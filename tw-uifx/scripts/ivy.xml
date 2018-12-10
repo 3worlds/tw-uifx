@@ -27,7 +27,11 @@
 			<conf name="java library"/>
 		</artifact>
 	</publications>
-
-	<dependencies/>
+	
+    <dependencies>
+		<!-- <dependency org="fr.ens.biologie" name="generics" rev="+"/> -->
+		<!-- Java fx extended controls -->
+		<dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>
+	</dependencies>
 
 </ivy-module>
