@@ -82,16 +82,16 @@ public class ModelMakerfx extends Application {
 	}
 
 	private void checkResources() {
-		File file = new File(
-				ProjectPaths.USER_ROOT + File.separator + ProjectPaths.TW_ROOT + File.separator + TwDepJar.TW_DEP_JAR);
-		if (!file.exists())
-			Dialogs.errorAlert("Resource Error", "Required Java dependency jar not found",
-					"Use TwSetup to create " + file.getAbsolutePath());
-
+//		File file = new File(
+//				ProjectPaths.USER_ROOT + File.separator + ProjectPaths.TW_ROOT + File.separator + TwDepJar.TW_DEP_JAR);
+//		if (!file.exists())
+//			Dialogs.errorAlert("Resource Error", "Required Java dependency jar not found",
+//					"Use TwSetup to create " + file.getAbsolutePath());
+//
 		javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		if (compiler == null)
-			Dialogs.errorAlert("Resource Error", "Java compiler not found",
-					"Check you have the Java Development Kit installed");
+//		if (compiler == null)
+//			Dialogs.errorAlert("Resource Error", "Java compiler not found",
+//					"Check you have the Java Development Kit installed");
 
 		if (!file.exists() || compiler == null) {
 			Platform.exit();

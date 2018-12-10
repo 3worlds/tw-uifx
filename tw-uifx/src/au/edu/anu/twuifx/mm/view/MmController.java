@@ -30,6 +30,7 @@
 
 package au.edu.anu.twuifx.mm.view;
 
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -53,6 +54,8 @@ import javafx.stage.Stage;
 import java.awt.Rectangle;
 import java.io.File;
 import org.controlsfx.control.PropertySheet;
+
+import au.edu.anu.twmm.ModelMakerModel;
 
 
 public class MmController /*implements ArchComplianceListener, CodeComplianceListener, DeployComplianceListener*/ {
@@ -149,7 +152,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 	@FXML
 	private Spinner<Integer> spinNodeSize;
 
-	//private ModelMakerModel model;
+	private ModelMakerModel model;
 	private Stage stage;
 	private ToggleGroup tgArchetype;
 	//private Verbosity verbosity = Verbosity.brief;
@@ -200,7 +203,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 		});
 
 		//StatusText.setStatusProperty(lblStatus);
-		// StatusText.message("Initialising user interface");
+		//StatusText.message("Initialising user interface");
 		btnLayout.setTooltip(new Tooltip("Apply layout function"));
 		btnXLinks.setTooltip(new Tooltip("Show/hide cross-links"));
 		btnChildLinks.setTooltip(new Tooltip("Show/hide parent-child edges"));
@@ -234,7 +237,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 		// Setup zooming from the graph display pane (zoomTarget)
 //		UiUtil.zoomConfig(scrollPane, scrollContent, group, zoomTarget);
-		// StatusText.clear();
+		 //StatusText.clear();
 		// AnchorPane.setRightAnchor(lblUserProjectPath, 0.0);
 
 	}
@@ -260,7 +263,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
 		// userSrcPath.set("");
-		//model.checkGraph();
+		model.checkGraph();
 	}
 
 	@FXML
@@ -273,7 +276,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 //			if (checkIsAProject(prjtmp) & !prjtmp.equals(userProjectPath.get())) {
 //				userProjectPath.set(prjtmp);
 //				// userSrcPath.set(srctmp);
-//				//model.checkGraph();
+				model.checkGraph();
 //			}
 //		}
 	}
@@ -293,15 +296,15 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 //		ArchCompliance.clear();
 //		CodeCompliance.clear();
 //		DeployCompliance.clear();
-//		model.checkGraph();
+		model.checkGraph();
 	}
 
 	@FXML
 	void handleMenuExit(ActionEvent event) {
-//		if (model.canClose("closing")) {
-//			Platform.exit();
-//			System.exit(0);
-//		}
+		if (model.canClose("closing")) {
+			Platform.exit();
+			System.exit(0);
+		}
 	}
 
 	public void enableButtons() {
@@ -317,40 +320,39 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 	}
 
 	private void openProject(File file) {
-//		model.openProject(file);
+		model.openProject(file);
 	}
 
 	@FXML
 	void handlePaneOnMouseClicked(MouseEvent event) {
-//		model.onPaneMouseClicked(event);
+		model.onPaneMouseClicked(event);
 
 	}
 
 	@FXML
 	void handlePaneOnMouseMoved(MouseEvent event) {
-//		model.onPaneMouseMoved(event);
+		model.onPaneMouseMoved(event);
 		captureDrawingSize();
 	}
 
 	@FXML
 	void handleLayout(ActionEvent event) {
-//		model.runLayout();
-
+		model.runLayout();
 	}
 
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
 //		if (!GraphState.hasChanged()) {
-//			StatusText.message("Deploying simulator");
+			//StatusText.message("Deploying simulator");
 //			DeployCompliance.clear();
-//			btnDeploy.setDisable(true);
-//			Runnable task = () -> {
-//				model.createSimulatorAndDeploy();
-//				Platform.runLater(() -> {
-//					btnDeploy.setDisable(false);
-//					StatusText.clear();
-//				});
-//			};
+			btnDeploy.setDisable(true);
+			Runnable task = () -> {
+				model.createSimulatorAndDeploy();
+				Platform.runLater(() -> {
+					btnDeploy.setDisable(false);
+					//StatusText.clear();
+				});
+			};
 //			ExecutorService executor = Executors.newSingleThreadExecutor();
 //			executor.execute(task);
 //		} else
@@ -384,24 +386,24 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 //		}
 	}
 
-//	public ModelMakerModel model() {
-//		return model;
-//	}
+	public ModelMakerModel model() {
+		return model;
+	}
 
 	@FXML
 	void handleNewProject(ActionEvent event) {
-//		model.newProject();
+		model.newProject();
 	}
 
 	@FXML
 	void handleSave(ActionEvent event) {
-//		model.save();
+		model.save();
 
 	}
 
 	@FXML
 	void handleSaveAs(ActionEvent event) {
-//		model.saveAs();
+		model.saveAs();
 
 	}
 
@@ -478,7 +480,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 	@FXML
 	void handleImport(ActionEvent event) {
-//		model.importProject();
+		model.importProject();
 	}
 
 	private Rectangle getStageRectangle() {
