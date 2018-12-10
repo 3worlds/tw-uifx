@@ -76,7 +76,7 @@ public class ModelMakerfx extends Application {
 			
 			} else {
 				Platform.exit();
-//				System.exit(0);
+				System.exit(0);
 			}
 		});
 	}
@@ -93,10 +93,10 @@ public class ModelMakerfx extends Application {
 //			Dialogs.errorAlert("Resource Error", "Java compiler not found",
 //					"Check you have the Java Development Kit installed");
 
-		if (!file.exists() || compiler == null) {
-			Platform.exit();
-			System.exit(0);
-		}
+//		if (!file.exists() || compiler == null) {
+//			Platform.exit();
+//			System.exit(0);
+//		}
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class ModelMakerfx extends Application {
 	@Override
 	public void stop() {
 		controller.putPreferences();
-		log.debug("Stopping program");
+//		log.debug("Stopping program");
 		// Without this, threads remain when debugging.
 		System.exit(0);
 	}

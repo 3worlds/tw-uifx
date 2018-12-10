@@ -324,14 +324,14 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 	}
 
 	@FXML
-	void handlePaneOnMouseClicked(MouseEvent event) {
-		model.onPaneMouseClicked(event);
+	void handlePaneOnMouseClicked(MouseEvent e) {
+		model.onPaneMouseClicked(e.getX(),e.getY(),zoomTarget.getWidth(),zoomTarget.getHeight());
 
 	}
 
 	@FXML
-	void handlePaneOnMouseMoved(MouseEvent event) {
-		model.onPaneMouseMoved(event);
+	void handlePaneOnMouseMoved(MouseEvent e) {
+		model.onPaneMouseMoved(e.getX(),e.getY(),zoomTarget.getWidth(),zoomTarget.getHeight());
 		captureDrawingSize();
 	}
 
