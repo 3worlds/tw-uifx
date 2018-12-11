@@ -55,6 +55,8 @@ import java.awt.Rectangle;
 import java.io.File;
 import org.controlsfx.control.PropertySheet;
 
+import au.edu.anu.twcore.preferences.PrefImpl;
+import au.edu.anu.twcore.preferences.Preferable;
 import au.edu.anu.twmm.ModelMakerModel;
 
 
@@ -514,30 +516,30 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 	// called when closing a project
 	public void putPreferences() {
-//		if (Project.isOpen()) {
-//			Preferences p = PreferencesProject.impl();
-//			p.put(UserProjectPath, userProjectPath.get());
-//			// p.put(UserSrcPath, userSrcPath.get());
-//			p.put(allElementsPropertySheet.idProperty().get() + Mode,
-//					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
-//			p.put(nodePropertySheet.idProperty().get() + Mode,
-//					(nodePropertySheet.getMode() == PropertySheet.Mode.NAME));
-//			p.put(zoomTarget.idProperty().get() + width, zoomTarget.getWidth());
-//			p.put(zoomTarget.idProperty().get() + height, zoomTarget.getHeight());
+		if (Project.isOpen()) {
+			Preferable p = new PrefImpl(this,"_");
+			p.putString(UserProjectPath, userProjectPath.get());
+//			 p.put(UserSrcPath, userSrcPath.get());
+			p.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
+					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
+			p.putBoolean(nodePropertySheet.idProperty().get() + Mode,
+					(nodePropertySheet.getMode() == PropertySheet.Mode.NAME));
+			p.putDouble(zoomTarget.idProperty().get() + width, zoomTarget.getWidth());
+			p.putDouble(zoomTarget.idProperty().get() + height, zoomTarget.getHeight());
 //			p.putSplitPaneDividers(splitPane1);
 //			p.putSplitPaneDividers(splitPane2);
 //			p.putTabSelection(tabPaneProperties);
-//			p.put(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
-//			p.put(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
+			p.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
+			p.putDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
 //			p.putRectangle(mainFrameName, getStageRectangle());
-//			p.putBoolean(mainMaximized, stage.isMaximized());
-//			p.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
-//			p.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
+			p.putBoolean(mainMaximized, stage.isMaximized());
+			p.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
+			p.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
 //			p.putInt(fontSizeKey, VisualNode.getFontSize());
 //			p.putInt(nodeSizeKey, VisualNode.getNodeRadius());
 //			PropertyDefaults.savePreferences(p);
-//			p.flush();
-//		}
+			p.flush();
+		}
 	}
 
 	private boolean checkIsAProject(String path) {
