@@ -107,7 +107,7 @@ public class ModelMakerfx extends Application {
 		mainStage = primaryStage;
 		mainStage.setTitle("3Worlds Model Maker");
 		createMainWindow();
-		Dialogs.setParent(root.getScene().getWindow());
+		//Dialogs.setParent(root.getScene().getWindow());
 		getFramePreferences();
 		mainStage.show();
 
