@@ -55,8 +55,9 @@ import java.awt.Rectangle;
 import java.io.File;
 import org.controlsfx.control.PropertySheet;
 
-import au.edu.anu.twcore.preferences.PrefImpl;
-import au.edu.anu.twcore.preferences.Preferable;
+import au.edu.anu.omhtk.preferences.PrefImpl;
+import au.edu.anu.omhtk.preferences.Preferable;
+import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twmm.ModelMakerModel;
 
 
@@ -517,7 +518,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 	// called when closing a project
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			Preferable p = new PrefImpl(this,"_");
+			Preferable p = new PrefImpl(this);
 			p.putString(UserProjectPath, userProjectPath.get());
 //			 p.put(UserSrcPath, userSrcPath.get());
 			p.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,

@@ -35,6 +35,8 @@ import java.io.IOException;
 
 import javax.tools.ToolProvider;
 
+import au.edu.anu.twcore.dialogs.Dialogs;
+import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -67,13 +69,10 @@ public class ModelMakerfx extends Application {
 		controller = loader.getController();
 		Scene scene = new Scene(root);
 		mainStage.setScene(scene);
-
 		controller.setStage(mainStage);
-
 		scene.getWindow().setOnCloseRequest((e) -> {
 			if (!controller.model().canClose("closing")) {
-				e.consume();
-			
+				e.consume();		
 			} else {
 				Platform.exit();
 				System.exit(0);
@@ -107,7 +106,7 @@ public class ModelMakerfx extends Application {
 		mainStage = primaryStage;
 		mainStage.setTitle("3Worlds Model Maker");
 		createMainWindow();
-		//Dialogs.setParent(root.getScene().getWindow());
+		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
 		getFramePreferences();
 		mainStage.show();
 
