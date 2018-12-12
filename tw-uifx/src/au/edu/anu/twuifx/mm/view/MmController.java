@@ -53,15 +53,25 @@ import javafx.scene.text.*;
 import javafx.stage.Stage;
 import java.awt.Rectangle;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferable;
+import au.edu.anu.twcore.dialogs.Dialogs;
+import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
+import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
+import au.edu.anu.twcore.errorMessaging.Verbosity;
+import au.edu.anu.twcore.errorMessaging.archetype.ArchComplianceManager;
+import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
+import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twmm.ModelMakerModel;
+import au.edu.anu.twuifx.mm.visualise.Visualisefx;
 
-
-public class MmController /*implements ArchComplianceListener, CodeComplianceListener, DeployComplianceListener*/ {
+public class MmController implements ErrorMessageListener {
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -92,7 +102,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 	@FXML
 	private MenuItem miSetCodePath;
-	
+
 	@FXML
 	private MenuItem miDisconnect;
 
@@ -158,11 +168,9 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 	private ModelMakerModel model;
 	private Stage stage;
 	private ToggleGroup tgArchetype;
-	//private Verbosity verbosity = Verbosity.brief;
+	private Verbosity verbosity = Verbosity.brief;
 
-	//private List<ArchComplianceMessageable> lstArchMsgs = new ArrayList<>();
-	//private List<CodeComplianceMessageable> lstCodeMsgs = new ArrayList<>();
-	//private List<DeploymentComplianceMessageable> lstDeploymentMsgs = new ArrayList<>();
+	private List<ErrorMessagable> lstErrorMsgs = new ArrayList<>();
 
 	private double drawWidth;
 	private double drawHeight;
@@ -170,12 +178,12 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 	public void initFontSize(int size) {
 		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 20, size));
-		//VisualNode.setFontSize(size);
+		Visualisefx.setFontSize(size);
 	}
 
 	public void initNodeRadius(int size) {
 		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 40, size));
-		//VisualNode.setNodeRadius(size);		
+		Visualisefx.setNodeRadius(size);
 	}
 
 	@FXML
@@ -187,11 +195,11 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 			@Override
 			public void changed(ObservableValue<? extends Integer> observable, //
 					Integer oldValue, Integer newValue) {
-				//VisualNode.setFontSize(newValue);
+				Visualisefx.setFontSize(newValue);
 				for (Node n : zoomTarget.getChildren()) {
 					if (n instanceof Text) {
 						Text t = (Text) n;
-//						t.setFont(VisualNode.getFont());
+						t.setFont(Visualisefx.getFont());
 					}
 				}
 			}
@@ -201,12 +209,12 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 			@Override
 			public void changed(ObservableValue<? extends Integer> observable, //
 					Integer oldValue, Integer newValue) {
-				//VisualNode.setNodeRadius(newValue);
+				Visualisefx.setNodeRadius(newValue);
 			}
 		});
 
-		//StatusText.setStatusProperty(lblStatus);
-		//StatusText.message("Initialising user interface");
+		// StatusText.setStatusProperty(lblStatus);
+		// StatusText.message("Initialising user interface");
 		btnLayout.setTooltip(new Tooltip("Apply layout function"));
 		btnXLinks.setTooltip(new Tooltip("Show/hide cross-links"));
 		btnChildLinks.setTooltip(new Tooltip("Show/hide parent-child edges"));
@@ -216,17 +224,17 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 		// https://stackoverflow.com/questions/38604780/javafx-zoom-scroll-in-scrollpane?rq=1
 		// This class has all the housework for managing graph
-		//model = new ModelMakerModel(this, zoomTarget);
+		// model = new ModelMakerModel(this, zoomTarget);
 
 		// Listen for Archetype error messages
-		//ArchCompliance.addListener(this);
+		// ArchCompliance.addListener(this);
 
 		// Listen for compile error messages
-		//CodeCompliance.addListener(this);
+		// CodeCompliance.addListener(this);
 		// anchorPane.boundsInLocalProperty().addListener(new ChangeListern);
 
 		// Listen for deployment error messages
-		//DeployCompliance.addListener(this);
+		// DeployCompliance.addListener(this);
 
 		// build a toggle group for the verbosity level of archetype error
 		// messages
@@ -240,32 +248,27 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 		// Setup zooming from the graph display pane (zoomTarget)
 //		UiUtil.zoomConfig(scrollPane, scrollContent, group, zoomTarget);
-		 //StatusText.clear();
+		// StatusText.clear();
 		// AnchorPane.setRightAnchor(lblUserProjectPath, 0.0);
 
 	}
 
 	private void verbosityChange(Observable t) {
 		RadioButton rb = (RadioButton) tgArchetype.getSelectedToggle();
-//		if (rb == rb1)
-//			verbosity = Verbosity.brief;
-//		else if (rb == rb2)
-//			verbosity = Verbosity.medium;
-//		else
-//			verbosity = Verbosity.full;
+		if (rb == rb1)
+			verbosity = Verbosity.brief;
+		else if (rb == rb2)
+			verbosity = Verbosity.medium;
+		else
+			verbosity = Verbosity.full;
 		textFlowErrorMsgs.getChildren().clear();
-//		for (ArchComplianceMessageable msg : lstArchMsgs)
-//			textFlowErrorMsgs.getChildren().add(getArchMessageText(msg));
-//		for (CodeComplianceMessageable msg : lstCodeMsgs)
-//			textFlowErrorMsgs.getChildren().add(getCodeMessageText(msg));
-//		for (DeploymentComplianceMessageable msg : lstDeploymentMsgs)
-//			textFlowErrorMsgs.getChildren().add(getDeployMessageText(msg));
+		for (ErrorMessagable msg : lstErrorMsgs)
+			textFlowErrorMsgs.getChildren().add(getMessageText(msg));
 	}
 
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
-		// userSrcPath.set("");
 		model.checkGraph();
 	}
 
@@ -279,7 +282,7 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 //			if (checkIsAProject(prjtmp) & !prjtmp.equals(userProjectPath.get())) {
 //				userProjectPath.set(prjtmp);
 //				// userSrcPath.set(srctmp);
-				model.checkGraph();
+		model.checkGraph();
 //			}
 //		}
 	}
@@ -296,9 +299,9 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 	@FXML
 	void handleCheck(ActionEvent event) {
-//		ArchCompliance.clear();
-//		CodeCompliance.clear();
-//		DeployCompliance.clear();
+		ArchComplianceManager.clear();
+		CodeComplianceManager.clear();
+		DeployComplianceManager.clear();
 		model.checkGraph();
 	}
 
@@ -328,13 +331,13 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 	@FXML
 	void handlePaneOnMouseClicked(MouseEvent e) {
-		model.onPaneMouseClicked(e.getX(),e.getY(),zoomTarget.getWidth(),zoomTarget.getHeight());
+		model.onPaneMouseClicked(e.getX(), e.getY(), zoomTarget.getWidth(), zoomTarget.getHeight());
 
 	}
 
 	@FXML
 	void handlePaneOnMouseMoved(MouseEvent e) {
-		model.onPaneMouseMoved(e.getX(),e.getY(),zoomTarget.getWidth(),zoomTarget.getHeight());
+		model.onPaneMouseMoved(e.getX(), e.getY(), zoomTarget.getWidth(), zoomTarget.getHeight());
 		captureDrawingSize();
 	}
 
@@ -346,20 +349,20 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
 //		if (!GraphState.hasChanged()) {
-			//StatusText.message("Deploying simulator");
-//			DeployCompliance.clear();
-			btnDeploy.setDisable(true);
-			Runnable task = () -> {
-				model.createSimulatorAndDeploy();
-				Platform.runLater(() -> {
-					btnDeploy.setDisable(false);
-					//StatusText.clear();
-				});
-			};
+		// StatusText.message("Deploying simulator");
+//			DeployComplianceManager.clear();
+		btnDeploy.setDisable(true);
+		Runnable task = () -> {
+			model.createSimulatorAndDeploy();
+			Platform.runLater(() -> {
+				btnDeploy.setDisable(false);
+				// StatusText.clear();
+			});
+		};
 //			ExecutorService executor = Executors.newSingleThreadExecutor();
 //			executor.execute(task);
 //		} else
-//			Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
+			Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
 	}
 
 	private void updateOpenProjectsMenu(Menu menuOpen) {
@@ -420,57 +423,6 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 		return oldCursor;
 	}
 
-//	@Override
-//	public void onReceiveArchetypeMsg(ArchComplianceMessageable msg) {
-//		lstArchMsgs.add(msg);
-//		textFlowErrorMsgs.getChildren().add(getArchMessageText(msg));
-//	}
-//
-//	@Override
-//	public void onReceiveCodeMsg(CodeComplianceMessageable msg) {
-//		lstCodeMsgs.add(msg);
-//		textFlowErrorMsgs.getChildren().add(getCodeMessageText(msg));
-//	}
-//
-//	@Override
-//	public void onReceiveDeployMsg(DeploymentComplianceMessageable msg) {
-//		lstDeploymentMsgs.add(msg);
-//		textFlowErrorMsgs.getChildren().add(getDeployMessageText(msg));
-//	}
-//
-//	@Override
-//	public void onClearArchetypeMsgs() {
-//		textFlowErrorMsgs.getChildren().clear();
-//		lstArchMsgs.clear();
-//	}
-//
-//	@Override
-//	public void onClearCodeMsgs() {
-//		textFlowErrorMsgs.getChildren().clear();
-//		lstCodeMsgs.clear();
-//	}
-//
-//	@Override
-//	public void onClearDeployMsgs() {
-//		textFlowErrorMsgs.getChildren().clear();
-//		lstDeploymentMsgs.clear();
-//	}
-//
-//	private Text getArchMessageText(ArchComplianceMessageable msg) {
-//		Text t = new Text(msg.message(verbosity) + "\n");
-//		return t;
-//	}
-
-//	private Text getCodeMessageText(CodeComplianceMessageable msg) {
-//		Text t = new Text(msg.message(verbosity) + "\n");
-//		return t;
-//	}
-//
-//	private Text getDeployMessageText(DeploymentComplianceMessageable msg) {
-//		Text t = new Text(msg.message(verbosity) + "\n");
-//		return t;
-//	}
-
 	public void setValid(boolean ok) {
 		if (ok) {
 			trafficLight.fillProperty().set(Color.GREEN);
@@ -520,7 +472,6 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 		if (Project.isOpen()) {
 			Preferable p = new PrefImpl(this);
 			p.putString(UserProjectPath, userProjectPath.get());
-//			 p.put(UserSrcPath, userSrcPath.get());
 			p.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
 					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
 			p.putBoolean(nodePropertySheet.idProperty().get() + Mode,
@@ -532,12 +483,13 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 //			p.putTabSelection(tabPaneProperties);
 			p.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
 			p.putDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
-//			p.putRectangle(mainFrameName, getStageRectangle());
+			Rectangle r = getStageRectangle();
+			p.putDoubles(mainFrameName, r.getX(),r.getY(),r.getHeight(),r.getWidth());
 			p.putBoolean(mainMaximized, stage.isMaximized());
 			p.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			p.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
-//			p.putInt(fontSizeKey, VisualNode.getFontSize());
-//			p.putInt(nodeSizeKey, VisualNode.getNodeRadius());
+			p.putInt(fontSizeKey, Visualisefx.getFontSize());
+			p.putInt(nodeSizeKey, Visualisefx.getNodeRadius());
 //			PropertyDefaults.savePreferences(p);
 			p.flush();
 		}
@@ -653,6 +605,23 @@ public class MmController /*implements ArchComplianceListener, CodeComplianceLis
 
 	public boolean haveUserProject() {
 		return !userProjectPath.get().equals("");
+	}
+
+	private Text getMessageText(ErrorMessagable msg) {
+		Text t = new Text(msg.message(verbosity) + "\n");
+		return t;
+	}
+
+	@Override
+	public void onReceiveMsg(ErrorMessagable msg) {
+		lstErrorMsgs.add(msg);
+		textFlowErrorMsgs.getChildren().add(getMessageText(msg));
+	}
+
+	@Override
+	public void onClear() {
+		textFlowErrorMsgs.getChildren().clear();
+		lstErrorMsgs.clear();
 	}
 
 }
