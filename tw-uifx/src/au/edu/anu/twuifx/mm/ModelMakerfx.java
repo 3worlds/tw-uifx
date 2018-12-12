@@ -23,7 +23,8 @@
  *  GNU General Public License for more details.                          *                         
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
- *  along with UIT.  If not, see <https://www.gnu.org/licenses/gpl.html>. *
+ *  along with TW-UIFX.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
 
@@ -36,6 +37,8 @@ import java.io.IOException;
 import javax.tools.ToolProvider;
 
 import au.edu.anu.twcore.dialogs.Dialogs;
+import au.edu.anu.twcore.project.ProjectPaths;
+import au.edu.anu.twcore.project.TWPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
@@ -47,20 +50,15 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-
 /**
  * Author Ian Davies
  *
  * Date 10 Dec. 2018
  */
-public class ModelMakerfx extends Application {
+public class ModelMakerfx extends Application implements ProjectPaths, TWPaths {
 	private Stage mainStage;
 	private Parent root;
-	//private Logger log = LoggerFactory.getLogger(ModelMakerfx.class, "3Worlds");
 	private MmController controller;
-	static {
-		//Utilities.loadDefaultLogging();
-	}
 
 	private void createMainWindow() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -72,7 +70,7 @@ public class ModelMakerfx extends Application {
 		controller.setStage(mainStage);
 		scene.getWindow().setOnCloseRequest((e) -> {
 			if (!controller.model().canClose("closing")) {
-				e.consume();		
+				e.consume();
 			} else {
 				Platform.exit();
 				System.exit(0);
@@ -81,35 +79,35 @@ public class ModelMakerfx extends Application {
 	}
 
 	private void checkResources() {
-//		File file = new File(
-//				ProjectPaths.USER_ROOT + File.separator + ProjectPaths.TW_ROOT + File.separator + TwDepJar.TW_DEP_JAR);
-//		if (!file.exists())
-//			Dialogs.errorAlert("Resource Error", "Required Java dependency jar not found",
-//					"Use TwSetup to create " + file.getAbsolutePath());
-//
-		javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-//		if (compiler == null)
-//			Dialogs.errorAlert("Resource Error", "Java compiler not found",
-//					"Check you have the Java Development Kit installed");
+		File file = new File(TW_ROOT + File.separator + TW_DEP_JAR);
+		if (!file.exists())
+			Dialogs.errorAlert("Resource Error", "Required Java dependency jar not found",
+					"Use TwSetup to create " + file.getAbsolutePath());
 
-//		if (!file.exists() || compiler == null) {
-//			Platform.exit();
-//			System.exit(0);
-//		}
+		boolean haveCompiler = !(ToolProvider.getSystemJavaCompiler() == null);
+		if (!haveCompiler)
+			Dialogs.errorAlert("Resource Error", "Java compiler not found",
+					"Check you have the Java Development Kit installed");
+
+		if (!file.exists() || !haveCompiler) {
+			Platform.exit();
+			System.exit(0);
+		}
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		checkResources();
-		// setUserAgentStylesheet(STYLESHEET_CASPIAN); // causes stylesheet warning from
-		// search bar of propertySheet
+		/**
+		 * setUserAgentStylesheet(STYLESHEET_CASPIAN); This stylesheet illicits a
+		 * warning from search bar of propertySheet
+		 */
 		mainStage = primaryStage;
 		mainStage.setTitle("3Worlds Model Maker");
 		createMainWindow();
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
+		checkResources();
 		getFramePreferences();
 		mainStage.show();
-
 	}
 
 	private void getFramePreferences() {
@@ -122,13 +120,11 @@ public class ModelMakerfx extends Application {
 		mainStage.setHeight(h);
 		mainStage.setX(x);
 		mainStage.setY(y);
-
 	}
 
 	@Override
 	public void stop() {
 		controller.putPreferences();
-//		log.debug("Stopping program");
 		// Without this, threads remain when debugging.
 		System.exit(0);
 	}
