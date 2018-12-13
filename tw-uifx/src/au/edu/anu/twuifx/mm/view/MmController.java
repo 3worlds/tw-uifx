@@ -470,7 +470,7 @@ public class MmController implements ErrorMessageListener {
 	// called when closing a project
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			Preferable p = new PrefImpl(this);
+			Preferable p = new PrefImpl(Project.getProjectFile());
 			p.putString(UserProjectPath, userProjectPath.get());
 			p.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
 					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
@@ -495,15 +495,6 @@ public class MmController implements ErrorMessageListener {
 		}
 	}
 
-	private boolean checkIsAProject(String path) {
-		return false;
-//		boolean res = (new File(path + File.separator + CodeGenFiles.SRC).exists());
-//		if (!res) {
-//			Dialogs.errorAlert("External project", "Path to user project does not contain a src directory.", path);
-//			return false;
-//		} else
-//			return true;
-	}
 
 	// called when opening a project
 	public void getPreferences() {
