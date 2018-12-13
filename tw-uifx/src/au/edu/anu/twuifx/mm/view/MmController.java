@@ -73,7 +73,7 @@ import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twmm.ModelMakerModel;
-import au.edu.anu.twuifx.mm.visualise.Visualisefx;
+import au.edu.anu.twuifx.mm.visualise.GVizfx;
 
 public class MmController implements ErrorMessageListener {
 
@@ -182,12 +182,12 @@ public class MmController implements ErrorMessageListener {
 
 	public void initFontSize(int size) {
 		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 20, size));
-		Visualisefx.setFontSize(size);
+		GVizfx.setFontSize(size);
 	}
 
 	public void initNodeRadius(int size) {
 		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 40, size));
-		Visualisefx.setNodeRadius(size);
+		GVizfx.setNodeRadius(size);
 	}
 
 	@FXML
@@ -199,11 +199,11 @@ public class MmController implements ErrorMessageListener {
 			@Override
 			public void changed(ObservableValue<? extends Integer> observable, //
 					Integer oldValue, Integer newValue) {
-				Visualisefx.setFontSize(newValue);
+				GVizfx.setFontSize(newValue);
 				for (Node n : zoomTarget.getChildren()) {
 					if (n instanceof Text) {
 						Text t = (Text) n;
-						t.setFont(Visualisefx.getFont());
+						t.setFont(GVizfx.getFont());
 					}
 				}
 			}
@@ -213,7 +213,7 @@ public class MmController implements ErrorMessageListener {
 			@Override
 			public void changed(ObservableValue<? extends Integer> observable, //
 					Integer oldValue, Integer newValue) {
-				Visualisefx.setNodeRadius(newValue);
+				GVizfx.setNodeRadius(newValue);
 			}
 		});
 
@@ -527,8 +527,8 @@ public class MmController implements ErrorMessageListener {
 			p.putBoolean(mainMaximized, stage.isMaximized());
 			p.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			p.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
-			p.putInt(fontSizeKey, Visualisefx.getFontSize());
-			p.putInt(nodeSizeKey, Visualisefx.getNodeRadius());
+			p.putInt(fontSizeKey, GVizfx.getFontSize());
+			p.putInt(nodeSizeKey, GVizfx.getNodeRadius());
 //			PropertyDefaults.savePreferences(p);
 			p.flush();
 		}

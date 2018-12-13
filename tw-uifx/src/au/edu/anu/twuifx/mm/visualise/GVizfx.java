@@ -30,6 +30,7 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
+import au.edu.anu.twmm.graphviz.GVisable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.text.Font;
@@ -42,7 +43,7 @@ import javafx.scene.text.Font;
 
 // We could do the old impl trick here or better just implement an interface. Must not expose fx!
 
-public class Visualisefx {
+public class GVizfx implements GVisable{
 	private static int fontSize;
 	private static Font font;
 	private static IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
