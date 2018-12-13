@@ -39,13 +39,17 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -213,29 +217,14 @@ public class MmController implements ErrorMessageListener {
 			}
 		});
 
-		// StatusText.setStatusProperty(lblStatus);
-		// StatusText.message("Initialising user interface");
 		btnLayout.setTooltip(new Tooltip("Apply layout function"));
 		btnXLinks.setTooltip(new Tooltip("Show/hide cross-links"));
 		btnChildLinks.setTooltip(new Tooltip("Show/hide parent-child edges"));
-		// propertySheet.setMode(mode);
 		// Set a handler to update the menu when openMenu is shown
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
 
-		// https://stackoverflow.com/questions/38604780/javafx-zoom-scroll-in-scrollpane?rq=1
 		// This class has all the housework for managing graph
-		// model = new ModelMakerModel(this, zoomTarget);
-
-		// Listen for Archetype error messages
-		// ArchCompliance.addListener(this);
-
-		// Listen for compile error messages
-		// CodeCompliance.addListener(this);
-		// anchorPane.boundsInLocalProperty().addListener(new ChangeListern);
-
-		// Listen for deployment error messages
-		// DeployCompliance.addListener(this);
-
+		model = new ModelMakerModel();
 		// build a toggle group for the verbosity level of archetype error
 		// messages
 		tgArchetype = new ToggleGroup();
@@ -247,9 +236,7 @@ public class MmController implements ErrorMessageListener {
 		});
 
 		// Setup zooming from the graph display pane (zoomTarget)
-//		UiUtil.zoomConfig(scrollPane, scrollContent, group, zoomTarget);
-		// StatusText.clear();
-		// AnchorPane.setRightAnchor(lblUserProjectPath, 0.0);
+		zoomConfig(scrollPane, scrollContent, group, zoomTarget);
 
 	}
 
@@ -274,7 +261,7 @@ public class MmController implements ErrorMessageListener {
 
 	@FXML
 	void handleSetCodePath(ActionEvent event) {
-//		File prjFile = Dialogs.getCodePath("Select java project", userProjectPath.get());
+		File prjFile = Dialogs.getCodePath("Select java project", userProjectPath.get());
 //		if (prjFile != null) {
 //			userProjectPath.set("");
 //			// userSrcPath.set("");
@@ -283,8 +270,60 @@ public class MmController implements ErrorMessageListener {
 //				userProjectPath.set(prjtmp);
 //				// userSrcPath.set(srctmp);
 		model.checkGraph();
-//			}
+	}
+
 //		}
+	private static void zoomConfig(ScrollPane scrollPane, StackPane scrollContent, Group group, Region zoomTarget) {
+//			zoomTarget.getProperties().put("tooltip",new Tooltip("Zoom: Ctrl+mouse wheel"));
+		Tooltip.install(zoomTarget, new Tooltip("Zoom: Ctrl+mouse wheel"));
+
+		// Manage zooming
+		group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+			scrollContent.setMinWidth(newBounds.getWidth());
+			scrollContent.setMinHeight(newBounds.getHeight());
+		});
+		scrollPane.viewportBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+			// use vieport size, if not too small for zoomTarget
+			scrollContent.setPrefSize(newBounds.getWidth(), newBounds.getHeight());
+		});
+		scrollContent.setOnScroll(event -> handleContentOnScroll(event, scrollPane, group, zoomTarget));
+
+	}
+
+	private static void handleContentOnScroll(ScrollEvent event, ScrollPane scrollPane, Group group,
+			Region zoomTarget) {
+
+		if (event.isControlDown()) {
+			event.consume();
+			final double zoomFactor = event.getDeltaY() > 0 ? 1.05 : 1 / 1.05;
+			Bounds groupBounds = group.getLayoutBounds();
+			final Bounds viewportBounds = scrollPane.getViewportBounds();
+
+			// calculate pixel offsets from [0, 1] range
+			double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
+			double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
+			// convert content coordinates to zoomTarget coordinates
+			Point2D posInZoomTarget = zoomTarget
+					.parentToLocal(group.parentToLocal(new Point2D(event.getX(), event.getY())));
+
+			// calculate adjustment of scroll position (pixels)
+			Point2D adjustment = zoomTarget.getLocalToParentTransform()
+					.deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
+
+			// do the resizing
+			zoomTarget.setScaleX(zoomFactor * zoomTarget.getScaleX());
+			zoomTarget.setScaleY(zoomFactor * zoomTarget.getScaleY());
+
+			// refresh ScrollPane scroll positions & content bounds
+			scrollPane.layout();
+
+			// convert back to [0, 1] range
+			// (values that are too large or small are automatically corrected by
+			// ScrollPane)
+			groupBounds = group.getLayoutBounds();
+			scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
+			scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
+		}
 	}
 
 	// Property to be bound to xlink lines
@@ -362,7 +401,7 @@ public class MmController implements ErrorMessageListener {
 //			ExecutorService executor = Executors.newSingleThreadExecutor();
 //			executor.execute(task);
 //		} else
-			Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
+		Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
 	}
 
 	private void updateOpenProjectsMenu(Menu menuOpen) {
@@ -484,7 +523,7 @@ public class MmController implements ErrorMessageListener {
 			p.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
 			p.putDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
 			Rectangle r = getStageRectangle();
-			p.putDoubles(mainFrameName, r.getX(),r.getY(),r.getHeight(),r.getWidth());
+			p.putDoubles(mainFrameName, r.getX(), r.getY(), r.getHeight(), r.getWidth());
 			p.putBoolean(mainMaximized, stage.isMaximized());
 			p.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			p.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
@@ -494,7 +533,6 @@ public class MmController implements ErrorMessageListener {
 			p.flush();
 		}
 	}
-
 
 	// called when opening a project
 	public void getPreferences() {

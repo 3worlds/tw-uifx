@@ -30,6 +30,8 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.text.Font;
 
 /**
@@ -37,31 +39,34 @@ import javafx.scene.text.Font;
  *
  * Date 12 Dec. 2018
  */
+
+// We could do the old impl trick here or better just implement an interface. Must not expose fx!
+
 public class Visualisefx {
+	private static int fontSize;
+	private static Font font;
+	private static IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
 
 	public static void setFontSize(int size) {
-		// TODO Auto-generated method stub
-		
+		font = Font.font("Verdana", size);
+		fontSize = size;
 	}
 
 	public static void setNodeRadius(int size) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public static Font getFont() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static int getFontSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		nodeRadiusProperty.set(size);
 	}
 
 	public static int getNodeRadius() {
-		// TODO Auto-generated method stub
-		return 0;
+		return nodeRadiusProperty.get();
+	}
+
+	// Exposes fx!
+	public static Font getFont() {
+		return font;
+	}
+
+	public static int getFontSize() {
+		return fontSize;
 	}
 
 }
