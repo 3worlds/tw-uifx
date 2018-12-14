@@ -58,7 +58,9 @@ import javafx.stage.Stage;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -76,6 +78,7 @@ import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twmm.ModelMakerModel;
+import au.edu.anu.twuifx.mm.GraphState;
 import au.edu.anu.twuifx.mm.visualise.GVizfx;
 
 public class MmController implements ErrorMessageListener {
@@ -396,7 +399,6 @@ public class MmController implements ErrorMessageListener {
 				model.createSimulatorAndDeploy();
 				Platform.runLater(() -> {
 					btnDeploy.setDisable(false);
-
 				});
 			};
 			ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -406,21 +408,21 @@ public class MmController implements ErrorMessageListener {
 	}
 
 	private void updateOpenProjectsMenu(Menu menuOpen) {
-//		Map<MenuItem, File> map = new HashMap<>();
-//		Uid cid = null;
-//		if (Project.isOpen())
-//			cid = Project.getProjectUid();
-//		menuOpen.getItems().clear();
-//		File[] f = Project.getProjectPaths();
-//		String[] names = Project.getProjectDisplayNames(f);
-//		for (int i = 0; i < f.length; i++) {
-//			MenuItem mi = new MenuItem(names[i]);
+		Map<MenuItem, File> map = new HashMap<>();
+		String currentId = null;
+	if (Project.isOpen())
+			currentId = Project.getProjectDateTime();
+		menuOpen.getItems().clear();
+		File[] files = Project.getProjectPaths();
+		String[] names = Project.extractDisplayNames(files);
+		for (int i = 0; i < files.length; i++) {
+			MenuItem mi = new MenuItem(names[i]);
 //			// Stop the first underscore from being removed
 //			// https://bugs.openjdk.java.net/browse/JDK-8095296
-//			mi.setMnemonicParsing(false);
-//			menuOpen.getItems().add(mi);
-//			map.put(mi, f[i]);
-//			Uid ui = Project.getProjectUid(f[i].getAbsolutePath());
+			mi.setMnemonicParsing(false);
+			menuOpen.getItems().add(mi);
+			map.put(mi, files[i]);
+			String dateTime = Project.extractProjectDateTime(files[i].getAbsolutePath());
 //			if (Objects.equals(cid, ui))
 //				mi.setDisable(true);
 //			else
@@ -429,7 +431,7 @@ public class MmController implements ErrorMessageListener {
 //				File file = map.get(e.getSource());
 //				openProject(file);
 //			});
-//		}
+		}
 	}
 
 	public ModelMakerModel model() {
