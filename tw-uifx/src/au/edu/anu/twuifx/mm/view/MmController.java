@@ -59,11 +59,14 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferable;
+import au.edu.anu.twcore.devenv.DevEnv;
 import au.edu.anu.twcore.dialogs.Dialogs;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
@@ -261,20 +264,19 @@ public class MmController implements ErrorMessageListener {
 
 	@FXML
 	void handleSetCodePath(ActionEvent event) {
-		File prjFile = Dialogs.getCodePath("Select java project", userProjectPath.get());
-//		if (prjFile != null) {
-//			userProjectPath.set("");
-//			// userSrcPath.set("");
-//			String prjtmp = prjFile.getAbsolutePath().replace("\\", "/");
-//			if (checkIsAProject(prjtmp) & !prjtmp.equals(userProjectPath.get())) {
-//				userProjectPath.set(prjtmp);
-//				// userSrcPath.set(srctmp);
-		model.checkGraph();
+		File jprjFile = Dialogs.selectDirectory("Select java project", userProjectPath.get());
+		if (jprjFile != null) {
+			String tmp = jprjFile.getAbsolutePath().replace("\\", "/");
+			if (!tmp.equals(userProjectPath.get()))
+				if (DevEnv.isJavaProject(jprjFile)) {
+					userProjectPath.set(tmp);
+					model.checkGraph();
+				}
+		}
 	}
 
 //		}
 	private static void zoomConfig(ScrollPane scrollPane, StackPane scrollContent, Group group, Region zoomTarget) {
-//			zoomTarget.getProperties().put("tooltip",new Tooltip("Zoom: Ctrl+mouse wheel"));
 		Tooltip.install(zoomTarget, new Tooltip("Zoom: Ctrl+mouse wheel"));
 
 		// Manage zooming
@@ -387,21 +389,20 @@ public class MmController implements ErrorMessageListener {
 
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
-//		if (!GraphState.hasChanged()) {
-		// StatusText.message("Deploying simulator");
-//			DeployComplianceManager.clear();
-		btnDeploy.setDisable(true);
-		Runnable task = () -> {
-			model.createSimulatorAndDeploy();
-			Platform.runLater(() -> {
-				btnDeploy.setDisable(false);
-				// StatusText.clear();
-			});
-		};
-//			ExecutorService executor = Executors.newSingleThreadExecutor();
-//			executor.execute(task);
-//		} else
-		Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
+		if (!GraphState.hasChanged()) {
+			DeployComplianceManager.clear();
+			btnDeploy.setDisable(true);
+			Runnable task = () -> {
+				model.createSimulatorAndDeploy();
+				Platform.runLater(() -> {
+					btnDeploy.setDisable(false);
+
+				});
+			};
+			ExecutorService executor = Executors.newSingleThreadExecutor();
+			executor.execute(task);
+		} else
+			Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
 	}
 
 	private void updateOpenProjectsMenu(Menu menuOpen) {

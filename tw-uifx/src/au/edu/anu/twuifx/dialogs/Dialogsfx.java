@@ -30,9 +30,14 @@
 
 package au.edu.anu.twuifx.dialogs;
 
+import java.io.File;
+
 import au.edu.anu.twcore.dialogs.Dialogable;
+import au.edu.anu.twcore.project.ProjectPaths;
+import au.edu.anu.twcore.project.TWPaths;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 
 /**
@@ -58,6 +63,17 @@ public class Dialogsfx implements Dialogable {
 		alert.setHeaderText(header);
 		alert.setContentText(content);
 		alert.showAndWait();
+	}
+
+	@Override
+	public File selectDirectory(String title, String currentPath) {
+		DirectoryChooser dc = new DirectoryChooser();
+		if (!currentPath.equals(""))
+			dc.setInitialDirectory(new File(currentPath));
+		else
+			dc.setInitialDirectory(new File(TWPaths.USER_ROOT));
+		dc.setTitle(title);
+		return dc.showDialog(owner);
 	}
 
 }
