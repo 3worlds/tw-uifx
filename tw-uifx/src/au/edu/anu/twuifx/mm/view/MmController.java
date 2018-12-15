@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -409,28 +410,28 @@ public class MmController implements ErrorMessageListener {
 
 	private void updateOpenProjectsMenu(Menu menuOpen) {
 		Map<MenuItem, File> map = new HashMap<>();
-		String currentId = null;
-	if (Project.isOpen())
-			currentId = Project.getProjectDateTime();
+		String cid = null;
+		if (Project.isOpen())
+			cid = Project.getProjectDateTime();
 		menuOpen.getItems().clear();
-		File[] files = Project.getProjectPaths();
+		File[] files = Project.getAllProjectPaths();
 		String[] names = Project.extractDisplayNames(files);
 		for (int i = 0; i < files.length; i++) {
 			MenuItem mi = new MenuItem(names[i]);
-//			// Stop the first underscore from being removed
+//			// Stop the first underscore from being removed - not needed anymore?
 //			// https://bugs.openjdk.java.net/browse/JDK-8095296
 			mi.setMnemonicParsing(false);
 			menuOpen.getItems().add(mi);
 			map.put(mi, files[i]);
-			String dateTime = Project.extractProjectDateTime(files[i].getAbsolutePath());
-//			if (Objects.equals(cid, ui))
-//				mi.setDisable(true);
-//			else
-//				mi.setDisable(false);
-//			mi.setOnAction((e) -> {
-//				File file = map.get(e.getSource());
-//				openProject(file);
-//			});
+			String id = Project.extractDateTime(files[i]);
+			if (Objects.equals(cid, id))
+				mi.setDisable(true);
+			else
+				mi.setDisable(false);
+			mi.setOnAction((e) -> {
+				File file = map.get(e.getSource());
+				openProject(file);
+			});
 		}
 	}
 
