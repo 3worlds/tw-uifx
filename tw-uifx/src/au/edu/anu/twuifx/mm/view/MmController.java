@@ -70,15 +70,15 @@ import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferable;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.errorMessaging.ErrorMessagable;
-import au.edu.anu.twapps.errorMessaging.ErrorMessageListener;
-import au.edu.anu.twapps.errorMessaging.Verbosity;
-import au.edu.anu.twapps.errorMessaging.archetype.ArchComplianceManager;
-import au.edu.anu.twapps.errorMessaging.codeGenerator.CodeComplianceManager;
-import au.edu.anu.twapps.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.ModelMakerModel;
 import au.edu.anu.twapps.project.Project;
+import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
+import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
+import au.edu.anu.twcore.errorMessaging.Verbosity;
+import au.edu.anu.twcore.errorMessaging.archetype.ArchComplianceManager;
+import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
+import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twuifx.mm.visualise.GVizfx;
 
 public class MmController implements ErrorMessageListener {
