@@ -62,6 +62,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TWPaths {
 
 	private void createMainWindow() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
+		///tw-uifx/src/au/edu/anu/twuifx/mm/view/Mm.fxml
 		loader.setLocation(ModelMakerfx.class.getResource("view/Mm.fxml"));
 		root = (Parent) loader.load();
 		controller = loader.getController();

@@ -31,12 +31,17 @@
 package au.edu.anu.twuifx.dialogs;
 
 import java.io.File;
+import java.util.Optional;
 
 import au.edu.anu.twcore.dialogs.Dialogable;
+import au.edu.anu.twcore.dialogs.YesNoCancel;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TWPaths;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 
@@ -74,6 +79,38 @@ public class Dialogsfx implements Dialogable {
 			dc.setInitialDirectory(new File(TWPaths.USER_ROOT));
 		dc.setTitle(title);
 		return dc.showDialog(owner);
+	}
+
+	@Override
+	public YesNoCancel yesNoCancel(String title, String header, String content) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.initOwner(owner);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		ButtonType btnYes = new ButtonType("Yes");
+		ButtonType btnNo = new ButtonType("No");
+		ButtonType btnCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+		alert.getButtonTypes().setAll(btnYes, btnNo, btnCancel);
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == btnYes)
+			return YesNoCancel.yes;
+		if (result.get() == btnNo)
+			return YesNoCancel.no;
+		return YesNoCancel.cancel;
+	}
+
+	@Override
+	public String getText(String title, String header, String content, String prompt) {
+		TextInputDialog dialog = new TextInputDialog(prompt);
+		dialog.initOwner(owner);
+		dialog.setTitle(title);
+		dialog.setHeaderText(header);
+		dialog.setContentText(content);
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent())
+			return result.get();
+		return null;
 	}
 
 }
