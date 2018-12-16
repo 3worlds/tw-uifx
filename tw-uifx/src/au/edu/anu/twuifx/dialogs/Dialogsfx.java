@@ -33,10 +33,9 @@ package au.edu.anu.twuifx.dialogs;
 import java.io.File;
 import java.util.Optional;
 
-import au.edu.anu.twcore.dialogs.Dialogable;
-import au.edu.anu.twcore.dialogs.YesNoCancel;
-import au.edu.anu.twcore.project.ProjectPaths;
-import au.edu.anu.twcore.project.TWPaths;
+import au.edu.anu.twapps.dialogs.Dialogable;
+import au.edu.anu.twapps.dialogs.YesNoCancel;
+import au.edu.anu.twapps.project.TWPaths;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;

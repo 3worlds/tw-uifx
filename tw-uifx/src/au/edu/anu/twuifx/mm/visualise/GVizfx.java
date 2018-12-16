@@ -30,7 +30,7 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
-import au.edu.anu.twmm.graphviz.GVisable;
+import au.edu.anu.twapps.graphviz.GVisable;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.text.Font;

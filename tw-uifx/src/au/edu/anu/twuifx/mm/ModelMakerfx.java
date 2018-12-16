@@ -36,9 +36,9 @@ import java.io.IOException;
 
 import javax.tools.ToolProvider;
 
-import au.edu.anu.twcore.dialogs.Dialogs;
-import au.edu.anu.twcore.project.ProjectPaths;
-import au.edu.anu.twcore.project.TWPaths;
+import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.project.ProjectPaths;
+import au.edu.anu.twapps.project.TWPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
@@ -70,7 +70,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TWPaths {
 		mainStage.setScene(scene);
 		controller.setStage(mainStage);
 		scene.getWindow().setOnCloseRequest((e) -> {
-			if (!controller.model().canClose("closing")) {
+			if (!controller.model().canClose()) {
 				e.consume();
 			} else {
 				Platform.exit();
