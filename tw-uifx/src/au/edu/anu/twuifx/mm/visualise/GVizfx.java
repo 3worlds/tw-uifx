@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.mm.visualise;
 
 import au.edu.anu.twapps.graphviz.GVisable;
+import fr.cnrs.iees.graph.generic.Graph;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.text.Font;
@@ -68,6 +69,12 @@ public class GVizfx implements GVisable{
 
 	public static int getFontSize() {
 		return fontSize;
+	}
+
+	@Override
+	public Graph newLayoutGraph() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

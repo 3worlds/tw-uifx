@@ -71,6 +71,7 @@ import au.edu.anu.omhtk.preferences.Preferable;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.GraphState;
+import au.edu.anu.twapps.mm.ModelListener;
 import au.edu.anu.twapps.mm.ModelMakerModel;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
@@ -81,7 +82,7 @@ import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.visualise.GVizfx;
 
-public class MmController implements ErrorMessageListener {
+public class MmController implements ErrorMessageListener, ModelListener {
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -635,6 +636,15 @@ public class MmController implements ErrorMessageListener {
 	public void onClear() {
 		textFlowErrorMsgs.getChildren().clear();
 		lstErrorMsgs.clear();
+	}
+
+	@Override
+	public void onProjectClosing() {
+//		Platform.runLater(() -> {
+			nodePropertySheet.getItems().clear();
+			allElementsPropertySheet.getItems().clear();
+			zoomTarget.getChildren().clear();
+//		});
 	}
 
 }
