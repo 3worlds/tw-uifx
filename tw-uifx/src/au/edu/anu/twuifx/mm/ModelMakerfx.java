@@ -37,8 +37,8 @@ import java.io.IOException;
 import javax.tools.ToolProvider;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.project.ProjectPaths;
-import au.edu.anu.twapps.project.TWPaths;
+import au.edu.anu.twcore.project.ProjectPaths;
+import au.edu.anu.twcore.project.TWPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
