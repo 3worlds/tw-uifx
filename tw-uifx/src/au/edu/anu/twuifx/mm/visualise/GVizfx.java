@@ -32,7 +32,6 @@ package au.edu.anu.twuifx.mm.visualise;
 
 import au.edu.anu.twapps.graphviz.GraphVisualisable;
 import fr.cnrs.iees.graph.generic.Graph;
-import fr.cnrs.iees.graph.generic.Node;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.text.Font;
@@ -77,7 +76,7 @@ public class GVizfx implements GraphVisualisable {
 	}
 
 	@Override
-	public Graph initialiseLayOut(Graph layoutGraph) {
+	public Graph<?, ?> initialiseLayOut(Graph<?, ?> layoutGraph) {
 		// Node vn = layoutGraph.nodes().iterator().next();
 		// vn.setProperty(kX, 0.1);
 		// vn.setProperty(kY, 0.5);
@@ -85,7 +84,7 @@ public class GVizfx implements GraphVisualisable {
 	}
 
 	@Override
-	public void createVisualElements(Graph layoutGraph) {
+	public void createVisualElements(Graph<?, ?> layoutGraph) {
 		// List<AotNode> collapseParents = new ArrayList<AotNode>();
 
 		// BooleanProperty showChildLines = controller.childLinksProperty();
@@ -103,7 +102,7 @@ public class GVizfx implements GraphVisualisable {
 	}
 
 	@Override
-	public void linkGraphs(Graph currentGraph, Graph layoutGraph) {
+	public void linkGraphs(Graph<?, ?> currentGraph, Graph<?, ?> layoutGraph) {
 		// TODO Auto-generated method stub
 //		for (AotNode n : vg.nodes()) {
 //			VisualNode vn = (VisualNode) n;

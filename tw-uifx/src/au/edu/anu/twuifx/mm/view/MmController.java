@@ -72,7 +72,7 @@ import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.graphviz.GraphVisualisation;
 import au.edu.anu.twapps.mm.GraphState;
-import au.edu.anu.twapps.mm.ModelListener;
+import au.edu.anu.twapps.mm.ModelController;
 import au.edu.anu.twapps.mm.ModelMakerModel;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
@@ -84,7 +84,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.visualise.GVizfx;
 import fr.cnrs.iees.graph.generic.Graph;
 
-public class MmController implements ErrorMessageListener, ModelListener {
+public class MmController implements ErrorMessageListener, ModelController {
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -234,8 +234,8 @@ public class MmController implements ErrorMessageListener, ModelListener {
 
 		// This class has all the housework for managing graph
 		GraphVisualisation.initialise(new GVizfx());
-		model = new ModelMakerModel();
-		model.addListener(this);
+		model = new ModelMakerModel(this);
+
 		// build a toggle group for the verbosity level of archetype error
 		// messages
 		tgArchetype = new ToggleGroup();
@@ -652,11 +652,11 @@ public class MmController implements ErrorMessageListener, ModelListener {
 	}
 
 	@Override
-	public void onProjectOpened(Graph layoutGraph, boolean valid) {
+	public void onProjectOpened(Graph<?, ?> layoutGraph, boolean valid) {
 		getPreferences();
 		// buildAllElementsPropertySheet()
 		// set the buttons
-		
+
 	}
 
 	@Override
@@ -668,7 +668,7 @@ public class MmController implements ErrorMessageListener, ModelListener {
 	@Override
 	public void onStartDrawing() {
 		zoomTarget.setPrefHeight(getDrawingHeight());
-		zoomTarget.setPrefWidth(getDrawingWidth());		
+		zoomTarget.setPrefWidth(getDrawingWidth());
 	}
 
 }

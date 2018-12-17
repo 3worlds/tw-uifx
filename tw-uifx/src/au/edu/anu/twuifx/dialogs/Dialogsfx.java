@@ -36,12 +36,14 @@ import java.util.Optional;
 import au.edu.anu.twapps.dialogs.Dialogable;
 import au.edu.anu.twapps.dialogs.YesNoCancel;
 import au.edu.anu.twcore.project.TWPaths;
+import fr.cnrs.iees.graph.io.GraphFileFormats;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 /**
@@ -110,6 +112,19 @@ public class Dialogsfx implements Dialogable {
 		if (result.isPresent())
 			return result.get();
 		return null;
+	}
+
+	@Override
+	public File getExternalProjectFile() {
+		FileChooser fc = new FileChooser();
+		fc.setInitialDirectory(new File(TWPaths.USER_ROOT));
+		String[] extList = GraphFileFormats.TWG.extensions();
+		for (String ext : extList)
+			fc.getExtensionFilters().add(
+					new FileChooser.ExtensionFilter(GraphFileFormats.TWG.toString() + " (*" + ext + ")", "*" + ext));
+		fc.setSelectedExtensionFilter(fc.getExtensionFilters().get(0));
+		File file = fc.showOpenDialog(owner);
+		return file;
 	}
 
 }
