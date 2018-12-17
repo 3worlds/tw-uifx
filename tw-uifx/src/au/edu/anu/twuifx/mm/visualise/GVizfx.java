@@ -30,8 +30,9 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
-import au.edu.anu.twapps.graphviz.GVisable;
+import au.edu.anu.twapps.graphviz.GraphVisualisable;
 import fr.cnrs.iees.graph.generic.Graph;
+import fr.cnrs.iees.graph.generic.Node;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.text.Font;
@@ -42,12 +43,16 @@ import javafx.scene.text.Font;
  * Date 12 Dec. 2018
  */
 
-// We could do the old impl trick here or better just implement an interface. Must not expose fx!
+// We could do the old impl trick here or better just implement an interface.
+// Must not expose fx!
 
-public class GVizfx implements GVisable{
+public class GVizfx implements GraphVisualisable {
 	private static int fontSize;
 	private static Font font;
 	private static IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
+
+	public static final String kX = "$x";
+	public static final String kY = "$y";
 
 	public static void setFontSize(int size) {
 		font = Font.font("Verdana", size);
@@ -72,9 +77,44 @@ public class GVizfx implements GVisable{
 	}
 
 	@Override
-	public Graph newLayoutGraph() {
-		// TODO Auto-generated method stub
+	public Graph initialiseLayOut(Graph layoutGraph) {
+		// Node vn = layoutGraph.nodes().iterator().next();
+		// vn.setProperty(kX, 0.1);
+		// vn.setProperty(kY, 0.5);
 		return null;
+	}
+
+	@Override
+	public void createVisualElements(Graph layoutGraph) {
+		// List<AotNode> collapseParents = new ArrayList<AotNode>();
+
+		// BooleanProperty showChildLines = controller.childLinksProperty();
+		// BooleanProperty showXLinkLines = controller.xLinksProperty();
+		// for (AotNode n : layoutGraph.nodes())
+		// VisualNode.createNodeVisualisation(n, pane, this);
+		// for (AotNode n : layoutGraph.nodes()) {
+		// VisualNode.createChildOutLines(n, showChildLines, pane);
+		// VisualNode.createXLinkOutLines(n, showXLinkLines, pane);
+		// if (VisualNode.isCollapseParent(n))
+		// collapseParents.add(n);
+		// }
+		// for (AotNode n : collapseParents)
+		// VisualNode.collapseTree(n);
+	}
+
+	@Override
+	public void linkGraphs(Graph currentGraph, Graph layoutGraph) {
+		// TODO Auto-generated method stub
+//		for (AotNode n : vg.nodes()) {
+//			VisualNode vn = (VisualNode) n;
+//			String id = VisualNode.getGuestNodeId(n);
+//			AotNode guestNode = findNode(cg, id);
+//			if (guestNode == null)
+//				throw new AotException("Unable to find guest node for visual node: " + id);
+//			vn.LinkNode(guestNode);
+//		}
+
+		
 	}
 
 }

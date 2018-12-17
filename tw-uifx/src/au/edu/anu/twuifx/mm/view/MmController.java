@@ -70,6 +70,7 @@ import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferable;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.graphviz.GraphVisualisation;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.ModelListener;
 import au.edu.anu.twapps.mm.ModelMakerModel;
@@ -81,6 +82,7 @@ import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.visualise.GVizfx;
+import fr.cnrs.iees.graph.generic.Graph;
 
 public class MmController implements ErrorMessageListener, ModelListener {
 
@@ -231,7 +233,9 @@ public class MmController implements ErrorMessageListener, ModelListener {
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
 
 		// This class has all the housework for managing graph
+		GraphVisualisation.initialise(new GVizfx());
 		model = new ModelMakerModel();
+		model.addListener(this);
 		// build a toggle group for the verbosity level of archetype error
 		// messages
 		tgArchetype = new ToggleGroup();
@@ -279,7 +283,7 @@ public class MmController implements ErrorMessageListener, ModelListener {
 		}
 	}
 
-//		}
+	// }
 	private static void zoomConfig(ScrollPane scrollPane, StackPane scrollContent, Group group, Region zoomTarget) {
 		Tooltip.install(zoomTarget, new Tooltip("Zoom: Ctrl+mouse wheel"));
 
@@ -419,8 +423,8 @@ public class MmController implements ErrorMessageListener, ModelListener {
 		String[] names = Project.extractDisplayNames(files);
 		for (int i = 0; i < files.length; i++) {
 			MenuItem mi = new MenuItem(names[i]);
-//			// Stop the first underscore from being removed - not needed anymore?
-//			// https://bugs.openjdk.java.net/browse/JDK-8095296
+			// // Stop the first underscore from being removed - not needed anymore?
+			// // https://bugs.openjdk.java.net/browse/JDK-8095296
 			mi.setMnemonicParsing(false);
 			menuOpen.getItems().add(mi);
 			map.put(mi, files[i]);
@@ -508,7 +512,7 @@ public class MmController implements ErrorMessageListener, ModelListener {
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			Preferable p = new PrefImpl(Project.getPreferencesFile());
+			Preferable p = new PrefImpl(Project.makePreferencesFile());
 			p.putString(UserProjectPath, userProjectPath.get());
 			p.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
 					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
@@ -533,7 +537,7 @@ public class MmController implements ErrorMessageListener, ModelListener {
 	// called when opening a project
 	public void getPreferences() {
 		GraphState.setTitleProperty(stage.titleProperty(), userProjectPath);
-		Preferable p = new PrefImpl(Project.getPreferencesFile());
+		Preferable p = new PrefImpl(Project.makePreferencesFile());
 		double[] r = p.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 		Platform.runLater(() -> {
 			stage.setX(r[0]);
@@ -640,11 +644,31 @@ public class MmController implements ErrorMessageListener, ModelListener {
 
 	@Override
 	public void onProjectClosing() {
-//		Platform.runLater(() -> {
-			nodePropertySheet.getItems().clear();
-			allElementsPropertySheet.getItems().clear();
-			zoomTarget.getChildren().clear();
-//		});
+		// Platform.runLater(() -> {
+		nodePropertySheet.getItems().clear();
+		allElementsPropertySheet.getItems().clear();
+		zoomTarget.getChildren().clear();
+		// });
+	}
+
+	@Override
+	public void onProjectOpened(Graph layoutGraph, boolean valid) {
+		getPreferences();
+		// buildAllElementsPropertySheet()
+		// set the buttons
+		
+	}
+
+	@Override
+	public void onEndDrawing() {
+		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
+		zoomTarget.setPrefWidth(Control.USE_COMPUTED_SIZE);
+	}
+
+	@Override
+	public void onStartDrawing() {
+		zoomTarget.setPrefHeight(getDrawingHeight());
+		zoomTarget.setPrefWidth(getDrawingWidth());		
 	}
 
 }
