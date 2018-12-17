@@ -29,7 +29,10 @@
 	</publications>
 	
     <dependencies>
-		<!-- <dependency org="fr.ens.biologie" name="generics" rev="+"/> -->
+		<dependency org="fr.ens.biologie" name="generics" rev="+"/>
+		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="+"/>
+		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="+"/>
+		<dependency org="au.edu.anu.tw-apps" name="tw-apps" rev="+"/>
 		<!-- Java fx extended controls -->
 		<dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>
 	</dependencies>
