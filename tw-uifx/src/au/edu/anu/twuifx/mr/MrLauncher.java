@@ -125,34 +125,34 @@ public class MrLauncher implements ProjectPaths {
 	 * @return the raw configuration graph
 	 * @throws IOException
 	 */
-	private static AotGraph getGraphFromJar(String filename) {
-		log.debug("Running from JAR '" + jarFilePath() + "'");
-		log.debug("Resource name: " + filename);
-		try {
-			int result = compareFiles(filename, Project.getProjectFile());
-			if (result != 0)
-				log.warning("File on disk differs from file in jar at byte: " + result);
-			else
-				log.debug("File on disk is identical to file in jar.");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
-
-		if (ins == null)
-			throw new TwuifxException("Unable to load resource '" + filename + "' using loader "
-					+ Thread.currentThread().getContextClassLoader().toString());
-
-		DslImporter importer = null;
-		try {
-			importer = new DslImporter(new AotReader(ins));
-		} catch (Exception e) {
-			log.error("The configuration graph could not be read: check its syntax");
-			e.printStackTrace();
-		}
-		AotGraph config = new AotGraph(importer);
-		return config;
-	}
+//	private static AotGraph getGraphFromJar(String filename) {
+//		log.debug("Running from JAR '" + jarFilePath() + "'");
+//		log.debug("Resource name: " + filename);
+//		try {
+//			int result = compareFiles(filename, Project.getProjectFile());
+//			if (result != 0)
+//				log.warning("File on disk differs from file in jar at byte: " + result);
+//			else
+//				log.debug("File on disk is identical to file in jar.");
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
+//		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+//
+//		if (ins == null)
+//			throw new TwuifxException("Unable to load resource '" + filename + "' using loader "
+//					+ Thread.currentThread().getContextClassLoader().toString());
+//
+//		DslImporter importer = null;
+//		try {
+//			importer = new DslImporter(new AotReader(ins));
+//		} catch (Exception e) {
+//			log.error("The configuration graph could not be read: check its syntax");
+//			e.printStackTrace();
+//		}
+//		AotGraph config = new AotGraph(importer);
+//		return config;
+//	}
 
 	@SuppressWarnings("rawtypes")
 	private static void loadUserClasses(AotGraph config) {

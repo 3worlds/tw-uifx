@@ -34,6 +34,7 @@ package au.edu.anu.twuifx.mr;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -152,7 +153,7 @@ public class TwUIManager {
 			pane = createAccordianWidgets(tabNode);
 			break;
 		default:
-			throw new AotException("'" + layout + "' is not a supported layout");
+			throw new TwuifxException("'" + layout + "' is not a supported layout");
 		}
 		tab.setContent(pane);
 
