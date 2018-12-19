@@ -32,6 +32,8 @@ package au.edu.anu.twuifx.mr;
 
 import java.io.File;
 import java.io.InputStream;
+
+import au.edu.anu.rscs.aot.util.Resources;
 import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.geometry.Pos;
@@ -103,12 +105,12 @@ public class MRSplash extends Preloader {
 //			title.setStyle("-fx-effect: innershadow(gaussian, gray, 5, 1.0, 0, 0);");
 
 			Image image;
-			if (ModelRunner.runningFromJAR()) {
-				InputStream ins = ModelRunner
-						.getProjectResource("fr/ens/biologie/threeWorlds/ui/modelUiRunner/3worlds-5.jpg");
+			if (MrLauncher.runningFromJAR()) {
+				InputStream ins = MrLauncher
+						.getProjectResource("au/edu/anu/twuifx/images/3worlds-5.jpg");
 				image = new Image(ins);
 			} else {
-				File file = Resource.getFile("3worlds-5.jpg", "fr.ens.biologie.threeWorlds.ui.modelUiRunner");
+				File file = Resources.getFile("3worlds-5.jpg", "au.edu.anu.twuifx.images");
 				image = new Image(file.toURI().toString());
 			}
 			ImageView imageView = new ImageView(image);

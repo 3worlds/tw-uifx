@@ -41,8 +41,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import au.edu.anu.omhtk.jars.Jars;
+import au.edu.anu.twcore.jars.SimulatorJar;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -96,7 +98,7 @@ public class MrLauncher implements ProjectPaths {
 		boolean found = path != null;
 		if (found) {
 			File file = new File(path);
-			path = path.replace(file.getName(), SimulatorJar.SimulatorName);// !!!
+			path = path.replace(file.getName(), SimulatorJar.SimJarName);// !!!
 			jarFile = new File(path);
 		} else
 			jarFile = null;
@@ -138,7 +140,7 @@ public class MrLauncher implements ProjectPaths {
 		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
 
 		if (ins == null)
-			throw new AotException("Unable to load resource '" + filename + "' using loader "
+			throw new TwuifxException("Unable to load resource '" + filename + "' using loader "
 					+ Thread.currentThread().getContextClassLoader().toString());
 
 		DslImporter importer = null;
@@ -176,7 +178,6 @@ public class MrLauncher implements ProjectPaths {
 			}
 
 		} catch (Exception e) {
-			log.error("could not load user-defined classes");
 			e.printStackTrace();
 		}
 
@@ -193,7 +194,7 @@ public class MrLauncher implements ProjectPaths {
 	 */
 	private static AotGraph getGraphFromDir() {
 		File file = Project.getProjectFile();
-		log.debug("Running from project " + file.getAbsolutePath());
+//		log.debug("Running from project " + file.getAbsolutePath());
 		InputStream ins = null;
 		try {
 			ins = new FileInputStream(file);
@@ -267,7 +268,7 @@ public class MrLauncher implements ProjectPaths {
 			InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
 			if (ins == null) {
 				// try project relative path
-				String prjDir = Project.getProjectRoot().getAbsolutePath() + File.separator;
+				String prjDir = Project.getProjectDirectory() + File.separator;
 				prjDir = prjDir.replace("\\", Jars.separator);
 				if (prjDir.startsWith(Jars.separator))
 					prjDir = prjDir.replaceFirst(Jars.separator, "");
