@@ -80,18 +80,18 @@ public class ModelRunnerfx extends Application {
 		// we need the ordered list of nodes to initialise
 		//AotList<AotNode> list = config.getInitialiser().getInitialisationList();
 		int i = 1;
-		double size = list.size();
-		for (AotNode n : list) {
-			try {
-				initNodeName = n.displayName();
-				double progress = i / size;
-				LauncherImpl.notifyPreloader(this, new Preloader.ProgressNotification(progress));
-				n.initialise();
-				i++;
-			} catch (Exception e) {
-				throw new TwuifxException("Initialisation failed for node: " + getInitNodeName() + ". ", e);
-			}
-		}
+//		double size = list.size();
+//		for (AotNode n : list) {
+//			try {
+//				initNodeName = n.displayName();
+//				double progress = i / size;
+//				LauncherImpl.notifyPreloader(this, new Preloader.ProgressNotification(progress));
+//				n.initialise();
+//				i++;
+//			} catch (Exception e) {
+//				throw new TwuifxException("Initialisation failed for node: " + getInitNodeName() + ". ", e);
+//			}
+//		}
 	}
 
 	private static final long maxSplashDelay = 2000;
@@ -121,7 +121,7 @@ public class ModelRunnerfx extends Application {
 		controller = loader.getController();
 		uiManager = new TwUIManager(uiNode, controller.getToolBar(), controller.getTopLeft(), controller.getTopRight(),
 				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
-				controller.getWidgetMenu(), stage.getScene().getWindow(), pref);
+				controller.getWidgetMenu(), stage.getScene().getWindow());
 
 		stage.show();
 		stage.toBack();
