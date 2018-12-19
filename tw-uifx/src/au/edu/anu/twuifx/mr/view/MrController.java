@@ -30,8 +30,6 @@
 
 package au.edu.anu.twuifx.mr.view;
 
-import java.awt.Rectangle;
-
 import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferenceable;
 import au.edu.anu.twcore.project.Project;
@@ -130,9 +128,6 @@ public class MrController {
 	private static final String mainFrameName = "mainFrame";
 	private static final String mainMaximized = mainFrameName + "_" + "maximized";
 
-	private Rectangle getStageRectangle(Stage stage) {
-		return new Rectangle((int) stage.getX(), (int) stage.getY(), (int) stage.getWidth(), (int) stage.getHeight());
-	}
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
