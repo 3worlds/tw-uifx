@@ -40,6 +40,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import javafx.scene.control.Alert;
@@ -91,7 +92,7 @@ public class MrLauncher implements ProjectPaths {
 	 */
 
 	private static void detectRunningEnvironment() {
-		String path = Jar.getRunningJarFilePath(MrLauncher.class);
+		String path = Jars.getRunningJarFilePath(MrLauncher.class);
 		boolean found = path != null;
 		if (found) {
 			File file = new File(path);
@@ -260,16 +261,16 @@ public class MrLauncher implements ProjectPaths {
 
 	public static InputStream getProjectResource(String name) {
 		if (runningFromJAR()) {
-			name = name.replace("\\", Jar.separator);
-			if (name.startsWith(Jar.separator))
-				name = name.replaceFirst(Jar.separator, "");
+			name = name.replace("\\", Jars.separator);
+			if (name.startsWith(Jars.separator))
+				name = name.replaceFirst(Jars.separator, "");
 			InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
 			if (ins == null) {
 				// try project relative path
 				String prjDir = Project.getProjectRoot().getAbsolutePath() + File.separator;
-				prjDir = prjDir.replace("\\", Jar.separator);
-				if (prjDir.startsWith(Jar.separator))
-					prjDir = prjDir.replaceFirst(Jar.separator, "");
+				prjDir = prjDir.replace("\\", Jars.separator);
+				if (prjDir.startsWith(Jars.separator))
+					prjDir = prjDir.replaceFirst(Jars.separator, "");
 				name = name.replace(prjDir, "");
 				ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
 			}
