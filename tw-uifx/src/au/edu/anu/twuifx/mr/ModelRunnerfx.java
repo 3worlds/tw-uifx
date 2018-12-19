@@ -38,6 +38,10 @@ import java.util.TimerTask;
 
 import com.sun.javafx.application.LauncherImpl;
 
+import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twcore.project.ProjectPaths;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
+import au.edu.anu.twuifx.mr.view.MrController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.application.Preloader;
@@ -51,19 +55,17 @@ import javafx.stage.Stage;
  *
  * Date 18 Dec. 2018
  */
-public class ModelLauncher extends Application {
-	private static AotNode uiNode;
-	private static AotGraph config;
-	private Preferences pref;
-	private Logger log = LoggerFactory.getLogger(ModelLauncher.class, "3Worlds");
+public class ModelRunnerfx extends Application {
+	private static Object uiNode;
+	private static Object config;
 	private TwUIManager uiManager;
 	private MrController controller;
 	private Stage stage;
 
-	public static void launchUI(AotGraph config1, String[] args) {
+	public static void launchUI(Object config1, String[] args) {
 		config = config1;
-		uiNode = config.findNode(N_UI.toString() + ":");
-		LauncherImpl.launchApplication(ModelLauncher.class, MRSplash.class, args);
+		//uiNode = config.findNode(N_UI.toString() + ":");
+		LauncherImpl.launchApplication(ModelRunnerfx.class, MRSplash.class, args);
 
 	}
 
@@ -76,7 +78,7 @@ public class ModelLauncher extends Application {
 	@Override
 	public void init() throws Exception {
 		// we need the ordered list of nodes to initialise
-		AotList<AotNode> list = config.getInitialiser().getInitialisationList();
+		//AotList<AotNode> list = config.getInitialiser().getInitialisationList();
 		int i = 1;
 		double size = list.size();
 		for (AotNode n : list) {
@@ -87,7 +89,7 @@ public class ModelLauncher extends Application {
 				n.initialise();
 				i++;
 			} catch (Exception e) {
-				throw new TwException("Initialisation failed for node: " + getInitNodeName() + ". ", e);
+				throw new TwuifxException("Initialisation failed for node: " + getInitNodeName() + ". ", e);
 			}
 		}
 	}
@@ -99,23 +101,23 @@ public class ModelLauncher extends Application {
 		this.stage = stage;
 		stage.setWidth(800);
 		stage.setHeight(600);
-		String title = Project.getCurrentProjectTitle();
+		String title = Project.getDisplayName();
 		stage.titleProperty().set(title);
 		// Create a runTime dir within this project and create a preferences file if not
 		// already present
 		File prefFile = Project.makeFile(ProjectPaths.RUNTIME, "preferences.dsl");
 		prefFile.getParentFile().mkdirs();
-		pref = new Preferences("RunTimePreferences", prefFile, log);
-		MrController.setPreferences(pref);
+//		pref = new Preferences("RunTimePreferences", prefFile, log);
+//		MrController.setPreferences(pref);
 		setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		// GraphState.setTitleProperty(stage.titleProperty(), null);
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ModelLauncher.class.getResource("view/Mr.fxml"));
+		loader.setLocation(ModelRunnerfx.class.getResource("view/Mr.fxml"));
 		Parent root = (Parent) loader.load();
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 
-		Dialogs.setParent(root.getScene().getWindow());
+//		Dialogs.setParent(root.getScene().getWindow());
 		controller = loader.getController();
 		uiManager = new TwUIManager(uiNode, controller.getToolBar(), controller.getTopLeft(), controller.getTopRight(),
 				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
@@ -126,7 +128,7 @@ public class ModelLauncher extends Application {
 
 		Platform.runLater(() -> {
 			uiManager.loadPreferences();
-			controller.loadPrefs(pref, stage);
+//			controller.loadPrefs(pref, stage);
 			// Hide the splash window
 			// 
 			long endTime = System.currentTimeMillis();
@@ -152,10 +154,9 @@ public class ModelLauncher extends Application {
 
 	@Override
 	public void stop() {
-		controller.savePrefs(pref, stage);
+//		controller.savePrefs(pref, stage);
 		uiManager.savePreferences();
-		pref.flush();
-		log.debug("Stopping program");
+//		pref.flush();
 	}
 
 }

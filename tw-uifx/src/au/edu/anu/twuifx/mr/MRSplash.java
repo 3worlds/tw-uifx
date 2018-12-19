@@ -139,7 +139,7 @@ public class MRSplash extends Preloader {
 		if (info instanceof ProgressNotification) {
 			ProgressNotification note = (ProgressNotification) info;
 			progressBar.setProgress(note.getProgress());
-			lblNodeName.setText(ModelLauncher.getInitNodeName() + "...");
+			lblNodeName.setText(ModelRunnerfx.getInitNodeName() + "...");
 		}
 	}
 }

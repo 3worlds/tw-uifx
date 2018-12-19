@@ -67,7 +67,7 @@ import java.util.concurrent.Executors;
 import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.omhtk.preferences.PrefImpl;
-import au.edu.anu.omhtk.preferences.Preferable;
+import au.edu.anu.omhtk.preferences.Preferenceable;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.graphviz.GraphVisualisation;
@@ -82,6 +82,7 @@ import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.visualise.GVizfx;
+import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.generic.Graph;
 
 public class MmController implements ErrorMessageListener, ModelController {
@@ -512,7 +513,7 @@ public class MmController implements ErrorMessageListener, ModelController {
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			Preferable p = new PrefImpl(Project.makePreferencesFile());
+			Preferenceable p = new PrefImpl(Project.makeProjectPreferencesFile());
 			p.putString(UserProjectPath, userProjectPath.get());
 			p.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
 					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
@@ -537,7 +538,7 @@ public class MmController implements ErrorMessageListener, ModelController {
 	// called when opening a project
 	public void getPreferences() {
 		GraphState.setTitleProperty(stage.titleProperty(), userProjectPath);
-		Preferable p = new PrefImpl(Project.makePreferencesFile());
+		Preferenceable p = new PrefImpl(Project.makeProjectPreferencesFile());
 		double[] r = p.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 		Platform.runLater(() -> {
 			stage.setX(r[0]);
@@ -588,15 +589,8 @@ public class MmController implements ErrorMessageListener, ModelController {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Platform.runLater(() -> {
-					double pos;
-					double[] positions = new double[1];
-					pos = p.getDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
-					positions[0] = pos;
-					splitPane1.setDividerPositions(positions);
-
-					pos = p.getDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
-					positions[0] = pos;
-					splitPane2.setDividerPositions(positions);
+					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(p,splitPane1));
+					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(p,splitPane2));
 					observable.removeListener(this);
 				});
 			}
