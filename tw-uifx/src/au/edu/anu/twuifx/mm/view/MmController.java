@@ -83,7 +83,7 @@ import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.visualise.GVizfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
-import fr.cnrs.iees.graph.generic.Graph;
+import fr.cnrs.iees.graph.Graph;
 
 public class MmController implements ErrorMessageListener, ModelController {
 
