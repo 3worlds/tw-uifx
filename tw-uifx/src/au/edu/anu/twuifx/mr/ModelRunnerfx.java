@@ -58,14 +58,14 @@ import javafx.stage.Stage;
 public class ModelRunnerfx extends Application {
 	private static Object uiNode;
 	private static Object config;
-	private TwUIManager uiManager;
+	private MrUIManager uiManager;
 	private MrController controller;
 	private Stage stage;
 
 	public static void launchUI(Object config1, String[] args) {
 		config = config1;
 		//uiNode = config.findNode(N_UI.toString() + ":");
-		LauncherImpl.launchApplication(ModelRunnerfx.class, MRSplash.class, args);
+		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
 
 	}
 
@@ -119,7 +119,7 @@ public class ModelRunnerfx extends Application {
 
 //		Dialogs.setParent(root.getScene().getWindow());
 		controller = loader.getController();
-		uiManager = new TwUIManager(uiNode, controller.getToolBar(), controller.getTopLeft(), controller.getTopRight(),
+		uiManager = new MrUIManager(uiNode, controller.getToolBar(), controller.getTopLeft(), controller.getTopRight(),
 				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
 				controller.getWidgetMenu(), stage.getScene().getWindow());
 
@@ -132,21 +132,21 @@ public class ModelRunnerfx extends Application {
 			// Hide the splash window
 			// 
 			long endTime = System.currentTimeMillis();
-			long timeElapsed = endTime - MRSplash.startTime;
+			long timeElapsed = endTime - MrSplash.startTime;
 			long delay = maxSplashDelay - timeElapsed;
 			if (delay > 0) {
 				Timer timer = new Timer();
 				TimerTask task = new TimerTask() {
 					public void run() {
 						Platform.runLater(() -> {
-								MRSplash.hideStage();
+								MrSplash.hideStage();
 								stage.toFront();
 						});
 					}
 				};
 				timer.schedule(task, delay);
 			} else {
-				MRSplash.hideStage();
+				MrSplash.hideStage();
 				stage.toFront();
 			}			
 		});

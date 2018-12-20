@@ -57,7 +57,7 @@ import javafx.stage.StageStyle;
  * 
  * 
  */
-public class MRSplash extends Preloader {
+public class MrSplash extends Preloader {
 	public static long startTime;
 	private static Stage stage;
 	private Scene scene;

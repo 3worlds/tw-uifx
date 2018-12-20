@@ -51,14 +51,14 @@ import javafx.stage.Window;
  * 
  * TODO: enact all possible property settings for each of the 10 container classes (if hasProperty("blah"); etc
  */
-public class TwUIManager {
+public class MrUIManager {
 	private Menu userMenu;
 	//private Preferences pref;
 	private Window parent;
 	private List<ElementUserInterfacefx> widgets;
 
 	@SuppressWarnings("unchecked")
-	public TwUIManager(AotNode userInterface, HBox toolBar, TabPane topLeft, TabPane topRight, TabPane bottomLeft,
+	public MrUIManager(AotNode userInterface, HBox toolBar, TabPane topLeft, TabPane topRight, TabPane bottomLeft,
 			TabPane bottomRight, HBox statusBar, Menu widgetMenu, Window window) {
 		this.parent = window;
 		this.pref = pref;
