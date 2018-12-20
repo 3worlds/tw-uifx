@@ -42,6 +42,8 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mr.view.MrController;
+import fr.cnrs.iees.graph.generic.Graph;
+import fr.cnrs.iees.graph.generic.Node;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.application.Preloader;
@@ -56,13 +58,13 @@ import javafx.stage.Stage;
  * Date 18 Dec. 2018
  */
 public class ModelRunnerfx extends Application {
-	private static Object uiNode;
-	private static Object config;
+	private static Node uiNode;
+	private static Graph<?, ?> config;
 	private MrUIManager uiManager;
 	private MrController controller;
 	private Stage stage;
 
-	public static void launchUI(Object config1, String[] args) {
+	public static void launchUI(Graph<?, ?> config1, String[] args) {
 		config = config1;
 		//uiNode = config.findNode(N_UI.toString() + ":");
 		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
