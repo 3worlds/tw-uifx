@@ -110,7 +110,7 @@ public class VersionManager {
 	private static String[][] DEPS = { 
 		{"org.controlsfx", "controlsfx", "8.40.14"},
 		{"fr.ens.biologie", "generics", "+"},
-		{"au.edu.anu.rscs.aot", "omugi", "0.0.3+"},
+		{"au.edu.anu.rscs.aot", "omugi", "+"},
 		{"fr.cnrs.iees.tw-core", "tw-core", "+"},
 		{"au.edu.anu.tw-apps", "tw-apps", "+"}
 	};

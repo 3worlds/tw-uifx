@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.0.2 (Wed Dec 26 09:11:49 AEDT 2018)
+ ant and ivy scripts for project <tw-uifx> version 0.0.1 (Mon Dec 10 12:33:47 AEDT 2018)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -12,7 +12,7 @@
 
 	<info	organisation="au.edu.anu.tw-uifx"
 			module="tw-uifx"
-			revision="0.0.2"
+			revision="0.0.1"
 			status="integration">
 		<license name="gpl3" url="https://www.gnu.org/licenses/gpl-3.0.txt"/>
 		<description>This module contains only fx code for the UI of ModelMaker and ModelRunner.</description>
@@ -27,13 +27,14 @@
 			<conf name="java library"/>
 		</artifact>
 	</publications>
-
-	<dependencies>
-		<dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>
+	
+    <dependencies>
 		<dependency org="fr.ens.biologie" name="generics" rev="+"/>
 		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="+"/>
 		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="+"/>
 		<dependency org="au.edu.anu.tw-apps" name="tw-apps" rev="+"/>
+		<!-- Java fx extended controls -->
+		<dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>
 	</dependencies>
 
 </ivy-module>
