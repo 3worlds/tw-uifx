@@ -36,7 +36,7 @@ import java.util.Optional;
 import au.edu.anu.twapps.dialogs.Dialogable;
 import au.edu.anu.twapps.dialogs.YesNoCancel;
 import au.edu.anu.twcore.project.TWPaths;
-import fr.cnrs.iees.graph.io.GraphFileFormats;
+import fr.cnrs.iees.io.GraphFileFormats;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
