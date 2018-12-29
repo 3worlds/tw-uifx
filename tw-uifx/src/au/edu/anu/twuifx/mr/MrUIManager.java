@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.edu.anu.twuifx.exceptions.TwuifxException;
+import fr.cnrs.iees.twcore.constants.TabLayoutTypes;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
