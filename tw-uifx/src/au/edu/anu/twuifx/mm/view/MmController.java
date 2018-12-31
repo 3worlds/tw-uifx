@@ -85,7 +85,7 @@ import au.edu.anu.twuifx.mm.visualise.GVizfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Graph;
 
-public class MmController implements ErrorMessageListener {
+public class MmController implements ErrorMessageListener, ModelMakerController {
 
 	@FXML
 	private ToggleButton btnXLinks;
