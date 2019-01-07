@@ -1,30 +1,30 @@
 /**************************************************************************
- *  OMHTK - One More Handy Tool Kit                                       *
+ *  TW-UIFX - ThreeWorlds User-Interface fx                               *
  *                                                                        *
- *  Copyright 2018: Shayne FLint, Jacques Gignoux & Ian D. Davies         *
- *       shayne.flint@anu.edu.au                                          *
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
  *       ian.davies@anu.edu.au                                            * 
  *                                                                        *
- *  OMHTK is a bunch of useful, very generic interfaces for designing     *
- *  consistent, plus some other utilities. The kind of things you need    *
- *  in all software projects and keep rebuilding all the time.            *
+ *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
+ *  This is to separate concerns of UI implementation and the code for    *
+ *  these java programs.                                                  *
  *                                                                        *
  **************************************************************************                                       
- *  This file is part of OMHTK (One More Handy Tool Kit).                 *
+ *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
  *                                                                        *
- *  OMHTK is free software: you can redistribute it and/or modify         *
+ *  TW-UIFX is free software: you can redistribute it and/or modify       *
  *  it under the terms of the GNU General Public License as published by  *
  *  the Free Software Foundation, either version 3 of the License, or     *
  *  (at your option) any later version.                                   *
  *                                                                        *
- *  OMHTK is distributed in the hope that it will be useful,              *
+ *  TW-UIFX is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *  GNU General Public License for more details.                          *                         
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
- *  along with UIT.  If not, see <https://www.gnu.org/licenses/gpl.html>. *
+ *  along with TW-UIFX.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
 package fr.cnrs.iees.versioning;
@@ -109,9 +109,10 @@ public class VersionManager {
 	 */
 	private static String[][] DEPS = { 
 		{"org.controlsfx", "controlsfx", "8.40.14"},
-		{"fr.ens.biologie", "generics", "+"},
-		{"au.edu.anu.rscs.aot", "omugi", "+"},
-		{"fr.cnrs.iees.tw-core", "tw-core", "+"},
+		{"fr.ens.biologie", "generics", "0.0.2+"},
+		{"au.edu.anu.rscs.aot", "omugi", "0.0.5+"},
+		{"fr.cnrs.iees.tw-core", "tw-core", "0.0.3+"},
+		{"au.edu.anu.rscs.aot", "aot", "0.0.3+"},
 		{"au.edu.anu.tw-apps", "tw-apps", "+"}
 	};
 	// ============================================================================================

@@ -41,6 +41,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import au.edu.anu.omhtk.jars.Jars;
+import au.edu.anu.rscs.aot.graph.AotGraph;
 import au.edu.anu.twcore.jars.SimulatorJar;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;

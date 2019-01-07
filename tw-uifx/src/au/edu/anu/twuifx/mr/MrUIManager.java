@@ -34,6 +34,8 @@ package au.edu.anu.twuifx.mr;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.edu.anu.rscs.aot.collections.DynamicList;
+import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import fr.cnrs.iees.twcore.constants.TabLayoutTypes;
 import javafx.scene.*;
@@ -175,7 +177,7 @@ public class MrUIManager {
 		}
 	}
 
-	private List<AotNode> sort(AotList<AotNode> widgetNodes) {
+	private List<AotNode> sort(DynamicList<AotNode> widgetNodes) {
 		widgetNodes.sort((first, second) -> {
 			Integer i1 = (Integer) first.getPropertyValue("order");
 			Integer i2 = (Integer) second.getPropertyValue("order");
