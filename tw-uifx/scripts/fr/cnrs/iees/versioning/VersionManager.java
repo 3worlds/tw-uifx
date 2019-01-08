@@ -108,12 +108,13 @@ public class VersionManager {
 	 * 
 	 */
 	private static String[][] DEPS = { 
+		{"fr.ens.biologie", "generics", "+"},
+		{"au.edu.anu.rscs.aot", "omugi", "+"},
+		{"fr.cnrs.iees.tw-core", "tw-core", "+"},
+		{"au.edu.anu.rscs.aot", "aot", "+"},
+		{"au.edu.anu.tw-apps", "tw-apps", "+"},
+		
 		{"org.controlsfx", "controlsfx", "8.40.14"},
-		{"fr.ens.biologie", "generics", "0.0.2+"},
-		{"au.edu.anu.rscs.aot", "omugi", "0.0.5+"},
-		{"fr.cnrs.iees.tw-core", "tw-core", "0.0.3+"},
-		{"au.edu.anu.rscs.aot", "aot", "0.0.3+"},
-		{"au.edu.anu.tw-apps", "tw-apps", "+"}
 	};
 	// ============================================================================================
 	
