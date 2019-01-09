@@ -28,14 +28,14 @@
  **************************************************************************/
 package au.edu.anu.twuifx.utils;
 
-import au.edu.anu.omhtk.preferences.Preferenceable;
+import au.edu.anu.omhtk.preferences.Preferences;
 import javafx.scene.control.SplitPane;
 
 public class UiHelpers {
-	public static double[] getSplitPanePositions(Preferenceable p, SplitPane s) {
+	public static double[] getSplitPanePositions(SplitPane s) {
 		double pos;
 		double[] positions = new double[1];
-		pos = p.getDouble(s.idProperty().get(), s.getDividerPositions()[0]);
+		pos = Preferences.getDouble(s.idProperty().get(), s.getDividerPositions()[0]);
 		positions[0] = pos;
 		return positions;
 	}

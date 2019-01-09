@@ -66,8 +66,7 @@ import java.util.concurrent.Executors;
 
 import org.controlsfx.control.PropertySheet;
 
-import au.edu.anu.omhtk.preferences.PrefImpl;
-import au.edu.anu.omhtk.preferences.Preferenceable;
+import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.graphviz.GraphVisualisation;
@@ -513,59 +512,59 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			Preferenceable p = new PrefImpl(Project.makeProjectPreferencesFile());
-			p.putString(UserProjectPath, userProjectPath.get());
-			p.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
+			Preferences.initialise(Project.makeProjectPreferencesFile());
+			Preferences.putString(UserProjectPath, userProjectPath.get());
+			Preferences.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
 					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
-			p.putBoolean(nodePropertySheet.idProperty().get() + Mode,
+			Preferences.putBoolean(nodePropertySheet.idProperty().get() + Mode,
 					(nodePropertySheet.getMode() == PropertySheet.Mode.NAME));
-			p.putDouble(zoomTarget.idProperty().get() + width, zoomTarget.getWidth());
-			p.putDouble(zoomTarget.idProperty().get() + height, zoomTarget.getHeight());
-			p.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
-			p.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
-			p.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
-			p.putDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
-			p.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-			p.putBoolean(mainMaximized, stage.isMaximized());
-			p.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
-			p.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
-			p.putInt(fontSizeKey, GVizfx.getFontSize());
-			p.putInt(nodeSizeKey, GVizfx.getNodeRadius());
-			p.flush();
+			Preferences.putDouble(zoomTarget.idProperty().get() + width, zoomTarget.getWidth());
+			Preferences.putDouble(zoomTarget.idProperty().get() + height, zoomTarget.getHeight());
+			Preferences.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
+			Preferences.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
+			Preferences.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
+			Preferences.putDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
+			Preferences.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+			Preferences.putBoolean(mainMaximized, stage.isMaximized());
+			Preferences.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
+			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
+			Preferences.putInt(fontSizeKey, GVizfx.getFontSize());
+			Preferences.putInt(nodeSizeKey, GVizfx.getNodeRadius());
+			Preferences.flush();
 		}
 	}
 
 	// called when opening a project
 	public void getPreferences() {
 		GraphState.setTitleProperty(stage.titleProperty(), userProjectPath);
-		Preferenceable p = new PrefImpl(Project.makeProjectPreferencesFile());
-		double[] r = p.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+		Preferences.initialise(Project.makeProjectPreferencesFile());
+		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 		Platform.runLater(() -> {
 			stage.setX(r[0]);
 			stage.setY(r[1]);
 			stage.setWidth(r[2]);
 			stage.setHeight(r[3]);
-			stage.setMaximized(p.getBoolean(mainMaximized, stage.isMaximized()));
+			stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
 		});
 
-		initFontSize(p.getInt(fontSizeKey, 10));
-		initNodeRadius(p.getInt(nodeSizeKey, 10));
-		tabPaneProperties.getSelectionModel().select(Math.max(0, p.getInt(tabPaneProperties.idProperty().get(), 0)));
+		initFontSize(Preferences.getInt(fontSizeKey, 10));
+		initNodeRadius(Preferences.getInt(nodeSizeKey, 10));
+		tabPaneProperties.getSelectionModel().select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
 		Platform.runLater(() -> {
-			boolean m = p.getBoolean(nodePropertySheet.idProperty().get() + Mode, true);
+			boolean m = Preferences.getBoolean(nodePropertySheet.idProperty().get() + Mode, true);
 			PropertySheet.Mode md = PropertySheet.Mode.CATEGORY;
 			if (m)
 				md = PropertySheet.Mode.NAME;
 			nodePropertySheet.setMode(md);
 
-			m = p.getBoolean(allElementsPropertySheet.idProperty().get() + Mode, true);
+			m = Preferences.getBoolean(allElementsPropertySheet.idProperty().get() + Mode, true);
 			md = PropertySheet.Mode.CATEGORY;
 			if (m)
 				md = PropertySheet.Mode.NAME;
 			allElementsPropertySheet.setMode(md);
 
-			String prjtmp = p.getString(UserProjectPath, "");
+			String prjtmp = Preferences.getString(UserProjectPath, "");
 			if (!prjtmp.equals("")) {
 				if (!DevEnv.isJavaProject(new File(prjtmp))) {
 					prjtmp = "";
@@ -573,24 +572,24 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 			}
 			userProjectPath.set(prjtmp);
 		});
-		btnXLinks.selectedProperty().set(p.getBoolean(btnXLinks.idProperty().get(), true));
-		btnChildLinks.selectedProperty().set(p.getBoolean(btnChildLinks.idProperty().get(), true));
+		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
+		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
 
-		drawWidth = p.getDouble(zoomTarget.idProperty().get() + width, zoomTarget.getMinWidth());
-		drawHeight = p.getDouble(zoomTarget.idProperty().get() + height, zoomTarget.getMinHeight());
+		drawWidth = Preferences.getDouble(zoomTarget.idProperty().get() + width, zoomTarget.getMinWidth());
+		drawHeight = Preferences.getDouble(zoomTarget.idProperty().get() + height, zoomTarget.getMinHeight());
 		zoomTarget.setPrefWidth(drawWidth);
 		zoomTarget.setPrefHeight(drawHeight);
 
-		zoomTarget.setScaleX(p.getDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX()));
-		zoomTarget.setScaleY(p.getDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY()));
+		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX()));
+		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY()));
 		// get splitPans later after UI has settled down
 		splitPane1.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Platform.runLater(() -> {
-					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(p,splitPane1));
-					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(p,splitPane2));
+					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane1));
+					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane2));
 					observable.removeListener(this);
 				});
 			}

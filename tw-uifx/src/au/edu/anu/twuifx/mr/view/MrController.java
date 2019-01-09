@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.mr.view;
 
 import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferenceable;
+import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import javafx.event.ActionEvent;
@@ -135,26 +136,27 @@ public class MrController {
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			Preferenceable p = new PrefImpl(Project.makeRuntimePreferencesFile());
-			p.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-			p.putBoolean(mainMaximized, stage.isMaximized());
-			p.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
-			p.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
-			p.putDouble(splitPane3.idProperty().get(), splitPane3.getDividerPositions()[0]);
+			Preferences.initialise(Project.makeRuntimePreferencesFile());
+			Preferences.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+			Preferences.putBoolean(mainMaximized, stage.isMaximized());
+			Preferences.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
+			Preferences.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
+			Preferences.putDouble(splitPane3.idProperty().get(), splitPane3.getDividerPositions()[0]);
+			Preferences.flush();
 		}
 	}
 
 	public void getPreferences() {
-		Preferenceable p = new PrefImpl(Project.makeProjectPreferencesFile());
-		double[] r = p.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+		Preferences.initialise(Project.makeProjectPreferencesFile());
+		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 		stage.setX(r[0]);
 		stage.setY(r[1]);
 		stage.setWidth(r[2]);
 		stage.setHeight(r[3]);
-		stage.setMaximized(p.getBoolean(mainMaximized, stage.isMaximized()));
-		splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(p,splitPane1));
-		splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(p,splitPane2));
-		splitPane3.setDividerPositions(UiHelpers.getSplitPanePositions(p,splitPane3));
+		stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
+		splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane1));
+		splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane2));
+		splitPane3.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane3));
 	}
 
 }

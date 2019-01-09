@@ -38,6 +38,8 @@ import java.util.TimerTask;
 
 import com.sun.javafx.application.LauncherImpl;
 
+import au.edu.anu.rscs.aot.graph.AotGraph;
+import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
@@ -58,13 +60,13 @@ import javafx.stage.Stage;
  * Date 18 Dec. 2018
  */
 public class ModelRunnerfx extends Application {
-	private static Node uiNode;
-	private static Graph<?, ?> config;
+	private static AotNode uiNode;
+	private static AotGraph config;
 	private MrUIManager uiManager;
 	private MrController controller;
 	private Stage stage;
 
-	public static void launchUI(Graph<?, ?> config1, String[] args) {
+	public static void launchUI(AotGraph config1, String[] args) {
 		config = config1;
 		//uiNode = config.findNode(N_UI.toString() + ":");
 		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
