@@ -84,7 +84,7 @@ import au.edu.anu.twuifx.mm.visualise.GVizfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Graph;
 
-public class MmController implements ErrorMessageListener, ModelMakerController {
+public class MmController implements ErrorMessageListener, Controllable {
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -178,7 +178,8 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 	@FXML
 	private Spinner<Integer> spinNodeSize;
 
-	private ModelMakerModel model;
+	// better to make this an interface of the controller's view of modelmaker
+	private Modelable model;
 	private Stage stage;
 	private ToggleGroup tgArchetype;
 	private Verbosity verbosity = Verbosity.brief;
@@ -234,7 +235,7 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 
 		// This class has all the housework for managing graph
 		GraphVisualisation.initialise(new GVizfx());
-		model = new ModelMakerModel( this);
+		model = new ModelMaker(this);
 
 		// build a toggle group for the verbosity level of archetype error
 		// messages
@@ -267,7 +268,7 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
-		model.checkGraph();
+		model.validateGraph();
 	}
 
 	@FXML
@@ -278,7 +279,7 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 			if (!tmp.equals(userProjectPath.get()))
 				if (DevEnv.isJavaProject(jprjFile)) {
 					userProjectPath.set(tmp);
-					model.checkGraph();
+					model.validateGraph();
 				}
 		}
 	}
@@ -352,7 +353,7 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 		ArchComplianceManager.clear();
 		CodeComplianceManager.clear();
 		DeployComplianceManager.clear();
-		model.checkGraph();
+		model.validateGraph();
 	}
 
 	@FXML
@@ -376,33 +377,34 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 	}
 
 	private void openProject(File file) {
-		model.openProject(file);
+		model.doOpenProject(file);
 	}
 
 	@FXML
 	void handlePaneOnMouseClicked(MouseEvent e) {
-		model.onPaneMouseClicked(e.getX(), e.getY(), zoomTarget.getWidth(), zoomTarget.getHeight());
+		//modelMaker.onPaneMouseClicked(e.getX(), e.getY(), zoomTarget.getWidth(), zoomTarget.getHeight());
 
 	}
 
 	@FXML
 	void handlePaneOnMouseMoved(MouseEvent e) {
-		model.onPaneMouseMoved(e.getX(), e.getY(), zoomTarget.getWidth(), zoomTarget.getHeight());
-		captureDrawingSize();
+		//modelMaker.onPaneMouseMoved(e.getX(), e.getY(), zoomTarget.getWidth(), zoomTarget.getHeight());
+		//captureDrawingSize();
 	}
 
 	@FXML
 	void handleLayout(ActionEvent event) {
-		model.runLayout();
+		model.doLayout();
 	}
 
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
+		model.doDeploy();
 		if (!GraphState.hasChanged()) {
 			DeployComplianceManager.clear();
 			btnDeploy.setDisable(true);
 			Runnable task = () -> {
-				model.createSimulatorAndDeploy();
+				modelMaker.createSimulatorAndDeploy();
 				Platform.runLater(() -> {
 					btnDeploy.setDisable(false);
 				});
@@ -440,24 +442,24 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 		}
 	}
 
-	public ModelMakerModel model() {
-		return model;
-	}
+//	public ModelMakerModel model() {
+//		return modelMaker;
+//	}
 
 	@FXML
 	void handleNewProject(ActionEvent event) {
-		model.newProject();
+		model.doNewProject();
 	}
 
 	@FXML
 	void handleSave(ActionEvent event) {
-		model.save();
+		model.doSave();
 
 	}
 
 	@FXML
 	void handleSaveAs(ActionEvent event) {
-		model.saveAs();
+		model.doSaveAs();
 
 	}
 
@@ -483,7 +485,7 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 
 	@FXML
 	void handleImport(ActionEvent event) {
-		model.importProject();
+		model.doImport();
 	}
 
 	public double getDrawingWidth() {
@@ -636,7 +638,7 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 	}
 
 	@Override
-	public void onProjectClosing() {
+	public void onProjectClosing(AotGraph layoutGraph) {
 		// Platform.runLater(() -> {
 		nodePropertySheet.getItems().clear();
 		allElementsPropertySheet.getItems().clear();
@@ -645,33 +647,35 @@ public class MmController implements ErrorMessageListener, ModelMakerController 
 	}
 
 	@Override
-	public void onProjectOpened(Graph<?, ?> layoutGraph, boolean valid) {
+	public void onProjectOpened(AotGraph layoutGraph, boolean valid) {
 		getPreferences();
 		// buildAllElementsPropertySheet()
 		// set the buttons
 
 	}
 
-	@Override
-	public void onEndDrawing() {
-		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
-		zoomTarget.setPrefWidth(Control.USE_COMPUTED_SIZE);
-	}
-
-	@Override
-	public void onStartDrawing() {
-		zoomTarget.setPrefHeight(getDrawingHeight());
-		zoomTarget.setPrefWidth(getDrawingWidth());
-	}
+//	@Override
+//	public void onEndDrawing() {
+//		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//		zoomTarget.setPrefWidth(Control.USE_COMPUTED_SIZE);
+//	}
+//
+//	@Override
+//	public void onStartDrawing() {
+//		zoomTarget.setPrefHeight(getDrawingHeight());
+//		zoomTarget.setPrefWidth(getDrawingWidth());
+//	}
 	
+	private Cursor oldCursor;
 	@Override
 	public void onStartWaiting() {
-		
+		oldCursor = stage.getScene().getCursor();
+		stage.getScene().setCursor(Cursor.WAIT);
 	}
 	
 	@Override
 	public void onEndWaiting() {
-		
+		stage.getScene().setCursor(oldCursor);
 	}
 
 }
