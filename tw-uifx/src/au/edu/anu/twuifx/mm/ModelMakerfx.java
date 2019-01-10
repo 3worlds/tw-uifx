@@ -70,7 +70,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TWPaths {
 		mainStage.setScene(scene);
 		controller.setStage(mainStage);
 		scene.getWindow().setOnCloseRequest((e) -> {
-			if (!controller.model().canClose()) {
+			if (!controller.canClose()) {
 				e.consume();
 			} else {
 				Platform.exit();

@@ -67,12 +67,14 @@ import java.util.concurrent.Executors;
 import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.graph.AotGraph;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.graphviz.GraphVisualisation;
+import au.edu.anu.twapps.mm.Controllable;
 import au.edu.anu.twapps.mm.GraphState;
-import au.edu.anu.twapps.mm.ModelMakerController;
-import au.edu.anu.twapps.mm.ModelMakerModel;
+import au.edu.anu.twapps.mm.ModelMaker;
+import au.edu.anu.twapps.mm.Modelable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
 import au.edu.anu.twcore.errorMessaging.Verbosity;
@@ -400,19 +402,19 @@ public class MmController implements ErrorMessageListener, Controllable {
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
 		model.doDeploy();
-		if (!GraphState.hasChanged()) {
-			DeployComplianceManager.clear();
-			btnDeploy.setDisable(true);
-			Runnable task = () -> {
-				modelMaker.createSimulatorAndDeploy();
-				Platform.runLater(() -> {
-					btnDeploy.setDisable(false);
-				});
-			};
-			ExecutorService executor = Executors.newSingleThreadExecutor();
-			executor.execute(task);
-		} else
-			Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
+//		if (!GraphState.hasChanged()) {
+//			DeployComplianceManager.clear();
+//			btnDeploy.setDisable(true);
+//			Runnable task = () -> {
+//				modelMaker.createSimulatorAndDeploy();
+//				Platform.runLater(() -> {
+//					btnDeploy.setDisable(false);
+//				});
+//			};
+//			ExecutorService executor = Executors.newSingleThreadExecutor();
+//			executor.execute(task);
+//		} else
+//			Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
 	}
 
 	private void updateOpenProjectsMenu(Menu menuOpen) {
@@ -676,6 +678,9 @@ public class MmController implements ErrorMessageListener, Controllable {
 	@Override
 	public void onEndWaiting() {
 		stage.getScene().setCursor(oldCursor);
+	}
+	public boolean canClose() {
+		return model.canClose();
 	}
 
 }
