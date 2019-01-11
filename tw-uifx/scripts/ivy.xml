@@ -31,7 +31,7 @@
 	<dependencies>
 		<dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>
 		<dependency org="fr.ens.biologie" name="generics" rev="+"/>
-		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="+"/>
+		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="0.0.6"/>
 		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="+"/>
 		<dependency org="au.edu.anu.rscs.aot" name="aot" rev="+"/>
 		<dependency org="au.edu.anu.tw-apps" name="tw-apps" rev="+"/>
