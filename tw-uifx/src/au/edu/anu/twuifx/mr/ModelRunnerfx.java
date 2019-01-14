@@ -123,15 +123,15 @@ public class ModelRunnerfx extends Application {
 
 //		Dialogs.setParent(root.getScene().getWindow());
 		controller = loader.getController();
-		uiManager = new MrUIManager(uiNode, controller.getToolBar(), controller.getTopLeft(), controller.getTopRight(),
-				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
-				controller.getWidgetMenu(), stage.getScene().getWindow());
+//		uiManager = new MrUIManager(uiNode, controller.getToolBar(), controller.getTopLeft(), controller.getTopRight(),
+//				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
+//				controller.getWidgetMenu(), stage.getScene().getWindow());
 
 		stage.show();
 		stage.toBack();
 
 		Platform.runLater(() -> {
-			uiManager.loadPreferences();
+//			uiManager.loadPreferences();
 //			controller.loadPrefs(pref, stage);
 			// Hide the splash window
 			// 
@@ -159,7 +159,7 @@ public class ModelRunnerfx extends Application {
 	@Override
 	public void stop() {
 //		controller.savePrefs(pref, stage);
-		uiManager.savePreferences();
+//		uiManager.savePreferences();
 //		pref.flush();
 	}
 

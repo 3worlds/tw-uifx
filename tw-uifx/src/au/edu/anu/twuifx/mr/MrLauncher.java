@@ -157,30 +157,30 @@ public class MrLauncher implements ProjectPaths {
 
 	@SuppressWarnings("rawtypes")
 	private static void loadUserClasses(AotGraph config) {
-		File userJar = Project.makeFile(UserProjectJar.USERPROJECTJAR);
-		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		URL userUrl;
-		try {
-			userUrl = userJar.toURI().toURL();
-			URL[] currentUrls = classLoader.getURLs();
-			boolean found = false;
-			for (URL currentUrl : currentUrls) {
-				if (userUrl.sameFile(currentUrl)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				Class[] parameters = new Class[] { URL.class };
-				Method method;
-				method = URLClassLoader.class.getDeclaredMethod("addURL", parameters);
-				method.setAccessible(true);
-				method.invoke(classLoader, userUrl);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		File userJar = Project.makeFile(UserProjectJar.USERPROJECTJAR);
+//		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+//		URL userUrl;
+//		try {
+//			userUrl = userJar.toURI().toURL();
+//			URL[] currentUrls = classLoader.getURLs();
+//			boolean found = false;
+//			for (URL currentUrl : currentUrls) {
+//				if (userUrl.sameFile(currentUrl)) {
+//					found = true;
+//					break;
+//				}
+//			}
+//			if (!found) {
+//				Class[] parameters = new Class[] { URL.class };
+//				Method method;
+//				method = URLClassLoader.class.getDeclaredMethod("addURL", parameters);
+//				method.setAccessible(true);
+//				method.invoke(classLoader, userUrl);
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 	}
 
@@ -193,25 +193,25 @@ public class MrLauncher implements ProjectPaths {
 	 *            the name of the project to look for (relative name)
 	 * @return the raw configuration graph
 	 */
-	private static AotGraph getGraphFromDir() {
-		File file = Project.getProjectFile();
-//		log.debug("Running from project " + file.getAbsolutePath());
-		InputStream ins = null;
-		try {
-			ins = new FileInputStream(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		DslImporter importer = null;
-		try {
-			importer = new DslImporter(new AotReader(ins));
-		} catch (Exception e) {
-			log.error("The configuration graph could not be read: check its syntax");
-			e.printStackTrace();
-		}
-		AotGraph config = new AotGraph(importer);
-		return config;
-	}
+//	private static AotGraph getGraphFromDir() {
+//		File file = Project.getProjectFile();
+////		log.debug("Running from project " + file.getAbsolutePath());
+//		InputStream ins = null;
+//		try {
+//			ins = new FileInputStream(file);
+//		} catch (FileNotFoundException e1) {
+//			e1.printStackTrace();
+//		}
+//		DslImporter importer = null;
+//		try {
+//			importer = new DslImporter(new AotReader(ins));
+//		} catch (Exception e) {
+//			log.error("The configuration graph could not be read: check its syntax");
+//			e.printStackTrace();
+//		}
+//		AotGraph config = new AotGraph(importer);
+//		return config;
+//	}
 
 	/**
 	 * gets a resource (from file or from jar entry) in the currently running
@@ -262,53 +262,53 @@ public class MrLauncher implements ProjectPaths {
 	}
 
 	public static InputStream getProjectResource(String name) {
-		if (runningFromJAR()) {
-			name = name.replace("\\", Jars.separator);
-			if (name.startsWith(Jars.separator))
-				name = name.replaceFirst(Jars.separator, "");
-			InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
-			if (ins == null) {
-				// try project relative path
-				String prjDir = Project.getProjectDirectory() + File.separator;
-				prjDir = prjDir.replace("\\", Jars.separator);
-				if (prjDir.startsWith(Jars.separator))
-					prjDir = prjDir.replaceFirst(Jars.separator, "");
-				name = name.replace(prjDir, "");
-				ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
-			}
-			return ins;
-		} else {
-			File result = null;
-			File file = new File(name);
-			if (file.exists())
-				result = file;
-
-			// user home, ~/
-			file = new File(System.getProperty("user.home") + File.separator + name);
-			if (file.exists())
-				result = file;
-			// user current working directory, eg ~/<workspace>/ in eclipse
-			file = new File(System.getProperty("user.dir") + File.separator + name);
-			if (file.exists())
-				result = file;
-			// Why not first try getResourceAsStream(name). It does not return an exception.
-			InputStream ips = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
-			if (ips != null)
-				return ips;
-			// CAUTION: this is dirty, i dont like it...
-			// from eclipse, src/threeWorlds directory
-			file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "threeWorlds"
-					+ File.separator + name);
-			if (file.exists())
-				result = file;
-			if (result != null)
-				try {
-					return new FileInputStream(result);
-				} catch (FileNotFoundException e) {
-					log.error("Could not open file " + result.getName());
-					e.printStackTrace();
-				}
-		}
+//		if (runningFromJAR()) {
+//			name = name.replace("\\", Jars.separator);
+//			if (name.startsWith(Jars.separator))
+//				name = name.replaceFirst(Jars.separator, "");
+//			InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
+//			if (ins == null) {
+//				// try project relative path
+//				String prjDir = Project.getProjectDirectory() + File.separator;
+//				prjDir = prjDir.replace("\\", Jars.separator);
+//				if (prjDir.startsWith(Jars.separator))
+//					prjDir = prjDir.replaceFirst(Jars.separator, "");
+//				name = name.replace(prjDir, "");
+//				ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
+//			}
+//			return ins;
+//		} else {
+//			File result = null;
+//			File file = new File(name);
+//			if (file.exists())
+//				result = file;
+//
+//			// user home, ~/
+//			file = new File(System.getProperty("user.home") + File.separator + name);
+//			if (file.exists())
+//				result = file;
+//			// user current working directory, eg ~/<workspace>/ in eclipse
+//			file = new File(System.getProperty("user.dir") + File.separator + name);
+//			if (file.exists())
+//				result = file;
+//			// Why not first try getResourceAsStream(name). It does not return an exception.
+//			InputStream ips = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
+//			if (ips != null)
+//				return ips;
+//			// CAUTION: this is dirty, i dont like it...
+//			// from eclipse, src/threeWorlds directory
+//			file = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator + "threeWorlds"
+//					+ File.separator + name);
+//			if (file.exists())
+//				result = file;
+//			if (result != null)
+//				try {
+//					return new FileInputStream(result);
+//				} catch (FileNotFoundException e) {
+//					log.error("Could not open file " + result.getName());
+//					e.printStackTrace();
+//				}
+//		}
 		return null;
 	}
 
@@ -321,78 +321,78 @@ public class MrLauncher implements ProjectPaths {
 	 *            project_bidon_70F3950209EA-000001601ED1C085-0000)
 	 */
 	private static void openProject(String dirname) {
-		File dirPath = new File(
-				ProjectPaths.USER_ROOT + File.separator + ProjectPaths.TW_ROOT + File.separator + dirname);
-		Project.open(dirPath);
+//		File dirPath = new File(
+//				ProjectPaths.USER_ROOT + File.separator + ProjectPaths.TW_ROOT + File.separator + dirname);
+//		Project.open(dirPath);
 	}
 
 	public static void main(String[] args) {
 
-		// command line must have two arguments:
-		// 1 the project directory name (relative)
-		// 2 the project dsl file name within this directory
-		// if wrong number of arguments, exit
-		if (args.length < 2) {
-			System.out.println("Usage:");
-			System.out.println(" ModelRunner <Project directory> <filename>.");
-			System.exit(1);
-		}
-
-		// open the project and get the dsl file
-		// fail if file does not exist
-		if (!Project.isOpen())
-			openProject(args[0]);
-		File projectFile = Project.getProjectFile();
-		if (projectFile == null)
-			throw new AotException("Project file '" + args[1] + "' not found in '" + args[0] + "'");
-		if (!projectFile.getName().equals(args[1]))
-			System.out.println(
-					"WARNING: ModelRunner arg[1] '" + args[1] + "' differs from '" + projectFile.getName() + "'");
-
-		// check if running from jar or from eclipse
-		detectRunningEnvironment();
-
-		// setup logging
-		// fail if logging configuration not found (in jar or in project directory tree)
-		String logConfigName = "fr/ens/biologie/threeWorlds/resources/defaults/SimulatorLogger.dsl";
-		InputStream loggingConfig = getProjectResource(logConfigName);
-		if (loggingConfig == null)
-			if (runningFromJAR())
-				throw new AotException(logConfigName + " not found in " + jarFilePath());
-			else
-				throw new AotException(logConfigName + " not found in the system");
-		LoggerFactory.loadConfig(loggingConfig);
-		log = LoggerFactory.getLogger(MrLauncher.class, "3Worlds");
-		log.enable();
-
-		// finally start interesting things
-		log.debug("Running 3Worlds... ");
-
-		// load the configuration graph from the configuration file or jar entry
-		AotGraph config = null;
-		if (runningFromJAR())
-			config = getGraphFromJar(args[1]);
-		else {
-			config = getGraphFromDir();
-			loadUserClasses(config);
-		}
-		config.resolveReferences();
-		// important! otherwise castnodes() misses the simulator !
-		Utilities.setDefaultProperties(config.nodes());
-		config.castNodes();
-		if ((config.findNode(N_UI.toString() + ":")!=null)){
-			log.debug("Starting the 3Worlds simulator with a graphical user interface");
-			ModelLauncher.launchUI(config, args);
-		} else {
-			log.debug("Starting the 3Worlds simulator without a graphical user interface");
-			config.initialise();
-			// somehow send a start message to simulator here??
-			// Maybe its as simple as having a flag in the statemachine to
-			// self start
-			// without requiring a msg
-		}
-
-		log.debug("...Done.");
+//		// command line must have two arguments:
+//		// 1 the project directory name (relative)
+//		// 2 the project dsl file name within this directory
+//		// if wrong number of arguments, exit
+//		if (args.length < 2) {
+//			System.out.println("Usage:");
+//			System.out.println(" ModelRunner <Project directory> <filename>.");
+//			System.exit(1);
+//		}
+//
+//		// open the project and get the dsl file
+//		// fail if file does not exist
+//		if (!Project.isOpen())
+//			openProject(args[0]);
+//		File projectFile = Project.getProjectFile();
+//		if (projectFile == null)
+//			throw new AotException("Project file '" + args[1] + "' not found in '" + args[0] + "'");
+//		if (!projectFile.getName().equals(args[1]))
+//			System.out.println(
+//					"WARNING: ModelRunner arg[1] '" + args[1] + "' differs from '" + projectFile.getName() + "'");
+//
+//		// check if running from jar or from eclipse
+//		detectRunningEnvironment();
+//
+//		// setup logging
+//		// fail if logging configuration not found (in jar or in project directory tree)
+//		String logConfigName = "fr/ens/biologie/threeWorlds/resources/defaults/SimulatorLogger.dsl";
+//		InputStream loggingConfig = getProjectResource(logConfigName);
+//		if (loggingConfig == null)
+//			if (runningFromJAR())
+//				throw new AotException(logConfigName + " not found in " + jarFilePath());
+//			else
+//				throw new AotException(logConfigName + " not found in the system");
+//		LoggerFactory.loadConfig(loggingConfig);
+//		log = LoggerFactory.getLogger(MrLauncher.class, "3Worlds");
+//		log.enable();
+//
+//		// finally start interesting things
+//		log.debug("Running 3Worlds... ");
+//
+//		// load the configuration graph from the configuration file or jar entry
+//		AotGraph config = null;
+//		if (runningFromJAR())
+//			config = getGraphFromJar(args[1]);
+//		else {
+//			config = getGraphFromDir();
+//			loadUserClasses(config);
+//		}
+//		config.resolveReferences();
+//		// important! otherwise castnodes() misses the simulator !
+//		Utilities.setDefaultProperties(config.nodes());
+//		config.castNodes();
+//		if ((config.findNode(N_UI.toString() + ":")!=null)){
+//			log.debug("Starting the 3Worlds simulator with a graphical user interface");
+//			ModelLauncher.launchUI(config, args);
+//		} else {
+//			log.debug("Starting the 3Worlds simulator without a graphical user interface");
+//			config.initialise();
+//			// somehow send a start message to simulator here??
+//			// Maybe its as simple as having a flag in the statemachine to
+//			// self start
+//			// without requiring a msg
+//		}
+//
+//		log.debug("...Done.");
 	}
 
 	// private static void checkResources() {
