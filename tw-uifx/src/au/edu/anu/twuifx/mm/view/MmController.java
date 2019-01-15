@@ -33,6 +33,7 @@ package au.edu.anu.twuifx.mm.view;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -180,7 +181,6 @@ public class MmController implements ErrorMessageListener, Controllable {
 	@FXML
 	private Spinner<Integer> spinNodeSize;
 
-	// better to make this an interface of the controller's view of modelmaker
 	private Modelable model;
 	private Stage stage;
 	private ToggleGroup tgArchetype;
@@ -191,6 +191,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 	private double drawWidth;
 	private double drawHeight;
 	private StringProperty userProjectPath = new SimpleStringProperty("");
+	private BooleanProperty validProject = new SimpleBooleanProperty();
 
 	public void initFontSize(int size) {
 		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 20, size));
@@ -270,7 +271,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
-		model.validateGraph();
+		validProject.set(model.validateGraph());
 	}
 
 	@FXML
@@ -281,7 +282,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 			if (!tmp.equals(userProjectPath.get()))
 				if (DevEnv.isJavaProject(jprjFile)) {
 					userProjectPath.set(tmp);
-					model.validateGraph();
+					validProject.set( model.validateGraph());
 				}
 		}
 	}
@@ -355,7 +356,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 		ArchComplianceManager.clear();
 		CodeComplianceManager.clear();
 		DeployComplianceManager.clear();
-		model.validateGraph();
+		validProject.set(model.validateGraph());
 	}
 
 	@FXML
@@ -384,8 +385,21 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	@FXML
 	void handlePaneOnMouseClicked(MouseEvent e) {
-		//modelMaker.onPaneMouseClicked(e.getX(), e.getY(), zoomTarget.getWidth(), zoomTarget.getHeight());
-
+//		if (placing) {
+//			Platform.runLater(() -> {
+//				AotNode n = popupEditor.locate(event, pane.getWidth(), pane.getHeight());
+//				VisualNode.insertCircle(n, controller.childLinksProperty(), controller.xLinksProperty(), pane, this);
+//				// add parent edge. There must be one in this circumstance
+//				AotEdge inEdge = (AotEdge) get(n.getEdges(Direction.IN), selectOne(hasTheLabel(Trees.CHILD_LABEL)));
+//				VisualNode.createChildLine(inEdge, controller.childLinksProperty(), pane);
+//				popupEditor = null;
+//				placing = false;
+//				pane.setCursor(Cursor.DEFAULT);
+//				reBuildAllElementsPropertySheet();
+//				checkGraph();
+//			});
+//		}
+//
 	}
 
 	@FXML
@@ -641,16 +655,22 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	@Override
 	public void onProjectClosing(AotGraph layoutGraph) {
-		// Platform.runLater(() -> {
 		nodePropertySheet.getItems().clear();
 		allElementsPropertySheet.getItems().clear();
 		zoomTarget.getChildren().clear();
-		// });
 	}
 
 	@Override
 	public void onProjectOpened(AotGraph layoutGraph, boolean valid) {
+//		controller.getPreferences();
+//		checkGraph();
+//		controller.setValid(projectOk);
+//		initialiseGraphView();
+//		buildAllElementsPropertySheet();
+//		controller.enableButtons();
 		getPreferences();
+		validProject.set(model.validateGraph());
+		//buildGraphView()
 		// buildAllElementsPropertySheet()
 		// set the buttons
 
