@@ -31,8 +31,6 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.graphviz.GraphVisualisationConstants;

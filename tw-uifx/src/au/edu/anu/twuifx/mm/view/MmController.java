@@ -76,6 +76,7 @@ import au.edu.anu.twapps.mm.Controllable;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.ModelMaker;
 import au.edu.anu.twapps.mm.Modelable;
+import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
 import au.edu.anu.twcore.errorMessaging.Verbosity;
@@ -652,16 +653,16 @@ public class MmController implements ErrorMessageListener, Controllable {
 		textFlowErrorMsgs.getChildren().clear();
 		lstErrorMsgs.clear();
 	}
-
 	@Override
-	public void onProjectClosing(AotGraph layoutGraph) {
+	public void onProjectClosing(VisualGraph arg0) {
 		nodePropertySheet.getItems().clear();
 		allElementsPropertySheet.getItems().clear();
 		zoomTarget.getChildren().clear();
+		
 	}
 
 	@Override
-	public void onProjectOpened(AotGraph layoutGraph, boolean valid) {
+	public void onProjectOpened(VisualGraph arg0) {
 //		controller.getPreferences();
 //		checkGraph();
 //		controller.setValid(projectOk);
@@ -673,9 +674,11 @@ public class MmController implements ErrorMessageListener, Controllable {
 		//buildGraphView()
 		// buildAllElementsPropertySheet()
 		// set the buttons
-
+		
 	}
 
+
+	
 //	@Override
 //	public void onEndDrawing() {
 //		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
@@ -702,5 +705,6 @@ public class MmController implements ErrorMessageListener, Controllable {
 	public boolean canClose() {
 		return model.canClose();
 	}
+
 
 }

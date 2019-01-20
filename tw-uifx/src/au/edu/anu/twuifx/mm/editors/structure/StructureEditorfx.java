@@ -30,8 +30,6 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.WordUtils;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
