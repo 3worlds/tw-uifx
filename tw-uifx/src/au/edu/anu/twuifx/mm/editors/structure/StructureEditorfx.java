@@ -30,8 +30,7 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
-import org.apache.commons.lang.WordUtils;
-
+import org.apache.commons.text.WordUtils;
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.GraphState;
