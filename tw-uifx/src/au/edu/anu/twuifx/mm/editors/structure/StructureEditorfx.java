@@ -145,6 +145,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			newChild = targetNode.newChild(childRoot,label,userName);
 			Iterable<AotNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
 			
+			// build the properties
+			
 			GraphState.isChanged(true);
 		});		
 	}

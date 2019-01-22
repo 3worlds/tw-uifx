@@ -33,12 +33,13 @@ import java.util.List;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 
 // just experimenting with what services mm requires of an aotnode.
 
 // impl will have a VisualNode which hosts the configuration node
 public interface SpecifiableNode {
-	public List<AotNode> getChildren();
+	public List<VisualNode> getChildren();
 
 	/* return the class value or null from the hosted config node */
 	public String getClassValue();
@@ -56,7 +57,7 @@ public interface SpecifiableNode {
 
 	public String getLabel();
 
-	public List<AotNode> graphRoots();
+	public List<VisualNode> graphRoots();
 
 	public boolean haschildren();
 
@@ -68,7 +69,7 @@ public interface SpecifiableNode {
 
 	public String getUniqueName(String label, String def);
 
-	public AotNode newChild(AotNode specs, String label, String name);
+	public VisualNode newChild(AotNode specs, String label, String name);
 	
 	//public void addProperty(String key, Object defaultValue);
 

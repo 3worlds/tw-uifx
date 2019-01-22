@@ -34,18 +34,19 @@ import java.util.List;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.twcore.constants.Configuration;
 import javafx.util.Pair;
 
 public class SpecifiedNode implements SpecifiableNode, Configuration {
-	private AotNode visualNode;
+	private VisualNode visualNode;
 
-	public SpecifiedNode(AotNode visualNode) {
+	public SpecifiedNode(VisualNode visualNode) {
 		this.visualNode = visualNode;
 	}
 
 	@Override
-	public List<AotNode> getChildren() {
+	public List<VisualNode> getChildren() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -79,9 +80,9 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	}
 
 	@Override
-	public List<AotNode> graphRoots() {
-		List<AotNode> result = new ArrayList<>();
-		for (AotNode root : visualNode.treeNodeFactory().roots())
+	public List<VisualNode> graphRoots() {
+		List<VisualNode> result = new ArrayList<>();
+		for (VisualNode root : visualNode.treeNodeFactory().roots())
 			result.add(root);
 		return result;
 	}
@@ -145,7 +146,7 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 		for (int i = name.length() - 1; i >= 0; i--) {
 			String s = name.substring(i, i + 1);
 			try {
-				Integer x = Integer.parseInt(s);
+				Integer.parseInt(s);
 				result = i;
 			} catch (NumberFormatException e) {
 				return result;
@@ -156,13 +157,13 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	}
 
 	@Override
-	public AotNode newChild(AotNode specs, String label, String name) {
+	public VisualNode newChild(AotNode specs, String label, String name) {
 		AotNode configParent = getConfigNode();
 		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent);
 		configChild.setLabel(label);
 		configChild.setName(name);
 		
-		AotNode  childVisualNode = visualNode.nodeFactory().makeTreeNode(visualNode);
+		VisualNode  childVisualNode = visualNode.nodeFactory().makeTreeNode(visualNode);
 		// TODO link the two
 		
 		return childVisualNode;

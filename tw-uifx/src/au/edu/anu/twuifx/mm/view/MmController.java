@@ -32,8 +32,11 @@ package au.edu.anu.twuifx.mm.view;
 
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -46,6 +49,8 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
@@ -77,6 +82,7 @@ import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.ModelMaker;
 import au.edu.anu.twapps.mm.Modelable;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
 import au.edu.anu.twcore.errorMessaging.Verbosity;
@@ -84,7 +90,12 @@ import au.edu.anu.twcore.errorMessaging.archetype.ArchComplianceManager;
 import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twuifx.mm.editors.structure.SpecifiableNode;
+import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
+import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
+import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import au.edu.anu.twuifx.mm.visualise.GVizfx;
+import au.edu.anu.twuifx.mm.visualise.TreeColours;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Graph;
 
@@ -194,6 +205,12 @@ public class MmController implements ErrorMessageListener, Controllable {
 	private StringProperty userProjectPath = new SimpleStringProperty("");
 	private BooleanProperty validProject = new SimpleBooleanProperty();
 
+	private static IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
+	private static final Color hoverColor = Color.RED;
+	private static DropShadow ds = new DropShadow();
+	private VisualGraph visualGraph;
+	private static Font font;
+
 	public void initFontSize(int size) {
 		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 20, size));
 		GVizfx.setFontSize(size);
@@ -206,6 +223,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	@FXML
 	public void initialize() {
+
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
 
@@ -283,7 +301,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 			if (!tmp.equals(userProjectPath.get()))
 				if (DevEnv.isJavaProject(jprjFile)) {
 					userProjectPath.set(tmp);
-					validProject.set( model.validateGraph());
+					validProject.set(model.validateGraph());
 				}
 		}
 	}
@@ -386,27 +404,30 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	@FXML
 	void handlePaneOnMouseClicked(MouseEvent e) {
-//		if (placing) {
-//			Platform.runLater(() -> {
-//				AotNode n = popupEditor.locate(event, pane.getWidth(), pane.getHeight());
-//				VisualNode.insertCircle(n, controller.childLinksProperty(), controller.xLinksProperty(), pane, this);
-//				// add parent edge. There must be one in this circumstance
-//				AotEdge inEdge = (AotEdge) get(n.getEdges(Direction.IN), selectOne(hasTheLabel(Trees.CHILD_LABEL)));
-//				VisualNode.createChildLine(inEdge, controller.childLinksProperty(), pane);
-//				popupEditor = null;
-//				placing = false;
-//				pane.setCursor(Cursor.DEFAULT);
-//				reBuildAllElementsPropertySheet();
-//				checkGraph();
-//			});
-//		}
-//
+		// if (placing) {
+		// Platform.runLater(() -> {
+		// AotNode n = popupEditor.locate(event, pane.getWidth(), pane.getHeight());
+		// VisualNode.insertCircle(n, controller.childLinksProperty(),
+		// controller.xLinksProperty(), pane, this);
+		// // add parent edge. There must be one in this circumstance
+		// AotEdge inEdge = (AotEdge) get(n.getEdges(Direction.IN),
+		// selectOne(hasTheLabel(Trees.CHILD_LABEL)));
+		// VisualNode.createChildLine(inEdge, controller.childLinksProperty(), pane);
+		// popupEditor = null;
+		// placing = false;
+		// pane.setCursor(Cursor.DEFAULT);
+		// reBuildAllElementsPropertySheet();
+		// checkGraph();
+		// });
+		// }
+		//
 	}
 
 	@FXML
 	void handlePaneOnMouseMoved(MouseEvent e) {
-		//modelMaker.onPaneMouseMoved(e.getX(), e.getY(), zoomTarget.getWidth(), zoomTarget.getHeight());
-		//captureDrawingSize();
+		// modelMaker.onPaneMouseMoved(e.getX(), e.getY(), zoomTarget.getWidth(),
+		// zoomTarget.getHeight());
+		// captureDrawingSize();
 	}
 
 	@FXML
@@ -417,19 +438,20 @@ public class MmController implements ErrorMessageListener, Controllable {
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
 		model.doDeploy();
-//		if (!GraphState.hasChanged()) {
-//			DeployComplianceManager.clear();
-//			btnDeploy.setDisable(true);
-//			Runnable task = () -> {
-//				modelMaker.createSimulatorAndDeploy();
-//				Platform.runLater(() -> {
-//					btnDeploy.setDisable(false);
-//				});
-//			};
-//			ExecutorService executor = Executors.newSingleThreadExecutor();
-//			executor.execute(task);
-//		} else
-//			Dialogs.errorAlert("Run simulator", "", "Project must be saved before creating simulator");
+		// if (!GraphState.hasChanged()) {
+		// DeployComplianceManager.clear();
+		// btnDeploy.setDisable(true);
+		// Runnable task = () -> {
+		// modelMaker.createSimulatorAndDeploy();
+		// Platform.runLater(() -> {
+		// btnDeploy.setDisable(false);
+		// });
+		// };
+		// ExecutorService executor = Executors.newSingleThreadExecutor();
+		// executor.execute(task);
+		// } else
+		// Dialogs.errorAlert("Run simulator", "", "Project must be saved before
+		// creating simulator");
 	}
 
 	private void updateOpenProjectsMenu(Menu menuOpen) {
@@ -459,9 +481,9 @@ public class MmController implements ErrorMessageListener, Controllable {
 		}
 	}
 
-//	public ModelMakerModel model() {
-//		return modelMaker;
-//	}
+	// public ModelMakerModel model() {
+	// return modelMaker;
+	// }
 
 	@FXML
 	void handleNewProject(ActionEvent event) {
@@ -482,12 +504,6 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
-	}
-
-	public Cursor setCursor(Cursor cursor) {
-		Cursor oldCursor = stage.getScene().getCursor();
-		stage.getScene().setCursor(cursor);
-		return oldCursor;
 	}
 
 	public void setValid(boolean ok) {
@@ -557,7 +573,8 @@ public class MmController implements ErrorMessageListener, Controllable {
 	public void getPreferences() {
 		GraphState.setTitleProperty(stage.titleProperty(), userProjectPath);
 		Preferences.initialise(Project.makeProjectPreferencesFile());
-		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
+				stage.getHeight());
 		Platform.runLater(() -> {
 			stage.setX(r[0]);
 			stage.setY(r[1]);
@@ -568,7 +585,8 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 		initFontSize(Preferences.getInt(fontSizeKey, 10));
 		initNodeRadius(Preferences.getInt(nodeSizeKey, 10));
-		tabPaneProperties.getSelectionModel().select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
+		tabPaneProperties.getSelectionModel()
+				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
 		Platform.runLater(() -> {
 			boolean m = Preferences.getBoolean(nodePropertySheet.idProperty().get() + Mode, true);
@@ -653,59 +671,139 @@ public class MmController implements ErrorMessageListener, Controllable {
 		textFlowErrorMsgs.getChildren().clear();
 		lstErrorMsgs.clear();
 	}
+
 	@Override
-	public void onProjectClosing(VisualGraph arg0) {
+	public void onProjectClosing() {
+		// clearGraphView(visualGraph);
+		// clearPropertySheets();
+		// setButtons(no project);
 		nodePropertySheet.getItems().clear();
 		allElementsPropertySheet.getItems().clear();
 		zoomTarget.getChildren().clear();
-		
+		visualGraph = null;
+
 	}
 
 	@Override
-	public void onProjectOpened(VisualGraph arg0) {
-//		controller.getPreferences();
-//		checkGraph();
-//		controller.setValid(projectOk);
-//		initialiseGraphView();
-//		buildAllElementsPropertySheet();
-//		controller.enableButtons();
+	public void onProjectOpened(VisualGraph visualGraph) {
+		this.visualGraph = visualGraph;
+		Cursor oldCursor = setWaitCursor();
 		getPreferences();
-		validProject.set(model.validateGraph());
-		//buildGraphView()
-		// buildAllElementsPropertySheet()
-		// set the buttons
+		initialiseGraphView();
+		initialisePropertySheets();
+		setCursor(oldCursor);
+		// setButtons(have project);
+	}
+
+	private void initialiseGraphView() {
+		zoomTarget.setPrefHeight(getDrawingHeight());
+		zoomTarget.setPrefWidth(getDrawingWidth());
+		BooleanProperty showTreeLines = btnChildLinks.selectedProperty();
+		BooleanProperty showGraphLines = btnXLinks.selectedProperty();
+		for (VisualNode n : visualGraph.nodes()) {
+			createNodeVisualisation(n);
+		}
+
+		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
+		zoomTarget.setPrefWidth(Control.USE_COMPUTED_SIZE);
+	}
+	private StructureEditable gse;
+	private VisualNode dragNode;
+	private void createNodeVisualisation(VisualNode n) {
+		double x = n.getX() * zoomTarget.getWidth();
+		double y = n.getY() * zoomTarget.getHeight();
+
+		// TODO Prefs must initialise these properties now
+		Circle c = new Circle(x, y, nodeRadiusProperty.get());
+		c.radiusProperty().bind(nodeRadiusProperty);
+		Text text = new Text(n.uniqueId());
+		n.setSymbols(c, text);
+		Color nColor = TreeColours.getCategoryColor(n.getCategory());
+		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
+		c.setEffect(ds);
+		c.setOnMousePressed(e -> {
+			if (e.getButton() == MouseButton.PRIMARY) {
+				dragNode = n;
+				e.consume();
+			}
+		});
+		c.setOnMouseDragged(e -> {
+			if (dragNode != null) {
+				double w = zoomTarget.getWidth();
+				double h = zoomTarget.getHeight();
+				double ex = e.getX();
+				double ey = e.getY();
+				if (x < w && y < h && ex >= 0 && ey >= 0) {
+					Circle dc = (Circle) dragNode.getSymbol();
+					dc.setCenterX(ex);
+					dc.setCenterY(ey);
+				}
+				e.consume();
+			}
+
+		});
+		c.setOnMouseReleased(e -> {
+			if (dragNode != null) {
+				Circle dc = (Circle) dragNode.getSymbol();
+				double w = zoomTarget.getWidth();
+				double h = zoomTarget.getHeight();
+				double newx = Math.max(0, Math.min(w, dc.getCenterX())) / w;
+				double newy = Math.max(0, Math.min(h, dc.getCenterY())) / h;
+				double oldx = dragNode.getX();
+				double oldy = dragNode.getY();
+				int dx = (int) Math.round(50 * Math.abs(oldx - newx));
+				int dy = (int) Math.round(50 * Math.abs(oldy - newy));
+				if (dx != 0 || dy != 0) {
+					dragNode.setPosition(newx, newy);
+					GraphState.isChanged(true);
+				}
+				dragNode = null;
+				e.consume();
+			}
+});
+		c.setOnMouseClicked(e -> {
+			if (e.getButton()==MouseButton.SECONDARY) {
+				gse = new StructureEditorfx(new SpecifiedNode(n),e); 			
+			}else
+				setNodePropertySheet(n);
+		});
+
+		text.setFont(font);
+
+		// Bind text position relative to circle center
+		text.xProperty().bind(c.centerXProperty().add(nodeRadiusProperty));
+		text.yProperty().bind(c.centerYProperty().add(nodeRadiusProperty.divide(2)));
+		text.visibleProperty().bind(c.visibleProperty());
+		zoomTarget.getChildren().addAll(c, text);
+		/*
+		 * put text behind circle - can't work entirely because other circles will be
+		 * behind this text. It would require a second loop.
+		 */
+		c.toFront();
+		text.toBack();
+	}
+
+	private void setNodePropertySheet(VisualNode n) {
 		
 	}
+	private void initialisePropertySheets() {
 
+	}
 
-	
-//	@Override
-//	public void onEndDrawing() {
-//		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
-//		zoomTarget.setPrefWidth(Control.USE_COMPUTED_SIZE);
-//	}
-//
-//	@Override
-//	public void onStartDrawing() {
-//		zoomTarget.setPrefHeight(getDrawingHeight());
-//		zoomTarget.setPrefWidth(getDrawingWidth());
-//	}
-	
-	private Cursor oldCursor;
-	@Override
-	public void onStartWaiting() {
-		oldCursor = stage.getScene().getCursor();
+	private Cursor setCursor(Cursor cursor) {
+		Cursor oldCursor = stage.getScene().getCursor();
+		stage.getScene().setCursor(cursor);
+		return oldCursor;
+	}
+
+	private Cursor setWaitCursor() {
+		Cursor result = stage.getScene().getCursor();
 		stage.getScene().setCursor(Cursor.WAIT);
+		return result;
 	}
-	
-	@Override
-	public void onEndWaiting() {
-		stage.getScene().setCursor(oldCursor);
-	}
+
 	public boolean canClose() {
 		return model.canClose();
 	}
-
-
 
 }

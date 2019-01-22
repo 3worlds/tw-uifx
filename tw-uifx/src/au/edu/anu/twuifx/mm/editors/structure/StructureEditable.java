@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 import au.edu.anu.rscs.aot.graph.AotNode;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import javafx.util.Pair;
 
 /**
@@ -43,7 +44,7 @@ public interface StructureEditable {
 	 * sets the location of a new node and returns its value so the calling program
 	 * can add the visualisation details
 	 */
-	public AotNode SetNodeLocation(double x, double y, double w, double h);
+	public VisualNode SetNodeLocation(double x, double y, double w, double h);
 
 	/* If true, the user is prompted to location a position for the new node */
 	public boolean hasNewChild();

@@ -34,13 +34,14 @@ import java.util.List;
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.graphviz.GraphVisualisationConstants;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import javafx.util.Pair;
 
 public  abstract class StructureEditorAdapter
 		implements StructureEditable, GraphVisualisationConstants, ArchetypeConstants {
 	protected Specifications specifications;
 	protected SpecifiableNode targetNode;
-	protected AotNode newChild;
+	protected VisualNode newChild;
 	protected AotNode nodeSpec;
 
 	public StructureEditorAdapter(SpecifiableNode targetNode) {
@@ -51,10 +52,9 @@ public  abstract class StructureEditorAdapter
 	}
 
 	@Override
-	public AotNode SetNodeLocation(double x, double y, double w, double h) {
+	public VisualNode SetNodeLocation(double x, double y, double w, double h) {
 		// rescale user's x,y into unit space
-		newChild.setProperty(gvX, x / w);
-		newChild.setProperty(gvY, y / h);
+		newChild.setPosition(x / w,  y / h);
 		return newChild;
 	}
 
