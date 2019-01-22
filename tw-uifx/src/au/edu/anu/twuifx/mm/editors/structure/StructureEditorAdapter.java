@@ -33,28 +33,30 @@ import java.util.ArrayList;
 import java.util.List;
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
-import au.edu.anu.twapps.graphviz.GraphVisualisationConstants;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import javafx.util.Pair;
 
-public  abstract class StructureEditorAdapter
-		implements StructureEditable, GraphVisualisationConstants, ArchetypeConstants {
+public abstract class StructureEditorAdapter implements StructureEditable, ArchetypeConstants {
+	/* what we need to know from the archetype graph*/
 	protected Specifications specifications;
-	protected SpecifiableNode targetNode;
+	/* what we need to know from the visualNode that has been selected for editing*/
+	protected SpecifiableNode editingNode;
+	/* new node created by this editor. May be null because the op is not necessarily node creation */
 	protected VisualNode newChild;
-	protected AotNode nodeSpec;
+	/* specificatons of this editingNode*/
+	protected AotNode editingNodeSpec;
 
-	public StructureEditorAdapter(SpecifiableNode targetNode) {
+	public StructureEditorAdapter(SpecifiableNode clickedNode) {
 		super();
 		this.newChild = null;
-		this.targetNode = targetNode;
-		this.nodeSpec = specifications.getSpecificationOf(targetNode.getConfigNode());
+		this.editingNode = clickedNode;
+		this.editingNodeSpec = specifications.getSpecificationOf(editingNode.getConfigNode());
 	}
 
 	@Override
 	public VisualNode SetNodeLocation(double x, double y, double w, double h) {
 		// rescale user's x,y into unit space
-		newChild.setPosition(x / w,  y / h);
+		newChild.setPosition(x / w, y / h);
 		return newChild;
 	}
 
@@ -64,12 +66,12 @@ public  abstract class StructureEditorAdapter
 	}
 
 	@Override
-	public List<AotNode> newChildList(Iterable< AotNode> childSpecs) {
+	public List<AotNode> newChildList(Iterable<AotNode> childSpecs) {
 		List<AotNode> result = new ArrayList<AotNode>();
 		for (AotNode childNodeSpec : childSpecs) {
 			IntegerRange range = specifications.getMultiplicity(childNodeSpec, atName);
 			String childLabel = specifications.getLabel(childNodeSpec);
-			if (!targetNode.inRange(range, childLabel))
+			if (!editingNode.inRange(range, childLabel))
 				result.add(childNodeSpec);
 		}
 		return result;
@@ -78,8 +80,8 @@ public  abstract class StructureEditorAdapter
 	@Override
 	public List<Pair<String, AotNode>> newEdgeList(Iterable<AotNode> edgeSpecs) {
 		List<Pair<String, AotNode>> result = new ArrayList<>();
-		List<String> edgePropXorOptions = specifications.getConstraintOptions(nodeSpec, atConstraintEdgePropXor);
-		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(nodeSpec, atConstraintNodeNodeXor);
+		List<String> edgePropXorOptions = specifications.getConstraintOptions(editingNodeSpec, atConstraintEdgePropXor);
+		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(editingNodeSpec, atConstraintNodeNodeXor);
 
 		for (AotNode edgeSpec : edgeSpecs) {
 			String nodeLabel = specifications.getEdgeToNodeLabel(edgeSpec);
@@ -88,16 +90,15 @@ public  abstract class StructureEditorAdapter
 		}
 		return result;
 	}
+
 	public List<AotNode> orphanedChildList(Iterable<AotNode> childSpecs) {
 		List<AotNode> result = new ArrayList<>();
-		
+
 		return result;
 	}
+
 	protected boolean haveSpecification() {
-		return nodeSpec != null;
+		return editingNodeSpec != null;
 	}
-
-	
-
 
 }

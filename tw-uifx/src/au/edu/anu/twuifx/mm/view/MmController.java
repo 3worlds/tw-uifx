@@ -67,16 +67,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.rscs.aot.graph.AotGraph;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.graphviz.GraphVisualisation;
 import au.edu.anu.twapps.mm.Controllable;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.ModelMaker;
@@ -90,14 +85,11 @@ import au.edu.anu.twcore.errorMessaging.archetype.ArchComplianceManager;
 import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twuifx.mm.editors.structure.SpecifiableNode;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
-import au.edu.anu.twuifx.mm.visualise.GVizfx;
 import au.edu.anu.twuifx.mm.visualise.TreeColours;
 import au.edu.anu.twuifx.utils.UiHelpers;
-import fr.cnrs.iees.graph.Graph;
 
 public class MmController implements ErrorMessageListener, Controllable {
 
@@ -205,20 +197,22 @@ public class MmController implements ErrorMessageListener, Controllable {
 	private StringProperty userProjectPath = new SimpleStringProperty("");
 	private BooleanProperty validProject = new SimpleBooleanProperty();
 
-	private static IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
-	private static final Color hoverColor = Color.RED;
-	private static DropShadow ds = new DropShadow();
+	private  IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
+	private  Color hoverColor = Color.RED;
+	private  DropShadow ds = new DropShadow();
 	private VisualGraph visualGraph;
-	private static Font font;
+	private Font font;
+	private int fontSize;
 
-	public void initFontSize(int size) {
+	public void setFontSize(int size) {
 		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 20, size));
-		GVizfx.setFontSize(size);
+		font = Font.font("Verdana", size);
+		fontSize = size;
 	}
 
-	public void initNodeRadius(int size) {
+	public void setNodeRadius(int size) {
 		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 40, size));
-		GVizfx.setNodeRadius(size);
+		nodeRadiusProperty.set(size);
 	}
 
 	@FXML
@@ -231,11 +225,11 @@ public class MmController implements ErrorMessageListener, Controllable {
 			@Override
 			public void changed(ObservableValue<? extends Integer> observable, //
 					Integer oldValue, Integer newValue) {
-				GVizfx.setFontSize(newValue);
+				setFontSize(newValue);
 				for (Node n : zoomTarget.getChildren()) {
 					if (n instanceof Text) {
 						Text t = (Text) n;
-						t.setFont(GVizfx.getFont());
+						t.setFont(font);
 					}
 				}
 			}
@@ -245,7 +239,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 			@Override
 			public void changed(ObservableValue<? extends Integer> observable, //
 					Integer oldValue, Integer newValue) {
-				GVizfx.setNodeRadius(newValue);
+				setNodeRadius(newValue);
 			}
 		});
 
@@ -256,7 +250,6 @@ public class MmController implements ErrorMessageListener, Controllable {
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
 
 		// This class has all the housework for managing graph
-		GraphVisualisation.initialise(new GVizfx());
 		model = new ModelMaker(this);
 
 		// build a toggle group for the verbosity level of archetype error
@@ -563,8 +556,8 @@ public class MmController implements ErrorMessageListener, Controllable {
 			Preferences.putBoolean(mainMaximized, stage.isMaximized());
 			Preferences.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
-			Preferences.putInt(fontSizeKey, GVizfx.getFontSize());
-			Preferences.putInt(nodeSizeKey, GVizfx.getNodeRadius());
+			Preferences.putInt(fontSizeKey, fontSize);
+			Preferences.putInt(nodeSizeKey, nodeRadiusProperty.get());
 			Preferences.flush();
 		}
 	}
@@ -583,8 +576,8 @@ public class MmController implements ErrorMessageListener, Controllable {
 			stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
 		});
 
-		initFontSize(Preferences.getInt(fontSizeKey, 10));
-		initNodeRadius(Preferences.getInt(nodeSizeKey, 10));
+		setFontSize(Preferences.getInt(fontSizeKey, 10));
+		setNodeRadius(Preferences.getInt(nodeSizeKey, 10));
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
@@ -698,22 +691,23 @@ public class MmController implements ErrorMessageListener, Controllable {
 	private void initialiseGraphView() {
 		zoomTarget.setPrefHeight(getDrawingHeight());
 		zoomTarget.setPrefWidth(getDrawingWidth());
-		BooleanProperty showTreeLines = btnChildLinks.selectedProperty();
-		BooleanProperty showGraphLines = btnXLinks.selectedProperty();
+		
 		for (VisualNode n : visualGraph.nodes()) {
 			createNodeVisualisation(n);
 		}
+		BooleanProperty showTreeLines = btnChildLinks.selectedProperty();
+		BooleanProperty showGraphLines = btnXLinks.selectedProperty();
 
 		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
 		zoomTarget.setPrefWidth(Control.USE_COMPUTED_SIZE);
 	}
+	
 	private StructureEditable gse;
 	private VisualNode dragNode;
 	private void createNodeVisualisation(VisualNode n) {
 		double x = n.getX() * zoomTarget.getWidth();
 		double y = n.getY() * zoomTarget.getHeight();
 
-		// TODO Prefs must initialise these properties now
 		Circle c = new Circle(x, y, nodeRadiusProperty.get());
 		c.radiusProperty().bind(nodeRadiusProperty);
 		Text text = new Text(n.uniqueId());

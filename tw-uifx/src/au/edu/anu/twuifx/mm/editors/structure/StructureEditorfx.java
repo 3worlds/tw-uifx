@@ -62,12 +62,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		if (haveSpecification()) {
-			Iterable<AotNode> childSpecs = specifications.getChildSpecificationsOf(targetNode.getLabel(), nodeSpec,
-					targetNode.getClassValue());
+			Iterable<AotNode> childSpecs = specifications.getChildSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
+					editingNode.getClassValue());
 			List<AotNode> allowedChildSpecs = newChildList(childSpecs);
 			List<AotNode> orphanedChildren = orphanedChildList(childSpecs);
-			Iterable<AotNode> edgeSpecs = specifications.getEdgeSpecificationsOf(targetNode.getLabel(), nodeSpec,
-					targetNode.getClassValue());
+			Iterable<AotNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
+					editingNode.getClassValue());
 			List<Pair<String, AotNode>> allowedEdges = newEdgeList(edgeSpecs);
 
 			if (!allowedChildSpecs.isEmpty()) {
@@ -89,7 +89,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 			cm.getItems().add(new SeparatorMenuItem());
 
-			if (targetNode.getChildren().isEmpty()) {
+			if (editingNode.getChildren().isEmpty()) {
 				// add exportTreeOptions
 			}
 			if (!allowedChildSpecs.isEmpty()) {
@@ -97,26 +97,26 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 
 			//--------------------------------------
-			if (targetNode.canDelete() || !targetNode.getChildren().isEmpty())
+			if (editingNode.canDelete() || !editingNode.getChildren().isEmpty())
 				if (!(allowedChildSpecs.isEmpty() && orphanedChildren.isEmpty()))
 					cm.getItems().add(new SeparatorMenuItem());
 
 		}
-		if (targetNode.haschildren()|| targetNode.hasOutEdges()) {
+		if (editingNode.haschildren()|| editingNode.hasOutEdges()) {
 			// delete edges to children || xlinks - maybe problem
 		}
 		
-		if(targetNode.canDelete()) {
+		if(editingNode.canDelete()) {
 			// add delete option
 		}
 		
-		if (targetNode.haschildren()) {
+		if (editingNode.haschildren()) {
 			// delete tree options
 		}
 		
-		if (!targetNode.isLeaf()) {
+		if (!editingNode.isLeaf()) {
 			cm.getItems().add(new SeparatorMenuItem());
-			if (targetNode.isCollapsed()) {
+			if (editingNode.isCollapsed()) {
 				// add expand option
 			} else {
 				// add collapse option
@@ -140,9 +140,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				userName = defName;
 			if (doUpper)
 				userName = WordUtils.capitalize(userName);
-			userName = targetNode.getUniqueName(label, userName);
+			userName = editingNode.getUniqueName(label, userName);
 			// make the node
-			newChild = targetNode.newChild(childRoot,label,userName);
+			newChild = editingNode.newChild(childRoot,label,userName);
 			Iterable<AotNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
 			
 			// build the properties

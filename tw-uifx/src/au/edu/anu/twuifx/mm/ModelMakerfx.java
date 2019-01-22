@@ -98,21 +98,24 @@ public class ModelMakerfx extends Application implements ProjectPaths, TWPaths {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		/**
-		 * setUserAgentStylesheet(STYLESHEET_CASPIAN); This stylesheet illicits a
-		 * warning from search bar of propertySheet
+		 * setUserAgentStylesheet(STYLESHEET_CASPIAN);
+		 * 
+		 * Not used because this stylesheet illicits a warning from search bar of
+		 * propertySheet.
 		 */
 		mainStage = primaryStage;
 		mainStage.setTitle("3Worlds Model Maker");
 		createMainWindow();
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
 		checkResources();
-		getFramePreferences();
+		setDefaultFrameSize();
 		mainStage.show();
 	}
 
-	private void getFramePreferences() {
+	private void setDefaultFrameSize() {
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 		double w = screenBounds.getWidth() / 1.5;
+		// golden mean?
 		double h = w / 1.618;
 		double x = (screenBounds.getWidth() - w) / 2;
 		double y = (screenBounds.getHeight() - h) / 3;
