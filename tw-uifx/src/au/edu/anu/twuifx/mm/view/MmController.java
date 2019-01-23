@@ -30,10 +30,15 @@
 
 package au.edu.anu.twuifx.mm.view;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -59,14 +64,19 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.commons.math.util.MathUtils;
 import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -76,6 +86,7 @@ import au.edu.anu.twapps.mm.Controllable;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.ModelMaker;
 import au.edu.anu.twapps.mm.Modelable;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
@@ -90,6 +101,10 @@ import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import au.edu.anu.twuifx.mm.visualise.TreeColours;
 import au.edu.anu.twuifx.utils.UiHelpers;
+import fr.cnrs.iees.graph.Direction;
+import fr.cnrs.iees.tree.TreeNode;
+import au.edu.anu.rscs.aot.queries.base.*;
+import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 
 public class MmController implements ErrorMessageListener, Controllable {
 
@@ -197,9 +212,9 @@ public class MmController implements ErrorMessageListener, Controllable {
 	private StringProperty userProjectPath = new SimpleStringProperty("");
 	private BooleanProperty validProject = new SimpleBooleanProperty();
 
-	private  IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
-	private  Color hoverColor = Color.RED;
-	private  DropShadow ds = new DropShadow();
+	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
+	private Color hoverColor = Color.RED;
+	private DropShadow ds = new DropShadow();
 	private VisualGraph visualGraph;
 	private Font font;
 	private int fontSize;
@@ -691,19 +706,181 @@ public class MmController implements ErrorMessageListener, Controllable {
 	private void initialiseGraphView() {
 		zoomTarget.setPrefHeight(getDrawingHeight());
 		zoomTarget.setPrefWidth(getDrawingWidth());
-		
+
 		for (VisualNode n : visualGraph.nodes()) {
 			createNodeVisualisation(n);
 		}
 		BooleanProperty showTreeLines = btnChildLinks.selectedProperty();
 		BooleanProperty showGraphLines = btnXLinks.selectedProperty();
+		List<VisualNode> collapsedParents = new ArrayList<>();
+
+		for (VisualNode n : visualGraph.nodes()) {
+			createTreeLines(n, showTreeLines);
+			createGraphLines(n, showGraphLines);
+			if (n.isCollapsedParent())
+				collapsedParents.add(n);
+		}
+		for (VisualNode n : collapsedParents)
+			collapseTree(n);
 
 		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
 		zoomTarget.setPrefWidth(Control.USE_COMPUTED_SIZE);
 	}
-	
+
+	private static void collapseTree(VisualNode parent) {
+		Circle circle = (Circle) parent.getSymbol();
+		DoubleProperty xp = circle.centerXProperty();
+		DoubleProperty yp = circle.centerYProperty();
+		for (TreeNode child : parent.getChildren()) {
+			collapse(child, xp, yp);
+		}
+	}
+
+	private static void collapse(TreeNode node, DoubleProperty xp, DoubleProperty yp) {
+		VisualNode vn = (VisualNode) node;
+		setCollapseBindings(vn, xp, yp);
+		vn.setCollapse(true);
+		for (TreeNode child : node.getChildren())
+			collapse(child, xp, yp);
+	}
+
+	private static final Double animateDuration = 1000.0;
+
+	private static void setCollapseBindings(VisualNode node, DoubleProperty xp, DoubleProperty yp) {
+		Circle circle = (Circle) node.getSymbol();
+		// Some subtrees may already be collapsed
+		if (node.isCollapsed()) {
+			circle.centerXProperty().unbind();
+			circle.centerYProperty().unbind();
+		}
+		KeyValue endX = new KeyValue(circle.centerXProperty(), xp.getValue(), Interpolator.EASE_IN);
+		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.EASE_IN);
+		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
+		Timeline timeline = new Timeline();
+		timeline.getKeyFrames().add(keyFrame);
+		timeline.setOnFinished((e) -> {
+			circle.setVisible(false);
+			circle.centerXProperty().bind(xp);
+			circle.centerYProperty().bind(yp);
+		});
+		timeline.play();
+	}
+
+	private static final Color treeEdgeColor = Color.GREEN;
+
+	private void createTreeLines(VisualNode n, BooleanProperty show) {
+		// each node has a line connected to its parent
+		VisualNode parent = n.getParent();
+		if (parent != null) {
+			Circle parentCircle = (Circle) parent.getSymbol();
+			Circle childCircle = (Circle) n.getSymbol();
+			Line line = new Line();
+			n.setParentLine(line);
+
+			// bindings
+			// TODO can we have a colour property?
+			// line.strokeProperty().bind(treeEdgeColourProperty());
+			line.setStroke(treeEdgeColor);
+			line.startXProperty().bind(parentCircle.centerXProperty());
+			line.startYProperty().bind(parentCircle.centerYProperty());
+
+			line.endXProperty().bind(childCircle.centerXProperty());
+			line.endYProperty().bind(childCircle.centerYProperty());
+
+			line.visibleProperty().bind(show);
+
+			zoomTarget.getChildren().add(line);
+			line.toBack();
+
+		}
+	}
+
+	private void createGraphLines(VisualNode n, BooleanProperty show) {
+		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(n.getEdges(Direction.OUT));
+		for (VisualEdge edge : edges) {
+			createGraphLine(edge, show);
+		}
+	}
+
+	/*
+	 * edge labels of identical lines will obscure each other. Therefore we have to
+	 * pull some tricks to concatentate all the infor in one text object and set the
+	 * others to ""
+	 */
+	private static final Color graphEdgeColor = Color.GRAY;
+
+	private void createGraphLine(VisualEdge edge, BooleanProperty show) {
+		VisualNode startNode = (VisualNode) edge.startNode();
+		VisualNode endNode = (VisualNode) edge.endNode();
+		@SuppressWarnings("unchecked")
+		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.getEdges(Direction.OUT),
+				selectZeroOrMany(notQuery(hasTheLabel(edge.getLabel()))));
+
+		String newLabel = "";
+		for (VisualEdge e : edges) {
+			if (e.endNode().uniqueId().equals(endNode.uniqueId())) {
+				newLabel += e.getLabel() + "/";
+				Text text = (Text) e.getText();
+				if (text != null)
+					text.setText("");
+			}
+		}
+		newLabel += edge.getLabel();
+
+		Circle fromCircle = (Circle) startNode.getSymbol();
+		Circle toCircle = (Circle) endNode.getSymbol();
+		Line line = new Line();
+		Text text = new Text(newLabel);
+		text.setFont(font);
+		;
+		edge.setVisualElements(line, text);
+		// TODO use property here
+		line.setStroke(graphEdgeColor);
+
+		// Bindings
+		line.startXProperty().bind(fromCircle.centerXProperty());
+		line.startYProperty().bind(fromCircle.centerYProperty());
+
+		line.endXProperty().bind(toCircle.centerXProperty());
+		line.endYProperty().bind(toCircle.centerYProperty());
+
+		line.visibleProperty().bind(show);
+
+		text.xProperty().bind(fromCircle.centerXProperty().add(toCircle.centerXProperty()).divide(2.0));
+		text.yProperty().bind(fromCircle.centerYProperty().add(toCircle.centerYProperty()).divide(2.0));
+		text.visibleProperty().bind(line.visibleProperty());
+
+		// possible change listener but does not fully work
+		text.xProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				textPropertyChange(line, text, startNode, endNode);
+
+			}
+		});
+		zoomTarget.getChildren().addAll(line, text);
+		line.toBack();
+
+	}
+
+	protected void textPropertyChange(Line line, Text text, VisualNode startNode, VisualNode endNode) {
+		boolean collapsed = startNode.isCollapsed() || endNode.isCollapsed();
+		double[] p1 = { line.getStartX(), line.getStartY() };
+		double[] p2 = { line.getEndX(), line.getEndY() };
+		double distance = MathUtils.distance(p1, p2);
+		// or dy small (horizontal) and dx shorter than label??
+		if ((distance < (8 * nodeRadiusProperty.get())) | collapsed) {
+			text.visibleProperty().unbind();
+			text.setVisible(false);
+		} else {
+			text.visibleProperty().bind(line.visibleProperty());
+		}
+	}
+
 	private StructureEditable gse;
 	private VisualNode dragNode;
+
 	private void createNodeVisualisation(VisualNode n) {
 		double x = n.getX() * zoomTarget.getWidth();
 		double y = n.getY() * zoomTarget.getHeight();
@@ -711,7 +888,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 		Circle c = new Circle(x, y, nodeRadiusProperty.get());
 		c.radiusProperty().bind(nodeRadiusProperty);
 		Text text = new Text(n.uniqueId());
-		n.setSymbols(c, text);
+		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
 		c.setEffect(ds);
@@ -754,11 +931,11 @@ public class MmController implements ErrorMessageListener, Controllable {
 				dragNode = null;
 				e.consume();
 			}
-});
+		});
 		c.setOnMouseClicked(e -> {
-			if (e.getButton()==MouseButton.SECONDARY) {
-				gse = new StructureEditorfx(new SpecifiedNode(n),e); 			
-			}else
+			if (e.getButton() == MouseButton.SECONDARY) {
+				gse = new StructureEditorfx(new SpecifiedNode(n), e);
+			} else
 				setNodePropertySheet(n);
 		});
 
@@ -778,8 +955,9 @@ public class MmController implements ErrorMessageListener, Controllable {
 	}
 
 	private void setNodePropertySheet(VisualNode n) {
-		
+
 	}
+
 	private void initialisePropertySheets() {
 
 	}

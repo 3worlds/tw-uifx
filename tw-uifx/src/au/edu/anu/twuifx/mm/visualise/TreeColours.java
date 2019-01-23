@@ -9,14 +9,6 @@ import fr.cnrs.iees.twcore.constants.Configuration;
 import javafx.scene.paint.Color;
 
 public class TreeColours implements Configuration{
-	private static Set<String> labelSet = new HashSet<>();
-	static {
-		labelSet.add(N_ECOLOGY);
-		labelSet.add(N_CODESOURCE);
-		labelSet.add(N_DATAIO);
-		labelSet.add(N_EXPERIMENT);
-		labelSet.add(N_UI);		
-	}
 	private static Map<String,Color> nodeColours= new HashMap<>();
 	static {
 		nodeColours.put(N_ECOLOGY, Color.CHARTREUSE);

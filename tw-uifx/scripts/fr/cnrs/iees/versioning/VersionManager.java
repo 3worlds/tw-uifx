@@ -113,8 +113,9 @@ public class VersionManager {
 		{"fr.cnrs.iees.tw-core", "tw-core", "+"},
 		{"au.edu.anu.rscs.aot", "aot", "+"},
 		{"au.edu.anu.tw-apps", "tw-apps", "+"},
-		
+		{"au.edu.anu.rscs.aot", "qgraph", "+"},		
 		{"org.controlsfx", "controlsfx", "8.40.14"},
+	    {"org.apache.commons","commons-math", "2.+"}
 	};
 	// ============================================================================================
 	
