@@ -957,6 +957,9 @@ public class MmController implements ErrorMessageListener, Controllable {
 	private void setNodePropertySheet(VisualNode n) {
 
 	}
+	private void setAllElementsPropertySheet(VisualNode n) {
+		
+	}
 
 	private void initialisePropertySheets() {
 
