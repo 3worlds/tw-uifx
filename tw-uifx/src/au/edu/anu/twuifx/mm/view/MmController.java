@@ -46,6 +46,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -72,12 +74,14 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.math.util.MathUtils;
 import org.controlsfx.control.PropertySheet;
+import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.devenv.DevEnv;
@@ -103,6 +107,7 @@ import au.edu.anu.twuifx.mm.visualise.TreeColours;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.tree.TreeNode;
+import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.queries.base.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 
@@ -957,8 +962,39 @@ public class MmController implements ErrorMessageListener, Controllable {
 	private void setNodePropertySheet(VisualNode n) {
 
 	}
-	private void setAllElementsPropertySheet(VisualNode n) {
-		
+
+	private List<VisualNode> getNodeList() {
+		List<VisualNode> result = new LinkedList<>();
+		for (VisualNode n : visualGraph.nodes())
+			result.add(n);
+		return result;
+	}
+
+	private void buildAllElementsPropertySheet() {
+		allElementsPropertySheet.getItems().clear();
+		// sort so order is consistent
+		List<VisualNode> nodeList = getNodeList();
+		nodeList.sort((first, second) -> {
+			String s1 = first.uniqueId();
+			String s2 = second.uniqueId();
+			return s1.compareTo(s2);
+		});
+		ObservableList<Item> obsList= FXCollections.observableArrayList();
+		for (VisualNode vn: nodeList) {
+			if (!vn.isCollapsed()) {
+				String cat = vn.getCategory();
+				AotNode cn = vn.getConfigNode();
+				ObservableList<Item> obsSubList= FXCollections.observableArrayList();
+				for (String key: cn.getKeysAsSet()) {
+					if (cn.getPropertyValue(key)!=null)
+						if (model.canEdit(cn.getLabel(),key)) {
+							
+						}
+				}
+			
+			}
+		}
+
 	}
 
 	private void initialisePropertySheets() {
