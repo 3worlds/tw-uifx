@@ -987,7 +987,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 				ObservableList<Item> obsSubList= FXCollections.observableArrayList();
 				for (String key: cn.getKeysAsSet()) {
 					if (cn.getPropertyValue(key)!=null)
-						if (model.canEdit(cn.getLabel(),key)) {
+						if (model.canEdit(cn.instanceId(),key)) {
 							
 						}
 				}
