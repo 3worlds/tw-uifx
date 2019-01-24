@@ -76,7 +76,7 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 
 	@Override
 	public String getLabel() {
-		return visualNode.getLabel();
+		return visualNode.classId();
 	}
 
 	@Override

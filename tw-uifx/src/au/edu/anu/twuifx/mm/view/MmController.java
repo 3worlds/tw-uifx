@@ -819,18 +819,18 @@ public class MmController implements ErrorMessageListener, Controllable {
 		VisualNode endNode = (VisualNode) edge.endNode();
 		@SuppressWarnings("unchecked")
 		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.getEdges(Direction.OUT),
-				selectZeroOrMany(notQuery(hasTheLabel(edge.getLabel()))));
+				selectZeroOrMany(notQuery(hasTheLabel(edge.classId()))));
 
 		String newLabel = "";
 		for (VisualEdge e : edges) {
 			if (e.endNode().uniqueId().equals(endNode.uniqueId())) {
-				newLabel += e.getLabel() + "/";
+				newLabel += e.classId() + "/";
 				Text text = (Text) e.getText();
 				if (text != null)
 					text.setText("");
 			}
 		}
-		newLabel += edge.getLabel();
+		newLabel += edge.classId();
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
