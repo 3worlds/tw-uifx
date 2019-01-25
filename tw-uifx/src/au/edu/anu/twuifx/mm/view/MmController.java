@@ -103,6 +103,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
+import au.edu.anu.twuifx.mm.propertyEditors.NodeItem;
 import au.edu.anu.twuifx.mm.visualise.TreeColours;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Direction;
@@ -963,42 +964,70 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	}
 
-	private List<VisualNode> getNodeList() {
-		List<VisualNode> result = new LinkedList<>();
-		for (VisualNode n : visualGraph.nodes())
-			result.add(n);
-		return result;
-	}
+//	private List<VisualNode> getNodeList() {
+//		List<VisualNode> result = new LinkedList<>();
+//		for (VisualNode n : visualGraph.nodes())
+//			result.add(n);
+//		return result;
+//	}
 
-	private void buildAllElementsPropertySheet() {
-		allElementsPropertySheet.getItems().clear();
-		// sort so order is consistent
-		List<VisualNode> nodeList = getNodeList();
-		nodeList.sort((first, second) -> {
-			String s1 = first.uniqueId();
-			String s2 = second.uniqueId();
-			return s1.compareTo(s2);
-		});
-		ObservableList<Item> obsList= FXCollections.observableArrayList();
-		for (VisualNode vn: nodeList) {
-			if (!vn.isCollapsed()) {
-				String cat = vn.getCategory();
-				AotNode cn = vn.getConfigNode();
-				ObservableList<Item> obsSubList= FXCollections.observableArrayList();
-				for (String key: cn.getKeysAsSet()) {
-					if (cn.getPropertyValue(key)!=null)
-						if (model.canEdit(cn.instanceId(),key)) {
-							
-						}
-				}
-			
-			}
-		}
+	// Some properties are hidden - showable
+	// some are shown but not editable - editable
+   private void fillNodePropertySheet(VisualNode visualNode) {
+	   nodePropertySheet.getItems().clear();
+	   AotNode cn = visualNode.getConfigNode();
+//	   ObservableList<Item> list = getNodeItems(cn,cn.uniqueId(),null);	   
+   }
+//   private ObservableList<Item> getNodeItems(AotNode node,String category,Modelable theModel){
+//		ObservableList<Item> result = FXCollections.observableArrayList();
+//		for (String key : node.getKeysAsSet()) 
+//			if (node.getPropertyValue(key) != null)
+//				if (model.propertyEditable(node.classId(), key)) 
+//					result.add(makeItemType(key, node, canEdit, category));
+//		result.sort((first,second)->{
+//			return first.getName().compareTo(second.getName());
+//		});
+//		
+//		return result;
+//   }
+//	private void fillGraphPropertySheet() {
+//		allElementsPropertySheet.getItems().clear();
+//		// sort so order is consistent
+//		List<VisualNode> nodeList = getNodeList();
+//		nodeList.sort((first, second) -> {
+//			return first.uniqueId().compareTo(second.uniqueId());
+//		});
+//		ObservableList<Item> obsList = FXCollections.observableArrayList();
+//		for (VisualNode vn : nodeList) {
+//			if (!vn.isCollapsed()) {
+//				String cat = vn.getCategory();
+//				AotNode cn = vn.getConfigNode();
+//				ObservableList<Item> obsSubList = getNodeItems(cn,cat,true);
+//				obsList.addAll(obsSubList);
+//			}
+//		}
+//		allElementsPropertySheet.getItems().setAll(obsList);
+//	}
 
-	}
+//	private Item makeItemType(String key, AotNode n, boolean editable, boolean showable, String category) {
+//		Object value = n.getPropertyValue(key);
+//		if (value instanceof FileType) {
+//			FileType ft = (FileType) value;
+//			FileTypeItem fti = new FileTypeItem(key, n, true, category, new ModelCheck(this));
+//			fti.setExtensions(ft.getExtensions());
+//			return fti;
+//		} else if (value instanceof StatisticalAggregatesSet)
+//			return new StatsTypeItem(key, n, true, category, new ModelCheck(this));
+//		else if (value instanceof DateTimeType) {
+//			return new DateTimeTypeItem(key, n, true, category, new ModelCheck(this));
+//		} else if (value instanceof StringTable) {
+//			return new StringTableTypeItem(key, n, true, category, new ModelCheck(this));
+//		}
+//		return new NodeItem(key, n, canEdit, category, model);
+//	}
 
 	private void initialisePropertySheets() {
-
+//		 fillGraphPropertySheet();
 	}
 
 	private Cursor setCursor(Cursor cursor) {
