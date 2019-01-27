@@ -34,7 +34,10 @@ import java.util.List;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import fr.cnrs.iees.Identifiable;
+import fr.cnrs.iees.TwIdentity;
 import fr.cnrs.iees.twcore.constants.Configuration;
 import javafx.util.Pair;
 
@@ -82,7 +85,8 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	@Override
 	public List<VisualNode> graphRoots() {
 		List<VisualNode> result = new ArrayList<>();
-		for (VisualNode root : visualNode.treeNodeFactory().roots())
+		VisualGraph vg = (VisualGraph) visualNode.treeNodeFactory();
+		for (VisualNode root : vg.roots())
 			result.add(root);
 		return result;
 	}
@@ -162,8 +166,9 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent,label,name);
 //		configChild.setLabel(label);
 //		configChild.setName(name);
-		
-		VisualNode  childVisualNode = visualNode.nodeFactory().makeTreeNode(visualNode);
+//		Identifiable id = new TwIdentity(label,name);
+		VisualGraph vg = (VisualGraph) visualNode.treeNodeFactory();
+		VisualNode  childVisualNode =vg.makeTreeNode(visualNode);
 		// TODO link the two
 		
 		return childVisualNode;
