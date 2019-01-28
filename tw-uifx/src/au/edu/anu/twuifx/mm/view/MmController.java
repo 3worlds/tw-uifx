@@ -104,6 +104,7 @@ import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.visualise.GraphVisualisablefx;
 import au.edu.anu.twuifx.mm.visualise.TreeColours;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Direction;
@@ -709,9 +710,11 @@ public class MmController implements ErrorMessageListener, Controllable {
 		// setButtons(have project);
 	}
 
+	private GraphVisualisablefx visualiser;
 	private void initialiseGraphView() {
 		zoomTarget.setPrefHeight(getDrawingHeight());
 		zoomTarget.setPrefWidth(getDrawingWidth());
+		visualiser.initialiseView(visualGraph);
 
 		for (VisualNode n : visualGraph.nodes()) {
 			createNodeVisualisation(n);
