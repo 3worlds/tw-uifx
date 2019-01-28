@@ -35,38 +35,41 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
+import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.Modelable;
 import au.edu.anu.twcore.specificationCheck.Checkable;
 import javafx.beans.value.ObservableValue;
 
-public class NodeItem implements Item {
-	protected AotNode n;
+public class SimplePropertyItem implements Item {
+	protected AotNode node;
 	protected String key;
-	protected boolean canEdit;
+	protected boolean isEditable;
 	protected String category;
 	protected Checkable checker;
+	private String description;
 
-	public NodeItem(String key, AotNode n, boolean canEdit, String category, Checkable checker) {
-		this.n = n;
+	public SimplePropertyItem(String key, AotNode n, boolean canEdit, String category, String description,Checkable checker) {
+		this.node = n;
 		this.key = key;
-		this.canEdit = canEdit;
+		this.isEditable = canEdit;
 		this.category = category;
 		this.checker = checker;
+		this.description=description;
 	}
 
-	public AotNode getNode() {
-		return n;
-	}
+//	public AotNode getNode() {
+//		return node;
+//	}
 
 	@Override
 	public boolean isEditable() {
-		return canEdit;
+		return isEditable;
 	}
 
 	@Override
 	public Class<?> getType() {
-		return n.getPropertyClass(key);
+		return node.getPropertyClass(key);
 	}
 
 	@Override
@@ -76,25 +79,24 @@ public class NodeItem implements Item {
 
 	@Override
 	public String getName() {
-		return n.uniqueId()+"#"+key;
+		return node.uniqueId() + "#" + key;
 	}
 
 	@Override
 	public String getDescription() {
-		return "";
+		return description;
 	}
 
 	@Override
 	public Object getValue() {
-		return n.getPropertyValue(key);
+		return node.getPropertyValue(key);
 	}
 
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
-//		System.out.println(key + "["+oldValue+","+newValue+"]");
-		if (!(oldValue.toString().compareTo(newValue.toString())==0)){
-			n.addProperty(key, newValue);
+		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
+			node.addProperty(key, newValue);
 			checker.validateGraph();
 			GraphState.isChanged(true);
 		}
@@ -104,5 +106,4 @@ public class NodeItem implements Item {
 	public Optional<ObservableValue<? extends Object>> getObservableValue() {
 		return Optional.empty();
 	}
-
 }

@@ -37,7 +37,8 @@ import org.controlsfx.property.editor.PropertyEditor;
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twcore.specificationCheck.Checkable;
-import au.edu.anu.twuifx.mm.propertyEditors.NodeItem;
+import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import fr.cnrs.iees.twcore.constants.FileType;
 import javafx.beans.value.ObservableValue;
 import javafx.stage.FileChooser;
 
@@ -49,12 +50,16 @@ import javafx.stage.FileChooser;
 // TODO Problem how to avoid polluting tw-apps or tw-core with FileChooser which
 // is fx stage specific
 
-public class FileTypeItem extends NodeItem {
+public class FileTypeItem extends SimplePropertyItem {
 
 	private List<FileChooser.ExtensionFilter> exts;
+	
+	private FileType fileType;
 
-	public FileTypeItem(String key, AotNode n, boolean canEdit, String category, Checkable checker) {
-		super(key, n, canEdit, category, checker);
+	public FileTypeItem(String key, AotNode n, boolean canEdit, String category, String description,
+			Checkable checker) {
+		super(key, n, canEdit, category, description, checker);
+		fileType= (FileType) node.getPropertyValue(key);
 	}
 
 	public void setExtensions(List<FileChooser.ExtensionFilter> exts) {
@@ -72,16 +77,15 @@ public class FileTypeItem extends NodeItem {
 
 	@Override
 	public Object getValue() {
-		FileType ft = (FileType) n.getPropertyValue(key);
-		return ft.getRelativePath();
+		//FileType ft = (FileType) node.getPropertyValue(key);
+		return fileType.getRelativePath();
 	}
 
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
 		if (!oldValue.toString().equals(newValue.toString())) {
-			FileType ft = (FileType) n.getPropertyValue(key);
-			ft.setRelativePath((String) newValue);
+			fileType.setRelativePath((String) newValue);
 			GraphState.isChanged(true);
 			checker.validateGraph();
 		}

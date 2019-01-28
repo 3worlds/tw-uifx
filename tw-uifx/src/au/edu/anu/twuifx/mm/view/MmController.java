@@ -103,7 +103,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
-import au.edu.anu.twuifx.mm.propertyEditors.NodeItem;
+import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.visualise.TreeColours;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Direction;
@@ -986,7 +986,8 @@ public class MmController implements ErrorMessageListener, Controllable {
 			if (node.getPropertyValue(key) != null) {
 				boolean editable = model.propertyEditable(node.classId(), key);
 				if (editable || showNonEditable) {
-					result.add(makeItemType(key, node, editable, category));
+					String propertyDesciption = "";// TODO: Property description should be from the archetype?
+					result.add(makeItemType(key, node, editable, category,propertyDesciption));
 				}
 			}
 		result.sort((first, second) -> {
@@ -1016,7 +1017,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 		allElementsPropertySheet.getItems().setAll(obsList);
 	}
 
-	private Item makeItemType(String key, AotNode n, boolean editable, String category) {
+	private Item makeItemType(String key, AotNode n, boolean editable, String category,String description) {
 		Object value = n.getPropertyValue(key);
 		// TODO other Item types to come...
 		// if (value instanceof FileType) {
@@ -1032,7 +1033,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 		// } else if (value instanceof StringTable) {
 		// return new StringTableTypeItem(key, n, true, category, new ModelCheck(this));
 		// }
-		return new NodeItem(key, n, editable, category, model);
+		return new SimplePropertyItem(key, n, editable, category,description, model);
 	}
 
 	private void initialisePropertySheets() {
