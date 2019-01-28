@@ -167,8 +167,8 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 //		configChild.setLabel(label);
 //		configChild.setName(name);
 //		Identifiable id = new TwIdentity(label,name);
-		VisualGraph vg = (VisualGraph) visualNode.treeNodeFactory();
-		VisualNode  childVisualNode =vg.makeTreeNode(visualNode);
+//		VisualGraph vg =  visualNode.treeNodeFactory();
+		VisualNode  childVisualNode =(VisualNode) visualNode.treeNodeFactory().makeTreeNode(visualNode);
 		// TODO link the two
 		
 		return childVisualNode;
