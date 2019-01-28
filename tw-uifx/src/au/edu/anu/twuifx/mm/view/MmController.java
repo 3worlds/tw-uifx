@@ -964,70 +964,79 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	}
 
-//	private List<VisualNode> getNodeList() {
-//		List<VisualNode> result = new LinkedList<>();
-//		for (VisualNode n : visualGraph.nodes())
-//			result.add(n);
-//		return result;
-//	}
+	private List<VisualNode> getNodeList() {
+		List<VisualNode> result = new LinkedList<>();
+		for (VisualNode n : visualGraph.nodes())
+			result.add(n);
+		return result;
+	}
 
-	// Some properties are hidden - showable
-	// some are shown but not editable - editable
-   private void fillNodePropertySheet(VisualNode visualNode) {
-	   nodePropertySheet.getItems().clear();
-	   AotNode cn = visualNode.getConfigNode();
-//	   ObservableList<Item> list = getNodeItems(cn,cn.uniqueId(),null);	   
-   }
-//   private ObservableList<Item> getNodeItems(AotNode node,String category,Modelable theModel){
-//		ObservableList<Item> result = FXCollections.observableArrayList();
-//		for (String key : node.getKeysAsSet()) 
-//			if (node.getPropertyValue(key) != null)
-//				if (model.propertyEditable(node.classId(), key)) 
-//					result.add(makeItemType(key, node, canEdit, category));
-//		result.sort((first,second)->{
-//			return first.getName().compareTo(second.getName());
-//		});
-//		
-//		return result;
-//   }
-//	private void fillGraphPropertySheet() {
-//		allElementsPropertySheet.getItems().clear();
-//		// sort so order is consistent
-//		List<VisualNode> nodeList = getNodeList();
-//		nodeList.sort((first, second) -> {
-//			return first.uniqueId().compareTo(second.uniqueId());
-//		});
-//		ObservableList<Item> obsList = FXCollections.observableArrayList();
-//		for (VisualNode vn : nodeList) {
-//			if (!vn.isCollapsed()) {
-//				String cat = vn.getCategory();
-//				AotNode cn = vn.getConfigNode();
-//				ObservableList<Item> obsSubList = getNodeItems(cn,cat,true);
-//				obsList.addAll(obsSubList);
-//			}
-//		}
-//		allElementsPropertySheet.getItems().setAll(obsList);
-//	}
+	private void fillNodePropertySheet(VisualNode visualNode) {
+		nodePropertySheet.getItems().clear();
+		AotNode cn = visualNode.getConfigNode();
+		boolean showNonEditables = true;
+		ObservableList<Item> list = getNodeItems(cn,cn.uniqueId(),showNonEditables);
+		nodePropertySheet.getItems().setAll(list);
+	}
 
-//	private Item makeItemType(String key, AotNode n, boolean editable, boolean showable, String category) {
-//		Object value = n.getPropertyValue(key);
-//		if (value instanceof FileType) {
-//			FileType ft = (FileType) value;
-//			FileTypeItem fti = new FileTypeItem(key, n, true, category, new ModelCheck(this));
-//			fti.setExtensions(ft.getExtensions());
-//			return fti;
-//		} else if (value instanceof StatisticalAggregatesSet)
-//			return new StatsTypeItem(key, n, true, category, new ModelCheck(this));
-//		else if (value instanceof DateTimeType) {
-//			return new DateTimeTypeItem(key, n, true, category, new ModelCheck(this));
-//		} else if (value instanceof StringTable) {
-//			return new StringTableTypeItem(key, n, true, category, new ModelCheck(this));
-//		}
-//		return new NodeItem(key, n, canEdit, category, model);
-//	}
+	private ObservableList<Item> getNodeItems(AotNode node, String category, boolean showNonEditable) {
+
+		ObservableList<Item> result = FXCollections.observableArrayList();
+		for (String key : node.getKeysAsSet())
+			if (node.getPropertyValue(key) != null) {
+				boolean editable = model.propertyEditable(node.classId(), key);
+				if (editable || showNonEditable) {
+					result.add(makeItemType(key, node, editable, category));
+				}
+			}
+		result.sort((first, second) -> {
+			return first.getName().compareTo(second.getName());
+		});
+		return result;
+	}
+
+	private void fillGraphPropertySheet() {
+		allElementsPropertySheet.getItems().clear();
+		// sort so order is consistent
+		List<VisualNode> nodeList = getNodeList();
+		nodeList.sort((first, second) -> {
+			return first.uniqueId().compareTo(second.uniqueId());
+		});
+		ObservableList<Item> obsList = FXCollections.observableArrayList();
+		boolean showNonEditables = false;
+		for (VisualNode vn : nodeList) {
+			// Hide clutter by not showing collapsed trees;
+			if (!vn.isCollapsed()) {
+				String cat = vn.getCategory();
+				AotNode cn = vn.getConfigNode();
+				ObservableList<Item> obsSubList = getNodeItems(cn, cat, showNonEditables);
+				obsList.addAll(obsSubList);
+			}
+		}
+		allElementsPropertySheet.getItems().setAll(obsList);
+	}
+
+	private Item makeItemType(String key, AotNode n, boolean editable, String category) {
+		Object value = n.getPropertyValue(key);
+		// TODO other Item types to come...
+		// if (value instanceof FileType) {
+		// FileType ft = (FileType) value;
+		// FileTypeItem fti = new FileTypeItem(key, n, true, category, new
+		// ModelCheck(this));
+		// fti.setExtensions(ft.getExtensions());
+		// return fti;
+		// } else if (value instanceof StatisticalAggregatesSet)
+		// return new StatsTypeItem(key, n, true, category, new ModelCheck(this));
+		// else if (value instanceof DateTimeType) {
+		// return new DateTimeTypeItem(key, n, true, category, new ModelCheck(this));
+		// } else if (value instanceof StringTable) {
+		// return new StringTableTypeItem(key, n, true, category, new ModelCheck(this));
+		// }
+		return new NodeItem(key, n, editable, category, model);
+	}
 
 	private void initialisePropertySheets() {
-//		 fillGraphPropertySheet();
+		fillGraphPropertySheet();
 	}
 
 	private Cursor setCursor(Cursor cursor) {
