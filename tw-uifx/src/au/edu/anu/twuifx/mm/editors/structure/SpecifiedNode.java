@@ -34,10 +34,7 @@ import java.util.List;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
-import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import fr.cnrs.iees.Identifiable;
-import fr.cnrs.iees.TwIdentity;
 import fr.cnrs.iees.twcore.constants.Configuration;
 import javafx.util.Pair;
 
@@ -79,6 +76,7 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 
 	@Override
 	public String getLabel() {
+//		return visualNode.classId();
 		return visualNode.classId();
 	}
 
