@@ -30,27 +30,47 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
+import static au.edu.anu.rscs.aot.queries.CoreQueries.hasTheLabel;
+import static au.edu.anu.rscs.aot.queries.CoreQueries.notQuery;
+import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrMany;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math.util.MathUtils;
+
+import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.GraphState;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
+import fr.cnrs.iees.graph.Direction;
+import fr.cnrs.iees.graph.Edge;
+import fr.cnrs.iees.graph.TreeNode;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Control;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 /**
  * Author Ian Davies
@@ -59,17 +79,25 @@ import javafx.scene.text.Text;
  */
 public final class GraphVisualiser implements GraphVisualisablefx {
 
-	private VisualGraph visualGraph;
-	private Pane pane;
-	private IntegerProperty nodeRadius;
-	private BooleanProperty showTreeLine;
-	private BooleanProperty showGraphLine;
-	private DropShadow ds;
-	private ObjectProperty<Font> font;
-	private Color hoverColor;
+	private final VisualGraph visualGraph;
+	private final Pane pane;
+	private final IntegerProperty nodeRadius;
+	private final BooleanProperty showTreeLine;
+	private final BooleanProperty showGraphLine;
+	private final DropShadow ds;
+	private final ObjectProperty<Font> font;
+	// these could all be properties and therefore modifiable from the GUI
+	private final Color hoverColor;
+	private final Color treeEdgeColor;
+	private final Color graphEdgeColor;
+	private static final Double animateDuration = 1000.0;
 
-	public GraphVisualiser(VisualGraph visualGraph, Pane pane, IntegerProperty nodeRadius, BooleanProperty showTreeLine,
-			BooleanProperty showGraphLine, ObjectProperty<Font> font) {
+	public GraphVisualiser(VisualGraph visualGraph, //
+			Pane pane, //
+			IntegerProperty nodeRadius, //
+			BooleanProperty showTreeLine, //
+			BooleanProperty showGraphLine, //
+			ObjectProperty<Font> font) {
 		this.visualGraph = visualGraph;
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
@@ -78,6 +106,9 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		this.font = font;
 		ds = new DropShadow();
 		hoverColor = Color.RED;
+		treeEdgeColor = Color.GREEN;
+		graphEdgeColor = Color.GRAY;
+
 	}
 
 	@Override
@@ -119,7 +150,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 
 		Circle c = new Circle(x, y, nodeRadius.get());
 		c.radiusProperty().bind(nodeRadius);
-		Text text = new Text(n.uniqueId());
+		Text text = new Text(n.id());
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
@@ -168,7 +199,8 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 			if (e.getButton() == MouseButton.SECONDARY) {
 				gse = new StructureEditorfx(new SpecifiedNode(n), e);
 			} else
-				setNodePropertySheet(n);
+				;
+			// TODO setNodePropertySheet(n);
 		});
 
 		text.fontProperty().bind(font);
@@ -184,6 +216,164 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		 */
 		c.toFront();
 		text.toBack();
+	}
+
+	private void createTreeLines(VisualNode n, BooleanProperty show) {
+		// each node has a line connected to its parent
+		VisualNode parent = n.getParent();
+		if (parent != null) {
+			Circle parentCircle = (Circle) parent.getSymbol();
+			Circle childCircle = (Circle) n.getSymbol();
+			Line line = new Line();
+			n.setParentLine(line);
+
+			// bindings
+			// TODO can we have a colour property?
+			// line.strokeProperty().bind(treeEdgeColourProperty());
+			line.setStroke(treeEdgeColor);
+			line.startXProperty().bind(parentCircle.centerXProperty());
+			line.startYProperty().bind(parentCircle.centerYProperty());
+
+			line.endXProperty().bind(childCircle.centerXProperty());
+			line.endYProperty().bind(childCircle.centerYProperty());
+
+			line.visibleProperty().bind(show);
+
+			pane.getChildren().add(line);
+			line.toBack();
+
+		}
+	}
+
+	// TODO used for editing??? later
+	private void createGraphLines(VisualNode n, BooleanProperty show) {
+		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(n.getEdges(Direction.OUT));
+		for (VisualEdge edge : edges) {
+			createGraphLine(edge, show);
+		}
+	}
+
+	private String getEdgeLabel(Edge e) {
+		return e.edgeFactory().edgeClassName(e.getClass());
+
+	}
+
+	private void createGraphLine(VisualEdge edge, BooleanProperty show) {
+		VisualNode startNode = (VisualNode) edge.startNode();
+		VisualNode endNode = (VisualNode) edge.endNode();
+		@SuppressWarnings("unchecked")
+		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.getEdges(Direction.OUT),
+				selectZeroOrMany(notQuery(hasTheLabel(getEdgeLabel(edge)))));
+		/*
+		 * edge labels of identical lines will obscure each other. Therefore we have to
+		 * pull some tricks to concatenate all the info in one text object and set the
+		 * others to ""
+		 */
+
+		String newLabel = "";
+		for (VisualEdge e : edges) {
+			if (e.endNode().id().equals(endNode.id())) {
+				newLabel += getEdgeLabel(e) + "/";
+				Text text = (Text) e.getText();
+				if (text != null)
+					text.setText("");
+			}
+		}
+		newLabel += getEdgeLabel(edge);
+
+		Circle fromCircle = (Circle) startNode.getSymbol();
+		Circle toCircle = (Circle) endNode.getSymbol();
+		Line line = new Line();
+		Text text = new Text(newLabel);
+		text.fontProperty().bind(font);
+		;
+		edge.setVisualElements(line, text);
+		// TODO use property here
+		line.setStroke(graphEdgeColor);
+
+		// Bindings
+		line.startXProperty().bind(fromCircle.centerXProperty());
+		line.startYProperty().bind(fromCircle.centerYProperty());
+
+		line.endXProperty().bind(toCircle.centerXProperty());
+		line.endYProperty().bind(toCircle.centerYProperty());
+
+		line.visibleProperty().bind(show);
+
+		text.xProperty().bind(fromCircle.centerXProperty().add(toCircle.centerXProperty()).divide(2.0));
+		text.yProperty().bind(fromCircle.centerYProperty().add(toCircle.centerYProperty()).divide(2.0));
+		text.visibleProperty().bind(line.visibleProperty());
+
+		// possible change listener but does not fully work
+		text.xProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				textPropertyChange(line, text, startNode, endNode);
+
+			}
+		});
+		text.yProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				textPropertyChange(line, text, startNode, endNode);
+
+			}
+		});
+		pane.getChildren().addAll(line, text);
+		line.toBack();
+
+	}
+
+	protected void textPropertyChange(Line line, Text text, VisualNode startNode, VisualNode endNode) {
+		boolean collapsed = startNode.isCollapsed() || endNode.isCollapsed();
+		double[] p1 = { line.getStartX(), line.getStartY() };
+		double[] p2 = { line.getEndX(), line.getEndY() };
+		double distance = MathUtils.distance(p1, p2);
+		// or dy small (horizontal) and dx shorter than label??
+		if ((distance < (8 * nodeRadius.get())) | collapsed) {
+			text.visibleProperty().unbind();
+			text.setVisible(false);
+		} else {
+			text.visibleProperty().bind(line.visibleProperty());
+		}
+	}
+
+	private static void collapseTree(VisualNode parent) {
+		Circle circle = (Circle) parent.getSymbol();
+		DoubleProperty xp = circle.centerXProperty();
+		DoubleProperty yp = circle.centerYProperty();
+		for (TreeNode child : parent.getChildren())
+			collapse(child, xp, yp);
+	}
+
+	private static void collapse(TreeNode node, DoubleProperty xp, DoubleProperty yp) {
+		VisualNode vn = (VisualNode) node;
+		setCollapseBindings(vn, xp, yp);
+		vn.setCollapse(true);
+		for (TreeNode child : node.getChildren())
+			collapse(child, xp, yp);
+	}
+
+	private static void setCollapseBindings(VisualNode node, DoubleProperty xp, DoubleProperty yp) {
+		Circle circle = (Circle) node.getSymbol();
+		// Some subtrees may already be collapsed
+		if (node.isCollapsed()) {
+			circle.centerXProperty().unbind();
+			circle.centerYProperty().unbind();
+		}
+		KeyValue endX = new KeyValue(circle.centerXProperty(), xp.getValue(), Interpolator.EASE_IN);
+		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.EASE_IN);
+		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
+		Timeline timeline = new Timeline();
+		timeline.getKeyFrames().add(keyFrame);
+		timeline.setOnFinished((e) -> {
+			circle.setVisible(false);
+			circle.centerXProperty().bind(xp);
+			circle.centerYProperty().bind(yp);
+		});
+		timeline.play();
 	}
 
 }
