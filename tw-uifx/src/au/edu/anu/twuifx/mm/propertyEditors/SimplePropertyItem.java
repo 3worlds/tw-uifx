@@ -79,7 +79,7 @@ public class SimplePropertyItem implements Item {
 
 	@Override
 	public String getName() {
-		return node.uniqueId() + "#" + key;
+		return node.id() + "#" + key;
 	}
 
 	@Override

@@ -36,8 +36,8 @@ import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import fr.cnrs.iees.Identifiable;
-import fr.cnrs.iees.TwIdentity;
+import fr.cnrs.iees.identity.Identity;
+import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.Configuration;
 import javafx.util.Pair;
 
@@ -79,7 +79,7 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 
 	@Override
 	public String getLabel() {
-		return visualNode.classId();
+		return visualNode.nodeFactory().nodeClassName(visualNode.getClass());
 	}
 
 	@Override
@@ -115,36 +115,47 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 		return false;
 	}
 
-	// This can go in omghtk in some form;
 	@Override
 	public String getUniqueName(String label, String name) {
+		// TODO wait and see what happens. Here we need a set of strings of instanceIds.
+		// The rest should be done by UniqueString(...)
+		// E.g You can't have two "Processes or Records or Tables with the same labels
+		// and names - it would be a mess. For a start,
+		// generated classes with have name collisions.
+		// Anyway how would the user know what they were editing if nodes had identical
+		// no matter what Identity impl was used.
+		//
 		AotNode n = getConfigNode();
-		Iterable<AotNode> nodes = n.nodeFactory().findNodesByReference(label+AotNode.LABEL_NAME_SEPARATOR+name);
+		Iterable<AotNode> nodes = n.nodeFactory()
+				.findNodesByReference(label + PairIdentity.LABEL_NAME_SEPARATOR + name);
 		if (!nodes.iterator().hasNext())
-				return name;
+			return name;
 		else {
-			Pair<String,Integer> nameInstance = parseName(name);
-			int count = nameInstance.getValue()+1;
-			name = nameInstance.getKey()+count;
-			return getUniqueName(label,name);
+			Pair<String, Integer> nameInstance = parseName(name);
+			int count = nameInstance.getValue() + 1;
+			name = nameInstance.getKey() + count;
+			return getUniqueName(label, name);
 		}
 	}
-	private static Pair<String,Integer> parseName(String name){
+
+	@Deprecated
+	private static Pair<String, Integer> parseName(String name) {
 		int idx = getCountStartIndex(name);
 		// all numbers or no numbers
-		//no numbers
-		if (idx<0)
-			return new Pair<>(name,0);
+		// no numbers
+		if (idx < 0)
+			return new Pair<>(name, 0);
 		// all numbers
-		if (idx==0)
-			return new Pair<String, Integer>(name+"_", 0);
+		if (idx == 0)
+			return new Pair<String, Integer>(name + "_", 0);
 		// ends with some numbers
 		String key = name.substring(0, idx);
 		String sCount = name.substring(idx, name.length());
 		int count = Integer.parseInt(sCount);
 		return new Pair<>(key, count);
 	}
-	
+
+	@Deprecated
 	private static int getCountStartIndex(String name) {
 		int result = -1;
 		for (int i = name.length() - 1; i >= 0; i--) {
@@ -163,16 +174,15 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	@Override
 	public VisualNode newChild(AotNode specs, String label, String name) {
 		AotNode configParent = getConfigNode();
-		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent,label,name);
-//		configChild.setLabel(label);
-//		configChild.setName(name);
-//		Identifiable id = new TwIdentity(label,name);
-//		VisualGraph vg =  visualNode.treeNodeFactory();
-		VisualNode  childVisualNode =(VisualNode) visualNode.treeNodeFactory().makeTreeNode(visualNode);
+		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent, label, name);
+		// configChild.setLabel(label);
+		// configChild.setName(name);
+		// Identifiable id = new TwIdentity(label,name);
+		// VisualGraph vg = visualNode.treeNodeFactory();
+		VisualNode childVisualNode = (VisualNode) visualNode.treeNodeFactory().makeTreeNode(visualNode);
 		// TODO link the two
-		
+
 		return childVisualNode;
 	}
-
 
 }

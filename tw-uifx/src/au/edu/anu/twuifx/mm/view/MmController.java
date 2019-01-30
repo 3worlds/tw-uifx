@@ -108,7 +108,9 @@ import au.edu.anu.twuifx.mm.visualise.GraphVisualisablefx;
 import au.edu.anu.twuifx.mm.visualise.TreeColours;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Direction;
-import fr.cnrs.iees.tree.TreeNode;
+import fr.cnrs.iees.graph.Edge;
+import fr.cnrs.iees.graph.GraphElement;
+import fr.cnrs.iees.graph.TreeNode;
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.queries.base.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
@@ -818,23 +820,27 @@ public class MmController implements ErrorMessageListener, Controllable {
 	 */
 	private static final Color graphEdgeColor = Color.GRAY;
 
+	private String getEdgeLabel(Edge e) {
+		return e.edgeFactory().edgeClassName(e.getClass());
+
+	}
 	private void createGraphLine(VisualEdge edge, BooleanProperty show) {
 		VisualNode startNode = (VisualNode) edge.startNode();
 		VisualNode endNode = (VisualNode) edge.endNode();
 		@SuppressWarnings("unchecked")
 		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.getEdges(Direction.OUT),
-				selectZeroOrMany(notQuery(hasTheLabel(edge.classId()))));
+				selectZeroOrMany(notQuery(hasTheLabel(getEdgeLabel(edge)))));
 
 		String newLabel = "";
 		for (VisualEdge e : edges) {
-			if (e.endNode().uniqueId().equals(endNode.uniqueId())) {
-				newLabel += e.classId() + "/";
+			if (e.endNode().id().equals(endNode.id())) {
+				newLabel += getEdgeLabel(e) + "/";
 				Text text = (Text) e.getText();
 				if (text != null)
 					text.setText("");
 			}
 		}
-		newLabel += edge.classId();
+		newLabel += getEdgeLabel(edge);
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
@@ -896,7 +902,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 		Circle c = new Circle(x, y, nodeRadiusProperty.get());
 		c.radiusProperty().bind(nodeRadiusProperty);
-		Text text = new Text(n.uniqueId());
+		Text text = new Text(n.id());
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
@@ -978,7 +984,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 		nodePropertySheet.getItems().clear();
 		AotNode cn = visualNode.getConfigNode();
 		boolean showNonEditables = true;
-		ObservableList<Item> list = getNodeItems(cn,cn.uniqueId(),showNonEditables);
+		ObservableList<Item> list = getNodeItems(cn,cn.id(),showNonEditables);
 		nodePropertySheet.getItems().setAll(list);
 	}
 
@@ -1004,7 +1010,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 		// sort so order is consistent
 		List<VisualNode> nodeList = getNodeList();
 		nodeList.sort((first, second) -> {
-			return first.uniqueId().compareTo(second.uniqueId());
+			return first.id().compareTo(second.id());
 		});
 		ObservableList<Item> obsList = FXCollections.observableArrayList();
 		boolean showNonEditables = false;
