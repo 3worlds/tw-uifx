@@ -993,7 +993,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 		ObservableList<Item> result = FXCollections.observableArrayList();
 		for (String key : node.getKeysAsSet())
 			if (node.getPropertyValue(key) != null) {
-				boolean editable = model.propertyEditable(node.classId(), key);
+				boolean editable = model.propertyEditable(node.getLabel(), key);
 				if (editable || showNonEditable) {
 					String propertyDesciption = "";// TODO: Property description should be from the archetype?
 					result.add(makeItemType(key, node, editable, category,propertyDesciption));
