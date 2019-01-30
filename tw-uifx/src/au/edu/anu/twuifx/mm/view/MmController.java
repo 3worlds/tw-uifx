@@ -40,8 +40,10 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -105,7 +107,9 @@ import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualisablefx;
+import au.edu.anu.twuifx.mm.visualise.GraphVisualiser;
 import au.edu.anu.twuifx.mm.visualise.TreeColours;
+import au.edu.anu.twuifx.mm.visualise.font;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
@@ -231,6 +235,10 @@ public class MmController implements ErrorMessageListener, Controllable {
 	public void setFontSize(int size) {
 		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 20, size));
 		font = Font.font("Verdana", size);
+		ObjectProperty<Font> fontp = new SimpleObjectProperty<Font>(font);
+		fontp.get().font(size);
+
+
 		fontSize = size;
 	}
 
@@ -691,6 +699,8 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	@Override
 	public void onProjectClosing() {
+		visualiser.close();
+		visualiser = null;
 		// clearGraphView(visualGraph);
 		// clearPropertySheets();
 		// setButtons(no project);
@@ -706,36 +716,14 @@ public class MmController implements ErrorMessageListener, Controllable {
 		this.visualGraph = visualGraph;
 		Cursor oldCursor = setWaitCursor();
 		getPreferences();
-		initialiseGraphView();
+		visualiser = new GraphVisualiser(visualGraph,zoomTarget,nodeRadiusProperty);
+		visualiser.initialiseView();
 		initialisePropertySheets();
 		setCursor(oldCursor);
 		// setButtons(have project);
 	}
 
 	private GraphVisualisablefx visualiser;
-	private void initialiseGraphView() {
-		zoomTarget.setPrefHeight(getDrawingHeight());
-		zoomTarget.setPrefWidth(getDrawingWidth());
-		visualiser.initialiseView(visualGraph);
-
-		for (VisualNode n : visualGraph.nodes()) {
-			createNodeVisualisation(n);
-		}
-		BooleanProperty showTreeLines = btnChildLinks.selectedProperty();
-		BooleanProperty showGraphLines = btnXLinks.selectedProperty();
-		List<VisualNode> collapsedParents = new ArrayList<>();
-
-		for (VisualNode n : visualGraph.nodes()) {
-			createTreeLines(n, showTreeLines);
-			createGraphLines(n, showGraphLines);
-			if (n.isCollapsedParent())
-				collapsedParents.add(n);
-		}
-		for (VisualNode n : collapsedParents)
-			collapseTree(n);
-
-		zoomTarget.setPrefHeight(Control.USE_COMPUTED_SIZE);
-		zoomTarget.setPrefWidth(Control.USE_COMPUTED_SIZE);
 	}
 
 	private static void collapseTree(VisualNode parent) {

@@ -33,6 +33,8 @@ package au.edu.anu.twuifx.mm.visualise;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 
 public interface GraphVisualisablefx {
-	public void initialiseView(VisualGraph visualGraph);
+	public void initialiseView();
+
+	public void close();
 
 }
