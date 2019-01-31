@@ -30,10 +30,12 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
-import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 
 public interface GraphVisualisablefx {
 	public void initialiseView();
+	
+	public void onNewNode(VisualNode node);
 
 	public void close();
 

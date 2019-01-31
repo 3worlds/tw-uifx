@@ -33,6 +33,7 @@ import java.util.List;
 import org.apache.commons.text.WordUtils;
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.mm.Controllable;
 import au.edu.anu.twapps.mm.GraphState;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -51,9 +52,11 @@ import javafx.util.Pair;
 public class StructureEditorfx extends StructureEditorAdapter {
 
 	private ContextMenu cm;
+	private Controllable controller;
 
-	public StructureEditorfx(SpecifiableNode n, MouseEvent event) {
+	public StructureEditorfx(SpecifiableNode n, MouseEvent event,Controllable controller) {
 		super(n);
+		this.controller = controller;
 		cm = new ContextMenu();
 		buildgui();
 		cm.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
@@ -146,7 +149,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Iterable<AotNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
 			
 			// build the properties
-			
+			controller.onNewNode(newChild);
 			GraphState.isChanged(true);
 		});		
 	}
