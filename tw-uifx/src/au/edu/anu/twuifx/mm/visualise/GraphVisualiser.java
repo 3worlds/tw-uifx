@@ -201,7 +201,8 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
-				gse = new StructureEditorfx(new SpecifiedNode(n), e);
+				
+				gse = new StructureEditorfx(new SpecifiedNode(n), e,controller);
 			} else
 				controller.onNodeSelected(n);
 			
@@ -378,6 +379,32 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 			circle.centerYProperty().bind(yp);
 		});
 		timeline.play();
+	}
+
+	@Override
+	public void onNewNode(VisualNode node) {
+		// create all the visual stuff
+		// TODO Auto-generated method stub
+		// set the x,y
+		// if (placing) {
+		// Platform.runLater(() -> {
+		// AotNode n = popupEditor.locate(event, pane.getWidth(), pane.getHeight());
+		// VisualNode.insertCircle(n, controller.childLinksProperty(),
+		// controller.xLinksProperty(), pane, this);
+		// // add parent edge. There must be one in this circumstance
+		// AotEdge inEdge = (AotEdge) get(n.getEdges(Direction.IN),
+		// selectOne(hasTheLabel(Trees.CHILD_LABEL)));
+		// VisualNode.createChildLine(inEdge, controller.childLinksProperty(), pane);
+		// popupEditor = null;
+		// placing = false;
+		// pane.setCursor(Cursor.DEFAULT);
+		// reBuildAllElementsPropertySheet();
+		// checkGraph();
+		// });
+		// }
+		//
+
+		
 	}
 
 }

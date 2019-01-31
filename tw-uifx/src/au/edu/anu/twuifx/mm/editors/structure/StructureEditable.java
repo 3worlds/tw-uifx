@@ -40,14 +40,6 @@ import javafx.util.Pair;
  * Date 11 Jan. 2019
  */
 public interface StructureEditable {
-	/*
-	 * sets the location of a new node and returns its value so the calling program
-	 * can add the visualisation details
-	 */
-	public VisualNode SetNodeLocation(double x, double y, double w, double h);
-
-	/* If true, the user is prompted to location a position for the new node */
-	public boolean hasNewChild();
 
 	/*
 	 * Filters a list of possible children depending on current state of the

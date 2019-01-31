@@ -53,17 +53,6 @@ public abstract class StructureEditorAdapter implements StructureEditable, Arche
 		this.editingNodeSpec = specifications.getSpecificationOf(editingNode.getConfigNode());
 	}
 
-	@Override
-	public VisualNode SetNodeLocation(double x, double y, double w, double h) {
-		// rescale user's x,y into unit space
-		newChild.setPosition(x / w, y / h);
-		return newChild;
-	}
-
-	@Override
-	public boolean hasNewChild() {
-		return newChild != null;
-	}
 
 	@Override
 	public List<AotNode> newChildList(Iterable<AotNode> childSpecs) {

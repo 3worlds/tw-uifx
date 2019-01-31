@@ -403,27 +403,6 @@ public class MmController implements ErrorMessageListener, Controllable {
 	}
 
 	@FXML
-	void handlePaneOnMouseClicked(MouseEvent e) {
-		// if (placing) {
-		// Platform.runLater(() -> {
-		// AotNode n = popupEditor.locate(event, pane.getWidth(), pane.getHeight());
-		// VisualNode.insertCircle(n, controller.childLinksProperty(),
-		// controller.xLinksProperty(), pane, this);
-		// // add parent edge. There must be one in this circumstance
-		// AotEdge inEdge = (AotEdge) get(n.getEdges(Direction.IN),
-		// selectOne(hasTheLabel(Trees.CHILD_LABEL)));
-		// VisualNode.createChildLine(inEdge, controller.childLinksProperty(), pane);
-		// popupEditor = null;
-		// placing = false;
-		// pane.setCursor(Cursor.DEFAULT);
-		// reBuildAllElementsPropertySheet();
-		// checkGraph();
-		// });
-		// }
-		//
-	}
-
-	@FXML
 	void handlePaneOnMouseMoved(MouseEvent e) {
 		// modelMaker.onPaneMouseMoved(e.getX(), e.getY(), zoomTarget.getWidth(),
 		// zoomTarget.getHeight());
@@ -705,8 +684,6 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	private GraphVisualisablefx visualiser;
 
-//	private StructureEditable gse;
-
 	private List<VisualNode> getNodeList() {
 		List<VisualNode> result = new LinkedList<>();
 		for (VisualNode n : visualGraph.nodes())
@@ -806,6 +783,23 @@ public class MmController implements ErrorMessageListener, Controllable {
 	public void onNodeSelected(VisualNode node) {
 		fillNodePropertySheet(node);
 
+	}
+
+	private VisualNode newNode;
+	@Override
+	public void onNewNode(VisualNode node) {
+		zoomTarget.setCursor(Cursor.WAIT);
+		newNode = node;
+	}
+
+	@FXML
+	void handlePaneOnMouseClicked(MouseEvent e) {
+		if (newNode != null) {
+			newNode.setPosition(e.getX() / zoomTarget.getWidth(), e.getY() / zoomTarget.getHeight());
+			visualiser.onNewNode(newNode);
+			zoomTarget.setCursor(Cursor.DEFAULT);
+			newNode = null;
+		}
 	}
 
 }
