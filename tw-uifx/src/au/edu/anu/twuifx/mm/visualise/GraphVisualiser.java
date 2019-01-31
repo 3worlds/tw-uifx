@@ -40,6 +40,7 @@ import java.util.List;
 import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
+import au.edu.anu.twapps.mm.Controllable;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
@@ -91,19 +92,22 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
 	private static final Double animateDuration = 1000.0;
+	private final Controllable controller;
 
 	public GraphVisualiser(VisualGraph visualGraph, //
 			Pane pane, //
 			IntegerProperty nodeRadius, //
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
-			ObjectProperty<Font> font) {
+			ObjectProperty<Font> font,//
+			Controllable controller) {
 		this.visualGraph = visualGraph;
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
 		this.showGraphLine = showGraphLine;
 		this.showTreeLine = showTreeLine;
 		this.font = font;
+		this.controller = controller;
 		ds = new DropShadow();
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.GREEN;
@@ -199,8 +203,8 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 			if (e.getButton() == MouseButton.SECONDARY) {
 				gse = new StructureEditorfx(new SpecifiedNode(n), e);
 			} else
-				;
-			// TODO setNodePropertySheet(n);
+				controller.onNodeSelected(n);
+			
 		});
 
 		text.fontProperty().bind(font);
@@ -304,7 +308,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		text.yProperty().bind(fromCircle.centerYProperty().add(toCircle.centerYProperty()).divide(2.0));
 		text.visibleProperty().bind(line.visibleProperty());
 
-		// possible change listener but does not fully work
+		// hide text when positions make text too cramped
 		text.xProperty().addListener(new ChangeListener<Number>() {
 
 			@Override

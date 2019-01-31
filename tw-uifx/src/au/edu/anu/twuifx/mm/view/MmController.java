@@ -316,7 +316,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 			scrollContent.setMinHeight(newBounds.getHeight());
 		});
 		scrollPane.viewportBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-			// use vieport size, if not too small for zoomTarget
+			// use viewport size, if not too small for zoomTarget
 			scrollContent.setPrefSize(newBounds.getWidth(), newBounds.getHeight());
 		});
 		scrollContent.setOnScroll(event -> handleContentOnScroll(event, scrollPane, group, zoomTarget));
@@ -691,12 +691,12 @@ public class MmController implements ErrorMessageListener, Controllable {
 		this.visualGraph = visualGraph;
 		Cursor oldCursor = setWaitCursor();
 		getPreferences();
-		visualiser = new GraphVisualiser(visualGraph,//
+		visualiser = new GraphVisualiser(visualGraph, //
 				zoomTarget, //
 				nodeRadiusProperty, //
-				btnChildLinks.selectedProperty(),//
-				btnXLinks.selectedProperty(),//
-				fontProperty);
+				btnChildLinks.selectedProperty(), //
+				btnXLinks.selectedProperty(), //
+				fontProperty, this);
 		visualiser.initialiseView();
 		initialisePropertySheets();
 		setCursor(oldCursor);
@@ -705,10 +705,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	private GraphVisualisablefx visualiser;
 
-
 //	private StructureEditable gse;
-
-
 
 	private List<VisualNode> getNodeList() {
 		List<VisualNode> result = new LinkedList<>();
@@ -717,13 +714,15 @@ public class MmController implements ErrorMessageListener, Controllable {
 		return result;
 	}
 
-	//TODO
+	// TODO
 	private void fillNodePropertySheet(VisualNode visualNode) {
 		nodePropertySheet.getItems().clear();
-		AotNode cn = visualNode.getConfigNode();
-		boolean showNonEditables = true;
-		ObservableList<Item> list = getNodeItems(cn, cn.id(), showNonEditables);
-		nodePropertySheet.getItems().setAll(list);
+		if (visualNode != null) {
+			AotNode cn = visualNode.getConfigNode();
+			boolean showNonEditables = true;
+			ObservableList<Item> list = getNodeItems(cn, cn.id(), showNonEditables);
+			nodePropertySheet.getItems().setAll(list);
+		}
 	}
 
 	private ObservableList<Item> getNodeItems(AotNode node, String category, boolean showNonEditable) {
@@ -801,6 +800,12 @@ public class MmController implements ErrorMessageListener, Controllable {
 
 	public boolean canClose() {
 		return model.canClose();
+	}
+
+	@Override
+	public void onNodeSelected(VisualNode node) {
+		fillNodePropertySheet(node);
+
 	}
 
 }
