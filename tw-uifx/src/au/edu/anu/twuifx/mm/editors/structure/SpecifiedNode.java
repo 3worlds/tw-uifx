@@ -45,6 +45,7 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 
 	public SpecifiedNode(VisualNode visualNode) {
 		this.visualNode = visualNode;
+
 	}
 
 	@Override
@@ -173,13 +174,12 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	@Override
 	public VisualNode newChild(AotNode specs, String label, String name) {
 		AotNode configParent = getConfigNode();
-		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent, label, name);
-		// configChild.setLabel(label);
-		// configChild.setName(name);
-		// Identifiable id = new TwIdentity(label,name);
-		// VisualGraph vg = visualNode.treeNodeFactory();
-		VisualNode childVisualNode = (VisualNode) visualNode.treeNodeFactory().makeTreeNode(visualNode);
-		// TODO link the two
+		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent,
+				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
+	// We seem to be looking at the wrong version of tw-apps???
+		VisualNode childVisualNode = visualNode.nodeFactory().makeTreeNode(visualNode,
+				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
+		childVisualNode.setConfigNode(configChild);
 
 		return childVisualNode;
 	}
