@@ -176,7 +176,6 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 		AotNode configParent = getConfigNode();
 		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent,
 				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
-	// We seem to be looking at the wrong version of tw-apps???
 		VisualNode childVisualNode = visualNode.nodeFactory().makeTreeNode(visualNode,
 				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
 		childVisualNode.setConfigNode(configChild);
