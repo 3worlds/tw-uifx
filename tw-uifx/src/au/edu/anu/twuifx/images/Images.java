@@ -27,73 +27,10 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mm.propertyEditors.fileType;
 
-import java.util.List;
-import java.util.Optional;
+package au.edu.anu.twuifx.images;
 
-import org.controlsfx.property.editor.PropertyEditor;
-
-import au.edu.anu.rscs.aot.graph.AotNode;
-import au.edu.anu.twapps.mm.GraphState;
-import au.edu.anu.twcore.specificationCheck.Checkable;
-import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
-import fr.cnrs.iees.twcore.constants.FileType;
-import javafx.beans.value.ObservableValue;
-import javafx.stage.FileChooser;
-
-/**
- * Author Ian davies
- *
- * Date Jan 28, 2019
- */
-// TODO Problem how to avoid polluting tw-apps or tw-core with FileChooser which
-// is fx stage specific
-
-public class FileTypeItem extends SimplePropertyItem {
-
-	private List<FileChooser.ExtensionFilter> exts;
-	
-	private FileType fileType;
-
-	public FileTypeItem(String key, AotNode n, boolean canEdit, String category, String description,
-			Checkable checker) {
-		super(key, n, canEdit, category, description, checker);
-		fileType= (FileType) node.getPropertyValue(key);
-	}
-
-	public void setExtensions(List<FileChooser.ExtensionFilter> exts) {
-		this.exts = exts;
-	}
-
-	public List<FileChooser.ExtensionFilter> getExtensions() {
-		return exts;
-	}
-
-	@Override
-	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
-		return Optional.of(FileTypeEditor.class);
-	}
-
-	@Override
-	public Object getValue() {
-		//FileType ft = (FileType) node.getPropertyValue(key);
-		return fileType.getRelativePath();
-	}
-
-	@Override
-	public void setValue(Objiect newValue) {
-		Object oldValue = getValue();
-		if (!oldValue.toString().equals(newValue.toString())) {
-			fileType.setRelativePath((String) newValue);
-			GraphState.isChanged(true);
-			checker.validateGraph();
-		}
-	}
-
-//	@Override
-//	public Optional<ObservableValue<? extends Object>> getObservableValue() {
-//		return Optional.empty();
-//	}
+public class Images {
+	public static String imagePackage = "au.edu.anu.twuifx.images";
 
 }

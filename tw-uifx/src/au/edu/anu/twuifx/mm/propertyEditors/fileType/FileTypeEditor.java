@@ -29,16 +29,28 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.propertyEditors.fileType;
 
+import java.io.File;
+
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twuifx.images.Images;
+import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 
 public class FileTypeEditor extends AbstractPropertyEditor<String,Pane>{
+	
+	private static LabelButtonControl view = new LabelButtonControl("Open16.gif", Images.imagePackage);
 
+	//private FileTypeItem fileTypeItem;
 	public FileTypeEditor(FileTypeItem property, Pane control) {
 		super(property, control);
-		// TODO Auto-generated constructor stub
+	}
+	public FileTypeEditor(FileTypeItem property) {
+		this(property,view);
+		view.setAction(e->onButtonClicked());
 	}
 
 	@Override
@@ -52,5 +64,21 @@ public class FileTypeEditor extends AbstractPropertyEditor<String,Pane>{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	private void onButtonClicked() {
+		File root = Project.makeFile("");
+		FileChooser fc = new FileChooser();
+		fc.setTitle("Select file");
+		fc.setInitialDirectory(root);
+		FileTypeItem fileTypeItem = (FileTypeItem)getProperty();
+		fc.getExtensionFilters().addAll(fileTypeItem.getExtensions());
+		if (!fc.getExtensionFilters().isEmpty())
+			fc.setSelectedExtensionFilter(fc.getExtensionFilters().get(0));
+		File file = fc.showOpenDialog(Dialogs.getParentWindow());
+	}
+
+//	protected LabelButtonControl getLBEditor() {
+//		return (LabelButtonControl) getEditor();
+//	}
+
 
 }
