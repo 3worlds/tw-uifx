@@ -100,7 +100,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TWPaths {
 		/**
 		 * setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		 * 
-		 * Not used because this stylesheet illicits a warning from search bar of
+		 * Not used because this stylesheet elicits a warning from search bar of
 		 * propertySheet.
 		 */
 		mainStage = primaryStage;

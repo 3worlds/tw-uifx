@@ -33,7 +33,7 @@ package au.edu.anu.twuifx.dialogs;
 import java.io.File;
 import java.util.Optional;
 
-import au.edu.anu.twapps.dialogs.Dialogable;
+import au.edu.anu.twapps.dialogs.IDialogs;
 import au.edu.anu.twapps.dialogs.YesNoCancel;
 import au.edu.anu.twcore.project.TWPaths;
 import fr.cnrs.iees.io.GraphFileFormats;
@@ -51,7 +51,7 @@ import javafx.stage.Window;
  *
  * Date 12 Dec. 2018
  */
-public class Dialogsfx implements Dialogable {
+public class Dialogsfx implements IDialogs {
 	private static Window owner;
 
 	/**

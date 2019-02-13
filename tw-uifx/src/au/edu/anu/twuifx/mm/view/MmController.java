@@ -76,10 +76,10 @@ import org.controlsfx.control.PropertySheet.Item;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.mm.Controllable;
+import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.GraphState;
-import au.edu.anu.twapps.mm.ModelMaker;
-import au.edu.anu.twapps.mm.Modelable;
+import au.edu.anu.twapps.mm.MMModel;
+import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
@@ -95,7 +95,7 @@ import au.edu.anu.twuifx.mm.visualise.GraphVisualiser;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import au.edu.anu.rscs.aot.graph.AotNode;
 
-public class MmController implements ErrorMessageListener, Controllable {
+public class MmController implements ErrorMessageListener, IMMController {
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -189,7 +189,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 	@FXML
 	private Spinner<Integer> spinNodeSize;
 
-	private Modelable model;
+	private IMMModel model;
 	private Stage stage;
 	private ToggleGroup tgArchetype;
 	private Verbosity verbosity = Verbosity.brief;
@@ -246,7 +246,7 @@ public class MmController implements ErrorMessageListener, Controllable {
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
 
 		// This class has all the housework for managing graph
-		model = new ModelMaker(this);
+		model = new MMModel(this);
 
 		// build a toggle group for the verbosity level of archetype error
 		// messages

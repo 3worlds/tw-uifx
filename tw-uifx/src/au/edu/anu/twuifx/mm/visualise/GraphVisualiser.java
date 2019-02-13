@@ -40,7 +40,7 @@ import java.util.List;
 import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
-import au.edu.anu.twapps.mm.Controllable;
+import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
@@ -92,7 +92,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
 	private static final Double animateDuration = 1000.0;
-	private final Controllable controller;
+	private final IMMController controller;
 
 	public GraphVisualiser(VisualGraph visualGraph, //
 			Pane pane, //
@@ -100,7 +100,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
 			ObjectProperty<Font> font,//
-			Controllable controller) {
+			IMMController controller) {
 		this.visualGraph = visualGraph;
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
