@@ -29,7 +29,6 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.propertyEditors.fileType;
 
-import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import javafx.beans.value.ObservableValue;
@@ -37,7 +36,7 @@ import javafx.scene.layout.Pane;
 
 public class FileTypeEditor extends AbstractPropertyEditor<String,Pane>{
 
-	public FileTypeEditor(Item property, Pane control) {
+	public FileTypeEditor(FileTypeItem property, Pane control) {
 		super(property, control);
 		// TODO Auto-generated constructor stub
 	}

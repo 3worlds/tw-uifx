@@ -91,9 +91,9 @@ public class FileTypeItem extends SimplePropertyItem {
 		}
 	}
 
-	@Override
-	public Optional<ObservableValue<? extends Object>> getObservableValue() {
-		return Optional.empty();
-	}
+//	@Override
+//	public Optional<ObservableValue<? extends Object>> getObservableValue() {
+//		return Optional.empty();
+//	}
 
 }
