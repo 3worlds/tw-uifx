@@ -62,6 +62,11 @@ public class Dialogsfx implements IDialogs {
 	}
 
 	@Override
+	public Object getParentObject() {
+		return owner;
+	}
+
+	@Override
 	public void errorAlert(String title, String header, String content) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.initOwner(owner);
