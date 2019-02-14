@@ -41,7 +41,10 @@ import fr.cnrs.iees.io.GraphFileFormats;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Control;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -54,13 +57,13 @@ import javafx.stage.Window;
  * Date 12 Dec. 2018
  */
 public class Dialogsfx implements IDialogs {
-	private static Window owner;
+	private  Window owner;
 
 	/**
-	 * @param owner set the owner of these dialogs
+	 * @param owner the application window - dialog parent
 	 */
 	public Dialogsfx(Window owner) {
-		Dialogsfx.owner = owner;
+		this.owner = owner;
 	}
 
 	@Override
@@ -141,13 +144,30 @@ public class Dialogsfx implements IDialogs {
 
 	@Override
 	public File getOpenFile(File directory, String title, List<ExtensionFilter> extensions) {
-		FileChooser fc = new FileChooser();
-		fc.setTitle(title);
-		fc.setInitialDirectory(directory);
-		fc.getExtensionFilters().addAll(extensions);
-		if (!fc.getExtensionFilters().isEmpty())
-			fc.setSelectedExtensionFilter(fc.getExtensionFilters().get(0));
-		return fc.showOpenDialog(owner);
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle(title);
+		fileChooser.setInitialDirectory(directory);
+		fileChooser.getExtensionFilters().addAll(extensions);
+		if (!fileChooser.getExtensionFilters().isEmpty())
+			fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(0));
+		return fileChooser.showOpenDialog(owner);
+	}
+
+	@Override
+	public boolean editList(String title, String header, String content, Object listView) {
+		Control view = (Control)listView;
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle(title);
+		dialog.setHeaderText(header);
+		dialog.setContentText(content);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane pane = new BorderPane();
+		dialog.getDialogPane().setContent(pane);
+		dialog.initOwner(owner);
+		pane.setCenter(view);	
+		Optional<ButtonType> result = dialog.showAndWait();
+		return result.get().equals(ok);
 	}
 
 }

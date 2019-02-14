@@ -27,37 +27,66 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mm.propertyEditors.fileType;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+package au.edu.anu.twuifx.mm.propertyEditors.statsType;
+
+import org.controlsfx.control.ListSelectionView;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 
-/**
- * Author Ian Davies
- *
- * Date 14 Feb. 2019
- */
-public class FileTypeEditor extends AbstractPropertyEditor<String, Pane> {
+public class StatsTypeEditor extends AbstractPropertyEditor<String, Pane> {
+	private static LabelButtonControl view = new LabelButtonControl("Ellipsis16.gif", Images.imagePackage);
 
-	private static LabelButtonControl view = new LabelButtonControl("Open16.gif", Images.imagePackage);
-
-	public FileTypeEditor(FileTypeItem property, Pane control) {
+	public StatsTypeEditor(StatsTypeItem property, Pane control) {
 		super(property, control);
 	}
 
-	public FileTypeEditor(FileTypeItem property) {
+	public StatsTypeEditor(StatsTypeItem property) {
 		this(property, view);
 		view.setOnAction(e -> onAction());
+	}
+
+	private Object onAction() {
+		StatsTypeItem statsItem = (StatsTypeItem) getProperty();
+		String oldString = (String) statsItem.getValue();
+		String newString = editTable(oldString);
+		if (!newString.equals(oldString)) {
+			setValue(newString);
+		}
+
+		return null;
+	}
+
+	private String editTable(String oldString) {
+		StatisticalAggregatesSet sas = StatisticalAggregatesSet.valueOf(oldString);
+		ListSelectionView<StatisticalAggregates> listView = new ListSelectionView<>();
+		ObservableList<StatisticalAggregates> src = listView.getSourceItems();
+		ObservableList<StatisticalAggregates> trg = listView.getTargetItems();
+		for (StatisticalAggregates sa : sas.values()) {
+			trg.add(sa);
+		}
+		for (StatisticalAggregates sa : StatisticalAggregates.values()) {
+			if (!sas.values().contains(sa))
+				src.add(sa);
+		}
+		if (Dialogs.editList(getProperty().getName(), "", "", listView)) {
+			if (!trg.isEmpty()) {
+				sas.values().clear();
+				for (StatisticalAggregates sa : trg) {
+					sas.values().add(sa);
+				}
+				return sas.toString();
+			}
+		}
+		return oldString;
 	}
 
 	@Override
@@ -70,49 +99,6 @@ public class FileTypeEditor extends AbstractPropertyEditor<String, Pane> {
 	protected ObservableValue<String> getObservableValue() {
 		LabelButtonControl control = (LabelButtonControl) getEditor();
 		return control.getTextProperty();
-	}
-
-	// This all needs refactoring
-	private void onAction() {
-		File root = Project.makeFile("");
-		FileTypeItem fileTypeItem = (FileTypeItem) getProperty();
-		File file = Dialogs.getOpenFile(root, "Select file", fileTypeItem.getExtensions());
-		String relativePath = null;
-		if (file != null) {
-			if (file.getAbsolutePath().contains(root.getAbsolutePath()))
-				relativePath = makeProjectRelative(file.getAbsolutePath());
-			else if (Dialogs.confirmation("Import file", "", "Import " + file.getName() + " to the current project?")) {
-				File newFile = importFile(file);
-				relativePath = makeProjectRelative(newFile.getAbsolutePath());
-			}
-		} else {
-			if (Dialogs.confirmation("Query", "Clear property value?", "")) {
-				relativePath = "";
-			}
-		}
-		if (relativePath != null)
-			setValue(relativePath);
-	}
-
-	private File importFile(File inFile) {
-		File result = new File(Project.makeFile("").getAbsolutePath() + File.separator + inFile.getName());
-		try {
-			Files.copy(inFile.toPath(), result.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			return result;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private static String makeProjectRelative(String absolutePath) {
-		String root = Project.makeFile("").getAbsolutePath();
-		if (absolutePath.contains(root))
-			absolutePath = absolutePath.replace(root, "");
-		if (absolutePath.startsWith(File.separator))
-			absolutePath = absolutePath.replaceFirst("\\\\", "");
-		absolutePath = absolutePath.replaceAll("\\\\", "/");
-		return absolutePath;
 	}
 
 }

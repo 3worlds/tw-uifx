@@ -28,83 +28,45 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors;
+package au.edu.anu.twuifx.mm.propertyEditors.statsType;
 
 import java.util.Optional;
 
-import org.controlsfx.control.PropertySheet.Item;
+import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
-import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twapps.mm.GraphState;
-import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twcore.specificationCheck.Checkable;
-import javafx.beans.value.ObservableValue;
+import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 
 /**
  * Author Ian Davies
  *
  * Date 14 Feb. 2019
  */
-public class SimplePropertyItem implements Item {
-	protected AotNode node;
-	protected String key;
-	protected boolean isEditable;
-	protected String category;
-	protected Checkable checker;
-	private String description;
+public class StatsTypeItem extends SimplePropertyItem{
 
-	public SimplePropertyItem(String key, AotNode n, boolean canEdit, String category, String description,Checkable checker) {
-		this.node = n;
-		this.key = key;
-		this.isEditable = canEdit;
-		this.category = category;
-		this.checker = checker;
-		this.description=description;
+	public StatsTypeItem(String key, AotNode n, boolean canEdit, String category, String description,
+			Checkable checker) {
+		super(key, n, canEdit, category, description, checker);
 	}
-
+	
 	@Override
-	public boolean isEditable() {
-		return isEditable;
-	}
-
-	@Override
-	public Class<?> getType() {
-		return node.getPropertyClass(key);
-	}
-
-	@Override
-	public String getCategory() {
-		return category;
-	}
-
-	@Override
-	public String getName() {
-		return node.id() + "#" + key;
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
-	}
-
-	@Override
-	public Object getValue() {
-		return node.getPropertyValue(key);
-	}
-
-	@Override
-	public void setValue(Object newValue) {
-		Object oldValue = getValue();
-		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
+	public void setValue(Object newString) {
+		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) node.getPropertyValue(key);
+		String oldString = oldValue.toString();
+		if (!oldString.equals(newString)) {
+			StatisticalAggregatesSet newValue = StatisticalAggregatesSet.valueOf((String) newString);
 			node.addProperty(key, newValue);
-			checker.validateGraph();
 			GraphState.isChanged(true);
+			checker.validateGraph();
 		}
 	}
-
 	@Override
-	public Optional<ObservableValue<? extends Object>> getObservableValue() {
-		return Optional.empty();
+	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
+		return Optional.of(StatsTypeEditor.class);
 	}
+
+
 }
