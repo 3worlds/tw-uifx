@@ -29,6 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.propertyEditors.fileType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,13 +54,15 @@ import javafx.stage.FileChooser;
 public class FileTypeItem extends SimplePropertyItem {
 
 	private List<FileChooser.ExtensionFilter> exts;
-	
+
 	private FileType fileType;
 
 	public FileTypeItem(String key, AotNode n, boolean canEdit, String category, String description,
 			Checkable checker) {
 		super(key, n, canEdit, category, description, checker);
 		fileType= (FileType) node.getPropertyValue(key);
+		exts= new ArrayList<>();
+		exts.add(new FileChooser.ExtensionFilter("All files", "*.*"));
 	}
 
 	public void setExtensions(List<FileChooser.ExtensionFilter> exts) {
@@ -77,12 +80,11 @@ public class FileTypeItem extends SimplePropertyItem {
 
 	@Override
 	public Object getValue() {
-		//FileType ft = (FileType) node.getPropertyValue(key);
 		return fileType.getRelativePath();
 	}
 
 	@Override
-	public void setValue(Objiect newValue) {
+	public void setValue(Object newValue) {
 		Object oldValue = getValue();
 		if (!oldValue.toString().equals(newValue.toString())) {
 			fileType.setRelativePath((String) newValue);

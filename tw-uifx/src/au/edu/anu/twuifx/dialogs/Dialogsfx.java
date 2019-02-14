@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.dialogs;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 import au.edu.anu.twapps.dialogs.IDialogs;
@@ -44,6 +45,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
 /**
@@ -59,11 +61,6 @@ public class Dialogsfx implements IDialogs {
 	 */
 	public Dialogsfx(Window owner) {
 		Dialogsfx.owner = owner;
-	}
-
-	@Override
-	public Object getParentObject() {
-		return owner;
 	}
 
 	@Override
@@ -130,6 +127,27 @@ public class Dialogsfx implements IDialogs {
 		fc.setSelectedExtensionFilter(fc.getExtensionFilters().get(0));
 		File file = fc.showOpenDialog(owner);
 		return file;
+	}
+
+	@Override
+	public boolean confirmation(String title, String header, String content) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		Optional<ButtonType> result = alert.showAndWait();
+		return (result.get() == ButtonType.OK);
+	}
+
+	@Override
+	public File getOpenFile(File directory, String title, List<ExtensionFilter> extensions) {
+		FileChooser fc = new FileChooser();
+		fc.setTitle(title);
+		fc.setInitialDirectory(directory);
+		fc.getExtensionFilters().addAll(extensions);
+		if (!fc.getExtensionFilters().isEmpty())
+			fc.setSelectedExtensionFilter(fc.getExtensionFilters().get(0));
+		return fc.showOpenDialog(owner);
 	}
 
 }

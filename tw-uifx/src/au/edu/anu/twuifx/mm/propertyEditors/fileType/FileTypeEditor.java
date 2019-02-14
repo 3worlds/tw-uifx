@@ -30,55 +30,84 @@
 package au.edu.anu.twuifx.mm.propertyEditors.fileType;
 
 import java.io.File;
-
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
 
-public class FileTypeEditor extends AbstractPropertyEditor<String,Pane>{
-	
+public class FileTypeEditor extends AbstractPropertyEditor<String, Pane> {
+
 	private static LabelButtonControl view = new LabelButtonControl("Open16.gif", Images.imagePackage);
 
-	//private FileTypeItem fileTypeItem;
 	public FileTypeEditor(FileTypeItem property, Pane control) {
 		super(property, control);
 	}
+
 	public FileTypeEditor(FileTypeItem property) {
-		this(property,view);
-		view.setAction(e->onButtonClicked());
+		this(property, view);
+		view.setAction(e -> onButtonClicked());
 	}
 
 	@Override
 	public void setValue(String value) {
-		// TODO Auto-generated method stub
-		
+		LabelButtonControl control = (LabelButtonControl) getEditor();
+		control.setText(value);
 	}
 
 	@Override
 	protected ObservableValue<String> getObservableValue() {
-		// TODO Auto-generated method stub
-		return null;
+		LabelButtonControl control = (LabelButtonControl) getEditor();
+		return control.getTextProperty();
 	}
+
+	// This all needs refactoring
 	private void onButtonClicked() {
 		File root = Project.makeFile("");
-		FileChooser fc = new FileChooser();
-		fc.setTitle("Select file");
-		fc.setInitialDirectory(root);
-		FileTypeItem fileTypeItem = (FileTypeItem)getProperty();
-		fc.getExtensionFilters().addAll(fileTypeItem.getExtensions());
-		if (!fc.getExtensionFilters().isEmpty())
-			fc.setSelectedExtensionFilter(fc.getExtensionFilters().get(0));
-		File file = fc.showOpenDialog(Dialogs.getParentWindow());
+		FileTypeItem fileTypeItem = (FileTypeItem) getProperty();
+		File file = Dialogs.getOpenFile(root, "Select file", fileTypeItem.getExtensions());
+		String relativePath = null;
+		if (file != null) {
+			if (file.getAbsolutePath().contains(root.getAbsolutePath()))
+				relativePath = makeProjectRelative(file.getAbsolutePath());
+			else if (Dialogs.confirmation("Import file", "", "Import " + file.getName() + " to the current project?")) {
+				File newFile = importFile(file);
+				relativePath = makeProjectRelative(newFile.getAbsolutePath());
+			}
+		} else {
+			if (Dialogs.confirmation("Query", "Clear property value?", "")) {
+				relativePath = "";
+			}
+		}
+		if (relativePath != null)
+			setValue(relativePath);
 	}
 
-//	protected LabelButtonControl getLBEditor() {
-//		return (LabelButtonControl) getEditor();
-//	}
+	private File importFile(File inFile) {
+		File result = new File(Project.makeFile("").getAbsolutePath() + File.separator + inFile.getName());
+		try {
+			Files.copy(inFile.toPath(), result.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			return result;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
+	private static String makeProjectRelative(String s) {
+		String root = Project.makeFile("").getAbsolutePath();
+		if (s.contains(root))
+			s = s.replace(root, "");
+		if (s.startsWith(File.separator))
+			s = s.replaceFirst("\\\\", "");
+		s = s.replaceAll("\\\\", "/");
+		return s;
+	}
 
 }
