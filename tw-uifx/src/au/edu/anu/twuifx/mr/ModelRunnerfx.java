@@ -31,8 +31,6 @@
 package au.edu.anu.twuifx.mr;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,13 +40,9 @@ import au.edu.anu.rscs.aot.graph.AotGraph;
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mr.view.MrController;
-import fr.cnrs.iees.graph.Graph;
-import fr.cnrs.iees.graph.Node;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

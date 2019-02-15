@@ -31,16 +31,12 @@
 package au.edu.anu.twuifx.mr;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import au.edu.anu.rscs.aot.collections.DynamicList;
 import au.edu.anu.rscs.aot.graph.AotNode;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
-import fr.cnrs.iees.twcore.constants.TabLayoutTypes;
 import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
 import javafx.stage.Window;
 
 /**
@@ -60,7 +56,6 @@ public class MrUIManager {
 	private Window parent;
 //	private List<ElementUserInterfacefx> widgets;
 
-	@SuppressWarnings("unchecked")
 //	public MrUIManager(AotNode userInterface, HBox toolBar, TabPane topLeft, TabPane topRight, TabPane bottomLeft,
 //			TabPane bottomRight, HBox statusBar, Menu widgetMenu, Window window) {
 //		this.parent = window;

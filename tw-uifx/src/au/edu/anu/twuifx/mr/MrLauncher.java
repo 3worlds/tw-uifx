@@ -36,18 +36,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-
 import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.graph.AotGraph;
 import au.edu.anu.twcore.jars.SimulatorJar;
-import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 /**
  * <p>
@@ -155,7 +147,6 @@ public class MrLauncher implements ProjectPaths {
 //		return config;
 //	}
 
-	@SuppressWarnings("rawtypes")
 	private static void loadUserClasses(AotGraph config) {
 //		File userJar = Project.makeFile(UserProjectJar.USERPROJECTJAR);
 //		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
