@@ -31,7 +31,6 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 import au.edu.anu.rscs.aot.graph.AotNode;
-import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import javafx.util.Pair;
 
 /**

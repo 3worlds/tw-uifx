@@ -1,10 +1,7 @@
 package au.edu.anu.twuifx.mm.visualise;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-
 import fr.cnrs.iees.twcore.constants.Configuration;
 import javafx.scene.paint.Color;
 

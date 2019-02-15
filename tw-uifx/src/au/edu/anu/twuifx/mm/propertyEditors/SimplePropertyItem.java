@@ -35,9 +35,7 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
-import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twapps.mm.GraphState;
-import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twcore.specificationCheck.Checkable;
 import javafx.beans.value.ObservableValue;
 

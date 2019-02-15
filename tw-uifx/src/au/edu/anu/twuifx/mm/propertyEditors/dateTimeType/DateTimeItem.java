@@ -36,8 +36,6 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twcore.specificationCheck.Checkable;
-import au.edu.anu.twuifx.images.Images;
-import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 

@@ -251,6 +251,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 	}
 
 	// TODO used for editing??? later
+	@SuppressWarnings("unchecked")
 	private void createGraphLines(VisualNode n, BooleanProperty show) {
 		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(n.getEdges(Direction.OUT));
 		for (VisualEdge edge : edges) {

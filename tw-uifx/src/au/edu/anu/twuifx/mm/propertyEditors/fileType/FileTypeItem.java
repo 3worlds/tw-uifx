@@ -40,7 +40,6 @@ import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twcore.specificationCheck.Checkable;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.twcore.constants.FileType;
-import javafx.beans.value.ObservableValue;
 import javafx.stage.FileChooser;
 
 /**

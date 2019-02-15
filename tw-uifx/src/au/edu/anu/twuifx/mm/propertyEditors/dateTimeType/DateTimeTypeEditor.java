@@ -30,7 +30,6 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.dateTimeType;
 
-import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.twuifx.images.Images;

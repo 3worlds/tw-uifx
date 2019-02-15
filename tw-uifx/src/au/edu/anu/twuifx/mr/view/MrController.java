@@ -30,8 +30,6 @@
 
 package au.edu.anu.twuifx.mr.view;
 
-import au.edu.anu.omhtk.preferences.PrefImpl;
-import au.edu.anu.omhtk.preferences.Preferenceable;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.utils.UiHelpers;
