@@ -40,18 +40,17 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.layout.Pane;
 
 /**
  * Author Ian Davies
  *
  * Date 14 Feb. 2019
  */
-public class FileTypeEditor extends AbstractPropertyEditor<String, Pane> {
+public class FileTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
 	private static LabelButtonControl view = new LabelButtonControl("Open16.gif", Images.imagePackage);
 
-	public FileTypeEditor(FileTypeItem property, Pane control) {
+	public FileTypeEditor(FileTypeItem property, LabelButtonControl control) {
 		super(property, control);
 	}
 
@@ -62,14 +61,12 @@ public class FileTypeEditor extends AbstractPropertyEditor<String, Pane> {
 
 	@Override
 	public void setValue(String value) {
-		LabelButtonControl control = (LabelButtonControl) getEditor();
-		control.setText(value);
+		getEditor().setText(value);
 	}
 
 	@Override
 	protected ObservableValue<String> getObservableValue() {
-		LabelButtonControl control = (LabelButtonControl) getEditor();
-		return control.getTextProperty();
+		return getEditor().getTextProperty();
 	}
 
 	// This all needs refactoring

@@ -40,12 +40,11 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.Pane;
 
-public class StatsTypeEditor extends AbstractPropertyEditor<String, Pane> {
+public class StatsTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private static LabelButtonControl view = new LabelButtonControl("Ellipsis16.gif", Images.imagePackage);
 
-	public StatsTypeEditor(StatsTypeItem property, Pane control) {
+	public StatsTypeEditor(StatsTypeItem property, LabelButtonControl control) {
 		super(property, control);
 	}
 
@@ -91,14 +90,12 @@ public class StatsTypeEditor extends AbstractPropertyEditor<String, Pane> {
 
 	@Override
 	public void setValue(String value) {
-		LabelButtonControl control = (LabelButtonControl) getEditor();
-		control.setText(value);
+		getEditor().setText(value);
 	}
 
 	@Override
 	protected ObservableValue<String> getObservableValue() {
-		LabelButtonControl control = (LabelButtonControl) getEditor();
-		return control.getTextProperty();
+		return getEditor().getTextProperty();
 	}
 
 }

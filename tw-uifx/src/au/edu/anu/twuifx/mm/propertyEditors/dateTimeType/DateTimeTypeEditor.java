@@ -37,10 +37,10 @@ import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
 
-public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, Pane> {
+public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private static LabelButtonControl view = new LabelButtonControl("Ellipsis16.gif", Images.imagePackage);
 
-	public DateTimeTypeEditor(DateTimeItem property, Pane control) {
+	public DateTimeTypeEditor(DateTimeItem property, LabelButtonControl control) {
 		super(property, control);
 		// TODO Auto-generated constructor stub
 	}
@@ -56,14 +56,12 @@ public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, Pane> {
 
 	@Override
 	public void setValue(String value) {
-		LabelButtonControl control = (LabelButtonControl) getEditor();
-		control.setText(value);		
+		getEditor().setText(value);		
 	}
 
 	@Override
 	protected ObservableValue<String> getObservableValue() {
-		LabelButtonControl control = (LabelButtonControl) getEditor();
-		return control.getTextProperty();
+		return getEditor().getTextProperty();
 	}
 
 }
