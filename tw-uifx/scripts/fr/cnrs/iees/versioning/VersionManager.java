@@ -169,7 +169,7 @@ public class VersionManager {
 	"</ivy-module>\n";
 	
 	private static String build1 =
-	"<project xmlns:ivy=\"antlib:org.apache.ivy.ant\" basedir=\"..\">\n\n" +
+	"<project xmlns:ivy=\"antlib:org.apache.ivy.ant\" basedir=\"..\" default=\"publishJar\">\n\n" +
 	"\t<!-- Artifacts are produced in the project lib directory-->\n" +
 	"\t<property name=\"jarRepo\" location=\"${user.dir}/../lib\"/>\n\n" +
 	"\t<!-- Use this string as the organisation package -->\n" +
