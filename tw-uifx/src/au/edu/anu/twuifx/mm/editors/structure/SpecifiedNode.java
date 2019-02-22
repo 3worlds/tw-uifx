@@ -174,9 +174,11 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	@Override
 	public VisualNode newChild(AotNode specs, String label, String name) {
 		AotNode configParent = getConfigNode();
+
 		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent,
 				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
-		VisualNode childVisualNode = visualNode.nodeFactory().makeTreeNode(visualNode,
+
+		VisualNode childVisualNode =  visualNode.nodeFactory().makeTreeNode(visualNode,
 				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
 		childVisualNode.setConfigNode(configChild);
 
