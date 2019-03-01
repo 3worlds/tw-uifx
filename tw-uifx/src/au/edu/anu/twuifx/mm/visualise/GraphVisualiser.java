@@ -80,7 +80,7 @@ import javafx.util.Duration;
  */
 public final class GraphVisualiser implements GraphVisualisablefx {
 
-	private final VisualGraph<VisualNode,VisualEdge> visualGraph;
+	private final VisualGraph visualGraph;
 	private final Pane pane;
 	private final IntegerProperty nodeRadius;
 	private final BooleanProperty showTreeLine;
@@ -94,7 +94,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 	private static final Double animateDuration = 1000.0;
 	private final IMMController controller;
 
-	public GraphVisualiser(VisualGraph<VisualNode,VisualEdge> visualGraph, //
+	public GraphVisualiser(VisualGraph visualGraph, //
 			Pane pane, //
 			IntegerProperty nodeRadius, //
 			BooleanProperty showTreeLine, //

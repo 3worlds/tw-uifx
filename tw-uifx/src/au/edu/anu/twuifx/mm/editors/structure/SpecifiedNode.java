@@ -87,7 +87,8 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	@Override
 	public List<VisualNode> graphRoots() {
 		List<VisualNode> result = new ArrayList<>();
-		VisualGraph<VisualNode,VisualEdge> vg = (VisualGraph<VisualNode, VisualEdge>) visualNode.treeNodeFactory();
+		//TODO maybe TYPECAST CRASH here??
+		VisualGraph vg = (VisualGraph) visualNode.treeNodeFactory();
 		for (VisualNode root : vg.roots())
 			result.add(root);
 		return result;
