@@ -80,6 +80,7 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.IMMModel;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
@@ -205,7 +206,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
 	private ObjectProperty<Font> fontProperty;
 
-	private VisualGraph visualGraph;
+	private VisualGraph<VisualNode,VisualEdge> visualGraph;
 	private Font font;
 	private int fontSize;
 

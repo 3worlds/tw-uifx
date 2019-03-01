@@ -34,6 +34,7 @@ import java.util.List;
 
 import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
@@ -82,10 +83,11 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 		return visualNode.nodeFactory().nodeClassName(visualNode.getClass());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<VisualNode> graphRoots() {
 		List<VisualNode> result = new ArrayList<>();
-		VisualGraph vg = (VisualGraph) visualNode.treeNodeFactory();
+		VisualGraph<VisualNode,VisualEdge> vg = (VisualGraph<VisualNode, VisualEdge>) visualNode.treeNodeFactory();
 		for (VisualNode root : vg.roots())
 			result.add(root);
 		return result;
