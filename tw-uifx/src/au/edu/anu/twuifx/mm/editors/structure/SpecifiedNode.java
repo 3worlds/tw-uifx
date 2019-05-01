@@ -37,6 +37,7 @@ import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.Configuration;
 import javafx.util.Pair;
@@ -80,10 +81,9 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 
 	@Override
 	public String getLabel() {
-		return visualNode.nodeFactory().nodeClassName(visualNode.getClass());
+		return visualNode.getLabel();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<VisualNode> graphRoots() {
 		List<VisualNode> result = new ArrayList<>();
@@ -120,25 +120,20 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 
 	@Override
 	public String getUniqueName(String label, String name) {
-		// TODO wait and see what happens. Here we need a set of strings of instanceIds.
-		// The rest should be done by UniqueString(...)
-		// E.g You can't have two "Processes or Records or Tables with the same labels
-		// and names - it would be a mess. For a start,
-		// generated classes with have name collisions.
-		// Anyway how would the user know what they were editing if nodes had identical
-		// no matter what Identity impl was used.
-		//
-		AotNode n = getConfigNode();
-		Iterable<AotNode> nodes = n.nodeFactory()
-				.findNodesByReference(label + PairIdentity.LABEL_NAME_SEPARATOR + name);
-		if (!nodes.iterator().hasNext())
-			return name;
-		else {
-			Pair<String, Integer> nameInstance = parseName(name);
-			int count = nameInstance.getValue() + 1;
-			name = nameInstance.getKey() + count;
-			return getUniqueName(label, name);
-		}
+//		// the id system has now been taken over by Identity system - we cant get one without it been added so we are lost here.
+//		// must do duplicate code I think!!!
+//		AotNode n = getConfigNode();
+//		Iterable<AotNode> nodes = n.nodeFactory()
+//				.findNodesByReference(label + PairIdentity.LABEL_NAME_SEPARATOR + name);
+//		if (!nodes.iterator().hasNext())
+//			return name;
+//		else {
+//			Pair<String, Integer> nameInstance = parseName(name);
+//			int count = nameInstance.getValue() + 1;
+//			name = nameInstance.getKey() + count;
+//			return getUniqueName(label, name);
+//		}
+		throw new TwuifxException("getUniqueName not yet implemented!!!");
 	}
 
 	@Deprecated
@@ -178,10 +173,10 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	public VisualNode newChild(AotNode specs, String label, String name) {
 		AotNode configParent = getConfigNode();
 
-		AotNode configChild = configParent.nodeFactory().makeTreeNode(configParent,
+		AotNode configChild = (AotNode) configParent.treeNodeFactory().makeTreeNode(configParent,
 				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
 
-		VisualNode childVisualNode =  visualNode.nodeFactory().makeTreeNode(visualNode,
+		VisualNode childVisualNode =  (VisualNode) visualNode.treeNodeFactory().makeTreeNode(visualNode,
 				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
 		childVisualNode.setConfigNode(configChild);
 
