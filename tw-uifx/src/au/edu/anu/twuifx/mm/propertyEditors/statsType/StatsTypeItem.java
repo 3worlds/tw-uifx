@@ -59,7 +59,7 @@ public class StatsTypeItem extends SimplePropertyItem{
 		if (!oldString.equals(newString)) {
 			StatisticalAggregatesSet newValue = StatisticalAggregatesSet.valueOf((String) newString);
 			node.addProperty(key, newValue);
-			GraphState.isChanged(true);
+			GraphState.setChanged(true);
 			checker.validateGraph();
 		}
 	}

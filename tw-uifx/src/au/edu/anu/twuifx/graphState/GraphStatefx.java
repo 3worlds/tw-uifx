@@ -27,82 +27,73 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
+package au.edu.anu.twuifx.graphState;
 
-package au.edu.anu.twuifx.mm.propertyEditors;
-
-import java.util.Optional;
-
-import org.controlsfx.control.PropertySheet.Item;
-
-import au.edu.anu.rscs.aot.graph.AotNode;
-import au.edu.anu.twapps.mm.GraphState;
-import au.edu.anu.twcore.specificationCheck.Checkable;
+import au.edu.anu.twapps.mm.IGraphState;
+import au.edu.anu.twcore.project.Project;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 /**
- * Author Ian Davies
+ * Author Ian davies
  *
- * Date 14 Feb. 2019
+ * Date May 6, 2019
  */
-public class SimplePropertyItem implements Item {
-	protected AotNode node;
-	protected String key;
-	protected boolean isEditable;
-	protected String category;
-	protected Checkable checker;
-	private String description;
+public class GraphStatefx implements IGraphState {
+	// private static boolean hasChanged = false;
+	private BooleanProperty propertyHasChanged = new SimpleBooleanProperty(false);
+	private StringProperty propertyTitle = new SimpleStringProperty("");
+	private StringProperty propertyJavaPath = new SimpleStringProperty("");
 
-	public SimplePropertyItem(String key, AotNode n, boolean canEdit, String category, String description,Checkable checker) {
-		this.node = n;
-		this.key = key;
-		this.isEditable = canEdit;
-		this.category = category;
-		this.checker = checker;
-		this.description=description;
+	public GraphStatefx(StringProperty propertyTitle, StringProperty propertyJavaPath) {
+		if (propertyTitle != null)
+			this.propertyTitle = propertyTitle;
+		if (propertyJavaPath != null)
+			this.propertyJavaPath = propertyJavaPath;
+		propertyJavaPath.addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(@SuppressWarnings("rawtypes") ObservableValue observable, String oldValue,
+					String newValue) {
+				setTitle();
+			}
+		});
+
+	}
+
+	private void setTitle() {
+		// TODO: needs checking!
+		Platform.runLater(() -> {
+			String title = null;
+			if (Project.isOpen()) {
+				title = Project.getDisplayName();
+				if (hasChanged())
+					title = "*" + title;
+				if (!propertyTitle.getValue().isEmpty()) {
+					if (!propertyJavaPath.getValue().isEmpty()) {
+							title = title + "<o-o-o>" + propertyJavaPath.get();
+					}
+					propertyTitle.setValue(title);
+				}
+			}
+		});
+
 	}
 
 	@Override
-	public boolean isEditable() {
-		return isEditable;
+	public boolean hasChanged() {
+		return propertyHasChanged.getValue();
 	}
 
 	@Override
-	public Class<?> getType() {
-		return node.getPropertyClass(key);
+	public void setChanged(boolean state) {
+		propertyHasChanged.setValue(state);
+		setTitle();
 	}
 
-	@Override
-	public String getCategory() {
-		return category;
-	}
-
-	@Override
-	public String getName() {
-		return node.id() + "#" + key;
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
-	}
-
-	@Override
-	public Object getValue() {
-		return node.getPropertyValue(key);
-	}
-
-	@Override
-	public void setValue(Object newValue) {
-		Object oldValue = getValue();
-		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
-			node.addProperty(key, newValue);
-			checker.validateGraph();
-			GraphState.setChanged(true);
-		}
-	}
-
-	@Override
-	public Optional<ObservableValue<? extends Object>> getObservableValue() {
-		return Optional.empty();
-	}
 }

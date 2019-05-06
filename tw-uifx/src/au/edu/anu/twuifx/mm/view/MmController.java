@@ -90,6 +90,7 @@ import au.edu.anu.twcore.errorMessaging.archetype.ArchComplianceManager;
 import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualisablefx;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiser;
@@ -551,7 +552,8 @@ public class MmController implements ErrorMessageListener, IMMController {
 
 	// called when opening a project
 	public void getPreferences() {
-		GraphState.setTitleProperty(stage.titleProperty(), userProjectPath);
+		GraphState.initialise(new GraphStatefx(stage.titleProperty(),userProjectPath));
+		// create GraphState impl
 		Preferences.initialise(Project.makeProjectPreferencesFile());
 		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
 				stage.getHeight());
