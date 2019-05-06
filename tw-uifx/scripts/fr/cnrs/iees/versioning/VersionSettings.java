@@ -54,12 +54,12 @@ public class VersionSettings {
 	 * 
 	 */
 	protected static String[][] DEPS = { 
-		{"fr.ens.biologie", "generics", "[0.0.6,)", null},
-		{"au.edu.anu.rscs.aot", "omugi", "[0.0.14,)", null},
-		{"fr.cnrs.iees.tw-core", "tw-core", "[0.0.8,)", null},
-		{"au.edu.anu.rscs.aot", "aot", "[0.0.10,)", null},
-		{"au.edu.anu.tw-apps", "tw-apps", "[0.0.12,)", null},
-		{"au.edu.anu.rscs.aot", "qgraph", "+", null},		
+		{"fr.ens.biologie", "generics", "[0.1.0,)", null},
+		{"au.edu.anu.rscs.aot", "omugi", "[0.1.0,)", null},
+		{"fr.cnrs.iees.tw-core", "tw-core", "[0.1.0,)", null},
+		{"au.edu.anu.rscs.aot", "aot", "[0.1.0,)", null},
+		{"au.edu.anu.tw-apps", "tw-apps", "[0.1.0,)", null},
+		{"au.edu.anu.rscs.aot", "qgraph", "[0.1.0,)", null},		
 		{"org.openjfx", "javafx-fxml", "11+", "_os"},
 		{"org.openjfx", "javafx-controls", "11+", "_os"},
 		{"org.openjfx", "javafx-graphics", "11+", "_os"},
