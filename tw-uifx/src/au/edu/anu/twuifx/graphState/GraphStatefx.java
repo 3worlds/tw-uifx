@@ -27,46 +27,73 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
+package au.edu.anu.twuifx.graphState;
 
-package au.edu.anu.twuifx.mm.propertyEditors.statsType;
-
-import java.util.Optional;
-
-import org.controlsfx.property.editor.PropertyEditor;
-
-import au.edu.anu.rscs.aot.graph.AotNode;
-import au.edu.anu.twapps.mm.GraphState;
-import au.edu.anu.twcore.specificationCheck.Checkable;
-import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
-import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
+import au.edu.anu.twapps.mm.IGraphState;
+import au.edu.anu.twcore.project.Project;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 /**
- * Author Ian Davies
+ * Author Ian davies
  *
- * Date 14 Feb. 2019
+ * Date May 6, 2019
  */
-public class StatsTypeItem extends SimplePropertyItem{
+public class GraphStatefx implements IGraphState {
+	// private static boolean hasChanged = false;
+	private BooleanProperty propertyHasChanged = new SimpleBooleanProperty(false);
+	private StringProperty propertyTitle = new SimpleStringProperty("");
+	private StringProperty propertyJavaPath = new SimpleStringProperty("");
 
-	public StatsTypeItem(String key, AotNode n, boolean canEdit, String category, String description,
-			Checkable checker) {
-		super(key, n, canEdit, category, description, checker);
-	}
-	
-	@Override
-	public void setValue(Object newString) {
-		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) node.getPropertyValue(key);
-		String oldString = oldValue.toString();
-		if (!oldString.equals(newString)) {
-			StatisticalAggregatesSet newValue = StatisticalAggregatesSet.valueOf((String) newString);
-			node.addProperty(key, newValue);
-			GraphState.setState(true);
-			checker.validateGraph();
-		}
-	}
-	@Override
-	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
-		return Optional.of(StatsTypeEditor.class);
+	public GraphStatefx(StringProperty propertyTitle, StringProperty propertyJavaPath) {
+		if (propertyTitle != null)
+			this.propertyTitle = propertyTitle;
+		if (propertyJavaPath != null)
+			this.propertyJavaPath = propertyJavaPath;
+		propertyJavaPath.addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(@SuppressWarnings("rawtypes") ObservableValue observable, String oldValue,
+					String newValue) {
+				setTitle();
+			}
+		});
+
 	}
 
+	private void setTitle() {
+		// TODO: needs checking!
+		Platform.runLater(() -> {
+			String title = null;
+			if (Project.isOpen()) {
+				title = Project.getDisplayName();
+				if (hasChanged())
+					title = "*" + title;
+				if (!propertyTitle.getValue().isEmpty()) {
+					if (!propertyJavaPath.getValue().isEmpty()) {
+							title = title + "<o-o-o>" + propertyJavaPath.get();
+					}
+					propertyTitle.setValue(title);
+				}
+			}
+		});
+
+	}
+
+	@Override
+	public boolean hasChanged() {
+		return propertyHasChanged.getValue();
+	}
+
+	@Override
+	public void setChanged(boolean state) {
+		propertyHasChanged.setValue(state);
+		setTitle();
+	}
 
 }

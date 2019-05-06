@@ -97,7 +97,7 @@ public class SimplePropertyItem implements Item {
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
 			node.addProperty(key, newValue);
 			checker.validateGraph();
-			GraphState.isChanged(true);
+			GraphState.setState(true);
 		}
 	}
 

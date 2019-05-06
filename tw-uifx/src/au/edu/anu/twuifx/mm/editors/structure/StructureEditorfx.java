@@ -150,7 +150,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			
 			// build the properties
 			controller.onNewNode(newChild);
-			GraphState.isChanged(true);
+			GraphState.setState(true);
 		});		
 	}
 	@Override

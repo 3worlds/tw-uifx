@@ -142,12 +142,13 @@ public class Dialogsfx implements IDialogs {
 		return (result.get() == ButtonType.OK);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public File getOpenFile(File directory, String title, List<ExtensionFilter> extensions) {
+	public File getOpenFile(File directory, String title, Object extensions) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(title);
 		fileChooser.setInitialDirectory(directory);
-		fileChooser.getExtensionFilters().addAll(extensions);
+		fileChooser.getExtensionFilters().addAll((List<ExtensionFilter>) extensions);
 		if (!fileChooser.getExtensionFilters().isEmpty())
 			fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(0));
 		return fileChooser.showOpenDialog(owner);
@@ -169,5 +170,7 @@ public class Dialogsfx implements IDialogs {
 		Optional<ButtonType> result = dialog.showAndWait();
 		return result.get().equals(ok);
 	}
+
+
 
 }
