@@ -181,10 +181,10 @@ public class MrUIManager {
 		return widgetNodes;
 	}
 
-	private void addToolTip(Node nodefx, String tip) {
-		if (nodefx.getProperties().get("toolTip") == null)
-			Tooltip.install(nodefx, new Tooltip(tip));
-	}
+//	private void addToolTip(Node nodefx, String tip) {
+//		if (nodefx.getProperties().get("toolTip") == null)
+//			Tooltip.install(nodefx, new Tooltip(tip));
+//	}
 
 //	private void buildBar(AotNode parentNode, HBox bar) {
 //		for (AotNode widgetNode : sort(parentNode.getChildren())) {

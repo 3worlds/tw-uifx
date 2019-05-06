@@ -35,7 +35,6 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.layout.Pane;
 
 public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private static LabelButtonControl view = new LabelButtonControl("Ellipsis16.gif", Images.imagePackage);
