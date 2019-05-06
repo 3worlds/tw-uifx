@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.0.8 (Mon May 06 13:35:48 CEST 2019)
+ ant and ivy scripts for project <tw-uifx> version 0.0.6 (Tue Feb 19 09:10:05 CET 2019)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -11,7 +11,7 @@
 	<!-- Artifacts are produced in the project lib directory-->
 	<property name="jarRepo" location="${user.dir}/../lib"/>
 
-	<property name="docRepo" location="${user.dir}/../doc/javadoc"/>	<!-- Use this string as the organisation package -->
+	<!-- Use this string as the organisation package -->
 	<property name="org" value="au.edu.anu.tw-uifx"/>
 
 	<!-- The project name -->
@@ -21,13 +21,10 @@
 	<property name="jarlib" location="${jarRepo}/${org}.${project}"/>
 
 	<!-- Tasks -->
-	<target name="makeArtifactDir" description="create directory for jars and doc">
+	<target name="makeArtifactDir" description="create directory for jars">
 		<mkdir dir="${jarlib}"/>
-		<mkdir dir="${docRepo}"/>	</target>
-
-	<target name="cleanDoc" description="cleanup javadoc directory">
-		<delete dir="${docRepo}"/>
 	</target>
+
 	<target name="resolve" description="resolve dependencies and setup publication environment">
 		<ivy:configure/>
 		<ivy:resolve file="scripts/${ivy.dep.file}" conf="${ivy.configurations}"/>
@@ -36,18 +33,13 @@
 
 	<target name="makeJar" description="pack as a jar library" depends="makeArtifactDir,resolve">
 		<jar destfile="${jarlib}/${project}.jar">
-			<fileset dir="bin"> 
-				<exclude name="**/*Version*.*"/>
-				<exclude name="**/LicenseManager.*"/>
-				<exclude name="**/current-version.txt"/>
-				<exclude name="**/*Test.class"/>
-				<exclude name="**/*.xml"/>
-				</fileset>
+			<fileset dir="bin" 
+				excludes="**/VersionManager.*,**/LicenseManager.*,**/current-version.txt,**/*.xml,**/*Test.class"/>
 			<fileset dir="src"/>
 			<manifest>
 				<attribute name="Implementation-Vendor" value="CNRS/ANU"/>
 				<attribute name="Implementation-Title" value="au.edu.anu.tw-uifx"/>
-				<attribute name="Implementation-Version" value="0.0.8"/>
+				<attribute name="Implementation-Version" value="0.0.6"/>
 				<attribute name="Built-By" value="${user.name}"/>
  			</manifest>
 		</jar>
@@ -59,9 +51,4 @@
 		</ivy:publish>
 	</target>
 
-	<target name="javadoc" description="generate JavaDoc" depends="makeArtifactDir,cleanDoc">
-		<javadoc destdir="${docRepo}">
-			<fileset dir="src"/>
-		</javadoc>
-	</target>
 </project>

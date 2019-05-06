@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.0.8 (Mon May 06 13:35:48 CEST 2019)
+ ant and ivy scripts for project <tw-uifx> version 0.0.6 (Tue Feb 19 09:10:05 CET 2019)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -8,12 +8,11 @@
 ===================================================================================-->
 <ivy-module version="2.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:m="http://maven.apache.org/POM/4.0.0"
 		xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
 
 	<info	organisation="au.edu.anu.tw-uifx"
 			module="tw-uifx"
-			revision="0.0.8"
+			revision="0.0.6"
 			status="integration">
 		<license name="gpl3" url="https://www.gnu.org/licenses/gpl-3.0.txt"/>
 		<description>This module contains only fx code for the UI of ModelMaker and ModelRunner.</description>
@@ -30,19 +29,12 @@
 	</publications>
 
 	<dependencies>
-		<dependency org="fr.ens.biologie" name="generics" rev="[0.0.6,)"/>
-		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="[0.0.14,)"/>
-		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="[0.0.8,)"/>
-		<dependency org="au.edu.anu.rscs.aot" name="aot" rev="[0.0.10,)"/>
-		<dependency org="au.edu.anu.tw-apps" name="tw-apps" rev="[0.0.12,)"/>
+		<dependency org="fr.ens.biologie" name="generics" rev="+"/>
+		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="+"/>
+		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="+"/>
+		<dependency org="au.edu.anu.rscs.aot" name="aot" rev="+"/>
+		<dependency org="au.edu.anu.tw-apps" name="tw-apps" rev="+"/>
 		<dependency org="au.edu.anu.rscs.aot" name="qgraph" rev="+"/>
-		<dependency org="org.openjfx" name="javafx-fxml" rev="11+" m:classifier="linux"/>
-		<dependency org="org.openjfx" name="javafx-controls" rev="11+" m:classifier="linux"/>
-		<dependency org="org.openjfx" name="javafx-graphics" rev="11+" m:classifier="linux"/>
-		<dependency org="org.openjfx" name="javafx-base" rev="11+" m:classifier="linux"/>
-		<dependency org="org.openjfx" name="javafx-web" rev="11+" m:classifier="linux"/>
-		<dependency org="org.openjfx" name="javafx-media" rev="11+" m:classifier="linux"/>
-		<dependency org="org.openjfx" name="javafx-swing" rev="11+" m:classifier="linux"/>
 		<dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>
 		<dependency org="org.apache.commons" name="commons-math" rev="2.+"/>
 	</dependencies>
