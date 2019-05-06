@@ -34,9 +34,9 @@ import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet.Item;
 
-import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twcore.specificationCheck.Checkable;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.beans.value.ObservableValue;
 
 /**
@@ -45,14 +45,14 @@ import javafx.beans.value.ObservableValue;
  * Date 14 Feb. 2019
  */
 public class SimplePropertyItem implements Item {
-	protected AotNode node;
+	protected TreeGraphNode node;
 	protected String key;
 	protected boolean isEditable;
 	protected String category;
 	protected Checkable checker;
 	private String description;
 
-	public SimplePropertyItem(String key, AotNode n, boolean canEdit, String category, String description,Checkable checker) {
+	public SimplePropertyItem(String key, TreeGraphNode n, boolean canEdit, String category, String description,Checkable checker) {
 		this.node = n;
 		this.key = key;
 		this.isEditable = canEdit;

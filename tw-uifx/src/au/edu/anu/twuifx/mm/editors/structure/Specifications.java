@@ -30,8 +30,8 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
-import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import fr.cnrs.iees.graph.TreeNode;
 
 /**
  * Author Ian Davies
@@ -57,7 +57,7 @@ public interface Specifications {
 	 * runs all checks against the given node . Nodes without an spec can't be
 	 * checked. I'm avoiding complies(AotGraph graph) at the moment
 	 */
-	public boolean complies(AotNode node, AotNode root);
+	public boolean complies(AotNode node, TreeNode root);
 
 	/*
 	 * get specification of a given node from the configuration graph. If null, it

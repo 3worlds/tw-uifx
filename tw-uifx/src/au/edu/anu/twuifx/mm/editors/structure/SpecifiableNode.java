@@ -31,9 +31,10 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 
-import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
 // just experimenting with what services mm requires of an aotnode.
 
@@ -45,7 +46,7 @@ public interface SpecifiableNode {
 	public String getClassValue();
 
 	/* get the configuration node under-pinning this */
-	public AotNode getConfigNode();
+	public TreeGraphNode getConfigNode();
 
 	/*
 	 * normally true unless this is the configuration root (3Worlds:<projectName>)
@@ -69,7 +70,7 @@ public interface SpecifiableNode {
 
 	public String getUniqueName(String label, String def);
 
-	public VisualNode newChild(AotNode specs, String label, String name);
+	public VisualNode newChild(TreeNode specs, String label, String name);
 	
 	//public void addProperty(String key, Object defaultValue);
 

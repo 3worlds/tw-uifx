@@ -43,7 +43,8 @@
 		<dependency org="org.openjfx" name="javafx-web" rev="11+" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-media" rev="11+" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-swing" rev="11+" m:classifier="linux"/>
-		<dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>
+		<dependency org="org.controlsfx" name="controlsfx" rev="11.0.0"/>
+		<!-- <dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>-->
 		<dependency org="org.apache.commons" name="commons-math" rev="2.+"/>
 	</dependencies>
 
