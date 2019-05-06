@@ -193,7 +193,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 				int dy = (int) Math.round(50 * Math.abs(oldy - newy));
 				if (dx != 0 || dy != 0) {
 					dragNode.setPosition(newx, newy);
-					GraphState.setState(true);
+					GraphState.setChanged(true);
 				}
 				dragNode = null;
 				e.consume();
