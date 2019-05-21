@@ -253,14 +253,14 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 	// TODO used for editing??? later
 	@SuppressWarnings("unchecked")
 	private void createGraphLines(VisualNode n, BooleanProperty show) {
-		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(n.getEdges(Direction.OUT));
+		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(n.edges(Direction.OUT));
 		for (VisualEdge edge : edges) {
 			createGraphLine(edge, show);
 		}
 	}
 
 	private String getEdgeLabel(Edge e) {
-		return e.edgeFactory().edgeClassName(e.getClass());
+		return e.factory().edgeClassName(e.getClass());
 
 	}
 
@@ -268,7 +268,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		VisualNode startNode = (VisualNode) edge.startNode();
 		VisualNode endNode = (VisualNode) edge.endNode();
 		@SuppressWarnings("unchecked")
-		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.getEdges(Direction.OUT),
+		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.edges(Direction.OUT),
 				selectZeroOrMany(notQuery(hasTheLabel(getEdgeLabel(edge)))));
 		/*
 		 * edge labels of identical lines will obscure each other. Therefore we have to

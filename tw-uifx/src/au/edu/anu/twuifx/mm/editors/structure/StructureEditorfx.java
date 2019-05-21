@@ -31,9 +31,9 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 import org.apache.commons.text.WordUtils;
-import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import au.edu.anu.twapps.mm.GraphState;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -65,17 +65,17 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		if (haveSpecification()) {
-			Iterable<AotNode> childSpecs = specifications.getChildSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
+			Iterable<TreeGraphDataNode> childSpecs = specifications.getChildSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
 					editingNode.getClassValue());
-			List<AotNode> allowedChildSpecs = newChildList(childSpecs);
-			List<AotNode> orphanedChildren = orphanedChildList(childSpecs);
-			Iterable<AotNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
+			List<TreeGraphDataNode> allowedChildSpecs = newChildList(childSpecs);
+			List<TreeGraphDataNode> orphanedChildren = orphanedChildList(childSpecs);
+			Iterable<TreeGraphDataNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
 					editingNode.getClassValue());
-			List<Pair<String, AotNode>> allowedEdges = newEdgeList(edgeSpecs);
+			List<Pair<String, TreeGraphDataNode>> allowedEdges = newEdgeList(edgeSpecs);
 
 			if (!allowedChildSpecs.isEmpty()) {
 				Menu mu = MenuLabels.addMenu(cm,MenuLabels.ML_NEW);
-				for (AotNode child: allowedChildSpecs) {
+				for (TreeGraphDataNode child: allowedChildSpecs) {
 					addOptionNewChild(mu,child);
 				}
 				// add new children options
@@ -127,7 +127,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 
 	}
-	private void addOptionNewChild(Menu mu, AotNode childRoot) {
+	private void addOptionNewChild(Menu mu, TreeGraphDataNode childRoot) {
 		String label = specifications.getLabel(childRoot);
 		MenuItem mi = new MenuItem(label);
 		mu.getItems().add(mi);
@@ -146,7 +146,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			userName = editingNode.getUniqueName(label, userName);
 			// make the node
 			newChild = editingNode.newChild(childRoot,label,userName);
-			Iterable<AotNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
+			Iterable<TreeGraphDataNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
 			
 			// build the properties
 			controller.onNewNode(newChild);

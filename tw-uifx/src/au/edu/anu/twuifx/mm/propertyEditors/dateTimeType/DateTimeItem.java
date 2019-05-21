@@ -34,29 +34,30 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twcore.specificationCheck.Checkable;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 
 public class DateTimeItem extends SimplePropertyItem{
 
-	public DateTimeItem(String key, AotNode n, boolean canEdit, String category, String description,
+	public DateTimeItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description,
 			Checkable checker) {
 		super(key, n, canEdit, category, description, checker);
 	}
 	@Override
 	public Object getValue() {
-		return node.getPropertyValue(key).toString();
+		return node.properties().getPropertyValue(key).toString();
 	}
 
 	@Override
 	public void setValue(Object value) {
 		//TODO This will be wrong - check later
-		DateTimeType oldValue = (DateTimeType) node.getPropertyValue(key);
+		DateTimeType oldValue = (DateTimeType) node.properties().getPropertyValue(key);
 		DateTimeType newValue = DateTimeType.valueOf((String) value);
 		if (oldValue.getDateTime() != newValue.getDateTime()) {
-			node.addProperty(key, newValue);
+//			node.addProperty(key, newValue);
+			node.properties().setProperty(key, newValue);
 			checker.validateGraph();
 		}
 	}

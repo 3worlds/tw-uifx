@@ -36,11 +36,14 @@ import java.util.TimerTask;
 
 import com.sun.javafx.application.LauncherImpl;
 
-import au.edu.anu.rscs.aot.graph.AotGraph;
-import au.edu.anu.rscs.aot.graph.AotNode;
+
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twuifx.mr.view.MrController;
+import fr.cnrs.iees.graph.impl.ALEdge;
+import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -54,13 +57,13 @@ import javafx.stage.Stage;
  * Date 18 Dec. 2018
  */
 public class ModelRunnerfx extends Application {
-	private static AotNode uiNode;
-	private static AotGraph config;
+	private static TreeGraphDataNode uiNode;
+	private static TreeGraph<TreeGraphNode,ALEdge> config;
 	private MrUIManager uiManager;
 	private MrController controller;
 	private Stage stage;
 
-	public static void launchUI(AotGraph config1, String[] args) {
+	public static void launchUI(TreeGraph<TreeGraphNode,ALEdge> config1, String[] args) {
 		config = config1;
 		//uiNode = config.findNode(N_UI.toString() + ":");
 		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
@@ -76,10 +79,10 @@ public class ModelRunnerfx extends Application {
 	@Override
 	public void init() throws Exception {
 		// we need the ordered list of nodes to initialise
-		//AotList<AotNode> list = config.getInitialiser().getInitialisationList();
+		//AotList<TreeGraphDataNode> list = config.getInitialiser().getInitialisationList();
 		int i = 1;
 //		double size = list.size();
-//		for (AotNode n : list) {
+//		for (TreeGraphDataNode n : list) {
 //			try {
 //				initNodeName = n.displayName();
 //				double progress = i / size;

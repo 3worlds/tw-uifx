@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.1.1 (Tue May 21 14:39:41 CEST 2019)
+ ant and ivy scripts for project <tw-uifx> version 0.1.0 (Mon May 06 15:13:17 CEST 2019)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -13,7 +13,7 @@
 
 	<info	organisation="au.edu.anu.tw-uifx"
 			module="tw-uifx"
-			revision="0.1.1"
+			revision="0.1.0"
 			status="integration">
 		<license name="gpl3" url="https://www.gnu.org/licenses/gpl-3.0.txt"/>
 		<description>This module contains only fx code for the UI of ModelMaker and ModelRunner.</description>
@@ -31,11 +31,11 @@
 
 	<dependencies>
 		<dependency org="fr.ens.biologie" name="generics" rev="[0.1.0,)"/>
-		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="[0.2.0,)"/>
-		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="[0.1.1,)"/>
-		<dependency org="au.edu.anu.rscs.aot" name="aot" rev="[0.1.2,)"/>
-		<dependency org="au.edu.anu.tw-apps" name="tw-apps" rev="[0.1.1,)"/>
-		<dependency org="au.edu.anu.rscs.aot" name="qgraph" rev="[0.1.1,)"/>
+		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="0.1.0"/>
+		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="[0.1.0,)"/>
+		<dependency org="au.edu.anu.rscs.aot" name="aot" rev="[0.1.0,)"/>
+		<dependency org="au.edu.anu.tw-apps" name="tw-apps" rev="[0.1.0,)"/>
+		<dependency org="au.edu.anu.rscs.aot" name="qgraph" rev="[0.1.0,)"/>
 		<dependency org="org.openjfx" name="javafx-fxml" rev="11+" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-controls" rev="11+" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-graphics" rev="11+" m:classifier="linux"/>
@@ -44,6 +44,7 @@
 		<dependency org="org.openjfx" name="javafx-media" rev="11+" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-swing" rev="11+" m:classifier="linux"/>
 		<dependency org="org.controlsfx" name="controlsfx" rev="11.0.0"/>
+		<!-- <dependency org="org.controlsfx" name="controlsfx" rev="8.40.14"/>-->
 		<dependency org="org.apache.commons" name="commons-math" rev="2.+"/>
 	</dependencies>
 

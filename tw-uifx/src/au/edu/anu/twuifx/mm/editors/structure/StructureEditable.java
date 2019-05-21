@@ -30,7 +30,8 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
-import au.edu.anu.rscs.aot.graph.AotNode;
+
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import javafx.util.Pair;
 
 /**
@@ -44,15 +45,15 @@ public interface StructureEditable {
 	 * Filters a list of possible children depending on current state of the
 	 * configuration
 	 */
-	public List<AotNode> newChildList(Iterable<AotNode> childNodeSpecs);
+	public List<TreeGraphDataNode> newChildList(Iterable<TreeGraphDataNode> childNodeSpecs);
 
 	/*
 	 * Filters a list of edge labels and eligible node pairs to be connected from a
 	 * list of all possible edge specifications
 	 */
-	public List<Pair<String, AotNode>> newEdgeList(Iterable<AotNode> edgeSpecs);
+	public List<Pair<String, TreeGraphDataNode>> newEdgeList(Iterable<TreeGraphDataNode> edgeSpecs);
 
-	public List<AotNode> orphanedChildList(Iterable<AotNode> childSpecs);
+	public List<TreeGraphDataNode> orphanedChildList(Iterable<TreeGraphDataNode> childSpecs);
 	
 	public String promptForNewNode(String label,String promptName);
 

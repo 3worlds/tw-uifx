@@ -34,7 +34,7 @@ package au.edu.anu.twuifx.mr;
 import java.util.List;
 
 import au.edu.anu.rscs.aot.collections.DynamicList;
-import au.edu.anu.rscs.aot.graph.AotNode;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.stage.Window;
@@ -56,16 +56,16 @@ public class MrUIManager {
 	private Window parent;
 //	private List<ElementUserInterfacefx> widgets;
 
-//	public MrUIManager(AotNode userInterface, HBox toolBar, TabPane topLeft, TabPane topRight, TabPane bottomLeft,
+//	public MrUIManager(TreeGraphDataNode userInterface, HBox toolBar, TabPane topLeft, TabPane topRight, TabPane bottomLeft,
 //			TabPane bottomRight, HBox statusBar, Menu widgetMenu, Window window) {
 //		this.parent = window;
 //		this.pref = pref;
 //		this.userMenu = widgetMenu;
 //		widgets = new ArrayList<>();
 //
-//		AotNode toolbarTopNode = (AotNode) get(userInterface.getChildren(),
+//		TreeGraphDataNode toolbarTopNode = (TreeGraphDataNode) get(userInterface.getChildren(),
 //				selectZeroOrOne(hasTheLabel(N_TOOLBARTOP.toString())));
-//		AotNode toolbarBottomNode = (AotNode) get(userInterface.getChildren(),
+//		TreeGraphDataNode toolbarBottomNode = (TreeGraphDataNode) get(userInterface.getChildren(),
 //				selectZeroOrOne(hasTheLabel(N_TOOLBARBOTTOM.toString())));
 //		if (toolbarTopNode != null)
 //			buildBar(toolbarTopNode, toolBar);
@@ -76,9 +76,9 @@ public class MrUIManager {
 //		buildQuadrant(N_BOTTOMLEFTPANEL.toString(), userInterface, bottomLeft);
 //		buildQuadrant(N_BOTTOMRIGHTPANEL.toString(), userInterface, bottomRight);
 //
-//		// List<AotNode> tabNodes = (List<AotNode>) get(userInterface, children(),
+//		// List<TreeGraphDataNode> tabNodes = (List<TreeGraphDataNode>) get(userInterface, children(),
 //		// selectZeroOrMany(hasTheLabel("tab")));
-//		// for (AotNode tabNode : tabNodes) {
+//		// for (TreeGraphDataNode tabNode : tabNodes) {
 //		// UIQuadrants quad = (UIQuadrants) tabNode.getPropertyValue("quadrant");
 //		// switch (quad) {
 //		// case TopLeftPanel: {
@@ -102,9 +102,9 @@ public class MrUIManager {
 //	}
 
 //	@SuppressWarnings("unchecked")
-	private void buildQuadrant(String label, AotNode uiNode, TabPane tabPane) {
-//		List<AotNode> qNodes = (List<AotNode>) get(uiNode.getChildren(), selectZeroOrMany(hasTheLabel(label)));
-//		for (AotNode n : qNodes) {
+	private void buildQuadrant(String label, TreeGraphDataNode uiNode, TabPane tabPane) {
+//		List<TreeGraphDataNode> qNodes = (List<TreeGraphDataNode>) get(uiNode.getChildren(), selectZeroOrMany(hasTheLabel(label)));
+//		for (TreeGraphDataNode n : qNodes) {
 //			tabPane.getTabs().add(createTab(n));
 //		}
 	}
@@ -114,7 +114,7 @@ public class MrUIManager {
 //			widget.loadPreferences(pref);
 //	}
 
-//	private Tab createTab(AotNode tabNode) {
+//	private Tab createTab(TreeGraphDataNode tabNode) {
 //		Tab tab = new Tab(tabNode.getName());
 //		tab.closableProperty().set(false);
 //		TabLayoutTypes layout = (TabLayoutTypes) tabNode.getPropertyValue("layout");
@@ -172,10 +172,10 @@ public class MrUIManager {
 //		}
 //	}
 
-	private List<AotNode> sort(DynamicList<AotNode> widgetNodes) {
+	private List<TreeGraphDataNode> sort(DynamicList<TreeGraphDataNode> widgetNodes) {
 		widgetNodes.sort((first, second) -> {
-			Integer i1 = (Integer) first.getPropertyValue("order");
-			Integer i2 = (Integer) second.getPropertyValue("order");
+			Integer i1 = (Integer) first.properties().getPropertyValue("order");
+			Integer i2 = (Integer) second.properties().getPropertyValue("order");
 			return i1.compareTo(i2);
 		});
 		return widgetNodes;
@@ -186,8 +186,8 @@ public class MrUIManager {
 //			Tooltip.install(nodefx, new Tooltip(tip));
 //	}
 
-//	private void buildBar(AotNode parentNode, HBox bar) {
-//		for (AotNode widgetNode : sort(parentNode.getChildren())) {
+//	private void buildBar(TreeGraphDataNode parentNode, HBox bar) {
+//		for (TreeGraphDataNode widgetNode : sort(parentNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -197,11 +197,11 @@ public class MrUIManager {
 //
 //	}
 
-//	private Pane createAccordianWidgets(AotNode tabNode) {
+//	private Pane createAccordianWidgets(TreeGraphDataNode tabNode) {
 //		Accordion accordion = new Accordion();
 //		BorderPane pane = new BorderPane();
 //		pane.setCenter(accordion);
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -214,7 +214,7 @@ public class MrUIManager {
 //		return pane;
 //	}
 
-//	private Pane createGridPaneWidgets(AotNode tabNode) {
+//	private Pane createGridPaneWidgets(TreeGraphDataNode tabNode) {
 //		GridPane pane = new GridPane();
 //		pane.setHgap(5);
 //		pane.setVgap(5);
@@ -225,7 +225,7 @@ public class MrUIManager {
 //			nCols++;
 //		int col = 0;
 //		int row = 0;
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -240,12 +240,12 @@ public class MrUIManager {
 //		return pane;
 //	}
 
-//	private Pane createTilePaneWidgets(AotNode tabNode) {
+//	private Pane createTilePaneWidgets(TreeGraphDataNode tabNode) {
 //		// This does not work for some reason
 //		// All widgets are added but only the first appears
 //		// Do a test to see if it works as content of a tab.
 //		TilePane tilePane = new TilePane();
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -256,11 +256,11 @@ public class MrUIManager {
 //		return tilePane;
 //	}
 
-//	private Pane createTabPaneWidgets(AotNode tabNode) {
+//	private Pane createTabPaneWidgets(TreeGraphDataNode tabNode) {
 //		BorderPane pane = new BorderPane();
 //		TabPane tabPane = new TabPane();
 //		pane.setCenter(tabPane);
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -273,9 +273,9 @@ public class MrUIManager {
 //		return pane;
 //	}
 
-//	private Pane createStackPaneWidgets(AotNode tabNode) {
+//	private Pane createStackPaneWidgets(TreeGraphDataNode tabNode) {
 //		StackPane pane = new StackPane();
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -286,9 +286,9 @@ public class MrUIManager {
 //		return null;
 //	}
 //
-//	private Pane createAnchorPaneWidgets(AotNode tabNode) {
+//	private Pane createAnchorPaneWidgets(TreeGraphDataNode tabNode) {
 //		AnchorPane pane = new AnchorPane();
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -300,9 +300,9 @@ public class MrUIManager {
 //		return pane;
 //	}
 //
-//	private Pane createVBoxWidgets(AotNode tabNode) {
+//	private Pane createVBoxWidgets(TreeGraphDataNode tabNode) {
 //		VBox pane = new VBox();
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -312,9 +312,9 @@ public class MrUIManager {
 //		return pane;
 //	}
 //
-//	private Pane createHBoxWidgets(AotNode tabNode) {
+//	private Pane createHBoxWidgets(TreeGraphDataNode tabNode) {
 //		HBox pane = new HBox();
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -324,9 +324,9 @@ public class MrUIManager {
 //		return pane;
 //	}
 //
-//	private Pane createBorderPaneWidgets(AotNode tabNode) {
+//	private Pane createBorderPaneWidgets(TreeGraphDataNode tabNode) {
 //		BorderPane pane = new BorderPane();
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());
@@ -352,13 +352,13 @@ public class MrUIManager {
 //		return pane;
 //	}
 //
-//	private Pane createFlowPaneWidgets(AotNode tabNode) {
+//	private Pane createFlowPaneWidgets(TreeGraphDataNode tabNode) {
 //		FlowPane pane = new FlowPane();
 //		pane.hgapProperty().set((Integer) tabNode.getPropertyValue(FlowLayoutParameters.hGap.toString(), 1));
 //		pane.vgapProperty().set((Integer) tabNode.getPropertyValue(FlowLayoutParameters.vGap.toString(), 1));
 //		// pane.setAlignment(Pos.valueOf((String)
 //		// tabNode.getPropertyValue(FlowLayoutParameters.align.toString())));
-//		for (AotNode widgetNode : sort(tabNode.getChildren())) {
+//		for (TreeGraphDataNode widgetNode : sort(tabNode.getChildren())) {
 //			ElementUserInterfacefx widget = (ElementUserInterfacefx) widgetNode;
 //			Node nodefx = widget.getUserInterface();
 //			addToolTip(nodefx, widgetNode.displayName());

@@ -37,9 +37,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import au.edu.anu.omhtk.jars.Jars;
-import au.edu.anu.rscs.aot.graph.AotGraph;
 import au.edu.anu.twcore.jars.SimulatorJar;
 import au.edu.anu.twcore.project.ProjectPaths;
+import fr.cnrs.iees.graph.impl.ALEdge;
+import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
 /**
  * <p>
@@ -147,7 +149,7 @@ public class MrLauncher implements ProjectPaths {
 //		return config;
 //	}
 
-	private static void loadUserClasses(AotGraph config) {
+	private static void loadUserClasses(TreeGraph<TreeGraphNode,ALEdge> config) {
 //		File userJar = Project.makeFile(UserProjectJar.USERPROJECTJAR);
 //		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 //		URL userUrl;

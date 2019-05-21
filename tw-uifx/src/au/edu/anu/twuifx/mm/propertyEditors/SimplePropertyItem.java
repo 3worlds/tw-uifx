@@ -36,7 +36,7 @@ import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twcore.specificationCheck.Checkable;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import javafx.beans.value.ObservableValue;
 
 /**
@@ -45,14 +45,14 @@ import javafx.beans.value.ObservableValue;
  * Date 14 Feb. 2019
  */
 public class SimplePropertyItem implements Item {
-	protected TreeGraphNode node;
+	protected TreeGraphDataNode node;
 	protected String key;
 	protected boolean isEditable;
 	protected String category;
 	protected Checkable checker;
 	private String description;
 
-	public SimplePropertyItem(String key, TreeGraphNode n, boolean canEdit, String category, String description,Checkable checker) {
+	public SimplePropertyItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description,Checkable checker) {
 		this.node = n;
 		this.key = key;
 		this.isEditable = canEdit;
@@ -68,7 +68,7 @@ public class SimplePropertyItem implements Item {
 
 	@Override
 	public Class<?> getType() {
-		return node.getPropertyClass(key);
+		return node.properties().getPropertyClass(key);
 	}
 
 	@Override
@@ -88,14 +88,15 @@ public class SimplePropertyItem implements Item {
 
 	@Override
 	public Object getValue() {
-		return node.getPropertyValue(key);
+		return node.properties().getPropertyValue(key);
 	}
 
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
-			node.addProperty(key, newValue);
+//			node.addProperty(key, newValue);
+			node.properties().setProperty(key, newValue);
 			checker.validateGraph();
 			GraphState.setChanged(true);
 		}

@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.List;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 
 /**
  * Author Ian Davies
@@ -57,41 +58,41 @@ public interface Specifications {
 	 * runs all checks against the given node . Nodes without an spec can't be
 	 * checked. I'm avoiding complies(AotGraph graph) at the moment
 	 */
-	public boolean complies(AotNode node, TreeNode root);
+	public boolean complies(TreeGraphDataNode node, TreeNode root);
 
 	/*
 	 * get specification of a given node from the configuration graph. If null, it
 	 * can't be checked.
 	 */
-	public AotNode getSpecificationOf(AotNode configurationNode);
+	public TreeGraphDataNode getSpecificationOf(TreeGraphDataNode configurationNode);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and
 	 * class.
 	 */
-	public Iterable<AotNode> getChildSpecificationsOf(String parentLabel, AotNode parentSpec, String parentClass);
+	public Iterable<TreeGraphDataNode> getChildSpecificationsOf(String parentLabel, TreeGraphDataNode parentSpec, String parentClass);
 
 	/* edge specification nodes of a node with this label and class */
-	public Iterable<AotNode> getEdgeSpecificationsOf(String parentLabel, AotNode parentSpec, String parentClass);
+	public Iterable<TreeGraphDataNode> getEdgeSpecificationsOf(String parentLabel, TreeGraphDataNode parentSpec, String parentClass);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<AotNode> getPropertySpecifications(AotNode root);
+	public Iterable<TreeGraphDataNode> getPropertySpecifications(TreeGraphDataNode root);
 
 	/* Get multiplicity of a property specification */
-	public IntegerRange getMultiplicity(AotNode root, String key);
+	public IntegerRange getMultiplicity(TreeGraphDataNode root, String key);
 
-	public IntegerRange getMultiplicity(AotNode spec);
+	public IntegerRange getMultiplicity(TreeGraphDataNode spec);
 
 	/* True if node name must begin with upper case letter */
-	public boolean nameStartsWithUpperCase(AotNode root);
+	public boolean nameStartsWithUpperCase(TreeGraphDataNode root);
 
 	/* returns just the label for nodes of this specification */
-	public String getLabel(AotNode root);
+	public String getLabel(TreeGraphDataNode root);
 
 	/* Items in the object table of these constraints. Preserve the order */
-	public List<String> getConstraintOptions(AotNode root, String constraintClass);
+	public List<String> getConstraintOptions(TreeGraphDataNode root, String constraintClass);
 
-	public String getEdgeToNodeLabel(AotNode edgeSpec);
+	public String getEdgeToNodeLabel(TreeGraphDataNode edgeSpec);
 
 	// TODO more to come...
 

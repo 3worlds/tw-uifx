@@ -80,7 +80,6 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.IMMModel;
-import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
@@ -95,7 +94,9 @@ import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualisablefx;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiser;
 import au.edu.anu.twuifx.utils.UiHelpers;
-import au.edu.anu.rscs.aot.graph.AotNode;
+import fr.cnrs.iees.graph.DataHolder;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
 public class MmController implements ErrorMessageListener, IMMController {
 
@@ -698,19 +699,21 @@ public class MmController implements ErrorMessageListener, IMMController {
 	private void fillNodePropertySheet(VisualNode visualNode) {
 		nodePropertySheet.getItems().clear();
 		if (visualNode != null) {
-			AotNode cn = visualNode.getConfigNode();
+			TreeGraphNode cn = visualNode.getConfigNode();
 			boolean showNonEditables = true;
-			ObservableList<Item> list = getNodeItems(cn, cn.id(), showNonEditables);
+			ObservableList<Item> list = null;
+			if (cn instanceof DataHolder)
+				list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables);
 			nodePropertySheet.getItems().setAll(list);
 		}
 	}
 
-	private ObservableList<Item> getNodeItems(AotNode node, String category, boolean showNonEditable) {
+	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable) {
 
 		ObservableList<Item> result = FXCollections.observableArrayList();
-		for (String key : node.getKeysAsSet())
-			if (node.getPropertyValue(key) != null) {
-				boolean editable = model.propertyEditable(node.getLabel(), key);
+		for (String key : node.properties().getKeysAsSet())
+			if (node.properties().getPropertyValue(key) != null) {
+				boolean editable = model.propertyEditable(node.classId(), key);
 				if (editable || showNonEditable) {
 					String propertyDesciption = "";// TODO: Property description should be from the archetype?
 					result.add(makeItemType(key, node, editable, category, propertyDesciption));
@@ -735,15 +738,17 @@ public class MmController implements ErrorMessageListener, IMMController {
 			// Hide clutter by not showing collapsed trees;
 			if (!vn.isCollapsed()) {
 				String cat = vn.getCategory();
-				AotNode cn = vn.getConfigNode();
-				ObservableList<Item> obsSubList = getNodeItems(cn, cat, showNonEditables);
+				TreeGraphNode cn = vn.getConfigNode();
+				ObservableList<Item> obsSubList = null;
+				if (cn instanceof DataHolder)
+					obsSubList = getNodeItems((TreeGraphDataNode) cn, cat, showNonEditables);
 				obsList.addAll(obsSubList);
 			}
 		}
 		allElementsPropertySheet.getItems().setAll(obsList);
 	}
 
-	private Item makeItemType(String key, AotNode n, boolean editable, String category, String description) {
+	private Item makeItemType(String key, TreeGraphDataNode n, boolean editable, String category, String description) {
 //		Object value = n.getPropertyValue(key);
 		// TODO other Item types to come...
 		// if (value instanceof FileType) {

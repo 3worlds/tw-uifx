@@ -34,10 +34,10 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twcore.specificationCheck.Checkable;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 
 /**
@@ -47,18 +47,19 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
  */
 public class StatsTypeItem extends SimplePropertyItem{
 
-	public StatsTypeItem(String key, AotNode n, boolean canEdit, String category, String description,
+	public StatsTypeItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description,
 			Checkable checker) {
 		super(key, n, canEdit, category, description, checker);
 	}
 	
 	@Override
 	public void setValue(Object newString) {
-		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) node.getPropertyValue(key);
+		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) node.properties().getPropertyValue(key);
 		String oldString = oldValue.toString();
 		if (!oldString.equals(newString)) {
 			StatisticalAggregatesSet newValue = StatisticalAggregatesSet.valueOf((String) newString);
-			node.addProperty(key, newValue);
+//			node.addProperty(key, newValue);
+			node.properties().setProperty(key, newValue);
 			GraphState.setChanged(true);
 			checker.validateGraph();
 		}

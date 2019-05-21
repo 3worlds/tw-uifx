@@ -32,12 +32,12 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.edu.anu.rscs.aot.graph.AotNode;
 import au.edu.anu.rscs.aot.util.IntegerRange;
-import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
+import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.Configuration;
 import javafx.util.Pair;
@@ -63,7 +63,7 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	}
 
 	@Override
-	public AotNode getConfigNode() {
+	public TreeGraphDataNode getConfigNode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -88,7 +88,7 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	public List<VisualNode> graphRoots() {
 		List<VisualNode> result = new ArrayList<>();
 		//TODO maybe TYPECAST CRASH here??
-		VisualGraph vg = (VisualGraph) visualNode.treeNodeFactory();
+		VisualGraph vg = (VisualGraph) visualNode.factory();
 		for (VisualNode root : vg.roots())
 			result.add(root);
 		return result;
@@ -122,8 +122,8 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	public String getUniqueName(String label, String name) {
 //		// the id system has now been taken over by Identity system - we cant get one without it been added so we are lost here.
 //		// must do duplicate code I think!!!
-//		AotNode n = getConfigNode();
-//		Iterable<AotNode> nodes = n.nodeFactory()
+//		TreeGraphDataNode n = getConfigNode();
+//		Iterable<TreeGraphDataNode> nodes = n.nodeFactory()
 //				.findNodesByReference(label + PairIdentity.LABEL_NAME_SEPARATOR + name);
 //		if (!nodes.iterator().hasNext())
 //			return name;
@@ -170,14 +170,16 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 	}
 
 	@Override
-	public VisualNode newChild(AotNode specs, String label, String name) {
-		AotNode configParent = getConfigNode();
+	public VisualNode newChild(TreeNode specs, String label, String name) {
+		TreeGraphDataNode configParent = getConfigNode();
 
-		AotNode configChild = (AotNode) configParent.treeNodeFactory().makeTreeNode(configParent,
-				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
+		TreeGraphDataNode configChild = (TreeGraphDataNode)	configParent
+				.factory().makeNode(label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
+		configChild.connectParent(configParent);
 
-		VisualNode childVisualNode =  (VisualNode) visualNode.treeNodeFactory().makeTreeNode(visualNode,
+		VisualNode childVisualNode =  (VisualNode) visualNode.factory().makeNode(
 				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
+		childVisualNode.connectParent(visualNode);
 		childVisualNode.setConfigNode(configChild);
 
 		return childVisualNode;
