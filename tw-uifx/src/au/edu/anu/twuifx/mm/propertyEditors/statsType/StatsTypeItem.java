@@ -34,7 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.twapps.mm.GraphState;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.specificationCheck.Checkable;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;

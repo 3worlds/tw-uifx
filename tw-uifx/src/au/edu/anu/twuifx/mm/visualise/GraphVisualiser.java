@@ -41,16 +41,17 @@ import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraph;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -80,7 +81,7 @@ import javafx.util.Duration;
  */
 public final class GraphVisualiser implements GraphVisualisablefx {
 
-	private final VisualGraph visualGraph;
+	private final TreeGraph<VisualNode, VisualEdge>  visualGraph;
 	private final Pane pane;
 	private final IntegerProperty nodeRadius;
 	private final BooleanProperty showTreeLine;
@@ -94,7 +95,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 	private static final Double animateDuration = 1000.0;
 	private final IMMController controller;
 
-	public GraphVisualiser(VisualGraph visualGraph, //
+	public GraphVisualiser(TreeGraph<VisualNode, VisualEdge>  visualGraph, //
 			Pane pane, //
 			IntegerProperty nodeRadius, //
 			BooleanProperty showTreeLine, //

@@ -38,7 +38,7 @@ import javax.tools.ToolProvider;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.project.ProjectPaths;
-import au.edu.anu.twcore.project.TWPaths;
+import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
@@ -55,7 +55,7 @@ import javafx.stage.Stage;
  *
  * Date 10 Dec. 2018
  */
-public class ModelMakerfx extends Application implements ProjectPaths, TWPaths {
+public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	private Stage mainStage;
 	private Parent root;
 	private MmController controller;

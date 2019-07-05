@@ -39,10 +39,10 @@ import au.edu.anu.twuifx.exceptions.TwuifxException;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
-import fr.cnrs.iees.twcore.constants.Configuration;
+import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import javafx.util.Pair;
 
-public class SpecifiedNode implements SpecifiableNode, Configuration {
+public class SpecifiedNode implements SpecifiableNode {
 	private VisualNode visualNode;
 
 	public SpecifiedNode(VisualNode visualNode) {
@@ -70,7 +70,7 @@ public class SpecifiedNode implements SpecifiableNode, Configuration {
 
 	@Override
 	public boolean canDelete() {
-		return getLabel().equals(N_ROOT);
+		return getLabel().equals(ConfigurationNodeLabels.N_ROOT.label());
 	}
 
 	@Override

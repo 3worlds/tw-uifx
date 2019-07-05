@@ -77,9 +77,9 @@ import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.GraphState;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.IMMModel;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
@@ -88,6 +88,7 @@ import au.edu.anu.twcore.errorMessaging.Verbosity;
 import au.edu.anu.twcore.errorMessaging.archetype.ArchComplianceManager;
 import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
@@ -95,6 +96,7 @@ import au.edu.anu.twuifx.mm.visualise.GraphVisualisablefx;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiser;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.DataHolder;
+import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
@@ -208,7 +210,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
 	private ObjectProperty<Font> fontProperty;
 
-	private VisualGraph visualGraph;
+	private TreeGraph<VisualNode, VisualEdge>  visualGraph;
 	private Font font;
 	private int fontSize;
 
@@ -670,8 +672,8 @@ public class MmController implements ErrorMessageListener, IMMController {
 	}
 
 	@Override
-	public void onProjectOpened(VisualGraph visualGraph) {
-		this.visualGraph = visualGraph;
+	public void onProjectOpened(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+		this.visualGraph = layoutGraph;
 		Cursor oldCursor = setWaitCursor();
 		getPreferences();
 		visualiser = new GraphVisualiser(visualGraph, //
@@ -809,5 +811,6 @@ public class MmController implements ErrorMessageListener, IMMController {
 			newNode = null;
 		}
 	}
+
 
 }

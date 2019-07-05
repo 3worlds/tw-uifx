@@ -36,7 +36,7 @@ import java.util.Optional;
 
 import au.edu.anu.twapps.dialogs.IDialogs;
 import au.edu.anu.twapps.dialogs.YesNoCancel;
-import au.edu.anu.twcore.project.TWPaths;
+import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.io.GraphFileFormats;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -82,7 +82,7 @@ public class Dialogsfx implements IDialogs {
 		if (!currentPath.equals(""))
 			dc.setInitialDirectory(new File(currentPath));
 		else
-			dc.setInitialDirectory(new File(TWPaths.USER_ROOT));
+			dc.setInitialDirectory(new File(TwPaths.USER_ROOT));
 		dc.setTitle(title);
 		return dc.showDialog(owner);
 	}
@@ -122,7 +122,7 @@ public class Dialogsfx implements IDialogs {
 	@Override
 	public File getExternalProjectFile() {
 		FileChooser fc = new FileChooser();
-		fc.setInitialDirectory(new File(TWPaths.USER_ROOT));
+		fc.setInitialDirectory(new File(TwPaths.USER_ROOT));
 		String[] extList = GraphFileFormats.TWG.extensions();
 		for (String ext : extList)
 			fc.getExtensionFilters().add(

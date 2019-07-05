@@ -29,7 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.graphState;
 
-import au.edu.anu.twapps.mm.IGraphState;
+import au.edu.anu.twcore.graphState.IGraphState;
 import au.edu.anu.twcore.project.Project;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;

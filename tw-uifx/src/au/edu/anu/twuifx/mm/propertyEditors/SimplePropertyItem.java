@@ -34,7 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet.Item;
 
-import au.edu.anu.twapps.mm.GraphState;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.specificationCheck.Checkable;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import javafx.beans.value.ObservableValue;
