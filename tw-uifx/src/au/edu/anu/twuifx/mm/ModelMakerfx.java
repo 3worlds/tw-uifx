@@ -134,6 +134,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 
 	public static void main(String[] args) {
 		launch(args);
+		//System.out.println("OK");
 	}
 
 }
