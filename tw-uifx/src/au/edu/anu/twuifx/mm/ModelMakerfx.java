@@ -37,9 +37,11 @@ import java.io.IOException;
 import javax.tools.ToolProvider;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
+import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -81,18 +83,13 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	private void checkResources() {
 		File file = new File(TW_ROOT + File.separator + TW_DEP_JAR);
 		if (!file.exists())
-			Dialogs.errorAlert("Resource Error", "Required Java dependency jar not found",
+			Dialogs.warnAlert("Resource Error", "Required Java dependency jar not found",
 					"Use TwSetup to create " + file.getAbsolutePath());
 
 		boolean haveCompiler = !(ToolProvider.getSystemJavaCompiler() == null);
 		if (!haveCompiler)
-			Dialogs.errorAlert("Resource Error", "Java compiler not found",
+			Dialogs.warnAlert("Resource Error", "Java compiler not found",
 					"Check you have the Java Development Kit installed");
-
-		if (!file.exists() || !haveCompiler) {
-			Platform.exit();
-			System.exit(0);
-		}
 	}
 
 	@Override
@@ -107,6 +104,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage.setTitle("3Worlds Model Maker");
 		createMainWindow();
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
+		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(),controller.getUserProjectPathProperty()));
 		checkResources();
 		setDefaultFrameSize();
 		mainStage.show();

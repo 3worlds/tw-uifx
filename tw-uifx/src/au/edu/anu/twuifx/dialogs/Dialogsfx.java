@@ -57,7 +57,7 @@ import javafx.stage.Window;
  * Date 12 Dec. 2018
  */
 public class Dialogsfx implements IDialogs {
-	private  Window owner;
+	private Window owner;
 
 	/**
 	 * @param owner the application window - dialog parent
@@ -66,14 +66,28 @@ public class Dialogsfx implements IDialogs {
 		this.owner = owner;
 	}
 
-	@Override
-	public void errorAlert(String title, String header, String content) {
-		Alert alert = new Alert(AlertType.ERROR);
+	private void alert(AlertType type, String title, String header, String content) {
+		Alert alert = new Alert(type);
 		alert.initOwner(owner);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
 		alert.setContentText(content);
 		alert.showAndWait();
+	}
+
+	@Override
+	public void errorAlert(String title, String header, String content) {
+		alert(AlertType.ERROR,title,header,content);
+	}
+
+	@Override
+	public void infoAlert(String title, String header, String content) {
+		alert(AlertType.INFORMATION,title,header,content);
+	}
+
+	@Override
+	public void warnAlert(String title, String header, String content) {
+		alert(AlertType.WARNING,title,header,content);
 	}
 
 	@Override
@@ -156,7 +170,7 @@ public class Dialogsfx implements IDialogs {
 
 	@Override
 	public boolean editList(String title, String header, String content, Object listView) {
-		Control view = (Control)listView;
+		Control view = (Control) listView;
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle(title);
 		dialog.setHeaderText(header);
@@ -166,11 +180,9 @@ public class Dialogsfx implements IDialogs {
 		BorderPane pane = new BorderPane();
 		dialog.getDialogPane().setContent(pane);
 		dialog.initOwner(owner);
-		pane.setCenter(view);	
+		pane.setCenter(view);
 		Optional<ButtonType> result = dialog.showAndWait();
 		return result.get().equals(ok);
 	}
-
-
 
 }
