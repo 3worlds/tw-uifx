@@ -210,7 +210,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
 	private ObjectProperty<Font> fontProperty;
 
-	private TreeGraph<VisualNode, VisualEdge>  visualGraph;
+	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private Font font;
 	private int fontSize;
 
@@ -555,7 +555,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 
 	// called when opening a project
 	public void getPreferences() {
-		GraphState.initialise(new GraphStatefx(stage.titleProperty(),userProjectPath));
+		GraphState.initialise(new GraphStatefx(stage.titleProperty(), userProjectPath));
 		// create GraphState impl
 		Preferences.initialise(Project.makeProjectPreferencesFile());
 		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
@@ -704,9 +704,10 @@ public class MmController implements ErrorMessageListener, IMMController {
 			TreeGraphNode cn = visualNode.getConfigNode();
 			boolean showNonEditables = true;
 			ObservableList<Item> list = null;
-			if (cn instanceof DataHolder)
+			if (cn instanceof DataHolder) {
 				list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables);
-			nodePropertySheet.getItems().setAll(list);
+				nodePropertySheet.getItems().setAll(list);
+			}
 		}
 	}
 
@@ -742,9 +743,10 @@ public class MmController implements ErrorMessageListener, IMMController {
 				String cat = vn.getCategory();
 				TreeGraphNode cn = vn.getConfigNode();
 				ObservableList<Item> obsSubList = null;
-				if (cn instanceof DataHolder)
+				if (cn instanceof DataHolder) {
 					obsSubList = getNodeItems((TreeGraphDataNode) cn, cat, showNonEditables);
-				obsList.addAll(obsSubList);
+					obsList.addAll(obsSubList);
+				}
 			}
 		}
 		allElementsPropertySheet.getItems().setAll(obsList);
@@ -796,6 +798,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 	}
 
 	private VisualNode newNode;
+
 	@Override
 	public void onNewNode(VisualNode node) {
 		zoomTarget.setCursor(Cursor.WAIT);
@@ -811,6 +814,5 @@ public class MmController implements ErrorMessageListener, IMMController {
 			newNode = null;
 		}
 	}
-
 
 }
