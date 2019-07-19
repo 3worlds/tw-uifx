@@ -38,15 +38,16 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import javafx.util.Pair;
 
 public class SpecifiedNode implements SpecifiableNode {
-	private VisualNode visualNode;
+	private VisualNode selectedVisualNode;
 
 	public SpecifiedNode(VisualNode visualNode) {
-		this.visualNode = visualNode;
+		this.selectedVisualNode = visualNode;
 
 	}
 
@@ -63,9 +64,8 @@ public class SpecifiedNode implements SpecifiableNode {
 	}
 
 	@Override
-	public TreeGraphDataNode getConfigNode() {
-		// TODO Auto-generated method stub
-		return null;
+	public TreeGraphNode getConfigNode() {
+		return selectedVisualNode.getConfigNode();
 	}
 
 	@Override
@@ -81,14 +81,14 @@ public class SpecifiedNode implements SpecifiableNode {
 
 	@Override
 	public String getLabel() {
-		return visualNode.getLabel();
+		return selectedVisualNode.getLabel();
 	}
 
 	@Override
 	public List<VisualNode> graphRoots() {
 		List<VisualNode> result = new ArrayList<>();
 		//TODO maybe TYPECAST CRASH here??
-		VisualGraph vg = (VisualGraph) visualNode.factory();
+		VisualGraph vg = (VisualGraph) selectedVisualNode.factory();
 		for (VisualNode root : vg.roots())
 			result.add(root);
 		return result;
@@ -171,15 +171,15 @@ public class SpecifiedNode implements SpecifiableNode {
 
 	@Override
 	public VisualNode newChild(TreeNode specs, String label, String name) {
-		TreeGraphDataNode configParent = getConfigNode();
+		TreeGraphNode configParent = getConfigNode();
 
 		TreeGraphDataNode configChild = (TreeGraphDataNode)	configParent
 				.factory().makeNode(label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
 		configChild.connectParent(configParent);
 
-		VisualNode childVisualNode =  (VisualNode) visualNode.factory().makeNode(
+		VisualNode childVisualNode =  (VisualNode) selectedVisualNode.factory().makeNode(
 				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
-		childVisualNode.connectParent(visualNode);
+		childVisualNode.connectParent(selectedVisualNode);
 		childVisualNode.setConfigNode(configChild);
 
 		return childVisualNode;
