@@ -32,7 +32,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.List;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import fr.cnrs.iees.graph.TreeNode;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
 /**
  * Author Ian Davies
@@ -46,6 +46,8 @@ import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
  * NOTE: There are two uses: CHECKING compliance and BUILDING a configuration
  * file. Queries are not executed when BUILDING.
  * 
+ * This interface is the contract between the archetype and what a builder (e.g MM) requires
+ * 
  * 
  */
 // Develop in this library but move to tw-core later - saves time!!
@@ -58,41 +60,41 @@ public interface Specifications {
 	 * runs all checks against the given node . Nodes without an spec can't be
 	 * checked. I'm avoiding complies(AotGraph graph) at the moment
 	 */
-	public boolean complies(TreeGraphDataNode node, TreeNode root);
+	public boolean complies(TreeGraphNode node, TreeNode root);
 
 	/*
 	 * get specification of a given node from the configuration graph. If null, it
 	 * can't be checked.
 	 */
-	public TreeGraphDataNode getSpecificationOf(TreeGraphDataNode configurationNode);
+	public TreeGraphNode getSpecificationOf(TreeGraphNode configurationNode);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and
 	 * class.
 	 */
-	public Iterable<TreeGraphDataNode> getChildSpecificationsOf(String parentLabel, TreeGraphDataNode parentSpec, String parentClass);
+	public Iterable<TreeGraphNode> getChildSpecificationsOf(String parentLabel, TreeGraphNode parentSpec, String parentClass);
 
 	/* edge specification nodes of a node with this label and class */
-	public Iterable<TreeGraphDataNode> getEdgeSpecificationsOf(String parentLabel, TreeGraphDataNode parentSpec, String parentClass);
+	public Iterable<TreeGraphNode> getEdgeSpecificationsOf(String parentLabel, TreeGraphNode parentSpec, String parentClass);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<TreeGraphDataNode> getPropertySpecifications(TreeGraphDataNode root);
+	public Iterable<TreeGraphNode> getPropertySpecifications(TreeGraphNode root);
 
 	/* Get multiplicity of a property specification */
-	public IntegerRange getMultiplicity(TreeGraphDataNode root, String key);
+	public IntegerRange getMultiplicity(TreeGraphNode root, String key);
 
-	public IntegerRange getMultiplicity(TreeGraphDataNode spec);
+	public IntegerRange getMultiplicity(TreeGraphNode spec);
 
 	/* True if node name must begin with upper case letter */
-	public boolean nameStartsWithUpperCase(TreeGraphDataNode root);
+	public boolean nameStartsWithUpperCase(TreeGraphNode root);
 
 	/* returns just the label for nodes of this specification */
-	public String getLabel(TreeGraphDataNode root);
+	public String getLabel(TreeGraphNode root);
 
 	/* Items in the object table of these constraints. Preserve the order */
-	public List<String> getConstraintOptions(TreeGraphDataNode root, String constraintClass);
+	public List<String> getConstraintOptions(TreeGraphNode root, String constraintClass);
 
-	public String getEdgeToNodeLabel(TreeGraphDataNode edgeSpec);
+	public String getEdgeToNodeLabel(TreeGraphNode edgeSpec);
 
 	// TODO more to come...
 
