@@ -28,7 +28,10 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.editors.structure;
 
-import au.edu.anu.twcore.archetype.TwArchetype;
+import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
+import fr.cnrs.iees.graph.Tree;
+import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.io.GraphImporter;
 
 /**
  * @author Ian Davies
@@ -37,14 +40,15 @@ import au.edu.anu.twcore.archetype.TwArchetype;
  */
 // Global singleton instance of the 3Warchetype: thread safe and lazy load
 public class TWA {
-	private static TwArchetype instance;
+	private static Tree<? extends TreeNode> instance;
 
 	private TWA() {
 	};
 
-	public static synchronized TwArchetype getInstance() {
+	@SuppressWarnings("unchecked")
+	public static synchronized Tree<? extends TreeNode> getInstance() {
 		if (instance == null) {
-			instance = new TwArchetype();
+			instance = (Tree<? extends TreeNode>) GraphImporter.importGraph("3wArchetype.ugt", IsInValueSetQuery.class);
 		}
 		return instance;
 	}

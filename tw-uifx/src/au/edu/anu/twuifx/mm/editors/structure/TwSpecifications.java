@@ -2,11 +2,12 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 
+import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twcore.archetype.TwArchetype;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 
 public class TwSpecifications implements Specifications{
 
@@ -24,11 +25,7 @@ public class TwSpecifications implements Specifications{
 
 	@Override
 	public TreeGraphNode getSpecificationOf(TreeGraphNode configNode) {
-		System.out.println("classId(): "+configNode.classId()+"; id(): "+configNode.id());
-		System.out.println(TwArchetype.getLabel(configNode.id()));
-
-		return null;
-	}
+		SequenceQuery.get(TWA.getInstance().root(),selectZeroOrMany(CoreQueries.has)
 
 	@Override
 	public Iterable<TreeGraphNode> getChildSpecificationsOf(String parentLabel, TreeGraphNode parentSpec,
