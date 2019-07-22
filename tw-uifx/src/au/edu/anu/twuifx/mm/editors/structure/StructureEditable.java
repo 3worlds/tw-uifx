@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.List;
 
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.util.Pair;
 
@@ -46,7 +47,7 @@ public interface StructureEditable {
 	 * Filters a list of possible children depending on current state of the
 	 * configuration
 	 */
-	public List<TreeNode> newChildList(Iterable<TreeNode> childNodeSpecs);
+	public List<SimpleDataTreeNode> newChildList(Iterable<SimpleDataTreeNode> childNodeSpecs);
 
 	/*
 	 * Filters a list of edge labels and eligible node pairs to be connected from a

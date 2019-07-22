@@ -34,6 +34,7 @@ import java.util.List;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.util.Pair;
 
@@ -45,7 +46,7 @@ public abstract class StructureEditorAdapter implements StructureEditable, TwArc
 	/* new node created by this editor. May be null because the op is not necessarily node creation */
 	protected VisualNode newChild;
 	/* specificatons of this editingNode*/
-	protected TreeNode editingNodeSpec;
+	protected SimpleDataTreeNode editingNodeSpec;
 
 	public StructureEditorAdapter(SpecifiableNode clickedNode) {
 		super();
@@ -57,9 +58,9 @@ public abstract class StructureEditorAdapter implements StructureEditable, TwArc
 
 
 	@Override
-	public List<TreeNode> newChildList(Iterable<TreeNode> childSpecs) {
-		List<TreeNode> result = new ArrayList<TreeNode>();
-		for (TreeNode childNodeSpec : childSpecs) {
+	public List<SimpleDataTreeNode> newChildList(Iterable<SimpleDataTreeNode> childSpecs) {
+		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
+		for (SimpleDataTreeNode childNodeSpec : childSpecs) {
 			IntegerRange range = specifications.getMultiplicity(childNodeSpec, twaName);
 			String childLabel = specifications.getLabel(childNodeSpec);
 			if (!editingNode.inRange(range, childLabel))
@@ -69,12 +70,12 @@ public abstract class StructureEditorAdapter implements StructureEditable, TwArc
 	}
 
 	@Override
-	public List<Pair<String, TreeNode>> newEdgeList(Iterable<TreeNode> edgeSpecs) {
-		List<Pair<String, TreeNode>> result = new ArrayList<>();
+	public List<Pair<String, SimpleDataTreeNode>> newEdgeList(Iterable<SimpleDataTreeNode> edgeSpecs) {
+		List<Pair<String, SimpleDataTreeNode>> result = new ArrayList<>();
 		List<String> edgePropXorOptions = specifications.getConstraintOptions(editingNodeSpec, twaConstraintEdgePropXor);
 		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(editingNodeSpec, twaConstraintNodeNodeXor);
 
-		for (TreeNode edgeSpec : edgeSpecs) {
+		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
 			String nodeLabel = specifications.getEdgeToNodeLabel(edgeSpec);
 			List<String> edgeLabelOptions = specifications.getConstraintOptions(edgeSpec, twaConstraintElementLabel);
 			// we now need the node list of the graph!

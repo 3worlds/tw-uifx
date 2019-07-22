@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.List;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
 /**
@@ -60,42 +61,42 @@ public interface Specifications {
 	 * runs all checks against the given node . Nodes without an spec can't be
 	 * checked. I'm avoiding complies(AotGraph graph) at the moment
 	 */
-	public boolean complies(TreeGraphNode node, TreeNode root);
+	public boolean complies(TreeGraphNode node, SimpleDataTreeNode root);
 
 	/*
 	 * get specification of a given node from the configuration graph. If null, it
 	 * can't be checked.
 	 */
-	public TreeNode getSpecificationOf(TreeGraphNode configurationNode);
+	public SimpleDataTreeNode getSpecificationOf(TreeGraphNode configurationNode);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and
 	 * class.
 	 */
-	public Iterable<TreeNode> getChildSpecificationsOf(TreeNode parentSpec);
+	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec);
 
 	/* edge specification nodes of a node with this label and class */
-	public Iterable<TreeNode> getEdgeSpecificationsOf(String parentLabel, TreeNode parentSpec, String parentClass);
+	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(String parentLabel, SimpleDataTreeNode parentSpec, String parentClass);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<TreeNode> getPropertySpecifications(TreeNode rootSpec);
+	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode rootSpec);
 
 	/* Get multiplicity of a property specification */
-	public IntegerRange getMultiplicity(TreeNode rootSpec, String key);
+	public IntegerRange getMultiplicity(SimpleDataTreeNode rootSpec, String key);
 
 	/* whats this for*/
 	//public IntegerRange getMultiplicity(TreeNode spec);
 
 	/* True if node name must begin with upper case letter */
-	public boolean nameStartsWithUpperCase(TreeNode root);
+	public boolean nameStartsWithUpperCase(SimpleDataTreeNode root);
 
 	/* returns just the label for nodes of this specification */
 	public String getLabel(TreeNode root);
 
 	/* Items in the object table of these constraints. Preserve the order */
-	public List<String> getConstraintOptions(TreeNode rootSpec, String constraintClass);
+	public List<String> getConstraintOptions(SimpleDataTreeNode rootSpec, String constraintClass);
 
-	public String getEdgeToNodeLabel(TreeNode edgeSpec);
+	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec);
 
 	// TODO more to come...
 

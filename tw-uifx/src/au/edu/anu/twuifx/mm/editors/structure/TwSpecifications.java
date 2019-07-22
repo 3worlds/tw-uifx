@@ -23,42 +23,40 @@ public class TwSpecifications implements //
 	}
 
 	@Override
-	public boolean complies(TreeGraphNode configNode, TreeNode spec) {
+	public boolean complies(TreeGraphNode configNode, SimpleDataTreeNode spec) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public TreeNode getSpecificationOf(TreeGraphNode configNode) {
-		TreeNode result = (TreeNode)SequenceQuery.get(aroot.getChildren(),
+	public SimpleDataTreeNode getSpecificationOf(TreeGraphNode configNode) {
+		return  (SimpleDataTreeNode)SequenceQuery.get(aroot.getChildren(),
 				selectOne(CoreQueries.hasProperty(aaIsOfClass, TWA.getLabel(configNode.id()))));
-		return result;
 	}
 
 	@Override
-	public Iterable<TreeNode> getChildSpecificationsOf(TreeNode parentSpec) {
-		SimpleDataTreeNode ps = (SimpleDataTreeNode) parentSpec;
-		
-		String className = (String) ps.properties().getPropertyValue(aaIsOfClass);
+	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec) {		
+		String className = (String) parentSpec.properties().getPropertyValue(aaIsOfClass);
+		System.out.println("Children of label: "+className);
 		// find all specs which list this isOfClass in hasParentTables
-		System.out.println("GetChildSpecificationof()");
+
 		return null;
 	}
 
 	@Override
-	public Iterable<TreeNode> getEdgeSpecificationsOf(String parentLabel, TreeNode parentSpec, String parentClass) {
+	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(String parentLabel, SimpleDataTreeNode parentSpec, String parentClass) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Iterable<TreeNode> getPropertySpecifications(TreeNode spec) {
+	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode spec) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public IntegerRange getMultiplicity(TreeNode spec, String key) {
+	public IntegerRange getMultiplicity(SimpleDataTreeNode spec, String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -70,7 +68,7 @@ public class TwSpecifications implements //
 //	}
 
 	@Override
-	public boolean nameStartsWithUpperCase(TreeNode spec) {
+	public boolean nameStartsWithUpperCase(SimpleDataTreeNode spec) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -82,13 +80,13 @@ public class TwSpecifications implements //
 	}
 
 	@Override
-	public List<String> getConstraintOptions(TreeNode spec, String constraintClass) {
+	public List<String> getConstraintOptions(SimpleDataTreeNode spec, String constraintClass) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getEdgeToNodeLabel(TreeNode edgeSpec) {
+	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec) {
 		// TODO Auto-generated method stub
 		return null;
 	}
