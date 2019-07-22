@@ -34,6 +34,7 @@ import org.apache.commons.text.WordUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twcore.graphState.GraphState;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -65,17 +66,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		if (haveSpecification()) {
-			Iterable<TreeGraphNode> childSpecs = specifications.getChildSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
-					editingNode.getClassValue());
-			List<TreeGraphNode> allowedChildSpecs = newChildList(childSpecs);
+			Iterable<TreeNode> childSpecs = specifications.getChildSpecificationsOf(editingNodeSpec);
+			List<TreeNode> allowedChildSpecs = newChildList(childSpecs);
 			List<TreeGraphNode> orphanedChildren = orphanedChildList(childSpecs);
-			Iterable<TreeGraphNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
+			Iterable<TreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
 					editingNode.getClassValue());
-			List<Pair<String, TreeGraphNode>> allowedEdges = newEdgeList(edgeSpecs);
+			List<Pair<String, TreeNode>> allowedEdges = newEdgeList(edgeSpecs);
 
 			if (!allowedChildSpecs.isEmpty()) {
 				Menu mu = MenuLabels.addMenu(cm,MenuLabels.ML_NEW);
-				for (TreeGraphNode child: allowedChildSpecs) {
+				for (TreeNode child: allowedChildSpecs) {
 					addOptionNewChild(mu,child);
 				}
 				// add new children options
@@ -127,7 +127,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 
 	}
-	private void addOptionNewChild(Menu mu, TreeGraphNode childRoot) {
+	private void addOptionNewChild(Menu mu, TreeNode childRoot) {
 		String label = specifications.getLabel(childRoot);
 		MenuItem mi = new MenuItem(label);
 		mu.getItems().add(mi);
@@ -146,7 +146,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			userName = editingNode.getUniqueName(label, userName);
 			// make the node
 			newChild = editingNode.newChild(childRoot,label,userName);
-			Iterable<TreeGraphNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
+			Iterable<TreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
 			
 			// build the properties
 			controller.onNewNode(newChild);

@@ -66,35 +66,36 @@ public interface Specifications {
 	 * get specification of a given node from the configuration graph. If null, it
 	 * can't be checked.
 	 */
-	public TreeGraphNode getSpecificationOf(TreeGraphNode configurationNode);
+	public TreeNode getSpecificationOf(TreeGraphNode configurationNode);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and
 	 * class.
 	 */
-	public Iterable<TreeGraphNode> getChildSpecificationsOf(String parentLabel, TreeGraphNode parentSpec, String parentClass);
+	public Iterable<TreeNode> getChildSpecificationsOf(TreeNode parentSpec);
 
 	/* edge specification nodes of a node with this label and class */
-	public Iterable<TreeGraphNode> getEdgeSpecificationsOf(String parentLabel, TreeGraphNode parentSpec, String parentClass);
+	public Iterable<TreeNode> getEdgeSpecificationsOf(String parentLabel, TreeNode parentSpec, String parentClass);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<TreeGraphNode> getPropertySpecifications(TreeGraphNode root);
+	public Iterable<TreeNode> getPropertySpecifications(TreeNode rootSpec);
 
 	/* Get multiplicity of a property specification */
-	public IntegerRange getMultiplicity(TreeGraphNode root, String key);
+	public IntegerRange getMultiplicity(TreeNode rootSpec, String key);
 
-	public IntegerRange getMultiplicity(TreeGraphNode spec);
+	/* whats this for*/
+	//public IntegerRange getMultiplicity(TreeNode spec);
 
 	/* True if node name must begin with upper case letter */
-	public boolean nameStartsWithUpperCase(TreeGraphNode root);
+	public boolean nameStartsWithUpperCase(TreeNode root);
 
 	/* returns just the label for nodes of this specification */
-	public String getLabel(TreeGraphNode root);
+	public String getLabel(TreeNode root);
 
 	/* Items in the object table of these constraints. Preserve the order */
-	public List<String> getConstraintOptions(TreeGraphNode root, String constraintClass);
+	public List<String> getConstraintOptions(TreeNode rootSpec, String constraintClass);
 
-	public String getEdgeToNodeLabel(TreeGraphNode edgeSpec);
+	public String getEdgeToNodeLabel(TreeNode edgeSpec);
 
 	// TODO more to come...
 

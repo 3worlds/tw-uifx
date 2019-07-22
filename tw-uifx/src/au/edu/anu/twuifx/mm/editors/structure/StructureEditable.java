@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.util.Pair;
 
@@ -45,15 +46,15 @@ public interface StructureEditable {
 	 * Filters a list of possible children depending on current state of the
 	 * configuration
 	 */
-	public List<TreeGraphNode> newChildList(Iterable<TreeGraphNode> childNodeSpecs);
+	public List<TreeNode> newChildList(Iterable<TreeNode> childNodeSpecs);
 
 	/*
 	 * Filters a list of edge labels and eligible node pairs to be connected from a
 	 * list of all possible edge specifications
 	 */
-	public List<Pair<String, TreeGraphNode>> newEdgeList(Iterable<TreeGraphNode> edgeSpecs);
+	public List<Pair<String, TreeNode>> newEdgeList(Iterable<TreeNode> edgeSpecs);
 
-	public List<TreeGraphNode> orphanedChildList(Iterable<TreeGraphNode> childSpecs);
+	public List<TreeGraphNode> orphanedChildList(Iterable<TreeNode> childSpecs);
 	
 	public String promptForNewNode(String label,String promptName);
 

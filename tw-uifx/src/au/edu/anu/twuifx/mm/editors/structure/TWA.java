@@ -32,6 +32,7 @@ import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import fr.cnrs.iees.graph.Tree;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.io.GraphImporter;
+import fr.cnrs.iees.identity.impl.PairIdentity;
 
 /**
  * @author Ian Davies
@@ -51,6 +52,15 @@ public class TWA {
 			instance = (Tree<? extends TreeNode>) GraphImporter.importGraph("3wArchetype.ugt", IsInValueSetQuery.class);
 		}
 		return instance;
+	}
+	
+	// Static helper methods??
+	public static String getLabel(String id) {
+		return id.split(PairIdentity.LABEL_NAME_STR_SEPARATOR)[0];
+	}
+
+	public static String getName(String id) {
+		return id.split(PairIdentity.LABEL_NAME_STR_SEPARATOR)[1];
 	}
 
 }

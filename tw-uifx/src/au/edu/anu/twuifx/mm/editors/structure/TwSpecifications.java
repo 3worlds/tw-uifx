@@ -2,83 +2,93 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 
+import au.edu.anu.rscs.aot.queries.CoreQueries;
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.rscs.aot.util.IntegerRange;
-import au.edu.anu.twcore.archetype.TwArchetype;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 
-public class TwSpecifications implements Specifications{
+public class TwSpecifications implements //
+		Specifications, //
+		ArchetypeArchetypeConstants//
+{
+	private static final TreeNode aroot = TWA.getInstance().root();
 
 	@Override
 	public boolean complies() {
+		// TODO Auto-generated method stub ??
+		return false;
+	}
+
+	@Override
+	public boolean complies(TreeGraphNode configNode, TreeNode spec) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean complies(TreeGraphNode node, TreeNode root) {
-		// TODO Auto-generated method stub
-		return false;
+	public TreeNode getSpecificationOf(TreeGraphNode configNode) {
+		TreeNode result = (TreeNode)SequenceQuery.get(aroot.getChildren(),
+				selectOne(CoreQueries.hasProperty(aaIsOfClass, TWA.getLabel(configNode.id()))));
+		return result;
 	}
 
 	@Override
-	public TreeGraphNode getSpecificationOf(TreeGraphNode configNode) {
-		SequenceQuery.get(TWA.getInstance().root(),selectZeroOrMany(CoreQueries.has)
-
-	@Override
-	public Iterable<TreeGraphNode> getChildSpecificationsOf(String parentLabel, TreeGraphNode parentSpec,
-			String parentClass) {
+	public Iterable<TreeNode> getChildSpecificationsOf(TreeNode parentSpec) {
+		SimpleDataTreeNode ps = (SimpleDataTreeNode) parentSpec;
+		
+		String className = (String) ps.properties().getPropertyValue(aaIsOfClass);
+		// find all specs which list this isOfClass in hasParentTables
 		System.out.println("GetChildSpecificationof()");
 		return null;
 	}
 
 	@Override
-	public Iterable<TreeGraphNode> getEdgeSpecificationsOf(String parentLabel, TreeGraphNode parentSpec,
-			String parentClass) {
+	public Iterable<TreeNode> getEdgeSpecificationsOf(String parentLabel, TreeNode parentSpec, String parentClass) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Iterable<TreeGraphNode> getPropertySpecifications(TreeGraphNode root) {
+	public Iterable<TreeNode> getPropertySpecifications(TreeNode spec) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public IntegerRange getMultiplicity(TreeGraphNode root, String key) {
+	public IntegerRange getMultiplicity(TreeNode spec, String key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public IntegerRange getMultiplicity(TreeGraphNode spec) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public IntegerRange getMultiplicity(TreeNode spec) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
-	public boolean nameStartsWithUpperCase(TreeGraphNode root) {
+	public boolean nameStartsWithUpperCase(TreeNode spec) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public String getLabel(TreeGraphNode root) {
+	public String getLabel(TreeNode root) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<String> getConstraintOptions(TreeGraphNode root, String constraintClass) {
+	public List<String> getConstraintOptions(TreeNode spec, String constraintClass) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String getEdgeToNodeLabel(TreeGraphNode edgeSpec) {
+	public String getEdgeToNodeLabel(TreeNode edgeSpec) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -29,7 +29,12 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.editors.structure;
 
-public interface AotArchetypeConstants {
-	public static final String aIsOfClass = "isOfClass";
+public interface ArchetypeArchetypeConstants {
+	public static final String aaIsOfClass = "isOfClass";
+	public static final String aaMultiplicity = "multiplicity";
+	public static final String aaHasParent = "hasParent";
+	//public static final String aaHasParent = "hasParent";
+	
+	
 
 }

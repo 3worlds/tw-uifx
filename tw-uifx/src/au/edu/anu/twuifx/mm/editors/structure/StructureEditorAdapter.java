@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.util.Pair;
 
@@ -44,7 +45,7 @@ public abstract class StructureEditorAdapter implements StructureEditable, TwArc
 	/* new node created by this editor. May be null because the op is not necessarily node creation */
 	protected VisualNode newChild;
 	/* specificatons of this editingNode*/
-	protected TreeGraphNode editingNodeSpec;
+	protected TreeNode editingNodeSpec;
 
 	public StructureEditorAdapter(SpecifiableNode clickedNode) {
 		super();
@@ -56,9 +57,9 @@ public abstract class StructureEditorAdapter implements StructureEditable, TwArc
 
 
 	@Override
-	public List<TreeGraphNode> newChildList(Iterable<TreeGraphNode> childSpecs) {
-		List<TreeGraphNode> result = new ArrayList<TreeGraphNode>();
-		for (TreeGraphNode childNodeSpec : childSpecs) {
+	public List<TreeNode> newChildList(Iterable<TreeNode> childSpecs) {
+		List<TreeNode> result = new ArrayList<TreeNode>();
+		for (TreeNode childNodeSpec : childSpecs) {
 			IntegerRange range = specifications.getMultiplicity(childNodeSpec, twaName);
 			String childLabel = specifications.getLabel(childNodeSpec);
 			if (!editingNode.inRange(range, childLabel))
@@ -68,12 +69,12 @@ public abstract class StructureEditorAdapter implements StructureEditable, TwArc
 	}
 
 	@Override
-	public List<Pair<String, TreeGraphNode>> newEdgeList(Iterable<TreeGraphNode> edgeSpecs) {
-		List<Pair<String, TreeGraphNode>> result = new ArrayList<>();
+	public List<Pair<String, TreeNode>> newEdgeList(Iterable<TreeNode> edgeSpecs) {
+		List<Pair<String, TreeNode>> result = new ArrayList<>();
 		List<String> edgePropXorOptions = specifications.getConstraintOptions(editingNodeSpec, twaConstraintEdgePropXor);
 		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(editingNodeSpec, twaConstraintNodeNodeXor);
 
-		for (TreeGraphNode edgeSpec : edgeSpecs) {
+		for (TreeNode edgeSpec : edgeSpecs) {
 			String nodeLabel = specifications.getEdgeToNodeLabel(edgeSpec);
 			List<String> edgeLabelOptions = specifications.getConstraintOptions(edgeSpec, twaConstraintElementLabel);
 			// we now need the node list of the graph!
@@ -82,7 +83,7 @@ public abstract class StructureEditorAdapter implements StructureEditable, TwArc
 		return result;
 	}
 
-	public List<TreeGraphNode> orphanedChildList(Iterable<TreeGraphNode> childSpecs) {
+	public List<TreeGraphNode> orphanedChildList(Iterable<TreeNode> childSpecs) {
 		List<TreeGraphNode> result = new ArrayList<>();
 
 		return result;
