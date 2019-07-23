@@ -34,13 +34,14 @@ import java.util.List;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
 // just experimenting with what services mm requires of an aotnode.
 
 // impl will have a VisualNode which hosts the configuration node
 public interface SpecifiableNode {
-	public List<VisualNode> getChildren();
+	public boolean hasChildren();
 
 	/* return the class value or null from the hosted config node */
 	public String getClassValue();
@@ -49,7 +50,7 @@ public interface SpecifiableNode {
 	public TreeGraphNode getConfigNode();
 
 	/*
-	 * normally true unless this is the configuration root (3Worlds:<projectName>)
+	 * normally true unless this is the configuration root (3worlds:<projectName>)
 	 */
 	public boolean canDelete();
 
@@ -58,9 +59,10 @@ public interface SpecifiableNode {
 
 	public String getLabel();
 
-	public List<VisualNode> graphRoots();
+	public Iterable<VisualNode> graphRoots();
+	
+	public String proposeId();
 
-	public boolean haschildren();
 
 	public boolean hasOutEdges();
 
@@ -70,7 +72,7 @@ public interface SpecifiableNode {
 
 	public String getUniqueName(String label, String def);
 
-	public VisualNode newChild(TreeNode specs, String label, String name);
+	public VisualNode newChild(SimpleDataTreeNode specs, String label, String name);
 	
 	//public void addProperty(String key, Object defaultValue);
 

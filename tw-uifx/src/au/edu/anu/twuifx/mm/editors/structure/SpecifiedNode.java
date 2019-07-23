@@ -29,32 +29,34 @@
 
 package au.edu.anu.twuifx.mm.editors.structure;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import au.edu.anu.rscs.aot.util.IntegerRange;
-import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
-import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
-import javafx.util.Pair;
+import javafx.util.Pair;// remove fx dependency here
+import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
+import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 public class SpecifiedNode implements SpecifiableNode {
 	private VisualNode selectedVisualNode;
+	private TreeGraph<VisualNode, VisualEdge> visualGraph ;
 
-	public SpecifiedNode(VisualNode visualNode) {
+	public SpecifiedNode(VisualNode visualNode, TreeGraph<VisualNode, VisualEdge> visualGraph) {
 		this.selectedVisualNode = visualNode;
-
+		this.visualGraph=visualGraph;
 	}
 
 	@Override
-	public List<VisualNode> getChildren() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean hasChildren() {
+		return selectedVisualNode.getChildren().iterator().hasNext();
 	}
 
 	@Override
@@ -70,13 +72,17 @@ public class SpecifiedNode implements SpecifiableNode {
 
 	@Override
 	public boolean canDelete() {
-		return getLabel().equals(ConfigurationNodeLabels.N_ROOT.label());
+		return !getLabel().equals(ConfigurationNodeLabels.N_ROOT.label());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean inRange(IntegerRange range, String childLabel) {
-		// TODO Auto-generated method stub
-		return false;
+		// TODO check again when we have children
+		List<SimpleDataTreeNode> lst = (List<SimpleDataTreeNode>) get(selectedVisualNode.getChildren(),
+				selectZeroOrMany(hasTheLabel(childLabel)));
+		int c = lst.size();
+		return range.inRange(c);
 	}
 
 	@Override
@@ -85,20 +91,10 @@ public class SpecifiedNode implements SpecifiableNode {
 	}
 
 	@Override
-	public List<VisualNode> graphRoots() {
-		List<VisualNode> result = new ArrayList<>();
-		//TODO maybe TYPECAST CRASH here??
-		VisualGraph vg = (VisualGraph) selectedVisualNode.factory();
-		for (VisualNode root : vg.roots())
-			result.add(root);
-		return result;
+	public Iterable<VisualNode> graphRoots() {
+		return visualGraph.roots();
 	}
 
-	@Override
-	public boolean haschildren() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public boolean hasOutEdges() {
@@ -170,19 +166,26 @@ public class SpecifiedNode implements SpecifiableNode {
 	}
 
 	@Override
-	public VisualNode newChild(TreeNode specs, String label, String name) {
+	public VisualNode newChild(SimpleDataTreeNode specs, String label, String name) {
 		TreeGraphNode configParent = getConfigNode();
 
-		TreeGraphDataNode configChild = (TreeGraphDataNode)	configParent
-				.factory().makeNode(label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
+		TreeGraphDataNode configChild = (TreeGraphDataNode) configParent.factory()
+				.makeNode(label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
 		configChild.connectParent(configParent);
 
-		VisualNode childVisualNode =  (VisualNode) selectedVisualNode.factory().makeNode(
-				label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
+		VisualNode childVisualNode = (VisualNode) selectedVisualNode.factory()
+				.makeNode(label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
 		childVisualNode.connectParent(selectedVisualNode);
 		childVisualNode.setConfigNode(configChild);
 
 		return childVisualNode;
 	}
+
+	@Override
+	public String proposeId() {
+		selectedVisualNode.scope().newId(proposedId)
+		return null;
+	}
+
 
 }

@@ -53,9 +53,9 @@ public interface StructureEditable {
 	 * Filters a list of edge labels and eligible node pairs to be connected from a
 	 * list of all possible edge specifications
 	 */
-	public List<Pair<String, TreeNode>> newEdgeList(Iterable<TreeNode> edgeSpecs);
+	public List<Pair<String, SimpleDataTreeNode>> newEdgeList(Iterable<SimpleDataTreeNode> edgeSpecs);
 
-	public List<TreeGraphNode> orphanedChildList(Iterable<TreeNode> childSpecs);
+	public List<TreeGraphNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
 	
 	public String promptForNewNode(String label,String promptName);
 

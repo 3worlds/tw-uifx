@@ -76,16 +76,16 @@ public interface Specifications {
 	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec);
 
 	/* edge specification nodes of a node with this label and class */
-	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(String parentLabel, SimpleDataTreeNode parentSpec, String parentClass);
+	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode nodeSpec);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode rootSpec);
+	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode nodeSpec);
 
 	/* Get multiplicity of a property specification */
 	public IntegerRange getMultiplicity(SimpleDataTreeNode rootSpec, String key);
 
-	/* whats this for*/
-	//public IntegerRange getMultiplicity(TreeNode spec);
+	
+	public IntegerRange getMultiplicity(SimpleDataTreeNode spec);
 
 	/* True if node name must begin with upper case letter */
 	public boolean nameStartsWithUpperCase(SimpleDataTreeNode root);

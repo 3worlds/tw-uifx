@@ -33,8 +33,8 @@ public interface ArchetypeArchetypeConstants {
 	public static final String aaIsOfClass = "isOfClass";
 	public static final String aaMultiplicity = "multiplicity";
 	public static final String aaHasParent = "hasParent";
-	//public static final String aaHasParent = "hasParent";
-	
-	
-
+	public static final String aaHasEdge = "hasEdge";
+	public static final String aaHasNode ="hasNode" ;
+	public static final String aaHasProperty = "hasProperty";
+	public static final String aaMustSatisfyQuery = "mustSatisfyQuery";
 }

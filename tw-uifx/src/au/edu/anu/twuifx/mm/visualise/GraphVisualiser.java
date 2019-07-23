@@ -203,7 +203,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
 				
-				gse = new StructureEditorfx(new SpecifiedNode(n), e,controller);
+				gse = new StructureEditorfx(new SpecifiedNode(n,visualGraph), e,controller);
 			} else
 				controller.onNodeSelected(n);
 			

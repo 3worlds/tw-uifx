@@ -32,8 +32,6 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 public interface TwArchetypeConstants {
 	public final static String twaName = "name";
-	public final static String twaConstraintEdgePropXor = "fr.ens.biologie.threeWorlds.ui.configuration.archetype3w.EdgeXorPropertyQuery";
-	public final static String twaConstraintNodeNodeXor = "fr.ens.biologie.threeWorlds.ui.configuration.archetype3w.NodeXorQuery";
-	public final static String twaConstraintEdgeAtLeastOneOfEach = "fr.ens.biologie.threeWorlds.ui.configuration.archetype3w.EdgeAtLeastOneOfEachQuery";
-	public final static String twaConstraintElementLabel = "au.edu.anu.rscs.aot.queries.graph.element.ElementLabel";
+	public final static String twaClassName = "className";
+	public final static String twaToNode = "toNode";
 }

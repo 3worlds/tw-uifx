@@ -105,7 +105,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		createMainWindow();
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
 		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(),controller.getUserProjectPathProperty()));
-		checkResources();
+		//checkResources();
 		setDefaultFrameSize();
 		mainStage.show();
 	}

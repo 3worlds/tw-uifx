@@ -34,7 +34,7 @@ import org.apache.commons.text.WordUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twcore.graphState.GraphState;
-import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -66,16 +66,15 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		if (haveSpecification()) {
-			Iterable<TreeNode> childSpecs = specifications.getChildSpecificationsOf(editingNodeSpec);
-			List<TreeNode> allowedChildSpecs = newChildList(childSpecs);
+			Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecificationsOf(editingNodeSpec);
+			List<SimpleDataTreeNode> allowedChildSpecs = newChildList(childSpecs);
 			List<TreeGraphNode> orphanedChildren = orphanedChildList(childSpecs);
-			Iterable<TreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNode.getLabel(), editingNodeSpec,
-					editingNode.getClassValue());
-			List<Pair<String, TreeNode>> allowedEdges = newEdgeList(edgeSpecs);
+			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNodeSpec);
+			List<Pair<String, SimpleDataTreeNode>> allowedEdges = newEdgeList(edgeSpecs);
 
 			if (!allowedChildSpecs.isEmpty()) {
 				Menu mu = MenuLabels.addMenu(cm,MenuLabels.ML_NEW);
-				for (TreeNode child: allowedChildSpecs) {
+				for (SimpleDataTreeNode child: allowedChildSpecs) {
 					addOptionNewChild(mu,child);
 				}
 				// add new children options
@@ -92,7 +91,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 			cm.getItems().add(new SeparatorMenuItem());
 
-			if (editingNode.getChildren().isEmpty()) {
+			if (editingNode.hasChildren()) {
 				// add exportTreeOptions
 			}
 			if (!allowedChildSpecs.isEmpty()) {
@@ -100,12 +99,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 
 			//--------------------------------------
-			if (editingNode.canDelete() || !editingNode.getChildren().isEmpty())
+			if (editingNode.canDelete() || editingNode.hasChildren())
 				if (!(allowedChildSpecs.isEmpty() && orphanedChildren.isEmpty()))
 					cm.getItems().add(new SeparatorMenuItem());
 
 		}
-		if (editingNode.haschildren()|| editingNode.hasOutEdges()) {
+		if (editingNode.hasChildren()|| editingNode.hasOutEdges()) {
 			// delete edges to children || xlinks - maybe problem
 		}
 		
@@ -113,7 +112,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			// add delete option
 		}
 		
-		if (editingNode.haschildren()) {
+		if (editingNode.hasChildren()) {
 			// delete tree options
 		}
 		
@@ -127,26 +126,28 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 
 	}
-	private void addOptionNewChild(Menu mu, TreeNode childRoot) {
-		String label = specifications.getLabel(childRoot);
-		MenuItem mi = new MenuItem(label);
+	private void addOptionNewChild(Menu mu, SimpleDataTreeNode childRoot) {
+		String childLabel = (String)childRoot.properties().getPropertyValue(aaIsOfClass);
+		MenuItem mi = new MenuItem(childLabel);
 		mu.getItems().add(mi);
 		mi.setOnAction((e) ->{
-			String defName=label+"1";
+			
+			// we need the graph to get the graph scope and 
+			String defName=childLabel+"1";
 			boolean doUpper = specifications.nameStartsWithUpperCase(childRoot);
 			if (doUpper)
 				defName = WordUtils.capitalize(defName); 
-			String userName = promptForNewNode(label,defName);
+			String userName = promptForNewNode(childLabel,defName);
 			if (userName!=null)
 				userName = userName.trim();
 			if (userName.equals(""))
 				userName = defName;
 			if (doUpper)
 				userName = WordUtils.capitalize(userName);
-			userName = editingNode.getUniqueName(label, userName);
+			userName = editingNode.getUniqueName(childLabel, userName);
 			// make the node
-			newChild = editingNode.newChild(childRoot,label,userName);
-			Iterable<TreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
+			newChild = editingNode.newChild(childRoot,childLabel,userName);
+			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
 			
 			// build the properties
 			controller.onNewNode(newChild);
