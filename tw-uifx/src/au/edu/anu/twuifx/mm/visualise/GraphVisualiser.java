@@ -42,11 +42,9 @@ import org.apache.commons.math.util.MathUtils;
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
-import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
-import au.edu.anu.twuifx.mm.editors.structure.StructureEditable;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
@@ -146,7 +144,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 
 	}
 
-	private StructureEditable gse;
+	//private StructureEditable gse;
 	private VisualNode dragNode;
 
 	private void createNodeVisualisation(VisualNode n) {
@@ -203,7 +201,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
 				
-				gse = new StructureEditorfx(new SpecifiedNode(n,visualGraph), e,controller);
+				/*gse =*/ new StructureEditorfx(new SpecifiedNode(n,visualGraph), e,controller);
 			} else
 				controller.onNodeSelected(n);
 			
@@ -222,6 +220,32 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		 */
 		c.toFront();
 		text.toBack();
+	}
+	@Override
+	public void onNewNode(VisualNode node) {
+		createNodeVisualisation(node);
+		createTreeLines(node, showTreeLine);
+		//gse.
+		// create all the visual stuff
+		// if (placing) {
+		// Platform.runLater(() -> {
+		// AotNode n = popupEditor.locate(event, pane.getWidth(), pane.getHeight());
+		// VisualNode.insertCircle(n, controller.childLinksProperty(),
+		// controller.xLinksProperty(), pane, this);
+		// // add parent edge. There must be one in this circumstance
+		// AotEdge inEdge = (AotEdge) get(n.getEdges(Direction.IN),
+		// selectOne(hasTheLabel(Trees.CHILD_LABEL)));
+		// VisualNode.createChildLine(inEdge, controller.childLinksProperty(), pane);
+		// popupEditor = null;
+		// placing = false;
+		// pane.setCursor(Cursor.DEFAULT);
+		// reBuildAllElementsPropertySheet();
+		// checkGraph();
+		// });
+		// }
+		//
+
+		
 	}
 
 	private void createTreeLines(VisualNode n, BooleanProperty show) {
@@ -383,30 +407,5 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		timeline.play();
 	}
 
-	@Override
-	public void onNewNode(VisualNode node) {
-		// create all the visual stuff
-		// TODO Auto-generated method stub
-		// set the x,y
-		// if (placing) {
-		// Platform.runLater(() -> {
-		// AotNode n = popupEditor.locate(event, pane.getWidth(), pane.getHeight());
-		// VisualNode.insertCircle(n, controller.childLinksProperty(),
-		// controller.xLinksProperty(), pane, this);
-		// // add parent edge. There must be one in this circumstance
-		// AotEdge inEdge = (AotEdge) get(n.getEdges(Direction.IN),
-		// selectOne(hasTheLabel(Trees.CHILD_LABEL)));
-		// VisualNode.createChildLine(inEdge, controller.childLinksProperty(), pane);
-		// popupEditor = null;
-		// placing = false;
-		// pane.setCursor(Cursor.DEFAULT);
-		// reBuildAllElementsPropertySheet();
-		// checkGraph();
-		// });
-		// }
-		//
-
-		
-	}
 
 }

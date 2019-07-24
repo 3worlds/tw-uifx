@@ -31,7 +31,6 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 
-import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.util.Pair;

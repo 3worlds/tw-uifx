@@ -55,7 +55,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	private ContextMenu cm;
 	private IMMController controller;
 
-	public StructureEditorfx(SpecifiableNode n, MouseEvent event,IMMController controller) {
+	public StructureEditorfx(SpecifiableNode n, MouseEvent event, IMMController controller) {
 		super(n);
 		this.controller = controller;
 		cm = new ContextMenu();
@@ -73,16 +73,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			List<Pair<String, SimpleDataTreeNode>> allowedEdges = newEdgeList(edgeSpecs);
 
 			if (!allowedChildSpecs.isEmpty()) {
-				Menu mu = MenuLabels.addMenu(cm,MenuLabels.ML_NEW);
-				for (SimpleDataTreeNode child: allowedChildSpecs) {
-					addOptionNewChild(mu,child);
+				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW);
+				for (SimpleDataTreeNode child : allowedChildSpecs) {
+					addOptionNewChild(mu, child);
 				}
 				// add new children options
 			}
 
 			if (!orphanedChildren.isEmpty()) {
 				// list new toNode edge options
-				
+
 			}
 
 			if (!allowedEdges.isEmpty()) {
@@ -98,24 +98,24 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				// add import tree options
 			}
 
-			//--------------------------------------
+			// --------------------------------------
 			if (editingNode.canDelete() || editingNode.hasChildren())
 				if (!(allowedChildSpecs.isEmpty() && orphanedChildren.isEmpty()))
 					cm.getItems().add(new SeparatorMenuItem());
 
 		}
-		if (editingNode.hasChildren()|| editingNode.hasOutEdges()) {
+		if (editingNode.hasChildren() || editingNode.hasOutEdges()) {
 			// delete edges to children || xlinks - maybe problem
 		}
-		
-		if(editingNode.canDelete()) {
+
+		if (editingNode.canDelete()) {
 			// add delete option
 		}
-		
+
 		if (editingNode.hasChildren()) {
 			// delete tree options
 		}
-		
+
 		if (!editingNode.isLeaf()) {
 			cm.getItems().add(new SeparatorMenuItem());
 			if (editingNode.isCollapsed()) {
@@ -126,40 +126,50 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 
 	}
+
 	private void addOptionNewChild(Menu mu, SimpleDataTreeNode childRoot) {
-		String childLabel = (String)childRoot.properties().getPropertyValue(aaIsOfClass);
+		String childLabel = (String) childRoot.properties().getPropertyValue(aaIsOfClass);
 		MenuItem mi = new MenuItem(childLabel);
 		mu.getItems().add(mi);
-		mi.setOnAction((e) ->{
-			
-			// we need the graph to get the graph scope and 
-			String defName=childLabel+"1";
-			boolean doUpper = specifications.nameStartsWithUpperCase(childRoot);
-			if (doUpper)
-				defName = WordUtils.capitalize(defName); 
-			String userName = promptForNewNode(childLabel,defName);
-			if (userName!=null)
+		mi.setOnAction((e) -> {
+
+			// default name is label with 1 appended
+			String prompt = childLabel + "1";
+			boolean captialize = specifications.nameStartsWithUpperCase(childRoot);
+			if (captialize)
+				prompt = WordUtils.capitalize(prompt);
+			boolean modified = true;
+			prompt = editingNode.proposeAnId(childLabel, prompt);
+			while (modified) {
+				String userName = promptForNewNode(childLabel, prompt);
+				if (userName == null)
+					return;
 				userName = userName.trim();
-			if (userName.equals(""))
-				userName = defName;
-			if (doUpper)
-				userName = WordUtils.capitalize(userName);
-			userName = editingNode.getUniqueName(childLabel, userName);
-			// make the node
-			newChild = editingNode.newChild(childRoot,childLabel,userName);
+				if (userName.equals(""))
+					userName = prompt;
+				if (captialize)
+					userName = WordUtils.capitalize(userName);
+				String newName = editingNode.proposeAnId(childLabel, userName);
+				modified = !newName.equals(userName);
+				prompt = newName;
+			}
+
+				// make the node
+			newChild = editingNode.newChild(childLabel, prompt);
 			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
-			
+
 			// build the properties
 			controller.onNewNode(newChild);
 			GraphState.setChanged(true);
-		});		
+		});
 	}
+
 	@Override
 	public String promptForNewNode(String label, String promptName) {
-		return Dialogs.getText("New "+label+ "node","", "Name:", promptName);
+		return Dialogs.getText("New " + label + "node", "", "Name:", promptName);
 	}
-	
-	private enum MenuLabels{
+
+	private enum MenuLabels {
 		ML_NEW /*-             */("New"), //
 		ML_CONNECT_TO/*-       */("Connect to"), //
 		ML_CONNECT_TO_CHILD/*- */("Connect to child"), //
@@ -170,37 +180,38 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_EXPORT_TREE/*-      */("Export tree"), //
 		ML_SELECT_PARAMETERS/* */("Select parameters"), //
 		ML_SELECT_DRIVERS/*    */("Select drivers"), //
-		ML_SELECT_DECORATORS/* */("Select decorators"),//
-		ML_EXPAND/*            */("Expand"),//
-		ML_COLLAPSE/*          */("Collapse"),//        
+		ML_SELECT_DECORATORS/* */("Select decorators"), //
+		ML_EXPAND/*            */("Expand"), //
+		ML_COLLAPSE/*          */("Collapse"),//
 		;
 
 		private final String label;
-		
+
 		private MenuLabels(String label) {
 			this.label = label;
 		}
+
 		public String label() {
 			return label;
 		}
+
 		public static Menu addMenu(ContextMenu cm, MenuLabels ml) {
 			Menu result = new Menu(ml.label());
 			cm.getItems().add(result);
 			return result;
 		}
-		
+
 		public static Menu addMenu(Menu mu, MenuLabels ml) {
 			Menu result = new Menu(ml.label());
 			mu.getItems().add(result);
 			return result;
 		}
-		
+
 		public static MenuItem addMenuItem(ContextMenu cm, MenuLabels ml) {
 			MenuItem result = new MenuItem(ml.label());
 			cm.getItems().add(result);
 			return result;
 		}
 	}
-
 
 }

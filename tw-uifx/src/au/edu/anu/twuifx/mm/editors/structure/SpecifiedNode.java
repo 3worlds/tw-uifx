@@ -34,14 +34,14 @@ import java.util.List;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
+import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.identity.Identity;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
-import javafx.util.Pair;// remove fx dependency here
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
@@ -114,77 +114,39 @@ public class SpecifiedNode implements SpecifiableNode {
 		return false;
 	}
 
-	@Override
-	public String getUniqueName(String label, String name) {
-//		// the id system has now been taken over by Identity system - we cant get one without it been added so we are lost here.
-//		// must do duplicate code I think!!!
-//		TreeGraphDataNode n = getConfigNode();
-//		Iterable<TreeGraphDataNode> nodes = n.nodeFactory()
-//				.findNodesByReference(label + PairIdentity.LABEL_NAME_SEPARATOR + name);
-//		if (!nodes.iterator().hasNext())
-//			return name;
-//		else {
-//			Pair<String, Integer> nameInstance = parseName(name);
-//			int count = nameInstance.getValue() + 1;
-//			name = nameInstance.getKey() + count;
-//			return getUniqueName(label, name);
-//		}
-		throw new TwuifxException("getUniqueName not yet implemented!!!");
-	}
 
-	@Deprecated
-	private static Pair<String, Integer> parseName(String name) {
-		int idx = getCountStartIndex(name);
-		// all numbers or no numbers
-		// no numbers
-		if (idx < 0)
-			return new Pair<>(name, 0);
-		// all numbers
-		if (idx == 0)
-			return new Pair<String, Integer>(name + "_", 0);
-		// ends with some numbers
-		String key = name.substring(0, idx);
-		String sCount = name.substring(idx, name.length());
-		int count = Integer.parseInt(sCount);
-		return new Pair<>(key, count);
-	}
-
-	@Deprecated
-	private static int getCountStartIndex(String name) {
-		int result = -1;
-		for (int i = name.length() - 1; i >= 0; i--) {
-			String s = name.substring(i, i + 1);
-			try {
-				Integer.parseInt(s);
-				result = i;
-			} catch (NumberFormatException e) {
-				return result;
-			}
-		}
-		return result;
-
-	}
-
-	@Override
-	public VisualNode newChild(SimpleDataTreeNode specs, String label, String name) {
-		TreeGraphNode configParent = getConfigNode();
-
-		TreeGraphDataNode configChild = (TreeGraphDataNode) configParent.factory()
-				.makeNode(label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
+	public static VisualNode newChild(VisualNode parent,String label, String name) {
+		String proposedId = label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name;
+		TreeGraphNode configParent = parent.getConfigNode();
+		NodeFactory cf =  configParent.factory();
+		TreeGraphDataNode configChild=(TreeGraphDataNode) cf.makeNode(cf.nodeClass(label), proposedId);
 		configChild.connectParent(configParent);
 
-		VisualNode childVisualNode = (VisualNode) selectedVisualNode.factory()
-				.makeNode(label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name);
-		childVisualNode.connectParent(selectedVisualNode);
+		NodeFactory vf = parent.factory();
+		VisualNode childVisualNode = (VisualNode) vf.makeNode(proposedId);
+		childVisualNode.connectParent(parent);
 		childVisualNode.setConfigNode(configChild);
-
+		childVisualNode.setCategory();
 		return childVisualNode;
+		
+	}
+	
+	@Override
+	public VisualNode newChild(String label, String name) {
+		return newChild(selectedVisualNode,label,name);
 	}
 
 	@Override
-	public String proposeId() {
-		selectedVisualNode.scope().newId(proposedId)
-		return null;
+	public String proposeAnId(String label, String proposedName) {
+		Identity id = selectedVisualNode.scope().newId(false,label,PairIdentity.LABEL_NAME_STR_SEPARATOR,proposedName);
+		return TWA.getName(id.id());
+	}
+
+
+	@Override
+	public String getUniqueName(String label, String proposedName) {
+		Identity id = selectedVisualNode.scope().newId(true,label,PairIdentity.LABEL_NAME_STR_SEPARATOR,proposedName);
+		return TWA.getName(id.id());
 	}
 
 

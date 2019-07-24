@@ -80,7 +80,6 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
-import au.edu.anu.twapps.mm.visualGraph.VisualGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
@@ -801,7 +800,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 
 	@Override
 	public void onNewNode(VisualNode node) {
-		zoomTarget.setCursor(Cursor.WAIT);
+		zoomTarget.setCursor(Cursor.CROSSHAIR);
 		newNode = node;
 	}
 

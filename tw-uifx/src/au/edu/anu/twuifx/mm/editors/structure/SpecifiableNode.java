@@ -29,12 +29,8 @@
 
 package au.edu.anu.twuifx.mm.editors.structure;
 
-import java.util.List;
-
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import fr.cnrs.iees.graph.TreeNode;
-import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
 // just experimenting with what services mm requires of an aotnode.
@@ -60,9 +56,6 @@ public interface SpecifiableNode {
 	public String getLabel();
 
 	public Iterable<VisualNode> graphRoots();
-	
-	public String proposeId();
-
 
 	public boolean hasOutEdges();
 
@@ -70,9 +63,11 @@ public interface SpecifiableNode {
 
 	public boolean isCollapsed();
 
-	public String getUniqueName(String label, String def);
+	public String getUniqueName(String label, String proposedName);
 
-	public VisualNode newChild(SimpleDataTreeNode specs, String label, String name);
+	public VisualNode newChild(String label, String name);
+
+	public String proposeAnId(String label, String proposedName);
 	
 	//public void addProperty(String key, Object defaultValue);
 
