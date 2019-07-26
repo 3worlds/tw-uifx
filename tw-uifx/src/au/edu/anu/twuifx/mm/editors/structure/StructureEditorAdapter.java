@@ -62,7 +62,7 @@ public abstract class StructureEditorAdapter
 		this.specifications = new TwSpecifications();
 		this.newChild = null;
 		this.editingNode = clickedNode;
-		this.editingNodeSpec = specifications.getSpecificationOf(editingNode.getConfigNode());
+		this.editingNodeSpec = specifications.getSpecificationOf(editingNode.createdBy(),editingNode.getConfigNode());
 	}
 
 	@Override

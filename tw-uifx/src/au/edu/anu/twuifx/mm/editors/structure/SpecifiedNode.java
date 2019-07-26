@@ -149,5 +149,10 @@ public class SpecifiedNode implements SpecifiableNode {
 		return TWA.getName(id.id());
 	}
 
+	@Override
+	public String createdBy() {
+		return selectedVisualNode.getCreatedBy();
+	}
+
 
 }

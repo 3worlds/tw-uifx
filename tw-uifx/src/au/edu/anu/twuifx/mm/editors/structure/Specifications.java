@@ -67,7 +67,7 @@ public interface Specifications {
 	 * get specification of a given node from the configuration graph. If null, it
 	 * can't be checked.
 	 */
-	public SimpleDataTreeNode getSpecificationOf(TreeGraphNode configurationNode);
+	public SimpleDataTreeNode getSpecificationOf(String createdBy,TreeGraphNode configurationNode);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and

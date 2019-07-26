@@ -31,9 +31,13 @@ public class TwSpecifications implements //
 		// TODO Auto-generated method stub
 		return false;
 	}
+//	isOfClass = String("categorySet")
+//	hasParent = StringTable(([1]"category:"))
+//	isOfClass = String("categorySet")
+//	hasParent = StringTable(([1]"structure:"))
 
 	@Override
-	public SimpleDataTreeNode getSpecificationOf(TreeGraphNode configNode) {
+	public SimpleDataTreeNode getSpecificationOf(String createdBy,TreeGraphNode configNode) {
 		return (SimpleDataTreeNode) get(aroot.getChildren(),
 				selectOne(hasProperty(aaIsOfClass, TWA.getLabel(configNode.id()))));
 	}
