@@ -63,6 +63,9 @@ public abstract class StructureEditorAdapter
 		this.newChild = null;
 		this.editingNode = clickedNode;
 		this.editingNodeSpec = specifications.getSpecificationOf(editingNode.createdBy(),editingNode.getConfigNode());
+//		System.out.println("Config: "+editingNode.getConfigNode().id());
+//		System.out.println("Specified by: "+editingNodeSpec.id());
+		
 	}
 
 	@Override
@@ -70,7 +73,7 @@ public abstract class StructureEditorAdapter
 		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
 		for (SimpleDataTreeNode childNodeSpec : childSpecs) {
 			IntegerRange range = specifications.getMultiplicity(childNodeSpec);
-			if (!editingNode.inRange(range, childNodeSpec.id()))
+			if (editingNode.moreChildrenAllowed(range, childNodeSpec.id()))
 				result.add(childNodeSpec);
 		}
 		return result;

@@ -36,11 +36,26 @@ public class TwSpecifications implements //
 //	isOfClass = String("categorySet")
 //	hasParent = StringTable(([1]"structure:"))
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public SimpleDataTreeNode getSpecificationOf(String createdBy,TreeGraphNode configNode) {
-		return (SimpleDataTreeNode) get(aroot.getChildren(),
-				selectOne(hasProperty(aaIsOfClass, TWA.getLabel(configNode.id()))));
+	public SimpleDataTreeNode getSpecificationOf(String createdBy, TreeGraphNode configNode) {
+		List<SimpleDataTreeNode> lst = (List<SimpleDataTreeNode>) get(aroot.getChildren(),
+				selectOneOrMany(hasProperty(aaIsOfClass, TWA.getLabel(configNode.id()))));
+		if (lst.size()==1)
+			return lst.get(0);
+		for (SimpleDataTreeNode node: lst) {
+			if (parentTableContains(node,createdBy))
+				return node;
+		}
+		return null;
+//		return (SimpleDataTreeNode) get(aroot.getChildren(),
+//				selectOne(hasProperty(aaIsOfClass, TWA.getLabel(configNode.id()))));
 	}
+
+	private static boolean parentTableContains(SimpleDataTreeNode node, String createdBy) {
+	StringTable st = (StringTable) node.properties().getPropertyValue(aaHasParent);
+	return st.contains(createdBy+PairIdentity.LABEL_NAME_STR_SEPARATOR);
+}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -82,7 +97,7 @@ public class TwSpecifications implements //
 
 	@Override
 	public boolean nameStartsWithUpperCase(SimpleDataTreeNode spec) {
-		return getConstraint(spec, NameStartsWithUpperCaseQuery.class.getName())!=null;
+		return getConstraint(spec, NameStartsWithUpperCaseQuery.class.getName()) != null;
 	}
 
 	@Override

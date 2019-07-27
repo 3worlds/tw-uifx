@@ -50,8 +50,8 @@ public interface SpecifiableNode {
 	 */
 	public boolean canDelete();
 
-	/* true if the number of nodes of this label is within the specified range */
-	public boolean inRange(IntegerRange range, String childLabel);
+	/* true if the this node can have more children of this label */
+	public boolean moreChildrenAllowed(IntegerRange range, String childLabel);
 
 	public String getLabel();
 
@@ -63,7 +63,7 @@ public interface SpecifiableNode {
 
 	public boolean isCollapsed();
 
-	public String getUniqueName(String label, String proposedName);
+	//public String getUniqueName(String label, String proposedName);
 
 	public VisualNode newChild(String label, String name);
 

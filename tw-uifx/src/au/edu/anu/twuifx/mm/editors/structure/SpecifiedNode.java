@@ -77,12 +77,10 @@ public class SpecifiedNode implements SpecifiableNode {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean inRange(IntegerRange range, String childLabel) {
-		// TODO check again when we have children
+	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {
 		List<SimpleDataTreeNode> lst = (List<SimpleDataTreeNode>) get(selectedVisualNode.getChildren(),
 				selectZeroOrMany(hasTheLabel(childLabel)));
-		int c = lst.size();
-		return range.inRange(c);
+		return lst.size()<range.getLast();
 	}
 
 	@Override
@@ -125,6 +123,7 @@ public class SpecifiedNode implements SpecifiableNode {
 		NodeFactory vf = parent.factory();
 		VisualNode childVisualNode = (VisualNode) vf.makeNode(proposedId);
 		childVisualNode.connectParent(parent);
+		childVisualNode.setCreatedBy(TWA.getLabel(parent.id()));
 		childVisualNode.setConfigNode(configChild);
 		childVisualNode.setCategory();
 		return childVisualNode;
@@ -143,11 +142,11 @@ public class SpecifiedNode implements SpecifiableNode {
 	}
 
 
-	@Override
-	public String getUniqueName(String label, String proposedName) {
-		Identity id = selectedVisualNode.scope().newId(true,label,PairIdentity.LABEL_NAME_STR_SEPARATOR,proposedName);
-		return TWA.getName(id.id());
-	}
+//	@Override
+//	public String getUniqueName(String label, String proposedName) {
+//		Identity id = selectedVisualNode.scope().newId(true,label,PairIdentity.LABEL_NAME_STR_SEPARATOR,proposedName);
+//		return TWA.getName(id.id());
+//	}
 
 	@Override
 	public String createdBy() {
