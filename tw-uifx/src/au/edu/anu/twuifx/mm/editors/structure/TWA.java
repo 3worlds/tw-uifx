@@ -40,6 +40,7 @@ import fr.cnrs.iees.identity.impl.PairIdentity;
  * @date 20 Jul 2019
  */
 // Global singleton instance of the 3Warchetype: thread safe and lazy load
+// TODO make use of the Singleton functional interface
 public class TWA {
 	private static Tree<? extends TreeNode> instance;
 
