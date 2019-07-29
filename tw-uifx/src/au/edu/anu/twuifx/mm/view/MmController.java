@@ -91,8 +91,8 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
-import au.edu.anu.twuifx.mm.visualise.GraphVisualisablefx;
-import au.edu.anu.twuifx.mm.visualise.GraphVisualiser;
+import au.edu.anu.twuifx.mm.visualise.GraphVisualisable;
+import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.DataHolder;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -675,7 +675,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 		this.visualGraph = layoutGraph;
 		Cursor oldCursor = setWaitCursor();
 		getPreferences();
-		visualiser = new GraphVisualiser(visualGraph, //
+		visualiser = new GraphVisualiserfx(visualGraph, //
 				zoomTarget, //
 				nodeRadiusProperty, //
 				btnChildLinks.selectedProperty(), //
@@ -687,7 +687,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 		// setButtons(have project);
 	}
 
-	private GraphVisualisablefx visualiser;
+	private GraphVisualisable visualiser;
 
 	private List<VisualNode> getNodeList() {
 		List<VisualNode> result = new LinkedList<>();

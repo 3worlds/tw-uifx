@@ -77,9 +77,9 @@ import javafx.util.Duration;
  *
  * Date 28 Jan. 2019
  */
-public final class GraphVisualiser implements GraphVisualisablefx {
+public final class GraphVisualiserfx implements GraphVisualisable {
 
-	private final TreeGraph<VisualNode, VisualEdge>  visualGraph;
+	private final TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private final Pane pane;
 	private final IntegerProperty nodeRadius;
 	private final BooleanProperty showTreeLine;
@@ -93,12 +93,12 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 	private static final Double animateDuration = 1000.0;
 	private final IMMController controller;
 
-	public GraphVisualiser(TreeGraph<VisualNode, VisualEdge>  visualGraph, //
+	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
 			IntegerProperty nodeRadius, //
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
-			ObjectProperty<Font> font,//
+			ObjectProperty<Font> font, //
 			IMMController controller) {
 		this.visualGraph = visualGraph;
 		this.pane = pane;
@@ -144,7 +144,7 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 
 	}
 
-	//private StructureEditable gse;
+	// private StructureEditable gse;
 	private VisualNode dragNode;
 
 	private void createNodeVisualisation(VisualNode n) {
@@ -200,11 +200,11 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
-				
-				/*gse =*/ new StructureEditorfx(new SpecifiedNode(n,visualGraph), e,controller);
+
+				/* gse = */ new StructureEditorfx(new SpecifiedNode(n, visualGraph), e, controller);
 			} else
 				controller.onNodeSelected(n);
-			
+
 		});
 
 		text.fontProperty().bind(font);
@@ -221,11 +221,12 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		c.toFront();
 		text.toBack();
 	}
+
 	@Override
 	public void onNewNode(VisualNode node) {
 		createNodeVisualisation(node);
 		createTreeLines(node, showTreeLine);
-		//gse.
+		// gse.
 		// create all the visual stuff
 		// if (placing) {
 		// Platform.runLater(() -> {
@@ -245,7 +246,6 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		// }
 		//
 
-		
 	}
 
 	private void createTreeLines(VisualNode n, BooleanProperty show) {
@@ -379,6 +379,38 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 			collapse(child, xp, yp);
 	}
 
+	private void expandTree(VisualNode parent) {
+		double w = pane.getWidth();
+		double h = pane.getHeight();
+		for (TreeNode child : parent.getChildren()) {
+			expand(child, w, h);
+		}
+	}
+
+	private static void expand(TreeNode node, double w, double h) {
+		setExpandBindings((VisualNode) node, w, h);
+		for (TreeNode child : node.getChildren())
+			expand(child, w, h);
+	}
+
+	private static void setExpandBindings(VisualNode node, double w, double h) {
+		Circle circle = (Circle) node.getSymbol();
+		double x = node.getX();
+		double y = node.getY();
+		x = w * x;
+		y = h * y;
+		circle.centerXProperty().unbind();
+		circle.centerYProperty().unbind();
+		KeyValue endX = new KeyValue(circle.centerXProperty(), x, Interpolator.EASE_OUT);
+		KeyValue endY = new KeyValue(circle.centerYProperty(), y, Interpolator.EASE_OUT);
+		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
+		Timeline timeline = new Timeline();
+		timeline.getKeyFrames().add(keyFrame);
+		node.setCollapse(false);
+		circle.setVisible(true);
+		timeline.play();
+	}
+
 	private static void collapse(TreeNode node, DoubleProperty xp, DoubleProperty yp) {
 		VisualNode vn = (VisualNode) node;
 		setCollapseBindings(vn, xp, yp);
@@ -407,5 +439,16 @@ public final class GraphVisualiser implements GraphVisualisablefx {
 		timeline.play();
 	}
 
+	@Override
+	public void collapseTreeFrom(VisualNode node) {
+		collapseTree(node);
+
+	}
+
+	@Override
+	public void expandTreeFrom(VisualNode node) {
+		expandTree(node);
+
+	}
 
 }

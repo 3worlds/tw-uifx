@@ -33,10 +33,14 @@ package au.edu.anu.twuifx.mm.visualise;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 // If it turns out that this does not need javafx then move to tw-apps
 
-public interface GraphVisualisablefx {
+public interface GraphVisualisable {
 	public void initialiseView();
 	
 	public void onNewNode(VisualNode node);
+	
+	public void collapseTreeFrom(VisualNode node);
+	
+	public void expandTreeFrom(VisualNode node);
 
 	public void close();
 

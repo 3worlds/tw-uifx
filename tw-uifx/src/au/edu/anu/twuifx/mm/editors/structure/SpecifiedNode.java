@@ -163,5 +163,11 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 		return selectedVisualNode.getCreatedBy();
 	}
 
+	@Override
+	public VisualNode getSelectedVisualNode() {
+		return selectedVisualNode;
+		
+	}
+
 
 }

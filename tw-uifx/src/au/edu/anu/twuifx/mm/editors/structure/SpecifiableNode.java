@@ -70,6 +70,8 @@ public interface SpecifiableNode {
 	public String proposeAnId(String label, String proposedName);
 	
 	public String createdBy();
+
+	public VisualNode getSelectedVisualNode();
 	
 	//public void addProperty(String key, Object defaultValue);
 

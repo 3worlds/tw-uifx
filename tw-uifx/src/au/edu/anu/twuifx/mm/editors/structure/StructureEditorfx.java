@@ -115,7 +115,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 		if (editingNode.hasChildren()) {
 			MenuItem mi = MenuLabels.addMenuItem(cm,MenuLabels.ML_DELETE);
-			addOptionDeleteThisNode
+			addOptionDeleteThisNode(mi);
 		}
 
 		if (!editingNode.isLeaf()) {
@@ -127,6 +127,23 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 		}
 
+	}
+
+	private void addOptionDeleteThisNode(MenuItem mi) {
+		mi.setOnAction((e)->{
+			// Expand children or they would be unreachable
+//			if (collapsed())
+//				VisualNode.expandTree(selectedNode, model.getPane());
+//			// Remove visual elements
+//			VisualNode.removeCircle(selectedNode, model.getPane());
+//			deleteNode(selectedNode);
+//			model.checkGraph();
+//			model.reBuildAllElementsPropertySheet();
+//			model.clearNodePropertySheet();
+//			GraphState.isChanged(true);
+			
+		});
+		
 	}
 
 	private void addOptionNewChild(Menu mu, SimpleDataTreeNode childRoot) {
