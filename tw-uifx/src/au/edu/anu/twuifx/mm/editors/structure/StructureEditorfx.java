@@ -110,10 +110,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 		if (editingNode.canDelete()) {
 			// add delete option
+			
 		}
 
 		if (editingNode.hasChildren()) {
-			// delete tree options
+			MenuItem mi = MenuLabels.addMenuItem(cm,MenuLabels.ML_DELETE);
+			addOptionDeleteThisNode
 		}
 
 		if (!editingNode.isLeaf()) {
