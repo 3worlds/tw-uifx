@@ -34,6 +34,7 @@ import org.apache.commons.text.WordUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twuifx.mm.visualise.GraphVisualisable;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.scene.Node;
@@ -55,8 +56,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	private ContextMenu cm;
 	private IMMController controller;
 
-	public StructureEditorfx(SpecifiableNode n, MouseEvent event, IMMController controller) {
-		super(n);
+	public StructureEditorfx(SpecifiableNode n, MouseEvent event, IMMController controller, GraphVisualisable gv) {
+		super(n,gv);
 		this.controller = controller;
 		cm = new ContextMenu();
 		buildgui();
@@ -109,13 +110,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 
 		if (editingNode.canDelete()) {
-			// add delete option
-			
+			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_DELETE);
+			addOptionDeleteThisNode(mi);
 		}
 
 		if (editingNode.hasChildren()) {
-			MenuItem mi = MenuLabels.addMenuItem(cm,MenuLabels.ML_DELETE);
-			addOptionDeleteThisNode(mi);
 		}
 
 		if (!editingNode.isLeaf()) {
@@ -130,20 +129,22 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	}
 
 	private void addOptionDeleteThisNode(MenuItem mi) {
-		mi.setOnAction((e)->{
+		mi.setOnAction((e) -> {
 			// Expand children or they would be unreachable
-//			if (collapsed())
-//				VisualNode.expandTree(selectedNode, model.getPane());
-//			// Remove visual elements
+			if (editingNode.getSelectedVisualNode().isCollapsedParent())
+				gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
+
+			// Remove visual elements
+			gvisualiser.removeView(editingNode.getSelectedVisualNode());
 //			VisualNode.removeCircle(selectedNode, model.getPane());
 //			deleteNode(selectedNode);
 //			model.checkGraph();
 //			model.reBuildAllElementsPropertySheet();
 //			model.clearNodePropertySheet();
 //			GraphState.isChanged(true);
-			
+
 		});
-		
+
 	}
 
 	private void addOptionNewChild(Menu mu, SimpleDataTreeNode childRoot) {
@@ -173,7 +174,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				prompt = newName;
 			}
 
-				// make the node
+			// make the node
 			newChild = editingNode.newChild(childLabel, prompt);
 			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
 

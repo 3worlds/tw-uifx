@@ -61,6 +61,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
@@ -201,7 +202,7 @@ public final class GraphVisualiserfx implements GraphVisualisable {
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
 
-				/* gse = */ new StructureEditorfx(new SpecifiedNode(n, visualGraph), e, controller);
+				/* gse = */ new StructureEditorfx(new SpecifiedNode(n, visualGraph), e, controller,this);
 			} else
 				controller.onNodeSelected(n);
 
@@ -449,6 +450,20 @@ public final class GraphVisualiserfx implements GraphVisualisable {
 	public void expandTreeFrom(VisualNode node) {
 		expandTree(node);
 
+	}
+
+	@Override
+	public void removeView(VisualNode visualNode) {
+		List<Node> sceneNodes = new ArrayList<>();
+		sceneNodes.add((Node) visualNode.getSymbol());
+		sceneNodes.add((Node)visualNode.getText());
+		sceneNodes.add((Node)visualNode.getParentLine());
+		for (Edge e: visualNode.edges()) {
+			VisualEdge ve = (VisualEdge)e;
+			sceneNodes.add((Node)ve.getText());
+			sceneNodes.add((Node)ve.getSymbol());
+		}
+		pane.getChildren().removeAll(sceneNodes);
 	}
 
 }

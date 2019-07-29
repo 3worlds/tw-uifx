@@ -43,4 +43,6 @@ public interface GraphVisualisable {
 
 	public void close();
 
+	public void removeView(VisualNode selectedVisualNode);
+
 }
