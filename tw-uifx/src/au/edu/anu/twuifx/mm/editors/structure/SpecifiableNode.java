@@ -63,8 +63,6 @@ public interface SpecifiableNode {
 
 	public boolean isCollapsed();
 
-	//public String getUniqueName(String label, String proposedName);
-
 	public VisualNode newChild(String label, String name);
 
 	public String proposeAnId(String label, String proposedName);

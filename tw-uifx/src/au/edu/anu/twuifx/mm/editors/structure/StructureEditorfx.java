@@ -33,8 +33,9 @@ import java.util.List;
 import org.apache.commons.text.WordUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twuifx.mm.visualise.GraphVisualisable;
+import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.scene.Node;
@@ -56,7 +57,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	private ContextMenu cm;
 	private IMMController controller;
 
-	public StructureEditorfx(SpecifiableNode n, MouseEvent event, IMMController controller, GraphVisualisable gv) {
+	public StructureEditorfx(SpecifiableNode n, MouseEvent event, IMMController controller, IGraphVisualiser gv) {
 		super(n,gv);
 		this.controller = controller;
 		cm = new ContextMenu();
@@ -130,14 +131,22 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	private void addOptionDeleteThisNode(MenuItem mi) {
 		mi.setOnAction((e) -> {
+			// TODO: This code can be moved to the adapter.
+			
 			// Expand children or they would be unreachable
 			if (editingNode.getSelectedVisualNode().isCollapsedParent())
 				gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
 
 			// Remove visual elements
-			gvisualiser.removeView(editingNode.getSelectedVisualNode());
-//			VisualNode.removeCircle(selectedNode, model.getPane());
-//			deleteNode(selectedNode);
+			VisualNode vn = editingNode.getSelectedVisualNode();
+			TreeGraphNode cn = editingNode.getConfigNode();
+			gvisualiser.removeView(vn);
+			vn.disconnect();
+			cn.disconnect();
+			vn.factory().removeNode(vn);
+			cn.factory().removeNode(cn);
+			controller.onNodeDeleted();
+			GraphState.setChanged(true);
 //			model.checkGraph();
 //			model.reBuildAllElementsPropertySheet();
 //			model.clearNodePropertySheet();
@@ -152,6 +161,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		MenuItem mi = new MenuItem(childLabel);
 		mu.getItems().add(mi);
 		mi.setOnAction((e) -> {
+			// TODO move to adapter?
 
 			// default name is label with 1 appended
 			String prompt = childLabel + "1";

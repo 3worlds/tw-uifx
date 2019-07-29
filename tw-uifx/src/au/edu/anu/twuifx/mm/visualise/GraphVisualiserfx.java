@@ -78,7 +78,7 @@ import javafx.util.Duration;
  *
  * Date 28 Jan. 2019
  */
-public final class GraphVisualiserfx implements GraphVisualisable {
+public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	private final TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private final Pane pane;

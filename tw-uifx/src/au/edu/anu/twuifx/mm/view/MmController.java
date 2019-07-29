@@ -91,7 +91,7 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
-import au.edu.anu.twuifx.mm.visualise.GraphVisualisable;
+import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.DataHolder;
@@ -687,7 +687,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 		// setButtons(have project);
 	}
 
-	private GraphVisualisable visualiser;
+	private IGraphVisualiser visualiser;
 
 	private List<VisualNode> getNodeList() {
 		List<VisualNode> result = new LinkedList<>();
@@ -812,6 +812,11 @@ public class MmController implements ErrorMessageListener, IMMController {
 			zoomTarget.setCursor(Cursor.DEFAULT);
 			newNode = null;
 		}
+	}
+
+	@Override
+	public void onNodeDeleted() {
+		initialisePropertySheets();		
 	}
 
 }

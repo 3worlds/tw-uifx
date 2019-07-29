@@ -37,7 +37,7 @@ import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.tw.EdgeXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
-import au.edu.anu.twuifx.mm.visualise.GraphVisualisable;
+import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.util.Pair;
@@ -58,10 +58,10 @@ public abstract class StructureEditorAdapter
 	/* specificatons of this editingNode */
 	protected SimpleDataTreeNode editingNodeSpec;
 	
-	protected GraphVisualisable gvisualiser;
+	protected IGraphVisualiser gvisualiser;
 
 
-	public StructureEditorAdapter(SpecifiableNode clickedNode,GraphVisualisable gv) {
+	public StructureEditorAdapter(SpecifiableNode clickedNode,IGraphVisualiser gv) {
 		super();
 		this.specifications = new TwSpecifications();
 		this.newChild = null;

@@ -32,7 +32,7 @@ package au.edu.anu.twuifx.mm.visualise;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 // TODO move to tw-apps later
 
-public interface GraphVisualisable {
+public interface IGraphVisualiser {
 	public void initialiseView();
 	
 	public void onNewNode(VisualNode node);
