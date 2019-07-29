@@ -72,8 +72,9 @@ public abstract class StructureEditorAdapter
 	public List<SimpleDataTreeNode> newChildList(Iterable<SimpleDataTreeNode> childSpecs) {
 		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
 		for (SimpleDataTreeNode childNodeSpec : childSpecs) {
+			String childLabel = (String) childNodeSpec.properties().getPropertyValue(aaIsOfClass);
 			IntegerRange range = specifications.getMultiplicity(childNodeSpec);
-			if (editingNode.moreChildrenAllowed(range, childNodeSpec.id()))
+			if (editingNode.moreChildrenAllowed(range, childLabel))
 				result.add(childNodeSpec);
 		}
 		return result;

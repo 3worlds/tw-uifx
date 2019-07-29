@@ -29,23 +29,25 @@
 
 package au.edu.anu.twuifx.mm.editors.structure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.NodeFactory;
-import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
+import fr.cnrs.iees.graph.TreeNode;
+//import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.Identity;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
-import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
-import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
+//import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
+//import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
-public class SpecifiedNode implements SpecifiableNode {
+public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstants {
 	private VisualNode selectedVisualNode;
 	private TreeGraph<VisualNode, VisualEdge> visualGraph ;
 
@@ -78,9 +80,17 @@ public class SpecifiedNode implements SpecifiableNode {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {
-		List<SimpleDataTreeNode> lst = (List<SimpleDataTreeNode>) get(selectedVisualNode.getChildren(),
-				selectZeroOrMany(hasTheLabel(childLabel)));
-		return lst.size()<range.getLast();
+		// we need a query hasTheName startsWith
+//		List<SimpleDataTreeNode> lstx = (List<SimpleDataTreeNode>) get(selectedVisualNode.getChildren(),
+//				selectZeroOrMany(id(),startsWith(childLabel+PairIdentity.LABEL_NAME_STR_SEPARATOR)));
+		//hasTheName startsWith
+		List<TreeNode> lst = new ArrayList<>();
+		for (TreeNode child:selectedVisualNode.getChildren()) {
+			String label = TWA.getLabel(child.id());
+			if (label.equals(childLabel))
+				lst.add(child);
+		}
+		return range.inRange(lst.size()+1);
 	}
 
 	@Override
