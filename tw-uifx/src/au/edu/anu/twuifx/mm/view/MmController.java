@@ -819,4 +819,16 @@ public class MmController implements ErrorMessageListener, IMMController {
 		initialisePropertySheets();		
 	}
 
+	@Override
+	public void onTreeCollapse() {
+		initialisePropertySheets();		
+		
+	}
+
+	@Override
+	public void onTreeExpand() {
+		initialisePropertySheets();		
+		
+	}
+
 }

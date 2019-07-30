@@ -58,7 +58,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	private IMMController controller;
 
 	public StructureEditorfx(SpecifiableNode n, MouseEvent event, IMMController controller, IGraphVisualiser gv) {
-		super(n,gv);
+		super(n, gv);
 		this.controller = controller;
 		cm = new ContextMenu();
 		buildgui();
@@ -70,20 +70,20 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (haveSpecification()) {
 			Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecificationsOf(editingNodeSpec);
 			List<SimpleDataTreeNode> allowedChildSpecs = newChildList(childSpecs);
-			List<TreeGraphNode> orphanedChildren = orphanedChildList(childSpecs);
+			List<TreeGraphNode> orphanedChildren = orphanedChildList(allowedChildSpecs);
 			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNodeSpec);
 			List<Pair<String, SimpleDataTreeNode>> allowedEdges = newEdgeList(edgeSpecs);
 
 			if (!allowedChildSpecs.isEmpty()) {
+				// add new children options
 				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW);
 				for (SimpleDataTreeNode child : allowedChildSpecs) {
 					addOptionNewChild(mu, child);
 				}
-				// add new children options
 			}
 
 			if (!orphanedChildren.isEmpty()) {
-				// list new toNode edge options
+				// list roots that can be children
 
 			}
 
@@ -93,21 +93,23 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 			cm.getItems().add(new SeparatorMenuItem());
 
+			boolean addSep = editingNode.canDelete();
 			if (editingNode.hasChildren()) {
 				// add exportTreeOptions
+				addSep = true;
 			}
 			if (!allowedChildSpecs.isEmpty()) {
 				// add import tree options
+				addSep = true;
 			}
 
 			// --------------------------------------
-			if (editingNode.canDelete() || editingNode.hasChildren())
-				if (!(allowedChildSpecs.isEmpty() && orphanedChildren.isEmpty()))
-					cm.getItems().add(new SeparatorMenuItem());
+			if (addSep)
+				cm.getItems().add(new SeparatorMenuItem());
 
 		}
-		if (editingNode.hasChildren() || editingNode.hasOutEdges()) {
-			// delete edges to children || xlinks - maybe problem
+		if (editingNode.hasOutEdges()) {
+			// delete xlinks
 		}
 
 		if (editingNode.canDelete()) {
@@ -120,19 +122,35 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 		if (!editingNode.isLeaf()) {
 			cm.getItems().add(new SeparatorMenuItem());
-			if (editingNode.isCollapsed()) {
-				// add expand option
-			} else {
-				// add collapse option
+			if (editingNode.getSelectedVisualNode().isCollapsedParent()) {
+				addExpandOption(MenuLabels.addMenuItem(cm, MenuLabels.ML_EXPAND));
+			} else if (editingNode.hasChildren()) {
+				addCollapseOption(MenuLabels.addMenuItem(cm, MenuLabels.ML_COLLAPSE));
 			}
 		}
+	}
+
+	private void addCollapseOption(MenuItem mi) {
+		mi.setOnAction((e) -> {
+			gvisualiser.collapseTreeFrom(editingNode.getSelectedVisualNode());
+			controller.onTreeCollapse();
+			GraphState.setChanged(true);
+		});
+	}
+
+	private void addExpandOption(MenuItem mi) {
+		mi.setOnAction((e) -> {
+			gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
+			controller.onTreeExpand();
+			GraphState.setChanged(true);
+		});
 
 	}
 
 	private void addOptionDeleteThisNode(MenuItem mi) {
 		mi.setOnAction((e) -> {
 			// TODO: This code can be moved to the adapter.
-			
+
 			// Expand children or they would be unreachable
 			if (editingNode.getSelectedVisualNode().isCollapsedParent())
 				gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
@@ -148,10 +166,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			controller.onNodeDeleted();
 			GraphState.setChanged(true);
 //			model.checkGraph();
-//			model.reBuildAllElementsPropertySheet();
-//			model.clearNodePropertySheet();
-//			GraphState.isChanged(true);
-
 		});
 
 	}
