@@ -402,8 +402,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		y = h * y;
 		circle.centerXProperty().unbind();
 		circle.centerYProperty().unbind();
-		KeyValue endX = new KeyValue(circle.centerXProperty(), x, Interpolator.EASE_OUT);
-		KeyValue endY = new KeyValue(circle.centerYProperty(), y, Interpolator.EASE_OUT);
+		KeyValue endX = new KeyValue(circle.centerXProperty(), x, Interpolator.LINEAR);
+		KeyValue endY = new KeyValue(circle.centerYProperty(), y, Interpolator.LINEAR);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
@@ -427,8 +427,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			circle.centerXProperty().unbind();
 			circle.centerYProperty().unbind();
 		}
-		KeyValue endX = new KeyValue(circle.centerXProperty(), xp.getValue(), Interpolator.EASE_IN);
-		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.EASE_IN);
+		KeyValue endX = new KeyValue(circle.centerXProperty(), xp.getValue(), Interpolator.LINEAR);
+		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.LINEAR);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
