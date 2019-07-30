@@ -91,7 +91,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Color hoverColor;
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
-	private static final Double animateDuration = 1000.0;
+	private static final Double animateDuration = 500.0;
 	private final IMMController controller;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //

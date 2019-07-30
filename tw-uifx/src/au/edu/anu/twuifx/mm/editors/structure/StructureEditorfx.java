@@ -38,6 +38,7 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -210,7 +211,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	@Override
 	public String promptForNewNode(String label, String promptName) {
-		return Dialogs.getText("New " + label + "node", "", "Name:", promptName);
+		return Dialogs.getText("New '" + label + "' node", "", "Name:", promptName);
 	}
 
 	private enum MenuLabels {
