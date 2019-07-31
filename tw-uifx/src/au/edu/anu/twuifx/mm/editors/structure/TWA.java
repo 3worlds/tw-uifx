@@ -28,6 +28,11 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.editors.structure;
 
+import java.util.logging.Logger;
+
+import au.edu.anu.rscs.aot.archetype.Archetypes;
+import au.edu.anu.rscs.aot.archetype.CheckMessage;
+import au.edu.anu.twcore.archetype.TwArchetype;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import fr.cnrs.iees.graph.Tree;
 import fr.cnrs.iees.graph.TreeNode;
@@ -43,6 +48,9 @@ import fr.cnrs.iees.identity.impl.PairIdentity;
 // TODO make use of the Singleton functional interface
 public class TWA {
 	private static Tree<? extends TreeNode> instance;
+	private static TreeNode aroot;
+	private static boolean checked = false;
+	private static Logger log = Logger.getLogger(TWA.class.getName());
 
 	private TWA() {
 	};
@@ -54,7 +62,28 @@ public class TWA {
 		}
 		return instance;
 	}
-	
+
+	public static synchronized TreeNode getRoot() {
+		if (aroot == null) {
+			aroot = TWA.getInstance().root();
+		}
+		return aroot;
+	}
+
+	public static synchronized boolean validArchetype() {
+		if (checked)
+			return checked;
+		Archetypes rootArch = new Archetypes();
+		if (!rootArch.isArchetype(TWA.getInstance())) {
+			log.severe("3WORLDS ARCHETYPE HAS ERRORS! (list follows)");
+			for (CheckMessage cm : rootArch.errorList())
+				log.severe(cm.toString() + "\n");
+			checked = false;
+		} else
+			checked = true;
+		return checked;
+	}
+
 	// Static helper methods??
 	public static String getLabel(String id) {
 		return id.split(PairIdentity.LABEL_NAME_STR_SEPARATOR)[0];

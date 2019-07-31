@@ -46,9 +46,7 @@ import javafx.util.Pair;
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
 	
-	public static final TreeNode aroot = TWA.getInstance().root();
-
-	/* what we need to know from the archetype graph */
+		/* what we need to know from the archetype graph */
 	protected Specifications specifications;
 	/*
 	 * what we need to know from the visualNode that has been selected for editing
@@ -72,7 +70,7 @@ public abstract class StructureEditorAdapter
 		this.specifications = new TwSpecifications();
 		this.newChild = null;
 		this.editingNode = clickedNode;
-		this.editingNodeSpec = specifications.getSpecificationOf(aroot,editingNode.createdBy(),editingNode.getConfigNode());
+		this.editingNodeSpec = specifications.getSpecificationOf(TWA.getRoot(),editingNode.createdBy(),editingNode.getConfigNode());
 		this.subClass = specifications.getSubClass(editingNode.getConfigNode().getClass().getName(),editingNodeSpec);
 		this.gvisualiser=gv;
 		System.out.println("Config: "+editingNode.getConfigNode().id()+", Specified by: "+editingNodeSpec.id());
