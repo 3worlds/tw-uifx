@@ -67,13 +67,13 @@ public interface Specifications {
 	 * get specification of a given node from the configuration graph. If null, it
 	 * can't be checked.
 	 */
-	public SimpleDataTreeNode getSpecificationOf(String createdBy,TreeGraphNode configurationNode);
+	public SimpleDataTreeNode getSpecificationOf(TreeNode root,String createdBy,TreeGraphNode configurationNode);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and
 	 * class.
 	 */
-	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec);
+	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(TreeNode root,SimpleDataTreeNode parentSpec);
 
 	/* edge specification nodes of a node with this label and class */
 	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode nodeSpec);
@@ -97,6 +97,10 @@ public interface Specifications {
 	public List<String> getConstraintOptions(SimpleDataTreeNode rootSpec, String constraintClass);
 
 	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec);
+
+	public String getSubClass(String className, SimpleDataTreeNode spec);
+	
+	
 
 	// TODO more to come...
 

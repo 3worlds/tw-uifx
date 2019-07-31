@@ -38,12 +38,16 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.tw.EdgeXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.util.Pair;
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
+	
+	public static final TreeNode aroot = TWA.getInstance().root();
+
 	/* what we need to know from the archetype graph */
 	protected Specifications specifications;
 	/*
@@ -59,6 +63,8 @@ public abstract class StructureEditorAdapter
 	protected SimpleDataTreeNode editingNodeSpec;
 	
 	protected IGraphVisualiser gvisualiser;
+	
+	protected String subClass;
 
 
 	public StructureEditorAdapter(SpecifiableNode clickedNode,IGraphVisualiser gv) {
@@ -66,11 +72,11 @@ public abstract class StructureEditorAdapter
 		this.specifications = new TwSpecifications();
 		this.newChild = null;
 		this.editingNode = clickedNode;
-		this.editingNodeSpec = specifications.getSpecificationOf(editingNode.createdBy(),editingNode.getConfigNode());
+		this.editingNodeSpec = specifications.getSpecificationOf(aroot,editingNode.createdBy(),editingNode.getConfigNode());
+		this.subClass = specifications.getSubClass(editingNode.getConfigNode().getClass().getName(),editingNodeSpec);
 		this.gvisualiser=gv;
-//		System.out.println("Config: "+editingNode.getConfigNode().id());
-//		System.out.println("Specified by: "+editingNodeSpec.id());
-		
+		System.out.println("Config: "+editingNode.getConfigNode().id()+", Specified by: "+editingNodeSpec.id());
+
 	}
 
 	@Override
