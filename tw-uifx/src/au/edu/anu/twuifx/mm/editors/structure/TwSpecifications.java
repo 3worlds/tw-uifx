@@ -58,16 +58,6 @@ public class TwSpecifications implements //
 					return result;
 			}
 		}
-
-//		List<SimpleDataTreeNode> lst = (List<SimpleDataTreeNode>) get(aroot.getChildren(),
-//				selectOneOrMany(hasProperty(aaIsOfClass, TWA.getLabel(configNode.id()))));
-//		if (lst.size() == 1)
-//			return lst.get(0);
-//
-//		for (SimpleDataTreeNode node : lst) {
-//			if (parentTableContains(node, createdBy))
-//				return node;
-//		}
 		return null;
 	}
 
@@ -76,6 +66,7 @@ public class TwSpecifications implements //
 		return ioc.equals(label);
 	}
 
+	/*If the config class is a subClass within this spec, return the subClass string else null*/
 	@Override
 	public String getSubClass(String configClass, SimpleDataTreeNode spec) {
 		SimpleDataTreeNode propertySpec = (SimpleDataTreeNode) get(spec.getChildren(),

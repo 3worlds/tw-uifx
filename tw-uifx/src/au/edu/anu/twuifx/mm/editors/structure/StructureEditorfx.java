@@ -197,6 +197,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				modified = !newName.equals(userName);
 				prompt = newName;
 			}
+			// prompt for creation options:
+			// class
+			// property choices
 
 			// make the node
 			newChild = editingNode.newChild(childLabel, prompt);

@@ -73,8 +73,7 @@ public abstract class StructureEditorAdapter
 		this.editingNodeSpec = specifications.getSpecificationOf(TWA.getRoot(),editingNode.createdBy(),editingNode.getConfigNode());
 		this.subClass = specifications.getSubClass(editingNode.getConfigNode().getClass().getName(),editingNodeSpec);
 		this.gvisualiser=gv;
-		System.out.println("Config: "+editingNode.getConfigNode().id()+", Specified by: "+editingNodeSpec.id());
-
+		System.out.println("Config: "+editingNode.getConfigNode().id()+", Specified by: "+editingNodeSpec.id()+", Subclass: "+subClass);
 	}
 
 	@Override
