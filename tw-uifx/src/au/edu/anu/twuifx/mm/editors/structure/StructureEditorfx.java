@@ -199,13 +199,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				prompt = newName;
 			}
 			// prompt for creation options:
+			//class
 			List<Class> subClasses = specifications.getSubClasses(childRoot);
-//			 try {
-//				Class cls = Class.forName("au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer");
-//			} catch (ClassNotFoundException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
+			for (Class c: subClasses)
+				System.out.println(c.getName());
 			// class
 			// property choices
 

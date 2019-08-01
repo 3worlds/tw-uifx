@@ -175,11 +175,21 @@ public class TwSpecifications implements //
 
 	@Override
 	public List<Class> getSubClasses(SimpleDataTreeNode spec) {
-		List<SimpleDataTreeNode> constraints = getConstraints(spec, CheckSubArchetypeQuery.class.getName());
-		for (TreeNode n:constraints)
-			System.out.println(n.id());
-// TODO Auto-generated method stub
-		return null;
+		List<Class > result = new ArrayList<>();
+		SimpleDataTreeNode propertySpec = (SimpleDataTreeNode) get(spec.getChildren(),
+				selectZeroOrOne(hasProperty(twaHasName, twaSubClass)));
+		if (propertySpec != null) {
+			SimpleDataTreeNode constraint = (SimpleDataTreeNode) get(propertySpec.getChildren(),
+					selectOne(hasProperty(twaClassName, IsInValueSetQuery.class.getName())));
+			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
+			for (int i= 0;i<classes.size();i++)
+				try {
+					result.add(Class.forName(classes.getWithFlatIndex(i)));
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}			
+		}
+		return result;
 	}
 
 }

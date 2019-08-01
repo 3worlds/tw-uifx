@@ -49,7 +49,6 @@ import javafx.beans.value.ObservableValue;
  * Date May 6, 2019
  */
 public class GraphStatefx implements IGraphState {
-	// private static boolean hasChanged = false;
 	private BooleanProperty propertyHasChanged = new SimpleBooleanProperty(false);
 	private StringProperty propertyTitle = new SimpleStringProperty("");
 	private StringProperty propertyJavaPath = new SimpleStringProperty("");
