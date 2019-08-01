@@ -34,6 +34,7 @@ import org.apache.commons.text.WordUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
@@ -198,6 +199,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				prompt = newName;
 			}
 			// prompt for creation options:
+			List<Class> subClasses = specifications.getSubClasses(childRoot);
+//			 try {
+//				Class cls = Class.forName("au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer");
+//			} catch (ClassNotFoundException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
 			// class
 			// property choices
 

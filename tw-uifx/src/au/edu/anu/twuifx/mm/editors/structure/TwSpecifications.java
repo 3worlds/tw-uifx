@@ -153,6 +153,11 @@ public class TwSpecifications implements //
 		return (SimpleDataTreeNode) get(spec.getChildren(),
 				selectZeroOrOne(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(twaClassName, constraintClass))));
 	}
+	@SuppressWarnings("unchecked")
+	private List<SimpleDataTreeNode> getConstraints(SimpleDataTreeNode spec, String constraintClass){
+		return (List<SimpleDataTreeNode>) get(spec.getChildren(),
+				selectZeroOrMany(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(twaClassName, constraintClass))));
+	}
 
 	@Override
 	public List<String> getConstraintOptions(SimpleDataTreeNode spec, String constraintClass) {
@@ -167,5 +172,14 @@ public class TwSpecifications implements //
 		return result;
 	}
 // end of implementation methods
+
+	@Override
+	public List<Class> getSubClasses(SimpleDataTreeNode spec) {
+		List<SimpleDataTreeNode> constraints = getConstraints(spec, CheckSubArchetypeQuery.class.getName());
+		for (TreeNode n:constraints)
+			System.out.println(n.id());
+// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -99,6 +99,9 @@ public interface Specifications {
 	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec);
 
 	public String getSubClass(String className, SimpleDataTreeNode spec);
+
+	public List<Class> getSubClasses(SimpleDataTreeNode spec);
+	
 	
 	
 
