@@ -96,7 +96,7 @@
 		<ToolBar BorderPane.alignment="CENTER">
 			<items>
 				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Check" />
-				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.49" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.5" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
 				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Create and run simulator" />
             <Label fx:id="lblStatus" />
 			</items>

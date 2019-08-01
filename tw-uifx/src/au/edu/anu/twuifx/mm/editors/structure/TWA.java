@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 
 import au.edu.anu.rscs.aot.archetype.Archetypes;
 import au.edu.anu.rscs.aot.archetype.CheckMessage;
-import au.edu.anu.twcore.archetype.TwArchetype;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import fr.cnrs.iees.graph.Tree;
 import fr.cnrs.iees.graph.TreeNode;

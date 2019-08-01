@@ -38,7 +38,7 @@ public class TwSpecifications implements //
 	@SuppressWarnings("unchecked")
 	@Override
 	public SimpleDataTreeNode getSpecificationOf(TreeNode root,String createdBy, TreeGraphNode configNode) {	
-		String className = configNode.getClass().getName();
+		//String className = configNode.getClass().getName();
 		for (TreeNode child : root.getChildren()) {
 			if (isOfClass((SimpleDataTreeNode) child,TWA.getLabel(configNode.id()))) {
 				if (createdBy==null)
@@ -47,6 +47,7 @@ public class TwSpecifications implements //
 					return (SimpleDataTreeNode) child;
 			}
 			// search sa.
+			// TODO check for TimeModel look for Sto
 			List<SimpleDataTreeNode> saConstraints = (List<SimpleDataTreeNode>) get(child.getChildren(),
 					selectZeroOrMany(hasProperty(twaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint: saConstraints) {

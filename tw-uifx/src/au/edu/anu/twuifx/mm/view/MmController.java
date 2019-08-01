@@ -226,12 +226,12 @@ public class MmController implements ErrorMessageListener, IMMController {
 			public void changed(ObservableValue<? extends Integer> observable, //
 					Integer oldValue, Integer newValue) {
 				setFontSize(newValue);
-				for (Node n : zoomTarget.getChildren()) {
-					if (n instanceof Text) {
-						Text t = (Text) n;
-						t.setFont(font);
-					}
-				}
+//				for (Node n : zoomTarget.getChildren()) {
+//					if (n instanceof Text) {
+//						Text t = (Text) n;
+//						t.setFont(font);
+//					}
+//				}
 			}
 		});
 
@@ -264,7 +264,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 
 		// Setup zooming from the graph display pane (zoomTarget)
 		zoomConfig(scrollPane, scrollContent, group, zoomTarget);
-
+//		setButtonState(); NO! not ready yet.
 	}
 
 	public void setFontSize(int size) {
@@ -390,20 +390,37 @@ public class MmController implements ErrorMessageListener, IMMController {
 		}
 	}
 
-	public void enableButtons() {
-		miSetCodePath.setDisable(false);
-		miDisconnect.setDisable(false);
-		btnLayout.setDisable(false);
-		menuItemSave.setDisable(false);
-		menuItemSaveAs.setDisable(false);
-		btnChildLinks.setDisable(false);
-		btnXLinks.setDisable(false);
-		btnCheck.setDisable(false);
-		trafficLight.setOpacity(1.0);
+	private boolean isValid = false;
+	// needs to respond to a 
+	public void setButtonState() {
+		boolean isOpen = visualGraph!=null;
+		boolean saveable = !GraphState.hasChanged() & isOpen;
+		boolean isConnected = haveUserProject();
+		miSetCodePath.setDisable(isConnected);
+		miDisconnect.setDisable(!isConnected);
+		menuItemSave.setDisable(saveable);
+		menuItemSaveAs.setDisable(!isOpen);
+		btnChildLinks.setDisable(!isOpen);
+		btnXLinks.setDisable(!isOpen);
+		btnLayout.setDisable(!isOpen);
+		btnCheck.setDisable(!isOpen);
+		btnDeploy.setDisable(saveable & !isValid);
+
+		if (isOpen) {
+			trafficLight.setOpacity(1.0);
+			if (isValid)
+				trafficLight.fillProperty().set(Color.GREEN);
+			else
+				trafficLight.fillProperty().set(Color.RED);
+		} else {
+			trafficLight.setOpacity(0.5);
+			trafficLight.fillProperty().set(Color.RED);
+		}
 	}
 
 	private void openProject(File file) {
 		model.doOpenProject(file);
+		setButtonState();
 	}
 
 	@FXML
@@ -464,25 +481,22 @@ public class MmController implements ErrorMessageListener, IMMController {
 		}
 	}
 
-	// public ModelMakerModel model() {
-	// return modelMaker;
-	// }
-
 	@FXML
 	void handleNewProject(ActionEvent event) {
 		model.doNewProject();
+		setButtonState();
 	}
 
 	@FXML
 	void handleSave(ActionEvent event) {
 		model.doSave();
-
+		setButtonState();
 	}
 
 	@FXML
 	void handleSaveAs(ActionEvent event) {
 		model.doSaveAs();
-
+		setButtonState();
 	}
 
 	public void setStage(Stage stage) {
@@ -490,18 +504,14 @@ public class MmController implements ErrorMessageListener, IMMController {
 	}
 
 	public void setValid(boolean ok) {
-		if (ok) {
-			trafficLight.fillProperty().set(Color.GREEN);
-			btnDeploy.setDisable(false);
-		} else {
-			trafficLight.fillProperty().set(Color.RED);
-			btnDeploy.setDisable(true);
-		}
+		isValid = ok;
+		setButtonState();
 	}
 
 	@FXML
 	void handleImport(ActionEvent event) {
 		model.doImport();
+		setButtonState();
 	}
 
 	public double getDrawingWidth() {
@@ -667,7 +677,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 		allElementsPropertySheet.getItems().clear();
 		zoomTarget.getChildren().clear();
 		visualGraph = null;
-
+		setButtonState();
 	}
 
 	@Override
@@ -684,7 +694,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 		visualiser.initialiseView();
 		initialisePropertySheets();
 		setCursor(oldCursor);
-		// setButtons(have project);
+		setButtonState();
 	}
 
 	private IGraphVisualiser visualiser;
@@ -793,7 +803,6 @@ public class MmController implements ErrorMessageListener, IMMController {
 	@Override
 	public void onNodeSelected(VisualNode node) {
 		fillNodePropertySheet(node);
-
 	}
 
 	private VisualNode newNode;
@@ -811,24 +820,26 @@ public class MmController implements ErrorMessageListener, IMMController {
 			visualiser.onNewNode(newNode);
 			zoomTarget.setCursor(Cursor.DEFAULT);
 			newNode = null;
+			setButtonState();
 		}
 	}
 
 	@Override
 	public void onNodeDeleted() {
-		initialisePropertySheets();		
+		initialisePropertySheets();
+		setButtonState();
 	}
 
 	@Override
 	public void onTreeCollapse() {
-		initialisePropertySheets();		
-		
+		initialisePropertySheets();
+		setButtonState();
 	}
 
 	@Override
 	public void onTreeExpand() {
-		initialisePropertySheets();		
-		
+		initialisePropertySheets();
+		setButtonState();
 	}
 
 }

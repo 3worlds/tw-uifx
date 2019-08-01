@@ -58,12 +58,12 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 
 	@Override
 	public boolean hasChildren() {
-		return selectedVisualNode.getChildren().iterator().hasNext();
+		return !isLeaf();
 	}
 
 	@Override
 	public String getClassValue() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub ???
 		return null;
 	}
 
@@ -77,13 +77,8 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 		return !getLabel().equals(ConfigurationNodeLabels.N_ROOT.label());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {
-		// we need a query hasTheName startsWith
-//		List<SimpleDataTreeNode> lstx = (List<SimpleDataTreeNode>) get(selectedVisualNode.getChildren(),
-//				selectZeroOrMany(id(),startsWith(childLabel+PairIdentity.LABEL_NAME_STR_SEPARATOR)));
-		//hasTheName startsWith
 		List<TreeNode> lst = new ArrayList<>();
 		for (TreeNode child:selectedVisualNode.getChildren()) {
 			String label = TWA.getLabel(child.id());
@@ -106,20 +101,17 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 
 	@Override
 	public boolean hasOutEdges() {
-		// TODO Auto-generated method stub
-		return false;
+		return selectedVisualNode.edges().iterator().hasNext();
 	}
 
 	@Override
 	public boolean isLeaf() {
-		// TODO Auto-generated method stub
-		return false;
+		return selectedVisualNode.isLeaf();
 	}
 
 	@Override
 	public boolean isCollapsed() {
-		// TODO Auto-generated method stub
-		return false;
+		return selectedVisualNode.isCollapsed();
 	}
 
 
@@ -151,12 +143,6 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 		return TWA.getName(id.id());
 	}
 
-
-//	@Override
-//	public String getUniqueName(String label, String proposedName) {
-//		Identity id = selectedVisualNode.scope().newId(true,label,PairIdentity.LABEL_NAME_STR_SEPARATOR,proposedName);
-//		return TWA.getName(id.id());
-//	}
 
 	@Override
 	public String createdBy() {

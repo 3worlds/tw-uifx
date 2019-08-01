@@ -29,7 +29,11 @@
  **************************************************************************/
 package au.edu.anu.twuifx.graphState;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import au.edu.anu.twcore.graphState.IGraphState;
+import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -49,8 +53,10 @@ public class GraphStatefx implements IGraphState {
 	private BooleanProperty propertyHasChanged = new SimpleBooleanProperty(false);
 	private StringProperty propertyTitle = new SimpleStringProperty("");
 	private StringProperty propertyJavaPath = new SimpleStringProperty("");
+	private List<IGraphStateListener> listeners;
 
 	public GraphStatefx(StringProperty propertyTitle, StringProperty propertyJavaPath) {
+		listeners = new ArrayList<>();
 		if (propertyTitle != null)
 			this.propertyTitle = propertyTitle;
 		if (propertyJavaPath != null)
@@ -94,6 +100,19 @@ public class GraphStatefx implements IGraphState {
 	public void setChanged(boolean state) {
 		propertyHasChanged.setValue(state);
 		setTitle();
+	}
+
+	@Override
+	public void addListener(IGraphStateListener l) {
+		listeners.add(l);
+		
+	}
+
+	@Override
+	public void onChange() {
+		for (IGraphStateListener l : listeners)
+			l.onStateChange(propertyHasChanged.getValue());
+		
 	}
 
 }
