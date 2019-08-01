@@ -87,6 +87,7 @@ public class GraphStatefx implements IGraphState {
 					propertyTitle.setValue(title);
 				}
 			}
+		onChange();
 		});
 
 	}

@@ -88,6 +88,7 @@ import au.edu.anu.twcore.errorMessaging.archetype.ArchComplianceManager;
 import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
 import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
@@ -99,7 +100,7 @@ import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
-public class MmController implements ErrorMessageListener, IMMController {
+public class MmController implements ErrorMessageListener, IMMController, IGraphStateListener {
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -265,6 +266,7 @@ public class MmController implements ErrorMessageListener, IMMController {
 		// Setup zooming from the graph display pane (zoomTarget)
 		zoomConfig(scrollPane, scrollContent, group, zoomTarget);
 //		setButtonState(); NO! not ready yet.
+		//GraphState.addListener(this);
 	}
 
 	public void setFontSize(int size) {
@@ -840,6 +842,11 @@ public class MmController implements ErrorMessageListener, IMMController {
 	public void onTreeExpand() {
 		initialisePropertySheets();
 		setButtonState();
+	}
+
+	@Override
+	public void onStateChange(boolean state) {
+		setButtonState();		
 	}
 
 }
