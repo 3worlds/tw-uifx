@@ -53,10 +53,9 @@ public class GraphStatefx implements IGraphState {
 	private BooleanProperty propertyHasChanged = new SimpleBooleanProperty(false);
 	private StringProperty propertyTitle = new SimpleStringProperty("");
 	private StringProperty propertyJavaPath = new SimpleStringProperty("");
-	private List<IGraphStateListener> listeners;
+	private List<IGraphStateListener> listeners=new ArrayList<>();
 
 	public GraphStatefx(StringProperty propertyTitle, StringProperty propertyJavaPath) {
-		listeners = new ArrayList<>();
 		if (propertyTitle != null)
 			this.propertyTitle = propertyTitle;
 		if (propertyJavaPath != null)

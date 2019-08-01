@@ -266,7 +266,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		// Setup zooming from the graph display pane (zoomTarget)
 		zoomConfig(scrollPane, scrollContent, group, zoomTarget);
 //		setButtonState(); NO! not ready yet.
-		//GraphState.addListener(this);
+		// GraphState.addListener(this);
 	}
 
 	public void setFontSize(int size) {
@@ -393,9 +393,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	}
 
 	private boolean isValid = false;
-	// needs to respond to a 
+
+	// needs to respond to a
 	public void setButtonState() {
-		boolean isOpen = visualGraph!=null;
+		boolean isOpen = visualGraph != null;
 		boolean saveable = !GraphState.hasChanged() & isOpen;
 		boolean isConnected = haveUserProject();
 		miSetCodePath.setDisable(isConnected);
@@ -566,8 +567,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	// called when opening a project
 	public void getPreferences() {
-		GraphState.initialise(new GraphStatefx(stage.titleProperty(), userProjectPath));
-		// create GraphState impl
 		Preferences.initialise(Project.makeProjectPreferencesFile());
 		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
 				stage.getHeight());
@@ -846,7 +845,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@Override
 	public void onStateChange(boolean state) {
-		setButtonState();		
+		setButtonState();
 	}
 
 }
