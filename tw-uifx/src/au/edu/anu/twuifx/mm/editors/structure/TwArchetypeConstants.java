@@ -35,7 +35,9 @@ public interface TwArchetypeConstants {
 	public final static String twaClassName = "className";
 	public final static String twaToNode = "toNode";
 	public final static String twaHasName = "hasName";
-	public final static String twaSubClass = "subClass";
+	public final static String twaSubclass = "subclass";
 	public final static String twaValues = "values";
+	public final static String twaParameters = "parameters";
+	
 	
 }

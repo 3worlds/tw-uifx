@@ -55,9 +55,11 @@ public interface StructureEditable {
 	public List<Pair<String, SimpleDataTreeNode>> newEdgeList(Iterable<SimpleDataTreeNode> edgeSpecs);
 
 	public List<TreeGraphNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
-	
-	public String promptForNewNode(String label,String promptName);
 
 	public void buildgui();
+
+	public Class promptForClass(List<Class> subClasses,String rootClassSimpleName);
+
+	public String promptForNewNode(String label, String promptName);
 
 }

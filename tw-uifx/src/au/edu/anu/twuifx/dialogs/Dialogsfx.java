@@ -43,6 +43,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextInputDialog;
@@ -77,17 +78,17 @@ public class Dialogsfx implements IDialogs {
 
 	@Override
 	public void errorAlert(String title, String header, String content) {
-		alert(AlertType.ERROR,title,header,content);
+		alert(AlertType.ERROR, title, header, content);
 	}
 
 	@Override
 	public void infoAlert(String title, String header, String content) {
-		alert(AlertType.INFORMATION,title,header,content);
+		alert(AlertType.INFORMATION, title, header, content);
 	}
 
 	@Override
 	public void warnAlert(String title, String header, String content) {
-		alert(AlertType.WARNING,title,header,content);
+		alert(AlertType.WARNING, title, header, content);
 	}
 
 	@Override
@@ -183,6 +184,23 @@ public class Dialogsfx implements IDialogs {
 		pane.setCenter(view);
 		Optional<ButtonType> result = dialog.showAndWait();
 		return result.get().equals(ok);
+	}
+
+	@Override
+	public int getListChoice(String[] list, String title, String header, String content) {
+		ChoiceDialog<String> dlg = new ChoiceDialog<>(list[0], list);
+		dlg.initOwner(owner);
+		dlg.setTitle(title);
+		dlg.setHeaderText(header);
+		dlg.setContentText(content);
+		Optional<String> result = dlg.showAndWait();
+		if (result.isPresent()) {
+			String s = result.get();
+			for (int i = 0; i < list.length; i++)
+				if (list[i].equals(s))
+					return i;
+		}
+		return -1;
 	}
 
 }

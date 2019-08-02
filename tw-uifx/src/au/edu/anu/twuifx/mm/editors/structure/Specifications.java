@@ -79,7 +79,7 @@ public interface Specifications {
 	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode nodeSpec);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode nodeSpec);
+	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode nodeSpec,Class subClass);
 
 	/* Get multiplicity of a property specification */
 	public IntegerRange getMultiplicity(SimpleDataTreeNode rootSpec, String key);

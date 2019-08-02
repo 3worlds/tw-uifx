@@ -44,6 +44,7 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.Identity;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
+import javafx.scene.Node;
 //import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 //import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
@@ -117,13 +118,13 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 
 	public static VisualNode newChild(VisualNode parent,String label, String name) {
 		String proposedId = label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name;
+		
 		TreeGraphNode configParent = parent.getConfigNode();
-		NodeFactory cf =  configParent.factory();
-		TreeGraphDataNode configChild=(TreeGraphDataNode) cf.makeNode(cf.nodeClass(label), proposedId);
+		NodeFactory cf = configParent.factory();
+		TreeGraphDataNode configChild=(TreeGraphDataNode)  cf.makeNode(cf.nodeClass(label), proposedId);
 		configChild.connectParent(configParent);
 
-		NodeFactory vf = parent.factory();
-		VisualNode childVisualNode = (VisualNode) vf.makeNode(proposedId);
+		VisualNode childVisualNode = (VisualNode) parent.factory().makeNode(proposedId);
 		childVisualNode.connectParent(parent);
 		childVisualNode.setCreatedBy(TWA.getLabel(parent.id()));
 		childVisualNode.setConfigNode(configChild);

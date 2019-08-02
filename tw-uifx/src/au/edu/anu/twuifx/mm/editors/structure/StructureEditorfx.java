@@ -37,8 +37,11 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.properties.ExtendablePropertyList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -69,7 +72,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		if (haveSpecification()) {
-			Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecificationsOf(TWA.getRoot(),editingNodeSpec);
+			Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecificationsOf(TWA.getRoot(),
+					editingNodeSpec);
 			List<SimpleDataTreeNode> allowedChildSpecs = newChildList(childSpecs);
 			List<TreeGraphNode> orphanedChildren = orphanedChildList(allowedChildSpecs);
 			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNodeSpec);
@@ -177,43 +181,77 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		mu.getItems().add(mi);
 		mi.setOnAction((e) -> {
 			// TODO move to adapter?
-
 			// default name is label with 1 appended
-			String prompt = childLabel + "1";
+			String promptId = childLabel + "1";
 			boolean captialize = specifications.nameStartsWithUpperCase(childRoot);
 			if (captialize)
-				prompt = WordUtils.capitalize(prompt);
+				promptId = WordUtils.capitalize(promptId);
 			boolean modified = true;
-			prompt = editingNode.proposeAnId(childLabel, prompt);
+			promptId = editingNode.proposeAnId(childLabel, promptId);
 			while (modified) {
-				String userName = promptForNewNode(childLabel, prompt);
+				String userName = promptForNewNode(childLabel, promptId);
 				if (userName == null)
 					return;
 				userName = userName.trim();
 				if (userName.equals(""))
-					userName = prompt;
+					userName = promptId;
 				if (captialize)
 					userName = WordUtils.capitalize(userName);
 				String newName = editingNode.proposeAnId(childLabel, userName);
 				modified = !newName.equals(userName);
-				prompt = newName;
+				promptId = newName;
 			}
-			// prompt for creation options:
-			//class
-			List<Class> subClasses = specifications.getSubClasses(childRoot);
-			for (Class c: subClasses)
-				System.out.println(c.getName());
-			// class
-			// property choices
-
 			// make the node
-			newChild = editingNode.newChild(childLabel, prompt);
-			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot);
+			newChild = editingNode.newChild(childLabel, promptId);
+			// prompt for property creation options:
+			// look for subclass
+			Class subClass = null;
+			List<Class> subClasses = specifications.getSubClasses(childRoot);
+			if (subClasses.size() > 1) {
+				subClass = promptForClass(subClasses, (String) childRoot.properties().getPropertyValue(aaIsOfClass));
+				if (subClass == null)
+					return;
+			} else if (subClasses.size() == 1) {
+				subClass = subClasses.get(0);
+			}
+
+			if (subClass != null)
+				newChild.addProperty(twaSubclass, subClass.getName());
+
+			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot, subClass);
+			for (SimpleDataTreeNode propertySpec : propertySpecs) {
+				String key = (String) propertySpec.properties().getPropertyValue(twaHasName);
+				// property choices - others to come.
+				if (!subclassProperty(propertySpec)) {
+					// we need some default values so we can have classes.
+					newChild.addProperty((String) propertySpec.properties().getPropertyValue(twaHasName));
+				}
+			}
 
 			// build the properties
 			controller.onNewNode(newChild);
 			GraphState.setChanged(true);
 		});
+	}
+
+	private boolean subclassProperty(SimpleDataTreeNode propertySpec) {
+		String value = (String) propertySpec.properties().getPropertyValue(twaHasName);
+		if (value.equals(twaSubclass))
+			return true;
+		else
+			return false;
+	}
+
+	@Override
+	public Class promptForClass(List<Class> subClasses, String rootClassSimpleName) {
+		String[] list = new String[subClasses.size()];
+		for (int i = 0; i < subClasses.size(); i++)
+			list[i] = subClasses.get(i).getSimpleName();
+		int result = Dialogs.getListChoice(list, "Sub-classes", rootClassSimpleName, "select:");
+		if (result != -1)
+			return subClasses.get(result);
+		else
+			return null;
 	}
 
 	@Override
