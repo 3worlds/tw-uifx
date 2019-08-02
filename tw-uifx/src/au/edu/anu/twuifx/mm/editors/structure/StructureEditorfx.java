@@ -41,6 +41,7 @@ import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import fr.cnrs.iees.properties.ExtendablePropertyList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -218,13 +219,15 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 			if (subClass != null)
 				newChild.addProperty(twaSubclass, subClass.getName());
-
 			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot, subClass);
 			for (SimpleDataTreeNode propertySpec : propertySpecs) {
 				String key = (String) propertySpec.properties().getPropertyValue(twaHasName);
 				// property choices - others to come.
 				if (!subclassProperty(propertySpec)) {
 					// we need some default values so we can have classes.
+					String type = (String) propertySpec.properties().getPropertyValue(twaType);
+					Object defValue = ValidPropertyTypes.getDefaultValue(type);
+					System.out.println(defValue.getClass()+": "+defValue);
 					newChild.addProperty((String) propertySpec.properties().getPropertyValue(twaHasName));
 				}
 			}

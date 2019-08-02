@@ -38,6 +38,7 @@ public interface TwArchetypeConstants {
 	public final static String twaSubclass = "subclass";
 	public final static String twaValues = "values";
 	public final static String twaParameters = "parameters";
+	public final static String twaType="type";
 	
 	
 }
