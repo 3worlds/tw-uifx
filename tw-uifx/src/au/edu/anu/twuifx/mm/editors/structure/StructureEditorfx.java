@@ -210,7 +210,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (subClasses.size() > 1) {
 				subClass = promptForClass(subClasses, (String) childRoot.properties().getPropertyValue(aaIsOfClass));
 				if (subClass == null)
-					return;
+					return;// flaw child exists in the graph if not shown??
+				// need to build an extendable property list and provide it at creation time.
 			} else if (subClasses.size() == 1) {
 				subClass = subClasses.get(0);
 			}
