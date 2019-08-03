@@ -70,6 +70,8 @@ public interface SpecifiableNode {
 	public String createdBy();
 
 	public VisualNode getSelectedVisualNode();
+
+	public Class<? extends TreeGraphNode> getSubClass();
 	
 	//public void addProperty(String key, Object defaultValue);
 

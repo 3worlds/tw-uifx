@@ -47,7 +47,8 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
  * NOTE: There are two uses: CHECKING compliance and BUILDING a configuration
  * file. Queries are not executed when BUILDING.
  * 
- * This interface is the contract between the archetype and what a builder (e.g MM) requires
+ * This interface is the contract between the archetype and what a builder (e.g
+ * MM) requires
  * 
  * 
  */
@@ -67,24 +68,27 @@ public interface Specifications {
 	 * get specification of a given node from the configuration graph. If null, it
 	 * can't be checked.
 	 */
-	public SimpleDataTreeNode getSpecificationOf(TreeNode root,String createdBy,TreeGraphNode configurationNode);
+	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configurationNode, String createdBy, TreeNode root);
+
+	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and
-	 * class.
+	 * optional subClass.
 	 */
-	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(TreeNode root,SimpleDataTreeNode parentSpec);
+	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec,
+			SimpleDataTreeNode parentSubClass, TreeNode root);
 
 	/* edge specification nodes of a node with this label and class */
 	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode nodeSpec);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode nodeSpec,Class subClass);
+	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode nodeSpec,
+			SimpleDataTreeNode subSpec);
 
 	/* Get multiplicity of a property specification */
 	public IntegerRange getMultiplicity(SimpleDataTreeNode rootSpec, String key);
 
-	
 	public IntegerRange getMultiplicity(SimpleDataTreeNode spec);
 
 	/* True if node name must begin with upper case letter */
@@ -98,13 +102,6 @@ public interface Specifications {
 
 	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec);
 
-	public String getSubClass(String className, SimpleDataTreeNode spec);
-
 	public List<Class> getSubClasses(SimpleDataTreeNode spec);
-	
-	
-	
-
-	// TODO more to come...
 
 }

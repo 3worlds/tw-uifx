@@ -48,13 +48,16 @@ import javafx.scene.Node;
 //import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 //import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
-public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstants {
+public class SpecifiedNode implements //
+		SpecifiableNode, //
+		ArchetypeArchetypeConstants, //
+		TwArchetypeConstants {
 	private VisualNode selectedVisualNode;
-	private TreeGraph<VisualNode, VisualEdge> visualGraph ;
+	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 
 	public SpecifiedNode(VisualNode visualNode, TreeGraph<VisualNode, VisualEdge> visualGraph) {
 		this.selectedVisualNode = visualNode;
-		this.visualGraph=visualGraph;
+		this.visualGraph = visualGraph;
 	}
 
 	@Override
@@ -81,12 +84,12 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 	@Override
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {
 		List<TreeNode> lst = new ArrayList<>();
-		for (TreeNode child:selectedVisualNode.getChildren()) {
+		for (TreeNode child : selectedVisualNode.getChildren()) {
 			String label = TWA.getLabel(child.id());
 			if (label.equals(childLabel))
 				lst.add(child);
 		}
-		return range.inRange(lst.size()+1);
+		return range.inRange(lst.size() + 1);
 	}
 
 	@Override
@@ -98,7 +101,6 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 	public Iterable<VisualNode> graphRoots() {
 		return visualGraph.roots();
 	}
-
 
 	@Override
 	public boolean hasOutEdges() {
@@ -115,13 +117,12 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 		return selectedVisualNode.isCollapsed();
 	}
 
-
-	public static VisualNode newChild(VisualNode parent,String label, String name) {
+	public static VisualNode newChild(VisualNode parent, String label, String name) {
 		String proposedId = label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name;
-		
+
 		TreeGraphNode configParent = parent.getConfigNode();
 		NodeFactory cf = configParent.factory();
-		TreeGraphDataNode configChild=(TreeGraphDataNode)  cf.makeNode(cf.nodeClass(label), proposedId);
+		TreeGraphDataNode configChild = (TreeGraphDataNode) cf.makeNode(cf.nodeClass(label), proposedId);
 		configChild.connectParent(configParent);
 
 		VisualNode childVisualNode = (VisualNode) parent.factory().makeNode(proposedId);
@@ -130,20 +131,20 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 		childVisualNode.setConfigNode(configChild);
 		childVisualNode.setCategory();
 		return childVisualNode;
-		
+
 	}
-	
+
 	@Override
 	public VisualNode newChild(String label, String name) {
-		return newChild(selectedVisualNode,label,name);
+		return newChild(selectedVisualNode, label, name);
 	}
 
 	@Override
 	public String proposeAnId(String label, String proposedName) {
-		Identity id = selectedVisualNode.scope().newId(false,label,PairIdentity.LABEL_NAME_STR_SEPARATOR,proposedName);
+		Identity id = selectedVisualNode.scope().newId(false, label, PairIdentity.LABEL_NAME_STR_SEPARATOR,
+				proposedName);
 		return TWA.getName(id.id());
 	}
-
 
 	@Override
 	public String createdBy() {
@@ -153,8 +154,16 @@ public class SpecifiedNode implements SpecifiableNode,ArchetypeArchetypeConstant
 	@Override
 	public VisualNode getSelectedVisualNode() {
 		return selectedVisualNode;
-		
+
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<? extends TreeGraphNode> getSubClass() {
+		if (selectedVisualNode.configHasProperty(twaSubclass))
+			return (Class<? extends TreeGraphNode>) selectedVisualNode.configGetPropertyValue(twaSubclass);
+		else
+			return null;
+	}
 
 }

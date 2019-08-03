@@ -41,12 +41,22 @@ import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.twcore.constants.DataElementType;
+import fr.cnrs.iees.twcore.constants.DateTimeType;
+import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
+import fr.cnrs.iees.twcore.constants.FileType;
+import fr.cnrs.iees.twcore.constants.Grouping;
+import fr.cnrs.iees.twcore.constants.LifespanType;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
+import fr.cnrs.iees.twcore.constants.TimeScaleType;
+import fr.cnrs.iees.twcore.constants.TimeUnits;
+import fr.cnrs.iees.twcore.constants.TwFunctionTypes;
 import javafx.util.Pair;
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
-	
-		/* what we need to know from the archetype graph */
+
+	/* what we need to know from the archetype graph */
 	protected Specifications specifications;
 	/*
 	 * what we need to know from the visualNode that has been selected for editing
@@ -58,22 +68,39 @@ public abstract class StructureEditorAdapter
 	 */
 	protected VisualNode newChild;
 	/* specificatons of this editingNode */
-	protected SimpleDataTreeNode editingNodeSpec;
-	
+	protected SimpleDataTreeNode baseSpec;
+
+	protected SimpleDataTreeNode subClassSpec;
+
 	protected IGraphVisualiser gvisualiser;
-	
-	protected String subClass;
 
+	// protected Class<? extends TreeGraphNode> subClass;
 
-	public StructureEditorAdapter(SpecifiableNode clickedNode,IGraphVisualiser gv) {
+	static private final DataElementType det = DataElementType.defaultValue();
+	static private final ExperimentDesignType edt = ExperimentDesignType.defaultValue();
+	static private final Grouping g = Grouping.defaultValue();
+	static private final LifespanType lst = LifespanType.defaultValue();
+	// SnippetLocation sl= SnippetLocation.defaultValue();
+	static private final StatisticalAggregates sa = StatisticalAggregates.defaultValue();
+	// TabLayoutTypes tlt = TabLayoutTypes.defaultValue();
+	static private final TimeScaleType tst = TimeScaleType.defaultValue();
+	static private final TimeUnits tu = TimeUnits.defaultValue();
+	static private final TwFunctionTypes twft = TwFunctionTypes.defaultValue();
+	// UIContainers uic =UIContainers.defaultValue();
+	static private final FileType ft = FileType.defaultValue();
+	static private final DateTimeType dtt = DateTimeType.defaultValue();
+
+	public StructureEditorAdapter(SpecifiableNode clickedNode, IGraphVisualiser gv) {
 		super();
 		this.specifications = new TwSpecifications();
 		this.newChild = null;
 		this.editingNode = clickedNode;
-		this.editingNodeSpec = specifications.getSpecificationOf(TWA.getRoot(),editingNode.createdBy(),editingNode.getConfigNode());
-		this.subClass = specifications.getSubClass(editingNode.getConfigNode().getClass().getName(),editingNodeSpec);
-		this.gvisualiser=gv;
-		System.out.println("Config: "+editingNode.getConfigNode().id()+", Specified by: "+editingNodeSpec.id()+", Subclass: "+subClass);
+		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(),
+				TWA.getRoot());
+		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editingNode.getSubClass());
+		this.gvisualiser = gv;
+		System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id()
+				+ " + " + subClassSpec);
 	}
 
 	@Override
@@ -91,9 +118,9 @@ public abstract class StructureEditorAdapter
 //	@Override
 	public List<Pair<String, SimpleDataTreeNode>> newEdgeList(Iterable<SimpleDataTreeNode> edgeSpecs) {
 		List<Pair<String, SimpleDataTreeNode>> result = new ArrayList<>();
-		List<String> edgePropXorOptions = specifications.getConstraintOptions(editingNodeSpec,
+		List<String> edgePropXorOptions = specifications.getConstraintOptions(baseSpec,
 				EdgeXorPropertyQuery.class.getName());
-		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(editingNodeSpec,
+		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(baseSpec,
 				OutNodeXorQuery.class.getName());
 
 		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
@@ -119,7 +146,7 @@ public abstract class StructureEditorAdapter
 	}
 
 	protected boolean haveSpecification() {
-		return editingNodeSpec != null;
+		return baseSpec != null;
 	}
 
 }

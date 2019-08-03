@@ -34,15 +34,11 @@ import org.apache.commons.text.WordUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
-import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
-import fr.cnrs.iees.properties.ExtendablePropertyList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -73,11 +69,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		if (haveSpecification()) {
-			Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecificationsOf(TWA.getRoot(),
-					editingNodeSpec);
+			Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecificationsOf(baseSpec, subClassSpec,
+					TWA.getRoot());
 			List<SimpleDataTreeNode> allowedChildSpecs = newChildList(childSpecs);
 			List<TreeGraphNode> orphanedChildren = orphanedChildList(allowedChildSpecs);
-			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(editingNodeSpec);
+			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(baseSpec);
 			List<Pair<String, SimpleDataTreeNode>> allowedEdges = newEdgeList(edgeSpecs);
 
 			if (!allowedChildSpecs.isEmpty()) {
@@ -192,7 +188,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			while (modified) {
 				String userName = promptForNewNode(childLabel, promptId);
 				if (userName == null)
-					return;
+					return;// cancel
 				userName = userName.trim();
 				if (userName.equals(""))
 					userName = promptId;
@@ -202,8 +198,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				modified = !newName.equals(userName);
 				promptId = newName;
 			}
-			// make the node
-			newChild = editingNode.newChild(childLabel, promptId);
 			// prompt for property creation options:
 			// look for subclass
 			Class subClass = null;
@@ -211,28 +205,29 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (subClasses.size() > 1) {
 				subClass = promptForClass(subClasses, (String) childRoot.properties().getPropertyValue(aaIsOfClass));
 				if (subClass == null)
-					return;// flaw child exists in the graph if not shown??
-				// need to build an extendable property list and provide it at creation time.
+					return;// cancel
 			} else if (subClasses.size() == 1) {
 				subClass = subClasses.get(0);
 			}
 
-			if (subClass != null)
-				newChild.addProperty(twaSubclass, subClass.getName());
-			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot, subClass);
+			// make the node
+			newChild = editingNode.newChild(childLabel, promptId);
+
+			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot,
+					specifications.getSubSpecsOf(childRoot, subClass));
+			// build the properties
 			for (SimpleDataTreeNode propertySpec : propertySpecs) {
 				String key = (String) propertySpec.properties().getPropertyValue(twaHasName);
 				// property choices - others to come.
 				if (!subclassProperty(propertySpec)) {
-					// we need some default values so we can have classes.
 					String type = (String) propertySpec.properties().getPropertyValue(twaType);
 					Object defValue = ValidPropertyTypes.getDefaultValue(type);
-					System.out.println(defValue.getClass()+": "+defValue);
-					newChild.addProperty((String) propertySpec.properties().getPropertyValue(twaHasName));
-				}
+					System.out.println(defValue.getClass() + ": " + defValue);
+					newChild.addProperty(key, defValue);
+				} else
+					newChild.addProperty(twaSubclass, subClass.getName());
 			}
 
-			// build the properties
 			controller.onNewNode(newChild);
 			GraphState.setChanged(true);
 		});

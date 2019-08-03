@@ -38,8 +38,7 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SimpleDataTreeNode getSpecificationOf(TreeNode root, String createdBy, TreeGraphNode configNode) {
-		// String className = configNode.getClass().getName();
+	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configNode, String createdBy, TreeNode root) {
 		for (TreeNode child : root.getChildren()) {
 			if (isOfClass((SimpleDataTreeNode) child, TWA.getLabel(configNode.id()))) {
 				if (createdBy == null)
@@ -48,13 +47,12 @@ public class TwSpecifications implements //
 					return (SimpleDataTreeNode) child;
 			}
 			// search sa.
-			// TODO check for TimeModel look for Sto
 			List<SimpleDataTreeNode> saConstraints = (List<SimpleDataTreeNode>) get(child.getChildren(),
 					selectZeroOrMany(hasProperty(twaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getConstraintTable(constraint);
 				Tree<?> tree = (Tree<?>) GraphImporter.importGraph(pars.get(2), CheckSubArchetypeQuery.class);
-				SimpleDataTreeNode result = getSpecificationOf(tree.root(), createdBy, configNode);
+				SimpleDataTreeNode result = getSpecsOf(configNode, createdBy, tree.root());
 				if (result != null)
 					return result;
 			}
@@ -62,82 +60,57 @@ public class TwSpecifications implements //
 		return null;
 	}
 
-	private boolean isOfClass(SimpleDataTreeNode child, String label) {
-		String ioc = (String) child.properties().getPropertyValue(aaIsOfClass);
-		return ioc.equals(label);
-	}
-
-	/*
-	 * If the config class is a subClass within this spec, return the subClass
-	 * string else null
-	 */
 	@Override
-	public String getSubClass(String configClass, SimpleDataTreeNode spec) {
-		SimpleDataTreeNode propertySpec = (SimpleDataTreeNode) get(spec.getChildren(),
-				selectZeroOrOne(hasProperty(twaHasName, twaSubclass)));
-		if (propertySpec != null) {
-			SimpleDataTreeNode constraint = (SimpleDataTreeNode) get(propertySpec.getChildren(),
-					selectOne(hasProperty(twaClassName, IsInValueSetQuery.class.getName())));
-			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
-			if (classes.contains(configClass))
-				return configClass;
-		}
-		return null;
-	}
-
-	private static boolean parentTableContains(SimpleDataTreeNode node, String createdBy) {
-		StringTable st = (StringTable) node.properties().getPropertyValue(aaHasParent);
-		return st.contains(createdBy + PairIdentity.LABEL_NAME_STR_SEPARATOR);
+	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass) {
+		Tree<?> subClassTree = getSubArchetype(baseSpecs, subClass);
+		return (SimpleDataTreeNode) get(subClassTree.root().getChildren(),
+				selectOne(hasProperty(aaIsOfClass, (String) baseSpecs.properties().getPropertyValue(aaIsOfClass))));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(TreeNode root, SimpleDataTreeNode parentSpec) {
+	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec,
+			SimpleDataTreeNode parentSubClass, TreeNode root) {
 		String parentLabel = (String) parentSpec.properties().getPropertyValue(aaIsOfClass);
 		List<SimpleDataTreeNode> children = (List<SimpleDataTreeNode>) get(root.getChildren(),
 				selectZeroOrMany(hasProperty(aaHasParent)));
+		// could have a query here for finding a parent in a parent Stringtable
 		List<SimpleDataTreeNode> result = new ArrayList<>();
+		addChildrenTo(result, parentLabel, children);
+		if (parentSubClass != null) {
+			// look for children in the subclass spec
+			children = (List<SimpleDataTreeNode>) get(parentSubClass.getChildren(),
+					selectZeroOrMany(hasProperty(aaHasParent)));
+			addChildrenTo(result,parentLabel,children);
+			}
+		return result;
+	}
+
+	private void addChildrenTo(List<SimpleDataTreeNode> result, String parentLabel, List<SimpleDataTreeNode> children) {
 		for (SimpleDataTreeNode child : children) {
 			StringTable t = (StringTable) child.properties().getPropertyValue(aaHasParent);
 			if (t.contains(parentLabel + PairIdentity.LABEL_NAME_SEPARATOR))
 				result.add(child);
 		}
-		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode spec, SimpleDataTreeNode subSpec) {
+		List<SimpleDataTreeNode> results = (List<SimpleDataTreeNode>) get(spec.getChildren(),
+				selectZeroOrMany(hasTheLabel(aaHasProperty)));
+		if (subSpec != null) {
+			List<SimpleDataTreeNode> subList = (List<SimpleDataTreeNode>) get(subSpec.getChildren(),
+					selectZeroOrMany(hasTheLabel(aaHasProperty)));
+			results.addAll(subList);
+		}
+		return results;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode nodeSpec) {
 		return (Iterable<SimpleDataTreeNode>) get(nodeSpec.getChildren(), selectZeroOrMany(hasTheLabel(aaHasEdge)));
-	}
-
-	@SuppressWarnings("unchecked")
-	private Tree<?> getSubArchetype(SimpleDataTreeNode spec, Class subClass) {
-		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
-				selectOneOrMany(hasProperty(twaClassName, CheckSubArchetypeQuery.class.getName())));
-		for (SimpleDataTreeNode constraint : constraints) {
-			StringTable pars = (StringTable) constraint.properties().getPropertyValue(twaParameters);
-			if (pars.getWithFlatIndex(1).equals(subClass.getName())) {
-				return (Tree<?>) GraphImporter.importGraph(pars.get(2), CheckSubArchetypeQuery.class);
-			}
-		}
-		throw new TwuifxException("Sub archetype graph not found for "+subClass.getName());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode spec, Class subClass) {
-		List<SimpleDataTreeNode> results = (List<SimpleDataTreeNode>) get(spec.getChildren(),
-				selectZeroOrMany(hasTheLabel(aaHasProperty)));
-		if (subClass != null) {
-			Tree<?> subClassTree = getSubArchetype(spec,subClass);
-			SimpleDataTreeNode subSpec = (SimpleDataTreeNode) get(subClassTree.root().getChildren(),
-					selectOne(hasProperty(aaIsOfClass, spec.properties().getPropertyValue(aaIsOfClass))));
-			List<SimpleDataTreeNode> subList = (List<SimpleDataTreeNode>) get(subSpec.getChildren(),
-					selectZeroOrMany(hasTheLabel(aaHasProperty)));
-			results.addAll(subList);
-		}
-		return results;
 	}
 
 	@Override
@@ -162,6 +135,52 @@ public class TwSpecifications implements //
 		return null;
 	}
 
+	@Override
+	public List<String> getConstraintOptions(SimpleDataTreeNode spec, String constraintClass) {
+		SimpleDataTreeNode constraint = getConstraint(spec, constraintClass);
+		return getConstraintTable(constraint);
+	}
+
+	@Override
+	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec) {
+		String result = (String) edgeSpec.properties().getPropertyValue(twaToNode);
+		result = result.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, "");
+		return result;
+	}
+
+	@Override
+	public List<Class> getSubClasses(SimpleDataTreeNode spec) {
+		List<Class> result = new ArrayList<>();
+		SimpleDataTreeNode propertySpec = (SimpleDataTreeNode) get(spec.getChildren(),
+				selectZeroOrOne(hasProperty(twaHasName, twaSubclass)));
+		if (propertySpec != null) {
+			SimpleDataTreeNode constraint = (SimpleDataTreeNode) get(propertySpec.getChildren(),
+					selectOne(hasProperty(twaClassName, IsInValueSetQuery.class.getName())));
+			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
+			for (int i = 0; i < classes.size(); i++)
+				try {
+					result.add(Class.forName(classes.getWithFlatIndex(i)));
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+		}
+		return result;
+	}
+	// -----------------------end of implementation methods-----------------------
+
+	@SuppressWarnings("unchecked")
+	protected Tree<?> getSubArchetype(SimpleDataTreeNode spec, Class subClass) {
+		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
+				selectOneOrMany(hasProperty(twaClassName, CheckSubArchetypeQuery.class.getName())));
+		for (SimpleDataTreeNode constraint : constraints) {
+			StringTable pars = (StringTable) constraint.properties().getPropertyValue(twaParameters);
+			if (pars.getWithFlatIndex(1).equals(subClass.getName())) {
+				return (Tree<?>) GraphImporter.importGraph(pars.get(2), CheckSubArchetypeQuery.class);
+			}
+		}
+		throw new TwuifxException("Sub archetype graph not found for " + subClass.getName());
+	}
+
 	private List<String> getConstraintTable(SimpleDataTreeNode constraint) {
 		List<String> result = new ArrayList<>();
 		if (constraint != null) {
@@ -181,43 +200,20 @@ public class TwSpecifications implements //
 				selectZeroOrOne(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(twaClassName, constraintClass))));
 	}
 
+	private static boolean parentTableContains(SimpleDataTreeNode node, String createdBy) {
+		StringTable st = (StringTable) node.properties().getPropertyValue(aaHasParent);
+		return st.contains(createdBy + PairIdentity.LABEL_NAME_STR_SEPARATOR);
+	}
+
 	@SuppressWarnings("unchecked")
 	private List<SimpleDataTreeNode> getConstraints(SimpleDataTreeNode spec, String constraintClass) {
 		return (List<SimpleDataTreeNode>) get(spec.getChildren(), selectZeroOrMany(
 				andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(twaClassName, constraintClass))));
 	}
 
-	@Override
-	public List<String> getConstraintOptions(SimpleDataTreeNode spec, String constraintClass) {
-		SimpleDataTreeNode constraint = getConstraint(spec, constraintClass);
-		return getConstraintTable(constraint);
-	}
-
-	@Override
-	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec) {
-		String result = (String) edgeSpec.properties().getPropertyValue(twaToNode);
-		result = result.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, "");
-		return result;
-	}
-// end of implementation methods
-
-	@Override
-	public List<Class> getSubClasses(SimpleDataTreeNode spec) {
-		List<Class> result = new ArrayList<>();
-		SimpleDataTreeNode propertySpec = (SimpleDataTreeNode) get(spec.getChildren(),
-				selectZeroOrOne(hasProperty(twaHasName, twaSubclass)));
-		if (propertySpec != null) {
-			SimpleDataTreeNode constraint = (SimpleDataTreeNode) get(propertySpec.getChildren(),
-					selectOne(hasProperty(twaClassName, IsInValueSetQuery.class.getName())));
-			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
-			for (int i = 0; i < classes.size(); i++)
-				try {
-					result.add(Class.forName(classes.getWithFlatIndex(i)));
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				}
-		}
-		return result;
+	private boolean isOfClass(SimpleDataTreeNode child, String label) {
+		String ioc = (String) child.properties().getPropertyValue(aaIsOfClass);
+		return ioc.equals(label);
 	}
 
 }
