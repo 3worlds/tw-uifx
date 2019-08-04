@@ -210,14 +210,19 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			} else if (subClasses.size() == 1) {
 				subClass = subClasses.get(0);
 			}
-			SimpleDataTreeNode childSubSpecs = specifications.getSubSpecsOf(childBaseSpec, subClass);
-			String k1 = specifications.getOptionalPropertyKey(childBaseSpec);
-			String k2 = specifications.getOptionalPropertyKey(childSubSpecs);
+			SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec, subClass);
+			//ChildXorPropertyQuery Constraint: some nodes must have ONE of either a property or a child node
+			//EdgeOrPropertyQuery   Constraint: some nodes must have at least ONE of a property or an edge
+			//EdgeXorPropertyQuery Constraint: some nodes must have ONE of either a property or an edge
+			List<Pair<String,String>> kb1 = specifications.getOptionalPropertyKey(childBaseSpec);
+			String ks2 = specifications.getOptionalPropertyKey(childSubSpec);
+			String[] ksb1 = specifications.getOptinalPropertyKeys(childBaseSpec);
+			String[] kss2 = specifications.getOptinalPropertyKeys(childSubSpec);
 			// make the node
 			newChild = editingNode.newChild(childLabel, promptId);
 
 			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childBaseSpec,
-					childSubSpecs);
+					childSubSpec);
 			// build the properties
 			for (SimpleDataTreeNode propertySpec : propertySpecs) {
 				String key = (String) propertySpec.properties().getPropertyValue(twaHasName);
