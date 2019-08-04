@@ -62,9 +62,12 @@ public class TwSpecifications implements //
 
 	@Override
 	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass) {
-		Tree<?> subClassTree = getSubArchetype(baseSpecs, subClass);
-		return (SimpleDataTreeNode) get(subClassTree.root().getChildren(),
-				selectOne(hasProperty(aaIsOfClass, (String) baseSpecs.properties().getPropertyValue(aaIsOfClass))));
+		if (subClass != null) {
+			Tree<?> subClassTree = getSubArchetype(baseSpecs, subClass);
+			return (SimpleDataTreeNode) get(subClassTree.root().getChildren(),
+					selectOne(hasProperty(aaIsOfClass, (String) baseSpecs.properties().getPropertyValue(aaIsOfClass))));
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -81,8 +84,8 @@ public class TwSpecifications implements //
 			// look for children in the subclass spec
 			children = (List<SimpleDataTreeNode>) get(parentSubClass.getChildren(),
 					selectZeroOrMany(hasProperty(aaHasParent)));
-			addChildrenTo(result,parentLabel,children);
-			}
+			addChildrenTo(result, parentLabel, children);
+		}
 		return result;
 	}
 

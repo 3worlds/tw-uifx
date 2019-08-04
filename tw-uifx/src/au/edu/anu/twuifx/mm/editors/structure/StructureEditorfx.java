@@ -34,6 +34,7 @@ import org.apache.commons.text.WordUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.archetype.tw.NodeAtLeastOneChildLabelOfQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
@@ -172,15 +173,15 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	}
 
-	private void addOptionNewChild(Menu mu, SimpleDataTreeNode childRoot) {
-		String childLabel = (String) childRoot.properties().getPropertyValue(aaIsOfClass);
+	private void addOptionNewChild(Menu mu, SimpleDataTreeNode childBaseSpec) {
+		String childLabel = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
 		MenuItem mi = new MenuItem(childLabel);
 		mu.getItems().add(mi);
 		mi.setOnAction((e) -> {
 			// TODO move to adapter?
 			// default name is label with 1 appended
 			String promptId = childLabel + "1";
-			boolean captialize = specifications.nameStartsWithUpperCase(childRoot);
+			boolean captialize = specifications.nameStartsWithUpperCase(childBaseSpec);
 			if (captialize)
 				promptId = WordUtils.capitalize(promptId);
 			boolean modified = true;
@@ -201,20 +202,22 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			// prompt for property creation options:
 			// look for subclass
 			Class subClass = null;
-			List<Class> subClasses = specifications.getSubClasses(childRoot);
+			List<Class> subClasses = specifications.getSubClasses(childBaseSpec);
 			if (subClasses.size() > 1) {
-				subClass = promptForClass(subClasses, (String) childRoot.properties().getPropertyValue(aaIsOfClass));
+				subClass = promptForClass(subClasses, (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass));
 				if (subClass == null)
 					return;// cancel
 			} else if (subClasses.size() == 1) {
 				subClass = subClasses.get(0);
 			}
-
+			SimpleDataTreeNode childSubSpecs = specifications.getSubSpecsOf(childBaseSpec, subClass);
+			String k1 = specifications.getOptionalPropertyKey(childBaseSpec);
+			String k2 = specifications.getOptionalPropertyKey(childSubSpecs);
 			// make the node
 			newChild = editingNode.newChild(childLabel, promptId);
 
-			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childRoot,
-					specifications.getSubSpecsOf(childRoot, subClass));
+			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childBaseSpec,
+					childSubSpecs);
 			// build the properties
 			for (SimpleDataTreeNode propertySpec : propertySpecs) {
 				String key = (String) propertySpec.properties().getPropertyValue(twaHasName);
