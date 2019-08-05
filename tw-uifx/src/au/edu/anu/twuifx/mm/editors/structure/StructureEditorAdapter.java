@@ -30,10 +30,8 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.queries.graph.element.ElementLabel;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -41,10 +39,8 @@ import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.EdgeXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
-import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
-import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.DataElementType;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
@@ -59,6 +55,20 @@ import javafx.util.Pair;
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
+	// forces call to registerType in ValidPropertyTypes
+	static private final DataElementType det = DataElementType.defaultValue();
+	static private final ExperimentDesignType edt = ExperimentDesignType.defaultValue();
+	static private final Grouping g = Grouping.defaultValue();
+	static private final LifespanType lst = LifespanType.defaultValue();
+	// SnippetLocation sl= SnippetLocation.defaultValue();
+	static private final StatisticalAggregates sa = StatisticalAggregates.defaultValue();
+	// TabLayoutTypes tlt = TabLayoutTypes.defaultValue();
+	static private final TimeScaleType tst = TimeScaleType.defaultValue();
+	static private final TimeUnits tu = TimeUnits.defaultValue();
+	static private final TwFunctionTypes twft = TwFunctionTypes.defaultValue();
+	// UIContainers uic =UIContainers.defaultValue();
+	static private final FileType ft = FileType.defaultValue();
+	static private final DateTimeType dtt = DateTimeType.defaultValue();
 
 	/* what we need to know from the archetype graph */
 	protected Specifications specifications;
@@ -78,21 +88,6 @@ public abstract class StructureEditorAdapter
 
 	protected IGraphVisualiser gvisualiser;
 
-	// protected Class<? extends TreeGraphNode> subClass;
-
-	static private final DataElementType det = DataElementType.defaultValue();
-	static private final ExperimentDesignType edt = ExperimentDesignType.defaultValue();
-	static private final Grouping g = Grouping.defaultValue();
-	static private final LifespanType lst = LifespanType.defaultValue();
-	// SnippetLocation sl= SnippetLocation.defaultValue();
-	static private final StatisticalAggregates sa = StatisticalAggregates.defaultValue();
-	// TabLayoutTypes tlt = TabLayoutTypes.defaultValue();
-	static private final TimeScaleType tst = TimeScaleType.defaultValue();
-	static private final TimeUnits tu = TimeUnits.defaultValue();
-	static private final TwFunctionTypes twft = TwFunctionTypes.defaultValue();
-	// UIContainers uic =UIContainers.defaultValue();
-	static private final FileType ft = FileType.defaultValue();
-	static private final DateTimeType dtt = DateTimeType.defaultValue();
 
 	public StructureEditorAdapter(SpecifiableNode clickedNode, IGraphVisualiser gv) {
 		super();
