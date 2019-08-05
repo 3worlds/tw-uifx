@@ -32,9 +32,11 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.queries.graph.element.ElementLabel;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.EdgeXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
@@ -95,22 +97,29 @@ public abstract class StructureEditorAdapter
 		this.specifications = new TwSpecifications();
 		this.newChild = null;
 		this.editingNode = clickedNode;
-		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(),
-				TWA.getRoot());
+		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(), TWA.getRoot());
 		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editingNode.getSubClass());
 		this.gvisualiser = gv;
-		System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id()
-				+ " + " + subClassSpec);
+		if (subClassSpec != null)
+			System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id()
+					+ " + " + subClassSpec.id());
+		else
+			System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id());
 	}
 
 	@Override
 	public List<SimpleDataTreeNode> newChildList(Iterable<SimpleDataTreeNode> childSpecs) {
 		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
-		for (SimpleDataTreeNode childNodeSpec : childSpecs) {
-			String childLabel = (String) childNodeSpec.properties().getPropertyValue(aaIsOfClass);
-			IntegerRange range = specifications.getMultiplicity(childNodeSpec);
-			if (editingNode.moreChildrenAllowed(range, childLabel))
-				result.add(childNodeSpec);
+		for (SimpleDataTreeNode childSpec : childSpecs) {
+			// SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec,
+			// subClass);
+			String childLabel = (String) childSpec.properties().getPropertyValue(aaIsOfClass);
+			IntegerRange range = specifications.getMultiplicity(childSpec);
+			if (editingNode.moreChildrenAllowed(range, childLabel)) {
+				List<String[]> t = specifications.getQueryStringTables(childSpec, ChildXorPropertyQuery.class);
+				System.out.println(t);
+				result.add(childSpec);
+			}
 		}
 		return result;
 	}

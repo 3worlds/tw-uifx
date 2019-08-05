@@ -160,10 +160,18 @@ public class SpecifiedNode implements //
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends TreeGraphNode> getSubClass() {
-		if (selectedVisualNode.configHasProperty(twaSubclass))
-			return (Class<? extends TreeGraphNode>) selectedVisualNode.configGetPropertyValue(twaSubclass);
-		else
+		if (selectedVisualNode.configHasProperty(twaSubclass)) {
+			String result= (String)selectedVisualNode.configGetPropertyValue(twaSubclass);
+			try {
+				return (Class<? extends TreeGraphNode>) Class.forName(result);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		//return (Class<? extends TreeGraphNode>) selectedVisualNode.configGetPropertyValue(twaSubclass);
+		}else
 			return null;
+		return null;
 	}
 
 }

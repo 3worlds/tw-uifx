@@ -256,6 +256,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	}
 
 	private static String getSelectedEntry(String key, List<String> selectedKeys, List<String[]> entries) {
+		if (selectedKeys==null)
+			return null;
 		for (int i = 0; i<selectedKeys.size();i++) {
 			String sel= selectedKeys.get(i);
 			String[] entry = entries.get(i);

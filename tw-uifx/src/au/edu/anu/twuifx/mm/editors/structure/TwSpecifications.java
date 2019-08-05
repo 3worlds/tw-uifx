@@ -33,7 +33,7 @@ public class TwSpecifications implements //
 
 	@Override
 	public boolean complies(TreeGraphNode configNode, SimpleDataTreeNode spec) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub ??
 		return false;
 	}
 
@@ -74,16 +74,16 @@ public class TwSpecifications implements //
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec,
-			SimpleDataTreeNode parentSubClass, TreeNode root) {
+			SimpleDataTreeNode parentSubSpec, TreeNode root) {
 		String parentLabel = (String) parentSpec.properties().getPropertyValue(aaIsOfClass);
 		List<SimpleDataTreeNode> children = (List<SimpleDataTreeNode>) get(root.getChildren(),
 				selectZeroOrMany(hasProperty(aaHasParent)));
 		// could have a query here for finding a parent in a parent Stringtable
 		List<SimpleDataTreeNode> result = new ArrayList<>();
 		addChildrenTo(result, parentLabel, children);
-		if (parentSubClass != null) {
-			// look for children in the subclass spec
-			children = (List<SimpleDataTreeNode>) get(parentSubClass.getChildren(),
+		if (parentSubSpec != null) {
+			// look for children in the subclass tree root
+			children = (List<SimpleDataTreeNode>) get(parentSubSpec.getParent().getChildren(),
 					selectZeroOrMany(hasProperty(aaHasParent)));
 			addChildrenTo(result, parentLabel, children);
 		}
@@ -152,6 +152,7 @@ public class TwSpecifications implements //
 		return result;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List<Class> getSubClasses(SimpleDataTreeNode spec) {
 		List<Class> result = new ArrayList<>();
@@ -207,7 +208,7 @@ public class TwSpecifications implements //
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Tree<?> getSubArchetype(SimpleDataTreeNode spec, Class subClass) {
+	protected Tree<? extends TreeNode> getSubArchetype(SimpleDataTreeNode spec, Class<? extends TreeNode> subClass) {
 		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
 				selectOneOrMany(hasProperty(twaClassName, CheckSubArchetypeQuery.class.getName())));
 		for (SimpleDataTreeNode constraint : constraints) {
