@@ -30,6 +30,7 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
@@ -43,6 +44,7 @@ import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.DataElementType;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
@@ -110,21 +112,34 @@ public abstract class StructureEditorAdapter
 	@Override
 	public List<SimpleDataTreeNode> newChildList(Iterable<SimpleDataTreeNode> childSpecs) {
 		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
+		List<String[]> tables = specifications.getQueryStringTables(baseSpec, ChildXorPropertyQuery.class);
+		tables.addAll(specifications.getQueryStringTables(subClassSpec, ChildXorPropertyQuery.class));
 		for (SimpleDataTreeNode childSpec : childSpecs) {
-			// SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec,
-			// subClass);
 			String childLabel = (String) childSpec.properties().getPropertyValue(aaIsOfClass);
 			IntegerRange range = specifications.getMultiplicity(childSpec);
 			if (editingNode.moreChildrenAllowed(range, childLabel)) {
-				List<String[]> t = specifications.getQueryStringTables(childSpec, ChildXorPropertyQuery.class);
-				System.out.println(t);
-				result.add(childSpec);
+				if (!tables.isEmpty()) {
+					if (allowedChild(childLabel, tables))
+						result.add(childSpec);
+				} else
+					result.add(childSpec);
 			}
 		}
 		return result;
 	}
 
-//	@Override
+private boolean allowedChild(String childLabel, List<String[]> tables) {
+	VisualNode vn =editingNode.getSelectedVisualNode();
+	for (String[] ss:tables) {
+		if (ss[0].equals(childLabel)){
+			if (vn.configHasProperty(ss[1]))
+				return false;
+		}		
+	}
+	return true;
+};
+
+	//	@Override
 	public List<Pair<String, SimpleDataTreeNode>> newEdgeList(Iterable<SimpleDataTreeNode> edgeSpecs) {
 		List<Pair<String, SimpleDataTreeNode>> result = new ArrayList<>();
 		List<String> edgePropXorOptions = specifications.getConstraintOptions(baseSpec,
