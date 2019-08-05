@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -103,5 +104,7 @@ public interface Specifications {
 	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec);
 
 	public List<Class> getSubClasses(SimpleDataTreeNode spec);
+
+	public List<String[]> getQueryStringTables(SimpleDataTreeNode spec, Class<ChildXorPropertyQuery> klass);
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
+import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import au.edu.anu.twcore.archetype.tw.NameStartsWithUpperCaseQuery;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
@@ -169,7 +170,41 @@ public class TwSpecifications implements //
 		}
 		return result;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String[]> getQueryStringTables(SimpleDataTreeNode spec, Class<ChildXorPropertyQuery> klass) {
+		List<String[]> result = new ArrayList<>();
+		if (spec == null)
+			return result;
+		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
+				selectZeroOrMany(hasProperty(twaClassName, klass.getName())));
+		for (SimpleDataTreeNode constraint : constraints) {
+			List<String> entries = getConstraintTable(constraint);
+			if (!entries.isEmpty()) {
+				String[] ss = new String[entries.size()];
+				for (int i = 0; i < ss.length; i++)
+					ss[i] = entries.get(i);
+				result.add(ss);
+			}
+		}
+		return result;
+	}
+
 	// -----------------------end of implementation methods-----------------------
+	private List<String> getConstraintTable(SimpleDataTreeNode constraint) {
+		List<String> result = new ArrayList<>();
+		if (constraint == null)
+			return result;
+		for (String key : constraint.properties().getKeysAsArray()) {
+			if (constraint.properties().getPropertyValue(key) instanceof StringTable) {
+				StringTable t = (StringTable) constraint.properties().getPropertyValue(key);
+				for (int i = 0; i < t.size(); i++)
+					result.add(t.getWithFlatIndex(i));
+			}
+		}
+		return result;
+	}
 
 	@SuppressWarnings("unchecked")
 	protected Tree<?> getSubArchetype(SimpleDataTreeNode spec, Class subClass) {
@@ -182,20 +217,6 @@ public class TwSpecifications implements //
 			}
 		}
 		throw new TwuifxException("Sub archetype graph not found for " + subClass.getName());
-	}
-
-	private List<String> getConstraintTable(SimpleDataTreeNode constraint) {
-		List<String> result = new ArrayList<>();
-		if (constraint != null) {
-			for (String key : constraint.properties().getKeysAsArray()) {
-				if (constraint.properties().getPropertyValue(key) instanceof StringTable) {
-					StringTable t = (StringTable) constraint.properties().getPropertyValue(key);
-					for (int i = 0; i < t.size(); i++)
-						result.add(t.getWithFlatIndex(i));
-				}
-			}
-		}
-		return result;
 	}
 
 	private SimpleDataTreeNode getConstraint(SimpleDataTreeNode spec, String constraintClass) {

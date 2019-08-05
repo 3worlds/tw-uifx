@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.dialogs;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +43,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -201,6 +206,48 @@ public class Dialogsfx implements IDialogs {
 					return i;
 		}
 		return -1;
+	}
+
+	@Override
+	public List<String> getRadioButtonChoices(String title, String header, String content, List<String[]> entries) {
+		Dialog<ButtonType> dlg = new Dialog<>();
+		dlg.initOwner(owner);
+		dlg.setTitle(title);
+		dlg.setHeaderText(header);
+		dlg.setContentText(content);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane pane = new BorderPane();
+		ScrollPane sp = new ScrollPane();
+		VBox vb = new VBox();
+		pane.setCenter(sp);
+		sp.setContent(vb);
+		dlg.getDialogPane().setContent(pane);
+		List<ToggleGroup> tgs = new ArrayList<>();
+		for (String[] ss:entries) {
+			ToggleGroup tg = new ToggleGroup();
+			tgs.add(tg);
+			boolean firstSelected = false;
+			for (String s : ss) {
+				RadioButton rb = new RadioButton(s);
+				rb.setToggleGroup(tg);
+				if (!firstSelected) {
+					rb.setSelected(true);
+					firstSelected = true;
+				}
+				vb.getChildren().add(rb);
+			}				
+		}	
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
+			List<String> selection = new ArrayList<>();
+			for (ToggleGroup tg:tgs) {
+				RadioButton rb = (RadioButton) tg.getSelectedToggle();
+				selection.add(rb.getText());
+			}
+			return selection;
+		};
+		return null;
 	}
 
 }
