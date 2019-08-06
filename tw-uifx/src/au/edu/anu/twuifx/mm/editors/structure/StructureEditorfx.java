@@ -36,6 +36,7 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.NodeAtLeastOneChildLabelOfQuery;
+import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
@@ -216,34 +217,54 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 			SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec, subClass);
 			// ChildXorPropertyQuery (e.g. Record,dataElementType)
-			List<String[]> entries = specifications.getQueryStringTables(childBaseSpec, ChildXorPropertyQuery.class);
-			entries.addAll(specifications.getQueryStringTables(childSubSpec, ChildXorPropertyQuery.class));
-			List<String> selectedKeys = null;
-			if (!entries.isEmpty()) {
-				selectedKeys = promptForTableEntryChoice(childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId,
-						"Property choices", "", entries);
-				if (selectedKeys == null)
+			List<String[]> entriesChildXorProperty = specifications.getQueryStringTables(childBaseSpec,
+					ChildXorPropertyQuery.class);
+			entriesChildXorProperty
+					.addAll(specifications.getQueryStringTables(childSubSpec, ChildXorPropertyQuery.class));
+			List<String> selectedKeysChildXorProperty = null;
+			if (!entriesChildXorProperty.isEmpty()) {
+				selectedKeysChildXorProperty = promptForTableEntryChoice(
+						childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, "Property choices", "",
+						entriesChildXorProperty);
+				if (selectedKeysChildXorProperty == null)
 					return;
 			}
 
+			List<String[]> entriesPropertiesXor = specifications.getQueryStringTables(childBaseSpec,
+					PropertyXorQuery.class);
+			entriesPropertiesXor.addAll(specifications.getQueryStringTables(childSubSpec, PropertyXorQuery.class));
+			List<String> selectedKeysPropertyXor = null;
+			if (!entriesPropertiesXor.isEmpty()) {
+				selectedKeysPropertyXor = promptForTableEntryChoice(
+						childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, "Property choices", "",
+						entriesPropertiesXor);
+				if (selectedKeysPropertyXor == null)
+					return;
+			}
 			// make the node
 			newChild = editingNode.newChild(childLabel, promptId);
-			
+
 			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childBaseSpec,
 					childSubSpec);
+			// we could remove the pspec based on the above choices before
 			// build the properties
 			for (SimpleDataTreeNode propertySpec : propertySpecs) {
 				String key = (String) propertySpec.properties().getPropertyValue(twaHasName);
 				// property choices - others to come.
 				if (!subclassProperty(propertySpec)) {
 					boolean addProperty = true;
-					String optionalKey = getSelectedEntry(key, selectedKeys, entries);
+					String optionalKey = getSelectedEntry(key, selectedKeysChildXorProperty, entriesChildXorProperty);
 					if (optionalKey != null && !optionalKey.equals(key))
 						addProperty = false;
 					if (addProperty) {
+						optionalKey = getSelectedEntry(key, selectedKeysPropertyXor, entriesPropertiesXor);
+						if (optionalKey != null && !optionalKey.equals(key))
+							addProperty = false;
+					}
+					if (addProperty) {
 						String type = (String) propertySpec.properties().getPropertyValue(twaType);
 						Object defValue = ValidPropertyTypes.getDefaultValue(type);
-						System.out.println(key+"; "+defValue.getClass() + ": " + defValue);
+						System.out.println(key + "; " + defValue.getClass() + ": " + defValue);
 						newChild.addProperty(key, defValue);
 					}
 				} else
@@ -256,12 +277,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	}
 
 	private static String getSelectedEntry(String key, List<String> selectedKeys, List<String[]> entries) {
-		if (selectedKeys==null)
+		if (selectedKeys == null)
 			return null;
-		for (int i = 0; i<selectedKeys.size();i++) {
-			String sel= selectedKeys.get(i);
+		for (int i = 0; i < selectedKeys.size(); i++) {
+			String sel = selectedKeys.get(i);
 			String[] entry = entries.get(i);
-			for (int j=0;j<entry.length;j++) {
+			for (int j = 0; j < entry.length; j++) {
 				if (entry[j].equals(sel))
 					return sel;
 			}

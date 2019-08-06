@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
@@ -174,12 +175,12 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String[]> getQueryStringTables(SimpleDataTreeNode spec, Class<ChildXorPropertyQuery> klass) {
+	public List<String[]> getQueryStringTables(SimpleDataTreeNode spec, Class<? extends Query> queryClass) {
 		List<String[]> result = new ArrayList<>();
 		if (spec == null)
 			return result;
 		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
-				selectZeroOrMany(hasProperty(twaClassName, klass.getName())));
+				selectZeroOrMany(hasProperty(twaClassName, queryClass.getName())));
 		for (SimpleDataTreeNode constraint : constraints) {
 			List<String> entries = getConstraintTable(constraint);
 			if (!entries.isEmpty()) {
@@ -240,5 +241,7 @@ public class TwSpecifications implements //
 		String ioc = (String) child.properties().getPropertyValue(aaIsOfClass);
 		return ioc.equals(label);
 	}
+
+
 
 }
