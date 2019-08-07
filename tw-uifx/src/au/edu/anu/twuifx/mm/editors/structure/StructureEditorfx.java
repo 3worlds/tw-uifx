@@ -35,10 +35,10 @@ import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
-import au.edu.anu.twcore.archetype.tw.NodeAtLeastOneChildLabelOfQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
@@ -75,15 +75,15 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (haveSpecification()) {
 			Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecificationsOf(baseSpec, subClassSpec,
 					TWA.getRoot());
-			List<SimpleDataTreeNode> allowedChildSpecs = newChildList(childSpecs);
-			List<TreeGraphNode> orphanedChildren = orphanedChildList(allowedChildSpecs);
+			List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
+			List<TreeGraphNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(baseSpec);
-			List<Pair<String, SimpleDataTreeNode>> allowedEdges = newEdgeList(edgeSpecs);
+			List<Pair<String, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
 
-			if (!allowedChildSpecs.isEmpty()) {
+			if (!filteredChildSpecs.isEmpty()) {
 				// add new children options
 				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW);
-				for (SimpleDataTreeNode child : allowedChildSpecs) {
+				for (SimpleDataTreeNode child : filteredChildSpecs) {
 					addOptionNewChild(mu, child);
 				}
 			}
@@ -93,7 +93,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 			}
 
-			if (!allowedEdges.isEmpty()) {
+			if (!filteredEdgeSpecs.isEmpty()) {
 				// addEdgeOptions
 			}
 
@@ -104,7 +104,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				// add exportTreeOptions
 				addSep = true;
 			}
-			if (!allowedChildSpecs.isEmpty()) {
+			if (!filteredChildSpecs.isEmpty()) {
 				// add import tree options
 				addSep = true;
 			}
@@ -176,6 +176,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void addOptionNewChild(Menu mu, SimpleDataTreeNode childBaseSpec) {
 		String childLabel = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
 		MenuItem mi = new MenuItem(childLabel);
@@ -207,7 +208,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			// look for subclass
 			String childClassName = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
 			Class subClass = null;
-			List<Class> subClasses = specifications.getSubClasses(childBaseSpec);
+			List<Class<? extends TreeNode>> subClasses =  specifications.getSubClasses(childBaseSpec);
 			if (subClasses.size() > 1) {
 				subClass = promptForClass(subClasses, childClassName);
 				if (subClass == null)
@@ -216,59 +217,27 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				subClass = subClasses.get(0);
 			}
 			SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec, subClass);
-			// ChildXorPropertyQuery (e.g. Record,dataElementType)
-			List<String[]> entriesChildXorProperty = specifications.getQueryStringTables(childBaseSpec,
-					ChildXorPropertyQuery.class);
-			entriesChildXorProperty
-					.addAll(specifications.getQueryStringTables(childSubSpec, ChildXorPropertyQuery.class));
-			List<String> selectedKeysChildXorProperty = null;
-			if (!entriesChildXorProperty.isEmpty()) {
-				selectedKeysChildXorProperty = promptForTableEntryChoice(
-						childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, "Property choices", "",
-						entriesChildXorProperty);
-				if (selectedKeysChildXorProperty == null)
-					return;
-			}
+			// unfiltered propertySpecs
+			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childBaseSpec,
+					childSubSpec);
+			if (!specifications.filterPropertySpecs(propertySpecs, childBaseSpec, childSubSpec,
+					childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, ChildXorPropertyQuery.class,
+					PropertyXorQuery.class))
+				return;// cancel
 
-			List<String[]> entriesPropertiesXor = specifications.getQueryStringTables(childBaseSpec,
-					PropertyXorQuery.class);
-			entriesPropertiesXor.addAll(specifications.getQueryStringTables(childSubSpec, PropertyXorQuery.class));
-			List<String> selectedKeysPropertyXor = null;
-			if (!entriesPropertiesXor.isEmpty()) {
-				selectedKeysPropertyXor = promptForTableEntryChoice(
-						childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, "Property choices", "",
-						entriesPropertiesXor);
-				if (selectedKeysPropertyXor == null)
-					return;
-			}
 			// make the node
 			newChild = editingNode.newChild(childLabel, promptId);
 
-			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childBaseSpec,
-					childSubSpec);
-			// we could remove the pspec based on the above choices before
-			// build the properties
 			for (SimpleDataTreeNode propertySpec : propertySpecs) {
 				String key = (String) propertySpec.properties().getPropertyValue(twaHasName);
-				// property choices - others to come.
-				if (!subclassProperty(propertySpec)) {
-					boolean addProperty = true;
-					String optionalKey = getSelectedEntry(key, selectedKeysChildXorProperty, entriesChildXorProperty);
-					if (optionalKey != null && !optionalKey.equals(key))
-						addProperty = false;
-					if (addProperty) {
-						optionalKey = getSelectedEntry(key, selectedKeysPropertyXor, entriesPropertiesXor);
-						if (optionalKey != null && !optionalKey.equals(key))
-							addProperty = false;
-					}
-					if (addProperty) {
-						String type = (String) propertySpec.properties().getPropertyValue(twaType);
-						Object defValue = ValidPropertyTypes.getDefaultValue(type);
-						System.out.println(key + "; " + defValue.getClass() + ": " + defValue);
-						newChild.addProperty(key, defValue);
-					}
-				} else
+				if (key.equals(twaSubclass))
 					newChild.addProperty(twaSubclass, subClass.getName());
+				else {
+					String type = (String) propertySpec.properties().getPropertyValue(twaType);
+					Object defValue = ValidPropertyTypes.getDefaultValue(type);
+					System.out.println(key + "; " + defValue.getClass() + ": " + defValue);
+					newChild.addProperty(key, defValue);
+				}
 			}
 
 			controller.onNewNode(newChild);
@@ -276,35 +245,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		});
 	}
 
-	private static String getSelectedEntry(String key, List<String> selectedKeys, List<String[]> entries) {
-		if (selectedKeys == null)
-			return null;
-		for (int i = 0; i < selectedKeys.size(); i++) {
-			String sel = selectedKeys.get(i);
-			String[] entry = entries.get(i);
-			for (int j = 0; j < entry.length; j++) {
-				if (entry[j].equals(sel))
-					return sel;
-			}
-		}
-		return null;
-	}
-
-	private List<String> promptForTableEntryChoice(String title, String header, String content,
-			List<String[]> entries) {
-		return Dialogs.getRadioButtonChoices(title, header, content, entries);
-	}
-
-	private boolean subclassProperty(SimpleDataTreeNode propertySpec) {
-		String value = (String) propertySpec.properties().getPropertyValue(twaHasName);
-		if (value.equals(twaSubclass))
-			return true;
-		else
-			return false;
-	}
-
 	@Override
-	public Class promptForClass(List<Class> subClasses, String rootClassSimpleName) {
+	public Class<? extends TreeNode> promptForClass(List<Class <? extends TreeNode>> subClasses, String rootClassSimpleName) {
 		String[] list = new String[subClasses.size()];
 		for (int i = 0; i < subClasses.size(); i++)
 			list[i] = subClasses.get(i).getSimpleName();

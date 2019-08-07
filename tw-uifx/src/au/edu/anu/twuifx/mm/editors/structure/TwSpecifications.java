@@ -1,11 +1,13 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
@@ -153,10 +155,10 @@ public class TwSpecifications implements //
 		return result;
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "unchecked" })
 	@Override
-	public List<Class> getSubClasses(SimpleDataTreeNode spec) {
-		List<Class> result = new ArrayList<>();
+	public List<Class<? extends TreeNode>> getSubClasses(SimpleDataTreeNode spec) {
+		List<Class<? extends TreeNode>> result = new ArrayList<>();
 		SimpleDataTreeNode propertySpec = (SimpleDataTreeNode) get(spec.getChildren(),
 				selectZeroOrOne(hasProperty(twaHasName, twaSubclass)));
 		if (propertySpec != null) {
@@ -165,7 +167,7 @@ public class TwSpecifications implements //
 			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
 			for (int i = 0; i < classes.size(); i++)
 				try {
-					result.add(Class.forName(classes.getWithFlatIndex(i)));
+					result.add((Class<? extends TreeNode>) Class.forName(classes.getWithFlatIndex(i)));
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -191,6 +193,43 @@ public class TwSpecifications implements //
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public boolean filterPropertySpecs(Iterable<SimpleDataTreeNode> propertySpecs, SimpleDataTreeNode baseSpec,
+			SimpleDataTreeNode subSpec, String childId, Class<? extends Query>... queryClasses) {
+		List<String[]> entries = new ArrayList<>();
+		for (Class<? extends Query> qclass : queryClasses) {
+			entries.addAll(getQueryStringTables(baseSpec, qclass));
+			entries.addAll(getQueryStringTables(subSpec, qclass));		
+		}
+		if (!entries.isEmpty()) {
+			List<String> selectedKeys = Dialogs.getRadioButtonChoices(childId, "PropertyChoices", "", entries);
+			if (selectedKeys==null)
+				return false;
+			Iterator<SimpleDataTreeNode> iter = propertySpecs.iterator();
+			while(iter.hasNext()) {
+				SimpleDataTreeNode ps = iter.next();
+				String key = (String) ps.properties().getPropertyValue(twaHasName);
+				String optionalKey = getSelectedEntry(key,selectedKeys,entries);
+				if (optionalKey!=null && !optionalKey.equals(key))
+					iter.remove();
+			}
+		} 
+		return true;
+	}
+	private static String getSelectedEntry(String key, List<String> selectedKeys, List<String[]> entries) {
+		if (selectedKeys == null)
+			return null;
+		for (int i = 0; i < selectedKeys.size(); i++) {
+			String sel = selectedKeys.get(i);
+			String[] entry = entries.get(i);
+			for (int j = 0; j < entry.length; j++) {
+				if (entry[j].equals(sel))
+					return sel;
+			}
+		}
+		return null;
 	}
 
 	// -----------------------end of implementation methods-----------------------
@@ -241,7 +280,5 @@ public class TwSpecifications implements //
 		String ioc = (String) child.properties().getPropertyValue(aaIsOfClass);
 		return ioc.equals(label);
 	}
-
-
 
 }

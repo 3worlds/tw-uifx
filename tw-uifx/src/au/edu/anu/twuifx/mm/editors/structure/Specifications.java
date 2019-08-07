@@ -34,6 +34,7 @@ import java.util.List;
 import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
+import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -105,8 +106,12 @@ public interface Specifications {
 
 	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec);
 
-	public List<Class> getSubClasses(SimpleDataTreeNode spec);
+	public List<Class<? extends TreeNode>> getSubClasses(SimpleDataTreeNode spec);
 
 	public List<String[]> getQueryStringTables(SimpleDataTreeNode spec, Class<? extends Query> queryClass);
+
+	@SuppressWarnings("unchecked")
+	public boolean filterPropertySpecs(Iterable<SimpleDataTreeNode> propertySpecs, SimpleDataTreeNode baseSpec,
+			SimpleDataTreeNode subSpec, String childId,Class<? extends Query>... queryClasses);
 
 }

@@ -105,7 +105,7 @@ public abstract class StructureEditorAdapter
 	}
 
 	@Override
-	public List<SimpleDataTreeNode> newChildList(Iterable<SimpleDataTreeNode> childSpecs) {
+	public List<SimpleDataTreeNode> filterChildSpecs(Iterable<SimpleDataTreeNode> childSpecs) {
 		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
 		List<String[]> tables = specifications.getQueryStringTables(baseSpec, ChildXorPropertyQuery.class);
 		tables.addAll(specifications.getQueryStringTables(subClassSpec, ChildXorPropertyQuery.class));
@@ -135,7 +135,7 @@ private boolean allowedChild(String childLabel, List<String[]> tables) {
 };
 
 	//	@Override
-	public List<Pair<String, SimpleDataTreeNode>> newEdgeList(Iterable<SimpleDataTreeNode> edgeSpecs) {
+	public List<Pair<String, SimpleDataTreeNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs) {
 		List<Pair<String, SimpleDataTreeNode>> result = new ArrayList<>();
 		List<String> edgePropXorOptions = specifications.getConstraintOptions(baseSpec,
 				EdgeXorPropertyQuery.class.getName());
