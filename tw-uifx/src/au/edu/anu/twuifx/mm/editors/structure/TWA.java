@@ -28,10 +28,13 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.editors.structure;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import au.edu.anu.rscs.aot.archetype.Archetypes;
 import au.edu.anu.rscs.aot.archetype.CheckMessage;
+import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import fr.cnrs.iees.graph.Tree;
 import fr.cnrs.iees.graph.TreeNode;
@@ -44,12 +47,13 @@ import fr.cnrs.iees.identity.impl.PairIdentity;
  * @date 20 Jul 2019
  */
 // Global singleton instance of the 3Warchetype: thread safe and lazy load
-// TODO make use of the Singleton functional interface
+// TODO make use of the Singleton functional interface?
 public class TWA {
 	private static Tree<? extends TreeNode> instance;
 	private static TreeNode aroot;
 	private static boolean checked = false;
 	private static Logger log = Logger.getLogger(TWA.class.getName());
+	private static Map<String, Tree<? extends TreeNode>> subGraphs = new HashMap<>();
 
 	private TWA() {
 	};
@@ -57,15 +61,15 @@ public class TWA {
 	@SuppressWarnings("unchecked")
 	public static synchronized Tree<? extends TreeNode> getInstance() {
 		if (instance == null) {
-			instance = (Tree<? extends TreeNode>) GraphImporter.importGraph("3wArchetype.ugt", IsInValueSetQuery.class);
+			instance = (Tree<? extends TreeNode>) GraphImporter.importGraph("3wArchetype.ugt",
+					CheckSubArchetypeQuery.class);
 		}
 		return instance;
 	}
 
 	public static synchronized TreeNode getRoot() {
-		if (aroot == null) {
+		if (aroot == null)
 			aroot = TWA.getInstance().root();
-		}
 		return aroot;
 	}
 
@@ -81,6 +85,15 @@ public class TWA {
 		} else
 			checked = true;
 		return checked;
+	}
+
+	public static synchronized Tree<? extends TreeNode> getSubArchetype(String key) {
+		if (subGraphs.containsKey(key))
+			return subGraphs.get(key);
+		Tree<? extends TreeNode> tree = (Tree<? extends TreeNode>) GraphImporter.importGraph(key,
+				CheckSubArchetypeQuery.class);
+		subGraphs.put(key, tree);
+		return tree;
 	}
 
 	// Static helper methods??

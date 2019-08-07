@@ -9,7 +9,6 @@ import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
-import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import au.edu.anu.twcore.archetype.tw.NameStartsWithUpperCaseQuery;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
@@ -17,7 +16,6 @@ import fr.cnrs.iees.graph.Tree;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
-import fr.cnrs.iees.graph.io.GraphImporter;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
@@ -55,7 +53,7 @@ public class TwSpecifications implements //
 					selectZeroOrMany(hasProperty(twaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getConstraintTable(constraint);
-				Tree<?> tree = (Tree<?>) GraphImporter.importGraph(pars.get(2), CheckSubArchetypeQuery.class);
+				Tree<?> tree = (Tree<?>) TWA.getSubArchetype(pars.get(2));
 				SimpleDataTreeNode result = getSpecsOf(configNode, createdBy, tree.root());
 				if (result != null)
 					return result;
@@ -254,7 +252,7 @@ public class TwSpecifications implements //
 		for (SimpleDataTreeNode constraint : constraints) {
 			StringTable pars = (StringTable) constraint.properties().getPropertyValue(twaParameters);
 			if (pars.getWithFlatIndex(1).equals(subClass.getName())) {
-				return (Tree<?>) GraphImporter.importGraph(pars.get(2), CheckSubArchetypeQuery.class);
+				return TWA.getSubArchetype(pars.get(2));
 			}
 		}
 		throw new TwuifxException("Sub archetype graph not found for " + subClass.getName());

@@ -41,7 +41,9 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
+import au.edu.anu.twuifx.mm.editors.structure.TWA;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -81,10 +83,12 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	}
 
 	private void checkResources() {
+		if (!TWA.validArchetype())
+			throw new TwuifxException("Archetype is not valid!");
 		File file = new File(TW_ROOT + File.separator + TW_DEP_JAR);
-		if (!file.exists())
-			Dialogs.warnAlert("Resource Error", "Required Java dependency jar not found",
-					"Use TwSetup to create " + file.getAbsolutePath());
+//		if (!file.exists())
+//			Dialogs.warnAlert("Resource Error", "Required Java dependency jar not found",
+//					"Use TwSetup to create " + file.getAbsolutePath());
 
 		boolean haveCompiler = !(ToolProvider.getSystemJavaCompiler() == null);
 		if (!haveCompiler)
@@ -104,8 +108,8 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage.setTitle("3Worlds Model Maker");
 		createMainWindow();
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
-		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(),controller.getUserProjectPathProperty()));
-		//checkResources();
+		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
+		checkResources();
 		setDefaultFrameSize();
 		GraphState.addListener(controller);
 		mainStage.show();
@@ -133,7 +137,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 
 	public static void main(String[] args) {
 		launch(args);
-		//System.out.println("OK");
+		// System.out.println("OK");
 	}
 
 }
