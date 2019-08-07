@@ -76,6 +76,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 			if (!controller.canClose()) {
 				e.consume();
 			} else {
+				stop();
 				Platform.exit();
 				System.exit(0);
 			}
@@ -131,7 +132,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	@Override
 	public void stop() {
 		controller.putPreferences();
-		// Without this, threads remain when debugging.
+		System.out.println("Stop from "+this.getClass().getSimpleName());
 		System.exit(0);
 	}
 

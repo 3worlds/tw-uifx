@@ -387,6 +387,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleMenuExit(ActionEvent event) {
 		if (model.canClose()) {
+			putPreferences();
 			Platform.exit();
 			System.exit(0);
 		}
