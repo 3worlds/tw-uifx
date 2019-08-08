@@ -81,9 +81,16 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		});
 	}
 
+	private boolean checkArchetype = false;
+
 	private void checkResources() {
-		if (!TWA.validArchetype())
-			throw new TwuifxException("Archetype is not valid!");
+		if (checkArchetype) {
+			if (!TWA.validArchetype())
+				throw new TwuifxException("Archetype is not valid!");
+		} else {
+			if (TWA.getRoot() == null)
+				throw new TwuifxException("Archetype has not single root!");
+		}
 		File file = new File(TW_ROOT + File.separator + TW_DEP_JAR);
 //		if (!file.exists())
 //			Dialogs.warnAlert("Resource Error", "Required Java dependency jar not found",

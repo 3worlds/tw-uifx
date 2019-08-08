@@ -822,6 +822,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			visualiser.onNewNode(newNode);
 			zoomTarget.setCursor(Cursor.DEFAULT);
 			newNode = null;
+			initialisePropertySheets();
 			setButtonState();
 		}
 	}
