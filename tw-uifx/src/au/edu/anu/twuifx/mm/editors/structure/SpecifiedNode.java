@@ -32,9 +32,12 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.archetype.TWA;
+import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.TreeNode;
 //import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;

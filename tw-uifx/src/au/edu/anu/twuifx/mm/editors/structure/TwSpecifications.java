@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twcore.archetype.TWA;
+import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import au.edu.anu.twcore.archetype.tw.NameStartsWithUpperCaseQuery;
@@ -50,7 +53,7 @@ public class TwSpecifications implements //
 			}
 			// search sa.
 			List<SimpleDataTreeNode> saConstraints = (List<SimpleDataTreeNode>) get(child.getChildren(),
-					selectZeroOrMany(hasProperty(twaClassName, CheckSubArchetypeQuery.class.getName())));
+					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getConstraintTable(constraint);
 				Tree<?> tree = (Tree<?>) TWA.getSubArchetype(pars.get(2));
@@ -148,7 +151,7 @@ public class TwSpecifications implements //
 
 	@Override
 	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec) {
-		String result = (String) edgeSpec.properties().getPropertyValue(twaToNode);
+		String result = (String) edgeSpec.properties().getPropertyValue(aaToNode);
 		result = result.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, "");
 		return result;
 	}
@@ -158,10 +161,10 @@ public class TwSpecifications implements //
 	public List<Class<? extends TreeNode>> getSubClasses(SimpleDataTreeNode spec) {
 		List<Class<? extends TreeNode>> result = new ArrayList<>();
 		SimpleDataTreeNode propertySpec = (SimpleDataTreeNode) get(spec.getChildren(),
-				selectZeroOrOne(hasProperty(twaHasName, twaSubclass)));
+				selectZeroOrOne(hasProperty(aaHasName, twaSubclass)));
 		if (propertySpec != null) {
 			SimpleDataTreeNode constraint = (SimpleDataTreeNode) get(propertySpec.getChildren(),
-					selectOne(hasProperty(twaClassName, IsInValueSetQuery.class.getName())));
+					selectOne(hasProperty(aaClassName, IsInValueSetQuery.class.getName())));
 			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
 			for (int i = 0; i < classes.size(); i++)
 				try {
@@ -180,7 +183,7 @@ public class TwSpecifications implements //
 		if (spec == null)
 			return result;
 		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
-				selectZeroOrMany(hasProperty(twaClassName, queryClass.getName())));
+				selectZeroOrMany(hasProperty(aaClassName, queryClass.getName())));
 		for (SimpleDataTreeNode constraint : constraints) {
 			List<String> entries = getConstraintTable(constraint);
 			if (!entries.isEmpty()) {
@@ -208,7 +211,7 @@ public class TwSpecifications implements //
 			Iterator<SimpleDataTreeNode> iter = propertySpecs.iterator();
 			while(iter.hasNext()) {
 				SimpleDataTreeNode ps = iter.next();
-				String key = (String) ps.properties().getPropertyValue(twaHasName);
+				String key = (String) ps.properties().getPropertyValue(aaHasName);
 				String optionalKey = getSelectedEntry(key,selectedKeys,entries);
 				if (optionalKey!=null && !optionalKey.equals(key))
 					iter.remove();
@@ -248,7 +251,7 @@ public class TwSpecifications implements //
 	@SuppressWarnings("unchecked")
 	protected Tree<? extends TreeNode> getSubArchetype(SimpleDataTreeNode spec, Class<? extends TreeNode> subClass) {
 		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
-				selectOneOrMany(hasProperty(twaClassName, CheckSubArchetypeQuery.class.getName())));
+				selectOneOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 		for (SimpleDataTreeNode constraint : constraints) {
 			StringTable pars = (StringTable) constraint.properties().getPropertyValue(twaParameters);
 			if (pars.getWithFlatIndex(1).equals(subClass.getName())) {
@@ -260,7 +263,7 @@ public class TwSpecifications implements //
 
 	private SimpleDataTreeNode getConstraint(SimpleDataTreeNode spec, String constraintClass) {
 		return (SimpleDataTreeNode) get(spec.getChildren(),
-				selectZeroOrOne(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(twaClassName, constraintClass))));
+				selectZeroOrOne(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, constraintClass))));
 	}
 
 	private static boolean parentTableContains(SimpleDataTreeNode node, String createdBy) {
@@ -271,7 +274,7 @@ public class TwSpecifications implements //
 	@SuppressWarnings("unchecked")
 	private List<SimpleDataTreeNode> getConstraints(SimpleDataTreeNode spec, String constraintClass) {
 		return (List<SimpleDataTreeNode>) get(spec.getChildren(), selectZeroOrMany(
-				andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(twaClassName, constraintClass))));
+				andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, constraintClass))));
 	}
 
 	private boolean isOfClass(SimpleDataTreeNode child, String label) {

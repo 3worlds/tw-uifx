@@ -34,6 +34,7 @@ import org.apache.commons.text.WordUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -229,11 +230,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			newChild = editingNode.newChild(childLabel, promptId);
 
 			for (SimpleDataTreeNode propertySpec : propertySpecs) {
-				String key = (String) propertySpec.properties().getPropertyValue(twaHasName);
+				String key = (String) propertySpec.properties().getPropertyValue(aaHasName);
 				if (key.equals(twaSubclass))
 					newChild.addProperty(twaSubclass, subClass.getName());
 				else {
-					String type = (String) propertySpec.properties().getPropertyValue(twaType);
+					String type = (String) propertySpec.properties().getPropertyValue(aaType);
 					Object defValue = ValidPropertyTypes.getDefaultValue(type);
 					System.out.println(key + "; " + defValue.getClass() + ": " + defValue);
 					newChild.addProperty(key, defValue);
