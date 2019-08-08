@@ -35,6 +35,7 @@ import java.util.List;
 import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.queries.graph.element.ElementLabel;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
@@ -43,7 +44,9 @@ import au.edu.anu.twcore.archetype.tw.EdgeXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.DataElementType;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
@@ -137,8 +140,27 @@ private boolean allowedChild(String childLabel, List<String[]> tables) {
 	return true;
 };
 
+private List<VisualNode> findNodesLabelled(String label){
+	List<VisualNode> result = new ArrayList<>();
+	TreeGraph<VisualNode, VisualEdge> vg = gvisualiser.getVisualGraph();
+	for (VisualNode vn:vg.nodes()) {
+		if (vn.getConfigNode().classId().equals(label))
+			result.add(vn);
+	}
+	return result;
+}
 	//	@Override
 	public List<Pair<String, SimpleDataTreeNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs) {
+		for (SimpleDataTreeNode edgeSpec:edgeSpecs) {
+			//1) Do the constraints allow this edge to exist?
+			//2) does multiplicity allow for this edge?
+			//3) do we have available end nodes?
+			String toNodeRef =(String)edgeSpec.properties().getPropertyValue(aaToNode);
+			List<VisualNode> en = findNodesLabelled(toNodeRef.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR,""));
+			for (VisualNode n:en)
+				System.out.println(n);
+		}
+		
 		List<Pair<String, SimpleDataTreeNode>> result = new ArrayList<>();
 		List<String> edgePropXorOptions = specifications.getConstraintOptions(baseSpec,
 				EdgeXorPropertyQuery.class.getName());

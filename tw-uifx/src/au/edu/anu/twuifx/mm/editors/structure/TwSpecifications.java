@@ -117,8 +117,14 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode nodeSpec) {
-		return (Iterable<SimpleDataTreeNode>) get(nodeSpec.getChildren(), selectZeroOrMany(hasTheLabel(aaHasEdge)));
+	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode baseSpec,
+			SimpleDataTreeNode subSpec) {
+		List<SimpleDataTreeNode> result = (List<SimpleDataTreeNode>) get(baseSpec.getChildren(),
+				selectZeroOrMany(hasTheLabel(aaHasEdge)));
+		if (subSpec != null)
+			result.addAll(
+					(List<SimpleDataTreeNode>) get(subSpec.getChildren(), selectZeroOrMany(hasTheLabel(aaHasEdge))));
+		return result;
 	}
 
 	@Override
@@ -202,23 +208,24 @@ public class TwSpecifications implements //
 		List<String[]> entries = new ArrayList<>();
 		for (Class<? extends Query> qclass : queryClasses) {
 			entries.addAll(getQueryStringTables(baseSpec, qclass));
-			entries.addAll(getQueryStringTables(subSpec, qclass));		
+			entries.addAll(getQueryStringTables(subSpec, qclass));
 		}
 		if (!entries.isEmpty()) {
 			List<String> selectedKeys = Dialogs.getRadioButtonChoices(childId, "PropertyChoices", "", entries);
-			if (selectedKeys==null)
+			if (selectedKeys == null)
 				return false;
 			Iterator<SimpleDataTreeNode> iter = propertySpecs.iterator();
-			while(iter.hasNext()) {
+			while (iter.hasNext()) {
 				SimpleDataTreeNode ps = iter.next();
 				String key = (String) ps.properties().getPropertyValue(aaHasName);
-				String optionalKey = getSelectedEntry(key,selectedKeys,entries);
-				if (optionalKey!=null && !optionalKey.equals(key))
+				String optionalKey = getSelectedEntry(key, selectedKeys, entries);
+				if (optionalKey != null && !optionalKey.equals(key))
 					iter.remove();
 			}
-		} 
+		}
 		return true;
 	}
+
 	private static String getSelectedEntry(String key, List<String> selectedKeys, List<String[]> entries) {
 		if (selectedKeys == null)
 			return null;
@@ -273,8 +280,8 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	private List<SimpleDataTreeNode> getConstraints(SimpleDataTreeNode spec, String constraintClass) {
-		return (List<SimpleDataTreeNode>) get(spec.getChildren(), selectZeroOrMany(
-				andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, constraintClass))));
+		return (List<SimpleDataTreeNode>) get(spec.getChildren(),
+				selectZeroOrMany(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, constraintClass))));
 	}
 
 	private boolean isOfClass(SimpleDataTreeNode child, String label) {

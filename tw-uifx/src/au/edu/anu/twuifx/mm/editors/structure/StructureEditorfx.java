@@ -78,7 +78,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					TWA.getRoot());
 			List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
 			List<TreeGraphNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
-			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(baseSpec);
+			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(baseSpec,subClassSpec);
+//			for (SimpleDataTreeNode edgeSpec:edgeSpecs)
+//				System.out.println(edgeSpec);
 			List<Pair<String, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
 
 			if (!filteredChildSpecs.isEmpty()) {

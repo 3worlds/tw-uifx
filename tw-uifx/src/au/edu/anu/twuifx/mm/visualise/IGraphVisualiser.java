@@ -29,8 +29,10 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 // TODO move to tw-apps later
+import fr.cnrs.iees.graph.impl.TreeGraph;
 
 public interface IGraphVisualiser {
 	public void initialiseView();
@@ -40,6 +42,8 @@ public interface IGraphVisualiser {
 	public void collapseTreeFrom(VisualNode node);
 	
 	public void expandTreeFrom(VisualNode node);
+	
+	public TreeGraph<VisualNode, VisualEdge> getVisualGraph();
 
 	public void close();
 

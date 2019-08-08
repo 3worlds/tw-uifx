@@ -81,13 +81,13 @@ public interface Specifications {
 	 * optional subClass.
 	 */
 	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec,
-			SimpleDataTreeNode parentSubClass, TreeNode root);
+			SimpleDataTreeNode parentSubSpec, TreeNode root);
 
-	/* edge specification nodes of a node with this label and class */
-	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode nodeSpec);
+	/* edge specifications nodes of a node with this label and class */
+	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode nodeSpec,
+	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode baseSpec,
 			SimpleDataTreeNode subSpec);
 
 	/* Get multiplicity of a property specification */

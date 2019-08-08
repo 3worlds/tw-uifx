@@ -49,7 +49,9 @@ import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -102,6 +104,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			ObjectProperty<Font> font, //
 			IMMController controller) {
 		this.visualGraph = visualGraph;
+
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
 		this.showGraphLine = showGraphLine;
@@ -201,8 +204,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
-
-				/* gse = */ new StructureEditorfx(new SpecifiedNode(n, visualGraph), e, controller,this);
+				new StructureEditorfx(new SpecifiedNode(n, visualGraph), e, controller, this);
 			} else
 				controller.onNodeSelected(n);
 
@@ -456,14 +458,19 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void removeView(VisualNode visualNode) {
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) visualNode.getSymbol());
-		sceneNodes.add((Node)visualNode.getText());
-		sceneNodes.add((Node)visualNode.getParentLine());
-		for (Edge e: visualNode.edges()) {
-			VisualEdge ve = (VisualEdge)e;
-			sceneNodes.add((Node)ve.getText());
-			sceneNodes.add((Node)ve.getSymbol());
+		sceneNodes.add((Node) visualNode.getText());
+		sceneNodes.add((Node) visualNode.getParentLine());
+		for (Edge e : visualNode.edges()) {
+			VisualEdge ve = (VisualEdge) e;
+			sceneNodes.add((Node) ve.getText());
+			sceneNodes.add((Node) ve.getSymbol());
 		}
 		pane.getChildren().removeAll(sceneNodes);
+	}
+
+	@Override
+	public TreeGraph<VisualNode, VisualEdge> getVisualGraph() {
+		return visualGraph;
 	}
 
 }

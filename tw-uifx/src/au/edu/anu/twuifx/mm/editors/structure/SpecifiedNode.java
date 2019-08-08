@@ -40,6 +40,7 @@ import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.ALEdge;
 //import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -57,7 +58,7 @@ public class SpecifiedNode implements //
 		TwArchetypeConstants {
 	private VisualNode selectedVisualNode;
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
-
+	
 	public SpecifiedNode(VisualNode visualNode, TreeGraph<VisualNode, VisualEdge> visualGraph) {
 		this.selectedVisualNode = visualNode;
 		this.visualGraph = visualGraph;
