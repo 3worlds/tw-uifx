@@ -62,19 +62,19 @@ import javafx.util.Pair;
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
 	// forces call to registerType in ValidPropertyTypes
-	static private final DataElementType det = DataElementType.defaultValue();
-	static private final ExperimentDesignType edt = ExperimentDesignType.defaultValue();
-	static private final Grouping g = Grouping.defaultValue();
-	static private final LifespanType lst = LifespanType.defaultValue();
-	// SnippetLocation sl= SnippetLocation.defaultValue();
-	static private final StatisticalAggregates sa = StatisticalAggregates.defaultValue();
-	// TabLayoutTypes tlt = TabLayoutTypes.defaultValue();
-	static private final TimeScaleType tst = TimeScaleType.defaultValue();
-	static private final TimeUnits tu = TimeUnits.defaultValue();
-	static private final TwFunctionTypes twft = TwFunctionTypes.defaultValue();
-	// UIContainers uic =UIContainers.defaultValue();
-	static private final FileType ft = FileType.defaultValue();
-	static private final DateTimeType dtt = DateTimeType.defaultValue();
+//	static private final DataElementType det = DataElementType.defaultValue();
+//	static private final ExperimentDesignType edt = ExperimentDesignType.defaultValue();
+//	static private final Grouping g = Grouping.defaultValue();
+//	static private final LifespanType lst = LifespanType.defaultValue();
+//	// SnippetLocation sl= SnippetLocation.defaultValue();
+//	static private final StatisticalAggregates sa = StatisticalAggregates.defaultValue();
+//	// TabLayoutTypes tlt = TabLayoutTypes.defaultValue();
+//	static private final TimeScaleType tst = TimeScaleType.defaultValue();
+//	static private final TimeUnits tu = TimeUnits.defaultValue();
+//	static private final TwFunctionTypes twft = TwFunctionTypes.defaultValue();
+//	// UIContainers uic =UIContainers.defaultValue();
+//	static private final FileType ft = FileType.defaultValue();
+//	static private final DateTimeType dtt = DateTimeType.defaultValue();
 
 	/* what we need to know from the archetype graph */
 	protected Specifications specifications;
