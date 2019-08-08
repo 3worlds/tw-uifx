@@ -38,6 +38,8 @@ import javax.tools.ToolProvider;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.archetype.TWA;
+import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.twcore.constants.EnumProperties;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
@@ -89,7 +91,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 				throw new TwuifxException("Archetype is not valid!");
 		} else {
 			if (TWA.getRoot() == null)
-				throw new TwuifxException("Archetype has not single root!");
+				throw new TwuifxException("Archetype has >1 roots!");
 		}
 		File file = new File(TW_ROOT + File.separator + TW_DEP_JAR);
 //		if (!file.exists())
@@ -110,6 +112,8 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		 * Not used because this stylesheet elicits a warning from search bar of
 		 * propertySheet.
 		 */
+		EnumProperties.recordEnums();
+//		ValidPropertyTypes.listTypes(); // uncomment this if you want to make sure all property types are here
 		mainStage = primaryStage;
 		mainStage.setTitle("3Worlds Model Maker");
 		createMainWindow();
