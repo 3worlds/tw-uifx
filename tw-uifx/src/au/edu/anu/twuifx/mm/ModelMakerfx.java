@@ -77,8 +77,6 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 				e.consume();
 			} else {
 				stop();
-				Platform.exit();
-				System.exit(0);
 			}
 		});
 	}
@@ -132,7 +130,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	@Override
 	public void stop() {
 		controller.putPreferences();
-		System.out.println("Stop from "+this.getClass().getSimpleName());
+		Platform.exit();
 		System.exit(0);
 	}
 
