@@ -34,10 +34,18 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 // TODO move to tw-apps later
 import fr.cnrs.iees.graph.impl.TreeGraph;
 
+
+/**
+ * @author Ian Davies
+ *
+ * @date 9 Aug 2019
+ */
 public interface IGraphVisualiser {
 	public void initialiseView();
 	
 	public void onNewNode(VisualNode node);
+	
+	public void onNewEdge(VisualEdge edge);
 	
 	public void collapseTreeFrom(VisualNode node);
 	
@@ -47,6 +55,8 @@ public interface IGraphVisualiser {
 
 	public void close();
 
-	public void removeView(VisualNode selectedVisualNode);
+	public void removeView(VisualNode node);
+	
+	public void removeView(VisualEdge edge);
 
 }

@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -53,7 +54,7 @@ public interface StructureEditable {
 	 * Filters a list of edge labels and eligible node pairs to be connected from a
 	 * list of all possible edge specifications
 	 */
-	public List<Pair<String, SimpleDataTreeNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs);
+	public List<Pair<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs);
 
 	public List<TreeGraphNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
 

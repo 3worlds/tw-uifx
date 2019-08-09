@@ -43,6 +43,7 @@ import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
@@ -140,6 +141,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pane.setPrefHeight(Control.USE_COMPUTED_SIZE);
 		pane.setPrefWidth(Control.USE_COMPUTED_SIZE);
 
+	}
+	@Override
+	public TreeGraph<VisualNode, VisualEdge> getVisualGraph() {
+		return visualGraph;
 	}
 
 	@Override
@@ -287,33 +292,30 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 	}
 
-	private String getEdgeLabel(Edge e) {
-		return e.factory().edgeClassName(e.getClass());
-
-	}
 
 	private void createGraphLine(VisualEdge edge, BooleanProperty show) {
 		VisualNode startNode = (VisualNode) edge.startNode();
 		VisualNode endNode = (VisualNode) edge.endNode();
-		@SuppressWarnings("unchecked")
-		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.edges(Direction.OUT),
-				selectZeroOrMany(notQuery(hasTheLabel(getEdgeLabel(edge)))));
-		/*
-		 * edge labels of identical lines will obscure each other. Therefore we have to
-		 * pull some tricks to concatenate all the info in one text object and set the
-		 * others to ""
-		 */
-
-		String newLabel = "";
-		for (VisualEdge e : edges) {
-			if (e.endNode().id().equals(endNode.id())) {
-				newLabel += getEdgeLabel(e) + "/";
-				Text text = (Text) e.getText();
-				if (text != null)
-					text.setText("");
-			}
-		}
-		newLabel += getEdgeLabel(edge);
+//		@SuppressWarnings("unchecked")
+//		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.edges(Direction.OUT),
+//				selectZeroOrMany(notQuery(hasTheLabel(getEdgeLabel(edge)))));
+//		/*
+//		 * edge labels of identical lines will obscure each other. Therefore we have to
+//		 * pull some tricks to concatenate all the info in one text object and set the
+//		 * others to ""
+//		 */
+//
+//		String newLabel = "";
+//		for (VisualEdge e : edges) {
+//			if (e.endNode().id().equals(endNode.id())) {
+//				newLabel += getEdgeLabel(e) + "/";
+//				Text text = (Text) e.getText();
+//				if (text != null)
+//					text.setText("");
+//			}
+//		}
+//		newLabel += getEdgeLabel(edge);
+		String newLabel = edge.getConfigEdge().id();
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
@@ -472,9 +474,17 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pane.getChildren().removeAll(sceneNodes);
 	}
 
+
 	@Override
-	public TreeGraph<VisualNode, VisualEdge> getVisualGraph() {
-		return visualGraph;
+	public void onNewEdge(VisualEdge edge) {
+		createGraphLine(edge, showGraphLine);
+		
+	}
+
+	@Override
+	public void removeView(VisualEdge edge) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

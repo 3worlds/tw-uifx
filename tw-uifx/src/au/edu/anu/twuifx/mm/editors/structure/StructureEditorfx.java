@@ -78,10 +78,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					TWA.getRoot());
 			List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
 			List<TreeGraphNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
-			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(baseSpec,subClassSpec);
-//			for (SimpleDataTreeNode edgeSpec:edgeSpecs)
-//				System.out.println(edgeSpec);
-			List<Pair<String, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
+			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(baseSpec, subClassSpec);
+			List<Pair<String, VisualNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
 
 			if (!filteredChildSpecs.isEmpty()) {
 				// add new children options
@@ -97,7 +95,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 
 			if (!filteredEdgeSpecs.isEmpty()) {
-				// addEdgeOptions
+				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_CONNECT_TO);
+				for (Pair<String, VisualNode> p : filteredEdgeSpecs) {
+					addConnectToOption(mu, p);
+				}
 			}
 
 			cm.getItems().add(new SeparatorMenuItem());
@@ -138,6 +139,19 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 		}
 	}
+
+	private void addConnectToOption(Menu mu, Pair<String, VisualNode> p) {
+		String miLabel = p.getKey() + "->" + p.getValue().id();
+		MenuItem mi = new MenuItem(miLabel);
+		mu.getItems().add(mi);
+		mi.setOnAction((e) -> {
+			if (editingNode.isCollapsed())
+				gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
+			connectTo(p);
+		});
+
+	}
+
 
 	private void addCollapseOption(MenuItem mi) {
 		mi.setOnAction((e) -> {
@@ -211,7 +225,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			// look for subclass
 			String childClassName = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
 			Class subClass = null;
-			List<Class<? extends TreeNode>> subClasses =  specifications.getSubClasses(childBaseSpec);
+			List<Class<? extends TreeNode>> subClasses = specifications.getSubClasses(childBaseSpec);
 			if (subClasses.size() > 1) {
 				subClass = promptForClass(subClasses, childClassName);
 				if (subClass == null)
@@ -249,7 +263,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	}
 
 	@Override
-	public Class<? extends TreeNode> promptForClass(List<Class <? extends TreeNode>> subClasses, String rootClassSimpleName) {
+	public Class<? extends TreeNode> promptForClass(List<Class<? extends TreeNode>> subClasses,
+			String rootClassSimpleName) {
 		String[] list = new String[subClasses.size()];
 		for (int i = 0; i < subClasses.size(); i++)
 			list[i] = subClasses.get(i).getSimpleName();

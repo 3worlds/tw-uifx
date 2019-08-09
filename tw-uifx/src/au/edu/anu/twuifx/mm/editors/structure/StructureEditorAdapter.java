@@ -36,15 +36,22 @@ import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.queries.graph.element.ElementLabel;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
+import au.edu.anu.twapps.mm.visualGraph.VisualGraphFactory;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.EdgeXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
+import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import fr.cnrs.iees.graph.Edge;
+import fr.cnrs.iees.graph.impl.ALDataEdge;
+import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.DataElementType;
@@ -94,7 +101,6 @@ public abstract class StructureEditorAdapter
 
 	protected IGraphVisualiser gvisualiser;
 
-
 	public StructureEditorAdapter(SpecifiableNode clickedNode, IGraphVisualiser gv) {
 		super();
 		this.specifications = new TwSpecifications();
@@ -129,50 +135,56 @@ public abstract class StructureEditorAdapter
 		return result;
 	}
 
-private boolean allowedChild(String childLabel, List<String[]> tables) {
-	VisualNode vn =editingNode.getSelectedVisualNode();
-	for (String[] ss:tables) {
-		if (ss[0].equals(childLabel)){
-			if (vn.configHasProperty(ss[1]))
-				return false;
-		}		
-	}
-	return true;
-};
-
-private List<VisualNode> findNodesLabelled(String label){
-	List<VisualNode> result = new ArrayList<>();
-	TreeGraph<VisualNode, VisualEdge> vg = gvisualiser.getVisualGraph();
-	for (VisualNode vn:vg.nodes()) {
-		if (vn.getConfigNode().classId().equals(label))
-			result.add(vn);
-	}
-	return result;
-}
-	//	@Override
-	public List<Pair<String, SimpleDataTreeNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs) {
-		for (SimpleDataTreeNode edgeSpec:edgeSpecs) {
-			//1) Do the constraints allow this edge to exist?
-			//2) does multiplicity allow for this edge?
-			//3) do we have available end nodes?
-			String toNodeRef =(String)edgeSpec.properties().getPropertyValue(aaToNode);
-			List<VisualNode> en = findNodesLabelled(toNodeRef.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR,""));
-			for (VisualNode n:en)
-				System.out.println(n);
+	private boolean allowedChild(String childLabel, List<String[]> tables) {
+		VisualNode vn = editingNode.getSelectedVisualNode();
+		for (String[] ss : tables) {
+			if (ss[0].equals(childLabel)) {
+				if (vn.configHasProperty(ss[1]))
+					return false;
+			}
 		}
-		
-		List<Pair<String, SimpleDataTreeNode>> result = new ArrayList<>();
-		List<String> edgePropXorOptions = specifications.getConstraintOptions(baseSpec,
-				EdgeXorPropertyQuery.class.getName());
-		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(baseSpec,
-				OutNodeXorQuery.class.getName());
+		return true;
+	};
 
+	private List<VisualNode> findNodesLabelled(String label) {
+		List<VisualNode> result = new ArrayList<>();
+		TreeGraph<VisualNode, VisualEdge> vg = gvisualiser.getVisualGraph();
+		for (VisualNode vn : vg.nodes()) {
+			if (vn.getConfigNode().classId().equals(label))
+				result.add(vn);
+		}
+		return result;
+	}
+
+	// @Override
+	public List<Pair<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs) {
+		// 1) Do the constraints allow this edge to exist?
+		// 2) does multiplicity allow for this edge?
+		// 3) do we have available end nodes?
+		// Test cases:
+		// 1) Table: dimensioner 1..*
+		List<Pair<String, VisualNode>> result = new ArrayList<>();
 		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
-			String nodeLabel = specifications.getEdgeToNodeLabel(edgeSpec);
-			List<String> edgeLabelOptions = specifications.getConstraintOptions(edgeSpec, ElementLabel.class.getName());
-			// we now need the node list of the graph!
-			// easy: graph.nodes() (as an Iterable<Node>)
+			String toNodeRef = (String) edgeSpec.properties().getPropertyValue(aaToNode);
+			String edgeLabel = (String) edgeSpec.properties().getPropertyValue(aaIsOfClass);
+			List<VisualNode> en = findNodesLabelled(toNodeRef.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, ""));
+			Pair<String, VisualNode> p = new Pair<String, VisualNode>(edgeLabel, en.get(0));
+			result.add(p);
+//			for (VisualNode n : en)
+//				System.out.println(n);
 		}
+
+//		List<String> edgePropXorOptions = specifications.getConstraintOptions(baseSpec,
+//				EdgeXorPropertyQuery.class.getName());
+//		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(baseSpec,
+//				OutNodeXorQuery.class.getName());
+//
+//		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
+//			String nodeLabel = specifications.getEdgeToNodeLabel(edgeSpec);
+//			List<String> edgeLabelOptions = specifications.getConstraintOptions(edgeSpec, ElementLabel.class.getName());
+//			// we now need the node list of the graph!
+//			// easy: graph.nodes() (as an Iterable<Node>)
+//		}
 		return result;
 	}
 
@@ -191,6 +203,23 @@ private List<VisualNode> findNodesLabelled(String label){
 
 	protected boolean haveSpecification() {
 		return baseSpec != null;
+	}
+
+	private static VisualEdge createVisualEdge(String edgeClassName, VisualNode vStart, VisualNode vEnd) {
+		TreeGraphDataNode cStart = (TreeGraphDataNode) vStart.getConfigNode();
+		TreeGraphDataNode cEnd = (TreeGraphDataNode) vEnd.getConfigNode();
+		TwConfigFactory cf = (TwConfigFactory) cStart.factory();
+		ALEdge ce = (ALEdge) cf.makeEdge(cf.edgeClass(edgeClassName), cStart, cEnd, edgeClassName);
+		VisualGraphFactory vf = (VisualGraphFactory) vStart.factory();
+		VisualEdge result = vf.makeEdge(vStart, vEnd, edgeClassName);
+		result.setConfigEdge(ce);
+		return result;
+	}
+
+	protected void connectTo(Pair<String, VisualNode> p) {
+		VisualEdge ve =createVisualEdge(p.getKey(),editingNode.getSelectedVisualNode(),p.getValue());
+		gvisualiser.onNewEdge(ve);
+		GraphState.setChanged(true);
 	}
 
 }
