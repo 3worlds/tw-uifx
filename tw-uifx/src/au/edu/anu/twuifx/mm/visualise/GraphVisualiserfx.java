@@ -460,6 +460,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		sceneNodes.add((Node) visualNode.getSymbol());
 		sceneNodes.add((Node) visualNode.getText());
 		sceneNodes.add((Node) visualNode.getParentLine());
+		for (VisualNode child:visualNode.getChildren()) {
+			sceneNodes.add((Node)child.getParentLine());
+			child.removeParentLine();
+		}
 		for (Edge e : visualNode.edges()) {
 			VisualEdge ve = (VisualEdge) e;
 			sceneNodes.add((Node) ve.getText());
