@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
-import au.edu.anu.rscs.aot.queries.graph.element.ElementLabel;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraphFactory;
@@ -41,47 +40,20 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
-import au.edu.anu.twcore.archetype.tw.EdgeXorPropertyQuery;
-import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
-import fr.cnrs.iees.graph.Edge;
-import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
-import fr.cnrs.iees.twcore.constants.DataElementType;
-import fr.cnrs.iees.twcore.constants.DateTimeType;
-import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
-import fr.cnrs.iees.twcore.constants.FileType;
-import fr.cnrs.iees.twcore.constants.Grouping;
-import fr.cnrs.iees.twcore.constants.LifespanType;
-import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
-import fr.cnrs.iees.twcore.constants.TimeScaleType;
-import fr.cnrs.iees.twcore.constants.TimeUnits;
-import fr.cnrs.iees.twcore.constants.TwFunctionTypes;
-import javafx.util.Pair;
+import fr.ens.biologie.generic.utils.Duple;
+
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
-	// forces call to registerType in ValidPropertyTypes
-//	static private final DataElementType det = DataElementType.defaultValue();
-//	static private final ExperimentDesignType edt = ExperimentDesignType.defaultValue();
-//	static private final Grouping g = Grouping.defaultValue();
-//	static private final LifespanType lst = LifespanType.defaultValue();
-//	// SnippetLocation sl= SnippetLocation.defaultValue();
-//	static private final StatisticalAggregates sa = StatisticalAggregates.defaultValue();
-//	// TabLayoutTypes tlt = TabLayoutTypes.defaultValue();
-//	static private final TimeScaleType tst = TimeScaleType.defaultValue();
-//	static private final TimeUnits tu = TimeUnits.defaultValue();
-//	static private final TwFunctionTypes twft = TwFunctionTypes.defaultValue();
-//	// UIContainers uic =UIContainers.defaultValue();
-//	static private final FileType ft = FileType.defaultValue();
-//	static private final DateTimeType dtt = DateTimeType.defaultValue();
 
 	/* what we need to know from the archetype graph */
 	protected Specifications specifications;
@@ -157,18 +129,18 @@ public abstract class StructureEditorAdapter
 	}
 
 	// @Override
-	public List<Pair<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs) {
+	public List<Duple<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs) {
 		// 1) Do the constraints allow this edge to exist?
 		// 2) does multiplicity allow for this edge?
 		// 3) do we have available end nodes?
 		// Test cases:
 		// 1) Table: dimensioner 1..*
-		List<Pair<String, VisualNode>> result = new ArrayList<>();
+		List<Duple<String, VisualNode>> result = new ArrayList<>();
 		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
 			String toNodeRef = (String) edgeSpec.properties().getPropertyValue(aaToNode);
 			String edgeLabel = (String) edgeSpec.properties().getPropertyValue(aaIsOfClass);
 			List<VisualNode> en = findNodesLabelled(toNodeRef.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, ""));
-			Pair<String, VisualNode> p = new Pair<String, VisualNode>(edgeLabel, en.get(0));
+			Duple<String, VisualNode> p = new Duple<String, VisualNode>(edgeLabel, en.get(0));
 			result.add(p);
 //			for (VisualNode n : en)
 //				System.out.println(n);
@@ -216,8 +188,8 @@ public abstract class StructureEditorAdapter
 		return result;
 	}
 
-	protected void connectTo(Pair<String, VisualNode> p) {
-		VisualEdge ve =createVisualEdge(p.getKey(),editingNode.getSelectedVisualNode(),p.getValue());
+	protected void connectTo(Duple<String, VisualNode> p) {
+		VisualEdge ve =createVisualEdge(p.getFirst(),editingNode.getSelectedVisualNode(),p.getSecond());
 		gvisualiser.onNewEdge(ve);
 		GraphState.setChanged(true);
 	}

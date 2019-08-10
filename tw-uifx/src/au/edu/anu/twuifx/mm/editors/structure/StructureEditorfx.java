@@ -50,7 +50,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Pair;
+import fr.ens.biologie.generic.utils.Duple;
 
 /**
  * Author Ian Davies
@@ -79,7 +79,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
 			List<TreeGraphNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 			Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(baseSpec, subClassSpec);
-			List<Pair<String, VisualNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
+			List<Duple<String, VisualNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
 
 			if (!filteredChildSpecs.isEmpty()) {
 				// add new children options
@@ -96,7 +96,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 			if (!filteredEdgeSpecs.isEmpty()) {
 				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_CONNECT_TO);
-				for (Pair<String, VisualNode> p : filteredEdgeSpecs) {
+				for (Duple<String, VisualNode> p : filteredEdgeSpecs) {
 					addConnectToOption(mu, p);
 				}
 			}
@@ -140,8 +140,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 	}
 
-	private void addConnectToOption(Menu mu, Pair<String, VisualNode> p) {
-		String miLabel = p.getKey() + "->" + p.getValue().id();
+	private void addConnectToOption(Menu mu, Duple<String, VisualNode> p) {
+		String miLabel = p.getFirst() + "->" + p.getSecond().id();
 		MenuItem mi = new MenuItem(miLabel);
 		mu.getItems().add(mi);
 		mi.setOnAction((e) -> {

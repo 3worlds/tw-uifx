@@ -69,7 +69,7 @@ public class MrSplash extends Preloader {
 	}
 
 	/*
-	 * this could be a separate method that returns a Pair<TextField,ProgressBar>
+	 * this could be a separate method that returns a Duple<TextField,ProgressBar>
 	 * and be used for an about box
 	 */
 	@Override
