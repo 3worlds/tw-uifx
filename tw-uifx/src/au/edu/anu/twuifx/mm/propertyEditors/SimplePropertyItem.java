@@ -98,7 +98,7 @@ public class SimplePropertyItem implements Item {
 //			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
 			checker.validateGraph();
-			GraphState.setChanged(true);
+			GraphState.setChanged();
 		}
 	}
 

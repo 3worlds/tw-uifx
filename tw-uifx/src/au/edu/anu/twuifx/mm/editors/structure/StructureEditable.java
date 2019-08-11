@@ -57,12 +57,21 @@ public interface StructureEditable {
 	public List<Duple<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs);
 
 	public List<TreeGraphNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
+	
+	public void onConnectToOrphanedChild(VisualNode child);
+	/* create child of node currently being edited base on childSpec*/
+	public void onNewChild(SimpleDataTreeNode childSpec);
+
+	/* add edge call String,from node currently being editied  to a visualNode*/
+	public void onNewEdge(Duple<String, VisualNode> duple);
+	
+	/* delete the node currently being edited*/
+	public void onDeleteNode();
+
 
 	public void buildgui();
 
-	public Class<? extends TreeNode> promptForClass(List<Class<? extends TreeNode>> subClasses,String rootClassSimpleName);
-
-	public String promptForNewNode(String label, String promptName);
-
+	
+	
 
 }

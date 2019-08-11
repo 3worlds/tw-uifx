@@ -61,11 +61,9 @@ import fr.ens.biologie.generic.utils.Duple;
 public class StructureEditorfx extends StructureEditorAdapter {
 
 	private ContextMenu cm;
-	private IMMController controller;
 
 	public StructureEditorfx(SpecifiableNode n, MouseEvent event, IMMController controller, IGraphVisualiser gv) {
-		super(n, gv);
-		this.controller = controller;
+		super(n, gv,controller);
 		cm = new ContextMenu();
 		buildgui();
 		cm.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
@@ -85,10 +83,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				// add new children options
 				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW);
 				for (SimpleDataTreeNode child : filteredChildSpecs) {
-					addOptionNewChild(mu, child);
+					String childLabel = (String) child.properties().getPropertyValue(aaIsOfClass);
+					MenuItem mi = new MenuItem(childLabel);
+					mu.getItems().add(mi);
+					mi.setOnAction((e) -> {
+						onNewChild(child);
+					});
 				}
 			}
-
 			if (!orphanedChildren.isEmpty()) {
 				// list roots that can be children
 
@@ -97,7 +99,15 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (!filteredEdgeSpecs.isEmpty()) {
 				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_CONNECT_TO);
 				for (Duple<String, VisualNode> p : filteredEdgeSpecs) {
-					addConnectToOption(mu, p);
+					MenuItem mi = new MenuItem(p.getFirst() + "->" + p.getSecond().id());
+					mu.getItems().add(mi);
+					mi.setOnAction((e) -> {
+						onNewEdge(p);
+//						if (editingNode.isCollapsed())
+//							gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
+//						connectTo(p);
+					});
+
 				}
 			}
 
@@ -118,13 +128,19 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				cm.getItems().add(new SeparatorMenuItem());
 
 		}
-		if (editingNode.hasOutEdges()) {
+		if (editingNode.hasOutEdges())
+
+		{
 			// delete xlinks
 		}
 
 		if (editingNode.canDelete()) {
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_DELETE);
-			addOptionDeleteThisNode(mi);
+			mi.setOnAction((e) -> {
+				onDeleteNode();
+			});
+
+			//addOptionDeleteThisNode(mi);
 		}
 
 		if (editingNode.hasChildren()) {
@@ -152,12 +168,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	}
 
-
 	private void addCollapseOption(MenuItem mi) {
 		mi.setOnAction((e) -> {
 			gvisualiser.collapseTreeFrom(editingNode.getSelectedVisualNode());
 			controller.onTreeCollapse();
-			GraphState.setChanged(true);
+			GraphState.setChanged();
 		});
 	}
 
@@ -165,7 +180,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		mi.setOnAction((e) -> {
 			gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
 			controller.onTreeExpand();
-			GraphState.setChanged(true);
+			GraphState.setChanged();
 		});
 
 	}
@@ -187,7 +202,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			vn.factory().removeNode(vn);
 			cn.factory().removeNode(cn);
 			controller.onNodeDeleted();
-			GraphState.setChanged(true);
+			GraphState.setChanged();
 //			model.checkGraph();
 		});
 
@@ -258,12 +273,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 
 			controller.onNewNode(newChild);
-			GraphState.setChanged(true);
+			GraphState.setChanged();
 		});
 	}
 
-	@Override
-	public Class<? extends TreeNode> promptForClass(List<Class<? extends TreeNode>> subClasses,
+	private Class<? extends TreeNode> promptForClass(List<Class<? extends TreeNode>> subClasses,
 			String rootClassSimpleName) {
 		String[] list = new String[subClasses.size()];
 		for (int i = 0; i < subClasses.size(); i++)
@@ -275,8 +289,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			return null;
 	}
 
-	@Override
-	public String promptForNewNode(String label, String promptName) {
+	private String promptForNewNode(String label, String promptName) {
 		return Dialogs.getText("New '" + label + "' node", "", "Name:", promptName);
 	}
 
@@ -324,5 +337,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			return result;
 		}
 	}
+
 
 }

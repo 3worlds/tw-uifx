@@ -87,7 +87,7 @@ public class FileTypeItem extends SimplePropertyItem {
 		Object oldValue = getValue();
 		if (!oldValue.toString().equals(newValue.toString())) {
 			fileType.setRelativePath((String) newValue);
-			GraphState.setChanged(true);
+			GraphState.setChanged();
 			checker.validateGraph();
 		}
 	}

@@ -201,7 +201,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				int dy = (int) Math.round(50 * Math.abs(oldy - newy));
 				if (dx != 0 || dy != 0) {
 					dragNode.setPosition(newx, newy);
-					GraphState.setChanged(true);
+					GraphState.setChanged();
 				}
 				dragNode = null;
 				e.consume();

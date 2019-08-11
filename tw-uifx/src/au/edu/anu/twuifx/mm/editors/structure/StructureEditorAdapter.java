@@ -34,6 +34,7 @@ import java.util.List;
 
 import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraphFactory;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -73,11 +74,14 @@ public abstract class StructureEditorAdapter
 
 	protected IGraphVisualiser gvisualiser;
 
-	public StructureEditorAdapter(SpecifiableNode clickedNode, IGraphVisualiser gv) {
+	protected IMMController controller;
+
+	public StructureEditorAdapter(SpecifiableNode selectedNode, IGraphVisualiser gv,IMMController controller) {
 		super();
 		this.specifications = new TwSpecifications();
+		this.controller = controller;
 		this.newChild = null;
-		this.editingNode = clickedNode;
+		this.editingNode = selectedNode;
 		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(), TWA.getRoot());
 		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editingNode.getSubClass());
 		this.gvisualiser = gv;
@@ -191,7 +195,44 @@ public abstract class StructureEditorAdapter
 	protected void connectTo(Duple<String, VisualNode> p) {
 		VisualEdge ve =createVisualEdge(p.getFirst(),editingNode.getSelectedVisualNode(),p.getSecond());
 		gvisualiser.onNewEdge(ve);
-		GraphState.setChanged(true);
+		GraphState.setChanged();
+	}
+	@Override
+	public void onConnectToOrphanedChild(VisualNode child) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNewChild(SimpleDataTreeNode childSpec) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNewEdge(Duple<String, VisualNode> duple) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDeleteNode() {
+		// Expand children or they would be unreachable
+		if (editingNode.getSelectedVisualNode().isCollapsedParent())
+			gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
+		// Remove visual elements
+		VisualNode vn = editingNode.getSelectedVisualNode();
+		TreeGraphNode cn = editingNode.getConfigNode();
+		gvisualiser.removeView(vn);
+		vn.disconnect();
+		cn.disconnect();
+		vn.factory().removeNode(vn);
+		cn.factory().removeNode(cn);
+		controller.onNodeDeleted();
+		GraphState.setChanged();
+//		model.checkGraph();
+
+		
 	}
 
 }

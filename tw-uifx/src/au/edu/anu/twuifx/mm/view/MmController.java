@@ -50,7 +50,6 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -90,7 +89,6 @@ import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
@@ -398,7 +396,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	// needs to respond to a
 	public void setButtonState() {
 		boolean isOpen = visualGraph != null;
-		boolean saveable = !GraphState.hasChanged() & isOpen;
+		boolean saveable = !GraphState.changed() & isOpen;
 		boolean isConnected = haveUserProject();
 		miSetCodePath.setDisable(isConnected);
 		miDisconnect.setDisable(!isConnected);

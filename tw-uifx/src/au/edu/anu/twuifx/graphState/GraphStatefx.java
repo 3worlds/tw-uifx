@@ -76,7 +76,7 @@ public class GraphStatefx implements IGraphState {
 			String title = null;
 			if (Project.isOpen()) {
 				title = Project.getDisplayName();
-				if (hasChanged())
+				if (changed())
 					title = "*" + title;
 				if (!propertyTitle.getValue().isEmpty()) {
 					if (!propertyJavaPath.getValue().isEmpty()) {
@@ -91,13 +91,19 @@ public class GraphStatefx implements IGraphState {
 	}
 
 	@Override
-	public boolean hasChanged() {
+	public boolean changed() {
 		return propertyHasChanged.getValue();
 	}
 
 	@Override
-	public void setChanged(boolean state) {
-		propertyHasChanged.setValue(state);
+	public void setChanged() {
+		propertyHasChanged.setValue(true);
+		setTitle();
+	}
+	
+	@Override
+	public void clear() {
+		propertyHasChanged.setValue(false);
 		setTitle();
 	}
 

@@ -40,17 +40,12 @@ import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.TreeNode;
-import fr.cnrs.iees.graph.impl.ALEdge;
-//import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.Identity;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
-import javafx.scene.Node;
-//import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
-//import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 public class SpecifiedNode implements //
 		SpecifiableNode, //
