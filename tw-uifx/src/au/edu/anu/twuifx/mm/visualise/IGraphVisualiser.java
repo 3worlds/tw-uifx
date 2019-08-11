@@ -59,4 +59,6 @@ public interface IGraphVisualiser {
 	
 	public void removeView(VisualEdge edge);
 
+	public void onNewParent(VisualNode child);
+
 }

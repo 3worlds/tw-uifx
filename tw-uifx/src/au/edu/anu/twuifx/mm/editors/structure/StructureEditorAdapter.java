@@ -32,8 +32,11 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.text.WordUtils;
+
 import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraphFactory;
@@ -41,17 +44,19 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
+import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
+import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import fr.ens.biologie.generic.utils.Duple;
-
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
@@ -64,19 +69,21 @@ public abstract class StructureEditorAdapter
 	protected SpecifiableNode editingNode;
 	/*
 	 * new node created by this editor. May be null because the op is not
-	 * necessarily node creation
+	 * necessarily node creation.
 	 */
 	protected VisualNode newChild;
-	/* specificatons of this editingNode */
+
+	/* specifications of this editingNode */
 	protected SimpleDataTreeNode baseSpec;
 
+	/* specifications of subclass of this editingNode if it has one */
 	protected SimpleDataTreeNode subClassSpec;
 
 	protected IGraphVisualiser gvisualiser;
 
 	protected IMMController controller;
 
-	public StructureEditorAdapter(SpecifiableNode selectedNode, IGraphVisualiser gv,IMMController controller) {
+	public StructureEditorAdapter(SpecifiableNode selectedNode, IGraphVisualiser gv, IMMController controller) {
 		super();
 		this.specifications = new TwSpecifications();
 		this.controller = controller;
@@ -85,11 +92,11 @@ public abstract class StructureEditorAdapter
 		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(), TWA.getRoot());
 		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editingNode.getSubClass());
 		this.gvisualiser = gv;
-		if (subClassSpec != null)
-			System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id()
-					+ " + " + subClassSpec.id());
-		else
-			System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id());
+//		if (subClassSpec != null)
+//			System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id()
+//					+ " + " + subClassSpec.id());
+//		else
+//			System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id());
 	}
 
 	@Override
@@ -164,9 +171,9 @@ public abstract class StructureEditorAdapter
 		return result;
 	}
 
-	public List<TreeGraphNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs) {
-		List<TreeGraphNode> result = new ArrayList<>();
-		for (TreeGraphNode root : editingNode.graphRoots()) {
+	public List<VisualNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs) {
+		List<VisualNode> result = new ArrayList<>();
+		for (VisualNode root : editingNode.graphRoots()) {
 			String rootLabel = TWA.getLabel(root.id());
 			for (SimpleDataTreeNode childSpec : childSpecs) {
 				String specLabel = (String) childSpec.properties().getPropertyValue(aaIsOfClass);
@@ -193,26 +200,102 @@ public abstract class StructureEditorAdapter
 	}
 
 	protected void connectTo(Duple<String, VisualNode> p) {
-		VisualEdge ve =createVisualEdge(p.getFirst(),editingNode.getSelectedVisualNode(),p.getSecond());
+		VisualEdge ve = createVisualEdge(p.getFirst(), editingNode.getSelectedVisualNode(), p.getSecond());
 		gvisualiser.onNewEdge(ve);
 		GraphState.setChanged();
 	}
+
 	@Override
 	public void onConnectToOrphanedChild(VisualNode child) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private String promptForNewNode(String label, String promptName) {
+		return Dialogs.getText("New '" + label + "' node", "", "Name:", promptName);
+	}
+
+	private Class<? extends TreeNode> promptForClass(List<Class<? extends TreeNode>> subClasses,
+			String rootClassSimpleName) {
+		String[] list = new String[subClasses.size()];
+		for (int i = 0; i < subClasses.size(); i++)
+			list[i] = subClasses.get(i).getSimpleName();
+		int result = Dialogs.getListChoice(list, "Sub-classes", rootClassSimpleName, "select:");
+		if (result != -1)
+			return subClasses.get(result);
+		else
+			return null;
 	}
 
 	@Override
-	public void onNewChild(SimpleDataTreeNode childSpec) {
-		// TODO Auto-generated method stub
-		
+	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec) {
+		// default name is label with 1 appended
+		String promptId = childLabel + "1";
+		boolean captialize = specifications.nameStartsWithUpperCase(childBaseSpec);
+		if (captialize)
+			promptId = WordUtils.capitalize(promptId);
+		boolean modified = true;
+		promptId = editingNode.proposeAnId(childLabel, promptId);
+		while (modified) {
+			String userName = promptForNewNode(childLabel, promptId);
+			if (userName == null)
+				return;// cancel
+			userName = userName.trim();
+			if (userName.equals(""))
+				userName = promptId;
+			if (captialize)
+				userName = WordUtils.capitalize(userName);
+			String newName = editingNode.proposeAnId(childLabel, userName);
+			modified = !newName.equals(userName);
+			promptId = newName;
+		}
+		// prompt for property creation options:
+		// TODO One dialog for all options.
+		// look for subclass
+		String childClassName = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
+		Class subClass = null;
+		List<Class<? extends TreeNode>> subClasses = specifications.getSubClasses(childBaseSpec);
+		if (subClasses.size() > 1) {
+			subClass = promptForClass(subClasses, childClassName);
+			if (subClass == null)
+				return;// cancel
+		} else if (subClasses.size() == 1) {
+			subClass = subClasses.get(0);
+		}
+		SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec, subClass);
+		// unfiltered propertySpecs
+		Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childBaseSpec,
+				childSubSpec);
+		if (!specifications.filterPropertySpecs(propertySpecs, childBaseSpec, childSubSpec,
+				childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, ChildXorPropertyQuery.class,
+				PropertyXorQuery.class))
+			return;// cancel
+
+		// make the node
+		newChild = editingNode.newChild(childLabel, promptId);
+
+		for (SimpleDataTreeNode propertySpec : propertySpecs) {
+			String key = (String) propertySpec.properties().getPropertyValue(aaHasName);
+			if (key.equals(twaSubclass))
+				newChild.addProperty(twaSubclass, subClass.getName());
+			else {
+				String type = (String) propertySpec.properties().getPropertyValue(aaType);
+				Object defValue = ValidPropertyTypes.getDefaultValue(type);
+				System.out.println(key + "; " + defValue.getClass() + ": " + defValue);
+				newChild.addProperty(key, defValue);
+			}
+		}
+
+		controller.onNewNode(newChild);
+		GraphState.setChanged();
 	}
 
 	@Override
 	public void onNewEdge(Duple<String, VisualNode> duple) {
-		// TODO Auto-generated method stub
-		
+		if (editingNode.isCollapsed())
+			gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
+		connectTo(duple);
+
 	}
 
 	@Override
@@ -220,9 +303,9 @@ public abstract class StructureEditorAdapter
 		// Expand children or they would be unreachable
 		if (editingNode.getSelectedVisualNode().isCollapsedParent())
 			gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
-		// Remove visual elements
 		VisualNode vn = editingNode.getSelectedVisualNode();
 		TreeGraphNode cn = editingNode.getConfigNode();
+		// Remove visual elements
 		gvisualiser.removeView(vn);
 		vn.disconnect();
 		cn.disconnect();
@@ -230,9 +313,33 @@ public abstract class StructureEditorAdapter
 		cn.factory().removeNode(cn);
 		controller.onNodeDeleted();
 		GraphState.setChanged();
-//		model.checkGraph();
+//		model.checkGraph();	
+	}
 
-		
+	@Override
+	public void onCollapseTree() {
+		gvisualiser.collapseTreeFrom(editingNode.getSelectedVisualNode());
+		controller.onTreeCollapse();
+		GraphState.setChanged();
+	}
+
+	@Override
+	public void onExpandTree() {
+		gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
+		controller.onTreeExpand();
+		GraphState.setChanged();
+
+	}
+
+	@Override
+	public void onSetChild(VisualNode vnChild) {
+		VisualNode vnParent = editingNode.getSelectedVisualNode();
+		TreeGraphNode cnChild = vnChild.getConfigNode();
+		TreeGraphNode cnParent = editingNode.getConfigNode();
+		cnParent.connectChild(cnChild);
+		vnParent.connectChild(vnChild);
+		gvisualiser.onNewParent(vnChild);
+		GraphState.setChanged();
 	}
 
 }

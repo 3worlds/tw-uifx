@@ -256,14 +256,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	}
 
-	private void createTreeLines(VisualNode n, BooleanProperty show) {
+	private void createTreeLines(VisualNode child, BooleanProperty show) {
 		// each node has a line connected to its parent
-		VisualNode parent = n.getParent();
+		VisualNode parent = child.getParent();
 		if (parent != null) {
 			Circle parentCircle = (Circle) parent.getSymbol();
-			Circle childCircle = (Circle) n.getSymbol();
+			Circle childCircle = (Circle) child.getSymbol();
 			Line line = new Line();
-			n.setParentLine(line);
+			child.setParentLine(line);
 
 			// bindings
 			// TODO can we have a colour property?
@@ -484,6 +484,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void removeView(VisualEdge edge) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onNewParent(VisualNode child) {
+		createTreeLines(child,showTreeLine);
 		
 	}
 

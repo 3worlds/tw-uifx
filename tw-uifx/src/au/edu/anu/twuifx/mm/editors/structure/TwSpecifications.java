@@ -56,6 +56,7 @@ public class TwSpecifications implements //
 					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getConstraintTable(constraint);
+				System.out.println("Look in ["+pars.get(2));
 				Tree<?> tree = (Tree<?>) TWA.getSubArchetype(pars.get(2));
 				SimpleDataTreeNode result = getSpecsOf(configNode, createdBy, tree.root());
 				if (result != null)

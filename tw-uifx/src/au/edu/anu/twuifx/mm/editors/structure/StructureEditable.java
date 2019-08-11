@@ -32,7 +32,6 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.List;
 
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.ens.biologie.generic.utils.Duple;
@@ -56,22 +55,27 @@ public interface StructureEditable {
 	 */
 	public List<Duple<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs);
 
-	public List<TreeGraphNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
-	
-	public void onConnectToOrphanedChild(VisualNode child);
-	/* create child of node currently being edited base on childSpec*/
-	public void onNewChild(SimpleDataTreeNode childSpec);
+	public List<VisualNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
 
-	/* add edge call String,from node currently being editied  to a visualNode*/
+	public void onConnectToOrphanedChild(VisualNode child);
+
+	/* create child of node currently being edited base on childSpec */
+	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec);
+
+	/* add edge call String,from node currently being editied to a visualNode */
 	public void onNewEdge(Duple<String, VisualNode> duple);
-	
-	/* delete the node currently being edited*/
+
+	/* delete the node currently being edited */
 	public void onDeleteNode();
 
+	/* collapse tree from the node currently being edited */
+	public void onCollapseTree();
+
+	/* expand tree from the node currently being edited */
+	public void onExpandTree();
+	
+	public void onSetChild(VisualNode childNode);
 
 	public void buildgui();
-
-	
-	
 
 }
