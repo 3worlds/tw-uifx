@@ -25,8 +25,6 @@ package au.edu.anu.twuifx.mm.visualise;
   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
   OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
   SUCH DAMAGE.
-  
-  Originally from the prefuse library.
  */
 
 import java.util.ArrayList;
@@ -71,6 +69,12 @@ import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
  * Adapted for ThreeWorlds by Ian Davies
  *
  */
+
+/**
+ * @author Ian Davies
+ *
+ * @date 13 Aug 2019
+ */
 public class TreeLayout implements Layout {
 	private static final String Prelim = "prelim";
 	private static final String Number = "number";
@@ -110,8 +114,8 @@ public class TreeLayout implements Layout {
 
 	private void addProperties(VisualNode parent) {
 		SharedPropertyListImpl p = new SharedPropertyListImpl(keys);
-		p.setProperty(X, parent.getX());
-		p.setProperty(Y, parent.getY());
+		//p.setProperty(X, parent.getX());
+		//p.setProperty(Y, parent.getY());
 		propertyMap.put(parent.id(), p);
 
 		List<VisualNode> childList = new ArrayList<>();
