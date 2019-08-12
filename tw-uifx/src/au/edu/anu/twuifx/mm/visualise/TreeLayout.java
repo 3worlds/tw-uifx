@@ -168,8 +168,11 @@ public class TreeLayout implements Layout {
 
 		prop.setProperty(X, x);
 		prop.setProperty(Y, y);
+		n.setX(x);
+		n.setY(y);;
 		for (VisualNode child : n.getChildren())
 			normalise(child);
+		
 	}
 
 	private void determineDepths() {
