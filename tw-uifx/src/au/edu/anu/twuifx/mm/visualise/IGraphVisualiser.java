@@ -61,4 +61,6 @@ public interface IGraphVisualiser {
 
 	public void onNewParent(VisualNode child);
 
+	public void doLayout();
+
 }

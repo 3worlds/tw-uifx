@@ -33,7 +33,6 @@ import java.util.List;
 
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.ens.biologie.generic.utils.Duple;
 
 /**
@@ -42,6 +41,7 @@ import fr.ens.biologie.generic.utils.Duple;
  * Date 11 Jan. 2019
  */
 public interface StructureEditable {
+	/* These methods are all in the context of a single user selected VisualNode*/
 
 	/*
 	 * Filters a list of possible children depending on current state of the
@@ -49,33 +49,33 @@ public interface StructureEditable {
 	 */
 	public List<SimpleDataTreeNode> filterChildSpecs(Iterable<SimpleDataTreeNode> childNodeSpecs);
 
-	/*
-	 * Filters a list of edge labels and eligible node pairs to be connected from a
-	 * list of all possible edge specifications
-	 */
+	
+	 /* Filters a list of edgeSpecs to produce a list of duples of edge labels and end nodes */
 	public List<Duple<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs);
 
+	/* list of nodes that are eligible children of the edit node*/
 	public List<VisualNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
 
-	public void onConnectToOrphanedChild(VisualNode child);
 
-	/* create child of node currently being edited base on childSpec */
+	/* create child on childSpec */
 	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec);
 
-	/* add edge call String,from node currently being editied to a visualNode */
+	/* add edge called String,to an end node */
 	public void onNewEdge(Duple<String, VisualNode> duple);
 
-	/* delete the node currently being edited */
+	/* delete this node */
 	public void onDeleteNode();
 
-	/* collapse tree from the node currently being edited */
+	/* collapse tree from this node */
 	public void onCollapseTree();
 
-	/* expand tree from the node currently being edited */
+	/* expand tree from this node */
 	public void onExpandTree();
 	
-	public void onSetChild(VisualNode childNode);
+	/* connect node as child of this node*/
+	public void onAddChild(VisualNode childNode);
 
+	/* build implementation specific gui*/
 	public void buildgui();
 
 }

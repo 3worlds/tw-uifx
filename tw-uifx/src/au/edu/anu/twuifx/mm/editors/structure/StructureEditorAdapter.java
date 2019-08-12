@@ -205,11 +205,6 @@ public abstract class StructureEditorAdapter
 		GraphState.setChanged();
 	}
 
-	@Override
-	public void onConnectToOrphanedChild(VisualNode child) {
-		// TODO Auto-generated method stub
-
-	}
 
 	private String promptForNewNode(String label, String promptName) {
 		return Dialogs.getText("New '" + label + "' node", "", "Name:", promptName);
@@ -305,12 +300,12 @@ public abstract class StructureEditorAdapter
 			gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
 		VisualNode vn = editingNode.getSelectedVisualNode();
 		TreeGraphNode cn = editingNode.getConfigNode();
-		// Remove visual elements
+		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vn);
-		vn.disconnect();
-		cn.disconnect();
 		vn.factory().removeNode(vn);
 		cn.factory().removeNode(cn);
+		vn.disconnect();
+		cn.disconnect();
 		controller.onNodeDeleted();
 		GraphState.setChanged();
 //		model.checkGraph();	
@@ -332,7 +327,7 @@ public abstract class StructureEditorAdapter
 	}
 
 	@Override
-	public void onSetChild(VisualNode vnChild) {
+	public void onAddChild(VisualNode vnChild) {
 		VisualNode vnParent = editingNode.getSelectedVisualNode();
 		TreeGraphNode cnChild = vnChild.getConfigNode();
 		TreeGraphNode cnParent = editingNode.getConfigNode();

@@ -30,10 +30,6 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
-import static au.edu.anu.rscs.aot.queries.CoreQueries.hasTheLabel;
-import static au.edu.anu.rscs.aot.queries.CoreQueries.notQuery;
-import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrMany;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,16 +39,13 @@ import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.TreeNode;
-import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -142,6 +135,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pane.setPrefWidth(Control.USE_COMPUTED_SIZE);
 
 	}
+
 	@Override
 	public TreeGraph<VisualNode, VisualEdge> getVisualGraph() {
 		return visualGraph;
@@ -291,7 +285,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			createGraphLine(edge, show);
 		}
 	}
-
 
 	private void createGraphLine(VisualEdge edge, BooleanProperty show) {
 		VisualNode startNode = (VisualNode) edge.startNode();
@@ -462,8 +455,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		sceneNodes.add((Node) visualNode.getSymbol());
 		sceneNodes.add((Node) visualNode.getText());
 		sceneNodes.add((Node) visualNode.getParentLine());
-		for (VisualNode child:visualNode.getChildren()) {
-			sceneNodes.add((Node)child.getParentLine());
+		for (VisualNode child : visualNode.getChildren()) {
+			sceneNodes.add((Node) child.getParentLine());
 			child.removeParentLine();
 		}
 		for (Edge e : visualNode.edges()) {
@@ -474,23 +467,45 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pane.getChildren().removeAll(sceneNodes);
 	}
 
-
 	@Override
 	public void onNewEdge(VisualEdge edge) {
 		createGraphLine(edge, showGraphLine);
-		
+
 	}
 
+	// Is this ever used???
 	@Override
 	public void removeView(VisualEdge edge) {
-		// TODO Auto-generated method stub
-		
+		List<Node> sceneNodes = new ArrayList<>();
+		sceneNodes.add((Node) edge.getText());
+		sceneNodes.add((Node) edge.getSymbol());
+		pane.getChildren().removeAll(sceneNodes);
+
 	}
 
 	@Override
 	public void onNewParent(VisualNode child) {
-		createTreeLines(child,showTreeLine);
-		
+		createTreeLines(child, showTreeLine);
+
 	}
 
+	@Override
+	public void doLayout() {
+		pane.setPrefHeight(pane.getHeight());
+		pane.setPrefWidth(pane.getWidth());
+//		Layout layout = new TreeLayout();
+//		layout.init(visualGraph);
+//		layout.compute();
+
+		for (VisualNode node : visualGraph.nodes()) {
+			Circle c = (Circle) node.getSymbol();
+			if (!c.centerXProperty().isBound()) {
+				c.centerXProperty().set(node.getX() * pane.getWidth());
+				c.centerYProperty().set(node.getY() * pane.getHeight());
+			}
+		}
+		pane.setPrefHeight(Control.USE_COMPUTED_SIZE);
+		pane.setPrefWidth(Control.USE_COMPUTED_SIZE);
+		GraphState.setChanged();
+	}
 }

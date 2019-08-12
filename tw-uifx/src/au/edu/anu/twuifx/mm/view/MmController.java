@@ -434,6 +434,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	void handleLayout(ActionEvent event) {
+		visualiser.doLayout();
 		model.doLayout();
 	}
 

@@ -89,7 +89,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = new MenuItem(vn.id());
 					mu.getItems().add(mi);
 					mi.setOnAction((e)->{
-						onSetChild(vn);
+						onAddChild(vn);
 					});
 				}
 				

@@ -59,14 +59,15 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
 // Develop in this library but move to tw-core later - saves time!!
 public interface Specifications {
 
+	// checking should be a static method of TWA?
 	/* True if the archetype is a valid archetype */
-	public boolean complies();
+//	public boolean complies();
 
 	/*
 	 * runs all checks against the given node . Nodes without an spec can't be
 	 * checked. I'm avoiding complies(AotGraph graph) at the moment
 	 */
-	public boolean complies(TreeGraphNode node, SimpleDataTreeNode root);
+//	public boolean complies(TreeGraphNode node, SimpleDataTreeNode root);
 
 	/*
 	 * get specification of a given node from the configuration graph. If null, it

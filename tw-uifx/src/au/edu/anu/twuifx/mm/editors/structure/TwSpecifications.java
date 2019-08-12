@@ -29,18 +29,18 @@ public class TwSpecifications implements //
 		ArchetypeArchetypeConstants, //
 		TwArchetypeConstants {
 
-	@Override
-	public boolean complies() {
-		// TODO Auto-generated method stub ??
-		return false;
-	}
-
-	@Override
-	public boolean complies(TreeGraphNode configNode, SimpleDataTreeNode spec) {
-		// TODO Auto-generated method stub ??
-		return false;
-	}
-
+//	@Override
+//	public boolean complies() {
+//		// TODO Auto-generated method stub ??
+//		return false;
+//	}
+//
+//	@Override
+//	public boolean complies(TreeGraphNode configNode, SimpleDataTreeNode spec) {
+//		// TODO Auto-generated method stub ??
+//		return false;
+//	}
+//
 	@SuppressWarnings("unchecked")
 	@Override
 	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configNode, String createdBy, TreeNode root) {
@@ -56,7 +56,7 @@ public class TwSpecifications implements //
 					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getConstraintTable(constraint);
-				System.out.println("Look in ["+pars.get(2));
+//				System.out.println("Look in ["+pars.get(2));
 				Tree<?> tree = (Tree<?>) TWA.getSubArchetype(pars.get(2));
 				SimpleDataTreeNode result = getSpecsOf(configNode, createdBy, tree.root());
 				if (result != null)
