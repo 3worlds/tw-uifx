@@ -398,7 +398,7 @@ public class TreeLayout implements Layout {
 		}
 
 	}
-    public static final double[] resize(double[] a, int size) {
+    private  static final double[] resize(double[] a, int size) {
         if ( a.length >= size ) return a;
         double[] b = new double[size];
         System.arraycopy(a, 0, b, 0, a.length);
