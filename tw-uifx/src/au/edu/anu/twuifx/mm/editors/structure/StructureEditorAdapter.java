@@ -151,10 +151,10 @@ public abstract class StructureEditorAdapter
 			String toNodeRef = (String) edgeSpec.properties().getPropertyValue(aaToNode);
 			String edgeLabel = (String) edgeSpec.properties().getPropertyValue(aaIsOfClass);
 			List<VisualNode> en = findNodesLabelled(toNodeRef.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, ""));
-			Duple<String, VisualNode> p = new Duple<String, VisualNode>(edgeLabel, en.get(0));
-			result.add(p);
-//			for (VisualNode n : en)
-//				System.out.println(n);
+			if (!en.isEmpty()) {
+				Duple<String, VisualNode> p = new Duple<String, VisualNode>(edgeLabel, en.get(0));
+				result.add(p);
+			}
 		}
 
 //		List<String> edgePropXorOptions = specifications.getConstraintOptions(baseSpec,
@@ -204,7 +204,6 @@ public abstract class StructureEditorAdapter
 		gvisualiser.onNewEdge(ve);
 		GraphState.setChanged();
 	}
-
 
 	private String promptForNewNode(String label, String promptName) {
 		return Dialogs.getText("New '" + label + "' node", "", "Name:", promptName);
