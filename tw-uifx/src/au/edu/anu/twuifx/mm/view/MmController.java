@@ -778,14 +778,14 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		if (value instanceof FileType) {
 			FileType ft = (FileType) value;
 			FileTypeItem fti = new FileTypeItem(key, n, true, category, description);
-			fti.setExtensions(ft.getExtensions());
+			//fti.setExtensions(ft.getExtensions());
 			return fti;
 		} else if (value instanceof StatisticalAggregatesSet)
 			return new StatsTypeItem(key, n, true, category, description);
 		else if (value instanceof DateTimeType) {
 			return new DateTimeItem(key, n, true, category, description);
 		} else if (value instanceof StringTable) {
-			return new StringTableTypeItem(key, n, true, category, description);
+			//return new StringTableTypeItem(key, n, true, category, description);
 		}
 		return new SimplePropertyItem(key, n, editable, category, description);
 	}
