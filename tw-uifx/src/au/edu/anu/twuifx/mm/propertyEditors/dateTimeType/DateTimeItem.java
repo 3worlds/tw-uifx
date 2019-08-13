@@ -34,16 +34,14 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.twcore.specificationCheck.Checkable;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 
 public class DateTimeItem extends SimplePropertyItem{
 
-	public DateTimeItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description,
-			Checkable checker) {
-		super(key, n, canEdit, category, description, checker);
+	public DateTimeItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
+		super(key, n, canEdit, category, description);
 	}
 	@Override
 	public Object getValue() {
@@ -58,7 +56,7 @@ public class DateTimeItem extends SimplePropertyItem{
 		if (oldValue.getDateTime() != newValue.getDateTime()) {
 //			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
-			checker.validateGraph();
+			//checker.validateGraph();
 		}
 	}
 

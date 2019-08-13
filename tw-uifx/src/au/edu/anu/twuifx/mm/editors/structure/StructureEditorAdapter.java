@@ -30,7 +30,9 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.text.WordUtils;
 
@@ -83,13 +85,16 @@ public abstract class StructureEditorAdapter
 
 	protected IMMController controller;
 
+	
 	public StructureEditorAdapter(SpecifiableNode selectedNode, IGraphVisualiser gv, IMMController controller) {
 		super();
 		this.specifications = new TwSpecifications();
 		this.controller = controller;
 		this.newChild = null;
 		this.editingNode = selectedNode;
-		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(), TWA.getRoot());
+		Set<String> discoveredFile =new HashSet<>();
+		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(), TWA.getRoot(),discoveredFile);
+		
 		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editingNode.getSubClass());
 		this.gvisualiser = gv;
 //		if (subClassSpec != null)
@@ -192,9 +197,10 @@ public abstract class StructureEditorAdapter
 		TreeGraphDataNode cStart = (TreeGraphDataNode) vStart.getConfigNode();
 		TreeGraphDataNode cEnd = (TreeGraphDataNode) vEnd.getConfigNode();
 		TwConfigFactory cf = (TwConfigFactory) cStart.factory();
-		ALEdge ce = (ALEdge) cf.makeEdge(cf.edgeClass(edgeClassName), cStart, cEnd, edgeClassName);
+		String proposedId = edgeClassName+PairIdentity.LABEL_NAME_STR_SEPARATOR+edgeClassName+"1";
+		ALEdge ce = (ALEdge) cf.makeEdge(cf.edgeClass(edgeClassName), cStart, cEnd, proposedId);
 		VisualGraphFactory vf = (VisualGraphFactory) vStart.factory();
-		VisualEdge result = vf.makeEdge(vStart, vEnd, edgeClassName);
+		VisualEdge result = vf.makeEdge(vStart, vEnd, proposedId);
 		result.setConfigEdge(ce);
 		return result;
 	}

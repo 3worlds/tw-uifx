@@ -34,8 +34,8 @@ import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet.Item;
 
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twcore.specificationCheck.Checkable;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import javafx.beans.value.ObservableValue;
 
@@ -49,15 +49,13 @@ public class SimplePropertyItem implements Item {
 	protected String key;
 	protected boolean isEditable;
 	protected String category;
-	protected Checkable checker;
 	private String description;
 
-	public SimplePropertyItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description,Checkable checker) {
+	public SimplePropertyItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
 		this.node = n;
 		this.key = key;
 		this.isEditable = canEdit;
 		this.category = category;
-		this.checker = checker;
 		this.description=description;
 	}
 
@@ -97,7 +95,7 @@ public class SimplePropertyItem implements Item {
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
 //			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
-			checker.validateGraph();
+			ConfigGraph.validateGraph();
 			GraphState.setChanged();
 		}
 	}

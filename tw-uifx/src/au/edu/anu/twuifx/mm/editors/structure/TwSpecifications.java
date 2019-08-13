@@ -3,6 +3,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
@@ -43,7 +44,8 @@ public class TwSpecifications implements //
 //
 	@SuppressWarnings("unchecked")
 	@Override
-	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configNode, String createdBy, TreeNode root) {
+	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configNode, String createdBy, TreeNode root,
+			Set<String> discoveredFiles) {
 		for (TreeNode child : root.getChildren()) {
 			if (isOfClass((SimpleDataTreeNode) child, TWA.getLabel(configNode.id()))) {
 				if (createdBy == null)
@@ -51,16 +53,20 @@ public class TwSpecifications implements //
 				if (parentTableContains((SimpleDataTreeNode) child, createdBy))
 					return (SimpleDataTreeNode) child;
 			}
-			// search sa.
+			// search subArchetypes
 			List<SimpleDataTreeNode> saConstraints = (List<SimpleDataTreeNode>) get(child.getChildren(),
 					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getConstraintTable(constraint);
-//				System.out.println("Look in ["+pars.get(2));
-				Tree<?> tree = (Tree<?>) TWA.getSubArchetype(pars.get(2));
-				SimpleDataTreeNode result = getSpecsOf(configNode, createdBy, tree.root());
-				if (result != null)
-					return result;
+				String fname = pars.get(2);
+				// prevent infinite recursion
+				if (!discoveredFiles.contains(fname)) {
+					discoveredFiles.add(fname);
+					Tree<?> tree = (Tree<?>) TWA.getSubArchetype(fname);
+					SimpleDataTreeNode result = getSpecsOf(configNode, createdBy, tree.root(), discoveredFiles);
+					if (result != null)
+						return result;
+				}
 			}
 		}
 		return null;

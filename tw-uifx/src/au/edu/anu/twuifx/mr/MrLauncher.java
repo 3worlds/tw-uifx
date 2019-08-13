@@ -37,7 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import au.edu.anu.omhtk.jars.Jars;
-import au.edu.anu.twcore.jars.SimulatorJar;
+//import au.edu.anu.twcore.jars.SimulatorJar;
 import au.edu.anu.twcore.project.ProjectPaths;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -91,12 +91,12 @@ public class MrLauncher implements ProjectPaths {
 	private static void detectRunningEnvironment() {
 		String path = Jars.getRunningJarFilePath(MrLauncher.class);
 		boolean found = path != null;
-		if (found) {
-			File file = new File(path);
-			path = path.replace(file.getName(), SimulatorJar.SimJarName);// !!!
-			jarFile = new File(path);
-		} else
-			jarFile = null;
+//		if (found) {
+//			File file = new File(path);
+//			path = path.replace(file.getName(), SimulatorJar.SimJarName);// !!!
+//			jarFile = new File(path);
+//		} else
+//			jarFile = null;
 	}
 
 	public static String jarFilePath() {

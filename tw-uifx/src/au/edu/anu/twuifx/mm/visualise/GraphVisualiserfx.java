@@ -39,6 +39,7 @@ import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
@@ -308,7 +309,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 //			}
 //		}
 //		newLabel += getEdgeLabel(edge);
-		String newLabel = edge.getConfigEdge().id();
+		String newLabel = TWA.getLabel(edge.getConfigEdge().id());
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
@@ -493,9 +494,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void doLayout() {
 		pane.setPrefHeight(pane.getHeight());
 		pane.setPrefWidth(pane.getWidth());
-//		Layout layout = new TreeLayout();
-//		layout.init(visualGraph);
-//		layout.compute();
+		Layout layout = new TreeLayout(visualGraph);
+		layout.compute();
 
 		for (VisualNode node : visualGraph.nodes()) {
 			Circle c = (Circle) node.getSymbol();

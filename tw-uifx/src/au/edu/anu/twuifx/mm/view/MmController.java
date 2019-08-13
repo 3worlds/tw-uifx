@@ -73,6 +73,7 @@ import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
@@ -90,6 +91,9 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
+import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
+import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
@@ -97,6 +101,9 @@ import fr.cnrs.iees.graph.DataHolder;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.twcore.constants.DateTimeType;
+import fr.cnrs.iees.twcore.constants.FileType;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 
 public class MmController implements ErrorMessageListener, IMMController, IGraphStateListener {
 
@@ -294,7 +301,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
-		validProject.set(model.validateGraph());
+		// validProject.set(model.validateGraph());
 	}
 
 	@FXML
@@ -305,7 +312,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			if (!tmp.equals(userProjectPath.get()))
 				if (DevEnv.isJavaProject(jprjFile)) {
 					userProjectPath.set(tmp);
-					validProject.set(model.validateGraph());
+					// validProject.set(model.validateGraph());
 				}
 		}
 	}
@@ -361,6 +368,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			groupBounds = group.getLayoutBounds();
 			scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
 			scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
+			GraphState.setChanged();
 		}
 	}
 
@@ -379,7 +387,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		ArchComplianceManager.clear();
 		CodeComplianceManager.clear();
 		DeployComplianceManager.clear();
-		validProject.set(model.validateGraph());
+		// validProject.set(model.validateGraph());
 	}
 
 	@FXML
@@ -696,6 +704,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		initialisePropertySheets();
 		setCursor(oldCursor);
 		setButtonState();
+		GraphState.setChanged();
+		GraphState.clear();
 	}
 
 	private IGraphVisualiser visualiser;
@@ -763,22 +773,21 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	}
 
 	private Item makeItemType(String key, TreeGraphDataNode n, boolean editable, String category, String description) {
-//		Object value = n.getPropertyValue(key);
+		Object value = n.properties().getPropertyValue(key);
 		// TODO other Item types to come...
-		// if (value instanceof FileType) {
-		// FileType ft = (FileType) value;
-		// FileTypeItem fti = new FileTypeItem(key, n, true, category, new
-		// ModelCheck(this));
-		// fti.setExtensions(ft.getExtensions());
-		// return fti;
-		// } else if (value instanceof StatisticalAggregatesSet)
-		// return new StatsTypeItem(key, n, true, category, new ModelCheck(this));
-		// else if (value instanceof DateTimeType) {
-		// return new DateTimeTypeItem(key, n, true, category, new ModelCheck(this));
-		// } else if (value instanceof StringTable) {
-		// return new StringTableTypeItem(key, n, true, category, new ModelCheck(this));
-		// }
-		return new SimplePropertyItem(key, n, editable, category, description, model);
+		if (value instanceof FileType) {
+			FileType ft = (FileType) value;
+			FileTypeItem fti = new FileTypeItem(key, n, true, category, description);
+			fti.setExtensions(ft.getExtensions());
+			return fti;
+		} else if (value instanceof StatisticalAggregatesSet)
+			return new StatsTypeItem(key, n, true, category, description);
+		else if (value instanceof DateTimeType) {
+			return new DateTimeItem(key, n, true, category, description);
+		} else if (value instanceof StringTable) {
+			return new StringTableTypeItem(key, n, true, category, description);
+		}
+		return new SimplePropertyItem(key, n, editable, category, description);
 	}
 
 	private void initialisePropertySheets() {
