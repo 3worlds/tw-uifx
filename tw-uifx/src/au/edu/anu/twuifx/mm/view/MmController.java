@@ -63,6 +63,8 @@ import javafx.scene.text.*;
 import javafx.stage.Stage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -472,6 +474,16 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			cid = Project.getProjectDateTime();
 		menuOpen.getItems().clear();
 		File[] files = Project.getAllProjectPaths();
+//		Arrays.sort
+//		Collections.sort(files,new Comparator<File>() {
+//
+//			@Override
+//			public int compare(File o1, File o2) {
+//				// TODO Auto-generated method stub
+//				return 0;
+//			}
+//			
+//		});
 		String[] names = Project.extractDisplayNames(files);
 		for (int i = 0; i < files.length; i++) {
 			MenuItem mi = new MenuItem(names[i]);

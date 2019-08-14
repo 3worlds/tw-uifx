@@ -281,7 +281,6 @@ public abstract class StructureEditorAdapter
 			else {
 				String type = (String) propertySpec.properties().getPropertyValue(aaType);
 				Object defValue = ValidPropertyTypes.getDefaultValue(type);
-				System.out.println(key + "; " + defValue.getClass() + ": " + defValue);
 				newChild.addProperty(key, defValue);
 			}
 		}
