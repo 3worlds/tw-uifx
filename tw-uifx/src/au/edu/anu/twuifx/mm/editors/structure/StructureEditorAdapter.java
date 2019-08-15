@@ -242,7 +242,8 @@ public abstract class StructureEditorAdapter
 				return;// cancel
 			userName = userName.trim();
 			if (userName.equals(""))
-				userName = promptId;
+				return; // implicit cancel
+				//userName = promptId;
 			if (captialize)
 				userName = WordUtils.capitalize(userName);
 			String newName = editingNode.proposeAnId(childLabel, userName);
