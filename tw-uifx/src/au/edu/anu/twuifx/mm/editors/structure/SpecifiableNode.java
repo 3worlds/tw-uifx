@@ -30,6 +30,7 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 
@@ -58,6 +59,8 @@ public interface SpecifiableNode {
 	public Iterable<VisualNode> graphRoots();
 
 	public boolean hasOutEdges();
+	
+	public Iterable<VisualEdge> getOutEdges();
 
 	public boolean isLeaf();
 

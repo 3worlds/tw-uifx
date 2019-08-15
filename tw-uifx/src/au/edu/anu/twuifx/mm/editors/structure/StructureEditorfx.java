@@ -32,9 +32,11 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import javafx.scene.Node;
@@ -85,14 +87,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 			if (!orphanedChildren.isEmpty()) {
 				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_CONNECT_TO_CHILD);
-				for (VisualNode vn:orphanedChildren) {
+				for (VisualNode vn : orphanedChildren) {
 					MenuItem mi = new MenuItem(vn.id());
 					mu.getItems().add(mi);
-					mi.setOnAction((e)->{
+					mi.setOnAction((e) -> {
 						onAddChild(vn);
 					});
 				}
-				
 
 			}
 
@@ -125,9 +126,18 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				cm.getItems().add(new SeparatorMenuItem());
 
 		}
-		if (editingNode.hasOutEdges())
+		// see if we ever need disconnect from child
+		if (editingNode.hasOutEdges()) {
+			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DISCONNECT_FROM);
+			for (VisualEdge edge:editingNode.getOutEdges()) {
+				// TODO label:name or just label??
+				MenuItem mi = new MenuItem(edge.id());
+				mu.getItems().add(mi);
+				mi.setOnAction((e)->{
+					onDeleteEdge(edge);
+				});
+			};
 
-		{
 			// delete xlinks
 		}
 
@@ -139,8 +149,19 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 
 		if (editingNode.hasChildren()) {
-		}
+			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_TREE);
+			Iterable<VisualNode> lst = editingNode.getSelectedVisualNode().getChildren();
+			for (VisualNode vn : lst) {
+				MenuItem mi = new MenuItem(vn.id());
+				mu.getItems().add(mi);
+				mi.setOnAction((e) -> {
+					onDeleteTree(vn);
+				});
+			}
 
+		}
+		// import tree
+		// export tree
 		if (!editingNode.isLeaf()) {
 			cm.getItems().add(new SeparatorMenuItem());
 			if (editingNode.getSelectedVisualNode().isCollapsedParent()) {
@@ -157,6 +178,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 		}
 	}
+
 
 	private enum MenuLabels {
 		ML_NEW /*-             */("New"), //
@@ -203,5 +225,4 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 	}
 
-	
 }

@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -40,6 +41,7 @@ import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualGraphFactory;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -62,6 +64,7 @@ import fr.ens.biologie.generic.utils.Duple;
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
+	// TODO logging
 
 	/* what we need to know from the archetype graph */
 	protected Specifications specifications;
@@ -85,23 +88,18 @@ public abstract class StructureEditorAdapter
 
 	protected IMMController controller;
 
-	
 	public StructureEditorAdapter(SpecifiableNode selectedNode, IGraphVisualiser gv, IMMController controller) {
 		super();
 		this.specifications = new TwSpecifications();
 		this.controller = controller;
 		this.newChild = null;
 		this.editingNode = selectedNode;
-		Set<String> discoveredFile =new HashSet<>();
-		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(), TWA.getRoot(),discoveredFile);
-		
+		Set<String> discoveredFile = new HashSet<>();
+		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(), TWA.getRoot(),
+				discoveredFile);
+
 		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editingNode.getSubClass());
 		this.gvisualiser = gv;
-//		if (subClassSpec != null)
-//			System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id()
-//					+ " + " + subClassSpec.id());
-//		else
-//			System.out.println("Config: " + editingNode.getConfigNode().id() + ", Specified by: " + baseSpec.id());
 	}
 
 	@Override
@@ -197,7 +195,7 @@ public abstract class StructureEditorAdapter
 		TreeGraphDataNode cStart = (TreeGraphDataNode) vStart.getConfigNode();
 		TreeGraphDataNode cEnd = (TreeGraphDataNode) vEnd.getConfigNode();
 		TwConfigFactory cf = (TwConfigFactory) cStart.factory();
-		String proposedId = edgeClassName+PairIdentity.LABEL_NAME_STR_SEPARATOR+edgeClassName+"1";
+		String proposedId = edgeClassName + PairIdentity.LABEL_NAME_STR_SEPARATOR + edgeClassName + "1";
 		ALEdge ce = (ALEdge) cf.makeEdge(cf.edgeClass(edgeClassName), cStart, cEnd, proposedId);
 		VisualGraphFactory vf = (VisualGraphFactory) vStart.factory();
 		VisualEdge result = vf.makeEdge(vStart, vEnd, proposedId);
@@ -205,10 +203,9 @@ public abstract class StructureEditorAdapter
 		return result;
 	}
 
-	protected void connectTo(Duple<String, VisualNode> p) {
+	private void connectTo(Duple<String, VisualNode> p) {
 		VisualEdge ve = createVisualEdge(p.getFirst(), editingNode.getSelectedVisualNode(), p.getSecond());
 		gvisualiser.onNewEdge(ve);
-		GraphState.setChanged();
 	}
 
 	private String promptForNewNode(String label, String promptName) {
@@ -227,6 +224,7 @@ public abstract class StructureEditorAdapter
 			return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec) {
 		// default name is label with 1 appended
@@ -243,7 +241,7 @@ public abstract class StructureEditorAdapter
 			userName = userName.trim();
 			if (userName.equals(""))
 				return; // implicit cancel
-				//userName = promptId;
+			// userName = promptId;
 			if (captialize)
 				userName = WordUtils.capitalize(userName);
 			String newName = editingNode.proposeAnId(childLabel, userName);
@@ -287,7 +285,9 @@ public abstract class StructureEditorAdapter
 		}
 
 		controller.onNewNode(newChild);
+
 		GraphState.setChanged();
+		ConfigGraph.validateGraph();
 	}
 
 	@Override
@@ -295,25 +295,28 @@ public abstract class StructureEditorAdapter
 		if (editingNode.isCollapsed())
 			gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
 		connectTo(duple);
+		ConfigGraph.validateGraph();
+		GraphState.setChanged();
+	}
 
+	private void deleteNode(VisualNode vNode) {
+		if (vNode.isCollapsedParent())
+			gvisualiser.expandTreeFrom(vNode);
+		TreeGraphNode cNode = vNode.getConfigNode();
+		// Remove visual elements before disconnecting
+		gvisualiser.removeView(vNode);
+		vNode.factory().removeNode(vNode);
+		cNode.factory().removeNode(cNode);
+		vNode.disconnect();
+		cNode.disconnect();
 	}
 
 	@Override
 	public void onDeleteNode() {
-		// Expand children or they would be unreachable
-		if (editingNode.getSelectedVisualNode().isCollapsedParent())
-			gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
-		VisualNode vn = editingNode.getSelectedVisualNode();
-		TreeGraphNode cn = editingNode.getConfigNode();
-		// Remove visual elements before disconnecting
-		gvisualiser.removeView(vn);
-		vn.factory().removeNode(vn);
-		cn.factory().removeNode(cn);
-		vn.disconnect();
-		cn.disconnect();
+		deleteNode(editingNode.getSelectedVisualNode());
 		controller.onNodeDeleted();
 		GraphState.setChanged();
-//		model.checkGraph();	
+		ConfigGraph.validateGraph();
 	}
 
 	@Override
@@ -328,7 +331,6 @@ public abstract class StructureEditorAdapter
 		gvisualiser.expandTreeFrom(editingNode.getSelectedVisualNode());
 		controller.onTreeExpand();
 		GraphState.setChanged();
-
 	}
 
 	@Override
@@ -339,7 +341,45 @@ public abstract class StructureEditorAdapter
 		cnParent.connectChild(cnChild);
 		vnParent.connectChild(vnChild);
 		gvisualiser.onNewParent(vnChild);
+		ConfigGraph.validateGraph();
 		GraphState.setChanged();
+	}
+
+	private void deleteTree(VisualNode root) {
+		// avoid concurrent modification
+		List<VisualNode> list = new LinkedList<>();
+		for (VisualNode child : root.getChildren())
+			list.add(child);
+		for (VisualNode child : list)
+			deleteTree(child);
+		deleteNode(root);
+	}
+
+	@Override
+	public void onDeleteTree(VisualNode root) {
+		deleteTree(root);
+		GraphState.setChanged();
+		ConfigGraph.validateGraph();
+	}
+
+	private void deleteEdge(VisualEdge vEdge) {
+		ALEdge cEdge = vEdge.getConfigEdge();
+		// Remove visual elements before disconnecting
+		gvisualiser.removeView(vEdge);
+		// Remove ids from scope
+		TwConfigFactory cf = (TwConfigFactory) cEdge.factory();
+		cf.removeEdgeId(cEdge);
+		VisualGraphFactory vf = (VisualGraphFactory) vEdge.factory();
+		vf.removeEdgeId(vEdge);
+		vEdge.disconnect();
+		cEdge.disconnect();
+	}
+
+	@Override
+	public void onDeleteEdge(VisualEdge edge) {
+		deleteEdge(edge);
+		GraphState.setChanged();
+		ConfigGraph.validateGraph();
 	}
 
 }

@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 
+import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.ens.biologie.generic.utils.Duple;
@@ -56,15 +57,18 @@ public interface StructureEditable {
 	/* list of nodes that are eligible children of the edit node*/
 	public List<VisualNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
 
-
 	/* create child on childSpec */
 	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec);
 
 	/* add edge called String,to an end node */
 	public void onNewEdge(Duple<String, VisualNode> duple);
+	
+	public void onDeleteEdge(VisualEdge edge);
 
 	/* delete this node */
 	public void onDeleteNode();
+	
+	public void onDeleteTree(VisualNode child);
 
 	/* collapse tree from this node */
 	public void onCollapseTree();

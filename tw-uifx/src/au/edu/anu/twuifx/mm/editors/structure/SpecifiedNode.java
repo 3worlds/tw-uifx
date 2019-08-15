@@ -38,6 +38,7 @@ import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
+import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -171,6 +172,12 @@ public class SpecifiedNode implements //
 		}else
 			return null;
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterable<VisualEdge> getOutEdges() {
+		return (Iterable<VisualEdge>) selectedVisualNode.edges(Direction.OUT);
 	}
 
 }
