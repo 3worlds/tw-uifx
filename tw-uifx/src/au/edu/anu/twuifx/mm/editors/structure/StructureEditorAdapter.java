@@ -367,10 +367,10 @@ public abstract class StructureEditorAdapter
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vEdge);
 		// Remove ids from scope
-		TwConfigFactory cf = (TwConfigFactory) cEdge.factory();
-		cf.removeEdgeId(cEdge);
-		VisualGraphFactory vf = (VisualGraphFactory) vEdge.factory();
-		vf.removeEdgeId(vEdge);
+//		TwConfigFactory cf = (TwConfigFactory) cEdge.factory();
+//		cf.removeEdgeId(cEdge);
+//		VisualGraphFactory vf = (VisualGraphFactory) vEdge.factory();
+//		vf.removeEdgeId(vEdge);
 		vEdge.disconnect();
 		cEdge.disconnect();
 	}
