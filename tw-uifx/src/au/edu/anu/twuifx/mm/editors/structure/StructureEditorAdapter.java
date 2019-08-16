@@ -50,6 +50,7 @@ import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.root.ExpungeableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.TreeNode;
@@ -305,8 +306,10 @@ public abstract class StructureEditorAdapter
 		TreeGraphNode cNode = vNode.getConfigNode();
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vNode);
-		vNode.factory().removeNode(vNode);
-		cNode.factory().removeNode(cNode);
+		ExpungeableFactory vf =(ExpungeableFactory) vNode.factory();
+		ExpungeableFactory cf =(ExpungeableFactory) cNode.factory();
+		vf.expungeNode(vNode);
+		cf.expungeNode(cNode);
 		vNode.disconnect();
 		cNode.disconnect();
 	}
@@ -366,11 +369,10 @@ public abstract class StructureEditorAdapter
 		ALEdge cEdge = vEdge.getConfigEdge();
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vEdge);
-		// Remove ids from scope
-//		TwConfigFactory cf = (TwConfigFactory) cEdge.factory();
-//		cf.removeEdgeId(cEdge);
-//		VisualGraphFactory vf = (VisualGraphFactory) vEdge.factory();
-//		vf.removeEdgeId(vEdge);
+		ExpungeableFactory vf =(ExpungeableFactory) vEdge.factory();
+		ExpungeableFactory cf =(ExpungeableFactory) cEdge.factory();
+		vf.expungeEdge(vEdge);
+		cf.expungeEdge(cEdge);
 		vEdge.disconnect();
 		cEdge.disconnect();
 	}
