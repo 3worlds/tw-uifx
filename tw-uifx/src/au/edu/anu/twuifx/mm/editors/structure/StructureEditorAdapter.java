@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +55,6 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.ExpungeableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
-import fr.cnrs.iees.graph.Element;
 import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
@@ -67,6 +65,55 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import fr.ens.biologie.generic.utils.Duple;
+
+//ChildXorPropertyQuery.java                                       //
+/**
+ * mustSatisfyQuery childXorPropertyQuerySpec className =
+ * String("au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery") edge_prop =
+ * StringTable(([2]"record","dataElementType"))
+ */
+
+//ChildXorQuery.java				not used 	not required//
+//EdgeAtLeastOneOfEachQuery.java	not used//
+//EdgeOrPropertyQuery.java			not used//
+//EdgeXorPropertyQuery.java			not used//
+//ExclusiveCategoryQuery.java//
+/**	mustSatisfyQuery exclusiveCategoryCheckSpec
+		className = String("au.edu.anu.twcore.archetype.tw.ExclusiveCategoryQuery")
+
+ * A Query to check that a system component only belongs to one category of a given
+ * category set (categories within a set are assumed exclusive) 
+*/
+//NodeAtLeastOneChildLabelOfQuery.java               //
+/**	mustSatisfyQuery recordRootNodeAtLeastOneChildLabelOfQuery
+		className = String("au.edu.anu.twcore.archetype.tw.NodeAtLeastOneChildLabelOfQuery")
+		childLabel = StringTable(([2]"field", "table"))
+*/
+//NodeParentLabelQuery.java			not used//
+//OutNodeXorQuery.java//
+/**	mustSatisfyQuery processToRelationOrCategorySpec
+		className = String("au.edu.anu.twcore.archetype.tw.OutNodeXorQuery")
+		nodeLabel1 = String("category")
+		nodeLabel2 = String("relationType")
+*/
+//ParentClassQuery.java				not used//
+//ParentHasPropertyValueQuery.java//
+/**
+  		mustSatisfyQuery parentMustBeMultipleStoppingCondition
+			className = String("au.edu.anu.twcore.archetype.tw.ParentHasPropertyValueQuery")
+			property = String("subclass")
+			values = StringTable(([2]"au.edu.anu.twcore.ecosystem.runtime.stop.MultipleOrStoppingCondition",+
+			"au.edu.anu.twcore.ecosystem.runtime.stop.MultipleAndStoppingCondition"))
+*/
+
+//ParentLabelQuery.java 			not used//
+//PropertyXorQuery.java//
+/**
+ * mustSatisfyQuery dimIsInRangeQuerySpec className =
+ * String("au.edu.anu.twcore.archetype.tw.PropertyXorQuery") proplist =
+ * StringTable(([2]file,type))
+ */
+//RequirePropertyQuery.java			not used//
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
@@ -320,6 +367,7 @@ public abstract class StructureEditorAdapter
 		TreeGraphNode cNode = vNode.getConfigNode();
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vNode);
+		// Remove ids before disconnecting
 		ExpungeableFactory vf = (ExpungeableFactory) vNode.factory();
 		ExpungeableFactory cf = (ExpungeableFactory) cNode.factory();
 		vf.expungeNode(vNode);
@@ -367,6 +415,7 @@ public abstract class StructureEditorAdapter
 		List<VisualNode> list = new LinkedList<>();
 		for (VisualNode child : root.getChildren())
 			list.add(child);
+
 		for (VisualNode child : list)
 			deleteTree(child);
 		deleteNode(root);
@@ -383,6 +432,7 @@ public abstract class StructureEditorAdapter
 		ALEdge cEdge = vEdge.getConfigEdge();
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vEdge);
+		// Remove ids before disconnecting;
 		ExpungeableFactory vf = (ExpungeableFactory) vEdge.factory();
 		ExpungeableFactory cf = (ExpungeableFactory) cEdge.factory();
 		vf.expungeEdge(vEdge);
@@ -399,13 +449,24 @@ public abstract class StructureEditorAdapter
 	}
 
 	@Override
-	public void onExportTree(VisualNode vn) {
+	public void onExportTree(VisualNode root) {
+
 	}
 
 	@Override
 	public void onImportTree(SimpleDataTreeNode childSpec) {
+		if (treeImport(editingNode.getSelectedVisualNode(), childSpec)) {
+			GraphState.setChanged();
+			ConfigGraph.validateGraph();
+		}
+		;
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
+	}
+
+	private boolean treeImport(VisualNode parent, SimpleDataTreeNode childSpec) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
