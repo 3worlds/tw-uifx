@@ -337,7 +337,7 @@ public abstract class StructureEditorAdapter
 	}
 
 	@Override
-	public void onAddChild(VisualNode vnChild) {
+	public void onReconnectChild(VisualNode vnChild) {
 		VisualNode vnParent = editingNode.getSelectedVisualNode();
 		TreeGraphNode cnChild = vnChild.getConfigNode();
 		TreeGraphNode cnParent = editingNode.getConfigNode();
@@ -382,6 +382,16 @@ public abstract class StructureEditorAdapter
 		deleteEdge(edge);
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
+	}
+	@Override
+	public void onExportTree(VisualNode vn) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onImportTree(SimpleDataTreeNode childSpec) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

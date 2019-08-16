@@ -68,7 +68,7 @@ public interface StructureEditable {
 	/* delete this node */
 	public void onDeleteNode();
 	
-	public void onDeleteTree(VisualNode child);
+	public void onDeleteTree(VisualNode root);
 
 	/* collapse tree from this node */
 	public void onCollapseTree();
@@ -77,9 +77,15 @@ public interface StructureEditable {
 	public void onExpandTree();
 	
 	/* connect node as child of this node*/
-	public void onAddChild(VisualNode childNode);
+	public void onReconnectChild(VisualNode childNode);
 
 	/* build implementation specific gui*/
 	public void buildgui();
+
+
+	void onExportTree(VisualNode root);
+
+
+	void onImportTree(SimpleDataTreeNode childSpec);
 
 }

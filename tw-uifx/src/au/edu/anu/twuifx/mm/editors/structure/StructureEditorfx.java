@@ -91,7 +91,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = new MenuItem(vn.id());
 					mu.getItems().add(mi);
 					mi.setOnAction((e) -> {
-						onAddChild(vn);
+						onReconnectChild(vn);
 					});
 				}
 
@@ -109,36 +109,44 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				}
 			}
 
-			cm.getItems().add(new SeparatorMenuItem());
+//			cm.getItems().add(new SeparatorMenuItem());
 
-			boolean addSep = editingNode.canDelete();
+//			boolean addSep = editingNode.canDelete();
 			if (editingNode.hasChildren()) {
-				// add exportTreeOptions
-				addSep = true;
+				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPORT_TREE);
+				Iterable<VisualNode> lst = editingNode.getSelectedVisualNode().getChildren();
+				for (VisualNode vn : lst) {
+					MenuItem mi = new MenuItem(vn.id());
+					mu.getItems().add(mi);
+					mi.setOnAction((e) -> {
+						onExportTree(vn);
+					});
+				}
 			}
 			if (!filteredChildSpecs.isEmpty()) {
-				// add import tree options
-				addSep = true;
+				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_IMPORT_TREE);
+				for (SimpleDataTreeNode childSpec:filteredChildSpecs) {
+					MenuItem mi = new MenuItem((String) childSpec.properties().getPropertyValue(aaIsOfClass));
+					mu.getItems().add(mi);
+					mi.setOnAction((e) -> {
+						onImportTree(childSpec);
+					});
+
+				}
 			}
-
-			// --------------------------------------
-			if (addSep)
-				cm.getItems().add(new SeparatorMenuItem());
-
 		}
 		// see if we ever need disconnect from child
 		if (editingNode.hasOutEdges()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DISCONNECT_FROM);
-			for (VisualEdge edge:editingNode.getOutEdges()) {
+			for (VisualEdge edge : editingNode.getOutEdges()) {
 				// TODO label:name or just label??
 				MenuItem mi = new MenuItem(edge.id());
 				mu.getItems().add(mi);
-				mi.setOnAction((e)->{
+				mi.setOnAction((e) -> {
 					onDeleteEdge(edge);
 				});
-			};
-
-			// delete xlinks
+			}
+			;
 		}
 
 		if (editingNode.canDelete()) {
@@ -158,7 +166,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					onDeleteTree(vn);
 				});
 			}
-
 		}
 		// import tree
 		// export tree
