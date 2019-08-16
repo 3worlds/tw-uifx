@@ -88,4 +88,7 @@ public interface StructureEditable {
 
 	void onImportTree(SimpleDataTreeNode childSpec);
 
+
+	void onDeleteParentLink(VisualNode child);
+
 }

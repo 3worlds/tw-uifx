@@ -508,4 +508,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pane.setPrefWidth(Control.USE_COMPUTED_SIZE);
 		GraphState.setChanged();
 	}
+
+	@Override
+	public void onRemoveParent(VisualNode vnChild) {
+		List<Node> sceneNodes = new ArrayList<>();
+		sceneNodes.add((Node) vnChild.getParentLine());
+		vnChild.removeParentLine();	
+		pane.getChildren().removeAll(sceneNodes);
+	}
 }

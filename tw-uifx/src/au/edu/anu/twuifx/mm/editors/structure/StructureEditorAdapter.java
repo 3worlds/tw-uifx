@@ -30,7 +30,10 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +56,8 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.ExpungeableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import fr.cnrs.iees.graph.Element;
+import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
@@ -119,6 +124,12 @@ public abstract class StructureEditorAdapter
 					result.add(childSpec);
 			}
 		}
+		Collections.sort(result, new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				return o1.id().compareToIgnoreCase(o2.id());
+			}
+		});
 		return result;
 	}
 
@@ -160,18 +171,15 @@ public abstract class StructureEditorAdapter
 				result.add(p);
 			}
 		}
+		Collections.sort(result, new Comparator<Duple<String, VisualNode>>() {
+			@Override
+			public int compare(Duple<String, VisualNode> o1, Duple<String, VisualNode> o2) {
+				String s1 = o1.getFirst() + o1.getSecond();
+				String s2 = o2.getFirst() + o2.getSecond();
+				return s1.compareToIgnoreCase(s2);
+			}
+		});
 
-//		List<String> edgePropXorOptions = specifications.getConstraintOptions(baseSpec,
-//				EdgeXorPropertyQuery.class.getName());
-//		List<String> nodeNodeXorOptions = specifications.getConstraintOptions(baseSpec,
-//				OutNodeXorQuery.class.getName());
-//
-//		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
-//			String nodeLabel = specifications.getEdgeToNodeLabel(edgeSpec);
-//			List<String> edgeLabelOptions = specifications.getConstraintOptions(edgeSpec, ElementLabel.class.getName());
-//			// we now need the node list of the graph!
-//			// easy: graph.nodes() (as an Iterable<Node>)
-//		}
 		return result;
 	}
 
@@ -185,6 +193,12 @@ public abstract class StructureEditorAdapter
 					result.add(root);
 			}
 		}
+		Collections.sort(result, new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				return o1.id().compareToIgnoreCase(o2.id());
+			}
+		});
 		return result;
 	}
 
@@ -306,8 +320,8 @@ public abstract class StructureEditorAdapter
 		TreeGraphNode cNode = vNode.getConfigNode();
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vNode);
-		ExpungeableFactory vf =(ExpungeableFactory) vNode.factory();
-		ExpungeableFactory cf =(ExpungeableFactory) cNode.factory();
+		ExpungeableFactory vf = (ExpungeableFactory) vNode.factory();
+		ExpungeableFactory cf = (ExpungeableFactory) cNode.factory();
 		vf.expungeNode(vNode);
 		cf.expungeNode(cNode);
 		vNode.disconnect();
@@ -369,8 +383,8 @@ public abstract class StructureEditorAdapter
 		ALEdge cEdge = vEdge.getConfigEdge();
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vEdge);
-		ExpungeableFactory vf =(ExpungeableFactory) vEdge.factory();
-		ExpungeableFactory cf =(ExpungeableFactory) cEdge.factory();
+		ExpungeableFactory vf = (ExpungeableFactory) vEdge.factory();
+		ExpungeableFactory cf = (ExpungeableFactory) cEdge.factory();
 		vf.expungeEdge(vEdge);
 		cf.expungeEdge(cEdge);
 		vEdge.disconnect();
@@ -383,15 +397,27 @@ public abstract class StructureEditorAdapter
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
 	}
+
 	@Override
 	public void onExportTree(VisualNode vn) {
-		// TODO Auto-generated method stub
-		
 	}
+
 	@Override
 	public void onImportTree(SimpleDataTreeNode childSpec) {
-		// TODO Auto-generated method stub
-		
+		GraphState.setChanged();
+		ConfigGraph.validateGraph();
+	}
+
+	@Override
+	public void onDeleteParentLink(VisualNode vChild) {
+		VisualNode vParent = editingNode.getSelectedVisualNode();
+		TreeGraphNode cChild = vChild.getConfigNode();
+		TreeGraphNode cParent = editingNode.getConfigNode();
+		gvisualiser.onRemoveParent(vChild);
+		vParent.disconnectFrom(vChild);
+		cParent.disconnectFrom(cChild);
+		GraphState.setChanged();
+		ConfigGraph.validateGraph();
 	}
 
 }
