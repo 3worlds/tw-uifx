@@ -75,6 +75,9 @@ public interface SpecifiableNode {
 	public VisualNode getSelectedVisualNode();
 
 	public Class<? extends TreeGraphNode> getSubClass();
+
+	public boolean hasOutEdgeTo(VisualNode endNode, String edgeLabel);
+
 	
 	//public void addProperty(String key, Object defaultValue);
 

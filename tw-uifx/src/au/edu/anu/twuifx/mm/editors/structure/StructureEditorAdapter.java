@@ -50,11 +50,14 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
+import au.edu.anu.twcore.archetype.tw.ExclusiveCategoryQuery;
+import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.ExpungeableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
@@ -64,41 +67,45 @@ import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
+import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
+import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
+
 import fr.ens.biologie.generic.utils.Duple;
 
-//ChildXorPropertyQuery.java                                       //
-/**
- * mustSatisfyQuery childXorPropertyQuerySpec className =
- * String("au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery") edge_prop =
+/**ChildXorPropertyQuery.java      				implement in GSE:DONE
  * StringTable(([2]"record","dataElementType"))
+ * uses: 
+ * 1) node creation: filterPropertyStringTableOptions
+ * 2) filteredChildren: to allow/forbid record as child
  */
 
-//ChildXorQuery.java				not used 	not required//
-//EdgeAtLeastOneOfEachQuery.java	not used//
-//EdgeOrPropertyQuery.java			not used//
-//EdgeXorPropertyQuery.java			not used//
-//ExclusiveCategoryQuery.java//
-/**	mustSatisfyQuery exclusiveCategoryCheckSpec
-		className = String("au.edu.anu.twcore.archetype.tw.ExclusiveCategoryQuery")
+/**ExclusiveCategoryQuery.java					implement in GSE: DONE
+*mustSatisfyQuery exclusiveCategoryCheckSpec
+*	className = String("au.edu.anu.twcore.archetype.tw.ExclusiveCategoryQuery")
+*		
+* 1) in filterEdge		
 
- * A Query to check that a system component only belongs to one category of a given
- * category set (categories within a set are assumed exclusive) 
+ * "component" cannot have out edges to categories within the same categorySet TODO:
 */
-//NodeAtLeastOneChildLabelOfQuery.java               //
-/**	mustSatisfyQuery recordRootNodeAtLeastOneChildLabelOfQuery
-		className = String("au.edu.anu.twcore.archetype.tw.NodeAtLeastOneChildLabelOfQuery")
-		childLabel = StringTable(([2]"field", "table"))
+
+/**ChildXorQuery.java				not used	implement in GSE
 */
-//NodeParentLabelQuery.java			not used//
-//OutNodeXorQuery.java//
-/**	mustSatisfyQuery processToRelationOrCategorySpec
+
+/**EdgeXorPropertyQuery.java		not used	implement in GSE
+*/
+
+/**OutNodeXorQuery.java							implement in GSE
+	mustSatisfyQuery processToRelationOrCategorySpec
 		className = String("au.edu.anu.twcore.archetype.tw.OutNodeXorQuery")
 		nodeLabel1 = String("category")
 		nodeLabel2 = String("relationType")
+		
+		1) filter edge nodes
 */
-//ParentClassQuery.java				not used//
-//ParentHasPropertyValueQuery.java//
-/**
+
+/**ParentHasPropertyValueQuery.java				implement in GSE??
+
   		mustSatisfyQuery parentMustBeMultipleStoppingCondition
 			className = String("au.edu.anu.twcore.archetype.tw.ParentHasPropertyValueQuery")
 			property = String("subclass")
@@ -106,14 +113,13 @@ import fr.ens.biologie.generic.utils.Duple;
 			"au.edu.anu.twcore.ecosystem.runtime.stop.MultipleAndStoppingCondition"))
 */
 
-//ParentLabelQuery.java 			not used//
-//PropertyXorQuery.java//
 /**
+ * PropertyXorQuery.java implement in GSE
+ * 
  * mustSatisfyQuery dimIsInRangeQuerySpec className =
  * String("au.edu.anu.twcore.archetype.tw.PropertyXorQuery") proplist =
  * StringTable(([2]file,type))
  */
-//RequirePropertyQuery.java			not used//
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
@@ -157,12 +163,13 @@ public abstract class StructureEditorAdapter
 
 	@Override
 	public List<SimpleDataTreeNode> filterChildSpecs(Iterable<SimpleDataTreeNode> childSpecs) {
+		// childXorPropertyQuerySpec
 		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
 		List<String[]> tables = specifications.getQueryStringTables(baseSpec, ChildXorPropertyQuery.class);
 		tables.addAll(specifications.getQueryStringTables(subClassSpec, ChildXorPropertyQuery.class));
 		for (SimpleDataTreeNode childSpec : childSpecs) {
 			String childLabel = (String) childSpec.properties().getPropertyValue(aaIsOfClass);
-			IntegerRange range = specifications.getMultiplicity(childSpec);
+			IntegerRange range = specifications.getMultiplicityOf(childSpec);
 			if (editingNode.moreChildrenAllowed(range, childLabel)) {
 				if (!tables.isEmpty()) {
 					if (allowedChild(childLabel, tables))
@@ -212,10 +219,14 @@ public abstract class StructureEditorAdapter
 		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
 			String toNodeRef = (String) edgeSpec.properties().getPropertyValue(aaToNode);
 			String edgeLabel = (String) edgeSpec.properties().getPropertyValue(aaIsOfClass);
-			List<VisualNode> en = findNodesLabelled(toNodeRef.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, ""));
-			if (!en.isEmpty()) {
-				Duple<String, VisualNode> p = new Duple<String, VisualNode>(edgeLabel, en.get(0));
-				result.add(p);
+			List<VisualNode> endNodes = findNodesLabelled(toNodeRef.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, ""));
+			for (VisualNode endNode : endNodes) {
+				if (!editingNode.getSelectedVisualNode().id().equals(endNode.id()))
+					if (!editingNode.hasOutEdgeTo(endNode, edgeLabel)) {
+						if (satisfyExclusiveCategoryQuery(edgeSpec, endNode, edgeLabel))
+							if (satisfyOutNodeXorQuery(edgeSpec, endNode, edgeLabel))
+								result.add(new Duple<String, VisualNode>(edgeLabel, endNode));
+					}
 			}
 		}
 		Collections.sort(result, new Comparator<Duple<String, VisualNode>>() {
@@ -228,6 +239,46 @@ public abstract class StructureEditorAdapter
 		});
 
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean satisfyOutNodeXorQuery(SimpleDataTreeNode edgeSpec, VisualNode proposedEndNode, String edgeLabel) {
+		if (specifications.getQueries(edgeSpec.getParent(), OutNodeXorQuery.class).isEmpty())
+			return true;
+		List<String[]> entries = specifications.getQueryStringTables((SimpleDataTreeNode) edgeSpec.getParent(),
+				OutNodeXorQuery.class);
+
+		get(edges(Direction.OUT),
+				selectOne(hasTheLabel(E_STOPSYSTEM.label())),
+				endNode()); // what do we do with this ? this is a SystemFactory.
+
+		
+		List<VisualNode> outNodes = editingNode.getOutNodes();
+		// if there is an out edge to one fo the node labels in the list then return false
+		
+		for (String[] entry:entries) {
+			
+			
+		}
+
+		return true;
+	}
+
+	private boolean satisfyExclusiveCategoryQuery(SimpleDataTreeNode edgeSpec, VisualNode proposedEndNode,
+			String edgeLabel) {
+		if (specifications.getQueries(edgeSpec.getParent(), ExclusiveCategoryQuery.class).isEmpty())
+			return true;
+		VisualNode proposedCatSet = proposedEndNode.getParent();
+		for (VisualEdge edge : editingNode.getOutEdges()) {
+			if (TWA.getLabel(edge.id()).equals(E_BELONGSTO.label())) {
+				VisualNode myCat = (VisualNode) edge.endNode();
+				VisualNode myCatSet = myCat.getParent();
+				if (proposedCatSet.id().equals(myCatSet.id()))
+					return false;
+			}
+		}
+		;
+		return true;
 	}
 
 	public List<VisualNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs) {
@@ -315,7 +366,7 @@ public abstract class StructureEditorAdapter
 		// look for subclass
 		String childClassName = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
 		Class subClass = null;
-		List<Class<? extends TreeNode>> subClasses = specifications.getSubClasses(childBaseSpec);
+		List<Class<? extends TreeNode>> subClasses = specifications.getSubClassesOf(childBaseSpec);
 		if (subClasses.size() > 1) {
 			subClass = promptForClass(subClasses, childClassName);
 			if (subClass == null)
@@ -325,9 +376,8 @@ public abstract class StructureEditorAdapter
 		}
 		SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec, subClass);
 		// unfiltered propertySpecs
-		Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecifications(childBaseSpec,
-				childSubSpec);
-		if (!specifications.filterPropertySpecs(propertySpecs, childBaseSpec, childSubSpec,
+		Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecsOf(childBaseSpec, childSubSpec);
+		if (!specifications.filterPropertyStringTableOptions(propertySpecs, childBaseSpec, childSubSpec,
 				childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, ChildXorPropertyQuery.class,
 				PropertyXorQuery.class))
 			return;// cancel

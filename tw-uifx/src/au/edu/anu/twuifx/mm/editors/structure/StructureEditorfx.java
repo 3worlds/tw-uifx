@@ -67,11 +67,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		// if (haveSpecification()) {
-		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecificationsOf(baseSpec, subClassSpec,
+		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(baseSpec, subClassSpec,
 				TWA.getRoot());
 		List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
 		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
-		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecificationsOf(baseSpec, subClassSpec);
+		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
 		List<Duple<String, VisualNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
 		boolean section1Entries = !filteredChildSpecs.isEmpty() || !filteredEdgeSpecs.isEmpty() || !orphanedChildren.isEmpty();
 		boolean section2Entries = editingNode.hasChildren() || !filteredChildSpecs.isEmpty();
@@ -160,7 +160,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (editingNode.hasOutEdges()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_EDGE);
 			for (VisualEdge edge : editingNode.getOutEdges()) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, edge.id());
+				MenuItem mi = MenuLabels.addMenuItem(mu, TWA.getLabel(edge.id())+"->"+edge.endNode().id());
 				mi.setOnAction((e) -> {
 					onDeleteEdge(edge);
 				});
@@ -200,7 +200,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_EXPAND/*            */("Expand"), //
 		ML_COLLAPSE/*          */("Collapse"), //
 		// --------------------------------------------
-		ML_DELETE_EDGE/*       */("Delete edge to"), //
+		ML_DELETE_EDGE/*       */("Delete edge"), //
 		ML_DELETE_CHILD/*      */("Delete child link"), //
 		ML_DELETE_TREE/*-      */("Delete tree"), //
 		ML_DELETE/*            */("Delete"), //

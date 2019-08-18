@@ -38,9 +38,12 @@ import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.NodeFactory;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.ALEdge;
+import fr.cnrs.iees.graph.impl.ALNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -54,7 +57,7 @@ public class SpecifiedNode implements //
 		TwArchetypeConstants {
 	private VisualNode selectedVisualNode;
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
-	
+
 	public SpecifiedNode(VisualNode visualNode, TreeGraph<VisualNode, VisualEdge> visualGraph) {
 		this.selectedVisualNode = visualNode;
 		this.visualGraph = visualGraph;
@@ -161,23 +164,34 @@ public class SpecifiedNode implements //
 	@Override
 	public Class<? extends TreeGraphNode> getSubClass() {
 		if (selectedVisualNode.configHasProperty(twaSubclass)) {
-			String result= (String)selectedVisualNode.configGetPropertyValue(twaSubclass);
+			String result = (String) selectedVisualNode.configGetPropertyValue(twaSubclass);
 			try {
 				return (Class<? extends TreeGraphNode>) Class.forName(result);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new TwuifxException("Subclass not found in the system: "+result);
+
 			}
-		//return (Class<? extends TreeGraphNode>) selectedVisualNode.configGetPropertyValue(twaSubclass);
-		}else
+		} else
 			return null;
-		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<VisualEdge> getOutEdges() {
 		return (Iterable<VisualEdge>) selectedVisualNode.edges(Direction.OUT);
+	}
+
+	@Override
+	public boolean hasOutEdgeTo(VisualNode vEnd, String edgeLabel) {
+		TreeGraphNode start = selectedVisualNode.getConfigNode();
+		TreeGraphNode end = vEnd.getConfigNode();
+		for (ALEdge edge : start.edges(Direction.OUT)) {
+			ALNode endNode = edge.endNode();
+			if (endNode.id().equals(end.id()))
+				if (TWA.getLabel(edge.id()).equals(edgeLabel))
+					return true;
+		}
+		return false;
 	}
 
 }

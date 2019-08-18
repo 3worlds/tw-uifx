@@ -30,18 +30,6 @@ public class TwSpecifications implements //
 		ArchetypeArchetypeConstants, //
 		TwArchetypeConstants {
 
-//	@Override
-//	public boolean complies() {
-//		// TODO Auto-generated method stub ??
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean complies(TreeGraphNode configNode, SimpleDataTreeNode spec) {
-//		// TODO Auto-generated method stub ??
-//		return false;
-//	}
-//
 	@SuppressWarnings("unchecked")
 	@Override
 	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configNode, String createdBy, TreeNode root,
@@ -57,7 +45,7 @@ public class TwSpecifications implements //
 			List<SimpleDataTreeNode> saConstraints = (List<SimpleDataTreeNode>) get(child.getChildren(),
 					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
-				List<String> pars = getConstraintTable(constraint);
+				List<String> pars = getQueryStringTableEntries(constraint);
 				String fname = pars.get(2);
 				// prevent infinite recursion
 				if (!discoveredFiles.contains(fname)) {
@@ -84,8 +72,8 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec,
-			SimpleDataTreeNode parentSubSpec, TreeNode root) {
+	public Iterable<SimpleDataTreeNode> getChildSpecsOf(SimpleDataTreeNode parentSpec, SimpleDataTreeNode parentSubSpec,
+			TreeNode root) {
 		String parentLabel = (String) parentSpec.properties().getPropertyValue(aaIsOfClass);
 		List<SimpleDataTreeNode> children = (List<SimpleDataTreeNode>) get(root.getChildren(),
 				selectZeroOrMany(hasProperty(aaHasParent)));
@@ -101,17 +89,9 @@ public class TwSpecifications implements //
 		return result;
 	}
 
-	private void addChildrenTo(List<SimpleDataTreeNode> result, String parentLabel, List<SimpleDataTreeNode> children) {
-		for (SimpleDataTreeNode child : children) {
-			StringTable t = (StringTable) child.properties().getPropertyValue(aaHasParent);
-			if (t.contains(parentLabel + PairIdentity.LABEL_NAME_SEPARATOR))
-				result.add(child);
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode spec, SimpleDataTreeNode subSpec) {
+	public Iterable<SimpleDataTreeNode> getPropertySpecsOf(SimpleDataTreeNode spec, SimpleDataTreeNode subSpec) {
 		List<SimpleDataTreeNode> results = (List<SimpleDataTreeNode>) get(spec.getChildren(),
 				selectZeroOrMany(hasTheLabel(aaHasProperty)));
 		if (subSpec != null) {
@@ -124,8 +104,7 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode baseSpec,
-			SimpleDataTreeNode subSpec) {
+	public Iterable<SimpleDataTreeNode> getEdgeSpecsOf(SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec) {
 		List<SimpleDataTreeNode> result = (List<SimpleDataTreeNode>) get(baseSpec.getChildren(),
 				selectZeroOrMany(hasTheLabel(aaHasEdge)));
 		if (subSpec != null)
@@ -135,43 +114,13 @@ public class TwSpecifications implements //
 	}
 
 	@Override
-	public IntegerRange getMultiplicity(SimpleDataTreeNode spec, String key) {
-		// TODO Auto-generated method stub - do we need this???
-		return null;
-	}
-
-	@Override
-	public IntegerRange getMultiplicity(SimpleDataTreeNode spec) {
-		return (IntegerRange) spec.properties().getPropertyValue(aaMultiplicity);
-	}
-
-	@Override
 	public boolean nameStartsWithUpperCase(SimpleDataTreeNode spec) {
 		return getConstraint(spec, NameStartsWithUpperCaseQuery.class.getName()) != null;
 	}
 
-	@Override
-	public String getLabel(TreeNode spec) {
-		System.out.println(spec.id());
-		return null;
-	}
-
-	@Override
-	public List<String> getConstraintOptions(SimpleDataTreeNode spec, String constraintClass) {
-		SimpleDataTreeNode constraint = getConstraint(spec, constraintClass);
-		return getConstraintTable(constraint);
-	}
-
-	@Override
-	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec) {
-		String result = (String) edgeSpec.properties().getPropertyValue(aaToNode);
-		result = result.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, "");
-		return result;
-	}
-
 	@SuppressWarnings({ "unchecked" })
 	@Override
-	public List<Class<? extends TreeNode>> getSubClasses(SimpleDataTreeNode spec) {
+	public List<Class<? extends TreeNode>> getSubClassesOf(SimpleDataTreeNode spec) {
 		List<Class<? extends TreeNode>> result = new ArrayList<>();
 		SimpleDataTreeNode propertySpec = (SimpleDataTreeNode) get(spec.getChildren(),
 				selectZeroOrOne(hasProperty(aaHasName, twaSubclass)));
@@ -195,10 +144,10 @@ public class TwSpecifications implements //
 		List<String[]> result = new ArrayList<>();
 		if (spec == null)
 			return result;
-		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
+		List<SimpleDataTreeNode> querySpecs = (List<SimpleDataTreeNode>) get(spec.getChildren(),
 				selectZeroOrMany(hasProperty(aaClassName, queryClass.getName())));
-		for (SimpleDataTreeNode constraint : constraints) {
-			List<String> entries = getConstraintTable(constraint);
+		for (SimpleDataTreeNode querySpec : querySpecs) {
+			List<String> entries = getQueryStringTableEntries(querySpec);
 			if (!entries.isEmpty()) {
 				String[] ss = new String[entries.size()];
 				for (int i = 0; i < ss.length; i++)
@@ -210,8 +159,9 @@ public class TwSpecifications implements //
 	}
 
 	@Override
-	public boolean filterPropertySpecs(Iterable<SimpleDataTreeNode> propertySpecs, SimpleDataTreeNode baseSpec,
-			SimpleDataTreeNode subSpec, String childId, Class<? extends Query>... queryClasses) {
+	public boolean filterPropertyStringTableOptions(Iterable<SimpleDataTreeNode> propertySpecs,
+			SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec, String childId,
+			Class<? extends Query>... queryClasses) {
 		List<String[]> entries = new ArrayList<>();
 		for (Class<? extends Query> qclass : queryClasses) {
 			entries.addAll(getQueryStringTables(baseSpec, qclass));
@@ -233,6 +183,13 @@ public class TwSpecifications implements //
 		return true;
 	}
 
+	@Override
+	public IntegerRange getMultiplicityOf(SimpleDataTreeNode spec) {
+		return (IntegerRange) spec.properties().getPropertyValue(aaMultiplicity);
+	}
+
+	// -----------------------end of implementation methods-----------------------
+
 	private static String getSelectedEntry(String key, List<String> selectedKeys, List<String[]> entries) {
 		if (selectedKeys == null)
 			return null;
@@ -247,8 +204,7 @@ public class TwSpecifications implements //
 		return null;
 	}
 
-	// -----------------------end of implementation methods-----------------------
-	private List<String> getConstraintTable(SimpleDataTreeNode constraint) {
+	private List<String> getQueryStringTableEntries(SimpleDataTreeNode constraint) {
 		List<String> result = new ArrayList<>();
 		if (constraint == null)
 			return result;
@@ -263,7 +219,7 @@ public class TwSpecifications implements //
 	}
 
 	@SuppressWarnings("unchecked")
-	protected Tree<? extends TreeNode> getSubArchetype(SimpleDataTreeNode spec, Class<? extends TreeNode> subClass) {
+	private Tree<? extends TreeNode> getSubArchetype(SimpleDataTreeNode spec, Class<? extends TreeNode> subClass) {
 		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
 				selectOneOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 		for (SimpleDataTreeNode constraint : constraints) {
@@ -294,6 +250,25 @@ public class TwSpecifications implements //
 	private boolean isOfClass(SimpleDataTreeNode child, String label) {
 		String ioc = (String) child.properties().getPropertyValue(aaIsOfClass);
 		return ioc.equals(label);
+	}
+
+	private void addChildrenTo(List<SimpleDataTreeNode> result, String parentLabel, List<SimpleDataTreeNode> children) {
+		for (SimpleDataTreeNode child : children) {
+			StringTable t = (StringTable) child.properties().getPropertyValue(aaHasParent);
+			if (t.contains(parentLabel + PairIdentity.LABEL_NAME_SEPARATOR))
+				result.add(child);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TreeNode> getQueries(TreeNode spec, Class<? extends Query>... queries) {
+		List<TreeNode> result = new ArrayList<>();
+		for (Class<? extends Query> query : queries) {
+			result.addAll((List<SimpleDataTreeNode>) get(spec.getChildren(), selectZeroOrMany(
+					andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, query.getName())))));
+		}
+		return result;
 	}
 
 }

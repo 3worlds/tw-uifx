@@ -278,7 +278,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	public void setFontSize(int size) {
 		this.fontSize = size;
-		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 20, fontSize));
+		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 40, fontSize));
 		fontProperty.set(Font.font("Verdana", fontSize));
 	}
 

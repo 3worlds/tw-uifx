@@ -34,8 +34,6 @@ import java.util.Set;
 
 import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
-import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
-import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -82,38 +80,34 @@ public interface Specifications {
 	 * Specifications of all potential children of a parent with this label and
 	 * optional subClass.
 	 */
-	public Iterable<SimpleDataTreeNode> getChildSpecificationsOf(SimpleDataTreeNode parentSpec,
-			SimpleDataTreeNode parentSubSpec, TreeNode root);
+	public Iterable<SimpleDataTreeNode> getChildSpecsOf(SimpleDataTreeNode baseSpec,
+			SimpleDataTreeNode subSpec, TreeNode root);
 
 	/* edge specifications nodes of a node with this label and class */
-	public Iterable<SimpleDataTreeNode> getEdgeSpecificationsOf(SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec);
+	public Iterable<SimpleDataTreeNode> getEdgeSpecsOf(SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec);
 
 	/* property specs of the given node spec (root) */
-	public Iterable<SimpleDataTreeNode> getPropertySpecifications(SimpleDataTreeNode baseSpec,
+	public Iterable<SimpleDataTreeNode> getPropertySpecsOf(SimpleDataTreeNode baseSpec,
 			SimpleDataTreeNode subSpec);
 
-	/* Get multiplicity of a property specification */
-	public IntegerRange getMultiplicity(SimpleDataTreeNode rootSpec, String key);
 
-	public IntegerRange getMultiplicity(SimpleDataTreeNode spec);
+	public IntegerRange getMultiplicityOf(SimpleDataTreeNode spec);
 
 	/* True if node name must begin with upper case letter */
 	public boolean nameStartsWithUpperCase(SimpleDataTreeNode root);
 
-	/* returns just the label for nodes of this specification */
-	public String getLabel(TreeNode root);
 
-	/* Items in the object table of these constraints. Preserve the order */
-	public List<String> getConstraintOptions(SimpleDataTreeNode rootSpec, String constraintClass);
-
-	public String getEdgeToNodeLabel(SimpleDataTreeNode edgeSpec);
-
-	public List<Class<? extends TreeNode>> getSubClasses(SimpleDataTreeNode spec);
+	public List<Class<? extends TreeNode>> getSubClassesOf(SimpleDataTreeNode spec);
+	
+	public List<TreeNode> getQueries(TreeNode spec, Class<? extends Query>... queryClass);
 
 	public List<String[]> getQueryStringTables(SimpleDataTreeNode spec, Class<? extends Query> queryClass);
 
+
+	/* returns false of no option chosen: expects user input*/
 	@SuppressWarnings("unchecked")
-	public boolean filterPropertySpecs(Iterable<SimpleDataTreeNode> propertySpecs, SimpleDataTreeNode baseSpec,
+	public boolean filterPropertyStringTableOptions(Iterable<SimpleDataTreeNode> propertySpecs, SimpleDataTreeNode baseSpec,
 			SimpleDataTreeNode subSpec, String childId,Class<? extends Query>... queryClasses);
+
 
 }
