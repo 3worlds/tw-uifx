@@ -29,6 +29,10 @@
 
 package au.edu.anu.twuifx.mm.editors.structure;
 
+import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
+import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -192,6 +196,14 @@ public class SpecifiedNode implements //
 					return true;
 		}
 		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterable<VisualNode> getOutNodes() {
+		return (Iterable<VisualNode>) get(selectedVisualNode.edges(Direction.OUT),
+				selectZeroOrMany(),
+				edgeListEndNodes()); 
 	}
 
 }

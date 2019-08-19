@@ -37,6 +37,7 @@ import au.edu.anu.rscs.aot.util.IntegerRange;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.ens.biologie.generic.utils.Duple;
 
 /**
  * Author Ian Davies
@@ -99,7 +100,7 @@ public interface Specifications {
 
 	public List<Class<? extends TreeNode>> getSubClassesOf(SimpleDataTreeNode spec);
 	
-	public List<TreeNode> getQueries(TreeNode spec, Class<? extends Query>... queryClass);
+	public List<SimpleDataTreeNode> getQueries(SimpleDataTreeNode spec, Class<? extends Query>... queryClass);
 
 	public List<String[]> getQueryStringTables(SimpleDataTreeNode spec, Class<? extends Query> queryClass);
 
@@ -108,6 +109,8 @@ public interface Specifications {
 	@SuppressWarnings("unchecked")
 	public boolean filterPropertyStringTableOptions(Iterable<SimpleDataTreeNode> propertySpecs, SimpleDataTreeNode baseSpec,
 			SimpleDataTreeNode subSpec, String childId,Class<? extends Query>... queryClasses);
+
+	public List<Duple<String, String>> getNodeLabelDuples(List<SimpleDataTreeNode> queries);
 
 
 }

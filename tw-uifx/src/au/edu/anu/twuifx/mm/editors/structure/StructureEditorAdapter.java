@@ -57,7 +57,6 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.ExpungeableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
-import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
@@ -68,9 +67,6 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
-import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
-import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
-
 import fr.ens.biologie.generic.utils.Duple;
 
 /**ChildXorPropertyQuery.java      				implement in GSE:DONE
@@ -86,22 +82,23 @@ import fr.ens.biologie.generic.utils.Duple;
 *		
 * 1) in filterEdge		
 
- * "component" cannot have out edges to categories within the same categorySet TODO:
+ * "component" cannot have out edges to categories within the same categorySet
 */
+
+/**OutNodeXorQuery.java							implement in GSE: DONE
+mustSatisfyQuery processToRelationOrCategorySpec
+	className = String("au.edu.anu.twcore.archetype.tw.OutNodeXorQuery")
+	nodeLabel1 = String("category")
+	nodeLabel2 = String("relationType")
+	
+	1) filter edge nodes
+*/
+
 
 /**ChildXorQuery.java				not used	implement in GSE
 */
 
 /**EdgeXorPropertyQuery.java		not used	implement in GSE
-*/
-
-/**OutNodeXorQuery.java							implement in GSE
-	mustSatisfyQuery processToRelationOrCategorySpec
-		className = String("au.edu.anu.twcore.archetype.tw.OutNodeXorQuery")
-		nodeLabel1 = String("category")
-		nodeLabel2 = String("relationType")
-		
-		1) filter edge nodes
 */
 
 /**ParentHasPropertyValueQuery.java				implement in GSE??
@@ -114,7 +111,7 @@ import fr.ens.biologie.generic.utils.Duple;
 */
 
 /**
- * PropertyXorQuery.java implement in GSE
+ * PropertyXorQuery.java 						implement in GSE: DONE
  * 
  * mustSatisfyQuery dimIsInRangeQuerySpec className =
  * String("au.edu.anu.twcore.archetype.tw.PropertyXorQuery") proplist =
@@ -243,30 +240,43 @@ public abstract class StructureEditorAdapter
 
 	@SuppressWarnings("unchecked")
 	private boolean satisfyOutNodeXorQuery(SimpleDataTreeNode edgeSpec, VisualNode proposedEndNode, String edgeLabel) {
-		if (specifications.getQueries(edgeSpec.getParent(), OutNodeXorQuery.class).isEmpty())
-			return true;
-		List<String[]> entries = specifications.getQueryStringTables((SimpleDataTreeNode) edgeSpec.getParent(),
+		List<SimpleDataTreeNode> queries = specifications.getQueries((SimpleDataTreeNode) edgeSpec.getParent(),
 				OutNodeXorQuery.class);
+		if (queries.isEmpty())
+			return true;
+		List<Duple<String, String>> entries = specifications.getNodeLabelDuples(queries);
 
-		get(edges(Direction.OUT),
-				selectOne(hasTheLabel(E_STOPSYSTEM.label())),
-				endNode()); // what do we do with this ? this is a SystemFactory.
+		// can have either of the entires
+		if (!editingNode.hasOutEdges())
+			return true;
 
-		
-		List<VisualNode> outNodes = editingNode.getOutNodes();
-		// if there is an out edge to one fo the node labels in the list then return false
-		
-		for (String[] entry:entries) {
-			
-			
-		}
-
+		// if there is an out node which is not of the same label as proposedEndNode
+		// then return false
+		String currentChoice = getCurrentXORChoice(entries);
+		// no outNodes with label in the set of duples
+		if (currentChoice == null)
+			return true;
+		// Can't change to other choice
+		if (!currentChoice.equals(TWA.getLabel(proposedEndNode.id())))
+			return false;
 		return true;
+	}
+
+	private String getCurrentXORChoice(List<Duple<String, String>> entries) {
+		for (VisualNode outNode : editingNode.getOutNodes()) {
+			String outLabel = TWA.getLabel(outNode.id());
+			for (Duple<String, String> duple : entries) {
+				if (duple.getFirst().equals(outLabel) || duple.getSecond().equals(outLabel))
+					return outLabel;
+			}
+		}
+		return null;
 	}
 
 	private boolean satisfyExclusiveCategoryQuery(SimpleDataTreeNode edgeSpec, VisualNode proposedEndNode,
 			String edgeLabel) {
-		if (specifications.getQueries(edgeSpec.getParent(), ExclusiveCategoryQuery.class).isEmpty())
+		if (specifications.getQueries((SimpleDataTreeNode) edgeSpec.getParent(), ExclusiveCategoryQuery.class)
+				.isEmpty())
 			return true;
 		VisualNode proposedCatSet = proposedEndNode.getParent();
 		for (VisualEdge edge : editingNode.getOutEdges()) {

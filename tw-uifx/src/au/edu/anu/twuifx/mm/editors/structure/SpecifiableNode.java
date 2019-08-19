@@ -29,6 +29,8 @@
 
 package au.edu.anu.twuifx.mm.editors.structure;
 
+import java.util.List;
+
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -77,6 +79,8 @@ public interface SpecifiableNode {
 	public Class<? extends TreeGraphNode> getSubClass();
 
 	public boolean hasOutEdgeTo(VisualNode endNode, String edgeLabel);
+
+	public Iterable<VisualNode> getOutNodes();
 
 	
 	//public void addProperty(String key, Object defaultValue);

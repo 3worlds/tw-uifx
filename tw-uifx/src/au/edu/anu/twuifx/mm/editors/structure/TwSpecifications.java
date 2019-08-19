@@ -21,6 +21,7 @@ import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
+import fr.ens.biologie.generic.utils.Duple;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
@@ -262,8 +263,8 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<TreeNode> getQueries(TreeNode spec, Class<? extends Query>... queries) {
-		List<TreeNode> result = new ArrayList<>();
+	public List<SimpleDataTreeNode> getQueries(SimpleDataTreeNode spec, Class<? extends Query>... queries) {
+		List<SimpleDataTreeNode> result = new ArrayList<>();
 		for (Class<? extends Query> query : queries) {
 			result.addAll((List<SimpleDataTreeNode>) get(spec.getChildren(), selectZeroOrMany(
 					andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, query.getName())))));
@@ -271,4 +272,16 @@ public class TwSpecifications implements //
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Duple<String, String>> getNodeLabelDuples(List<SimpleDataTreeNode> queries) {
+		List<Duple<String, String>> result = new ArrayList<>();
+		for (SimpleDataTreeNode query : queries) {
+			if (query.properties().hasProperty(twaNodeLabel1) && query.properties().hasProperty(twaNodeLabel2)) {
+				result.add(new Duple(query.properties().getPropertyValue(twaNodeLabel1),
+						query.properties().getPropertyValue(twaNodeLabel2)));
+			}
+		}
+		return result;
+	}
 }
