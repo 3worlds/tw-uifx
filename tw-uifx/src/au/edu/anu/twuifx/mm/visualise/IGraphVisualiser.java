@@ -63,6 +63,6 @@ public interface IGraphVisualiser {
 
 	public void doLayout();
 
-	public void onRemoveParent(VisualNode vnChild);
+	public void onRemoveParentLink(VisualNode vnChild);
 
 }

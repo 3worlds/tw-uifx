@@ -511,7 +511,7 @@ public abstract class StructureEditorAdapter
 
 	@Override
 	public void onExportTree(VisualNode root) {
-
+		Dialogs.infoAlert("Export Tree", "Not implemented yet", "");
 	}
 
 	@Override
@@ -520,13 +520,10 @@ public abstract class StructureEditorAdapter
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
 		}
-		;
-		GraphState.setChanged();
-		ConfigGraph.validateGraph();
 	}
 
 	private boolean treeImport(VisualNode parent, SimpleDataTreeNode childSpec) {
-		// TODO Auto-generated method stub
+		Dialogs.infoAlert("Import Tree", "Not implemented yet", "");
 		return false;
 	}
 
@@ -535,7 +532,7 @@ public abstract class StructureEditorAdapter
 		VisualNode vParent = editingNode.getSelectedVisualNode();
 		TreeGraphNode cChild = vChild.getConfigNode();
 		TreeGraphNode cParent = editingNode.getConfigNode();
-		gvisualiser.onRemoveParent(vChild);
+		gvisualiser.onRemoveParentLink(vChild);
 		vParent.disconnectFrom(vChild);
 		cParent.disconnectFrom(cChild);
 		GraphState.setChanged();

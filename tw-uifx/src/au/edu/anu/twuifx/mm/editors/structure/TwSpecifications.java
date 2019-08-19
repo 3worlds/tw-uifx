@@ -63,11 +63,23 @@ public class TwSpecifications implements //
 
 	@Override
 	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass) {
-		multiple stopping condtions have many entries of IsOfClass
+		//multiple stopping condtions have many entries of IsOfClass
 		if (subClass != null) {
+			String parent = (String) baseSpecs.properties().getPropertyValue(aaIsOfClass);
 			Tree<?> subClassTree = getSubArchetype(baseSpecs, subClass);
-			return (SimpleDataTreeNode) get(subClassTree.root().getChildren(),
-					selectOne(hasProperty(aaIsOfClass, (String) baseSpecs.properties().getPropertyValue(aaIsOfClass))));
+			List<SimpleDataTreeNode> specs= (List<SimpleDataTreeNode>) get(subClassTree.root().getChildren(),
+					selectOneOrMany(hasProperty(aaIsOfClass, parent)));
+			if (specs.size()==1)
+				return specs.get(0);
+			else {
+				for (SimpleDataTreeNode spec:specs) {
+					StringTable t = (StringTable) spec.properties().getPropertyValue(aaHasParent);
+					if (t.contains(parent + PairIdentity.LABEL_NAME_SEPARATOR)) {
+						return spec;
+					}
+				}				
+			}
+				
 		}
 		return null;
 	}
