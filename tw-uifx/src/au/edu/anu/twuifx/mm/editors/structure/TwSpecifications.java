@@ -63,6 +63,7 @@ public class TwSpecifications implements //
 
 	@Override
 	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass) {
+		multiple stopping condtions have many entries of IsOfClass
 		if (subClass != null) {
 			Tree<?> subClassTree = getSubArchetype(baseSpecs, subClass);
 			return (SimpleDataTreeNode) get(subClassTree.root().getChildren(),
@@ -129,12 +130,14 @@ public class TwSpecifications implements //
 			SimpleDataTreeNode constraint = (SimpleDataTreeNode) get(propertySpec.getChildren(),
 					selectOne(hasProperty(aaClassName, IsInValueSetQuery.class.getName())));
 			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
-			for (int i = 0; i < classes.size(); i++)
+			for (int i = 0; i < classes.size(); i++) {
+				System.out.println(classes.getWithFlatIndex(i));
 				try {
 					result.add((Class<? extends TreeNode>) Class.forName(classes.getWithFlatIndex(i)));
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
+			}
 		}
 		return result;
 	}

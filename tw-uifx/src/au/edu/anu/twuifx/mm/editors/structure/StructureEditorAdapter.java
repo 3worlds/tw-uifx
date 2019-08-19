@@ -394,6 +394,7 @@ public abstract class StructureEditorAdapter
 
 		// make the node
 		newChild = editingNode.newChild(childLabel, promptId);
+		newChild.setCollapse(false);
 
 		for (SimpleDataTreeNode propertySpec : propertySpecs) {
 			String key = (String) propertySpec.properties().getPropertyValue(aaHasName);
