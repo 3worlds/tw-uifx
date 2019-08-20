@@ -318,7 +318,7 @@ public abstract class StructureEditorAdapter
 		VisualGraphFactory vf = (VisualGraphFactory) vStart.factory();
 		VisualEdge result = vf.makeEdge(vStart, vEnd, proposedId);
 		proposedId = result.id();
-		
+
 		TreeGraphDataNode cStart = (TreeGraphDataNode) vStart.getConfigNode();
 		TreeGraphDataNode cEnd = (TreeGraphDataNode) vEnd.getConfigNode();
 		TwConfigFactory cf = (TwConfigFactory) cStart.factory();
@@ -426,19 +426,13 @@ public abstract class StructureEditorAdapter
 	}
 
 	private void deleteNode(VisualNode vNode) {
+		// don't leave nodes hidden
 		if (vNode.isCollapsedParent())
 			gvisualiser.expandTreeFrom(vNode);
-		// Remove visual elements before disconnecting
+		// remove from view while still entract
 		gvisualiser.removeView(vNode);
-		// Remove ids before disconnecting
-		this can be a method of VisualNode;
-		ExpungeableFactory vf = (ExpungeableFactory) vNode.factory();
-		TreeGraphNode cNode = vNode.getConfigNode();
-		ExpungeableFactory cf = (ExpungeableFactory) cNode.factory();
-		vf.expungeNode(vNode);
-		cf.expungeNode(cNode);
-		vNode.disconnect();
-		cNode.disconnect();
+		// this and its config from graphs and disconnect
+		vNode.remove();
 	}
 
 	@Override

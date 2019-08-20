@@ -120,24 +120,10 @@ public class VisualNodeEditor implements //
 		return selectedVisualNode.isCollapsed();
 	}
 
-	public static VisualNode newChild(VisualNode parent, String label, String proposedId) {
-		TreeGraphNode configParent = parent.getConfigNode();
-		NodeFactory cf = configParent.factory();
-		TreeGraphDataNode configChild = (TreeGraphDataNode) cf.makeNode(cf.nodeClass(label), proposedId);
-		configChild.connectParent(configParent);
-
-		VisualNode childVisualNode = (VisualNode) parent.factory().makeNode(proposedId);
-		childVisualNode.connectParent(parent);
-		childVisualNode.setCreatedBy(configParent.classId());
-		childVisualNode.setConfigNode(configChild);
-		childVisualNode.setCategory();
-		return childVisualNode;
-
-	}
 
 	@Override
-	public VisualNode newChild(String label, String name) {
-		return newChild(selectedVisualNode, label, name);
+	public VisualNode newChild(String label, String proposedId) {
+		return selectedVisualNode.newChild(label, proposedId);
 	}
 
 	@Override
