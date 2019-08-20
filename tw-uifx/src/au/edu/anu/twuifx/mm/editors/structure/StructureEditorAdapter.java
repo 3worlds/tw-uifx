@@ -428,11 +428,12 @@ public abstract class StructureEditorAdapter
 	private void deleteNode(VisualNode vNode) {
 		if (vNode.isCollapsedParent())
 			gvisualiser.expandTreeFrom(vNode);
-		TreeGraphNode cNode = vNode.getConfigNode();
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vNode);
 		// Remove ids before disconnecting
+		this can be a method of VisualNode;
 		ExpungeableFactory vf = (ExpungeableFactory) vNode.factory();
+		TreeGraphNode cNode = vNode.getConfigNode();
 		ExpungeableFactory cf = (ExpungeableFactory) cNode.factory();
 		vf.expungeNode(vNode);
 		cf.expungeNode(cNode);
