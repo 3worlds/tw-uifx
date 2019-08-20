@@ -257,14 +257,14 @@ public abstract class StructureEditorAdapter
 		if (currentChoice == null)
 			return true;
 		// Can't change to other choice
-		if (!currentChoice.equals(TWA.getLabel(proposedEndNode.id())))
+		if (!currentChoice.equals(proposedEndNode.classId()))
 			return false;
 		return true;
 	}
 
 	private String getCurrentXORChoice(List<Duple<String, String>> entries) {
 		for (VisualNode outNode : editingNode.getOutNodes()) {
-			String outLabel = TWA.getLabel(outNode.id());
+			String outLabel = outNode.getConfigNode().classId();
 			for (Duple<String, String> duple : entries) {
 				if (duple.getFirst().equals(outLabel) || duple.getSecond().equals(outLabel))
 					return outLabel;
@@ -280,7 +280,7 @@ public abstract class StructureEditorAdapter
 			return true;
 		VisualNode proposedCatSet = proposedEndNode.getParent();
 		for (VisualEdge edge : editingNode.getOutEdges()) {
-			if (TWA.getLabel(edge.id()).equals(E_BELONGSTO.label())) {
+			if (edge.getConfigEdge().classId().equals(E_BELONGSTO.label())) {
 				VisualNode myCat = (VisualNode) edge.endNode();
 				VisualNode myCatSet = myCat.getParent();
 				if (proposedCatSet.id().equals(myCatSet.id()))
@@ -294,7 +294,7 @@ public abstract class StructureEditorAdapter
 	public List<VisualNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs) {
 		List<VisualNode> result = new ArrayList<>();
 		for (VisualNode root : editingNode.graphRoots()) {
-			String rootLabel = TWA.getLabel(root.id());
+			String rootLabel = root.getConfigNode().classId();
 			for (SimpleDataTreeNode childSpec : childSpecs) {
 				String specLabel = (String) childSpec.properties().getPropertyValue(aaIsOfClass);
 				if (rootLabel.equals(specLabel))

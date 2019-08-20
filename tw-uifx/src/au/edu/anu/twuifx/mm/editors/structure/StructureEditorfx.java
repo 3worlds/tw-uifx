@@ -160,7 +160,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (editingNode.hasOutEdges()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_EDGE);
 			for (VisualEdge edge : editingNode.getOutEdges()) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, TWA.getLabel(edge.id())+"->"+edge.endNode().id());
+				MenuItem mi = MenuLabels.addMenuItem(mu, edge.getConfigEdge().classId()+"->"+((VisualEdge) edge).endNode()).getConfigEdge().displayText(false));
 				mi.setOnAction((e) -> {
 					onDeleteEdge(edge);
 				});

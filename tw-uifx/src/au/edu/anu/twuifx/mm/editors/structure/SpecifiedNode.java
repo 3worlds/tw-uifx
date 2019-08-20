@@ -85,24 +85,20 @@ public class SpecifiedNode implements //
 
 	@Override
 	public boolean canDelete() {
-		return !getLabel().equals(ConfigurationNodeLabels.N_ROOT.label());
+		return !getConfigNode().classId().equals(ConfigurationNodeLabels.N_ROOT.label());
 	}
 
 	@Override
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {
 		List<TreeNode> lst = new ArrayList<>();
 		for (TreeNode child : selectedVisualNode.getChildren()) {
-			String label = TWA.getLabel(child.id());
+			String label =selectedVisualNode.getConfigNode().classId();
 			if (label.equals(childLabel))
 				lst.add(child);
 		}
 		return range.inRange(lst.size() + 1);
 	}
 
-	@Override
-	public String getLabel() {
-		return selectedVisualNode.getLabel();
-	}
 
 	@Override
 	public Iterable<VisualNode> graphRoots() {
@@ -134,7 +130,7 @@ public class SpecifiedNode implements //
 
 		VisualNode childVisualNode = (VisualNode) parent.factory().makeNode(proposedId);
 		childVisualNode.connectParent(parent);
-		childVisualNode.setCreatedBy(TWA.getLabel(parent.id()));
+		childVisualNode.setCreatedBy(configParent.classId());
 		childVisualNode.setConfigNode(configChild);
 		childVisualNode.setCategory();
 		return childVisualNode;
@@ -148,9 +144,8 @@ public class SpecifiedNode implements //
 
 	@Override
 	public String proposeAnId(String label, String proposedName) {
-		Identity id = selectedVisualNode.scope().newId(false, label, PairIdentity.LABEL_NAME_STR_SEPARATOR,
-				proposedName);
-		return TWA.getName(id.id());
+		Identity id = selectedVisualNode.scope().newId(false, proposedName);
+		return id.id();
 	}
 
 	@Override
@@ -187,12 +182,12 @@ public class SpecifiedNode implements //
 
 	@Override
 	public boolean hasOutEdgeTo(VisualNode vEnd, String edgeLabel) {
-		TreeGraphNode start = selectedVisualNode.getConfigNode();
-		TreeGraphNode end = vEnd.getConfigNode();
-		for (ALEdge edge : start.edges(Direction.OUT)) {
-			ALNode endNode = edge.endNode();
-			if (endNode.id().equals(end.id()))
-				if (TWA.getLabel(edge.id()).equals(edgeLabel))
+		TreeGraphNode cStart = selectedVisualNode.getConfigNode();
+		TreeGraphNode cEnd = vEnd.getConfigNode();
+		for (ALEdge cEdge : cStart.edges(Direction.OUT)) {
+			ALNode cEndNode = cEdge.endNode();
+			if (cEndNode.id().equals(cEnd.id()))
+				if ((cEdge.classId()).equals(edgeLabel))
 					return true;
 		}
 		return false;

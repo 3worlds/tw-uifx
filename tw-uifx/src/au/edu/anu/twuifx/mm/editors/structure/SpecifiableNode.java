@@ -56,8 +56,6 @@ public interface SpecifiableNode {
 	/* true if the this node can have more children of this label */
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel);
 
-	public String getLabel();
-
 	public Iterable<VisualNode> graphRoots();
 
 	public boolean hasOutEdges();

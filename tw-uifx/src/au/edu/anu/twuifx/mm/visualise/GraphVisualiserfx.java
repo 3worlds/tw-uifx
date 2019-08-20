@@ -39,7 +39,6 @@ import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
@@ -90,6 +89,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Color graphEdgeColor;
 	private static final Double animateDuration = 500.0;
 	private final IMMController controller;
+	
+	private boolean edgeClassOnly = false;
+	private boolean nodeClassOnly = false;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
@@ -157,7 +159,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		Circle c = new Circle(x, y, nodeRadius.get());
 		c.radiusProperty().bind(nodeRadius);
-		Text text = new Text(n.id());
+		Text text = new Text(n.getDisplayText(nodeClassOnly));
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
@@ -309,7 +311,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 //			}
 //		}
 //		newLabel += getEdgeLabel(edge);
-		String newLabel = TWA.getLabel(edge.getConfigEdge().id());
+		String newLabel = edge.getDisplayText(edgeClassOnly);
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();

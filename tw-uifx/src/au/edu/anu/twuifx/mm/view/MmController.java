@@ -63,8 +63,6 @@ import javafx.scene.text.*;
 import javafx.stage.Stage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,12 +81,10 @@ import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.errorMessaging.ComplianceManager;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
 import au.edu.anu.twcore.errorMessaging.Verbosity;
-import au.edu.anu.twcore.errorMessaging.archetype.ArchComplianceManager;
-import au.edu.anu.twcore.errorMessaging.codeGenerator.CodeComplianceManager;
-import au.edu.anu.twcore.errorMessaging.deploy.DeployComplianceManager;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
@@ -270,6 +266,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			verbosityChange(t);
 		});
 
+		ComplianceManager.addListener(this);
 		// Setup zooming from the graph display pane (zoomTarget)
 		zoomConfig(scrollPane, scrollContent, group, zoomTarget);
 //		setButtonState(); NO! not ready yet.
@@ -386,9 +383,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	void handleCheck(ActionEvent event) {
-		ArchComplianceManager.clear();
-		CodeComplianceManager.clear();
-		DeployComplianceManager.clear();
+		ComplianceManager.clear();
+//		CodeComplianceManager.clear();
+//		DeployComplianceManager.clear();
 		// validProject.set(model.validateGraph());
 	}
 
@@ -474,16 +471,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			cid = Project.getProjectDateTime();
 		menuOpen.getItems().clear();
 		File[] files = Project.getAllProjectPaths();
-//		Arrays.sort
-//		Collections.sort(files,new Comparator<File>() {
-//
-//			@Override
-//			public int compare(File o1, File o2) {
-//				// TODO Auto-generated method stub
-//				return 0;
-//			}
-//			
-//		});
 		String[] names = Project.extractDisplayNames(files);
 		for (int i = 0; i < files.length; i++) {
 			MenuItem mi = new MenuItem(names[i]);
