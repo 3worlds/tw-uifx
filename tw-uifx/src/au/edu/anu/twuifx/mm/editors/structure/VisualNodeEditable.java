@@ -80,6 +80,8 @@ public interface VisualNodeEditable {
 
 	public Iterable<VisualNode> getOutNodes();
 
+	public String cClassId();
+
 	
 	//public void addProperty(String key, Object defaultValue);
 

@@ -199,4 +199,9 @@ public class VisualNodeEditor implements //
 				edgeListEndNodes()); 
 	}
 
+	@Override
+	public String cClassId() {
+		return selectedVisualNode.cClassId();
+	}
+
 }

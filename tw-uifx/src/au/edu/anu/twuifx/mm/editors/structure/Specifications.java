@@ -73,7 +73,7 @@ public interface Specifications {
 	 * get specification of a given node from the configuration graph. If null, it
 	 * can't be checked.
 	 */
-	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configurationNode, String createdBy, TreeNode root, Set<String> discoveredFiles);
+	public SimpleDataTreeNode getSpecsOf(String cClassId, String createdBy, TreeNode root, Set<String> discoveredFiles);
 
 	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass);
 

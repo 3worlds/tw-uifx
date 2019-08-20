@@ -33,10 +33,10 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configNode, String createdBy, TreeNode root,
+	public SimpleDataTreeNode getSpecsOf(String cClassId, String createdBy, TreeNode root,
 			Set<String> discoveredFiles) {
 		for (TreeNode child : root.getChildren()) {
-			if (isOfClass((SimpleDataTreeNode) child, configNode.classId())) {
+			if (isOfClass((SimpleDataTreeNode) child, cClassId)) {
 				if (createdBy == null)
 					return (SimpleDataTreeNode) child;
 				if (parentTableContains((SimpleDataTreeNode) child, createdBy))
@@ -52,7 +52,7 @@ public class TwSpecifications implements //
 				if (!discoveredFiles.contains(fname)) {
 					discoveredFiles.add(fname);
 					Tree<?> tree = (Tree<?>) TWA.getSubArchetype(fname);
-					SimpleDataTreeNode result = getSpecsOf(configNode, createdBy, tree.root(), discoveredFiles);
+					SimpleDataTreeNode result = getSpecsOf(cClassId, createdBy, tree.root(), discoveredFiles);
 					if (result != null)
 						return result;
 				}

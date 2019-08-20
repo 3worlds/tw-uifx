@@ -94,7 +94,6 @@ mustSatisfyQuery processToRelationOrCategorySpec
 	1) filter edge nodes
 */
 
-
 /**ChildXorQuery.java				not used	implement in GSE
 */
 
@@ -111,7 +110,7 @@ mustSatisfyQuery processToRelationOrCategorySpec
 */
 
 /**
- * PropertyXorQuery.java 						implement in GSE: DONE
+ * PropertyXorQuery.java implement in GSE: DONE
  * 
  * mustSatisfyQuery dimIsInRangeQuerySpec className =
  * String("au.edu.anu.twcore.archetype.tw.PropertyXorQuery") proplist =
@@ -151,7 +150,7 @@ public abstract class StructureEditorAdapter
 		this.newChild = null;
 		this.editingNode = selectedNode;
 		Set<String> discoveredFile = new HashSet<>();
-		this.baseSpec = specifications.getSpecsOf(editingNode.getConfigNode(), editingNode.createdBy(), TWA.getRoot(),
+		this.baseSpec = specifications.getSpecsOf(editingNode.cClassId(), editingNode.createdBy(), TWA.getRoot(),
 				discoveredFile);
 
 		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editingNode.getSubClass());
@@ -199,7 +198,7 @@ public abstract class StructureEditorAdapter
 		List<VisualNode> result = new ArrayList<>();
 		TreeGraph<VisualNode, VisualEdge> vg = gvisualiser.getVisualGraph();
 		for (VisualNode vn : vg.nodes()) {
-			if (vn.getConfigNode().classId().equals(label))
+			if (vn.cClassId().equals(label))
 				result.add(vn);
 		}
 		return result;
@@ -264,7 +263,7 @@ public abstract class StructureEditorAdapter
 
 	private String getCurrentXORChoice(List<Duple<String, String>> entries) {
 		for (VisualNode outNode : editingNode.getOutNodes()) {
-			String outLabel = outNode.getConfigNode().classId();
+			String outLabel = outNode.cClassId();
 			for (Duple<String, String> duple : entries) {
 				if (duple.getFirst().equals(outLabel) || duple.getSecond().equals(outLabel))
 					return outLabel;
@@ -294,7 +293,7 @@ public abstract class StructureEditorAdapter
 	public List<VisualNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs) {
 		List<VisualNode> result = new ArrayList<>();
 		for (VisualNode root : editingNode.graphRoots()) {
-			String rootLabel = root.getConfigNode().classId();
+			String rootLabel = root.cClassId();
 			for (SimpleDataTreeNode childSpec : childSpecs) {
 				String specLabel = (String) childSpec.properties().getPropertyValue(aaIsOfClass);
 				if (rootLabel.equals(specLabel))
@@ -315,13 +314,16 @@ public abstract class StructureEditorAdapter
 	}
 
 	private static VisualEdge createVisualEdge(String edgeClassName, VisualNode vStart, VisualNode vEnd) {
+		String proposedId = edgeClassName + "1";
+		VisualGraphFactory vf = (VisualGraphFactory) vStart.factory();
+		VisualEdge result = vf.makeEdge(vStart, vEnd, proposedId);
+		proposedId = result.id();
+		
 		TreeGraphDataNode cStart = (TreeGraphDataNode) vStart.getConfigNode();
 		TreeGraphDataNode cEnd = (TreeGraphDataNode) vEnd.getConfigNode();
 		TwConfigFactory cf = (TwConfigFactory) cStart.factory();
-		String proposedId =  edgeClassName + "1";
 		ALEdge ce = (ALEdge) cf.makeEdge(cf.edgeClass(edgeClassName), cStart, cEnd, proposedId);
-		VisualGraphFactory vf = (VisualGraphFactory) vStart.factory();
-		VisualEdge result = vf.makeEdge(vStart, vEnd, proposedId);
+
 		result.setConfigEdge(ce);
 		return result;
 	}
