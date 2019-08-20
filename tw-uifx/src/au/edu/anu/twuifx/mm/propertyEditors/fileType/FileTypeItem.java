@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -57,8 +58,8 @@ public class FileTypeItem extends SimplePropertyItem {
 
 	public FileTypeItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
 		super(key, n, canEdit, category, description);
-		fileType= (FileType) node.properties().getPropertyValue(key);
-		exts= new ArrayList<>();
+		fileType = (FileType) node.properties().getPropertyValue(key);
+		exts = new ArrayList<>();
 		exts.add(new FileChooser.ExtensionFilter("All files", "*.*"));
 	}
 
@@ -86,7 +87,7 @@ public class FileTypeItem extends SimplePropertyItem {
 		if (!oldValue.toString().equals(newValue.toString())) {
 			fileType.setRelativePath((String) newValue);
 			GraphState.setChanged();
-//			checker.validateGraph();
+			ConfigGraph.validateGraph();
 		}
 	}
 

@@ -40,7 +40,7 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twuifx.mm.editors.structure.SpecifiedNode;
+import au.edu.anu.twuifx.mm.editors.structure.VisualNodeEditor;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
@@ -206,7 +206,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
-				new StructureEditorfx(new SpecifiedNode(n, visualGraph), e, controller, this);
+				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this);
 			} else
 				controller.onNodeSelected(n);
 

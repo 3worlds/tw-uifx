@@ -34,6 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -44,12 +45,12 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
  *
  * Date 14 Feb. 2019
  */
-public class StatsTypeItem extends SimplePropertyItem{
+public class StatsTypeItem extends SimplePropertyItem {
 
 	public StatsTypeItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
 		super(key, n, canEdit, category, description);
 	}
-	
+
 	@Override
 	public void setValue(Object newString) {
 		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) node.properties().getPropertyValue(key);
@@ -59,13 +60,13 @@ public class StatsTypeItem extends SimplePropertyItem{
 //			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
 			GraphState.setChanged();
-//			checker.validateGraph();
+			ConfigGraph.validateGraph();
 		}
 	}
+
 	@Override
 	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
 		return Optional.of(StatsTypeEditor.class);
 	}
-
 
 }

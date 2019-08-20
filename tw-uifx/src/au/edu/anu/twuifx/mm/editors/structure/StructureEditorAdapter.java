@@ -127,7 +127,7 @@ public abstract class StructureEditorAdapter
 	/*
 	 * what we need to know from the visualNode that has been selected for editing
 	 */
-	protected SpecifiableNode editingNode;
+	protected VisualNodeEditable editingNode;
 	/*
 	 * new node created by this editor. May be null because the op is not
 	 * necessarily node creation.
@@ -144,7 +144,7 @@ public abstract class StructureEditorAdapter
 
 	protected IMMController controller;
 
-	public StructureEditorAdapter(SpecifiableNode selectedNode, IGraphVisualiser gv, IMMController controller) {
+	public StructureEditorAdapter(VisualNodeEditable selectedNode, IGraphVisualiser gv, IMMController controller) {
 		super();
 		this.specifications = new TwSpecifications();
 		this.controller = controller;
@@ -216,7 +216,7 @@ public abstract class StructureEditorAdapter
 		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
 			String toNodeRef = (String) edgeSpec.properties().getPropertyValue(aaToNode);
 			String edgeLabel = (String) edgeSpec.properties().getPropertyValue(aaIsOfClass);
-			List<VisualNode> endNodes = findNodesLabelled(toNodeRef.replace(PairIdentity.LABEL_NAME_STR_SEPARATOR, ""));
+			List<VisualNode> endNodes = findNodesLabelled(toNodeRef.replace(":", ""));
 			for (VisualNode endNode : endNodes) {
 				if (!editingNode.getSelectedVisualNode().id().equals(endNode.id()))
 					if (!editingNode.hasOutEdgeTo(endNode, edgeLabel)) {
@@ -318,7 +318,7 @@ public abstract class StructureEditorAdapter
 		TreeGraphDataNode cStart = (TreeGraphDataNode) vStart.getConfigNode();
 		TreeGraphDataNode cEnd = (TreeGraphDataNode) vEnd.getConfigNode();
 		TwConfigFactory cf = (TwConfigFactory) cStart.factory();
-		String proposedId = edgeClassName + PairIdentity.LABEL_NAME_STR_SEPARATOR + edgeClassName + "1";
+		String proposedId =  edgeClassName + "1";
 		ALEdge ce = (ALEdge) cf.makeEdge(cf.edgeClass(edgeClassName), cStart, cEnd, proposedId);
 		VisualGraphFactory vf = (VisualGraphFactory) vStart.factory();
 		VisualEdge result = vf.makeEdge(vStart, vEnd, proposedId);
@@ -356,7 +356,7 @@ public abstract class StructureEditorAdapter
 		if (captialize)
 			promptId = WordUtils.capitalize(promptId);
 		boolean modified = true;
-		promptId = editingNode.proposeAnId(childLabel, promptId);
+		promptId = editingNode.proposeAnId(promptId);
 		while (modified) {
 			String userName = promptForNewNode(childLabel, promptId);
 			if (userName == null)
@@ -367,7 +367,7 @@ public abstract class StructureEditorAdapter
 			// userName = promptId;
 			if (captialize)
 				userName = WordUtils.capitalize(userName);
-			String newName = editingNode.proposeAnId(childLabel, userName);
+			String newName = editingNode.proposeAnId(userName);
 			modified = !newName.equals(userName);
 			promptId = newName;
 		}
@@ -395,6 +395,7 @@ public abstract class StructureEditorAdapter
 		// make the node
 		newChild = editingNode.newChild(childLabel, promptId);
 		newChild.setCollapse(false);
+		newChild.setCategory();
 
 		for (SimpleDataTreeNode propertySpec : propertySpecs) {
 			String key = (String) propertySpec.properties().getPropertyValue(aaHasName);

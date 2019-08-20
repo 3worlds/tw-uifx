@@ -104,7 +104,7 @@ public class TreeLayout implements Layout {
 		propertyMap = new HashMap<>();
 		sortedChildMap = new HashMap<>();
 		for (VisualNode vnRoot : visualGraph.roots()) {
-			if (TWA.getLabel(vnRoot.id()).equals(ConfigurationNodeLabels.N_ROOT.label()))
+			if (vnRoot.getConfigNode().classId().equals(ConfigurationNodeLabels.N_ROOT.label()))
 				root = vnRoot;
 		}
 		addProperties(root);

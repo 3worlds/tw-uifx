@@ -36,7 +36,7 @@ public class TwSpecifications implements //
 	public SimpleDataTreeNode getSpecsOf(TreeGraphNode configNode, String createdBy, TreeNode root,
 			Set<String> discoveredFiles) {
 		for (TreeNode child : root.getChildren()) {
-			if (isOfClass((SimpleDataTreeNode) child, TWA.getLabel(configNode.id()))) {
+			if (isOfClass((SimpleDataTreeNode) child, configNode.classId())) {
 				if (createdBy == null)
 					return (SimpleDataTreeNode) child;
 				if (parentTableContains((SimpleDataTreeNode) child, createdBy))

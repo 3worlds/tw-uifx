@@ -34,6 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet.Item;
 
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 //import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -95,7 +96,7 @@ public class SimplePropertyItem implements Item {
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
 //			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
-			//ConfigGraph.validateGraph();
+			ConfigGraph.validateGraph();
 			GraphState.setChanged();
 		}
 	}

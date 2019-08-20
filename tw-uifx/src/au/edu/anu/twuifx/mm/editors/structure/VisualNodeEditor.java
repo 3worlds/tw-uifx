@@ -55,14 +55,14 @@ import fr.cnrs.iees.identity.Identity;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 
-public class SpecifiedNode implements //
-		SpecifiableNode, //
+public class VisualNodeEditor implements //
+		VisualNodeEditable, //
 		ArchetypeArchetypeConstants, //
 		TwArchetypeConstants {
 	private VisualNode selectedVisualNode;
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 
-	public SpecifiedNode(VisualNode visualNode, TreeGraph<VisualNode, VisualEdge> visualGraph) {
+	public VisualNodeEditor(VisualNode visualNode, TreeGraph<VisualNode, VisualEdge> visualGraph) {
 		this.selectedVisualNode = visualNode;
 		this.visualGraph = visualGraph;
 	}
@@ -120,9 +120,7 @@ public class SpecifiedNode implements //
 		return selectedVisualNode.isCollapsed();
 	}
 
-	public static VisualNode newChild(VisualNode parent, String label, String name) {
-		String proposedId = label + PairIdentity.LABEL_NAME_STR_SEPARATOR + name;
-
+	public static VisualNode newChild(VisualNode parent, String label, String proposedId) {
 		TreeGraphNode configParent = parent.getConfigNode();
 		NodeFactory cf = configParent.factory();
 		TreeGraphDataNode configChild = (TreeGraphDataNode) cf.makeNode(cf.nodeClass(label), proposedId);
@@ -143,7 +141,7 @@ public class SpecifiedNode implements //
 	}
 
 	@Override
-	public String proposeAnId(String label, String proposedName) {
+	public String proposeAnId(String proposedName) {
 		Identity id = selectedVisualNode.scope().newId(false, proposedName);
 		return id.id();
 	}

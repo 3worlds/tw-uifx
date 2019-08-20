@@ -57,7 +57,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	private ContextMenu cm;
 
-	public StructureEditorfx(SpecifiableNode n, MouseEvent event, IMMController controller, IGraphVisualiser gv) {
+	public StructureEditorfx(VisualNodeEditable n, MouseEvent event, IMMController controller, IGraphVisualiser gv) {
 		super(n, gv, controller);
 		cm = new ContextMenu();
 		buildgui();
@@ -90,7 +90,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (!filteredEdgeSpecs.isEmpty()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_EDGE);
 			for (Duple<String, VisualNode> p : filteredEdgeSpecs) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().id());
+				MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->"+p.getSecond().getDisplayText(false));
 				mi.setOnAction((e) -> {
 					onNewEdge(p);
 				});
@@ -160,7 +160,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (editingNode.hasOutEdges()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_EDGE);
 			for (VisualEdge edge : editingNode.getOutEdges()) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, edge.getConfigEdge().classId()+"->"+((VisualEdge) edge).endNode()).getConfigEdge().displayText(false));
+				VisualNode vn = (VisualNode) edge.endNode();
+				MenuItem mi = MenuLabels.addMenuItem(mu, edge.getConfigEdge().classId()+"->"+vn.getDisplayText(false));
 				mi.setOnAction((e) -> {
 					onDeleteEdge(edge);
 				});

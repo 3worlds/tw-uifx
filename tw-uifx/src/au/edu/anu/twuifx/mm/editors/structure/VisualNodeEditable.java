@@ -39,7 +39,7 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
 // just experimenting with what services mm requires of an aotnode.
 
 // impl will have a VisualNode which hosts the configuration node
-public interface SpecifiableNode {
+public interface VisualNodeEditable {
 	public boolean hasChildren();
 
 	/* return the class value or null from the hosted config node */
@@ -68,7 +68,7 @@ public interface SpecifiableNode {
 
 	public VisualNode newChild(String label, String name);
 
-	public String proposeAnId(String label, String proposedName);
+	public String proposeAnId(String proposedName);
 	
 	public String createdBy();
 
