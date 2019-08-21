@@ -51,14 +51,15 @@ import javafx.scene.layout.Pane;
  */
 public class FileTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
-	private static LabelButtonControl view = new LabelButtonControl("Open16.gif", Images.imagePackage);
+	private  LabelButtonControl view;
 
 	public FileTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
 	public FileTypeEditor(Item property) {
-		this(property, view);
+		this(property, new LabelButtonControl("Open16.gif", Images.imagePackage));
+		view = this.getEditor();
 		view.setOnAction(e -> onAction());
 	}
 

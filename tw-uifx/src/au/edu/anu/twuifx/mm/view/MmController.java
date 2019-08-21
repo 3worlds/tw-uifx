@@ -80,6 +80,7 @@ import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -850,6 +851,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			newNode = null;
 			initialisePropertySheets();
 			setButtonState();
+			GraphState.setChanged();
+			ConfigGraph.validateGraph();
 		}
 	}
 

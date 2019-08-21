@@ -107,7 +107,7 @@ public class VisualNodeEditor implements //
 
 	@Override
 	public boolean hasOutEdges() {
-		return visualNode.edges().iterator().hasNext();
+		return visualNode.edges(Direction.OUT).iterator().hasNext();
 	}
 
 	@Override

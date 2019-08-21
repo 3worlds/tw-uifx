@@ -398,8 +398,8 @@ public abstract class StructureEditorAdapter
 
 		controller.onNewNode(newChild);
 
-		GraphState.setChanged();
-		ConfigGraph.validateGraph();
+//		GraphState.setChanged();
+//		ConfigGraph.validateGraph();
 	}
 
 	@Override

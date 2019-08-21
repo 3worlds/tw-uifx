@@ -39,7 +39,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
 
 public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, LabelButtonControl> {
-	private static LabelButtonControl view = new LabelButtonControl("Ellipsis16.gif", Images.imagePackage);
+	private  LabelButtonControl view;
 
 	public DateTimeTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -47,7 +47,8 @@ public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, LabelBut
 	}
 
 	public DateTimeTypeEditor(Item property) {
-		this(property,view);
+		this(property,new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		view = this.getEditor();
 		view.setOnAction(e-> onAction());
 	}
 	private void onAction() {
