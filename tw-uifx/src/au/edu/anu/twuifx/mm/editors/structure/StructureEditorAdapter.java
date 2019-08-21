@@ -446,11 +446,11 @@ public abstract class StructureEditorAdapter
 	@Override
 	public void onReconnectChild(VisualNode vnChild) {
 		editableNode.reconnectChild(vnChild);
-		VisualNode vnParent = editableNode.getSelectedVisualNode();
-		TreeGraphNode cnChild = vnChild.getConfigNode();
-		TreeGraphNode cnParent = editableNode.getConfigNode();
-		cnParent.connectChild(cnChild);
-		vnParent.connectChild(vnChild);
+//		VisualNode vnParent = editableNode.getSelectedVisualNode();
+//		TreeGraphNode cnChild = vnChild.getConfigNode();
+//		TreeGraphNode cnParent = editableNode.getConfigNode();
+//		cnParent.connectChild(cnChild);
+//		vnParent.connectChild(vnChild);
 		gvisualiser.onNewParent(vnChild);
 		ConfigGraph.validateGraph();
 		GraphState.setChanged();
@@ -514,12 +514,15 @@ public abstract class StructureEditorAdapter
 
 	@Override
 	public void onDeleteParentLink(VisualNode vChild) {
+		// messy: onParentChanged never expect edge deletion
 		VisualNode vParent = editableNode.getSelectedVisualNode();
 		TreeGraphNode cChild = vChild.getConfigNode();
 		TreeGraphNode cParent = editableNode.getConfigNode();
-		gvisualiser.onRemoveParentLink(vChild);
+		gvisualiser.onRemoveParentLink(vChild);		
 		vParent.disconnectFrom(vChild);
 		cParent.disconnectFrom(cChild);
+		gvisualiser.getVisualGraph().onParentChanged();
+		ConfigGraph.onParentChanged();
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
 	}

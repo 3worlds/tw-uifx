@@ -100,7 +100,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (!orphanedChildren.isEmpty()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_CHILD_LINK);
 			for (VisualNode vn : orphanedChildren) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, vn.id());
+				MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 				mi.setOnAction((e) -> {
 					onReconnectChild(vn);
 				});
@@ -126,7 +126,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPORT_TREE);
 			Iterable<VisualNode> lst = editableNode.getSelectedVisualNode().getChildren();
 			for (VisualNode vn : lst) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, vn.id());
+				MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 				mi.setOnAction((e) -> {
 					onExportTree(vn);
 				});
@@ -171,7 +171,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (editableNode.hasChildren()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_CHILD);
 			for (VisualNode child : editableNode.getSelectedVisualNode().getChildren()) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, child.id());
+				MenuItem mi = MenuLabels.addMenuItem(mu, child.getDisplayText(false));
 				mi.setOnAction((e) -> {
 					onDeleteParentLink(child);
 				});
@@ -183,7 +183,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_TREE);
 			Iterable<VisualNode> lst = editableNode.getSelectedVisualNode().getChildren();
 			for (VisualNode vn : lst) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, vn.id());
+				MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 				mi.setOnAction((e) -> {
 					onDeleteTree(vn);
 				});

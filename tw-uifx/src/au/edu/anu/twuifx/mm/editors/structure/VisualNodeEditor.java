@@ -195,4 +195,10 @@ public class VisualNodeEditor implements //
 		return visualNode.newEdge(label,vEnd);
 	}
 
+	@Override
+	public void reconnectChild(VisualNode vnChild) {
+		visualNode.reconnectChild(vnChild);
+		
+	}
+
 }

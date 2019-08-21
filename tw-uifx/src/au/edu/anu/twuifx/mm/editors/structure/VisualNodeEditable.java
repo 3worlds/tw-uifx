@@ -84,6 +84,8 @@ public interface VisualNodeEditable {
 	
 	public VisualEdge newEdge(String label, VisualNode vEnd);
 
+	public void reconnectChild(VisualNode vnChild);
+
 	
 	//public void addProperty(String key, Object defaultValue);
 
