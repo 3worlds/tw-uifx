@@ -61,6 +61,7 @@ public class TwSpecifications implements //
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass) {
 		//multiple stopping condtions have many entries of IsOfClass
@@ -287,14 +288,13 @@ public class TwSpecifications implements //
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Duple<String, String>> getNodeLabelDuples(List<SimpleDataTreeNode> queries) {
 		List<Duple<String, String>> result = new ArrayList<>();
 		for (SimpleDataTreeNode query : queries) {
 			if (query.properties().hasProperty(twaNodeLabel1) && query.properties().hasProperty(twaNodeLabel2)) {
-				result.add(new Duple(query.properties().getPropertyValue(twaNodeLabel1),
-						query.properties().getPropertyValue(twaNodeLabel2)));
+				result.add(new Duple<String,String>((String)query.properties().getPropertyValue(twaNodeLabel1),
+						(String)query.properties().getPropertyValue(twaNodeLabel2)));
 			}
 		}
 		return result;

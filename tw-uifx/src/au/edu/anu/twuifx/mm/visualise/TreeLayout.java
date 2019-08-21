@@ -58,7 +58,6 @@ import java.util.Random;
 import au.edu.anu.rscs.aot.graph.property.PropertyKeys;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.exceptions.TwcoreException;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.properties.impl.SharedPropertyListImpl;
@@ -104,7 +103,7 @@ public class TreeLayout implements Layout {
 		propertyMap = new HashMap<>();
 		sortedChildMap = new HashMap<>();
 		for (VisualNode vnRoot : visualGraph.roots()) {
-			if (vnRoot.getConfigNode().classId().equals(ConfigurationNodeLabels.N_ROOT.label()))
+			if (vnRoot.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))
 				root = vnRoot;
 		}
 		addProperties(root);

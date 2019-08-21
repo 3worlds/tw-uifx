@@ -59,11 +59,11 @@ public class VisualNodeEditor implements //
 		VisualNodeEditable, //
 		ArchetypeArchetypeConstants, //
 		TwArchetypeConstants {
-	private VisualNode selectedVisualNode;
+	private VisualNode visualNode;
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 
 	public VisualNodeEditor(VisualNode visualNode, TreeGraph<VisualNode, VisualEdge> visualGraph) {
-		this.selectedVisualNode = visualNode;
+		this.visualNode = visualNode;
 		this.visualGraph = visualGraph;
 	}
 
@@ -80,19 +80,19 @@ public class VisualNodeEditor implements //
 
 	@Override
 	public TreeGraphNode getConfigNode() {
-		return selectedVisualNode.getConfigNode();
+		return visualNode.getConfigNode();
 	}
 
 	@Override
 	public boolean canDelete() {
-		return !getConfigNode().classId().equals(ConfigurationNodeLabels.N_ROOT.label());
+		return !visualNode.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label());
 	}
 
 	@Override
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {
 		List<TreeNode> lst = new ArrayList<>();
-		for (TreeNode child : selectedVisualNode.getChildren()) {
-			String label =selectedVisualNode.getConfigNode().classId();
+		for (TreeNode child : visualNode.getChildren()) {
+			String label =visualNode.cClassId();
 			if (label.equals(childLabel))
 				lst.add(child);
 		}
@@ -107,47 +107,47 @@ public class VisualNodeEditor implements //
 
 	@Override
 	public boolean hasOutEdges() {
-		return selectedVisualNode.edges().iterator().hasNext();
+		return visualNode.edges().iterator().hasNext();
 	}
 
 	@Override
 	public boolean isLeaf() {
-		return selectedVisualNode.isLeaf();
+		return visualNode.isLeaf();
 	}
 
 	@Override
 	public boolean isCollapsed() {
-		return selectedVisualNode.isCollapsed();
+		return visualNode.isCollapsed();
 	}
 
 
 	@Override
 	public VisualNode newChild(String label, String proposedId) {
-		return selectedVisualNode.newChild(label, proposedId);
+		return visualNode.newChild(label, proposedId);
 	}
 
 	@Override
 	public String proposeAnId(String proposedName) {
-		Identity id = selectedVisualNode.scope().newId(false, proposedName);
+		Identity id = visualNode.scope().newId(false, proposedName);
 		return id.id();
 	}
 
 	@Override
 	public String createdBy() {
-		return selectedVisualNode.getCreatedBy();
+		return visualNode.getCreatedBy();
 	}
 
 	@Override
 	public VisualNode getSelectedVisualNode() {
-		return selectedVisualNode;
+		return visualNode;
 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends TreeGraphNode> getSubClass() {
-		if (selectedVisualNode.configHasProperty(twaSubclass)) {
-			String result = (String) selectedVisualNode.configGetPropertyValue(twaSubclass);
+		if (visualNode.configHasProperty(twaSubclass)) {
+			String result = (String) visualNode.configGetPropertyValue(twaSubclass);
 			try {
 				return (Class<? extends TreeGraphNode>) Class.forName(result);
 			} catch (ClassNotFoundException e) {
@@ -161,12 +161,12 @@ public class VisualNodeEditor implements //
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<VisualEdge> getOutEdges() {
-		return (Iterable<VisualEdge>) selectedVisualNode.edges(Direction.OUT);
+		return (Iterable<VisualEdge>) visualNode.edges(Direction.OUT);
 	}
 
 	@Override
 	public boolean hasOutEdgeTo(VisualNode vEnd, String edgeLabel) {
-		TreeGraphNode cStart = selectedVisualNode.getConfigNode();
+		TreeGraphNode cStart = visualNode.getConfigNode();
 		TreeGraphNode cEnd = vEnd.getConfigNode();
 		for (ALEdge cEdge : cStart.edges(Direction.OUT)) {
 			ALNode cEndNode = cEdge.endNode();
@@ -180,14 +180,19 @@ public class VisualNodeEditor implements //
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<VisualNode> getOutNodes() {
-		return (Iterable<VisualNode>) get(selectedVisualNode.edges(Direction.OUT),
+		return (Iterable<VisualNode>) get(visualNode.edges(Direction.OUT),
 				selectZeroOrMany(),
 				edgeListEndNodes()); 
 	}
 
 	@Override
 	public String cClassId() {
-		return selectedVisualNode.cClassId();
+		return visualNode.cClassId();
+	}
+
+	@Override
+	public VisualEdge newEdge(String label, VisualNode vEnd) {
+		return visualNode.newEdge(label,vEnd);
 	}
 
 }

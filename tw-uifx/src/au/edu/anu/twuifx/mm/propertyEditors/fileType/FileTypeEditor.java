@@ -33,6 +33,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+
+import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -40,6 +42,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.layout.Pane;
 
 /**
  * Author Ian Davies
@@ -50,11 +53,11 @@ public class FileTypeEditor extends AbstractPropertyEditor<String, LabelButtonCo
 
 	private static LabelButtonControl view = new LabelButtonControl("Open16.gif", Images.imagePackage);
 
-	public FileTypeEditor(FileTypeItem property, LabelButtonControl control) {
-		super(property, control);
+	public FileTypeEditor(Item property, Pane control) {
+		super(property, (LabelButtonControl) control);
 	}
 
-	public FileTypeEditor(FileTypeItem property) {
+	public FileTypeEditor(Item property) {
 		this(property, view);
 		view.setOnAction(e -> onAction());
 	}

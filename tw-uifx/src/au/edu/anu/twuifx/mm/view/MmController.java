@@ -50,6 +50,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -63,6 +64,7 @@ import javafx.scene.text.*;
 import javafx.stage.Stage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -293,6 +295,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		else
 			verbosity = Verbosity.full;
 		textFlowErrorMsgs.getChildren().clear();
+		sortErrors();
 		for (ErrorMessagable msg : lstErrorMsgs)
 			textFlowErrorMsgs.getChildren().add(getMessageText(msg));
 	}
@@ -662,10 +665,25 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		return t;
 	}
 
+//================== ERROR MSG LISTENER =============
+	private void sortErrors() {
+		lstErrorMsgs.sort(new Comparator<ErrorMessagable>() {
+
+			@Override
+			public int compare(ErrorMessagable m1, ErrorMessagable m2) {
+				return m1.message(verbosity).compareToIgnoreCase(m2.message(verbosity));
+			}
+		});
+	
+	}
 	@Override
 	public void onReceiveMsg(ErrorMessagable msg) {
 		lstErrorMsgs.add(msg);
-		textFlowErrorMsgs.getChildren().add(getMessageText(msg));
+		sortErrors();
+		ObservableList<Node> children = textFlowErrorMsgs.getChildren();
+		children.clear();
+		for (ErrorMessagable m: lstErrorMsgs) 
+			children.add(getMessageText(m));
 	}
 
 	@Override
@@ -673,6 +691,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		textFlowErrorMsgs.getChildren().clear();
 		lstErrorMsgs.clear();
 	}
+	// ===============================================
 
 	@Override
 	public void onProjectClosing() {
@@ -777,14 +796,14 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		if (value instanceof FileType) {
 			FileType ft = (FileType) value;
 			FileTypeItem fti = new FileTypeItem(key, n, true, category, description);
-			//fti.setExtensions(ft.getExtensions());
+			// fti.setExtensions(ft.getExtensions());
 			return fti;
 		} else if (value instanceof StatisticalAggregatesSet)
 			return new StatsTypeItem(key, n, true, category, description);
 		else if (value instanceof DateTimeType) {
 			return new DateTimeItem(key, n, true, category, description);
 		} else if (value instanceof StringTable) {
-			//return new StringTableTypeItem(key, n, true, category, description);
+			// return new StringTableTypeItem(key, n, true, category, description);
 		}
 		return new SimplePropertyItem(key, n, editable, category, description);
 	}

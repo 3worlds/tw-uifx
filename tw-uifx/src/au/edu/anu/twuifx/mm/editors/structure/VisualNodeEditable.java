@@ -81,6 +81,8 @@ public interface VisualNodeEditable {
 	public Iterable<VisualNode> getOutNodes();
 
 	public String cClassId();
+	
+	public VisualEdge newEdge(String label, VisualNode vEnd);
 
 	
 	//public void addProperty(String key, Object defaultValue);

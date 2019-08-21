@@ -30,21 +30,23 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.dateTimeType;
 
+import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.layout.Pane;
 
 public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private static LabelButtonControl view = new LabelButtonControl("Ellipsis16.gif", Images.imagePackage);
 
-	public DateTimeTypeEditor(DateTimeItem property, LabelButtonControl control) {
-		super(property, control);
+	public DateTimeTypeEditor(Item property, Pane control) {
+		super(property, (LabelButtonControl) control);
 		// TODO Auto-generated constructor stub
 	}
 
-	public DateTimeTypeEditor(DateTimeItem property) {
+	public DateTimeTypeEditor(Item property) {
 		this(property,view);
 		view.setOnAction(e-> onAction());
 	}
