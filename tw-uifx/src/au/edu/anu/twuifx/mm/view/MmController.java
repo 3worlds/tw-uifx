@@ -211,6 +211,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	private double drawHeight;
 
 	private StringProperty userProjectPath = new SimpleStringProperty("");
+	// not used yet but just set with ComplianceManager.haveErrors();
 	private BooleanProperty validProject = new SimpleBooleanProperty();
 
 	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
@@ -233,12 +234,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			public void changed(ObservableValue<? extends Integer> observable, //
 					Integer oldValue, Integer newValue) {
 				setFontSize(newValue);
-//				for (Node n : zoomTarget.getChildren()) {
-//					if (n instanceof Text) {
-//						Text t = (Text) n;
-//						t.setFont(font);
-//					}
-//				}
 			}
 		});
 
@@ -269,6 +264,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			verbosityChange(t);
 		});
 
+		//Listen for error msgs from validategraph
 		ComplianceManager.addListener(this);
 		// Setup zooming from the graph display pane (zoomTarget)
 		zoomConfig(scrollPane, scrollContent, group, zoomTarget);
@@ -649,6 +645,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	}
 
+	@Override
 	public String getUserProjectPath() {
 		return userProjectPath.get();
 	}
