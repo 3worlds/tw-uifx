@@ -144,7 +144,6 @@ public class TwSpecifications implements //
 					selectOne(hasProperty(aaClassName, IsInValueSetQuery.class.getName())));
 			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
 			for (int i = 0; i < classes.size(); i++) {
-				System.out.println(classes.getWithFlatIndex(i));
 				try {
 					result.add((Class<? extends TreeNode>) Class.forName(classes.getWithFlatIndex(i)));
 				} catch (ClassNotFoundException e) {

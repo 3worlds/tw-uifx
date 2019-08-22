@@ -300,7 +300,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
-		// validProject.set(model.validateGraph());
+		ConfigGraph.resetUserProjectPath(userProjectPath.get());
+		ConfigGraph.validateGraph();;
 	}
 
 	@FXML
@@ -311,7 +312,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			if (!tmp.equals(userProjectPath.get()))
 				if (DevEnv.isJavaProject(jprjFile)) {
 					userProjectPath.set(tmp);
-					// validProject.set(model.validateGraph());
+					ConfigGraph.resetUserProjectPath(userProjectPath.get());
+					ConfigGraph.validateGraph();;
 				}
 		}
 	}

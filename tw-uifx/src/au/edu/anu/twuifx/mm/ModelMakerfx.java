@@ -85,24 +85,6 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 
 	private boolean checkArchetype = false;
 
-	private void checkResources() {
-		if (checkArchetype) {
-			if (!TWA.validArchetype())
-				throw new TwuifxException("Archetype is not valid!");
-		} else {
-			if (TWA.getRoot() == null)
-				throw new TwuifxException("Archetype has >1 roots!");
-		}
-		File file = new File(TW_ROOT + File.separator + TW_DEP_JAR);
-//		if (!file.exists())
-//			Dialogs.warnAlert("Resource Error", "Required Java dependency jar not found",
-//					"Use TwSetup to create " + file.getAbsolutePath());
-
-		boolean haveCompiler = !(ToolProvider.getSystemJavaCompiler() == null);
-		if (!haveCompiler)
-			Dialogs.warnAlert("Resource Error", "Java compiler not found",
-					"Check you have the Java Development Kit installed");
-	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -119,7 +101,6 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		createMainWindow();
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
 		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
-		checkResources();
 		setDefaultFrameSize();
 		GraphState.addListener(controller);
 		mainStage.show();
