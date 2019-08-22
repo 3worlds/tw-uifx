@@ -90,9 +90,9 @@ public class VisualNodeEditor implements //
 
 	@Override
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {
-		List<TreeNode> lst = new ArrayList<>();
-		for (TreeNode child : visualNode.getChildren()) {
-			String label =visualNode.cClassId();
+		List<VisualNode> lst = new ArrayList<>();
+		for (VisualNode child : visualNode.getChildren()) {
+			String label =child.cClassId();
 			if (label.equals(childLabel))
 				lst.add(child);
 		}
