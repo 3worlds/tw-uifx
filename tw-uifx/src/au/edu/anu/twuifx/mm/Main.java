@@ -34,7 +34,7 @@ import javafx.application.Application;
 public class Main {
 
 	public static void main(String[] args) {
-		System.out.println("This is 3w ModelMaker. Over.");
+		System.out.println("Before 'Application.launch(ModelMakerfx.class)'");
 		Application.launch(ModelMakerfx.class);
 	}
 
