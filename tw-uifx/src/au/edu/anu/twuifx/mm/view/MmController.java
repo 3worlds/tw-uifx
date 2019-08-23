@@ -76,14 +76,17 @@ import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
-import au.edu.anu.twapps.devenv.DevEnv;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
+import au.edu.anu.twapps.mm.devEnv.DevEnvFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.devenv.DevEnv;
+import au.edu.anu.twcore.devenv.EclipseProject;
+import au.edu.anu.twcore.devenv.IDETypes;
 import au.edu.anu.twcore.errorMessaging.ComplianceManager;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
@@ -221,6 +224,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	private Font font;
 	private int fontSize;
 
+	public static final IDETypes ideType = IDETypes.eclipse;
+
 	@FXML
 	public void initialize() {
 
@@ -264,12 +269,13 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			verbosityChange(t);
 		});
 
-		//Listen for error msgs from validategraph
+		// Listen for error msgs from validategraph
 		ComplianceManager.addListener(this);
 		// Setup zooming from the graph display pane (zoomTarget)
 		zoomConfig(scrollPane, scrollContent, group, zoomTarget);
 //		setButtonState(); NO! not ready yet.
 		// GraphState.addListener(this);
+
 	}
 
 	public void setFontSize(int size) {
@@ -300,8 +306,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
+		DevEnv.close();
 		ConfigGraph.resetUserProjectPath(userProjectPath.get());
-		ConfigGraph.validateGraph();;
+		ConfigGraph.validateGraph();
+		;
 	}
 
 	@FXML
@@ -309,12 +317,14 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		File jprjFile = Dialogs.selectDirectory("Select java project", userProjectPath.get());
 		if (jprjFile != null) {
 			String tmp = jprjFile.getAbsolutePath().replace("\\", "/");
-			if (!tmp.equals(userProjectPath.get()))
-				if (DevEnv.isJavaProject(jprjFile)) {
-					userProjectPath.set(tmp);
+			if (!tmp.equals(userProjectPath.get())) {
+				DevEnv.close();
+				if (DevEnvFactory.makeEnv(jprjFile, ideType)) {
+					userProjectPath.set(DevEnv.projectRoot().getAbsolutePath());
 					ConfigGraph.resetUserProjectPath(userProjectPath.get());
-					ConfigGraph.validateGraph();;
+					ConfigGraph.validateGraph();
 				}
+			}
 		}
 	}
 
@@ -606,12 +616,16 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			allElementsPropertySheet.setMode(md);
 
 			String prjtmp = Preferences.getString(UserProjectPath, "");
+			// should store in preferences??
 			if (!prjtmp.equals("")) {
-				if (!DevEnv.isJavaProject(new File(prjtmp))) {
-					prjtmp = "";
-				}
-			}
-			userProjectPath.set(prjtmp);
+				DevEnv.close();
+				if (DevEnvFactory.makeEnv(new File(prjtmp), ideType)) {
+					userProjectPath.set(DevEnv.projectRoot().getAbsolutePath());
+					ConfigGraph.resetUserProjectPath(userProjectPath.get());
+				} else
+					userProjectPath.set("");
+			} else
+				userProjectPath.set("");
 		});
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
@@ -674,15 +688,16 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 				return m1.message(verbosity).compareToIgnoreCase(m2.message(verbosity));
 			}
 		});
-	
+
 	}
+
 	@Override
 	public void onReceiveMsg(ErrorMessagable msg) {
 		lstErrorMsgs.add(msg);
 		sortErrors();
 		ObservableList<Node> children = textFlowErrorMsgs.getChildren();
 		children.clear();
-		for (ErrorMessagable m: lstErrorMsgs) 
+		for (ErrorMessagable m : lstErrorMsgs)
 			children.add(getMessageText(m));
 	}
 
