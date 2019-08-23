@@ -395,10 +395,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	void handleCheck(ActionEvent event) {
-		ComplianceManager.clear();
-//		CodeComplianceManager.clear();
-//		DeployComplianceManager.clear();
-		// validProject.set(model.validateGraph());
+		ConfigGraph.validateGraph();
 	}
 
 	@FXML
@@ -407,35 +404,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			putPreferences();
 			Platform.exit();
 			System.exit(0);
-		}
-	}
-
-	private boolean isValid = false;
-
-	// needs to respond to a
-	public void setButtonState() {
-		boolean isOpen = visualGraph != null;
-		boolean saveable = !GraphState.changed() & isOpen;
-		boolean isConnected = haveUserProject();
-		miSetCodePath.setDisable(isConnected);
-		miDisconnect.setDisable(!isConnected);
-		menuItemSave.setDisable(saveable);
-		menuItemSaveAs.setDisable(!isOpen);
-		btnChildLinks.setDisable(!isOpen);
-		btnXLinks.setDisable(!isOpen);
-		btnLayout.setDisable(!isOpen);
-		btnCheck.setDisable(!isOpen);
-		btnDeploy.setDisable(saveable & !isValid);
-
-		if (isOpen) {
-			trafficLight.setOpacity(1.0);
-			if (isValid)
-				trafficLight.fillProperty().set(Color.GREEN);
-			else
-				trafficLight.fillProperty().set(Color.RED);
-		} else {
-			trafficLight.setOpacity(0.5);
-			trafficLight.fillProperty().set(Color.RED);
 		}
 	}
 
@@ -523,11 +491,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
-	}
-
-	public void setValid(boolean ok) {
-		isValid = ok;
-		setButtonState();
 	}
 
 	@FXML
@@ -890,6 +853,39 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@Override
 	public void onStateChange(boolean state) {
+		setButtonState();
+	}
+
+	public void setButtonState() {
+		boolean isOpen = Project.isOpen();
+		boolean saveable = !GraphState.changed() & isOpen;
+		boolean isConnected = haveUserProject();
+		miSetCodePath.setDisable(isConnected);
+		miDisconnect.setDisable(!isConnected);
+		menuItemSave.setDisable(saveable);
+		menuItemSaveAs.setDisable(!isOpen);
+		btnChildLinks.setDisable(!isOpen);
+		btnXLinks.setDisable(!isOpen);
+		btnLayout.setDisable(!isOpen);
+		btnCheck.setDisable(!isOpen);
+		btnDeploy.setDisable(saveable & !isValid);
+
+		if (isOpen) {
+			trafficLight.setOpacity(1.0);
+		} else {
+			trafficLight.setOpacity(0.5);
+			trafficLight.fillProperty().set(Color.RED);
+		}
+		if (isValid)
+			trafficLight.fillProperty().set(Color.GREEN);
+		else
+			trafficLight.fillProperty().set(Color.RED);
+	}
+
+	private boolean isValid=false;
+	@Override
+	public void state(boolean valid) {
+		isValid = valid;
 		setButtonState();
 	}
 
