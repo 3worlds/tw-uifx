@@ -306,7 +306,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
-		DevEnv.close();
+		DevEnv.unlinkUserProject();
 		ConfigGraph.resetUserProjectPath(userProjectPath.get());
 		ConfigGraph.validateGraph();
 		;
@@ -318,7 +318,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		if (jprjFile != null) {
 			String tmp = jprjFile.getAbsolutePath().replace("\\", "/");
 			if (!tmp.equals(userProjectPath.get())) {
-				DevEnv.close();
+				DevEnv.unlinkUserProject();
 				if (DevEnvFactory.makeEnv(jprjFile, ideType)) {
 					userProjectPath.set(DevEnv.projectRoot().getAbsolutePath());
 					ConfigGraph.resetUserProjectPath(userProjectPath.get());
@@ -581,7 +581,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			String prjtmp = Preferences.getString(UserProjectPath, "");
 			// should store in preferences??
 			if (!prjtmp.equals("")) {
-				DevEnv.close();
+				DevEnv.unlinkUserProject();
 				if (DevEnvFactory.makeEnv(new File(prjtmp), ideType)) {
 					userProjectPath.set(DevEnv.projectRoot().getAbsolutePath());
 					ConfigGraph.resetUserProjectPath(userProjectPath.get());
