@@ -426,7 +426,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
-		model.doDeploy();
+		model.doDeploy(au.edu.anu.twuifx.mr.Main.class.getName());
 		// if (!GraphState.hasChanged()) {
 		// DeployComplianceManager.clear();
 		// btnDeploy.setDisable(true);
