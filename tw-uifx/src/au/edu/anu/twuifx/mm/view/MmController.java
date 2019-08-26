@@ -80,13 +80,10 @@ import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twapps.mm.devEnv.DevEnvFactory;
+import au.edu.anu.twapps.mm.userProjectLinkFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.devenv.DevEnv;
-import au.edu.anu.twcore.devenv.EclipseProject;
-import au.edu.anu.twcore.devenv.IDETypes;
 import au.edu.anu.twcore.errorMessaging.ComplianceManager;
 import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
 import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
@@ -94,6 +91,8 @@ import au.edu.anu.twcore.errorMessaging.Verbosity;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twcore.userProject.IDETypes;
+import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
@@ -224,7 +223,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	private Font font;
 	private int fontSize;
 
-	public static final IDETypes ideType = IDETypes.eclipse;
+	// TODO: make menu options and preferences entry for this choice when netbeans
+	// and IntelliJ have been tested
+	private static final IDETypes ideType = IDETypes.eclipse;
 
 	@FXML
 	public void initialize() {
@@ -306,8 +307,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
-		DevEnv.unlinkUserProject();
-		ConfigGraph.resetUserProjectPath(userProjectPath.get());
+		UserProjectLink.unlinkUserProject();
 		ConfigGraph.validateGraph();
 		;
 	}
@@ -318,10 +318,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		if (jprjFile != null) {
 			String tmp = jprjFile.getAbsolutePath().replace("\\", "/");
 			if (!tmp.equals(userProjectPath.get())) {
-				DevEnv.unlinkUserProject();
-				if (DevEnvFactory.makeEnv(jprjFile, ideType)) {
-					userProjectPath.set(DevEnv.projectRoot().getAbsolutePath());
-					ConfigGraph.resetUserProjectPath(userProjectPath.get());
+				UserProjectLink.unlinkUserProject();
+				if (UserProjectLinkFactory.makeEnv(jprjFile, ideType)) {
+					userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
 					ConfigGraph.validateGraph();
 				}
 			}
@@ -581,10 +580,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			String prjtmp = Preferences.getString(UserProjectPath, "");
 			// should store in preferences??
 			if (!prjtmp.equals("")) {
-				DevEnv.unlinkUserProject();
-				if (DevEnvFactory.makeEnv(new File(prjtmp), ideType)) {
-					userProjectPath.set(DevEnv.projectRoot().getAbsolutePath());
-					ConfigGraph.resetUserProjectPath(userProjectPath.get());
+				UserProjectLink.unlinkUserProject();
+				if (UserProjectLinkFactory.makeEnv(new File(prjtmp), ideType)) {
+					userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
 				} else
 					userProjectPath.set("");
 			} else
@@ -772,8 +770,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		Object value = n.properties().getPropertyValue(key);
 		// TODO other Item types to come...
 		if (value instanceof FileType) {
-			FileType ft = (FileType) value;
 			FileTypeItem fti = new FileTypeItem(key, n, true, category, description);
+			// FileType ft = (FileType) value; not sure how we can manage extensions. There
+			// is no 'type' info to distinguish this node.
 			// fti.setExtensions(ft.getExtensions());
 			return fti;
 		} else if (value instanceof StatisticalAggregatesSet)
@@ -882,7 +881,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			trafficLight.fillProperty().set(Color.RED);
 	}
 
-	private boolean isValid=false;
+	private boolean isValid = false;
+
 	@Override
 	public void state(boolean valid) {
 		isValid = valid;
