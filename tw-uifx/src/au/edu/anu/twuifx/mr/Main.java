@@ -49,14 +49,14 @@ public class Main {
 			System.out.println("Project is already open: [" + prjDir + "]");
 			System.exit(1);
 		}
-		Project.open(prjDir);	
-		File userJar = Project.makeFile(Project.getProjectName()+".jar");
+		Project.open(prjDir);
+		File userJar = Project.makeFile(Project.getProjectName() + ".jar");
 		if (!userJar.exists()) {
 			System.out.println("User generated classes not found: [" + userJar + "]");
 			System.exit(1);
-		
-		}
 
+		}
+// needs to install this in the thread class loader?
 		loadUserClasses(userJar);
 		@SuppressWarnings("unchecked")
 		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
@@ -64,32 +64,42 @@ public class Main {
 //		SimulationSession session = new SimulationSession(configGraph);
 		// generated classes are not accessible here?
 		List<Initialisable> initList = new LinkedList<>();
-		for (TreeGraphDataNode n:configGraph.nodes()) 
+		for (TreeGraphDataNode n : configGraph.nodes())
 			initList.add((Initialisable) n);
 		Initialiser initer = new Initialiser(initList);
 		initer.initialise();
-		if (initer.errorList()!=null)
-		for (InitialiseMessage msg: initer.errorList()){
-			System.out.println("FAILED: "+msg.getTarget()+msg.getException().getMessage());
-		} else {
-		TreeGraphDataNode uiNode = (TreeGraphDataNode) get(configGraph.root().getChildren(),
-				selectZeroOrOne(hasTheLabel(N_UI.label())));
-		if (uiNode != null) {
-			System.out.println("Ready to launch UI");
-		} else {
-			System.out.println("Ready to run without UI?");
+		if (initer.errorList() != null)
+			for (InitialiseMessage msg : initer.errorList()) {
+				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
+			}
+		else {
+			TreeGraphDataNode uiNode = (TreeGraphDataNode) get(configGraph.root().getChildren(),
+					selectZeroOrOne(hasTheLabel(N_UI.label())));
+			if (uiNode != null) {
+				System.out.println("Ready to launch UI");
+			} else {
+				System.out.println("Ready to run without UI?");
+			}
 		}
 	}
-	}
+
 	private static void loadUserClasses(File userJar) {
 		// This typecast is no longer possible cf:
-		//https://blog.codefx.org/java/java-11-migration-guide/ 
-		
-		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		// https://blog.codefx.org/java/java-11-migration-guide/
+		/*-
+		 * URL path[] = { ... }; 
+		 * ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
+		 * URLClassLoader loader = new URLClassLoader(path, parent);
+		 */
+		ClassLoader parent = ClassLoader.getPlatformClassLoader();
+//		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		URL userUrl;
+
 		try {
 			userUrl = userJar.toURI().toURL();
-			URL[] currentUrls = classLoader.getURLs();
+			URL path[] = {userUrl};
+			URLClassLoader loader = new URLClassLoader(path, parent);
+			URL[] currentUrls = loader.getURLs();
 			boolean found = false;
 			for (URL currentUrl : currentUrls) {
 				if (userUrl.sameFile(currentUrl)) {
@@ -102,7 +112,7 @@ public class Main {
 				Method method;
 				method = URLClassLoader.class.getDeclaredMethod("addURL", parameters);
 				method.setAccessible(true);
-				method.invoke(classLoader, userUrl);
+				method.invoke(loader, userUrl);
 			}
 
 		} catch (Exception e) {
