@@ -31,8 +31,6 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
-import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,20 +38,15 @@ import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import fr.cnrs.iees.graph.Direction;
-import fr.cnrs.iees.graph.NodeFactory;
-import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.ALNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.Identity;
-import fr.cnrs.iees.identity.impl.PairIdentity;
-import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 public class VisualNodeEditor implements //
 		VisualNodeEditable, //
@@ -85,7 +78,7 @@ public class VisualNodeEditor implements //
 
 	@Override
 	public boolean canDelete() {
-		return !visualNode.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label());
+		return !visualNode.cClassId().equals(N_ROOT.label());
 	}
 
 	@Override
