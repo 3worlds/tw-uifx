@@ -38,7 +38,7 @@ public class Main {
 	public static void main(String[] args) {
 		if (args.length < 1) {
 			System.out.println("Usage:");
-			System.out.println(Main.class.getName() + " <Project directory>.");
+			System.out.println(Main.class.getName() + " <Project relative directory>.");
 			System.exit(1);
 		}
 		File prjDir = new File(TwPaths.TW_ROOT + File.separator + args[0]);
@@ -51,7 +51,7 @@ public class Main {
 			System.exit(1);
 		}
 		Project.open(prjDir);
-		File userJar = Project.makeFile(Project.getProjectName() + ".jar");
+		File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
 		if (!userJar.exists()) {
 			System.out.println("User generated classes not found: [" + userJar + "]");
 			System.exit(1);
