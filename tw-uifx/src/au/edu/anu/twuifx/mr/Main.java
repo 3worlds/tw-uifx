@@ -11,6 +11,7 @@ import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.TwPaths;
+import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -87,11 +88,12 @@ public class Main {
 		// This typecast is no longer possible cf:
 		// https://blog.codefx.org/java/java-11-migration-guide/
 		/*-
+		 * Try:
 		 * URL path[] = { ... }; 
 		 * ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
 		 * URLClassLoader loader = new URLClassLoader(path, parent);
 		 */
-		ClassLoader parent = ClassLoader.getPlatformClassLoader();
+		ClassLoader parent = OmugiClassLoader.getClassLoader();
 //		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		URL userUrl;
 

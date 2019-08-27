@@ -74,6 +74,7 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
  * @author Jacques Gignoux - 4 December 2017
  *
  */
+@Deprecated
 public class MrLauncher implements ProjectPaths {
 
 	private static File jarFile = null;
