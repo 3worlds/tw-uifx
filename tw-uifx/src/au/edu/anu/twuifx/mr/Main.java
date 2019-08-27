@@ -2,6 +2,7 @@ package au.edu.anu.twuifx.mr;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.LinkedList;
@@ -84,44 +85,51 @@ public class Main {
 		}
 	}
 
-	private static void loadUserClasses(File userJar) {
+	private static void loadUserClasses(File userJar)  {
 		// This typecast is no longer possible cf:
 		// https://blog.codefx.org/java/java-11-migration-guide/
 		/*-
 		 * Try:
 		 * URL path[] = { ... }; 
-		 * ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
+		 ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
 		 * URLClassLoader loader = new URLClassLoader(path, parent);
 		 */
-		ClassLoader parent = OmugiClassLoader.getClassLoader();
+		//ClassLoader parent = OmugiClassLoader.getClassLoader();
 //		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		URL userUrl;
 
-		try {
+//		try {
+			try {
+				 ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
 			userUrl = userJar.toURI().toURL();
-			URL path[] = {userUrl};
-			URLClassLoader loader = new URLClassLoader(path, parent);
-			URL[] currentUrls = loader.getURLs();
-			boolean found = false;
-			for (URL currentUrl : currentUrls) {
-				if (userUrl.sameFile(currentUrl)) {
-					found = true;
-					break;
-				}
+				URL path[] = {userUrl};
+				OmugiClassLoader.setURLClassLoader(path);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			if (!found) {
-				Class[] parameters = new Class[] { URL.class };
-				Method method;
-				method = URLClassLoader.class.getDeclaredMethod("addURL", parameters);
-				method.setAccessible(true);
-				method.invoke(loader, userUrl);
-			}
-
-		} catch (Exception e) {
-//			log.error("could not load user-defined classes");
-			e.printStackTrace();
-		}
-
+			//URLClassLoader loader = new URLClassLoader(path, parent);
+			//URL[] currentUrls = loader.getURLs();
+//			boolean found = false;
+//			for (URL currentUrl : currentUrls) {
+//				if (userUrl.sameFile(currentUrl)) {
+//					found = true;
+//					break;
+//				}
+//			}
+//			if (!found) {
+//				Class[] parameters = new Class[] { URL.class };
+//				Method method;
+//				method = URLClassLoader.class.getDeclaredMethod("addURL", parameters);
+//				method.setAccessible(true);
+//				method.invoke(loader, userUrl);
+//			}
+//
+//		} catch (Exception e) {
+////			log.error("could not load user-defined classes");
+//			e.printStackTrace();
+//		}
+//
 	}
 
 }
