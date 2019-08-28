@@ -92,6 +92,7 @@ public class Main {
 		try {
 			userUrl = userJar.toURI().toURL();
 			URL path[] = {userUrl};
+			new Main().getClass().getClassLoader();// this is parent 
 //			OmugiClassLoader.setURLPaths(path);
 //			ClassLoader cl = OmugiClassLoader.setClassLoader();
 			
