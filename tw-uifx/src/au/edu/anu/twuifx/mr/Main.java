@@ -92,8 +92,8 @@ public class Main {
 		try {
 			userUrl = userJar.toURI().toURL();
 			URL path[] = {userUrl};
-			OmugiClassLoader.setURLPaths(path);
-			ClassLoader cl = OmugiClassLoader.getURLClassLoader();
+//			OmugiClassLoader.setURLPaths(path);
+//			ClassLoader cl = OmugiClassLoader.setClassLoader();
 			
 //			String pathSeparator = System
 //				    .getProperty("path.separator");
