@@ -3,6 +3,7 @@ package au.edu.anu.twuifx.mr;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class Main {
 
 		}
 // needs to install this in the thread class loader?
+		// if not running from jar
 		loadUserClasses(userJar);		 
 //			    System.out.println("Classloader of ArrayList:"
 //			        + FunctionNode.class.getClassLoader());
@@ -92,9 +94,33 @@ public class Main {
 		try {
 			userUrl = userJar.toURI().toURL();
 			URL path[] = {userUrl};
-			new Main().getClass().getClassLoader();// this is parent 
-//			OmugiClassLoader.setURLPaths(path);
-//			ClassLoader cl = OmugiClassLoader.setClassLoader();
+			ClassLoader parent = new Main().getClass().getClassLoader();
+			URLClassLoader child = new URLClassLoader(path,parent);
+			OmugiClassLoader.setClassLoader(child);
+//			File userJar = Project.makeFile(UserProjectJar.USERPROJECTJAR);
+//			URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+//			URL userUrl;
+//			try {
+//				userUrl = userJar.toURI().toURL();
+//				URL[] currentUrls = classLoader.getURLs();
+//				boolean found = false;
+//				for (URL currentUrl : currentUrls) {
+//					if (userUrl.sameFile(currentUrl)) {
+//						found = true;
+//						break;
+//					}
+//				}
+//				if (!found) {
+//					Class[] parameters = new Class[] { URL.class };
+//					Method method;
+//					method = URLClassLoader.class.getDeclaredMethod("addURL", parameters);
+//					method.setAccessible(true);
+//					method.invoke(classLoader, userUrl);
+//				}
+	//
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
 			
 //			String pathSeparator = System
 //				    .getProperty("path.separator");
