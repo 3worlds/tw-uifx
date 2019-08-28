@@ -1,10 +1,8 @@
 package au.edu.anu.twuifx.mr;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +13,6 @@ import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.io.FileImporter;
 import fr.ens.biologie.generic.Initialisable;
@@ -60,7 +57,9 @@ public class Main {
 
 		}
 // needs to install this in the thread class loader?
-		loadUserClasses(userJar);
+		loadUserClasses(userJar);		 
+//			    System.out.println("Classloader of ArrayList:"
+//			        + FunctionNode.class.getClassLoader());
 		@SuppressWarnings("unchecked")
 		TreeGraph<TreeGraphNode, ALEdge> configGraph = (TreeGraph<TreeGraphNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
@@ -69,7 +68,7 @@ public class Main {
 		// generated classes are not accessible here?
 		List<Initialisable> initList = new LinkedList<>();
 		for (TreeGraphNode n : configGraph.nodes())
-			if (n instanceof Initialisable)
+//			if (n instanceof Initialisable)
 			initList.add((Initialisable) n);
 		Initialiser initer = new Initialiser(initList);
 		initer.initialise();
@@ -89,6 +88,27 @@ public class Main {
 	}
 
 	private static void loadUserClasses(File userJar)  {
+		URL userUrl;
+		try {
+			userUrl = userJar.toURI().toURL();
+			URL path[] = {userUrl};
+			OmugiClassLoader.setURLPaths(path);
+			ClassLoader cl = OmugiClassLoader.getURLClassLoader();
+			
+//			String pathSeparator = System
+//				    .getProperty("path.separator");
+//				String[] classPathEntries = System
+//				    .getProperty("java.class.path")
+//				    .split(pathSeparator);
+//				for (String s: classPathEntries) {
+//					System.out.println(s);
+//				}
+	} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 		// This typecast is no longer possible cf:
 		// https://blog.codefx.org/java/java-11-migration-guide/
 		/*-
@@ -99,13 +119,12 @@ public class Main {
 		 */
 		//ClassLoader parent = OmugiClassLoader.getClassLoader();
 //		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		URL userUrl;
+		//URL userUrl;
 
 //		try {
-//			try {
-//				 ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
 //			userUrl = userJar.toURI().toURL();
 //				URL path[] = {userUrl};
+//				OmugiClassLoader.setURLPaths(path);
 //				OmugiClassLoader.setURLClassLoader(path);
 //			} catch (MalformedURLException e) {
 //				// TODO Auto-generated catch block
@@ -133,6 +152,6 @@ public class Main {
 //			e.printStackTrace();
 //		}
 //
-	}
+//	}
 
 }
