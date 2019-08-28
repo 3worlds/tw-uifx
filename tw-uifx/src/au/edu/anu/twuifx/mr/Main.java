@@ -94,7 +94,7 @@ public class Main {
 		try {
 			userUrl = userJar.toURI().toURL();
 			URL path[] = {userUrl};
-			ClassLoader parent = new Main().getClass().getClassLoader();
+			ClassLoader parent = ClassLoader.getPlatformClassLoader();
 			URLClassLoader child = new URLClassLoader(path,parent);
 			OmugiClassLoader.setClassLoader(child);
 //			File userJar = Project.makeFile(UserProjectJar.USERPROJECTJAR);
