@@ -16,6 +16,7 @@ import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.io.FileImporter;
 import fr.ens.biologie.generic.Initialisable;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
@@ -61,12 +62,14 @@ public class Main {
 // needs to install this in the thread class loader?
 		loadUserClasses(userJar);
 		@SuppressWarnings("unchecked")
-		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
+		TreeGraph<TreeGraphNode, ALEdge> configGraph = (TreeGraph<TreeGraphNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
+		// TwConfigFactory labels are lost somewhere???
 //		SimulationSession session = new SimulationSession(configGraph);
 		// generated classes are not accessible here?
 		List<Initialisable> initList = new LinkedList<>();
-		for (TreeGraphDataNode n : configGraph.nodes())
+		for (TreeGraphNode n : configGraph.nodes())
+			if (n instanceof Initialisable)
 			initList.add((Initialisable) n);
 		Initialiser initer = new Initialiser(initList);
 		initer.initialise();
@@ -75,7 +78,7 @@ public class Main {
 				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
 			}
 		else {
-			TreeGraphDataNode uiNode = (TreeGraphDataNode) get(configGraph.root().getChildren(),
+			TreeGraphNode uiNode = (TreeGraphNode) get(configGraph.root().getChildren(),
 					selectZeroOrOne(hasTheLabel(N_UI.label())));
 			if (uiNode != null) {
 				System.out.println("Ready to launch UI");
@@ -99,15 +102,15 @@ public class Main {
 		URL userUrl;
 
 //		try {
-			try {
-				 ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
-			userUrl = userJar.toURI().toURL();
-				URL path[] = {userUrl};
-				OmugiClassLoader.setURLClassLoader(path);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				 ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
+//			userUrl = userJar.toURI().toURL();
+//				URL path[] = {userUrl};
+//				OmugiClassLoader.setURLClassLoader(path);
+//			} catch (MalformedURLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			//URLClassLoader loader = new URLClassLoader(path, parent);
 			//URL[] currentUrls = loader.getURLs();
 //			boolean found = false;
