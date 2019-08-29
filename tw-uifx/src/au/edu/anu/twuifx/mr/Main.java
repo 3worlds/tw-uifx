@@ -131,7 +131,11 @@ public class Main {
 				 * au.edu.anu.twcore.ecosystem.runtime.TwFunction is in unnamed module of loader
 				 * 'app')
 				 * 
-				 * SOMETHING TO DO WITH Modules and layers crap!!!
+				 * humm... class hierarchy spans two classLoader
+				 * i.e. we are looking at two different class defs of TwFunction: one here in eclispe in the app classLoader and one in the 
+				 * twdep.jar inculded with the user generated classes
+				 * 
+				 * cf: https://stackoverflow.com/questions/50934610/unable-to-cast-to-interface-class-with-urlclassloader-and-reflection
 				 */
 				f = (TwFunction) function;
 			} catch (Exception e) {
