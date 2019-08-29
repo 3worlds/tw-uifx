@@ -126,7 +126,7 @@ public class Main {
 				 * au.edu.anu.twcore.ecosystem.runtime.TwFunction is in unnamed module of loader
 				 * 'app')
 				 * 
-				 * SOMETHING TO DO WITH Modules and layers crap!!!
+				 * humm... class hierarchy spans two classLoader
 				 */
 				f = (TwFunction) function;
 			} catch (Exception e) {
