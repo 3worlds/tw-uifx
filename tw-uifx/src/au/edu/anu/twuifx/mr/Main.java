@@ -1,21 +1,12 @@
 package au.edu.anu.twuifx.mr;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.List;
 
 import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
-import au.edu.anu.twcore.ecosystem.runtime.TwFunction;
-import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
-import au.edu.anu.twcore.ecosystem.runtime.biology.TwFunctionAdapter;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.OmugiClassLoader;
@@ -42,6 +33,7 @@ public class Main {
 	private Main() {
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		if (args.length < 1) {
 			System.out.println("Usage:");
@@ -65,13 +57,8 @@ public class Main {
 
 		}
 
-		if (Jars.getRunningJarFilePath(Main.class) == null) {
+		if (Jars.getRunningJarFilePath(Main.class) == null) 
 			loadUserClasses(userJar);
-		} else
-			OmugiClassLoader.setClassLoader(Thread.currentThread().getContextClassLoader());
-//			    System.out.println("Classloader of ArrayList:"
-//			        + FunctionNode.class.getClassLoader());
-		@SuppressWarnings("unchecked")
 		TreeGraph<TreeGraphNode, ALEdge> configGraph = (TreeGraph<TreeGraphNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
 		// TwConfigFactory labels are lost somewhere???
@@ -79,7 +66,6 @@ public class Main {
 		// generated classes are not accessible here?
 		List<Initialisable> initList = new LinkedList<>();
 		for (TreeGraphNode n : configGraph.nodes())
-//			if (n instanceof Initialisable)
 			initList.add((Initialisable) n);
 		Initialiser initer = new Initialiser(initList);
 		initer.initialise();
@@ -99,63 +85,7 @@ public class Main {
 	}
 
 	private static void loadUserClasses(File userJar) {
-		URL userUrl;
-		try {
-			userUrl = userJar.toURI().toURL();
-			URL path[] = { userUrl };
-//			ClassLoader parent = ClassLoader.getPlatformClassLoader();
-			ClassLoader parent = Thread.currentThread().getContextClassLoader();
-			URLClassLoader child = new URLClassLoader(path, parent);
-			OmugiClassLoader.setClassLoader(child);
-			// test code
-			try {
-				Class<? extends TwFunction> functionClass = (Class<? extends TwFunction>) Class
-						.forName("system1.Function1", true, child);
-				System.out.println(functionClass);
-				// ok to here
-				Constructor<? extends TwFunction> nodeConstructor = functionClass.getDeclaredConstructor();
-				System.out.println(nodeConstructor);
-				Object function = nodeConstructor.newInstance();
-				System.out.println(function.getClass());
-				System.out.println(function.getClass().getSuperclass());
-				System.out.println(function.getClass().getSuperclass().getSuperclass());
-				Class<?>[] intfs = function.getClass().getSuperclass().getSuperclass().getInterfaces();
-				System.out.println(intfs[0].getName());
-				System.out.println("function class loader: "+function.getClass().getClassLoader());				
-				TwFunction f = new MyChangeStateFunction();
-				System.out.println("f class loader: "+f.getClass().getClassLoader());
-		/*
-				 * fail here. class system1.Function1 cannot be cast to class
-				 * au.edu.anu.twcore.ecosystem.runtime.TwFunction (system1.Function1 is in
-				 * unnamed module of loader java.net.URLClassLoader @17c68925;
-				 * au.edu.anu.twcore.ecosystem.runtime.TwFunction is in unnamed module of loader
-				 * 'app')
-				 * 
-				 * humm... class hierarchy spans two classLoader
-				 * i.e. we are looking at two different class defs of TwFunction: one here in eclispe in the app classLoader and one in the 
-				 * twdep.jar inculded with the user generated classes
-				 * 
-				 * cf: https://stackoverflow.com/questions/50934610/unable-to-cast-to-interface-class-with-urlclassloader-and-reflection
-				 */
-				f = (TwFunction) function;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			//
-
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//		String pathSeparator = System
-//			    .getProperty("path.separator");
-//			String[] classPathEntries = System
-//			    .getProperty("java.class.path")
-//			    .split(pathSeparator);
-//			for (String s: classPathEntries) {
-//				System.out.println(s);
-//			}
-
+		OmugiClassLoader.setJarClassLoader(userJar);
 	}
 
 }

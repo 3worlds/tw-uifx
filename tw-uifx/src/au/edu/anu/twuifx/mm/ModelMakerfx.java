@@ -30,22 +30,15 @@
 
 package au.edu.anu.twuifx.mm;
 
-import java.io.File;
-
 import java.io.IOException;
 import java.net.URL;
 
-import javax.tools.ToolProvider;
-
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twcore.archetype.TWA;
-import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
@@ -94,7 +87,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		});
 	}
 
-	private boolean checkArchetype = false;
+//	private boolean checkArchetype = false;
 
 
 	@Override
