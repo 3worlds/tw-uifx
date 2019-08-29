@@ -118,6 +118,7 @@ public class Main {
 				System.out.println(function.getClass());
 				System.out.println(function.getClass().getSuperclass());
 				System.out.println(function.getClass().getSuperclass().getSuperclass());
+				System.out.println(function.getClass().getSuperclass().getSuperclass().getSuperclass());
 				TwFunction f = new MyChangeStateFunction();
 		/*
 				 * fail here. class system1.Function1 cannot be cast to class
@@ -126,11 +127,9 @@ public class Main {
 				 * au.edu.anu.twcore.ecosystem.runtime.TwFunction is in unnamed module of loader
 				 * 'app')
 				 * 
-				 * humm... class hierarchy spans two classLoader
+				 * humm... class hierarchy spans two classLoaders
 				 * i.e. we are looking at two different class defs of TwFunction: one here in eclispe in the app classLoader and one in the 
-				 * twdep.jar inculded with the user generated classes
-				 * 
-				 * cf: https://stackoverflow.com/questions/50934610/unable-to-cast-to-interface-class-with-urlclassloader-and-reflection
+				 * twdep.jar
 				 */
 				f = (TwFunction) function;
 			} catch (Exception e) {
