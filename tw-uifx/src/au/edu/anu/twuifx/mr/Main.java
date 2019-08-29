@@ -68,7 +68,7 @@ public class Main {
 		if (Jars.getRunningJarFilePath(Main.class) == null) {
 			loadUserClasses(userJar);
 		} else
-			OmugiClassLoader.setClassLoader(ClassLoader.getPlatformClassLoader());
+			OmugiClassLoader.setClassLoader(Thread.currentThread().getContextClassLoader());
 //			    System.out.println("Classloader of ArrayList:"
 //			        + FunctionNode.class.getClassLoader());
 		@SuppressWarnings("unchecked")
@@ -103,22 +103,27 @@ public class Main {
 		try {
 			userUrl = userJar.toURI().toURL();
 			URL path[] = { userUrl };
-			ClassLoader parent = ClassLoader.getPlatformClassLoader();
+//			ClassLoader parent = ClassLoader.getPlatformClassLoader();
+			ClassLoader parent = Thread.currentThread().getContextClassLoader();
 			URLClassLoader child = new URLClassLoader(path, parent);
 			OmugiClassLoader.setClassLoader(child);
 			// test code
 			try {
 				Class<? extends TwFunction> functionClass = (Class<? extends TwFunction>) Class
-						.forName("system1.Function1", false, child);
+						.forName("system1.Function1", true, child);
 				System.out.println(functionClass);
 				// ok to here
-				Constructor<? extends TwFunction> nodeConstructor = functionClass.getConstructor();
+				Constructor<? extends TwFunction> nodeConstructor = functionClass.getDeclaredConstructor();
 				System.out.println(nodeConstructor);
 				Object function = nodeConstructor.newInstance();
 				System.out.println(function.getClass());
 				System.out.println(function.getClass().getSuperclass());
 				System.out.println(function.getClass().getSuperclass().getSuperclass());
+				Class<?>[] intfs = function.getClass().getSuperclass().getSuperclass().getInterfaces();
+				System.out.println(intfs[0].getName());
+				System.out.println("function class loader: "+function.getClass().getClassLoader());				
 				TwFunction f = new MyChangeStateFunction();
+				System.out.println("f class loader: "+f.getClass().getClassLoader());
 		/*
 				 * fail here. class system1.Function1 cannot be cast to class
 				 * au.edu.anu.twcore.ecosystem.runtime.TwFunction (system1.Function1 is in
