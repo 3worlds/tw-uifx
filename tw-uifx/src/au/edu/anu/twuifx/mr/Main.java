@@ -14,6 +14,8 @@ import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
 import au.edu.anu.twcore.ecosystem.runtime.TwFunction;
+import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
+import au.edu.anu.twcore.ecosystem.runtime.biology.TwFunctionAdapter;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.OmugiClassLoader;
@@ -112,8 +114,21 @@ public class Main {
 				// ok to here
 				Constructor<? extends TwFunction> nodeConstructor = functionClass.getConstructor();
 				System.out.println(nodeConstructor);
-				TwFunction function = nodeConstructor.newInstance();
-				System.out.println(function);
+				Object function = nodeConstructor.newInstance();
+				System.out.println(function.getClass());
+				System.out.println(function.getClass().getSuperclass());
+				System.out.println(function.getClass().getSuperclass().getSuperclass());
+				TwFunction f = new MyChangeStateFunction();
+		/*
+				 * fail here. class system1.Function1 cannot be cast to class
+				 * au.edu.anu.twcore.ecosystem.runtime.TwFunction (system1.Function1 is in
+				 * unnamed module of loader java.net.URLClassLoader @17c68925;
+				 * au.edu.anu.twcore.ecosystem.runtime.TwFunction is in unnamed module of loader
+				 * 'app')
+				 * 
+				 * SOMETHING TO DO WITH Modules and layers crap!!!
+				 */
+				f = (TwFunction) function;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
