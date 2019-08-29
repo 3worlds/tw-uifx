@@ -1,14 +1,19 @@
 package au.edu.anu.twuifx.mr;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.List;
 
+import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
+import au.edu.anu.twcore.ecosystem.runtime.TwFunction;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.OmugiClassLoader;
@@ -57,9 +62,11 @@ public class Main {
 			System.exit(1);
 
 		}
-// needs to install this in the thread class loader?
-		// if not running from jar
-		loadUserClasses(userJar);		 
+
+		if (Jars.getRunningJarFilePath(Main.class) == null) {
+			loadUserClasses(userJar);
+		} else
+			OmugiClassLoader.setClassLoader(ClassLoader.getPlatformClassLoader());
 //			    System.out.println("Classloader of ArrayList:"
 //			        + FunctionNode.class.getClassLoader());
 		@SuppressWarnings("unchecked")
@@ -89,96 +96,42 @@ public class Main {
 		}
 	}
 
-	private static void loadUserClasses(File userJar)  {
+	private static void loadUserClasses(File userJar) {
 		URL userUrl;
 		try {
 			userUrl = userJar.toURI().toURL();
-			URL path[] = {userUrl};
+			URL path[] = { userUrl };
 			ClassLoader parent = ClassLoader.getPlatformClassLoader();
-			URLClassLoader child = new URLClassLoader(path,parent);
+			URLClassLoader child = new URLClassLoader(path, parent);
 			OmugiClassLoader.setClassLoader(child);
-//			File userJar = Project.makeFile(UserProjectJar.USERPROJECTJAR);
-//			URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-//			URL userUrl;
-//			try {
-//				userUrl = userJar.toURI().toURL();
-//				URL[] currentUrls = classLoader.getURLs();
-//				boolean found = false;
-//				for (URL currentUrl : currentUrls) {
-//					if (userUrl.sameFile(currentUrl)) {
-//						found = true;
-//						break;
-//					}
-//				}
-//				if (!found) {
-//					Class[] parameters = new Class[] { URL.class };
-//					Method method;
-//					method = URLClassLoader.class.getDeclaredMethod("addURL", parameters);
-//					method.setAccessible(true);
-//					method.invoke(classLoader, userUrl);
-//				}
-	//
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-			
-//			String pathSeparator = System
-//				    .getProperty("path.separator");
-//				String[] classPathEntries = System
-//				    .getProperty("java.class.path")
-//				    .split(pathSeparator);
-//				for (String s: classPathEntries) {
-//					System.out.println(s);
-//				}
-	} catch (MalformedURLException e) {
+			// test code
+			try {
+				Class<? extends TwFunction> functionClass = (Class<? extends TwFunction>) Class
+						.forName("system1.Function1", false, child);
+				System.out.println(functionClass);
+				// ok to here
+				Constructor<? extends TwFunction> nodeConstructor = functionClass.getConstructor();
+				System.out.println(nodeConstructor);
+				TwFunction function = nodeConstructor.newInstance();
+				System.out.println(function);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//
+
+		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+//		String pathSeparator = System
+//			    .getProperty("path.separator");
+//			String[] classPathEntries = System
+//			    .getProperty("java.class.path")
+//			    .split(pathSeparator);
+//			for (String s: classPathEntries) {
+//				System.out.println(s);
+//			}
 
 	}
-		// This typecast is no longer possible cf:
-		// https://blog.codefx.org/java/java-11-migration-guide/
-		/*-
-		 * Try:
-		 * URL path[] = { ... }; 
-		 ClassLoader parent = ClassLoader.getPlatformClassLoader(); 
-		 * URLClassLoader loader = new URLClassLoader(path, parent);
-		 */
-		//ClassLoader parent = OmugiClassLoader.getClassLoader();
-//		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		//URL userUrl;
-
-//		try {
-//			userUrl = userJar.toURI().toURL();
-//				URL path[] = {userUrl};
-//				OmugiClassLoader.setURLPaths(path);
-//				OmugiClassLoader.setURLClassLoader(path);
-//			} catch (MalformedURLException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			//URLClassLoader loader = new URLClassLoader(path, parent);
-			//URL[] currentUrls = loader.getURLs();
-//			boolean found = false;
-//			for (URL currentUrl : currentUrls) {
-//				if (userUrl.sameFile(currentUrl)) {
-//					found = true;
-//					break;
-//				}
-//			}
-//			if (!found) {
-//				Class[] parameters = new Class[] { URL.class };
-//				Method method;
-//				method = URLClassLoader.class.getDeclaredMethod("addURL", parameters);
-//				method.setAccessible(true);
-//				method.invoke(loader, userUrl);
-//			}
-//
-//		} catch (Exception e) {
-////			log.error("could not load user-defined classes");
-//			e.printStackTrace();
-//		}
-//
-//	}
 
 }
