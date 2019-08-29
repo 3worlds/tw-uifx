@@ -1,21 +1,12 @@
 package au.edu.anu.twuifx.mr;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.List;
 
 import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
-import au.edu.anu.twcore.ecosystem.runtime.TwFunction;
-import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
-import au.edu.anu.twcore.ecosystem.runtime.biology.TwFunctionAdapter;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.OmugiClassLoader;
@@ -42,6 +33,7 @@ public class Main {
 	private Main() {
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		if (args.length < 1) {
 			System.out.println("Usage:");
@@ -65,13 +57,8 @@ public class Main {
 
 		}
 
-		if (Jars.getRunningJarFilePath(Main.class) == null) {
+		if (Jars.getRunningJarFilePath(Main.class) == null) 
 			loadUserClasses(userJar);
-		} else
-			OmugiClassLoader.setClassLoader(ClassLoader.getPlatformClassLoader());
-//			    System.out.println("Classloader of ArrayList:"
-//			        + FunctionNode.class.getClassLoader());
-		@SuppressWarnings("unchecked")
 		TreeGraph<TreeGraphNode, ALEdge> configGraph = (TreeGraph<TreeGraphNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
 		// TwConfigFactory labels are lost somewhere???
@@ -79,7 +66,6 @@ public class Main {
 		// generated classes are not accessible here?
 		List<Initialisable> initList = new LinkedList<>();
 		for (TreeGraphNode n : configGraph.nodes())
-//			if (n instanceof Initialisable)
 			initList.add((Initialisable) n);
 		Initialiser initer = new Initialiser(initList);
 		initer.initialise();
@@ -99,6 +85,7 @@ public class Main {
 	}
 
 	private static void loadUserClasses(File userJar) {
+<<<<<<< HEAD
 		URL userUrl;
 		try {
 			userUrl = userJar.toURI().toURL();
@@ -150,6 +137,9 @@ public class Main {
 //				System.out.println(s);
 //			}
 
+=======
+		OmugiClassLoader.setJarClassLoader(userJar);
+>>>>>>> branch 'master' of git@gitlab.anu.edu.au:ThreeWorlds/tw-uifx.git
 	}
 
 }
