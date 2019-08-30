@@ -1,4 +1,32 @@
-package au.edu.anu.twuifx.mr;
+/**************************************************************************
+ *  TW-UIFX - ThreeWorlds User-Interface fx                               *
+ *                                                                        *
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
+ *       jacques.gignoux@upmc.fr                                          *
+ *       ian.davies@anu.edu.au                                            * 
+ *                                                                        *
+ *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
+ *  This is to separate concerns of UI implementation and the code for    *
+ *  these java programs.                                                  *
+ *                                                                        *
+ **************************************************************************                                       
+ *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
+ *                                                                        *
+ *  TW-UIFX is free software: you can redistribute it and/or modify       *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation, either version 3 of the License, or     *
+ *  (at your option) any later version.                                   *
+ *                                                                        *
+ *  TW-UIFX is distributed in the hope that it will be useful,            *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *  GNU General Public License for more details.                          *                         
+ *                                                                        *
+ *  You should have received a copy of the GNU General Public License     *
+ *  along with TW-UIFX.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
+ *                                                                        *
+ **************************************************************************/package au.edu.anu.twuifx.mr;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -19,15 +47,13 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
+
 /**
- * TODO: at the moment this is a dummy application Main class for testing the
- * jar packing in TwSystem. Of course it will have to change when ModelRunner is
- * functional
- * 
- * @author Jacques Gignoux - 14 août 2019
+ * @author Ian Davies
  *
+ * @date 30 Aug 2019
  */
-// This should now replace the stupid MrLauncher i wrote.
+// This replaces MrLauncher
 public class Main {
 
 	private Main() {
@@ -79,6 +105,7 @@ public class Main {
 			if (uiNode != null) {
 				// ok now we can start building the ui
 				System.out.println("Ready to launch UI");
+				ModelRunnerfx.launchUI(configGraph,  args) ;
 			} else {
 				System.out.println("Ready to run without UI?");
 			}
