@@ -50,7 +50,6 @@ public interface StructureEditable {
 	 */
 	public List<SimpleDataTreeNode> filterChildSpecs(Iterable<SimpleDataTreeNode> childNodeSpecs);
 
-	
 	 /* Filters a list of edgeSpecs to produce a list of duples of edge labels and end nodes */
 	public List<Duple<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs);
 

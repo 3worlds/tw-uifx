@@ -54,63 +54,59 @@ import fr.ens.biologie.generic.utils.Duple;
  * This interface is the contract between the archetype and what a builder (e.g
  * MM) requires
  * 
- * 
+ * TODO: All this needs careful documenting
  */
-// Develop in this library but move to tw-core later - saves time!!
+
 public interface Specifications {
-
-	// checking should be a static method of TWA?
-	/* True if the archetype is a valid archetype */
-//	public boolean complies();
-
-	/*
-	 * runs all checks against the given node . Nodes without an spec can't be
-	 * checked. I'm avoiding complies(AotGraph graph) at the moment
-	 */
-//	public boolean complies(TreeGraphNode node, SimpleDataTreeNode root);
 
 	/*
 	 * get specification of a given node from the configuration graph. If null, it
-	 * can't be checked.
+	 * won't be checked.
 	 */
 	public SimpleDataTreeNode getSpecsOf(String cClassId, String createdBy, TreeNode root, Set<String> discoveredFiles);
 
+	/*Returns the sub archetype spec of the given class of this baseSpec. Often will return null*/
 	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and
 	 * optional subClass.
 	 */
-	public Iterable<SimpleDataTreeNode> getChildSpecsOf(SimpleDataTreeNode baseSpec,
-			SimpleDataTreeNode subSpec, TreeNode root);
+	public Iterable<SimpleDataTreeNode> getChildSpecsOf(SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec,
+			TreeNode root);
 
 	/* edge specifications nodes of a node with this label and class */
 	public Iterable<SimpleDataTreeNode> getEdgeSpecsOf(SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec);
 
-	/* property specs of the given node spec (root) */
-	public Iterable<SimpleDataTreeNode> getPropertySpecsOf(SimpleDataTreeNode baseSpec,
-			SimpleDataTreeNode subSpec);
+	/*
+	 * Returns all property specs of the given spec, both the base class spec and
+	 * its optional sub class spec (can be null)
+	 */
+	public Iterable<SimpleDataTreeNode> getPropertySpecsOf(SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec);
 
-
+	/* Returns the integerRange class of the spec's multiplicity property */
 	public IntegerRange getMultiplicityOf(SimpleDataTreeNode spec);
 
-	/* True if node name must begin with upper case letter */
-	public boolean nameStartsWithUpperCase(SimpleDataTreeNode root);
-
+	/* True if node name must begin with upper case letter - not sure if should be here?*/
+	public boolean nameStartsWithUpperCase(SimpleDataTreeNode spec);
 
 	public List<Class<? extends TreeNode>> getSubClassesOf(SimpleDataTreeNode spec);
-	
-	public List<SimpleDataTreeNode> getQueries(SimpleDataTreeNode spec, Class<? extends Query>... queryClass);
 
+	/*
+	 * returns all query specs of the given query classes for the given parent spec
+	 */
+	public List<SimpleDataTreeNode> getQueries(SimpleDataTreeNode parentSpec, Class<? extends Query>... queryClass);
+
+	/* check the use of this. It should use the above function */
 	public List<String[]> getQueryStringTables(SimpleDataTreeNode spec, Class<? extends Query> queryClass);
 
-
-	/* returns false of no option chosen: expects user input*/
+	/* returns false if no option chosen: expects user input */
 	@SuppressWarnings("unchecked")
-	public boolean filterPropertyStringTableOptions(Iterable<SimpleDataTreeNode> propertySpecs, SimpleDataTreeNode baseSpec,
-			SimpleDataTreeNode subSpec, String childId,Class<? extends Query>... queryClasses);
+	public boolean filterPropertyStringTableOptions(Iterable<SimpleDataTreeNode> propertySpecs,
+			SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec, String childId,
+			Class<? extends Query>... queryClasses);
 
+	/*Returns a list of Duple<NodeLabel1,NodeLabel2> optons for the given query list*/
 	public List<Duple<String, String>> getNodeLabelDuples(List<SimpleDataTreeNode> queries);
-
 
 }
