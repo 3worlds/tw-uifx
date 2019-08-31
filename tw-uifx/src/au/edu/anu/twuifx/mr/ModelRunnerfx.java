@@ -36,14 +36,18 @@ import java.util.TimerTask;
 
 import com.sun.javafx.application.LauncherImpl;
 
-
+import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
+import au.edu.anu.twuifx.dialogs.Dialogsfx;
+import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.twcore.constants.EnumProperties;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -58,14 +62,14 @@ import javafx.stage.Stage;
  */
 public class ModelRunnerfx extends Application {
 	private static TreeGraphDataNode uiNode;
-	private static TreeGraph<TreeGraphNode,ALEdge> config;
+	private static TreeGraph<TreeGraphNode, ALEdge> config;
 	private MrUIManager uiManager;
 	private MrController controller;
 	private Stage stage;
 
-	public static void launchUI(TreeGraph<TreeGraphNode,ALEdge> config1, String[] args) {
+	public static void launchUI(TreeGraph<TreeGraphNode, ALEdge> config1, String[] args) {
 		config = config1;
-		//uiNode = config.findNode(N_UI.toString() + ":");
+		// uiNode = config.findNode(N_UI.toString() + ":");
 		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
 
 	}
@@ -79,7 +83,8 @@ public class ModelRunnerfx extends Application {
 	@Override
 	public void init() throws Exception {
 		// we need the ordered list of nodes to initialise
-		//AotList<TreeGraphDataNode> list = config.getInitialiser().getInitialisationList();
+		// AotList<TreeGraphDataNode> list =
+		// config.getInitialiser().getInitialisationList();
 		int i = 1;
 //		double size = list.size();
 //		for (TreeGraphDataNode n : list) {
@@ -96,30 +101,30 @@ public class ModelRunnerfx extends Application {
 	}
 
 	private static final long maxSplashDelay = 2000;
+
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage primaryStage) throws Exception {
 		// we could build the scene in an init() method.??
-		this.stage = stage;
+		EnumProperties.recordEnums();
+		this.stage = primaryStage;
 		stage.setWidth(800);
 		stage.setHeight(600);
 		String title = Project.getDisplayName();
 		stage.titleProperty().set(title);
-		// Create a runTime dir within this project and create a preferences file if not
-		// already present
-		File prefFile = Project.makeFile(ProjectPaths.RUNTIME, "preferences.dsl");
-		prefFile.getParentFile().mkdirs();
-//		pref = new Preferences("RunTimePreferences", prefFile, log);
-//		MrController.setPreferences(pref);
 		setUserAgentStylesheet(STYLESHEET_CASPIAN);
-		// GraphState.setTitleProperty(stage.titleProperty(), null);
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ModelRunnerfx.class.getResource("view/Mr.fxml"));
 		Parent root = (Parent) loader.load();
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 
-//		Dialogs.setParent(root.getScene().getWindow());
+		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
+		GraphState.initialise(null);
+
 		controller = loader.getController();
+		scene.getWindow().setOnCloseRequest((e) -> {
+			stop();
+		});
 //		uiManager = new MrUIManager(uiNode, controller.getToolBar(), controller.getTopLeft(), controller.getTopRight(),
 //				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
 //				controller.getWidgetMenu(), stage.getScene().getWindow());
@@ -131,7 +136,7 @@ public class ModelRunnerfx extends Application {
 //			uiManager.loadPreferences();
 //			controller.loadPrefs(pref, stage);
 			// Hide the splash window
-			// 
+			//
 			long endTime = System.currentTimeMillis();
 			long timeElapsed = endTime - MrSplash.startTime;
 			long delay = maxSplashDelay - timeElapsed;
@@ -140,8 +145,8 @@ public class ModelRunnerfx extends Application {
 				TimerTask task = new TimerTask() {
 					public void run() {
 						Platform.runLater(() -> {
-								MrSplash.hideStage();
-								stage.toFront();
+							MrSplash.hideStage();
+							stage.toFront();
 						});
 					}
 				};
@@ -149,7 +154,7 @@ public class ModelRunnerfx extends Application {
 			} else {
 				MrSplash.hideStage();
 				stage.toFront();
-			}			
+			}
 		});
 	}
 
@@ -157,6 +162,8 @@ public class ModelRunnerfx extends Application {
 	public void stop() {
 //		controller.savePrefs(pref, stage);
 //		uiManager.savePreferences();
+		Platform.exit();
+		System.exit(0);
 //		pref.flush();
 	}
 

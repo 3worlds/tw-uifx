@@ -61,23 +61,14 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	private MmController controller;
 
 	private void createMainWindow() throws IOException {
-		System.out.println("Before 'FXMLLoader loader = new FXMLLoader()'");
 		FXMLLoader loader = new FXMLLoader();
-		System.out.println("Before ModelMakerfx.class.getResource()");
 		URL URLView = ModelMakerfx.class.getResource("view/Mm.fxml");
-		System.out.println("Before 'setLocation': URLView = "+URLView);
 		loader.setLocation(URLView);
-		System.out.println("Before 'root = (Parent) loader.load()'");
 		root = (Parent) loader.load();
-		System.out.println("Before 'controller = loader.getController()'");
 		controller = loader.getController();
-		System.out.println("Before 'Scene scene = new Scene(root)'");
 		Scene scene = new Scene(root);
-		System.out.println("Before 'mainStage.setScene(scene)'");
 		mainStage.setScene(scene);
-		System.out.println("Before 'controller.setStage(mainStage)'");
 		controller.setStage(mainStage);
-		System.out.println("Before 'scene.getWindow()'");
 		scene.getWindow().setOnCloseRequest((e) -> {
 			if (!controller.canClose()) {
 				e.consume();

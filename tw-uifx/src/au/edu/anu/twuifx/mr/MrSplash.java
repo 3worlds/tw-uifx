@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.InputStream;
 
 import au.edu.anu.rscs.aot.util.Resources;
+import au.edu.anu.twuifx.images.Images;
 import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.geometry.Pos;
@@ -104,16 +105,7 @@ public class MrSplash extends Preloader {
 			title.setOpacity(0.8);
 //			title.setStyle("-fx-effect: innershadow(gaussian, gray, 5, 1.0, 0, 0);");
 
-			Image image;
-			if (MrLauncher.runningFromJAR()) {
-				InputStream ins = MrLauncher
-						.getProjectResource("au/edu/anu/twuifx/images/3worlds-5.jpg");
-				image = new Image(ins);
-			} else {
-				File file = Resources.getFile("3worlds-5.jpg", "au.edu.anu.twuifx.images");
-				image = new Image(file.toURI().toString());
-			}
-			ImageView imageView = new ImageView(image);
+			ImageView imageView = new ImageView(new Image( Images.class.getResourceAsStream("3worlds-5.jpg")));
 			imageView.preserveRatioProperty().set(true);
 
 			root.setTop(title);
