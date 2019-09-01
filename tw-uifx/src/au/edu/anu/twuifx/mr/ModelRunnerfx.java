@@ -36,6 +36,7 @@ import java.util.TimerTask;
 
 import com.sun.javafx.application.LauncherImpl;
 
+import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
@@ -63,7 +64,8 @@ import javafx.stage.Stage;
 public class ModelRunnerfx extends Application {
 	private static TreeGraphDataNode uiNode;
 	private static TreeGraph<TreeGraphNode, ALEdge> config;
-	private MrUIManager uiManager;
+	//private MrUIManager uiManager;
+	private UIDeployer uiDeployer;
 	private MrController controller;
 	private Stage stage;
 
@@ -130,9 +132,12 @@ public class ModelRunnerfx extends Application {
 //				controller.getWidgetMenu(), stage.getScene().getWindow());
 
 		stage.show();
+		Preferences.initialise(Project.makeRuntimePreferencesFile());
 		stage.toBack();
-
 		Platform.runLater(() -> {
+			
+			controller.getPreferences();
+
 //			uiManager.loadPreferences();
 //			controller.loadPrefs(pref, stage);
 			// Hide the splash window
@@ -160,8 +165,10 @@ public class ModelRunnerfx extends Application {
 
 	@Override
 	public void stop() {
+		controller.putPreferences();
 //		controller.savePrefs(pref, stage);
 //		uiManager.savePreferences();
+		Preferences.flush();
 		Platform.exit();
 		System.exit(0);
 //		pref.flush();

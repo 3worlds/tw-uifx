@@ -548,7 +548,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	// called when opening a project
 	public void getPreferences() {
-		Preferences.initialise(Project.makeProjectPreferencesFile());
 		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
 				stage.getHeight());
 		Platform.runLater(() -> {

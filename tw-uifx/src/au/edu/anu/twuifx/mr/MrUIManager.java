@@ -50,6 +50,7 @@ import javafx.stage.Window;
  * 
  * TODO: enact all possible property settings for each of the 10 container classes (if hasProperty("blah"); etc
  */
+@Deprecated
 public class MrUIManager {
 	private Menu userMenu;
 	//private Preferences pref;
