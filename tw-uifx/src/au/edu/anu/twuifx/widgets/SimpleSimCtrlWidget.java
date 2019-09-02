@@ -103,6 +103,7 @@ public class SimpleSimCtrlWidget extends AbstractWidget{
 		// toggle these graphics
 //		btnRunPause.setGraphic(runGraphic);
 //		btnRunPause.setGraphic(pauseGraphic);
+		// possibly nice to have run/pause/contine(running)
 		// issue command and manage button logic (??)
 		return null;
 	}
