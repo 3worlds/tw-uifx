@@ -68,6 +68,8 @@ public class TwSpecifications implements //
 		if (subClass != null) {
 			String parent = (String) baseSpecs.properties().getPropertyValue(aaIsOfClass);
 			Tree<?> subClassTree = getSubArchetype(baseSpecs, subClass);
+			if (subClassTree==null)
+				return null;
 			List<SimpleDataTreeNode> specs= (List<SimpleDataTreeNode>) get(subClassTree.root().getChildren(),
 					selectOneOrMany(hasProperty(aaIsOfClass, parent)));
 			if (specs.size()==1)
@@ -237,14 +239,15 @@ public class TwSpecifications implements //
 	@SuppressWarnings("unchecked")
 	private Tree<? extends TreeNode> getSubArchetype(SimpleDataTreeNode spec, Class<? extends TreeNode> subClass) {
 		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
-				selectOneOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
+				selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 		for (SimpleDataTreeNode constraint : constraints) {
 			StringTable pars = (StringTable) constraint.properties().getPropertyValue(twaParameters);
 			if (pars.getWithFlatIndex(1).equals(subClass.getName())) {
 				return TWA.getSubArchetype(pars.get(2));
 			}
 		}
-		throw new TwuifxException("Sub archetype graph not found for " + subClass.getName());
+//		throw new TwuifxException("Sub archetype graph not found for " + subClass.getName());
+		return null;
 	}
 
 	private SimpleDataTreeNode getConstraint(SimpleDataTreeNode spec, String constraintClass) {

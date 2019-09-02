@@ -30,10 +30,6 @@
 
 package au.edu.anu.twuifx.mr;
 
-import java.io.File;
-import java.io.InputStream;
-
-import au.edu.anu.rscs.aot.util.Resources;
 import au.edu.anu.twuifx.images.Images;
 import javafx.application.Platform;
 import javafx.application.Preloader;

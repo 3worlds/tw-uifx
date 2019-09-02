@@ -27,30 +27,36 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mr;
+package au.edu.anu.twuifx.widgets;
 
-import au.edu.anu.twuifx.mr.view.MrController;
+import au.edu.anu.twcore.ecosystem.runtime.ui.AbstractWidget;
+import fr.cnrs.iees.properties.SimplePropertyList;
 
+public class LabelValuePair extends AbstractWidget{
 
-/**
- * @author Ian Davies
- *
- * @date 2 Sep 2019
- */
-public class UIDeployer {
-
-	public UIDeployer(MrController controller) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public void getPreferences() {
+	@Override
+	public void setProperties(SimplePropertyList properties) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void putPreferences() {
+	@Override
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public Object getUserInterfaceContainer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getMenuContainer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

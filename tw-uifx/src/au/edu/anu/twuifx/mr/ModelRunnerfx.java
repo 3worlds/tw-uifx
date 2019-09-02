@@ -64,7 +64,6 @@ import javafx.stage.Stage;
 public class ModelRunnerfx extends Application {
 	private static TreeGraphDataNode uiNode;
 	private static TreeGraph<TreeGraphNode, ALEdge> config;
-	//private MrUIManager uiManager;
 	private UIDeployer uiDeployer;
 	private MrController controller;
 	private Stage stage;
@@ -132,16 +131,14 @@ public class ModelRunnerfx extends Application {
 //				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
 //				controller.getWidgetMenu(), stage.getScene().getWindow());
 
+		uiDeployer = new UIDeployer(controller);
 		stage.show();
 		stage.toBack();
 		Platform.runLater(() -> {
 			Preferences.initialise(Project.makeRuntimePreferencesFile());
 			controller.getPreferences();
-
-//			uiManager.loadPreferences();
-//			controller.loadPrefs(pref, stage);
-			// Hide the splash window
-			//
+			uiDeployer.getPreferences();
+			// hide splash after set delay
 			long endTime = System.currentTimeMillis();
 			long timeElapsed = endTime - MrSplash.startTime;
 			long delay = maxSplashDelay - timeElapsed;
@@ -166,12 +163,10 @@ public class ModelRunnerfx extends Application {
 	@Override
 	public void stop() {
 		controller.putPreferences();
-//		controller.savePrefs(pref, stage);
-//		uiManager.savePreferences();
+		uiDeployer.putPreferences();
 		Preferences.flush();
 		Platform.exit();
 		System.exit(0);
-//		pref.flush();
 	}
 
 }
