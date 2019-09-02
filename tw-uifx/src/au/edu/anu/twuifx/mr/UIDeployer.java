@@ -29,8 +29,9 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mr;
 
-import au.edu.anu.twcore.ecosystem.runtime.ui.Widget;
+
 import au.edu.anu.twcore.ui.WidgetNode;
+import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;

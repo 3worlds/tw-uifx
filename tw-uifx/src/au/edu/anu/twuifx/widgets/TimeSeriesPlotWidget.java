@@ -29,7 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import au.edu.anu.twcore.ecosystem.runtime.ui.AbstractWidget;
+import au.edu.anu.twcore.ui.runtime.AbstractWidget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 
 public class TimeSeriesPlotWidget extends AbstractWidget{
