@@ -58,5 +58,17 @@ public class TimeSeriesPlotWidget extends AbstractWidget{
 		
 	}
 
+	@Override
+	public void putPreferences() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getPreferences() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

@@ -95,17 +95,17 @@ public class Main {
 				.loadGraphFromFile(Project.makeConfigurationFile());
 //		 Humm... I imagine the experiement deployer will be responsible for node init
 //		Therefore, creating the widget ui should not be a part of init()
-//		List<Initialisable> initList = new LinkedList<>();
-//		for (TreeGraphNode n : configGraph.nodes())
-//			initList.add((Initialisable) n);
-//		Initialiser initer = new Initialiser(initList);
-//		initer.initialise();
-//		if (initer.errorList() != null) {
-//			for (InitialiseMessage msg : initer.errorList()) 
-//				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
-//			System.exit(1);
-//		}else {
-		TreeGraphNode uiNode = (TreeGraphNode) get(configGraph.root().getChildren(),
+		List<Initialisable> initList = new LinkedList<>();
+		for (TreeGraphNode n : configGraph.nodes())
+			initList.add((Initialisable) n);
+		Initialiser initer = new Initialiser(initList);
+		initer.initialise();
+		if (initer.errorList() != null) {
+			for (InitialiseMessage msg : initer.errorList()) 
+				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
+			System.exit(1);
+		}
+			TreeGraphNode uiNode = (TreeGraphNode) get(configGraph.root().getChildren(),
 				selectZeroOrOne(hasTheLabel(N_UI.label())));
 		if (uiNode != null) {
 			// ok now we can start building the ui

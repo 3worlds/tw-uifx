@@ -29,8 +29,17 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import au.edu.anu.twcore.ecosystem.runtime.ui.AbstractWidget;
+import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 /**
  * @author Ian Davies
@@ -38,6 +47,12 @@ import fr.cnrs.iees.properties.SimplePropertyList;
  * @date 2 Sep 2019
  */
 public class SimpleSimCtrlWidget extends AbstractWidget{
+	private Button btnRunPause;
+	private Button btnStep;
+	private Button btnReset;
+	private List<Button> buttons;
+	private ImageView runGraphic;
+	private ImageView pauseGraphic;
 
 	@Override
 	public void setProperties(SimplePropertyList properties) {
@@ -47,18 +62,71 @@ public class SimpleSimCtrlWidget extends AbstractWidget{
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		// TODO Auto-generated method stub
+		runGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Play16.gif")));
+		pauseGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Pause16.gif")));
+		btnRunPause = new Button("", runGraphic);
+		btnRunPause.setTooltip(new Tooltip("Run/Pause simulation"));
+		btnStep = new Button("", new ImageView(new Image(Images.class.getResourceAsStream("StepForward16.gif"))));
+		btnStep.setTooltip(new Tooltip("Step forward one timer event"));
+		btnReset = new Button("", new ImageView(new Image(Images.class.getResourceAsStream("Stop16.gif"))));
+		btnReset.setTooltip(new Tooltip("Reset to start"));
+		btnReset.setDisable(true);
+
+		buttons = new ArrayList<>();
+		buttons.add(btnRunPause);
+		buttons.add(btnStep);
+		buttons.add(btnReset);
+
+		btnRunPause.setOnAction(e -> handleRunPausePressed());
+		btnStep.setOnAction(e -> handleStepPressed());
+		btnReset.setOnAction(e -> handleResetPressed());
+
+		HBox pane = new HBox();
+		pane.getChildren().addAll(buttons);
+		return pane;
+	}
+
+	private Object handleResetPressed() {
+		System.out.println("RESET PRESSED");
+		// issue command and manage button logic (??)
+		return null;
+	}
+
+	private Object handleStepPressed() {
+		System.out.println("STEP PRESSED");
+		// issue command and manage button logic (??)
+		return null;
+	}
+
+	private Object handleRunPausePressed() {
+		System.out.println("RUN/PAUSE PRESSED");
+		// toggle these graphics
+//		btnRunPause.setGraphic(runGraphic);
+//		btnRunPause.setGraphic(pauseGraphic);
+		// issue command and manage button logic (??)
 		return null;
 	}
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
+		//No options here
 		return null;
 	}
 
 	@Override
 	public void reset() {
+		// reset simulation(s)? I think this is circular - do nothing
+		
+	}
+
+	@Override
+	public void putPreferences() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getPreferences() {
 		// TODO Auto-generated method stub
 		
 	}

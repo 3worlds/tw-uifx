@@ -30,6 +30,11 @@
 
 package au.edu.anu.twuifx.mr;
 
+import static au.edu.anu.rscs.aot.queries.CoreQueries.hasTheLabel;
+import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrOne;
+import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UI;
+
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -62,7 +67,7 @@ import javafx.stage.Stage;
  * Date 18 Dec. 2018
  */
 public class ModelRunnerfx extends Application {
-	private static TreeGraphDataNode uiNode;
+	private static TreeGraphNode uiNode;
 	private static TreeGraph<TreeGraphNode, ALEdge> config;
 	private UIDeployer uiDeployer;
 	private MrController controller;
@@ -70,7 +75,8 @@ public class ModelRunnerfx extends Application {
 
 	public static void launchUI(TreeGraph<TreeGraphNode, ALEdge> config1, String[] args) {
 		config = config1;
-		// uiNode = config.findNode(N_UI.toString() + ":");
+		uiNode = (TreeGraphNode) get(config.root().getChildren(),
+				selectZeroOrOne(hasTheLabel(N_UI.label())));
 		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
 
 	}
@@ -131,7 +137,7 @@ public class ModelRunnerfx extends Application {
 //				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
 //				controller.getWidgetMenu(), stage.getScene().getWindow());
 
-		uiDeployer = new UIDeployer(controller);
+		uiDeployer = new UIDeployer(uiNode,controller);
 		stage.show();
 		stage.toBack();
 		Platform.runLater(() -> {
