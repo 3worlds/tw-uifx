@@ -124,6 +124,7 @@ public class ModelRunnerfx extends Application {
 		GraphState.initialise(null);
 
 		controller = loader.getController();
+		controller.setStage(stage);
 		scene.getWindow().setOnCloseRequest((e) -> {
 			stop();
 		});
@@ -132,10 +133,9 @@ public class ModelRunnerfx extends Application {
 //				controller.getWidgetMenu(), stage.getScene().getWindow());
 
 		stage.show();
-		Preferences.initialise(Project.makeRuntimePreferencesFile());
 		stage.toBack();
 		Platform.runLater(() -> {
-			
+			Preferences.initialise(Project.makeRuntimePreferencesFile());
 			controller.getPreferences();
 
 //			uiManager.loadPreferences();

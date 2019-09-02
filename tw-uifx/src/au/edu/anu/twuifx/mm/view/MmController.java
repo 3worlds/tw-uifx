@@ -524,7 +524,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			Preferences.initialise(Project.makeProjectPreferencesFile());
+//			Preferences.initialise(Project.makeProjectPreferencesFile());
 			Preferences.putString(UserProjectPath, userProjectPath.get());
 			Preferences.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
 					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
@@ -548,6 +548,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	// called when opening a project
 	public void getPreferences() {
+		Preferences.initialise(Project.makeProjectPreferencesFile());
 		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
 				stage.getHeight());
 		Platform.runLater(() -> {

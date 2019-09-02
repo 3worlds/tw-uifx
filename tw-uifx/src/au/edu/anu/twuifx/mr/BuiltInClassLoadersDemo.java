@@ -5,6 +5,8 @@ import java.sql.Date;
 public class BuiltInClassLoadersDemo {
 
     public static void main(String[] args) {
+    	ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
+    	printClassLoaderDetails(threadClassLoader);
 
         BuiltInClassLoadersDemo demoObject = new BuiltInClassLoadersDemo();
 

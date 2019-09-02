@@ -134,7 +134,6 @@ public class MrController {
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-//			Preferences.initialise(Project.makeRuntimePreferencesFile());
 			Preferences.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 			Preferences.putBoolean(mainMaximized, stage.isMaximized());
 			Preferences.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
@@ -145,8 +144,8 @@ public class MrController {
 	}
 
 	public void getPreferences() {
-//		Preferences.initialise(Project.makeProjectPreferencesFile());
 		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+//		double[] r = Preferences.getDoubles(mainFrameName, 0, 0, 500, 500);
 		stage.setX(r[0]);
 		stage.setY(r[1]);
 		stage.setWidth(r[2]);

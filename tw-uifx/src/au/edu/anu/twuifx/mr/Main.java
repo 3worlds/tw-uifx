@@ -26,7 +26,8 @@
  *  along with TW-UIFX.                                                   *
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
- **************************************************************************/package au.edu.anu.twuifx.mr;
+ **************************************************************************/
+package au.edu.anu.twuifx.mr;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -36,6 +37,7 @@ import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.impl.ALEdge;
@@ -46,7 +48,6 @@ import fr.ens.biologie.generic.Initialisable;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
-
 
 /**
  * @author Ian Davies
@@ -76,6 +77,8 @@ public class Main {
 			System.exit(1);
 		}
 		Project.open(prjDir);
+		// Make the runtime dir, otherwise saving prefs will crash
+		Project.makeFile(ProjectPaths.RUNTIME).mkdirs();
 
 		// If we are not running from a jar the load the generated classes
 		if (Jars.getRunningJarFilePath(Main.class) == null) {
@@ -86,29 +89,30 @@ public class Main {
 			}
 			OmugiClassLoader.setJarClassLoader(userJar);
 		} else {
-			// we are running from a jar so all classes are here.
+			// Nothing to do. We are running from a jar so all classes are here.
 		}
 		TreeGraph<TreeGraphNode, ALEdge> configGraph = (TreeGraph<TreeGraphNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
-		List<Initialisable> initList = new LinkedList<>();
-		for (TreeGraphNode n : configGraph.nodes())
-			initList.add((Initialisable) n);
-		Initialiser initer = new Initialiser(initList);
-		initer.initialise();
-		if (initer.errorList() != null)
-			for (InitialiseMessage msg : initer.errorList()) {
-				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
-			}
-		else {
-			TreeGraphNode uiNode = (TreeGraphNode) get(configGraph.root().getChildren(),
-					selectZeroOrOne(hasTheLabel(N_UI.label())));
-			if (uiNode != null) {
-				// ok now we can start building the ui
-				System.out.println("Ready to launch UI");
-				ModelRunnerfx.launchUI(configGraph,  args) ;
-			} else {
-				System.out.println("Ready to run without UI?");
-			}
+//		 Humm... I imagine the experiement deployer will be responsible for node init
+//		Therefore, creating the widget ui should not be a part of init()
+//		List<Initialisable> initList = new LinkedList<>();
+//		for (TreeGraphNode n : configGraph.nodes())
+//			initList.add((Initialisable) n);
+//		Initialiser initer = new Initialiser(initList);
+//		initer.initialise();
+//		if (initer.errorList() != null) {
+//			for (InitialiseMessage msg : initer.errorList()) 
+//				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
+//			System.exit(1);
+//		}else {
+		TreeGraphNode uiNode = (TreeGraphNode) get(configGraph.root().getChildren(),
+				selectZeroOrOne(hasTheLabel(N_UI.label())));
+		if (uiNode != null) {
+			// ok now we can start building the ui
+			System.out.println("Ready to launch UI");
+			ModelRunnerfx.launchUI(configGraph, args);
+		} else {
+			System.out.println("Ready to run without UI?");
 		}
 	}
 
