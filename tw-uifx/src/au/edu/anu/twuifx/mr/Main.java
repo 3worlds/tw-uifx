@@ -81,16 +81,25 @@ public class Main {
 		Project.makeFile(ProjectPaths.RUNTIME).mkdirs();
 
 		// If we are not running from a jar the load the generated classes
-		if (Jars.getRunningJarFilePath(Main.class) == null) {
-			File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
-			if (!userJar.exists()) {
-				System.out.println("User generated classes not found: [" + userJar + "]");
-				System.exit(1);
-			}
-			OmugiClassLoader.setJarClassLoader(userJar);
-		} else {
-			// Nothing to do. We are running from a jar so all classes are here.
+//		if (Jars.getRunningJarFilePath(Main.class) == null) {
+//			File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
+//			if (!userJar.exists()) {
+//				System.out.println("User generated classes not found: [" + userJar + "]");
+//				System.exit(1);
+//			}
+//			OmugiClassLoader.setJarClassLoader(userJar);
+//		} else {
+//			// Nothing to do. We are running from a jar so all classes are here.
+//		}
+		
+		// OK try this regardless
+		File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
+		if (!userJar.exists()) {
+			System.out.println("User generated classes not found: [" + userJar + "]");
+			System.exit(1);
 		}
+		OmugiClassLoader.setJarClassLoader(userJar);
+
 		TreeGraph<TreeGraphNode, ALEdge> configGraph = (TreeGraph<TreeGraphNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
 //		 Humm... I imagine the experiement deployer will be responsible for node init
