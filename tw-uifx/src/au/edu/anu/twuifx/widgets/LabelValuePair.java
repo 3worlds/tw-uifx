@@ -30,11 +30,14 @@
 package au.edu.anu.twuifx.widgets;
 
 
-import au.edu.anu.twcore.ui.runtime.AbstractWidget;
+import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import au.edu.anu.rscs.aot.graph.property.Property;
+import au.edu.anu.twcore.data.runtime.DataMessageTypes;
+import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 
 /**
  * @author Ian Davies
@@ -42,7 +45,14 @@ import javafx.scene.layout.HBox;
  * @date 3 Sep 2019
  */
 // listens to what??
-public class LabelValuePair extends AbstractWidget{
+public class LabelValuePair 
+		extends AbstractDisplayWidget<Property>
+		implements Widget {
+	
+	public LabelValuePair() {
+		super(DataMessageTypes.VALUE_PAIR);
+	}
+
 	private Label label;
 	private Label value;
 
@@ -71,6 +81,16 @@ public class LabelValuePair extends AbstractWidget{
 	}
 	@Override
 	public void setProperties(String id,SimplePropertyList properties) {
+	}
+
+	@Override
+	public void onDataMessage(Property data) {
+		// TODO Auto-generated method stub
+		// when plugged to a simulator through an edge with label "trackTime"
+		// this method will receive a pair with label="time" and value=<long>, the current time
+		// of the attached simulator (dont forget there could be many simulators)
+		data.getKey(); // = "time"
+		data.getValue(); // = the current time as a long
 	}
 
 

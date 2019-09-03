@@ -54,8 +54,6 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
-// JG - NB this widget should be called ExperimentControlWidget because it doesnt control the
-// simulators directly - this is done by the Experiment Deployer.
 public class ExperimentControlWidget extends ControlWidget {
 
 	private Button btnRunPause;
@@ -147,7 +145,6 @@ public class ExperimentControlWidget extends ControlWidget {
 	private void setButtonLogic() {
 		// processStatus is not in the application thread
 		Platform.runLater(() -> {
-//			System.out.println("Current state: " + state);
 			if (state.equals(waiting.name())) {
 				setButtons(false, false, true, runGraphic);
 				return;
