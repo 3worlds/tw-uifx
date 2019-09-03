@@ -70,7 +70,7 @@ public class LabelValuePair extends AbstractWidget{
 	public void getPreferences() {
 	}
 	@Override
-	public void setProperties(SimplePropertyList properties) {
+	public void setProperties(String id,SimplePropertyList properties) {
 	}
 
 

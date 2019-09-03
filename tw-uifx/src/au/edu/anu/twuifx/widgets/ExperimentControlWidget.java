@@ -189,7 +189,7 @@ public class ExperimentControlWidget extends ControlWidget {
 	}
 
 	@Override
-	public void setProperties(SimplePropertyList properties) {
+	public void setProperties(String id,SimplePropertyList properties) {
 	}
 
 	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {

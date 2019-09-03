@@ -29,8 +29,15 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
+import java.util.List;
+
 import au.edu.anu.twcore.ui.runtime.AbstractWidget;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.twcore.constants.TimeScaleType;
+import fr.cnrs.iees.twcore.constants.TimeUnits;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 
 /**
  * @author Ian Davies
@@ -38,17 +45,45 @@ import fr.cnrs.iees.properties.SimplePropertyList;
  * @date 2 Sep 2019
  */
 public class TimeDisplayWidget extends AbstractWidget{
+	private TimeUnits smallest;
+	private Label lblTime;
+	private TimeScaleType timeScale;
+	private List<TimeUnits> units;
+	private long startTime;
+
+//	PayloadReader reader = metadata.payloadReader();
+//
+//	startTime = reader.readLong();
+//	timeScale = TimeScaleType.valueOf(reader.readString());
+//	TimeUnits largest = TimeUnits.valueOf(reader.readString());
+//	smallest = TimeUnits.valueOf(reader.readString());
+//	SortedSet<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
+//	units = new ArrayList<>();
+//	for (TimeUnits allowed : allowable) {
+//		if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0) {
+//			units.add(allowed);
+//		}
+//	}
+//	// ensure sorted largest to smallest
+//	units.sort((first, second) -> {
+//		return second.compareTo(first);
+//	});
 
 	@Override
-	public void setProperties(SimplePropertyList properties) {
+	public void setProperties(String id,SimplePropertyList properties) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		HBox content = new HBox();
+		// top, right, bottom, and left padding
+		content.setPadding(new Insets(5, 1, 1, 2));
+		content.setSpacing(5);
+		//content.getChildren().addAll(tdm.getTimeLabel());
+		return content;
+
 	}
 
 	@Override

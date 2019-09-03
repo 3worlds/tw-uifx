@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.widgets;
 
 import java.text.DecimalFormat;
 
+import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
 import au.edu.anu.twcore.ui.runtime.AbstractWidget;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -39,6 +40,7 @@ import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -82,11 +84,11 @@ public class SingleGridWidget extends AbstractWidget{
 	private static Font font = Font.font("Verdana", fontSize);
 	private int mx;
 	private int my;
+	private String id;
 
 	@Override
-	public void setProperties(SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-		
+	public void setProperties(String id,SimplePropertyList properties) {
+		this.id = id;
 	}
 
 	@Override
@@ -105,16 +107,53 @@ public class SingleGridWidget extends AbstractWidget{
 		return null;
 	}
 
+	private static final String keyScaleX = "scaleX";
+	private static final String keyScaleY = "scaleY";
+	private static final String keyScrollH = "scrollH";
+	private static final String keyScrollV = "scrollV";
+	private static final String keyResolution = "resolution";
+	private static final String keyDecimalPlaces = "decimalPlaces";
+	private static final String keyPalette = "palette";
+	private static final String keyMinValue = "minValue";
+	private static final String keyMaxValue = "maxValue";
 
 	@Override
 	public void putPreferences() {
-		// TODO Auto-generated method stub
-		
+		Preferences.putDouble(id + keyScaleX, zoomTarget.getScaleX());
+		Preferences.putDouble(id + keyScaleY, zoomTarget.getScaleY());
+		Preferences.putDouble(id + keyScrollH, scrollPane.getHvalue());
+		Preferences.putDouble(id + keyScrollV, scrollPane.getVvalue());
+		Preferences.putDouble(id + keyResolution, resolution);
+		Preferences.putDouble(id + keyDecimalPlaces, decimalPlaces);
+		Preferences.putDouble(id + keyMinValue, minValue);
+		Preferences.putDouble(id + keyMaxValue, maxValue);
+		//Preferences.putDouble(id + keyPalette, paletteType);
+
 	}
 
 	@Override
 	public void getPreferences() {
-		// TODO Auto-generated method stub
+		//paletteType = (PaletteTypes) pref.get(prefix + keyPalette, PaletteTypes.BLUELIMERED);
+		//palette = paletteType.getPalette();
+		Image image = getLegend(10, 100);
+		paletteImageView.setImage(image);
+		minValue = Preferences.getDouble(id+ keyMinValue, 0.0);
+		maxValue = Preferences.getDouble(id+  keyMaxValue, 1.0);
+
+		zoomTarget.setScaleX(Preferences.getDouble(id+ keyScaleX, zoomTarget.getScaleX()));
+		zoomTarget.setScaleY(Preferences.getDouble(id+ keyScaleY, zoomTarget.getScaleY()));
+		scrollPane.setHvalue(Preferences.getDouble(id+  keyScrollH, scrollPane.getHvalue()));
+		scrollPane.setVvalue(Preferences.getDouble(id+  keyScrollV, scrollPane.getVvalue()));
+		decimalPlaces =Preferences.getInt(id+  keyDecimalPlaces, 2);
+		//formatter = UiUtil.getDecimalFormat(decimalPlaces);
+		lblLow.setText(formatter.format(minValue));
+		lblHigh.setText(formatter.format(maxValue));
+
+		//tdm.loadPreferences(pref, prefix);
+
+		resolution = Preferences.getInt(id+  keyResolution, 1);
+		//dataToCanvas();
+
 		
 	}
 	

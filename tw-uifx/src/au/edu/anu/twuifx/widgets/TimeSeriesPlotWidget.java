@@ -35,9 +35,8 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 public class TimeSeriesPlotWidget extends AbstractWidget{
 
 	@Override
-	public void setProperties(SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-		
+	public void setProperties(String id,SimplePropertyList properties) {
+		// TODO Auto-generated method stub	
 	}
 
 	@Override
