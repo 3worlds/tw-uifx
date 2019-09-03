@@ -29,12 +29,14 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm;
 
+import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import javafx.application.Application;
 
 public class Main {
 
 	public static void main(String[] args) {
-		System.out.println("Before 'Application.launch(ModelMakerfx.class)'");
+		// Flaky I know but...
+		ProjectJarGenerator.mainClass = au.edu.anu.twuifx.mr.Main.class.getName();
 		Application.launch(ModelMakerfx.class);
 	}
 
