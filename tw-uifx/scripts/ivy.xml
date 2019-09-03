@@ -32,7 +32,7 @@
 	<dependencies>
 		<dependency org="fr.ens.biologie" name="generics" rev="[0.1.0,)"/>
 		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="[0.2.1,)"/>
-		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="[0.1.1,)"/>
+		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="[0.2.0,)"/>
 		<dependency org="au.edu.anu.rscs.aot" name="aot" rev="[0.1.2,)"/>
 		<dependency org="au.edu.anu.tw-apps" name="tw-apps" rev="[0.1.1,)"/>
 		<dependency org="au.edu.anu.rscs.aot" name="qgraph" rev="[0.1.1,)"/>
