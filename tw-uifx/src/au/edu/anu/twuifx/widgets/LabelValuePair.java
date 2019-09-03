@@ -32,38 +32,45 @@ package au.edu.anu.twuifx.widgets;
 
 import au.edu.anu.twcore.ui.runtime.AbstractWidget;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 
+/**
+ * @author Ian Davies
+ *
+ * @date 3 Sep 2019
+ */
+// listens to what??
 public class LabelValuePair extends AbstractWidget{
-
-	@Override
-	public void setProperties(SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	private Label label;
+	private Label value;
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		HBox content = new HBox();
+		label = new Label("crap label");
+		value = new Label("crap value");
+		content.setPadding(new Insets(5, 1, 1, 2));
+		content.setSpacing(5);
+		content.getChildren().addAll(label, value);
+		return content;
 	}
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void putPreferences() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void getPreferences() {
-		// TODO Auto-generated method stub
-		
+	}
+	@Override
+	public void setProperties(SimplePropertyList properties) {
 	}
 
 
