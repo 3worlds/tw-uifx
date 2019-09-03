@@ -52,11 +52,6 @@ public class TimeSeriesPlotWidget extends AbstractWidget{
 		return null;
 	}
 
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void putPreferences() {

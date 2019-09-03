@@ -55,7 +55,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  */
 // JG - NB this widget should be called ExperimentControlWidget because it doesnt control the
 // simulators directly - this is done by the Experiment Deployer.
-public class SimpleSimCtrlWidget extends ControlWidget{
+public class ExperimentControlWidget extends ControlWidget{
 	
 	private Button btnRunPause;
 	private Button btnStep;
@@ -67,7 +67,7 @@ public class SimpleSimCtrlWidget extends ControlWidget{
 	// NB initial state is always 'waiting' ('null' causes a crash)
 	private String state = waiting.name();
 
-	public SimpleSimCtrlWidget(StateMachineObserver controller) {
+	public ExperimentControlWidget(StateMachineObserver controller) {
 		super(controller);
 		((ExperimentController)controller).setStatusProcessor(this);
 	}
@@ -146,11 +146,6 @@ public class SimpleSimCtrlWidget extends ControlWidget{
 		return null;
 	}
 
-	@Override
-	public void reset() {
-		// reset simulation(s)? I think this is circular - do nothing
-		
-	}
 
 	@Override
 	public void putPreferences() {

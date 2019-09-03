@@ -41,11 +41,6 @@ public class LabelValuePair extends AbstractWidget{
 		
 	}
 
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
