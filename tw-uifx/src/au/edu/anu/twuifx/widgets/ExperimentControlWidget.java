@@ -36,8 +36,10 @@ import au.edu.anu.twcore.experiment.runtime.ExperimentController;
 import au.edu.anu.twcore.ui.runtime.ControlWidget;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineObserver;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -47,7 +49,6 @@ import javafx.scene.layout.HBox;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
-
 /**
  * @author Ian Davies
  *
@@ -55,27 +56,21 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  */
 // JG - NB this widget should be called ExperimentControlWidget because it doesnt control the
 // simulators directly - this is done by the Experiment Deployer.
-public class ExperimentControlWidget extends ControlWidget{
-	
+public class ExperimentControlWidget extends ControlWidget {
+
 	private Button btnRunPause;
 	private Button btnStep;
 	private Button btnReset;
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
-	
+
 	// NB initial state is always 'waiting' ('null' causes a crash)
 	private String state = waiting.name();
 
 	public ExperimentControlWidget(StateMachineObserver controller) {
 		super(controller);
-		((ExperimentController)controller).setStatusProcessor(this);
-	}
-
-	@Override
-	public void setProperties(SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-		
+		((ExperimentController) controller).setStatusProcessor(this);
 	}
 
 	@Override
@@ -101,69 +96,108 @@ public class ExperimentControlWidget extends ControlWidget{
 
 		HBox pane = new HBox();
 		pane.getChildren().addAll(buttons);
+		setButtonLogic();
 		return pane;
 	}
 
 	private Object handleResetPressed() {
-		System.out.println("RESET PRESSED");
-		// issue command and manage button logic (??)
+//		System.out.println("RESET PRESSED");
+		setButtons(true,true,true,null);
 		controller.sendEvent(reset.event());
 		return null;
 	}
 
 	private Object handleStepPressed() {
-		System.out.println("STEP PRESSED");
-		// issue command and manage button logic (??)
+//		System.out.println("STEP PRESSED");
+		setButtons(true,true,true,null);
 		controller.sendEvent(step.event());
 		return null;
 	}
 
 	private Object handleRunPausePressed() {
-		System.out.println("RUN/PAUSE PRESSED");
+//		System.out.println("RUN/PAUSE PRESSED");
+		// TODO see of long step times mean the buttons are not updated in a timely
+		// fashion?
+		// If so disable all buttons before issuing the event. Safe because we are in
+		// the application thread here
+		setButtons(true,true,true,null);
+
+		Event event = null;
 		if (state.equals(waiting.name())) {
-			controller.sendEvent(run.event());
-			btnRunPause.setGraphic(pauseGraphic);
+			event = run.event();
+//			controller.sendEvent(run.event());
+		} else if (state.equals(running.name())) {
+			event = pause.event();
+//			controller.sendEvent(pause.event());
+		} else if (state.equals(pausing.name()) | state.equals(stepping.name())) {
+			event = goOn.event();
+//			controller.sendEvent(goOn.event());
 		}
-		else if (state.equals(running.name())) {
-			controller.sendEvent(pause.event());
-			btnRunPause.setGraphic(runGraphic);
-		}
-		else if (state.equals(pausing.name()) | state.equals(stepping.name())) {
-			controller.sendEvent(goOn.event());
-			btnRunPause.setGraphic(pauseGraphic);
-		}
-		// toggle these graphics
-//		btnRunPause.setGraphic(runGraphic);
-//		btnRunPause.setGraphic(pauseGraphic);
-		// possibly nice to have run/pause/contine(running)
-		// issue command and manage button logic (??)
+		if (event != null)
+			controller.sendEvent(event);
+//		System.out.println(event);
 		return null;
-	}
-
-	@Override
-	public Object getMenuContainer() {
-		//No options here
-		return null;
-	}
-
-
-	@Override
-	public void putPreferences() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void getPreferences() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void processStatus(Object status) {
 		State st = (State) status;
 		state = st.getName();
+
+		setButtonLogic();
 	}
 
+	private void setButtonLogic() {
+		// processStatus is not in the application thread
+		Platform.runLater(() -> {
+//			System.out.println("Current state: " + state);
+			if (state.equals(waiting.name())) {
+				setButtons(false, false, true, runGraphic);
+				return;
+			}
+			if (state.equals(running.name())) {
+				setButtons(false, true, true, pauseGraphic);
+				return;
+
+			}
+			if (state.equals(stepping.name())) {
+				setButtons(false, false, false, runGraphic);
+				return;
+			}
+			if (state.equals(finished.name())) {
+				setButtons(true, true, false, runGraphic);
+				return;
+			}
+			if (state.equals(pausing.name())) {
+				setButtons(false, false, false, runGraphic);
+				return;
+			}
+		});
+	}
+
+	@Override
+	public Object getMenuContainer() {
+		return null;
+	}
+
+	@Override
+	public void putPreferences() {
+	}
+
+	@Override
+	public void getPreferences() {
+	}
+
+	@Override
+	public void setProperties(SimplePropertyList properties) {
+	}
+
+	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
+		btnRunPause.setDisable(runPauseDisable);
+		btnStep.setDisable(stepDisable);
+		btnReset.setDisable(resetDisable);
+		if (iv != null)
+			btnRunPause.setGraphic(iv);
+	}
 
 }
