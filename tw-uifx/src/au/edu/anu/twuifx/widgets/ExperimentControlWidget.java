@@ -101,41 +101,38 @@ public class ExperimentControlWidget extends ControlWidget {
 	}
 
 	private Object handleResetPressed() {
-//		System.out.println("RESET PRESSED");
 		setButtons(true,true,true,null);
-		controller.sendEvent(reset.event());
+		if (state.equals(pausing.name()) | 
+			state.equals(stepping.name()) | 
+			state.equals(finished.name()))
+			controller.sendEvent(reset.event());
 		return null;
 	}
 
 	private Object handleStepPressed() {
-//		System.out.println("STEP PRESSED");
 		setButtons(true,true,true,null);
-		controller.sendEvent(step.event());
+		if (state.equals(pausing.name()) | 
+			state.equals(stepping.name()) | 
+			state.equals(waiting.name()))
+			controller.sendEvent(step.event());
 		return null;
 	}
 
 	private Object handleRunPausePressed() {
-//		System.out.println("RUN/PAUSE PRESSED");
 		// TODO see of long step times mean the buttons are not updated in a timely
 		// fashion?
 		// If so disable all buttons before issuing the event. Safe because we are in
 		// the application thread here
 		setButtons(true,true,true,null);
-
 		Event event = null;
-		if (state.equals(waiting.name())) {
+		if (state.equals(waiting.name()))
 			event = run.event();
-//			controller.sendEvent(run.event());
-		} else if (state.equals(running.name())) {
+		else if (state.equals(running.name()))
 			event = pause.event();
-//			controller.sendEvent(pause.event());
-		} else if (state.equals(pausing.name()) | state.equals(stepping.name())) {
+		else if (state.equals(pausing.name()) | state.equals(stepping.name()))
 			event = goOn.event();
-//			controller.sendEvent(goOn.event());
-		}
 		if (event != null)
 			controller.sendEvent(event);
-//		System.out.println(event);
 		return null;
 	}
 
