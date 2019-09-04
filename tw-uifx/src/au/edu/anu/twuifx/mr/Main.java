@@ -33,7 +33,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
 import au.edu.anu.twcore.project.Project;
