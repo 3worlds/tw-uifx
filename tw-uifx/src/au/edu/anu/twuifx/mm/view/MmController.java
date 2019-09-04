@@ -100,6 +100,7 @@ import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
+import au.edu.anu.ymuit.scrolling.CenteredZooming;
 import fr.cnrs.iees.graph.DataHolder;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -107,6 +108,7 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
+
 
 public class MmController implements ErrorMessageListener, IMMController, IGraphStateListener {
 
@@ -273,9 +275,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		// Listen for error msgs from validategraph
 		ComplianceManager.addListener(this);
 		// Setup zooming from the graph display pane (zoomTarget)
-		zoomConfig(scrollPane, scrollContent, group, zoomTarget);
-//		setButtonState(); NO! not ready yet.
-		// GraphState.addListener(this);
+		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
+		// are prefs saved regardless of graphState??
 
 	}
 
@@ -327,60 +328,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		}
 	}
 
-	// }
-	private static void zoomConfig(ScrollPane scrollPane, StackPane scrollContent, Group group, Region zoomTarget) {
-		Tooltip.install(zoomTarget, new Tooltip("Zoom: Ctrl+mouse wheel"));
-
-		// Manage zooming
-		group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-			scrollContent.setMinWidth(newBounds.getWidth());
-			scrollContent.setMinHeight(newBounds.getHeight());
-		});
-		scrollPane.viewportBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-			// use viewport size, if not too small for zoomTarget
-			scrollContent.setPrefSize(newBounds.getWidth(), newBounds.getHeight());
-		});
-		scrollContent.setOnScroll(event -> handleContentOnScroll(event, scrollPane, group, zoomTarget));
-
-	}
-
-	private static void handleContentOnScroll(ScrollEvent event, ScrollPane scrollPane, Group group,
-			Region zoomTarget) {
-
-		if (event.isControlDown()) {
-			event.consume();
-			final double zoomFactor = event.getDeltaY() > 0 ? 1.05 : 1 / 1.05;
-			Bounds groupBounds = group.getLayoutBounds();
-			final Bounds viewportBounds = scrollPane.getViewportBounds();
-
-			// calculate pixel offsets from [0, 1] range
-			double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
-			double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
-			// convert content coordinates to zoomTarget coordinates
-			Point2D posInZoomTarget = zoomTarget
-					.parentToLocal(group.parentToLocal(new Point2D(event.getX(), event.getY())));
-
-			// calculate adjustment of scroll position (pixels)
-			Point2D adjustment = zoomTarget.getLocalToParentTransform()
-					.deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
-
-			// do the resizing
-			zoomTarget.setScaleX(zoomFactor * zoomTarget.getScaleX());
-			zoomTarget.setScaleY(zoomFactor * zoomTarget.getScaleY());
-
-			// refresh ScrollPane scroll positions & content bounds
-			scrollPane.layout();
-
-			/**
-			 * Convert back to [0, 1] range. Values that are too large or small are
-			 * automatically corrected by ScrollPane.
-			 */
-			groupBounds = group.getLayoutBounds();
-			scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
-			scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
-			GraphState.setChanged();
-		}
-	}
 
 	// Property to be bound to xlink lines
 	public BooleanProperty xLinksProperty() {
