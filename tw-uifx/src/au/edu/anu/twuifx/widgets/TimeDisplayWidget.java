@@ -30,6 +30,7 @@
 package au.edu.anu.twuifx.widgets;
 
 import java.util.List;
+import java.util.Map;
 
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
@@ -62,19 +63,20 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property> implement
 	/*
 	 * Need the meta-data listed below to interpret the time value as anything other
 	 * than a great big number. The values 'could' be just properties of this that
-	 * the user can change and have saved and loaded in preferences. This is
-	 * annoying. You have to do this every time you first deploy.
+	 * the user can change and have saved and loaded in preferences. But this would
+	 * be annoying as you would have to do this every time you first deploy.
 	 * 
 	 * Question is when?
 	 * 
 	 * 1) The meta-data comes from the TimeLine and so assumes all sending sims are
-	 * using this same timeline. Does the archetype enforce this?
+	 * using this same timeline. Is this enforced somewhere?
 	 * 
 	 * 2) This data shouldn't change after initialisation (i.e.not at reset) so
 	 * should only be sent once per deployment.
 	 * 
 	 * Could it be done within initialise and the data passed to each instance or
-	 * does this risk conflating the purpose of initialisation?
+	 * does this risk conflating the purpose of initialisation order? Well
+	 * initialisation does not create the instance.
 	 */
 
 	/*- 
@@ -84,6 +86,8 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property> implement
 	 * smallest = TimeUnits.valueOf(reader.readString()); 
 	 * 
 	*/
+
+	// Also see below
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
@@ -122,22 +126,49 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property> implement
 
 	@Override
 	public void onDataMessage(Property data) {
-		// TODO Auto-generated method stub
 		// when plugged to a simulator through an edge with label "trackTime"
 		// this method will receive a pair with label="time" and value=<long>, the
 		// current time
 		// of the attached simulator (dont forget there could be many simulators)
 		/*
-		 * SO to track this we need something to identify which simulator
-		 * (SimulatorNode.id()+instance count?). I presume that simulators can come and
-		 * go so maintaining any list of simulators needs to be dynamic (e.g in a
-		 * genetic alg deployment)
+		 * Ok so we could have a sim swarm. Can we assume that all Simulator are
+		 * instances of the same SimulatorNode?? If so the "key" could be a hashcode
+		 * supplied by the sim instance instead of "time" since we know its the time
+		 * (because its a TimeDisplayWidget silly!). All sim instances would be using
+		 * the same timeline so the meta-data for display is always the same. Am i right
+		 * so far? If so there are various display options:
+		 * 
+		 * If one sim just show its time as usual.
+		 * 
+		 * If >1 show the times of the fastest and slowest of still running sims. (Need
+		 * to listen for a Finish state?)
+		 * 
+		 * Show a graph of straight lines, one for each sim (this is really another
+		 * widget (SwarmProgressWidget).
+		 * 
+		 * Show a time density distribution etc etc - another widget
 		 */
-		data.getKey(); // = "time"
-		/*
-		 * Actually, this is redundant as this is a time widget. This key could be the
-		 * sim instance id
-		 */
+		/*- e.g.
+		* |1-----------------
+		* |2--------
+		* |3--------------------
+		* |4------
+		* |etc...
+		* |______________________________
+		* Time scale in appropriate units
+		*/
+		/*- or
+		* |
+		* |
+		* |     ^
+		* |    /  \_
+		* |   /     \
+		* |__/_______\_____________________
+		* Time scale in appropriate units
+		* and many others
+		*/
+		
+		data.getKey(); // = "time" or sim hashcode
 		data.getValue(); // = the current time as a long
 
 	}
