@@ -70,6 +70,8 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property> implement
 	 * 
 	 * 1) The meta-data comes from the TimeLine and so assumes all sending sims are
 	 * using this same timeline. Is this enforced somewhere?
+	 * YES (cf archetype): at the moment there is 1 timeLine per Simulator (=dynamics node) 
+	 * and 1 simulator per ecosystem BUT there may be more than one ecosystem per 3w root node
 	 * 
 	 * 2) This data shouldn't change after initialisation (i.e.not at reset) so
 	 * should only be sent once per deployment.
@@ -77,6 +79,15 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property> implement
 	 * Could it be done within initialise and the data passed to each instance or
 	 * does this risk conflating the purpose of initialisation order? Well
 	 * initialisation does not create the instance.
+	 * 
+	 * WHAT about another solution: add into the abstract DisplayWidget ancestor
+	 * the possibility to send metadata (as a propertylist) through a particular message type
+	 * then (1) it's up to the widget to interpret the metadata and (2) it's also up to the widget
+	 * to know what to do in the case where data arrive before the metadata or when the
+	 * metadata change (ie when a second metadata message is sent).
+	 * This would fix the problem for this widget, and possibly for all other ones where
+	 * the same question will certainly arise.
+	 * 
 	 */
 
 	/*- 
@@ -166,6 +177,19 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property> implement
 		* |__/_______\_____________________
 		* Time scale in appropriate units
 		* and many others
+		* 
+		* That's GREAT!
+		* One of the still unresolved issues with sending data is the identification of the
+		* data sent - here we just send a label and a value, and we were naively thinking
+		* that label = variable name. But what about component name, species, stage, etc etc.
+		* I think one solution is to construct a hierarchical label, eg in our case here
+		* "sim1>time" or "sim2>time" etc. If we dont want a complex string parser to deal with 
+		* those labels, then we can define the label as a String list (eg "sim1","time" here),
+		* so it's easier to get the information back (and you dont get into problems if you
+		* use the separator character in the Strings). It's easy for the Simulator to build
+		* the hierarchical label list, since all its objects have a uniqueID and are stored
+		* in nested data structures, and it's easy for widgets to analyse this label list
+		* 
 		*/
 		
 		data.getKey(); // = "time" or sim hashcode
