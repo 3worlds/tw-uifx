@@ -29,26 +29,28 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mr;
 
-
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.twcore.constants.UIContainerOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
-
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
  * @author Ian Davies
@@ -61,50 +63,78 @@ public class UIDeployer {
 
 	public UIDeployer(TreeGraphNode uiNode, MrController controller) {
 		widgets = new ArrayList<>();
-		this.controller= controller;
-		HBox toolBar = controller.getToolBar();
-		List<WidgetNode> toolBarList = new ArrayList<>();
-		TreeGraphNode top = (TreeGraphNode) get(uiNode.getChildren(),selectZeroOrOne(hasTheLabel(N_UITOP.label())));
-		if (top!=null) {
-			Iterable<? extends TreeNode> widgetNodes = top.getChildren();
-			for (TreeNode n:widgetNodes) 
-				toolBarList.add((WidgetNode)n);
-			sortWidgetOrder(toolBarList);
-			for (WidgetNode wn:toolBarList) {
-				Widget w = wn.getInstance();
-				widgets.add(w);
-				toolBar.getChildren().add((Node) w.getUserInterfaceContainer());
-			}
+		this.controller = controller;
+		TreeGraphNode top = (TreeGraphNode) get(uiNode.getChildren(), selectZeroOrOne(hasTheLabel(N_UITOP.label())));
+		if (top != null)
+			buildBar(controller.getToolBar(), top);
+
+		TreeGraphNode bottom = (TreeGraphNode) get(uiNode.getChildren(),
+				selectZeroOrOne(hasTheLabel(N_UIBOTTOM.label())));
+		if (bottom != null)
+			buildBar(controller.getStatusBar(), bottom);
+
+		List<TreeGraphNode> tabs = (List<TreeGraphNode>) get(uiNode.getChildren(),
+				selectZeroOrMany(hasTheLabel(N_UITAB.label())));
+		for (TreeGraphNode tab : tabs)
+			buildTab(tab);
+
+	}
+
+	private void buildTab(TreeGraphNode tabNode) {
+		TabPane tabPane = controller.getTabPane();
+		Tab tab = new Tab(tabNode.id());
+		tabPane.getTabs().add(tab);
+		for (TreeNode c : tabNode.getChildren()) {
+			TreeGraphDataNode container = (TreeGraphDataNode) c;
+			UIContainerOrientation orientation = (UIContainerOrientation) container.properties()
+					.getPropertyValue(P_UICONTAINER_ORIENT.key());
+
+		}
+	}
+
+	private void buildBar(HBox container, TreeGraphNode parent) {
+		List<WidgetNode> barList = new ArrayList<>();
+		Iterable<? extends TreeNode> widgetNodes = parent.getChildren();
+		for (TreeNode n : widgetNodes)
+			barList.add((WidgetNode) n);
+		sortWidgetOrder(barList);
+		for (WidgetNode wn : barList) {
+			Widget w = wn.getInstance();
+			widgets.add(w);
+			container.getChildren().add((Node) w.getUserInterfaceContainer());
 		}
 	}
 
 	private void setMenus() {
 		Menu wmenu = controller.getWidgetMenu();
-		for (Widget w:widgets) {
+		for (Widget w : widgets) {
 			Object o = w.getMenuContainer();
-			if (o!=null) 
-				wmenu.getItems().add((MenuItem)o);
+			if (o != null)
+				wmenu.getItems().add((MenuItem) o);
 		}
 	}
+
 	public void getPreferences() {
-		for (Widget w:widgets)
+		for (Widget w : widgets)
 			w.getPreferences();
 	}
 
 	public void putPreferences() {
-		for (Widget w:widgets)
-			w.putPreferences();		
+		for (Widget w : widgets)
+			w.putPreferences();
 	}
+
 //------------------------------
 	private void sortWidgetOrder(List<WidgetNode> lst) {
 		lst.sort(new Comparator<WidgetNode>() {
 
 			@Override
 			public int compare(WidgetNode o1, WidgetNode o2) {
-				Integer w1 = (Integer)o1.properties().getPropertyValue("order");
-				Integer w2 = (Integer)o2.properties().getPropertyValue("order");
+				Integer w1 = (Integer) o1.properties().getPropertyValue("order");
+				Integer w2 = (Integer) o2.properties().getPropertyValue("order");
 				return w1.compareTo(w2);
-			}});
-		
+			}
+		});
+
 	}
 }

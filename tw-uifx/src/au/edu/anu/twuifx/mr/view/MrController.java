@@ -56,6 +56,10 @@ public class MrController {
 
 	@FXML
 	private TabPane tabPane;
+	
+	public TabPane getTabPane() {
+		return tabPane;
+	}
 
 	@FXML
 	private HBox toolBar;
