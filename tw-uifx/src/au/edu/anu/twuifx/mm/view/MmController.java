@@ -216,7 +216,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	private StringProperty userProjectPath = new SimpleStringProperty("");
 	// not used yet but just set with ComplianceManager.haveErrors();
-	private BooleanProperty validProject = new SimpleBooleanProperty();
+//	private BooleanProperty validProject = new SimpleBooleanProperty();
 
 	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
 	private ObjectProperty<Font> fontProperty;
@@ -368,7 +368,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleLayout(ActionEvent event) {
 		visualiser.doLayout();
-		model.doLayout();
 	}
 
 	@FXML

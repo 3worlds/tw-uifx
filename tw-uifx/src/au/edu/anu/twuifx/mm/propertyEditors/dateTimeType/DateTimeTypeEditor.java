@@ -30,16 +30,40 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.dateTimeType;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
+import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
+import fr.cnrs.iees.twcore.constants.TimeScaleType;
+import fr.cnrs.iees.twcore.constants.TimeUnits;
+import fr.ens.biologie.generic.utils.Duple;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
-public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, LabelButtonControl> {
-	private  LabelButtonControl view;
+public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
+	private LabelButtonControl view;
+	private DateTimeItem dtItem;
 
 	public DateTimeTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -47,18 +71,124 @@ public class DateTimeTypeEditor  extends AbstractPropertyEditor<String, LabelBut
 	}
 
 	public DateTimeTypeEditor(Item property) {
-		this(property,new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
-		view.setOnAction(e-> onAction());
+		dtItem = (DateTimeItem) this.getProperty();
+		// we need to find the timeline to create the meta-data for time editing
+		view.setOnAction(e -> onAction());
 	}
+
 	private void onAction() {
-		// TODO Auto-generated method stub
+		String oldString = (String) dtItem.getValue();
+		String newString = oldString;
+		newString = editDateTime(oldString);
+		if (!newString.equals(oldString)) {
+			setValue(newString);
+			GraphState.setChanged();
+			ConfigGraph.validateGraph();
+		}
+	}
+	
+	private String editDateTime(String currentValue) {
+		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
+		dlg.setTitle(getProperty().getName());
+		//dlg.initOwner(Dialogs);
+		ButtonType ok = new ButtonType("Ok",ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane pane = new BorderPane();
+		dlg.getDialogPane().setContent(pane);
+		HBox top = new HBox();
+		pane.setTop(top);
+		top.setAlignment(Pos.CENTER);
+		top.setSpacing(5);
+		top.getChildren().addAll(new Label("Time scale:"), new Label(dtItem.getTimeScaleType().name()));
+
+		GridPane grid = new GridPane();
+		pane.setCenter(grid);
 		
+		// sorted smallest to largest
+		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
+		SortedSet<TimeUnits> units = new TreeSet<>();
+		for (TimeUnits unit : validUnits) {
+			if ((dtItem.getTUMin().compareTo(unit) <= 0) && (dtItem.getTUMax().compareTo(unit) >= 0))
+				units.add(unit);
+		}
+
+		List<Duple<TimeUnits, Spinner<Integer>>> lstSpinners = new ArrayList<>();
+		int i = 0;
+		for (TimeUnits unit : units) {
+			Spinner<Integer> spinner = new Spinner<>();
+			spinner.setEditable(true);
+			SpinnerValueFactory<Integer> factory;
+			if (units.size() == 1)
+				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE, 0);
+			else
+				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1000, 1000, 0);
+
+			spinner.setValueFactory(factory);
+			spinner.setMaxWidth(100);
+			// handles null when spinner is +-ed
+			spinner.valueProperty().addListener(
+					(observableValue, oldValue, newValue) -> handleSpin(spinner, observableValue, oldValue, newValue));
+
+			// This forces the edited value to be committed when losing focus (i.e. leaving
+			// the dlg)
+			spinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
+				if (!newValue)
+					spinner.increment(0);
+			});
+			lstSpinners.add(new Duple<TimeUnits, Spinner<Integer>>(unit, spinner));
+			grid.add(new Label(unit.abbreviation()), units.size() - i, 0);
+			grid.add(spinner, units.size() - i, 1);
+			i++;
+		}
+		dlg.setResizable(true);
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
+			// we assume the shortest is the base unit
+			Long time = 0L;
+			if (!dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)) {
+				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners) {
+					Integer n = duple.getSecond().getValue();
+					if (n != 0) {
+						Long factor = TimeUtil.timeUnitExactConversionFactor(duple.getFirst(), dtItem.getTUMin());
+						time += (factor * n);
+					}
+				}
+			} else {
+				// TODO probable crash: to be checked. Should use epochTime
+				LocalDateTime epochTime = TimeUtil.longToDate(0, dtItem.getTUMin());
+				LocalDateTime dateTime = epochTime;
+				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners) {
+					Integer n = duple.getSecond().getValue();
+					if (n != 0) {
+						TimeUnits tu = duple.getFirst();
+						dateTime = TimeUtil.getIncrementedDate(dateTime, tu, n);
+					}
+				}
+				time = TimeUtil.dateToLong(dateTime, dtItem.getTUMin(), epochTime);
+			}
+			return time.toString();
+
+		}
+		return currentValue;
+
+	}
+	private void handleSpin(Spinner<Integer> spinner, ObservableValue<?> observableValue, Number oldValue,
+			Number newValue) {
+		try {
+			// handle blanks
+			if (newValue == null) {
+				spinner.getValueFactory().setValue((int) oldValue);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	@Override
 	public void setValue(String value) {
-		getEditor().setText(value);		
+		getEditor().setText(value);
 	}
 
 	@Override

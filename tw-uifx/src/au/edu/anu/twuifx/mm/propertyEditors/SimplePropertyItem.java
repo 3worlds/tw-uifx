@@ -77,7 +77,7 @@ public class SimplePropertyItem implements Item {
 
 	@Override
 	public String getName() {
-		return node.id() + "#" + key;
+		return node.classId()+":"+node.id() + "#" + key;
 	}
 
 	@Override
