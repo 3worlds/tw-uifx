@@ -62,7 +62,7 @@ public class TwSpecifications implements //
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass) {
+	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeNode> subClass) {
 		//multiple stopping condtions have many entries of IsOfClass
 		if (subClass != null) {
 			String parent = (String) baseSpecs.properties().getPropertyValue(aaIsOfClass);
