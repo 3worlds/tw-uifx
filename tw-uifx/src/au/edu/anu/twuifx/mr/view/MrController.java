@@ -55,16 +55,7 @@ public class MrController {
 	private Menu menuWidgets;
 
 	@FXML
-	private TabPane tptl;
-
-	@FXML
-	private TabPane tptr;
-
-	@FXML
-	private TabPane tpbl;
-
-	@FXML
-	private TabPane tpbr;
+	private TabPane tabPane;
 
 	@FXML
 	private HBox toolBar;
@@ -72,18 +63,6 @@ public class MrController {
 	@FXML
 	private HBox statusBar;
 
-	@FXML
-	private SplitPane splitPane1;
-
-	@FXML
-	private SplitPane splitPane2;
-
-	@FXML
-	private SplitPane splitPane3;
-
-	public TabPane getTopLeft() {
-		return tptl;
-	}
 
 	public HBox getToolBar() {
 		return toolBar;
@@ -93,17 +72,6 @@ public class MrController {
 		return statusBar;
 	}
 
-	public TabPane getTopRight() {
-		return tptr;
-	}
-
-	public TabPane getBottomLeft() {
-		return tpbl;
-	}
-
-	public TabPane getBottomRight() {
-		return tpbr;
-	}
 
 	public Menu getWidgetMenu() {
 		return menuWidgets;
@@ -126,6 +94,7 @@ public class MrController {
 	private Stage stage;
 	private static final String mainFrameName = "mainFrame";
 	private static final String mainMaximized = mainFrameName + "_" + "maximized";
+	private static final String tabIndex = "tabIndex";
 
 
 	public void setStage(Stage stage) {
@@ -136,24 +105,21 @@ public class MrController {
 		if (Project.isOpen()) {
 			Preferences.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 			Preferences.putBoolean(mainMaximized, stage.isMaximized());
-			Preferences.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
-			Preferences.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
-			Preferences.putDouble(splitPane3.idProperty().get(), splitPane3.getDividerPositions()[0]);
+			int idx = tabPane.getSelectionModel().getSelectedIndex();
+			Preferences.putInt(tabIndex, idx);
 			Preferences.flush();
 		}
 	}
 
 	public void getPreferences() {
 		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-//		double[] r = Preferences.getDoubles(mainFrameName, 0, 0, 500, 500);
 		stage.setX(r[0]);
 		stage.setY(r[1]);
 		stage.setWidth(r[2]);
 		stage.setHeight(r[3]);
 		stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
-		splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane1));
-		splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane2));
-		splitPane3.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane3));
+		int idx = Preferences.getInt(tabIndex, 0);
+		tabPane.getSelectionModel().select(idx);
 	}
 
 }
