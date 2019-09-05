@@ -30,8 +30,6 @@
 package au.edu.anu.twuifx.widgets;
 
 import java.util.List;
-import java.util.Map;
-
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
@@ -43,15 +41,17 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
+
 /**
  * @author Ian Davies
  *
  * @date 2 Sep 2019
  */
-public class TimeDisplayWidget extends AbstractDisplayWidget<Property> implements Widget {
-	protected TimeDisplayWidget(int messageType) {
-		super(DataMessageTypes.VALUE_PAIR);
-		// TODO Auto-generated constructor stub
+public class TimeDisplayWidget extends AbstractDisplayWidget<Property,SimplePropertyList> implements Widget {
+	
+	public TimeDisplayWidget() {
+		super(DataMessageTypes.TIME);
 	}
 
 	private TimeUnits smallest;
@@ -192,9 +192,22 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property> implement
 		* 
 		*/
 		
-		data.getKey(); // = "time" or sim hashcode
-		data.getValue(); // = the current time as a long
+		// TODO: replace this with useful code
+		System.out.println("Simulator "+data.getKey()+" time = "+data.getValue()+" "+lblTime.getText());
+	}
 
+	@Override
+	public void onMetaDataMessage(SimplePropertyList meta) {
+		smallest = (TimeUnits) meta.getPropertyValue(P_TIMELINE_SHORTTU.key());
+		lblTime = new Label("t ("+smallest.abbreviation()+")");
+		timeScale = (TimeScaleType) meta.getPropertyValue(P_TIMELINE_SCALE.key());
+//		private List<TimeUnits> units;
+		startTime = (Long) meta.getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
+		// what to do with this one ? compute all valid unit within timescale ?
+		meta.getPropertyValue(P_TIMELINE_LONGTU.key()); // longest time unit
+		
+		// TODO: replace this by useful code
+		System.out.println("metadata for TimeDisplayWidget: "+meta.toString());				
 	}
 
 }

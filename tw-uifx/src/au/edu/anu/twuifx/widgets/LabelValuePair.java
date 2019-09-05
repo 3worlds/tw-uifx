@@ -46,7 +46,7 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
  */
 // listens to what??
 public class LabelValuePair 
-		extends AbstractDisplayWidget<Property>
+		extends AbstractDisplayWidget<Property,SimplePropertyList>
 		implements Widget {
 	
 	public LabelValuePair() {
@@ -91,6 +91,12 @@ public class LabelValuePair
 		// of the attached simulator (dont forget there could be many simulators)
 		data.getKey(); // = "time"
 		data.getValue(); // = the current time as a long
+	}
+
+	@Override
+	public void onMetaDataMessage(SimplePropertyList meta) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
