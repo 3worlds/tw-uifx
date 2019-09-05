@@ -66,7 +66,7 @@ public interface Specifications {
 	public SimpleDataTreeNode getSpecsOf(String cClassId, String createdBy, TreeNode root, Set<String> discoveredFiles);
 
 	/*Returns the sub archetype spec of the given class of this baseSpec. Often will return null*/
-	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeGraphNode> subClass);
+	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeNode> subClass);
 
 	/*
 	 * Specifications of all potential children of a parent with this label and

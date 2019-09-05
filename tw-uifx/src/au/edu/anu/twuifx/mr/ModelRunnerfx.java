@@ -35,7 +35,6 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrOne;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UI;
 
-import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,13 +44,10 @@ import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
-import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import javafx.application.Application;

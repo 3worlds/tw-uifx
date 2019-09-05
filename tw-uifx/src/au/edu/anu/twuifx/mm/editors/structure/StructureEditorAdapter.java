@@ -361,7 +361,7 @@ public abstract class StructureEditorAdapter
 		// TODO One dialog for all options.
 		// look for subclass
 		String childClassName = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
-		Class subClass = null;
+		Class<? extends TreeNode> subClass = null;
 		List<Class<? extends TreeNode>> subClasses = specifications.getSubClassesOf(childBaseSpec);
 		if (subClasses.size() > 1) {
 			subClass = promptForClass(subClasses, childClassName);
