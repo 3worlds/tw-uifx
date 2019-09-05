@@ -54,6 +54,7 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property,SimpleProp
 		super(DataMessageTypes.TIME);
 	}
 
+	private boolean metadataReceived = false;
 	private TimeUnits smallest;
 	private Label lblTime;
 	private TimeScaleType timeScale;
@@ -193,13 +194,15 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property,SimpleProp
 		*/
 		
 		// TODO: replace this with useful code
-		System.out.println("Simulator "+data.getKey()+" time = "+data.getValue()+" "+lblTime.getText());
+		if (metadataReceived)
+			System.out.println("Simulator "+data.getKey()+" time = "+
+					data.getValue()+" "+smallest.abbreviation());
 	}
 
 	@Override
 	public void onMetaDataMessage(SimplePropertyList meta) {
 		smallest = (TimeUnits) meta.getPropertyValue(P_TIMELINE_SHORTTU.key());
-		lblTime = new Label("t ("+smallest.abbreviation()+")");
+//		lblTime = new Label("t ("+smallest.abbreviation()+")");
 		timeScale = (TimeScaleType) meta.getPropertyValue(P_TIMELINE_SCALE.key());
 //		private List<TimeUnits> units;
 		startTime = (Long) meta.getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
@@ -207,7 +210,8 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property,SimpleProp
 		meta.getPropertyValue(P_TIMELINE_LONGTU.key()); // longest time unit
 		
 		// TODO: replace this by useful code
-		System.out.println("metadata for TimeDisplayWidget: "+meta.toString());				
+		System.out.println("metadata for TimeDisplayWidget: "+meta.toString());	
+		metadataReceived = true;
 	}
 
 }
