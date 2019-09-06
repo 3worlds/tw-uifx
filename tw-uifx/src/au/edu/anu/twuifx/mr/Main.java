@@ -71,7 +71,7 @@ public class Main {
 		// TODO: use command line args to set the log level
 		// possible values:
 		// INFO = debug, WARNING, SEVERE=errors, OFF
-		Logging.setDefaultLogLevel(Level.INFO);
+		Logging.setDefaultLogLevel(Level.OFF);
 		
 		if (args.length < 1) {
 			System.out.println("Usage:");
