@@ -29,7 +29,10 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm;
 
+import java.util.logging.Level;
+
 import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
+import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Application;
 
 public class Main {
@@ -37,6 +40,8 @@ public class Main {
 	public static void main(String[] args) {
 		// Flaky I know but...
 		ProjectJarGenerator.mainClass = au.edu.anu.twuifx.mr.Main.class.getName();
+		Logging.setDefaultLogLevel(Level.OFF);
+		Logging.setLogLevel(Level.OFF);
 		Application.launch(ModelMakerfx.class);
 	}
 
