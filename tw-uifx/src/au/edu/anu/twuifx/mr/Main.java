@@ -30,15 +30,20 @@
 package au.edu.anu.twuifx.mr;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.OmugiClassLoader;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -80,49 +85,79 @@ public class Main {
 		Project.makeFile(ProjectPaths.RUNTIME).mkdirs();
 
 		// If we are not running from a jar the load the generated classes
-//		if (Jars.getRunningJarFilePath(Main.class) == null) {
-//			File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
-//			if (!userJar.exists()) {
-//				System.out.println("User generated classes not found: [" + userJar + "]");
-//				System.exit(1);
-//			}
-//			OmugiClassLoader.setJarClassLoader(userJar);
-//		} else {
-//			// Nothing to do. We are running from a jar so all classes are here.
-//		}
-		
+		if (Jars.getRunningJarFilePath(Main.class) == null) {
+			System.out.println("ModelRunner is NOT running from JAR");
+			File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
+			if (!userJar.exists()) {
+				System.out.println("User generated classes not found: [" + userJar + "]");
+				System.exit(1);
+			}
+			OmugiClassLoader.setJarClassLoader(userJar);
+		} else {
+			System.out.println("ModelRunner is running from JAR");
+			// Nothing to do. We are running from a jar so all classes are here.
+		}
+
 		// OK try this regardless
 		File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
 		if (!userJar.exists()) {
 			System.out.println("User generated classes not found: [" + userJar + "]");
 			System.exit(1);
 		}
-		OmugiClassLoader.setJarClassLoader(userJar);
+//		OmugiClassLoader.setJarClassLoader(userJar);
 
 		TreeGraph<TreeGraphNode, ALEdge> configGraph = (TreeGraph<TreeGraphNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
-		// this initialises the graph
-//		 Humm... I imagine the experiement deployer will be responsible for node init
-//		Therefore, creating the widget ui should not be a part of init()
+
+		// TODO move this to the splash screen routine
 		List<Initialisable> initList = new LinkedList<>();
 		for (TreeGraphNode n : configGraph.nodes())
 			initList.add((Initialisable) n);
 		Initialiser initer = new Initialiser(initList);
 		initer.initialise();
 		if (initer.errorList() != null) {
-			for (InitialiseMessage msg : initer.errorList()) 
+			for (InitialiseMessage msg : initer.errorList())
 				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
 			System.exit(1);
 		}
-		TreeGraphNode uiNode = (TreeGraphNode) get(configGraph.root().getChildren(),
-			selectZeroOrOne(hasTheLabel(N_UI.label())));
-		if (uiNode != null) {
-			// ok now we can start building the ui
-			System.out.println("Ready to launch UI");
+
+		int depth = 0;
+		parentFirstList = new HashSet<>();
+		initialiseTree(configGraph.root(), depth);
+
+		if (get(configGraph.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label()))) != null) {
 			ModelRunnerfx.launchUI(configGraph, args);
 		} else {
 			System.out.println("Ready to run without UI?");
 		}
 	}
 
+	private static Set<TreeNode> parentFirstList;
+
+
+	private static void onParentInitialised(TreeNode child, int depth) {
+		Initialisable initNode = (Initialisable) child;
+		System.out.println("Parent \tDepth: " + depth + "\tRank: " + initNode.initRank() + "\t" + child.classId() + ":"
+				+ child.id());
+
+	}
+
+	private static void onChildrenInitialised(TreeNode parent, int depth) {
+		Initialisable initNode = (Initialisable) parent;
+		System.out.println("Child \tDepth: " + depth + "\tRank: " + initNode.initRank() + "\t" + parent.classId() + ":"
+				+ parent.id());
+
+	}
+
+	// This method means onParentInitialised can't depend on children being ready.
+	// If we do two passes we can
+	private static void initialiseTree(TreeNode parent, int depth) {
+		if (!parentFirstList.contains(parent)) {
+			parentFirstList.add(parent);
+			onParentInitialised(parent, depth);
+		}
+		for (TreeNode child : parent.getChildren())
+			initialiseTree(child, depth + 1);
+		onChildrenInitialised(parent, depth);
+	}
 }
