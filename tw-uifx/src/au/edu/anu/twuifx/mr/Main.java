@@ -30,11 +30,11 @@
 package au.edu.anu.twuifx.mr;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
@@ -49,6 +49,8 @@ import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.io.FileImporter;
 import fr.ens.biologie.generic.Initialisable;
+import fr.ens.biologie.generic.utils.Logging;
+
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
@@ -66,6 +68,11 @@ public class Main {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
+		// TODO: use command line args to set the log level
+		// possible values:
+		// INFO = debug, WARNING, SEVERE=errors, OFF
+		Logging.setDefaultLogLevel(Level.INFO);
+		
 		if (args.length < 1) {
 			System.out.println("Usage:");
 			System.out.println(Main.class.getName() + " <Project relative directory>.");
