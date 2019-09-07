@@ -222,7 +222,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	// TODO: make menu options and preferences entry for this choice when netbeans
 	// and IntelliJ have been tested
-	private static final IDETypes ideType = IDETypes.eclipse;
+	private   IDETypes ideType = IDETypes.eclipse;
 
 	@FXML
 	public void initialize() {

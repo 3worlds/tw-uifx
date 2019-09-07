@@ -69,10 +69,11 @@ public class ModelRunnerfx extends Application {
 	private MrController controller;
 	private Stage stage;
 
-	public static void launchUI(TreeGraph<TreeGraphNode, ALEdge> config1, String[] args) {
+	public static void launchUI(TreeGraph<TreeGraphNode, ALEdge> config1) {
 		config = config1;
 		uiNode = (TreeGraphNode) get(config.root().getChildren(),
 				selectZeroOrOne(hasTheLabel(N_UI.label())));
+		String[] args = new String[0];
 		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
 
 	}
