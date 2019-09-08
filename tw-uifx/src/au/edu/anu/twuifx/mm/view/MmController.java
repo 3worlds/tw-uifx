@@ -198,6 +198,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	private Spinner<Integer> spinNodeSize;
+	
+    @FXML
+    private Spinner<Integer> spinJitter;
+
 
 	private IMMModel model;
 	private Stage stage;
@@ -214,6 +218,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 //	private BooleanProperty validProject = new SimpleBooleanProperty();
 
 	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
+	private IntegerProperty jitterProperty = new SimpleIntegerProperty(1);
 	private ObjectProperty<Font> fontProperty;
 
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
@@ -226,9 +231,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	public void initialize() {
-
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
+		spinJitter.setMaxWidth(75.0);
+		
 		font = Font.font("Verdana", 10);
 		fontProperty = new SimpleObjectProperty<Font>(font);
 
@@ -246,6 +252,16 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 					Integer oldValue, Integer newValue) {
 				setNodeRadius(newValue);
 			}
+		});
+		
+		spinJitter.valueProperty().addListener(new ChangeListener<Integer>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Integer> observable, Integer aoldValue, Integer newValue) {
+				setJitter(newValue);
+				
+			}
+			
 		});
 
 		btnLayout.setTooltip(new Tooltip("Apply layout function"));
@@ -285,6 +301,11 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 40, size));
 		nodeRadiusProperty.set(size);
 	}
+	
+	private void setJitter(int size) {
+		spinJitter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, size));
+		jitterProperty.set(size);			
+	};
 
 	private void verbosityChange(Observable t) {
 		RadioButton rb = (RadioButton) tgArchetype.getSelectedToggle();
@@ -362,7 +383,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	void handleLayout(ActionEvent event) {
-		visualiser.doLayout();
+		int size = jitterProperty.get();
+		double dSize = size;
+		dSize = dSize/100.0;
+		visualiser.doLayout(dSize);
 	}
 
 	@FXML
@@ -461,6 +485,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	private static final String UserProjectPath = "userProjectPath";
 	private static final String fontSizeKey = "fontSize";
 	private static final String nodeSizeKey = "nodeSize";
+	private static final String jitterKey = "jitter";
 	private static final String Mode = "_mode";
 
 	public void putPreferences() {
@@ -483,6 +508,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
 			Preferences.putInt(fontSizeKey, fontSize);
 			Preferences.putInt(nodeSizeKey, nodeRadiusProperty.get());
+			Preferences.putInt(jitterKey,jitterProperty.get());
 			Preferences.flush();
 		}
 	}
@@ -502,6 +528,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 		setFontSize(Preferences.getInt(fontSizeKey, 10));
 		setNodeRadius(Preferences.getInt(nodeSizeKey, 10));
+		setJitter(Preferences.getInt(jitterKey, 1));
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 

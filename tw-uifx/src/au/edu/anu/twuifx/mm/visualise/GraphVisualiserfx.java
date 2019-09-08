@@ -493,10 +493,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void doLayout() {
+	public void doLayout(double jitterFraction) {
 		pane.setPrefHeight(pane.getHeight());
 		pane.setPrefWidth(pane.getWidth());
-		Layout layout = new TreeLayout(visualGraph);
+		Layout layout = new TreeLayout(visualGraph,jitterFraction);
 		layout.compute();
 
 		for (VisualNode node : visualGraph.nodes()) {

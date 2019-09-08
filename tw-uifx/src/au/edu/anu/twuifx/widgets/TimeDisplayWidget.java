@@ -113,7 +113,7 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property,SimpleProp
 		// top, right, bottom, and left padding
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
-		// content.getChildren().addAll(tdm.getTimeLabel());
+		content.getChildren().addAll(new Label("Dummy Time label"));
 		return content;
 
 	}

@@ -29,6 +29,8 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mr;
 
+import au.edu.anu.twcore.ui.UIContainer;
+import au.edu.anu.twcore.ui.UITab;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.mr.view.MrController;
@@ -36,11 +38,15 @@ import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.twcore.constants.UIContainerOrientation;
+import fr.ens.biologie.generic.utils.Duple;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
@@ -59,37 +65,142 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  */
 public class UIDeployer {
 	private List<Widget> widgets;
+	private List<SplitPane> splitPanes;
 	private MrController controller;
 
+	@SuppressWarnings("unchecked")
 	public UIDeployer(TreeGraphNode uiNode, MrController controller) {
 		widgets = new ArrayList<>();
+		splitPanes = new ArrayList<>();
 		this.controller = controller;
-		TreeGraphNode top = (TreeGraphNode) get(uiNode.getChildren(), selectZeroOrOne(hasTheLabel(N_UITOP.label())));
-		if (top != null)
-			buildBar(controller.getToolBar(), top);
+		// top bar
+		TreeGraphNode topNode = (TreeGraphNode) get(uiNode.getChildren(),
+				selectZeroOrOne(hasTheLabel(N_UITOP.label())));
+		if (topNode != null)
+			buildBar(controller.getToolBar(), topNode);
 
-		TreeGraphNode bottom = (TreeGraphNode) get(uiNode.getChildren(),
+		// bottom bar
+		TreeGraphNode bottomNode = (TreeGraphNode) get(uiNode.getChildren(),
 				selectZeroOrOne(hasTheLabel(N_UIBOTTOM.label())));
-		if (bottom != null)
-			buildBar(controller.getStatusBar(), bottom);
+		if (bottomNode != null)
+			buildBar(controller.getStatusBar(), bottomNode);
 
-		List<TreeGraphNode> tabs = (List<TreeGraphNode>) get(uiNode.getChildren(),
+		// center content
+		List<TreeGraphNode> tabNodes = (List<TreeGraphNode>) get(uiNode.getChildren(),
 				selectZeroOrMany(hasTheLabel(N_UITAB.label())));
-		for (TreeGraphNode tab : tabs)
-			buildTab(tab);
+		for (TreeGraphNode n : tabNodes) {
+			UITab tabNode = (UITab) n;
+			UIContainerOrientation orientation = (UIContainerOrientation) tabNode.properties()
+					.getPropertyValue(P_UICONTAINER_ORIENT.key());
+			buildContent(n.getChildren(), orientation, getTabContainer(n.id()));
+		}
 
 	}
 
-	private void buildTab(TreeGraphNode tabNode) {
-		TabPane tabPane = controller.getTabPane();
-		Tab tab = new Tab(tabNode.id());
-		tabPane.getTabs().add(tab);
-		for (TreeNode c : tabNode.getChildren()) {
-			TreeGraphDataNode container = (TreeGraphDataNode) c;
-			UIContainerOrientation orientation = (UIContainerOrientation) container.properties()
-					.getPropertyValue(P_UICONTAINER_ORIENT.key());
+	private Duple<BorderPane, BorderPane> makeSplitPane(UIContainerOrientation orientation, BorderPane parentPane) {
+		SplitPane splitPane = new SplitPane();
+		splitPanes.add(splitPane);
+		if (orientation == UIContainerOrientation.horizontal)
+			splitPane.setOrientation(Orientation.HORIZONTAL);
+		else
+			splitPane.setOrientation(Orientation.VERTICAL);
+		BorderPane first = new BorderPane();
+		BorderPane second = new BorderPane();
+		splitPane.getItems().add(first);
+		splitPane.getItems().add(second);
+		parentPane.setCenter(splitPane);
+		return new Duple<BorderPane, BorderPane>(first, second);
+	}
 
+	private void buildContent(Iterable<? extends TreeNode> children, UIContainerOrientation parentOrientation,
+			BorderPane parentBorderPane) {
+	
+		List<WidgetNode> widgetNodes = new ArrayList<>();
+		List<UIContainer> containerNodes = new ArrayList<>();
+		for (TreeNode c : children) {
+			if (c.classId().equals(N_UIWIDGET.label()))
+				widgetNodes.add((WidgetNode) c);
+			if (c.classId().equals(N_UICONTAINER.label()))
+				containerNodes.add((UIContainer) c);
 		}
+		if (widgetNodes.size() == 1 && containerNodes.size() == 1) {
+			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane);
+			WidgetNode wn = widgetNodes.get(0);
+			UIContainer cn = containerNodes.get(0);
+			int wnp = (Integer) wn.properties().getPropertyValue(P_UIORDER.key());
+			int cnp = (Integer) cn.properties().getPropertyValue(P_UIORDER.key());
+			Widget w = wn.getInstance();
+			widgets.add(w);
+			if (wnp <= cnp) {
+				contents.getFirst().setCenter((Node) w.getUserInterfaceContainer());
+				buildContent(cn.getChildren(),
+						(UIContainerOrientation) cn.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						contents.getSecond());
+			} else {
+				contents.getSecond().setCenter((Node) w.getUserInterfaceContainer());
+				buildContent(cn.getChildren(),
+						(UIContainerOrientation) cn.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						contents.getFirst());
+			}
+
+		} else if (widgetNodes.size() == 1) {
+			Widget w = widgetNodes.get(0).getInstance();
+			widgets.add(w);
+			parentBorderPane.setCenter((Node) w.getUserInterfaceContainer());
+		} else if (widgetNodes.size() == 2) {
+			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane);
+			WidgetNode wn1 = widgetNodes.get(0);
+			WidgetNode wn2 = widgetNodes.get(1);
+			int w1Pos = (Integer) wn1.properties().getPropertyValue(P_UIORDER.key());
+			int w2Pos = (Integer) wn2.properties().getPropertyValue(P_UIORDER.key());
+			Widget w1 = wn1.getInstance();
+			Widget w2 = wn2.getInstance();
+			widgets.add(w1);
+			widgets.add(w2);
+			if (w1Pos <= w2Pos) {
+				contents.getFirst().setCenter((Node) w1.getUserInterfaceContainer());
+				contents.getSecond().setCenter((Node) w2.getUserInterfaceContainer());
+			} else {
+				contents.getFirst().setCenter((Node) w2.getUserInterfaceContainer());
+				contents.getSecond().setCenter((Node) w1.getUserInterfaceContainer());
+			}
+		} else if (containerNodes.size() == 2) {
+			// not strictly necessary but might give options for how the nested splitters
+			// move their contents
+			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane);
+			UIContainer cn1 = containerNodes.get(0);
+			UIContainer cn2 = containerNodes.get(1);
+			int c1Pos = (Integer) cn1.properties().getPropertyValue(P_UIORDER.key());
+			int c2Pos = (Integer) cn2.properties().getPropertyValue(P_UIORDER.key());
+			if (c1Pos <= c2Pos) {
+				buildContent(cn1.getChildren(),
+						(UIContainerOrientation) cn1.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						contents.getFirst());
+				buildContent(cn2.getChildren(),
+						(UIContainerOrientation) cn2.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						contents.getSecond());
+			} else {
+				buildContent(cn1.getChildren(),
+						(UIContainerOrientation) cn1.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						contents.getSecond());
+				buildContent(cn2.getChildren(),
+						(UIContainerOrientation) cn2.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						contents.getFirst());
+			}
+		} else if (containerNodes.size() == 1) {
+			// ignore this and use parent orientation and borderPane
+			UIContainer cn = containerNodes.get(0);
+			buildContent(cn.getChildren(), parentOrientation, parentBorderPane);
+		}
+	}
+
+	private BorderPane getTabContainer(String name) {
+		TabPane tabPane = controller.getTabPane();
+		Tab tab = new Tab(name);
+		BorderPane result = new BorderPane();
+		tab.setContent(result);
+		tabPane.getTabs().add(tab);
+		return result;
 	}
 
 	private void buildBar(HBox container, TreeGraphNode parent) {

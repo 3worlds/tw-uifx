@@ -98,9 +98,12 @@ public class TreeLayout implements Layout {
 	private double ymn;
 	private double dx;
 	private double dy;
+	private double jitterFraction = 0.01;
 
-	public TreeLayout(TreeGraph<VisualNode, VisualEdge> visualGraph) {
+	public TreeLayout(TreeGraph<VisualNode, VisualEdge> visualGraph,double jFrac) {
+		this.jitterFraction = jFrac;
 		propertyMap = new HashMap<>();
+		
 		sortedChildMap = new HashMap<>();
 		for (VisualNode vnRoot : visualGraph.roots()) {
 			if (vnRoot.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))
@@ -163,12 +166,17 @@ public class TreeLayout implements Layout {
 			y = ((y - ymn) / dy) * 0.9;// + 0.03;
 		else
 			y = 0.5;
-		double jitter = rnd.nextDouble() * 0.01;
+		// 0.01 can be a percentage parameter
+		double jitter = rnd.nextDouble() * jitterFraction;
 		if (rnd.nextBoolean())
 			x += jitter;
 		else
 			x -= jitter;
 
+		if (rnd.nextBoolean())
+			y +=jitter;
+		else
+			y -=jitter;
 		prop.setProperty(X, x);
 		prop.setProperty(Y, y);
 		n.setX(x);
