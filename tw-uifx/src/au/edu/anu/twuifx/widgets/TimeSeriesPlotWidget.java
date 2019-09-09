@@ -58,10 +58,16 @@ public class TimeSeriesPlotWidget extends  AbstractDisplayWidget<Property, Simpl
 	private Map<String, XYChart.Series<Number, Number>> activeSeries;
 
 	private String creatorId;
+	
+	private int layout;
+	
+	private static int stacked = 1;
+	private static int tiled =0;
 
 	protected TimeSeriesPlotWidget(int dataType) {
 		super(DataMessageTypes.TIME_SERIES);
 		clearOnReset = true;
+		layout = stacked;
 	}
 
 	@Override
@@ -86,7 +92,10 @@ public class TimeSeriesPlotWidget extends  AbstractDisplayWidget<Property, Simpl
 		mu.getItems().add(miExport);
 		return mu;
 	}
-	
+	private enum LayoutOptions{
+		Stacked,
+		Tiled
+	}
 	private void edit() {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle(creatorId);
@@ -102,11 +111,11 @@ public class TimeSeriesPlotWidget extends  AbstractDisplayWidget<Property, Simpl
 		dialog.getDialogPane().setContent(grid);
 		//dialog.initOwner(parent);
 
-//		ComboBox<PlotWindowLayout> cbxLayout = new ComboBox<>();
-//		cbxLayout.getItems().setAll(PlotWindowLayout.values());
-//		cbxLayout.getSelectionModel().select(layout);
+		ComboBox<LayoutOptions> cbxLayout = new ComboBox<>();
+		cbxLayout.getItems().setAll(LayoutOptions.values());
+		cbxLayout.getSelectionModel().select(layout);
 		grid.add(new Label("Layout:"), 0, 0);
-//		grid.add(cbxLayout, 1, 0);
+		grid.add(cbxLayout, 1, 0);
 
 		CheckBox chxClearOnReset = new CheckBox("Clear data on reset");
 		grid.add(chxClearOnReset, 1, 1);
@@ -114,7 +123,7 @@ public class TimeSeriesPlotWidget extends  AbstractDisplayWidget<Property, Simpl
 
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
-//			PlotWindowLayout newLayout = cbxLayout.getSelectionModel().getSelectedItem();
+			LayoutOptions newLayout = cbxLayout.getSelectionModel().getSelectedItem();
 			clearOnReset = chxClearOnReset.isSelected();
 //			if (!newLayout.equals(layout)) {
 //				layout = cbxLayout.getSelectionModel().getSelectedItem();
@@ -131,14 +140,14 @@ public class TimeSeriesPlotWidget extends  AbstractDisplayWidget<Property, Simpl
 	@Override
 	public void putPreferences() {
 		Preferences.putBoolean(creatorId + KeyClearOnReset, clearOnReset);
-		//Preferences.putString(creatorId + KeyLayout, layout.name());
+		Preferences.putInt(creatorId + KeyLayout, layout);
 		
 	}
 
 	@Override
 	public void getPreferences() {
 		clearOnReset = Preferences.getBoolean(creatorId+KeyClearOnReset, true);
-		//String layoutName = Preferences.getString(creatorId+KeyLayout, PlotWindowLayout.STACKED.name());
+		layout = Preferences.getInt(creatorId+KeyLayout, stacked);
 	}
 
 	@Override
