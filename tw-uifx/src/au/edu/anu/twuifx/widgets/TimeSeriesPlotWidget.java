@@ -41,6 +41,7 @@ import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.rvgrid.statemachine.State;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -62,7 +63,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 
-public class TimeSeriesPlotWidget extends AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
+public class TimeSeriesPlotWidget 
+		extends AbstractDisplayWidget<Property, SimplePropertyList> 
+implements Widget {
 	private boolean clearOnReset;
 	private GridPane gridPane;
 	private Map<String, XYChart.Series<Number, Number>> activeSeries;
@@ -74,8 +77,8 @@ public class TimeSeriesPlotWidget extends AbstractDisplayWidget<Property, Simple
 	private static int stacked = 1;
 	private static int tiled = 0;
 
-	protected TimeSeriesPlotWidget(int dataType) {
-		super(DataMessageTypes.TIME_SERIES);
+	protected TimeSeriesPlotWidget(int statusMessageCode,int dataType) {
+		super(statusMessageCode,DataMessageTypes.TIME_SERIES);
 		clearOnReset = true;
 		layout = stacked;
 		activeSeries = new HashMap<>();
@@ -330,6 +333,12 @@ public class TimeSeriesPlotWidget extends AbstractDisplayWidget<Property, Simple
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

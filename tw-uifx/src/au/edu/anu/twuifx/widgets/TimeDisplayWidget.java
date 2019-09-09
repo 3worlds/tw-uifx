@@ -43,6 +43,7 @@ import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.ens.biologie.generic.utils.Duple;
@@ -60,7 +61,9 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  * @date 2 Sep 2019
  */
 
-public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
+public class TimeDisplayWidget 
+		extends AbstractDisplayWidget<Property, SimplePropertyList> 
+		implements Widget {
 
 	private boolean metadataReceived = false;
 	private TimeUnits smallest;
@@ -92,8 +95,8 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePro
 //		});
 //	}
 
-	public TimeDisplayWidget() {
-		super(DataMessageTypes.TIME);
+	public TimeDisplayWidget(int statusMessageCode) {
+		super(statusMessageCode,DataMessageTypes.TIME);
 		simTimes = new HashMap<>();
 		log.info("Constructor");
 	}
@@ -203,6 +206,12 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePro
 	@Override
 	public void getPreferences() {
 		log.info("getPreferences");
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/*

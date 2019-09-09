@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.widgets;
 
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.rvgrid.statemachine.State;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -49,8 +50,8 @@ public class LabelValuePair
 		extends AbstractDisplayWidget<Property,SimplePropertyList>
 		implements Widget {
 	
-	public LabelValuePair() {
-		super(DataMessageTypes.VALUE_PAIR);
+	public LabelValuePair(int statusMessageCode) {
+		super(statusMessageCode,DataMessageTypes.VALUE_PAIR);
 	}
 
 	private Label label;
@@ -95,6 +96,12 @@ public class LabelValuePair
 
 	@Override
 	public void onMetaDataMessage(SimplePropertyList meta) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
 		// TODO Auto-generated method stub
 		
 	}

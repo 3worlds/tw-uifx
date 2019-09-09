@@ -32,13 +32,14 @@ package au.edu.anu.twuifx.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.edu.anu.twcore.experiment.runtime.ExperimentController;
-import au.edu.anu.twcore.ui.runtime.ControlWidget;
+import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.rvgrid.rendezvous.GridNode;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineObserver;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
@@ -54,7 +55,9 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
-public class ExperimentControlWidget extends ControlWidget {
+public class ExperimentControlWidget 
+		extends StateMachineController 
+		implements Widget {
 
 	private Button btnRunPause;
 	private Button btnStep;
@@ -66,9 +69,8 @@ public class ExperimentControlWidget extends ControlWidget {
 	// NB initial state is always 'waiting' ('null' causes a crash)
 	private String state = waiting.name();
 
-	public ExperimentControlWidget(StateMachineObserver controller) {
-		super(controller);
-		((ExperimentController) controller).setStatusProcessor(this);
+	public ExperimentControlWidget(StateMachineEngine<? extends GridNode> observed) {
+		super(observed);
 	}
 
 	@Override
@@ -103,7 +105,7 @@ public class ExperimentControlWidget extends ControlWidget {
 		if (state.equals(pausing.name()) | 
 			state.equals(stepping.name()) | 
 			state.equals(finished.name()))
-			controller.sendEvent(reset.event());
+			sendEvent(reset.event());
 		return null;
 	}
 
@@ -112,7 +114,7 @@ public class ExperimentControlWidget extends ControlWidget {
 		if (state.equals(pausing.name()) | 
 			state.equals(stepping.name()) | 
 			state.equals(waiting.name()))
-			controller.sendEvent(step.event());
+			sendEvent(step.event());
 		return null;
 	}
 
@@ -130,15 +132,13 @@ public class ExperimentControlWidget extends ControlWidget {
 		else if (state.equals(pausing.name()) | state.equals(stepping.name()))
 			event = goOn.event();
 		if (event != null)
-			controller.sendEvent(event);
+			sendEvent(event);
 		return null;
 	}
 
 	@Override
-	public void processStatus(Object status) {
-		State st = (State) status;
-		state = st.getName();
-
+	public void onStatusMessage(State newState) {
+		state = newState.getName();
 		setButtonLogic();
 	}
 
