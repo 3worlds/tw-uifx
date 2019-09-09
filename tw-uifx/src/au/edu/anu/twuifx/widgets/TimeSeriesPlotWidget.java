@@ -29,37 +29,126 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import au.edu.anu.twcore.ui.runtime.AbstractWidget;
-import fr.cnrs.iees.properties.SimplePropertyList;
+import java.util.Map;
+import java.util.Optional;
 
-public class TimeSeriesPlotWidget extends AbstractWidget{
+import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.graph.property.Property;
+import au.edu.anu.twcore.data.runtime.DataMessageTypes;
+import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.Widget;
+import fr.cnrs.iees.properties.SimplePropertyList;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+
+public class TimeSeriesPlotWidget extends  AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
+	private boolean clearOnReset;
+	private GridPane gridPane;
+	private Map<String, XYChart.Series<Number, Number>> activeSeries;
+
+	private String creatorId;
+
+	protected TimeSeriesPlotWidget(int dataType) {
+		super(DataMessageTypes.TIME_SERIES);
+		clearOnReset = true;
+	}
 
 	@Override
 	public void setProperties(String id,SimplePropertyList properties) {
-		// TODO Auto-generated method stub	
+		this.creatorId = id;
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		gridPane = new GridPane();
+		return gridPane;
 	}
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		Menu mu = new Menu(creatorId);
+		MenuItem miEdit = new MenuItem("Edit...");
+		mu.getItems().add(miEdit);
+		miEdit.setOnAction(e -> edit());
+
+		MenuItem miExport = new MenuItem("Export data...");
+		mu.getItems().add(miExport);
+		return mu;
+	}
+	
+	private void edit() {
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle(creatorId);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
+		ColumnConstraints cc = new ColumnConstraints();
+		cc.setHalignment(HPos.RIGHT);
+		grid.getColumnConstraints().add(cc);
+		dialog.getDialogPane().setContent(grid);
+		//dialog.initOwner(parent);
+
+//		ComboBox<PlotWindowLayout> cbxLayout = new ComboBox<>();
+//		cbxLayout.getItems().setAll(PlotWindowLayout.values());
+//		cbxLayout.getSelectionModel().select(layout);
+		grid.add(new Label("Layout:"), 0, 0);
+//		grid.add(cbxLayout, 1, 0);
+
+		CheckBox chxClearOnReset = new CheckBox("Clear data on reset");
+		grid.add(chxClearOnReset, 1, 1);
+		chxClearOnReset.setSelected(clearOnReset);
+
+		Optional<ButtonType> result = dialog.showAndWait();
+		if (result.get().equals(ok)) {
+//			PlotWindowLayout newLayout = cbxLayout.getSelectionModel().getSelectedItem();
+			clearOnReset = chxClearOnReset.isSelected();
+//			if (!newLayout.equals(layout)) {
+//				layout = cbxLayout.getSelectionModel().getSelectedItem();
+//				if (!activeSeries.isEmpty()) {
+//					reconfigure();
+//				}
+//			}
+		}
 	}
 
 
+	private static final String KeyLayout = "layout";
+	private static final String KeyClearOnReset = "clearOnReset";
 	@Override
 	public void putPreferences() {
-		// TODO Auto-generated method stub
+		Preferences.putBoolean(creatorId + KeyClearOnReset, clearOnReset);
+		//Preferences.putString(creatorId + KeyLayout, layout.name());
 		
 	}
 
 	@Override
 	public void getPreferences() {
+		clearOnReset = Preferences.getBoolean(creatorId+KeyClearOnReset, true);
+		//String layoutName = Preferences.getString(creatorId+KeyLayout, PlotWindowLayout.STACKED.name());
+	}
+
+	@Override
+	public void onDataMessage(Property data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMetaDataMessage(SimplePropertyList meta) {
 		// TODO Auto-generated method stub
 		
 	}
