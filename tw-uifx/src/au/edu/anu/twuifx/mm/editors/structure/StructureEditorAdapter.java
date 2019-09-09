@@ -468,6 +468,7 @@ public abstract class StructureEditorAdapter
 	@Override
 	public void onDeleteTree(VisualNode root) {
 		deleteTree(root);
+		controller.onNodeDeleted();
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
 	}

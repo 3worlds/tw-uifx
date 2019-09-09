@@ -35,7 +35,6 @@ import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.TreeNode;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.twcore.constants.UIContainerOrientation;
 import fr.ens.biologie.generic.utils.Duple;
