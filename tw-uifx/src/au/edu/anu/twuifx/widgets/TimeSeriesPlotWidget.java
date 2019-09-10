@@ -40,12 +40,17 @@ import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.graph.property.Property;
+import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
+import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.TimeSeriesData;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -69,7 +74,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
-public class TimeSeriesPlotWidget extends AbstractDisplayWidget<SimplePropertyList, SimplePropertyList> implements Widget {
+public class TimeSeriesPlotWidget 
+		extends AbstractDisplayWidget<TimeSeriesData, Metadata> 
+		implements Widget {
 	private boolean clearOnReset;
 	private GridPane gridPane;
 	private Map<String, XYChart.Series<Number, Number>> activeSeries;
@@ -88,19 +95,19 @@ public class TimeSeriesPlotWidget extends AbstractDisplayWidget<SimplePropertyLi
 
 	private static Logger log = Logging.getLogger(TimeSeriesPlotWidget.class);
 
-	public TimeSeriesPlotWidget(int statusMessageCode) {
-		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
+	public TimeSeriesPlotWidget(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, DataMessageTypes.TIME_SERIES);
 		clearOnReset = true;
 		layout = stacked;
 		activeSeries = new HashMap<>();
 		seriesNames = new ArrayList<>();
 	}
 
-	public TimeSeriesPlotWidget(int statusMessageCode, int dataType) {
-		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
-
-		// what is this dataType?
-	}
+//	public TimeSeriesPlotWidget(int statusMessageCode, int dataType) {
+//		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
+//
+//		// what is this dataType?
+//	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
@@ -108,19 +115,19 @@ public class TimeSeriesPlotWidget extends AbstractDisplayWidget<SimplePropertyLi
 	}
 
 	@Override
-	public void onDataMessage(SimplePropertyList data) {
+	public void onDataMessage(TimeSeriesData data) {
 		log.info("Data received: " + data);
 		
 		// time + order list of arrays of unknown number types
-		Long time = (Long)data.getPropertyValue("time");
-		Number[][] numbers = (Number[][])data.getPropertyValue("numbers");
+		long time = data.time();
+		Map<DataLabel,Number> numbers = data.values();
 	}
 
 	@Override
-	public void onMetaDataMessage(SimplePropertyList meta) {
+	public void onMetaDataMessage(Metadata meta) {
 		log.info("Meta-data received: " + meta);
-		String timeUnits = (String) meta.getPropertyValue("timeUnits");
-		StringTable names = (StringTable) meta.getPropertyValue("seriesNames");
+		String timeUnits = (String) meta.properties().getPropertyValue("timeUnits");
+		StringTable names = (StringTable) meta.properties().getPropertyValue("seriesNames");
 		Dimensioner d[] = names.getDimensioners();
 		// check row/col order? The last (or first) could by the series units?
 		for (int i = 0; i < d[0].getLength(); i++) {

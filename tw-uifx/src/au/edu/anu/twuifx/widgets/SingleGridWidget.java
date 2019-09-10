@@ -33,10 +33,14 @@ import java.text.DecimalFormat;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
+import au.edu.anu.twcore.data.runtime.MapData;
+import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -60,10 +64,10 @@ import javafx.scene.text.Font;
  *
  * @date 2 Sep 2019
  */
-public class SingleGridWidget extends AbstractDisplayWidget implements Widget {
+public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> implements Widget {
 	
-	protected SingleGridWidget(int statusType) {
-		super(statusType, -1);
+	protected SingleGridWidget(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, -1);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -165,100 +169,99 @@ public class SingleGridWidget extends AbstractDisplayWidget implements Widget {
 		
 	}
 	
-
-private Pane buildStatusBar() {
-	VBox pane = new VBox();
-	HBox valuePane = new HBox();
-	valuePane.setSpacing(5.0);
-	HBox timePane = new HBox();
-	timePane.setSpacing(5.0);
-	lblXY = makeLabel("");
-	lblValue = makeLabel("");
-	//tdm.getTimeLabel().setFont(font);
-	valuePane.getChildren().addAll(makeLabel("[x,y]"), lblXY, makeLabel("="), lblValue);
-	//timePane.getChildren().addAll(tdm.getTimeLabel());
-	pane.getChildren().addAll(valuePane, timePane);
-	return pane;
-}
-private Label makeLabel(String s) {
-	Label result = new Label(s);
-	result.setFont(font);
-	return result;
-}
-
-
-private WritableImage getLegend(int width, int height) {
-	WritableImage image = new WritableImage(width, height);
-	PixelWriter pw = image.getPixelWriter();
-	for (int h = 0; h < height; h++) {
-//		Color c = palette.getColour(height - h - 1, 0, height);
-//		for (int w = 0; w < width; w++) {
-//			pw.setColor(w, h, c);
-//		}
+	private Pane buildStatusBar() {
+		VBox pane = new VBox();
+		HBox valuePane = new HBox();
+		valuePane.setSpacing(5.0);
+		HBox timePane = new HBox();
+		timePane.setSpacing(5.0);
+		lblXY = makeLabel("");
+		lblValue = makeLabel("");
+		//tdm.getTimeLabel().setFont(font);
+		valuePane.getChildren().addAll(makeLabel("[x,y]"), lblXY, makeLabel("="), lblValue);
+		//timePane.getChildren().addAll(tdm.getTimeLabel());
+		pane.getChildren().addAll(valuePane, timePane);
+		return pane;
 	}
-	return image;
-}
-
-private Pane buildPalettePane() {
-	paletteImageView = new ImageView();
-	lblHigh = makeLabel("");
-	lblLow = makeLabel("");
-	VBox pane = new VBox(makeLabel("high"), lblHigh, paletteImageView, lblLow, makeLabel("low"));
-	pane.setAlignment(Pos.CENTER);
-	return pane;
-}
-
-private Pane buildNamePane() {
-	BorderPane pane = new BorderPane();
-	lblName = new Label("Grid name");
-	Font font = Font.font("Verdana", 12);
-	lblName.setFont(font);
-	pane.setCenter(lblName);
-	return pane;
-}
-
-private ScrollPane buildScrollPane() {
-	zoomTarget = new AnchorPane();
-	canvas = new Canvas();
-	zoomTarget.getChildren().add(canvas);
-	Group group = new Group(zoomTarget);
-	StackPane content = new StackPane(group);
-	scrollPane = new ScrollPane(content);
-	scrollPane.setPannable(true);
-	scrollPane.setContent(content);
-	scrollPane.setMinSize(170, 170);
-	//UiUtil.zoomConfig(scrollPane, content, group, zoomTarget);
-	zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
-	return scrollPane;
-}
-
-private void onMouseMove(MouseEvent e) {
-	int x = (int) (e.getX() / resolution);
-	int y = (int) (e.getY() / resolution);
-	lblXY.setText("[" + x + "," + y + "]");
-	if (x < mx & y < my & x >= 0 & y >= 0) {
-//		Double d = getData(x, y);
-//		lblValue.setText(formatter.format(d));
+	private Label makeLabel(String s) {
+		Label result = new Label(s);
+		result.setFont(font);
+		return result;
 	}
-}
-
-// TODO: properly type those methods
-@Override
-public void onDataMessage(Object data) {
-	// TODO Auto-generated method stub
 	
-}
-
-@Override
-public void onMetaDataMessage(Object meta) {
-	// TODO Auto-generated method stub
 	
-}
-
-@Override
-public void onStatusMessage(State state) {
-	// TODO Auto-generated method stub
+	private WritableImage getLegend(int width, int height) {
+		WritableImage image = new WritableImage(width, height);
+		PixelWriter pw = image.getPixelWriter();
+		for (int h = 0; h < height; h++) {
+	//		Color c = palette.getColour(height - h - 1, 0, height);
+	//		for (int w = 0; w < width; w++) {
+	//			pw.setColor(w, h, c);
+	//		}
+		}
+		return image;
+	}
 	
-}
+	private Pane buildPalettePane() {
+		paletteImageView = new ImageView();
+		lblHigh = makeLabel("");
+		lblLow = makeLabel("");
+		VBox pane = new VBox(makeLabel("high"), lblHigh, paletteImageView, lblLow, makeLabel("low"));
+		pane.setAlignment(Pos.CENTER);
+		return pane;
+	}
+	
+	private Pane buildNamePane() {
+		BorderPane pane = new BorderPane();
+		lblName = new Label("Grid name");
+		Font font = Font.font("Verdana", 12);
+		lblName.setFont(font);
+		pane.setCenter(lblName);
+		return pane;
+	}
+	
+	private ScrollPane buildScrollPane() {
+		zoomTarget = new AnchorPane();
+		canvas = new Canvas();
+		zoomTarget.getChildren().add(canvas);
+		Group group = new Group(zoomTarget);
+		StackPane content = new StackPane(group);
+		scrollPane = new ScrollPane(content);
+		scrollPane.setPannable(true);
+		scrollPane.setContent(content);
+		scrollPane.setMinSize(170, 170);
+		//UiUtil.zoomConfig(scrollPane, content, group, zoomTarget);
+		zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
+		return scrollPane;
+	}
+	
+	private void onMouseMove(MouseEvent e) {
+		int x = (int) (e.getX() / resolution);
+		int y = (int) (e.getY() / resolution);
+		lblXY.setText("[" + x + "," + y + "]");
+		if (x < mx & y < my & x >= 0 & y >= 0) {
+	//		Double d = getData(x, y);
+	//		lblValue.setText(formatter.format(d));
+		}
+	}
+	
+	// TODO: properly type those methods
+	@Override
+	public void onDataMessage(MapData data) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void onMetaDataMessage(Metadata meta) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void onStatusMessage(State state) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -36,7 +36,6 @@ import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.ens.biologie.generic.utils.Duple;
 
 /**
@@ -95,6 +94,7 @@ public interface Specifications {
 	/*
 	 * returns all query specs of the given query classes for the given parent spec
 	 */
+	@SuppressWarnings("unchecked")
 	public List<SimpleDataTreeNode> getQueries(SimpleDataTreeNode parentSpec, Class<? extends Query>... queryClass);
 
 	/* check the use of this. It should use the above function */

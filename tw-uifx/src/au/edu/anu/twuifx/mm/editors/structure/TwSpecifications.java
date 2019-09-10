@@ -18,7 +18,6 @@ import au.edu.anu.twcore.archetype.tw.NameStartsWithUpperCaseQuery;
 import fr.cnrs.iees.graph.Tree;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.ens.biologie.generic.utils.Duple;
 
@@ -175,6 +174,7 @@ public class TwSpecifications implements //
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean filterPropertyStringTableOptions(Iterable<SimpleDataTreeNode> propertySpecs,
 			SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec, String childId,
@@ -259,7 +259,7 @@ public class TwSpecifications implements //
 		return st.contains(createdBy + PairIdentity.LABEL_NAME_STR_SEPARATOR);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked" })
 	private List<SimpleDataTreeNode> getConstraints(SimpleDataTreeNode spec, String constraintClass) {
 		return (List<SimpleDataTreeNode>) get(spec.getChildren(),
 				selectZeroOrMany(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, constraintClass))));
