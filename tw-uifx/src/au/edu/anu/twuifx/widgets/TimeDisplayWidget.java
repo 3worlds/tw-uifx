@@ -37,8 +37,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
+import au.edu.anu.twcore.data.runtime.LabelValuePairData;
+import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -64,7 +65,9 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  * @date 2 Sep 2019
  */
 
-public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
+public class TimeDisplayWidget 
+		extends AbstractDisplayWidget<LabelValuePairData,Metadata> 
+		implements Widget {
 
 	private boolean metadataReceived = false;
 	private TimeUnits smallest;
@@ -96,12 +99,12 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePro
 	}
 
 	@Override
-	public void onMetaDataMessage(SimplePropertyList meta) {
+	public void onMetaDataMessage(Metadata meta) {
 		log.info("meta-data for TimeDisplayWidget: " + meta.toString());
-		smallest = (TimeUnits) meta.getPropertyValue(P_TIMELINE_SHORTTU.key());
-		largest = (TimeUnits) meta.getPropertyValue(P_TIMELINE_LONGTU.key());
-		timeScale = (TimeScaleType) meta.getPropertyValue(P_TIMELINE_SCALE.key());
-		startTime = (Long) meta.getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
+		smallest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
+		largest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_LONGTU.key());
+		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
+		startTime = (Long) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
 		units = new ArrayList<>();
 		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
 		for (TimeUnits allowed : allowable)
@@ -117,10 +120,10 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePro
 	}
 
 	@Override
-	public void onDataMessage(Property data) {
+	public void onDataMessage(LabelValuePairData data) {
 		log.info("data msg received");
 		if (metadataReceived) {
-			simTimes.put(data.getKey(), (Long) data.getValue());
+			simTimes.put(data.label().getEnd(), (Long)data.value());
 			Duple<Long, Long> times = getTimes();
 			updateControls(times.getFirst(), times.getSecond());
 		} else
