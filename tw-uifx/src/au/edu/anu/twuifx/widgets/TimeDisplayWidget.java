@@ -205,7 +205,7 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePro
 	@Override
 	public void onStatusMessage(State state) {
 		log.info("Status message received: " + state);
-		if (state.equals(waiting)) {
+		if (state.equals(waiting.state())) {
 			simTimes.clear();
 			updateControls(startTime, startTime);
 		}
