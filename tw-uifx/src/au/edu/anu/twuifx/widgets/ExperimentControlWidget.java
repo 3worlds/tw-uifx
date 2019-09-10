@@ -36,7 +36,6 @@ import java.util.logging.Logger;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.rendezvous.GridNode;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
@@ -73,7 +72,7 @@ public class ExperimentControlWidget
 	// NB initial state is always 'waiting' ('null' causes a crash)
 	private String state = waiting.name();
 
-	public ExperimentControlWidget(StateMachineEngine<? extends GridNode> observed) {
+	public ExperimentControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 	}
 

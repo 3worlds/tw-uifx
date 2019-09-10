@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.widgets;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -43,6 +44,7 @@ import java.util.logging.Logger;
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
@@ -54,8 +56,8 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 // listens to what??
 public class LabelValuePair extends AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
 
-	public LabelValuePair(int statusMessageCode) {
-		super(statusMessageCode, DataMessageTypes.VALUE_PAIR);
+	public LabelValuePair(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, DataMessageTypes.VALUE_PAIR);
 	}
 
 	private Label lblName;

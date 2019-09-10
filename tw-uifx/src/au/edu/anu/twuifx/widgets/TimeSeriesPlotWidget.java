@@ -42,10 +42,12 @@ import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -88,19 +90,19 @@ public class TimeSeriesPlotWidget extends AbstractDisplayWidget<SimplePropertyLi
 
 	private static Logger log = Logging.getLogger(TimeSeriesPlotWidget.class);
 
-	public TimeSeriesPlotWidget(int statusMessageCode) {
-		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
+	public TimeSeriesPlotWidget(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, DataMessageTypes.TIME_SERIES);
 		clearOnReset = true;
 		layout = stacked;
 		activeSeries = new HashMap<>();
 		seriesNames = new ArrayList<>();
 	}
 
-	public TimeSeriesPlotWidget(int statusMessageCode, int dataType) {
-		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
-
-		// what is this dataType?
-	}
+//	public TimeSeriesPlotWidget(int statusMessageCode, int dataType) {
+//		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
+//
+//		// what is this dataType?
+//	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {

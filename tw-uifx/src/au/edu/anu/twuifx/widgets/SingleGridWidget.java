@@ -34,9 +34,11 @@ import java.text.DecimalFormat;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -62,8 +64,8 @@ import javafx.scene.text.Font;
  */
 public class SingleGridWidget extends AbstractDisplayWidget implements Widget {
 	
-	protected SingleGridWidget(int statusType) {
-		super(statusType, -1);
+	protected SingleGridWidget(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, -1);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -41,9 +41,11 @@ import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.ens.biologie.generic.utils.Duple;
@@ -87,8 +89,8 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePro
 	 * 
 	 */
 
-	public TimeDisplayWidget(int statusMessageCode) {
-		super(statusMessageCode, DataMessageTypes.TIME);
+	public TimeDisplayWidget(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, DataMessageTypes.TIME);
 		simTimes = new HashMap<>();
 		log.info("Constructor");
 	}
