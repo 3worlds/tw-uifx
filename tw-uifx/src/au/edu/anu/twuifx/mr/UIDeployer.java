@@ -93,6 +93,8 @@ public class UIDeployer {
 					.getPropertyValue(P_UICONTAINER_ORIENT.key());
 			buildContent(n.getChildren(), orientation, getTabContainer(n.id()));
 		}
+		
+		setMenus();
 
 	}
 

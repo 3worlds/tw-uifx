@@ -34,14 +34,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
+import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
+import fr.ens.biologie.generic.utils.Logging;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -62,13 +67,13 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 
-public class TimeSeriesPlotWidget 
-		extends AbstractDisplayWidget<Property, SimplePropertyList> 
-implements Widget {
+public class TimeSeriesPlotWidget extends AbstractDisplayWidget<SimplePropertyList, SimplePropertyList> implements Widget {
 	private boolean clearOnReset;
 	private GridPane gridPane;
 	private Map<String, XYChart.Series<Number, Number>> activeSeries;
+	private List<String> seriesNames;
 
 	private String creatorId;
 
@@ -77,11 +82,24 @@ implements Widget {
 	private static int stacked = 1;
 	private static int tiled = 0;
 
-	protected TimeSeriesPlotWidget(int statusMessageCode,int dataType) {
-		super(statusMessageCode,DataMessageTypes.TIME_SERIES);
+	private final Color backGroundColor = Color.WHITE;
+	private static final String sep = ":";
+	private String[] colours;
+
+	private static Logger log = Logging.getLogger(TimeSeriesPlotWidget.class);
+
+	public TimeSeriesPlotWidget(int statusMessageCode) {
+		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
 		clearOnReset = true;
 		layout = stacked;
 		activeSeries = new HashMap<>();
+		seriesNames = new ArrayList<>();
+	}
+
+	public TimeSeriesPlotWidget(int statusMessageCode, int dataType) {
+		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
+
+		// what is this dataType?
 	}
 
 	@Override
@@ -90,35 +108,58 @@ implements Widget {
 	}
 
 	@Override
-	public void onDataMessage(Property data) {
-		// 
-
+	public void onDataMessage(SimplePropertyList data) {
+		log.info("Data received: " + data);
+		
+		// time + order list of arrays of unknown number types
+		Long time = (Long)data.getPropertyValue("time");
+		Number[][] numbers = (Number[][])data.getPropertyValue("numbers");
 	}
 
 	@Override
 	public void onMetaDataMessage(SimplePropertyList meta) {
+		log.info("Meta-data received: " + meta);
+		String timeUnits = (String) meta.getPropertyValue("timeUnits");
+		StringTable names = (StringTable) meta.getPropertyValue("seriesNames");
+		Dimensioner d[] = names.getDimensioners();
+		// check row/col order? The last (or first) could by the series units?
+		for (int i = 0; i < d[0].getLength(); i++) {
+			String name = "";
+			for (int j = 0; j < d[1].getLength(); j++) {
+				String field = names.getByInt(i, j);
+				if (!field.trim().isEmpty()) {
+					System.out.println("{" + i + "," + j + "]=" + field);
+					name += sep + field;
+				}
+			}
+			seriesNames.add(name.replaceFirst(sep, ""));
+		}
+	}
+
+	private void setColours() {
+		colours = ColourContrast.allContrastingColourNames(backGroundColor, seriesNames.size() + 5);
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
 		// TODO Auto-generated method stub
 
 	}
+
 	@Override
 	public Object getUserInterfaceContainer() {
+		seriesNames.add("clip:clop");
+		seriesNames.add("hip:hop");
+		seriesNames.add("go:slow");
+		setColours();
+
 		gridPane = new GridPane();
+		if (layout == stacked) {
+			layoutStacked();
+		} else
+			layoutTiled();
 		return gridPane;
 	}
-
-	@Override
-	public Object getMenuContainer() {
-		Menu mu = new Menu(creatorId);
-		MenuItem miEdit = new MenuItem("Edit...");
-		mu.getItems().add(miEdit);
-		miEdit.setOnAction(e -> edit());
-
-		MenuItem miExport = new MenuItem("Export data...");
-		mu.getItems().add(miExport);
-		return mu;
-	}
-
-
 
 	private static final String KeyLayout = "layout";
 	private static final String KeyClearOnReset = "clearOnReset";
@@ -136,36 +177,41 @@ implements Widget {
 	}
 
 	private void layoutStacked() {
-//		int row = 0;
-//		for (String name : reader.data().keySet()) {
-//			if (!name.equals("time")) {
-//				addChart(row, 0, name, colourNames[row], getXAxisTile(reader));
-//				row++;
-//			}
-//		}
+		int row = 0;
+		for (String name : seriesNames) {
+			addChart(row, 0, name, colours[row], getXAxisTile(name));
+			row++;
+		}
 	}
+
+	private String getXAxisTile(String name) {
+		// we need units here???
+		return "time";
+	}
+
 	private void layoutTiled() {
-//		int nSeries = reader.data().size() - 1;
-//		int nCols = (int) Math.sqrt(nSeries) + 1;
-//		int nRows = 1;
-//		while (nRows * nCols < nSeries)
-//			nRows++;
-//		int row = 0;
-//		int col = 0;
-//		int count = 0;
-//		for (String name : reader.data().keySet()) {
-//			if (!name.equals("time")) {
-//				// Need units of the x axis (time units)
-//				addChart(row, col, name, colourNames[count], getXAxisTile(reader));
-//				col++;
-//				count++;
-//				if (col > nCols) {
-//					col = 0;
-//					row++;
-//				}
-//			}
-//		}
+		int nSeries = seriesNames.size() - 1;
+		int nCols = (int) Math.sqrt(nSeries) + 1;
+		int nRows = 1;
+		while (nRows * nCols < nSeries)
+			nRows++;
+		int row = 0;
+		int col = 0;
+		int count = 0;
+		for (String name : seriesNames) {
+			if (!name.equals("time")) {
+				// Need units of the x axis (time units)
+				addChart(row, col, name, colours[count], getXAxisTile(name));
+				col++;
+				count++;
+				if (col > nCols) {
+					col = 0;
+					row++;
+				}
+			}
+		}
 	}
+
 	private void createNewSeries() {
 		ObservableList<Node> charts = gridPane.getChildren();
 		int count = 0;
@@ -187,6 +233,7 @@ implements Widget {
 			row++;
 		}
 	}
+
 	private void reconfigure() {
 		List<Node> charts = new ArrayList<>();
 		for (Node c : gridPane.getChildren())
@@ -215,6 +262,7 @@ implements Widget {
 			}
 		}
 	}
+
 	private void addChart(int r, int c, String name, String colour, String xAxisLabel) {
 		// for now there is 1:1 with chart and series.
 		final NumberAxis xAxis = new NumberAxis();
@@ -253,15 +301,10 @@ implements Widget {
 		gridPane.add(lineChart, c, r);
 	}
 
-	// completely wrong now - wait and see
 	private String getYAxisLabel(String name) {
 		String result = "";
-		String[] fields = name.split(":");
-		if (fields.length == 1)
-			result = name;
-		else
-			result = (fields[fields.length - 2] + ":" + fields[fields.length - 1]);
-		return result;
+		String[] fields = name.split(sep);
+		return fields[fields.length - 1];
 	}
 
 	private void setFontSize(LineChart<Number, Number> chart, int fs) {
@@ -290,6 +333,7 @@ implements Widget {
 		String css = "-fx-stroke: " + colourName + "; -fx-stroke-width: 1px;";
 		series.getNode().lookup(".chart-series-line").setStyle(css);
 	}
+
 	private enum LayoutOptions {
 		Stacked, Tiled
 	}
@@ -336,9 +380,21 @@ implements Widget {
 	}
 
 	@Override
-	public void onStatusMessage(State state) {
+	public Object getMenuContainer() {
+		Menu mu = new Menu(creatorId);
+		MenuItem miEdit = new MenuItem("Edit...");
+		mu.getItems().add(miEdit);
+		miEdit.setOnAction(e -> edit());
+
+		MenuItem miExport = new MenuItem("Export data...");
+		miExport.setOnAction(e -> doExportData());
+		mu.getItems().add(miExport);
+		return mu;
+	}
+
+	private Object doExportData() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 

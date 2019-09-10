@@ -29,16 +29,22 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
+import fr.ens.biologie.generic.utils.Logging;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+
+import java.util.logging.Logger;
+
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
  * @author Ian Davies
@@ -46,26 +52,72 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
  * @date 3 Sep 2019
  */
 // listens to what??
-public class LabelValuePair 
-		extends AbstractDisplayWidget<Property,SimplePropertyList>
-		implements Widget {
-	
+public class LabelValuePair extends AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
+
 	public LabelValuePair(int statusMessageCode) {
-		super(statusMessageCode,DataMessageTypes.VALUE_PAIR);
+		super(statusMessageCode, DataMessageTypes.VALUE_PAIR);
 	}
 
-	private Label label;
-	private Label value;
+	private Label lblName;
+	private Label lblValue;
+
+	private String name = "uninitialised name";
+	private Object initialValue = new Object();
+	private Object value = initialValue;
+
+	private static Logger log = Logging.getLogger(LabelValuePair.class);
+
+	@Override
+	public void onDataMessage(Property data) {
+		// of the attached simulator (dont forget there could be many simulators)
+		log.info("Data received " + data);
+		data.getKey();
+		value = data.getValue();
+		updateLabel();
+	}
+
+	@Override
+	public void onMetaDataMessage(SimplePropertyList meta) {
+		log.info("Meta-data received " + meta);
+		name = (String) meta.getPropertyValue("name");
+		initialValue = meta.getPropertyValue("value");
+		value = initialValue;
+		updateLabel();
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
+		log.info("Status message received: " + state);
+		if (state.equals(waiting)) {
+			value = initialValue;
+			updateLabel();
+		}
+
+	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
+		log.info("Prepared user interface");
 		HBox content = new HBox();
-		label = new Label("crap label");
-		value = new Label("crap value");
+		lblName = new Label(name);
+		lblValue = new Label();
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
-		content.getChildren().addAll(label, value);
+		content.getChildren().addAll(lblName, lblValue);
+		updateLabel0();
+		log.info("User interface built");
 		return content;
+	}
+
+	private void updateLabel0() {
+		log.info(value.toString());
+		lblValue.setText(value.toString());
+	}
+
+	private void updateLabel() {
+		Platform.runLater(() -> {
+			updateLabel0();
+		});
 	}
 
 	@Override
@@ -80,31 +132,9 @@ public class LabelValuePair
 	@Override
 	public void getPreferences() {
 	}
-	@Override
-	public void setProperties(String id,SimplePropertyList properties) {
-	}
 
 	@Override
-	public void onDataMessage(Property data) {
-		// TODO Auto-generated method stub
-		// when plugged to a simulator through an edge with label "trackTime"
-		// this method will receive a pair with label="time" and value=<long>, the current time
-		// of the attached simulator (dont forget there could be many simulators)
-		data.getKey(); // = "time"
-		data.getValue(); // = the current time as a long
+	public void setProperties(String id, SimplePropertyList properties) {
 	}
-
-	@Override
-	public void onMetaDataMessage(SimplePropertyList meta) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onStatusMessage(State state) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 }

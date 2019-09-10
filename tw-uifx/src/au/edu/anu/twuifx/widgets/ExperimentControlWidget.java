@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.images.Images;
@@ -40,6 +41,7 @@ import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
@@ -65,6 +67,8 @@ public class ExperimentControlWidget
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
+	
+	private static Logger log = Logging.getLogger(ExperimentControlWidget.class);
 
 	// NB initial state is always 'waiting' ('null' causes a crash)
 	private String state = waiting.name();
@@ -75,6 +79,7 @@ public class ExperimentControlWidget
 
 	@Override
 	public Object getUserInterfaceContainer() {
+		log.info("Prepared user interface");
 		runGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Play16.gif")));
 		pauseGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Pause16.gif")));
 		btnRunPause = new Button("", runGraphic);
@@ -97,10 +102,13 @@ public class ExperimentControlWidget
 		HBox pane = new HBox();
 		pane.getChildren().addAll(buttons);
 		setButtonLogic();
+		log.info("User interface built");
 		return pane;
 	}
 
 	private Object handleResetPressed() {
+		// Always begin by disabling in case the next operation takes a long time
+		log.info("Reset button pressed");
 		setButtons(true,true,true,null);
 		if (state.equals(pausing.name()) | 
 			state.equals(stepping.name()) | 
@@ -110,6 +118,7 @@ public class ExperimentControlWidget
 	}
 
 	private Object handleStepPressed() {
+		log.info("Step button pressed");
 		setButtons(true,true,true,null);
 		if (state.equals(pausing.name()) | 
 			state.equals(stepping.name()) | 
@@ -118,11 +127,8 @@ public class ExperimentControlWidget
 		return null;
 	}
 
-	private Object handleRunPausePressed() {
-		// TODO see of long step times mean the buttons are not updated in a timely
-		// fashion?
-		// If so disable all buttons before issuing the event. Safe because we are in
-		// the application thread here
+	private Object handleRunPausePressed() {	
+		log.info("Run/Paused button pressed");
 		setButtons(true,true,true,null);
 		Event event = null;
 		if (state.equals(waiting.name()))
@@ -138,6 +144,7 @@ public class ExperimentControlWidget
 
 	@Override
 	public void onStatusMessage(State newState) {
+		log.info("Received status message: "+newState);
 		state = newState.getName();
 		setButtonLogic();
 	}

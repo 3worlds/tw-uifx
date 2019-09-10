@@ -54,6 +54,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
  * @author Ian Davies
@@ -61,16 +62,14 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  * @date 2 Sep 2019
  */
 
-public class TimeDisplayWidget 
-		extends AbstractDisplayWidget<Property, SimplePropertyList> 
-		implements Widget {
+public class TimeDisplayWidget extends AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
 
 	private boolean metadataReceived = false;
 	private TimeUnits smallest;
 	private TimeUnits largest;
 	private TimeScaleType timeScale;
 	private List<TimeUnits> units;
-	private long startTime;
+	private Long startTime;
 
 	private Label lblTimeSlowest;
 	private Label lblTimeFastest;
@@ -88,15 +87,8 @@ public class TimeDisplayWidget
 	 * 
 	 */
 
-//	@Override
-//	public void onResetStatus() {
-//		Platform.runLater(() -> {
-//			initialiseLabels();
-//		});
-//	}
-
 	public TimeDisplayWidget(int statusMessageCode) {
-		super(statusMessageCode,DataMessageTypes.TIME);
+		super(statusMessageCode, DataMessageTypes.TIME);
 		simTimes = new HashMap<>();
 		log.info("Constructor");
 	}
@@ -122,6 +114,17 @@ public class TimeDisplayWidget
 		log.info("metadata received");
 	}
 
+	@Override
+	public void onDataMessage(Property data) {
+		log.info("data msg received");
+		if (metadataReceived) {
+			simTimes.put(data.getKey(), (Long) data.getValue());
+			Duple<Long, Long> times = getTimes();
+			updateControls(times.getFirst(), times.getSecond());
+		} else
+			log.severe("Missed data. Data msg received before widget has received meta-data. " + data.toString());
+	}
+
 	private Duple<Long, Long> getTimes() {
 		Long min = Long.MAX_VALUE;
 		Long max = Long.MIN_VALUE;
@@ -141,32 +144,21 @@ public class TimeDisplayWidget
 		}
 	}
 
-	@Override
-	public void onDataMessage(Property data) {
-		log.info("data msg received");
-		if (metadataReceived) {
-			simTimes.put(data.getKey(), (Long) data.getValue());
-			Duple<Long, Long> times = getTimes();
-			String slowest = getLabelText(times.getFirst());
-			String fastest = getLabelText(times.getSecond());
-			Platform.runLater(() -> {
-				lblTimeSlowest.setText(slowest);
-				if (slowest.equals(fastest))
-					lblTimeFastest.setText("");
-				else
-					lblTimeFastest.setText(fastest);
-
-				log.info("Updating ui labels");
-			});
-
-		} else
-			log.severe("Missed data. Data msg received before widget has received meta-data. " + data.toString());
+	private void updateControls(Long slowest, Long fastest) {
+		String ss = getLabelText(slowest);
+		String sf = getLabelText(fastest);
+		Platform.runLater(() -> {
+			updateControls0(ss, sf);
+		});
 	}
 
-	private void initialiseLabels() {
-		String t = getLabelText(startTime);
-		lblTimeSlowest.setText(t);
-		lblTimeFastest.setText("");
+	private void updateControls0(String slowest, String fastest) {
+		lblTimeSlowest.setText(slowest);
+		if (slowest.equals(fastest))
+			lblTimeFastest.setText("");
+		else
+			lblTimeFastest.setText(fastest);
+		log.info("Updating ui labels");
 	}
 
 	@Override
@@ -182,8 +174,8 @@ public class TimeDisplayWidget
 		content.setSpacing(5);
 		lblTimeSlowest = new Label();
 		lblTimeFastest = new Label();
-		initialiseLabels();
 		content.getChildren().addAll(lblTimeSlowest, lblTimeFastest);
+		updateControls0(getLabelText(startTime), getLabelText(startTime));
 		return content;
 	}
 
@@ -210,88 +202,11 @@ public class TimeDisplayWidget
 
 	@Override
 	public void onStatusMessage(State state) {
-		// TODO Auto-generated method stub
-		
+		log.info("Status message received: " + state);
+		if (state.equals(waiting)) {
+			simTimes.clear();
+			updateControls(startTime, startTime);
+		}
+
 	}
-
-	/*
-	 * We could have a sim swarm. Can we assume that all Simulator are instances of
-	 * the same SimulatorNode?? If so the "key" could be a hashcode supplied by the
-	 * sim instance instead of "time" since we know its the time (because its a
-	 * TimeDisplayWidget silly!). All sim instances would be using the same timeline
-	 * so the meta-data for display is always the same. Am i right so far? If so
-	 * there are various display options:
-	 * 
-	 * If one sim just show its time as usual.
-	 * 
-	 * If >1 show the times of the fastest and slowest of still running sims. (Need
-	 * to listen for a Finish state?)
-	 * 
-	 * Show a graph of straight lines, one for each sim (this is really another
-	 * widget (SwarmProgressWidget).
-	 * 
-	 * Show a time density distribution etc etc - another widget
-	 */
-	/*- e.g.
-	* |1-----------------
-	* |2--------
-	* |3--------------------
-	* |4------
-	* |etc...
-	* |______________________________
-	* Time scale in appropriate units
-	*/
-	/*- or
-	* |
-	* |
-	* |     ^
-	* |    /  \_
-	* |   /     \
-	* |__/_______\_____________________
-	* Time scale in appropriate units
-	* and many others
-	* 
-	* That's GREAT!
-	* One of the still unresolved issues with sending data is the identification of the
-	* data sent - here we just send a label and a value, and we were naively thinking
-	* that label = variable name. But what about component name, species, stage, etc etc.
-	* I think one solution is to construct a hierarchical label, eg in our case here
-	* "sim1>time" or "sim2>time" etc. If we dont want a complex string parser to deal with 
-	* those labels, then we can define the label as a String list (eg "sim1","time" here),
-	* so it's easier to get the information back (and you dont get into problems if you
-	* use the separator character in the Strings). It's easy for the Simulator to build
-	* the hierarchical label list, since all its objects have a uniqueID and are stored
-	* in nested data structures, and it's easy for widgets to analyse this label list
-	* 
-	*/
-	/*
-	 * Need the meta-data listed below to interpret the time value as anything other
-	 * than a great big number. The values 'could' be just properties of this that
-	 * the user can change and have saved and loaded in preferences. But this would
-	 * be annoying as you would have to do this every time you first deploy.
-	 * 
-	 * Question is when?
-	 * 
-	 * 1) The meta-data comes from the TimeLine and so assumes all sending sims are
-	 * using this same timeline. Is this enforced somewhere? YES (cf archetype): at
-	 * the moment there is 1 timeLine per Simulator (=dynamics node) and 1 simulator
-	 * per ecosystem BUT there may be more than one ecosystem per 3w root node
-	 * 
-	 * 2) This data shouldn't change after initialisation (i.e.not at reset) so
-	 * should only be sent once per deployment.
-	 * 
-	 * Could it be done within initialise and the data passed to each instance or
-	 * does this risk conflating the purpose of initialisation order? Well
-	 * initialisation does not create the instance.
-	 * 
-	 * WHAT about another solution: add into the abstract DisplayWidget ancestor the
-	 * possibility to send metadata (as a propertylist) through a particular message
-	 * type then (1) it's up to the widget to interpret the metadata and (2) it's
-	 * also up to the widget to know what to do in the case where data arrive before
-	 * the metadata or when the metadata change (ie when a second metadata message
-	 * is sent). This would fix the problem for this widget, and possibly for all
-	 * other ones where the same question will certainly arise.
-	 * 
-	 */
-
 }

@@ -71,8 +71,7 @@ public class ModelRunnerfx extends Application {
 
 	public static void launchUI(TreeGraph<TreeGraphNode, ALEdge> config1) {
 		config = config1;
-		uiNode = (TreeGraphNode) get(config.root().getChildren(),
-				selectZeroOrOne(hasTheLabel(N_UI.label())));
+		uiNode = (TreeGraphNode) get(config.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label())));
 		String[] args = new String[0];
 		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
 
@@ -130,15 +129,12 @@ public class ModelRunnerfx extends Application {
 		scene.getWindow().setOnCloseRequest((e) -> {
 			stop();
 		});
-//		uiManager = new MrUIManager(uiNode, controller.getToolBar(), controller.getTopLeft(), controller.getTopRight(),
-//				controller.getBottomLeft(), controller.getBottomRight(), controller.getStatusBar(),
-//				controller.getWidgetMenu(), stage.getScene().getWindow());
-
-		uiDeployer = new UIDeployer(uiNode,controller);
+		Preferences.initialise(Project.makeRuntimePreferencesFile());
+		uiDeployer = new UIDeployer(uiNode, controller);
 		stage.show();
 		stage.toBack();
 		Platform.runLater(() -> {
-			Preferences.initialise(Project.makeRuntimePreferencesFile());
+
 			controller.getPreferences();
 			uiDeployer.getPreferences();
 			// hide splash after set delay
