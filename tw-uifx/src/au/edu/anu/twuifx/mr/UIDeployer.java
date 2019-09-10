@@ -29,11 +29,14 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mr;
 
+import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.UIContainer;
 import au.edu.anu.twcore.ui.UITab;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.mr.view.MrController;
+import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.twcore.constants.UIContainerOrientation;
@@ -93,13 +96,15 @@ public class UIDeployer {
 					.getPropertyValue(P_UICONTAINER_ORIENT.key());
 			buildContent(n.getChildren(), orientation, getTabContainer(n.id()));
 		}
-		
+
 		setMenus();
 
 	}
 
-	private Duple<BorderPane, BorderPane> makeSplitPane(UIContainerOrientation orientation, BorderPane parentPane) {
+	private Duple<BorderPane, BorderPane> makeSplitPane(UIContainerOrientation orientation, BorderPane parentPane,
+			String id) {
 		SplitPane splitPane = new SplitPane();
+		splitPane.setId(id);
 		splitPanes.add(splitPane);
 		if (orientation == UIContainerOrientation.horizontal)
 			splitPane.setOrientation(Orientation.HORIZONTAL);
@@ -115,7 +120,7 @@ public class UIDeployer {
 
 	private void buildContent(Iterable<? extends TreeNode> children, UIContainerOrientation parentOrientation,
 			BorderPane parentBorderPane) {
-	
+
 		List<WidgetNode> widgetNodes = new ArrayList<>();
 		List<UIContainer> containerNodes = new ArrayList<>();
 		for (TreeNode c : children) {
@@ -125,9 +130,11 @@ public class UIDeployer {
 				containerNodes.add((UIContainer) c);
 		}
 		if (widgetNodes.size() == 1 && containerNodes.size() == 1) {
-			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane);
 			WidgetNode wn = widgetNodes.get(0);
 			UIContainer cn = containerNodes.get(0);
+			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane,
+					wn.getParent().id());
+
 			int wnp = (Integer) wn.properties().getPropertyValue(P_UIORDER.key());
 			int cnp = (Integer) cn.properties().getPropertyValue(P_UIORDER.key());
 			Widget w = wn.getInstance();
@@ -149,9 +156,11 @@ public class UIDeployer {
 			widgets.add(w);
 			parentBorderPane.setCenter((Node) w.getUserInterfaceContainer());
 		} else if (widgetNodes.size() == 2) {
-			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane);
 			WidgetNode wn1 = widgetNodes.get(0);
 			WidgetNode wn2 = widgetNodes.get(1);
+			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane,
+					wn1.getParent().id());
+
 			int w1Pos = (Integer) wn1.properties().getPropertyValue(P_UIORDER.key());
 			int w2Pos = (Integer) wn2.properties().getPropertyValue(P_UIORDER.key());
 			Widget w1 = wn1.getInstance();
@@ -168,9 +177,11 @@ public class UIDeployer {
 		} else if (containerNodes.size() == 2) {
 			// not strictly necessary but might give options for how the nested splitters
 			// move their contents
-			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane);
 			UIContainer cn1 = containerNodes.get(0);
 			UIContainer cn2 = containerNodes.get(1);
+
+			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane,
+					cn1.getParent().id());
 			int c1Pos = (Integer) cn1.properties().getPropertyValue(P_UIORDER.key());
 			int c2Pos = (Integer) cn2.properties().getPropertyValue(P_UIORDER.key());
 			if (c1Pos <= c2Pos) {
@@ -229,11 +240,21 @@ public class UIDeployer {
 	public void getPreferences() {
 		for (Widget w : widgets)
 			w.getPreferences();
+		// maybe needs to be delayed!
+		for (SplitPane s : splitPanes) {
+			String key = s.getId();
+			UiHelpers.getSplitPanePositions(s, key);
+		}
 	}
 
 	public void putPreferences() {
 		for (Widget w : widgets)
 			w.putPreferences();
+		for (SplitPane s:splitPanes) {
+			String key =  s.getId();
+			Preferences.putDouble(key, s.getDividerPositions()[0]);
+	
+		}
 	}
 
 //------------------------------

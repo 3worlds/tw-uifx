@@ -572,8 +572,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Platform.runLater(() -> {
-					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane1));
-					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane2));
+					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane1,splitPane1.getId()));
+					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane2,splitPane2.getId()));
 					observable.removeListener(this);
 				});
 			}

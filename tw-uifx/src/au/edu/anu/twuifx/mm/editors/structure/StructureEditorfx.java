@@ -131,13 +131,17 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 		}
 		if (editableNode.hasChildren()) {
-			if (editableNode.getSelectedVisualNode().isCollapsedParent()) {
+			if (editableNode.getSelectedVisualNode().hasCollaspedChild()) {
 				MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_EXPAND);
 				mi.setOnAction((e) -> {
 					onExpandTree();
 				});
 
-			} else {
+			} 
+		    if (editableNode.getSelectedVisualNode().hasUncollapsedChildren()){
+			}
+			
+			else {
 				MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_COLLAPSE);
 				mi.setOnAction((e) -> {
 					onCollapseTree();

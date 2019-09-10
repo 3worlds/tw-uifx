@@ -32,10 +32,10 @@ import au.edu.anu.omhtk.preferences.Preferences;
 import javafx.scene.control.SplitPane;
 
 public class UiHelpers {
-	public static double[] getSplitPanePositions(SplitPane s) {
+	public static double[] getSplitPanePositions(SplitPane s,String key) {
 		double pos;
 		double[] positions = new double[1];
-		pos = Preferences.getDouble(s.idProperty().get(), s.getDividerPositions()[0]);
+		pos = Preferences.getDouble(key, s.getDividerPositions()[0]);
 		positions[0] = pos;
 		return positions;
 	}
