@@ -36,57 +36,60 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
+
+
 /**
  * @author Ian Davies
  *
- * @date 3 Sep 2019
+ * @date 11 Sep 2019
  */
-// listens to what??
-public class LabelValuePairWidget extends AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
+public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<SimplePropertyList, SimplePropertyList> implements Widget {
 
-	public LabelValuePairWidget(StateMachineEngine<StatusWidget> statusSender) {
+	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.VALUE_PAIR);
+		simData = new HashMap<>();
 	}
-
-	private Label lblName;
-	private Label lblValue;
 
 	private String name = "uninitialised name";
-	private Object initialValue = new Object();
-	private Object value = initialValue;
+	private String units = "?";
+	private String timeUnits = "?";
+	private Number initialValue = (Double)0.0;
+	private Number value = initialValue;
+	private Map<Integer, Long> simData;
 
-	private static Logger log = Logging.getLogger(LabelValuePairWidget.class);
+	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget.class);
 
-	@Override
-	public void onDataMessage(Property data) {
-		// of the attached simulator (dont forget there could be many simulators)
-		log.info("Data received " + data);
-		data.getKey();
-		value = data.getValue();
-		updateLabel();
-	}
 
 	@Override
 	public void onMetaDataMessage(SimplePropertyList meta) {
 		log.info("Meta-data received " + meta);
 		name = (String) meta.getPropertyValue("name");
-		initialValue = meta.getPropertyValue("value");
+		initialValue = (Number) meta.getPropertyValue("value");
 		value = initialValue;
 		updateLabel();
 	}
 
+	@Override
+	public void onDataMessage(SimplePropertyList data) {
+		// of the attached simulator (dont forget there could be many simulators)
+		log.info("Data received " + data);
+		int simId = (Integer)data.getPropertyValue("simId");
+		value = (Number) data.getPropertyValue("value");
+		long time =(Long)data.getPropertyValue("time");
+		updateLabel();
+	}
 	@Override
 	public void onStatusMessage(State state) {
 		log.info("Status msg received:" + state);
@@ -102,11 +105,11 @@ public class LabelValuePairWidget extends AbstractDisplayWidget<Property, Simple
 	public Object getUserInterfaceContainer() {
 		log.info("Prepared user interface");
 		HBox content = new HBox();
-		lblName = new Label(name);
-		lblValue = new Label();
+//		lblName = new Label(name);
+//		lblValue = new Label();
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
-		content.getChildren().addAll(lblName, lblValue);
+//		content.getChildren().addAll(lblName, lblValue);
 		updateLabel0();
 		log.info("User interface built");
 		return content;
@@ -114,7 +117,7 @@ public class LabelValuePairWidget extends AbstractDisplayWidget<Property, Simple
 
 	private void updateLabel0() {
 		log.info(value.toString());
-		lblValue.setText(value.toString());
+//		lblValue.setText(value.toString());
 	}
 
 	private void updateLabel() {
