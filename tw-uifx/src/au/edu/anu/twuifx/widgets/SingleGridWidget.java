@@ -29,6 +29,8 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+
 import java.text.DecimalFormat;
 
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -260,7 +262,9 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 	
 	@Override
 	public void onStatusMessage(State state) {
-		// TODO Auto-generated method stub
+		if (isSimulatorState(state, waiting)) {
+			
+		}
 		
 	}
 

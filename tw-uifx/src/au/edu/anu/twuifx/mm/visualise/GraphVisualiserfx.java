@@ -89,7 +89,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Color graphEdgeColor;
 	private static final Double animateDuration = 500.0;
 	private final IMMController controller;
-	
+
 	private boolean edgeClassOnly = true;
 	private boolean nodeClassOnly = false;
 
@@ -128,11 +128,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		for (VisualNode n : visualGraph.nodes()) {
 			createTreeLines(n, showTreeLine);
 			createGraphLines(n, showGraphLine);
-			if (n.isCollapsedParent())
+			if (!n.isCollapsed() && n.hasCollaspedChild())
 				collapsedParents.add(n);
 		}
-		for (VisualNode n : collapsedParents)
-			collapseTree(n);
+		for (VisualNode parent : collapsedParents)
+			for (VisualNode child : parent.getChildren()) {
+				if (child.isCollapsed())
+					collapseTree(child);
+			}
 
 		pane.setPrefHeight(Control.USE_COMPUTED_SIZE);
 		pane.setPrefWidth(Control.USE_COMPUTED_SIZE);
@@ -231,26 +234,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void onNewNode(VisualNode node) {
 		createNodeVisualisation(node);
 		createTreeLines(node, showTreeLine);
-		// gse.
-		// create all the visual stuff
-		// if (placing) {
-		// Platform.runLater(() -> {
-		// AotNode n = popupEditor.locate(event, pane.getWidth(), pane.getHeight());
-		// VisualNode.insertCircle(n, controller.childLinksProperty(),
-		// controller.xLinksProperty(), pane, this);
-		// // add parent edge. There must be one in this circumstance
-		// AotEdge inEdge = (AotEdge) get(n.getEdges(Direction.IN),
-		// selectOne(hasTheLabel(Trees.CHILD_LABEL)));
-		// VisualNode.createChildLine(inEdge, controller.childLinksProperty(), pane);
-		// popupEditor = null;
-		// placing = false;
-		// pane.setCursor(Cursor.DEFAULT);
-		// reBuildAllElementsPropertySheet();
-		// checkGraph();
-		// });
-		// }
-		//
-
 	}
 
 	private void createTreeLines(VisualNode child, BooleanProperty show) {
@@ -292,25 +275,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private void createGraphLine(VisualEdge edge, BooleanProperty show) {
 		VisualNode startNode = (VisualNode) edge.startNode();
 		VisualNode endNode = (VisualNode) edge.endNode();
-//		@SuppressWarnings("unchecked")
-//		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(startNode.edges(Direction.OUT),
-//				selectZeroOrMany(notQuery(hasTheLabel(getEdgeLabel(edge)))));
-//		/*
-//		 * edge labels of identical lines will obscure each other. Therefore we have to
-//		 * pull some tricks to concatenate all the info in one text object and set the
-//		 * others to ""
-//		 */
-//
-//		String newLabel = "";
-//		for (VisualEdge e : edges) {
-//			if (e.endNode().id().equals(endNode.id())) {
-//				newLabel += getEdgeLabel(e) + "/";
-//				Text text = (Text) e.getText();
-//				if (text != null)
-//					text.setText("");
-//			}
-//		}
-//		newLabel += getEdgeLabel(edge);
+		// TODO deal with overlapping edge labels
 		String newLabel = edge.getDisplayText(edgeClassOnly);
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
@@ -372,25 +337,23 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 	}
 
-	private static void collapseTree(VisualNode parent) {
+	private static void collapseTree(VisualNode childRoot) {
+		VisualNode parent = childRoot.getParent();
 		Circle circle = (Circle) parent.getSymbol();
 		DoubleProperty xp = circle.centerXProperty();
 		DoubleProperty yp = circle.centerYProperty();
-		for (TreeNode child : parent.getChildren())
-			collapse(child, xp, yp);
+		collapse(childRoot, xp, yp);
 	}
 
-	private void expandTree(VisualNode parent) {
+	private void expandTree(VisualNode childRoot) {
 		double w = pane.getWidth();
 		double h = pane.getHeight();
-		for (TreeNode child : parent.getChildren()) {
-			expand(child, w, h);
-		}
+		expand(childRoot, w, h);
 	}
 
-	private static void expand(TreeNode node, double w, double h) {
-		setExpandBindings((VisualNode) node, w, h);
-		for (TreeNode child : node.getChildren())
+	private static void expand(TreeNode parent, double w, double h) {
+		setExpandBindings((VisualNode) parent, w, h);
+		for (TreeNode child : parent.getChildren())
 			expand(child, w, h);
 	}
 
@@ -412,11 +375,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		timeline.play();
 	}
 
-	private static void collapse(TreeNode node, DoubleProperty xp, DoubleProperty yp) {
-		VisualNode vn = (VisualNode) node;
-		setCollapseBindings(vn, xp, yp);
-		vn.setCollapse(true);
-		for (TreeNode child : node.getChildren())
+	private static void collapse(TreeNode parent, DoubleProperty xp, DoubleProperty yp) {
+		VisualNode vParent = (VisualNode) parent;
+		setCollapseBindings(vParent, xp, yp);
+		vParent.setCollapse(true);
+		for (TreeNode child : parent.getChildren())
 			collapse(child, xp, yp);
 	}
 
@@ -441,15 +404,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void collapseTreeFrom(VisualNode node) {
-		collapseTree(node);
-
+	public void collapseTreeFrom(VisualNode childRoot) {
+		collapseTree(childRoot);
 	}
 
 	@Override
-	public void expandTreeFrom(VisualNode node) {
-		expandTree(node);
-
+	public void expandTreeFrom(VisualNode childRoot) {
+		expandTree(childRoot);
 	}
 
 	@Override
@@ -496,7 +457,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void doLayout(double jitterFraction) {
 		pane.setPrefHeight(pane.getHeight());
 		pane.setPrefWidth(pane.getWidth());
-		Layout layout = new TreeLayout(visualGraph,jitterFraction);
+		ILayout layout = new TreeLayout(visualGraph, jitterFraction);
 		layout.compute();
 
 		for (VisualNode node : visualGraph.nodes()) {
@@ -515,7 +476,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void onRemoveParentLink(VisualNode vnChild) {
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) vnChild.getParentLine());
-		vnChild.removeParentLine();	
+		vnChild.removeParentLine();
 		pane.getChildren().removeAll(sceneNodes);
 	}
 }

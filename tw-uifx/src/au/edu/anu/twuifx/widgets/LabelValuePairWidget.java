@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
+import au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 
@@ -89,8 +90,9 @@ public class LabelValuePairWidget extends AbstractDisplayWidget<Property, Simple
 
 	@Override
 	public void onStatusMessage(State state) {
-		log.info("Status message received: " + state);
-		if (state.equals(waiting)) {
+		log.info("Status msg received:" + state);
+		if (isSimulatorState(state, waiting)) {
+			log.info("Resetting initial value: " + initialValue + "," + state);
 			value = initialValue;
 			updateLabel();
 		}

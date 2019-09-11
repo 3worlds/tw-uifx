@@ -29,6 +29,8 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -60,6 +63,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -74,13 +78,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 
-public class TimeSeriesPlotWidget 
-		extends AbstractDisplayWidget<TimeSeriesData, Metadata> 
-		implements Widget {
+public class TimeSeriesPlotWidget extends AbstractDisplayWidget<TimeSeriesData, Metadata> implements Widget {
 	private boolean clearOnReset;
 	private GridPane gridPane;
 	private Map<String, XYChart.Series<Number, Number>> activeSeries;
+
 	private List<String> seriesNames;
+	private List<String> seriesUnits;
+	private String timeUnits = "light years"; // for x axis
 
 	private String creatorId;
 
@@ -101,46 +106,41 @@ public class TimeSeriesPlotWidget
 		layout = stacked;
 		activeSeries = new HashMap<>();
 		seriesNames = new ArrayList<>();
-	}
-
-//	public TimeSeriesPlotWidget(int statusMessageCode, int dataType) {
-//		super(statusMessageCode, DataMessageTypes.TIME_SERIES);
-//
-//		// what is this dataType?
-//	}
-
-	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
-		this.creatorId = id;
-	}
-
-	@Override
-	public void onDataMessage(TimeSeriesData data) {
-		log.info("Data received: " + data);
-		
-		// time + order list of arrays of unknown number types
-		long time = data.time();
-		Map<DataLabel,Number> numbers = data.values();
+		seriesUnits = new ArrayList<>();
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Meta-data received: " + meta);
-		String timeUnits = (String) meta.properties().getPropertyValue("timeUnits");
-		StringTable names = (StringTable) meta.properties().getPropertyValue("seriesNames");
-		Dimensioner d[] = names.getDimensioners();
-		// check row/col order? The last (or first) could by the series units?
-		for (int i = 0; i < d[0].getLength(); i++) {
+		// we need a units label for the xaxis (cf: TimeUnit.addreviation())
+		timeUnits = (String) meta.properties().getPropertyValue("timeUnits");
+		// ordered list of DataLabel
+		List<DataLabel> dls = (List<DataLabel>) meta.properties().getPropertyValue("labels");
+		seriesNames.clear();
+		for (DataLabel dl : dls) {
 			String name = "";
-			for (int j = 0; j < d[1].getLength(); j++) {
-				String field = names.getByInt(i, j);
-				if (!field.trim().isEmpty()) {
-					System.out.println("{" + i + "," + j + "]=" + field);
-					name += sep + field;
-				}
-			}
+			for (int i = 0; i < dl.size(); i++)
+				name += sep + dl.get(i);
 			seriesNames.add(name.replaceFirst(sep, ""));
 		}
+		// likewise, we need y axis units
+		seriesUnits = (List<String>) meta.properties().getPropertyValue("units");
+	}
+
+	@Override
+	public void onDataMessage(TimeSeriesData data) {
+		log.info("Data received: " + data);
+		// I thought we would have an ordered list of data instead of a Map<>
+		addData(data.time(), data.values());
+	}
+
+	private void addData(long time, Map<DataLabel, Number> numbers) {
+		Platform.runLater(() -> {
+			for (String key : seriesNames) {
+				XYChart.Series<Number, Number> srs = activeSeries.get(key);
+				srs.getData().add(new Data<Number, Number>(time, numbers.get(key)));
+			}
+		});
 	}
 
 	private void setColours() {
@@ -149,8 +149,25 @@ public class TimeSeriesPlotWidget
 
 	@Override
 	public void onStatusMessage(State state) {
-		// TODO Auto-generated method stub
+		if (isSimulatorState(state, waiting)) {
+			Platform.runLater(() -> {
 
+				for (XYChart.Series srs : activeSeries.values())
+					srs.getNode().lookup(".chart-series-line").setStyle("-fx-stroke: lightgray;-fx-stroke-width: 1px;");
+
+				activeSeries.clear();
+
+				if (clearOnReset) {
+					for (Node n : gridPane.getChildren()) {
+						LineChart<Number, Number> chart = (LineChart<Number, Number>) n;
+						chart.getData().clear();
+
+					}
+				}
+				// TODO but now we must createNewSerues
+			});
+
+		}
 	}
 
 	@Override
@@ -158,6 +175,9 @@ public class TimeSeriesPlotWidget
 		seriesNames.add("clip:clop");
 		seriesNames.add("hip:hop");
 		seriesNames.add("go:slow");
+		seriesUnits.add("m/s");
+		seriesUnits.add("ha.");
+		seriesUnits.add("mph");
 		setColours();
 
 		gridPane = new GridPane();
@@ -168,8 +188,13 @@ public class TimeSeriesPlotWidget
 		return gridPane;
 	}
 
-	private static final String KeyLayout = "layout";
-	private static final String KeyClearOnReset = "clearOnReset";
+	@Override
+	public void setProperties(String id, SimplePropertyList properties) {
+		this.creatorId = id;
+	}
+
+	private static final String KeyLayout = "_layout";
+	private static final String KeyClearOnReset = "_clearOnReset";
 
 	@Override
 	public void putPreferences() {
@@ -185,15 +210,14 @@ public class TimeSeriesPlotWidget
 
 	private void layoutStacked() {
 		int row = 0;
-		for (String name : seriesNames) {
-			addChart(row, 0, name, colours[row], getXAxisTile(name));
+		for (int i = 0; i < seriesNames.size(); i++) {
+			addChart(row, 0, seriesNames.get(i), colours[row], getXAxisTile());
 			row++;
 		}
 	}
 
-	private String getXAxisTile(String name) {
-		// we need units here???
-		return "time";
+	private String getXAxisTile() {
+		return "time (" + timeUnits + ")";
 	}
 
 	private void layoutTiled() {
@@ -208,7 +232,7 @@ public class TimeSeriesPlotWidget
 		for (String name : seriesNames) {
 			if (!name.equals("time")) {
 				// Need units of the x axis (time units)
-				addChart(row, col, name, colours[count], getXAxisTile(name));
+				addChart(row, col, name, colours[count], getXAxisTile());
 				col++;
 				count++;
 				if (col > nCols) {
@@ -309,9 +333,9 @@ public class TimeSeriesPlotWidget
 	}
 
 	private String getYAxisLabel(String name) {
-		String result = "";
+		String units = seriesUnits.get(seriesNames.indexOf(name));
 		String[] fields = name.split(sep);
-		return fields[fields.length - 1];
+		return fields[fields.length - 1] + " (" + units + ")";
 	}
 
 	private void setFontSize(LineChart<Number, Number> chart, int fs) {
@@ -320,11 +344,7 @@ public class TimeSeriesPlotWidget
 
 	private void setChartTitle(LineChart<Number, Number> lineChart, String name) {
 		String chartTitle = name;
-		String[] items = name.split("/");
-		items = items[items.length - 1].split(":");
-		if (items[0].length() == 34) {
-			chartTitle = chartTitle.replace(items[0], "").replace("/" + ":", "/");
-		}
+		// TODO who knows?
 		lineChart.setTitle(chartTitle);
 	}
 
@@ -403,6 +423,5 @@ public class TimeSeriesPlotWidget
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

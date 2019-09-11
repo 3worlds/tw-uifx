@@ -1,6 +1,6 @@
 package au.edu.anu.twuifx.mm.visualise;
 
-public interface Layout {
+public interface ILayout {
 	public void compute();
 
 }

@@ -70,10 +70,10 @@ public interface StructureEditable {
 	public void onDeleteTree(VisualNode root);
 
 	/* collapse tree from this node */
-	public void onCollapseTree();
+	public void onCollapseTree(VisualNode childRoot);
 
 	/* expand tree from this node */
-	public void onExpandTree();
+	public void onExpandTree(VisualNode childRoot);
 	
 	/* connect node as child of this node*/
 	public void onReconnectChild(VisualNode childNode);

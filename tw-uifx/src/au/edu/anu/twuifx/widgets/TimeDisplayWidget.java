@@ -65,9 +65,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  * @date 2 Sep 2019
  */
 
-public class TimeDisplayWidget 
-		extends AbstractDisplayWidget<LabelValuePairData,Metadata> 
-		implements Widget {
+public class TimeDisplayWidget extends AbstractDisplayWidget<LabelValuePairData, Metadata> implements Widget {
 
 	private boolean metadataReceived = false;
 	private TimeUnits smallest;
@@ -123,9 +121,9 @@ public class TimeDisplayWidget
 	public void onDataMessage(LabelValuePairData data) {
 		log.info("data msg received");
 		if (metadataReceived) {
-			simTimes.put(data.label().getEnd(), (Long)data.value());
+			simTimes.put(data.label().getEnd(), (Long) data.value());
 			Duple<Long, Long> times = getTimes();
-			updateControls(times.getFirst(), times.getSecond());
+			updateControls(getLabelText(times.getFirst()), getLabelText(times.getSecond()));
 		} else
 			log.severe("Missed data. Data msg received before widget has received meta-data. " + data.toString());
 	}
@@ -149,11 +147,9 @@ public class TimeDisplayWidget
 		}
 	}
 
-	private void updateControls(Long slowest, Long fastest) {
-		String ss = getLabelText(slowest);
-		String sf = getLabelText(fastest);
+	private void updateControls(String slowest, String fastest) {
 		Platform.runLater(() -> {
-			updateControls0(ss, sf);
+			updateControls0(slowest, fastest);
 		});
 	}
 
@@ -169,8 +165,7 @@ public class TimeDisplayWidget
 	@Override
 	public Object getUserInterfaceContainer() {
 		/*
-		 * This is only called in application thread so it is only here that you can
-		 * construct fx stuff
+		 * Application thread: It is only here that you can construct fx stuff
 		 */
 		log.info("getUserInterfaceContainer");
 		HBox content = new HBox();
@@ -208,9 +203,9 @@ public class TimeDisplayWidget
 	@Override
 	public void onStatusMessage(State state) {
 		log.info("Status message received: " + state);
-		if (state.equals(waiting.state())) {
+		if (isSimulatorState(state, waiting)) {
 			simTimes.clear();
-			updateControls(startTime, startTime);
+			updateControls(getLabelText(startTime), getLabelText(startTime));
 		}
 
 	}

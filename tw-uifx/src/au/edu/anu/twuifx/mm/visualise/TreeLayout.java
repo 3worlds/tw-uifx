@@ -1,5 +1,37 @@
+
+/**************************************************************************
+ *  TW-UIFX - ThreeWorlds User-Interface fx                               *
+ *                                                                        *
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
+ *       jacques.gignoux@upmc.fr                                          *
+ *       ian.davies@anu.edu.au                                            * 
+ *                                                                        *
+ *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
+ *  This is to separate concerns of UI implementation and the code for    *
+ *  these java programs.                                                  *
+ *                                                                        *
+ **************************************************************************                                       
+ *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
+ *                                                                        *
+ *  TW-UIFX is free software: you can redistribute it and/or modify       *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation, either version 3 of the License, or     *
+ *  (at your option) any later version.                                   *
+ *                                                                        *
+ *  TW-UIFX is distributed in the hope that it will be useful,            *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *  GNU General Public License for more details.                          *                         
+ *                                                                        *
+ *  You should have received a copy of the GNU General Public License     *
+ *  along with TW-UIFX.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
+ *                                                                        *
+ **************************************************************************/
+
 package au.edu.anu.twuifx.mm.visualise;
-/*
+
+/**------------------------------------------------------------------------
  * 
   Copyright (c) 2004-2007 Regents of the University of California.
   All rights reserved.
@@ -25,7 +57,7 @@ package au.edu.anu.twuifx.mm.visualise;
   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
   OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
   SUCH DAMAGE.
- */
+------------------------------------------------------------------------- */
 
 import java.util.ArrayList;
 
@@ -74,7 +106,7 @@ import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
  *
  * @date 13 Aug 2019
  */
-public class TreeLayout implements Layout {
+public class TreeLayout implements ILayout {
 	private static final String Prelim = "prelim";
 	private static final String Number = "number";
 	private static final String Thread = "thread";
@@ -100,10 +132,20 @@ public class TreeLayout implements Layout {
 	private double dy;
 	private double jitterFraction = 0.01;
 
-	public TreeLayout(TreeGraph<VisualNode, VisualEdge> visualGraph,double jFrac) {
+	/*
+	 * TreeLayout operator is only applied to expanded trees from the 3w root. The
+	 * position of detached or collapsed trees are left unchanged.
+	 * 
+	 * Properties are neither added or deleted from the visual node's property list.
+	 * Instead a lookup table is built of properties required by the layout
+	 * operator.
+	 * 
+	 * Child nodes are sorted in alpha order for visual consistency.
+	 */
+	public TreeLayout(TreeGraph<VisualNode, VisualEdge> visualGraph, double jFrac) {
 		this.jitterFraction = jFrac;
 		propertyMap = new HashMap<>();
-		
+
 		sortedChildMap = new HashMap<>();
 		for (VisualNode vnRoot : visualGraph.roots()) {
 			if (vnRoot.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))
@@ -116,13 +158,13 @@ public class TreeLayout implements Layout {
 
 	private void addProperties(VisualNode parent) {
 		SharedPropertyListImpl p = new SharedPropertyListImpl(keys);
-		//p.setProperty(X, parent.getX());
-		//p.setProperty(Y, parent.getY());
 		propertyMap.put(parent.id(), p);
 
 		List<VisualNode> childList = new ArrayList<>();
-		for (VisualNode child : parent.getChildren())
-			childList.add(child);
+		for (VisualNode child : parent.getChildren()) {
+			if (!child.isCollapsed())
+				childList.add(child);
+		}
 		Collections.sort(childList, new Comparator<VisualNode>() {
 			@Override
 			public int compare(VisualNode n1, VisualNode n2) {
@@ -130,8 +172,10 @@ public class TreeLayout implements Layout {
 			}
 		});
 		sortedChildMap.put(parent.id(), childList);
-		for (VisualNode child : parent.getChildren())
-			addProperties(child);
+		for (VisualNode child : parent.getChildren()) {
+			if (!child.isCollapsed())
+				addProperties(child);
+		}
 	}
 
 	@Override
@@ -174,16 +218,17 @@ public class TreeLayout implements Layout {
 			x -= jitter;
 
 		if (rnd.nextBoolean())
-			y +=jitter;
+			y += jitter;
 		else
-			y -=jitter;
+			y -= jitter;
 		prop.setProperty(X, x);
 		prop.setProperty(Y, y);
 		n.setX(x);
-		n.setY(y);;
+		n.setY(y);
+		;
 		for (VisualNode child : n.getChildren())
-			normalise(child);
-		
+			if (!child.isCollapsed())
+				normalise(child);
 	}
 
 	private void determineDepths() {
@@ -412,12 +457,14 @@ public class TreeLayout implements Layout {
 		}
 
 	}
-    private  static final double[] resize(double[] a, int size) {
-        if ( a.length >= size ) return a;
-        double[] b = new double[size];
-        System.arraycopy(a, 0, b, 0, a.length);
-        return b;
-    }
+
+	private static final double[] resize(double[] a, int size) {
+		if (a.length >= size)
+			return a;
+		double[] b = new double[size];
+		System.arraycopy(a, 0, b, 0, a.length);
+		return b;
+	}
 
 	private void updateDepths(int depth, VisualNode n) {
 		if (m_depths.length <= depth)
@@ -427,7 +474,7 @@ public class TreeLayout implements Layout {
 	}
 
 	private void secondWalk(VisualNode n, VisualNode p, double m, int depth) {
-		SharedPropertyListImpl nprops = properties(n); 
+		SharedPropertyListImpl nprops = properties(n);
 		double y = (Double) nprops.getPropertyValue(Prelim) + m;
 		double x = m_depths[depth];
 		nprops.setProperty(Y, y);

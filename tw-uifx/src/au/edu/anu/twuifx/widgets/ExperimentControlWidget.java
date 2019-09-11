@@ -149,7 +149,7 @@ public class ExperimentControlWidget
 	}
 
 	private void setButtonLogic() {
-		// processStatus is not in the application thread
+		// ensure waiting for app thread
 		Platform.runLater(() -> {
 			if (state.equals(waiting.name())) {
 				setButtons(false, false, true, runGraphic);

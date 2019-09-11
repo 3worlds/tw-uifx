@@ -411,9 +411,9 @@ public abstract class StructureEditorAdapter
 
 	private void deleteNode(VisualNode vNode) {
 		// don't leave nodes hidden
-		if (vNode.isCollapsedParent())
+		if (vNode.hasCollaspedChild())
 			gvisualiser.expandTreeFrom(vNode);
-		// remove from view while still entract
+		// remove from view while still intact
 		gvisualiser.removeView(vNode);
 		// this and its config from graphs and disconnect
 		vNode.remove();
@@ -428,15 +428,15 @@ public abstract class StructureEditorAdapter
 	}
 
 	@Override
-	public void onCollapseTree() {
-		gvisualiser.collapseTreeFrom(editableNode.getSelectedVisualNode());
+	public void onCollapseTree(VisualNode childRoot) {
+		gvisualiser.collapseTreeFrom(childRoot);
 		controller.onTreeCollapse();
 		GraphState.setChanged();
 	}
 
 	@Override
-	public void onExpandTree() {
-		gvisualiser.expandTreeFrom(editableNode.getSelectedVisualNode());
+	public void onExpandTree(VisualNode childRoot) {
+		gvisualiser.expandTreeFrom(childRoot);
 		controller.onTreeExpand();
 		GraphState.setChanged();
 	}
@@ -444,11 +444,6 @@ public abstract class StructureEditorAdapter
 	@Override
 	public void onReconnectChild(VisualNode vnChild) {
 		editableNode.reconnectChild(vnChild);
-//		VisualNode vnParent = editableNode.getSelectedVisualNode();
-//		TreeGraphNode cnChild = vnChild.getConfigNode();
-//		TreeGraphNode cnParent = editableNode.getConfigNode();
-//		cnParent.connectChild(cnChild);
-//		vnParent.connectChild(vnChild);
 		gvisualiser.onNewParent(vnChild);
 		ConfigGraph.validateGraph();
 		GraphState.setChanged();

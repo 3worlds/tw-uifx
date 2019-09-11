@@ -47,9 +47,9 @@ public interface IGraphVisualiser {
 	
 	public void onNewEdge(VisualEdge edge);
 	
-	public void collapseTreeFrom(VisualNode node);
+	public void collapseTreeFrom(VisualNode childRoot);
 	
-	public void expandTreeFrom(VisualNode node);
+	public void expandTreeFrom(VisualNode childRoot);
 	
 	public TreeGraph<VisualNode, VisualEdge> getVisualGraph();
 
