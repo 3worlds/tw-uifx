@@ -458,21 +458,29 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		ILayout layout = new TreeLayout(visualGraph, jitterFraction);
 		layout.compute();
 
+		// Prevent pane size incrementing in width after layout operations because of label widths
+		double maxExcess = 0.0;
+		double r = nodeRadius.get() / pane.getWidth();
 		for (VisualNode node : visualGraph.nodes()) {
 			Circle c = (Circle) node.getSymbol();
 			if (!c.centerXProperty().isBound()) {
 				// ensure there is room for the text. Otherwise the pane width will increment
 				Text text = (Text) node.getText();
-				double tw = (text.getBoundsInLocal().getWidth()+1) / pane.getWidth();
-				double r = nodeRadius.get()/pane.getWidth();
+				double tw = (text.getBoundsInLocal().getWidth() + 1) / pane.getWidth();
 				double x = node.getX();
-				double size = x+r+tw;
-				double excess = size-1.0;
-				if (excess>0) {
-					x = x - excess;
-					node.setX(x);
-				}
-				c.centerXProperty().set(node.getX() * pane.getWidth());
+				double size = x + r + tw;
+				double excess = size - 1.0;
+				if (excess > 0)
+					maxExcess = Math.max(maxExcess, excess);
+			}
+		}
+		for (VisualNode node : visualGraph.nodes()) {
+			Circle c = (Circle) node.getSymbol();
+			if (!c.centerXProperty().isBound()) {
+				// ensure there is room for the text. Otherwise the pane width will increment
+				double x = node.getX();
+				node.setX(x-maxExcess);
+				c.centerXProperty().set(node.getX()* pane.getWidth());
 				c.centerYProperty().set(node.getY() * pane.getHeight());
 			}
 		}
