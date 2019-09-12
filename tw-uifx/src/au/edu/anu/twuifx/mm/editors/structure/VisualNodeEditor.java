@@ -144,7 +144,7 @@ public class VisualNodeEditor implements //
 			try {
 				return (Class<? extends TreeGraphNode>) Class.forName(result);
 			} catch (ClassNotFoundException e) {
-				throw new TwuifxException("Subclass not found in the system: "+result);
+				throw new TwuifxException("Subclass not found in the system: "+result+visualNode);
 
 			}
 		} else

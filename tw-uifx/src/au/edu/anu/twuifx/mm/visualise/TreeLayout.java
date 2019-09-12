@@ -94,6 +94,7 @@ import au.edu.anu.twcore.exceptions.TwcoreException;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.properties.impl.SharedPropertyListImpl;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
+import javafx.scene.text.Text;
 
 /**
  * 
@@ -123,6 +124,7 @@ public class TreeLayout implements ILayout {
 
 	private VisualNode root;
 	private Map<String, SharedPropertyListImpl> propertyMap;
+	//
 	private Map<String, List<VisualNode>> sortedChildMap;
 	private double xmx;
 	private double ymx;
@@ -225,7 +227,6 @@ public class TreeLayout implements ILayout {
 		prop.setProperty(Y, y);
 		n.setX(x);
 		n.setY(y);
-		;
 		for (VisualNode child : n.getChildren())
 			if (!child.isCollapsed())
 				normalise(child);
@@ -239,7 +240,7 @@ public class TreeLayout implements ILayout {
 	private VisualNode prevSibling(VisualNode sibling) {
 		VisualNode parent = sibling.getParent();
 		if (parent != null) {
-			List<VisualNode> siblings = children(parent);
+			List<VisualNode> siblings = accessibleChildren(parent);
 			int idx = siblings.indexOf(sibling);
 			idx--;
 			if (idx >= 0)
@@ -251,7 +252,7 @@ public class TreeLayout implements ILayout {
 	private VisualNode nextSibling(VisualNode sibling) {
 		VisualNode parent = sibling.getParent();
 		if (parent != null) {
-			List<VisualNode> siblings = children(parent);
+			List<VisualNode> siblings = accessibleChildren(parent);
 			int idx = siblings.indexOf(sibling);
 			idx++;
 			if (idx < siblings.size())
@@ -267,14 +268,14 @@ public class TreeLayout implements ILayout {
 	private VisualNode getFirstChild(VisualNode n) {
 		if (n == null)
 			throw new TwcoreException("Asking for children of null node");
-		List<VisualNode> children = children(n);
+		List<VisualNode> children = accessibleChildren(n);
 		if (children.isEmpty())
-			throw new TwcoreException("Expecting children but none found ");
+			throw new TwcoreException("Expecting children but none found: " + n);
 		return children.get(0);
 	}
 
 	private VisualNode getLastChild(VisualNode n) {
-		List<VisualNode> children = children(n);
+		List<VisualNode> children = accessibleChildren(n);
 		return children.get(children.size() - 1);
 	}
 
@@ -289,7 +290,7 @@ public class TreeLayout implements ILayout {
 		prop.setProperty(Change, 0.0);
 
 		updateDepths(depth, n);
-		if (!n.hasChildren()) {
+		if (!hasAccessibleChildren(n)) {
 			VisualNode l = prevSibling(n);
 			if (l == null) {
 				prop.setProperty(Prelim, 0.0);
@@ -335,7 +336,7 @@ public class TreeLayout implements ILayout {
 			double sip, sim, sop, som;
 			vip = vop = v;
 			vim = w;
-			vom = children(vip.getParent()).get(0);
+			vom = accessibleChildren(vip.getParent()).get(0);
 
 			sip = (Double) propertyMap.get(vip.id()).getPropertyValue(Mod);
 			sop = (Double) propertyMap.get(vop.id()).getPropertyValue(Mod);
@@ -383,7 +384,7 @@ public class TreeLayout implements ILayout {
 	}
 
 	private VisualNode nextLeft(VisualNode n) {
-		List<VisualNode> children = children(n);
+		List<VisualNode> children = accessibleChildren(n);
 		if (!children.isEmpty())
 			return children.get(0);
 		else
@@ -391,7 +392,7 @@ public class TreeLayout implements ILayout {
 	}
 
 	private VisualNode nextRight(VisualNode n) {
-		List<VisualNode> children = children(n);
+		List<VisualNode> children = accessibleChildren(n);
 		if (!children.isEmpty())
 			return children.get(children.size() - 1);
 		else
@@ -484,7 +485,7 @@ public class TreeLayout implements ILayout {
 		xmn = Math.min(xmn, x);
 		ymn = Math.min(ymn, y);
 		depth += 1;
-		if (!children(n).isEmpty())
+		if (!accessibleChildren(n).isEmpty())
 			for (VisualNode c = getFirstChild(n); c != null; c = nextSibling(c)) {
 				secondWalk(c, n, m + (Double) nprops.getPropertyValue(Mod), depth);
 			}
@@ -494,8 +495,12 @@ public class TreeLayout implements ILayout {
 		return propertyMap.get(node.id());
 	}
 
-	private List<VisualNode> children(VisualNode node) {
-		return sortedChildMap.get(node.id());
+	private List<VisualNode> accessibleChildren(VisualNode parent) {
+		return sortedChildMap.get(parent.id());
+	}
+
+	private boolean hasAccessibleChildren(VisualNode parent) {
+		return !accessibleChildren(parent).isEmpty();
 	}
 
 }

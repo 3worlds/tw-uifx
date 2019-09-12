@@ -455,20 +455,27 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public void doLayout(double jitterFraction) {
-		pane.setPrefHeight(pane.getHeight());
-		pane.setPrefWidth(pane.getWidth());
 		ILayout layout = new TreeLayout(visualGraph, jitterFraction);
 		layout.compute();
 
 		for (VisualNode node : visualGraph.nodes()) {
 			Circle c = (Circle) node.getSymbol();
 			if (!c.centerXProperty().isBound()) {
+				// ensure there is room for the text. Otherwise the pane width will increment
+				Text text = (Text) node.getText();
+				double tw = (text.getBoundsInLocal().getWidth()+1) / pane.getWidth();
+				double r = nodeRadius.get()/pane.getWidth();
+				double x = node.getX();
+				double size = x+r+tw;
+				double excess = size-1.0;
+				if (excess>0) {
+					x = x - excess;
+					node.setX(x);
+				}
 				c.centerXProperty().set(node.getX() * pane.getWidth());
 				c.centerYProperty().set(node.getY() * pane.getHeight());
 			}
 		}
-		pane.setPrefHeight(Control.USE_COMPUTED_SIZE);
-		pane.setPrefWidth(Control.USE_COMPUTED_SIZE);
 		GraphState.setChanged();
 	}
 
