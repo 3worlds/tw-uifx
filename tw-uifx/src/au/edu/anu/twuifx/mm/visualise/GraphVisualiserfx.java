@@ -222,7 +222,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		// Bind text position relative to circle center
 		text.xProperty().bind(c.centerXProperty().add(nodeRadius));
-		text.yProperty().bind(c.centerYProperty().add(nodeRadius.divide(2)));
+		text.yProperty().bind(c.centerYProperty());
 		text.visibleProperty().bind(c.visibleProperty());
 		pane.getChildren().addAll(c, text);
 		/*
@@ -465,13 +465,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public void doLayout(double jitterFraction) {
+		new TreeLayout(visualGraph, jitterFraction).compute();
 		double w = pane.getWidth();
 		double h = pane.getHeight();
 		double dx = nodeRadius.get() / w;
 		double dy = nodeRadius.get() / h;
 		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-		new TreeLayout(visualGraph, jitterFraction).compute();
 		for (VisualNode node : visualGraph.nodes()) {
 			if (!node.isCollapsed()) {
 				Text text = (Text) node.getText();
@@ -479,12 +479,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				tw = tw/w;
 				double th = text.getBoundsInLocal().getHeight();
 				th = th/h;
-				double right = node.getX() + dx + tw + dx;
-				double left = node.getX() - dx;
-				double top = node.getY() + th;
-				double bottom = node.getY() - dy;
-				min.setLocation(Math.min(min.getX(), left), Math.min(min.getY(), bottom));
-				max.setLocation(Math.max(max.getX(), right), Math.max(max.getY(), top));
+				th = Math.max(th, dy);
+				double maxx = node.getX() + tw + dx;
+				double minx = node.getX();
+	
+				double maxy = node.getY();
+				double miny = node.getY()-th;
+				min.setLocation(Math.min(min.getX(), minx), Math.min(min.getY(), miny));
+				max.setLocation(Math.max(max.getX(), maxx), Math.max(max.getY(), maxy));
 			}
 		}
 
@@ -492,8 +494,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (!node.isCollapsed()) {
 				double x = node.getX();
 				double y = node.getY();
-				x = rescale(x,min.getX(),max.getX(),0.0,1.0);
-				y = rescale(y,min.getY(),max.getY(),0.0,1.0);
+				y = rescale(y,min.getY(),max.getY(),0.0,1.0-dy);
+				x = rescale(x,min.getX(),max.getX(),0.0,1.0-(2*dx));
 				node.setX(x);
 				node.setY(y);
 			}

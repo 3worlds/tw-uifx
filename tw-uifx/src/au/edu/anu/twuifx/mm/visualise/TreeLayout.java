@@ -192,28 +192,14 @@ public class TreeLayout implements ILayout {
 
 		secondWalk(root, null, -(Double) properties(root).getPropertyValue(Prelim), 0);
 
-		Point2D minIn = new Point2D.Double(0.0,0.1);
-		Point2D maxIn = new Point2D.Double(1.0, 1.0);
 		Point2D minOut = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		Point2D maxOut = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-		getOutBounds(minOut, maxOut);
+		getLayoutBounds(minOut, maxOut);
 
-		normalise(root,minOut,maxOut,minIn,maxIn);
+		normalise(root, minOut, maxOut, new Point2D.Double(0.0, 0.0), new Point2D.Double(1.0, 1.0));
 	}
 
-	private void getInBounds(VisualNode parent, Point2D min, Point2D max) {
-		double x = parent.getX();
-		double y = parent.getY();
-		min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
-		max.setLocation(Math.max(y, max.getY()), Math.max(y, max.getY()));
-		for (VisualNode child : parent.getChildren()) {
-			if (!child.isCollapsed())
-				getInBounds(child, min, max);
-		}
-
-	}
-
-	private void getOutBounds(Point2D min, Point2D max) {
+	private void getLayoutBounds(Point2D min, Point2D max) {
 		for (SharedPropertyListImpl pl : propertyMap.values()) {
 			double x = (Double) pl.getPropertyValue(X);
 			double y = (Double) pl.getPropertyValue(Y);
@@ -240,18 +226,18 @@ public class TreeLayout implements ILayout {
 			else
 				y -= delta;
 			pl.setProperty(X, x);
-			pl.setProperty(Y,y);
+			pl.setProperty(Y, y);
 			min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
 			max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
 		}
-		
+
 	}
 
 	private double rescale(double value, double fromMin, double fromMax, double toMin, double toMax) {
 		double fromRange = fromMax - fromMin;
-		double toRange = toMax - toMin;	
-		if (fromRange==0.0)
-			return toRange/2.0+toMin;
+		double toRange = toMax - toMin;
+		if (fromRange == 0.0)
+			return toRange / 2.0 + toMin;
 		double p = (value - fromMin) / fromRange;
 		return p * toRange + toMin;
 	}
@@ -268,7 +254,7 @@ public class TreeLayout implements ILayout {
 		parent.setY(y);
 		for (VisualNode child : parent.getChildren())
 			if (!child.isCollapsed())
-				normalise(child,fromMin,fromMax,toMin,toMax);
+				normalise(child, fromMin, fromMax, toMin, toMax);
 	}
 
 	private void determineDepths() {
