@@ -31,6 +31,10 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
+import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+
 /**------------------------------------------------------------------------
  * 
   Copyright (c) 2004-2007 Regents of the University of California.
@@ -94,7 +98,8 @@ import au.edu.anu.twcore.exceptions.TwcoreException;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.properties.impl.SharedPropertyListImpl;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
-import javafx.scene.text.Text;
+import fr.ens.biologie.generic.utils.Duple;
+import javafx.util.Pair;
 
 /**
  * 
@@ -126,12 +131,6 @@ public class TreeLayout implements ILayout {
 	private Map<String, SharedPropertyListImpl> propertyMap;
 	//
 	private Map<String, List<VisualNode>> sortedChildMap;
-	private double xmx;
-	private double ymx;
-	private double xmn;
-	private double ymn;
-	private double dx;
-	private double dy;
 	private double jitterFraction = 0.01;
 
 	/*
@@ -182,54 +181,94 @@ public class TreeLayout implements ILayout {
 
 	@Override
 	public void compute() {
+//		Point2D minIn = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+//		Point2D maxIn = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+//
+//		getInBounds(root, minIn, maxIn);
 
 		firstWalk(root, 0, 1);
 
 		determineDepths();
 
-		xmx = Double.NEGATIVE_INFINITY;
-		ymx = xmx;
-		xmn = Double.POSITIVE_INFINITY;
-		ymn = xmn;
 		secondWalk(root, null, -(Double) properties(root).getPropertyValue(Prelim), 0);
 
-		dx = xmx - xmn;
-		dy = ymx - ymn;
-		normalise(root);
+		Point2D minIn = new Point2D.Double(0.0,0.1);
+		Point2D maxIn = new Point2D.Double(1.0, 1.0);
+		Point2D minOut = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Point2D maxOut = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		getOutBounds(minOut, maxOut);
+
+		normalise(root,minOut,maxOut,minIn,maxIn);
 	}
 
-	private void normalise(VisualNode n) {
-		Random rnd = new Random();
-		SharedPropertyListImpl prop = properties(n);
+	private void getInBounds(VisualNode parent, Point2D min, Point2D max) {
+		double x = parent.getX();
+		double y = parent.getY();
+		min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
+		max.setLocation(Math.max(y, max.getY()), Math.max(y, max.getY()));
+		for (VisualNode child : parent.getChildren()) {
+			if (!child.isCollapsed())
+				getInBounds(child, min, max);
+		}
 
+	}
+
+	private void getOutBounds(Point2D min, Point2D max) {
+		for (SharedPropertyListImpl pl : propertyMap.values()) {
+			double x = (Double) pl.getPropertyValue(X);
+			double y = (Double) pl.getPropertyValue(Y);
+			min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
+			max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
+		}
+
+		Random rnd = new Random();
+		double w = max.getX() - min.getX();
+		double h = max.getY() - min.getY();
+		double size = Math.max(w, h);
+		min.setLocation(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		max.setLocation(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		for (SharedPropertyListImpl pl : propertyMap.values()) {
+			double delta = rnd.nextDouble() * jitterFraction * (size);
+			double x = (Double) pl.getPropertyValue(X);
+			double y = (Double) pl.getPropertyValue(Y);
+			if (rnd.nextBoolean())
+				x += delta;
+			else
+				x -= delta;
+			if (rnd.nextBoolean())
+				y += delta;
+			else
+				y -= delta;
+			pl.setProperty(X, x);
+			pl.setProperty(Y,y);
+			min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
+			max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
+		}
+		
+	}
+
+	private double rescale(double value, double fromMin, double fromMax, double toMin, double toMax) {
+		double fromRange = fromMax - fromMin;
+		double toRange = toMax - toMin;	
+		if (fromRange==0.0)
+			return toRange/2.0+toMin;
+		double p = (value - fromMin) / fromRange;
+		return p * toRange + toMin;
+	}
+
+	private void normalise(VisualNode parent, Point2D fromMin, Point2D fromMax, Point2D toMin, Point2D toMax) {
+		SharedPropertyListImpl prop = properties(parent);
 		double x = (Double) prop.getPropertyValue(X);
 		double y = (Double) prop.getPropertyValue(Y);
-		if (dx > 0)
-			x = ((x - xmn) / dx) * 0.9 + 0.03;
-		else
-			x = 0.5;
-		if (dy > 0)
-			y = ((y - ymn) / dy) * 0.9;// + 0.03;
-		else
-			y = 0.5;
-		// 0.01 can be a percentage parameter
-		double jitter = rnd.nextDouble() * jitterFraction;
-		if (rnd.nextBoolean())
-			x += jitter;
-		else
-			x -= jitter;
-
-		if (rnd.nextBoolean())
-			y += jitter;
-		else
-			y -= jitter;
+		x = rescale(x, fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
+		y = rescale(y, fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
 		prop.setProperty(X, x);
 		prop.setProperty(Y, y);
-		n.setX(x);
-		n.setY(y);
-		for (VisualNode child : n.getChildren())
+		parent.setX(x);
+		parent.setY(y);
+		for (VisualNode child : parent.getChildren())
 			if (!child.isCollapsed())
-				normalise(child);
+				normalise(child,fromMin,fromMax,toMin,toMax);
 	}
 
 	private void determineDepths() {
@@ -480,10 +519,6 @@ public class TreeLayout implements ILayout {
 		double x = m_depths[depth];
 		nprops.setProperty(Y, y);
 		nprops.setProperty(X, x);
-		xmx = Math.max(xmx, x);
-		ymx = Math.max(ymx, y);
-		xmn = Math.min(xmn, x);
-		ymn = Math.min(ymn, y);
 		depth += 1;
 		if (!accessibleChildren(n).isEmpty())
 			for (VisualNode c = getFirstChild(n); c != null; c = nextSibling(c)) {

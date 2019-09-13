@@ -30,10 +30,13 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math.util.MathUtils;
+
+import com.sun.javafx.geom.Rectangle;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
@@ -450,40 +453,59 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onNewParent(VisualNode child) {
 		createTreeLines(child, showTreeLine);
-
+	}
+	private double rescale(double value, double fromMin, double fromMax, double toMin, double toMax) {
+		double fromRange = fromMax - fromMin;
+		double toRange = toMax - toMin;	
+		if (fromRange==0.0)
+			return toRange/2.0+toMin;
+		double p = (value - fromMin) / fromRange;
+		return p * toRange + toMin;
 	}
 
 	@Override
 	public void doLayout(double jitterFraction) {
-		ILayout layout = new TreeLayout(visualGraph, jitterFraction);
-		layout.compute();
-
-		// Prevent pane size incrementing in width after layout operations because of label widths
-		double maxExcess = 0.0;
-		double r = nodeRadius.get() / pane.getWidth();
+		double w = pane.getWidth();
+		double h = pane.getHeight();
+		double dx = nodeRadius.get() / w;
+		double dy = nodeRadius.get() / h;
+		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		new TreeLayout(visualGraph, jitterFraction).compute();
 		for (VisualNode node : visualGraph.nodes()) {
-			Circle c = (Circle) node.getSymbol();
-			if (!c.centerXProperty().isBound()) {
-				// ensure there is room for the text. Otherwise the pane width will increment
+			if (!node.isCollapsed()) {
 				Text text = (Text) node.getText();
-				double tw = (text.getBoundsInLocal().getWidth() + 1) / pane.getWidth();
+				double tw = text.getBoundsInLocal().getWidth();
+				tw = tw/w;
+				double th = text.getBoundsInLocal().getHeight();
+				th = th/h;
+				double right = node.getX() + dx + tw + dx;
+				double left = node.getX() - dx;
+				double top = node.getY() + th;
+				double bottom = node.getY() - dy;
+				min.setLocation(Math.min(min.getX(), left), Math.min(min.getY(), bottom));
+				max.setLocation(Math.max(max.getX(), right), Math.max(max.getY(), top));
+			}
+		}
+
+		for (VisualNode node : visualGraph.nodes()) {
+			if (!node.isCollapsed()) {
 				double x = node.getX();
-				double size = x + r + tw;
-				double excess = size - 1.0;
-				if (excess > 0)
-					maxExcess = Math.max(maxExcess, excess);
+				double y = node.getY();
+				x = rescale(x,min.getX(),max.getX(),0.0,1.0);
+				y = rescale(y,min.getY(),max.getY(),0.0,1.0);
+				node.setX(x);
+				node.setY(y);
 			}
 		}
 		for (VisualNode node : visualGraph.nodes()) {
-			Circle c = (Circle) node.getSymbol();
-			if (!c.centerXProperty().isBound()) {
-				// ensure there is room for the text. Otherwise the pane width will increment
-				double x = node.getX();
-				node.setX(x-maxExcess);
-				c.centerXProperty().set(node.getX()* pane.getWidth());
+			if (!node.isCollapsed()) {
+				Circle c = (Circle) node.getSymbol();
+				c.centerXProperty().set(node.getX() * pane.getWidth());
 				c.centerYProperty().set(node.getY() * pane.getHeight());
 			}
 		}
+//		pane.setPrefSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
 		GraphState.setChanged();
 	}
 

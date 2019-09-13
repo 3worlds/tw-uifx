@@ -142,7 +142,7 @@
                                        <children>
 														<Group fx:id="group">
 															<children>
-																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="600.0" minWidth="800.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
+																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="600.0" minWidth="800.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: lightgrey;" />
 															</children>
 														</Group>
                                        </children>
