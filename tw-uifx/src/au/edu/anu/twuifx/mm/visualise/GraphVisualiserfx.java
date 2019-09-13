@@ -182,7 +182,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				double h = pane.getHeight();
 				double ex = e.getX();
 				double ey = e.getY();
-				if (x < w && y < h && ex >= 0 && ey >= 0) {
+				double nx = dragNode.getX()*w;
+				double ny = dragNode.getY()*h;
+				if (nx < w && ny < h && ex >= 0 && ey >= 0) {
 					Circle dc = (Circle) dragNode.getSymbol();
 					dc.setCenterX(ex);
 					dc.setCenterY(ey);
