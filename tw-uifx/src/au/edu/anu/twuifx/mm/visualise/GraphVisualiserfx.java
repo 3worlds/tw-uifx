@@ -39,6 +39,8 @@ import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.layout.ILayout;
+import au.edu.anu.twapps.mm.layout.TreeLayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -483,6 +485,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
 				double x = node.getX();
+				// I don't know why the labels don't line up on the rh side?
 				double x1 = layout.rescale(x, min.getX(), max.getX(), 0.00, 1.0-0.05);
 				double y = node.getY();
 				double y1 = layout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
