@@ -105,7 +105,8 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 		double w = screenBounds.getWidth() / 1.5;
 		// golden mean?
-		double h = w / 1.618;
+//		double h = w / 1.618;
+		double h = w *0.707; // A4 landscape
 		double x = (screenBounds.getWidth() - w) / 2;
 		double y = (screenBounds.getHeight() - h) / 3;
 		mainStage.setWidth(w);

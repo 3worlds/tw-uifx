@@ -28,13 +28,6 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-
-package au.edu.anu.twuifx.mm.visualise;
-
-import java.awt.Rectangle;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 /**------------------------------------------------------------------------
  * 
   Copyright (c) 2004-2007 Regents of the University of California.
@@ -63,6 +56,10 @@ import java.awt.geom.Rectangle2D;
   SUCH DAMAGE.
 ------------------------------------------------------------------------- */
 
+package au.edu.anu.twuifx.mm.visualise;
+
+
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
@@ -89,8 +86,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
 import au.edu.anu.rscs.aot.graph.property.PropertyKeys;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -98,8 +93,6 @@ import au.edu.anu.twcore.exceptions.TwcoreException;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.properties.impl.SharedPropertyListImpl;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
-import fr.ens.biologie.generic.utils.Duple;
-import javafx.util.Pair;
 
 /**
  * 
@@ -131,7 +124,6 @@ public class TreeLayout implements ILayout {
 	private Map<String, SharedPropertyListImpl> propertyMap;
 	//
 	private Map<String, List<VisualNode>> sortedChildMap;
-	private double jitterFraction = 0.01;
 
 	/*
 	 * TreeLayout operator is only applied to expanded trees from the 3w root. The
@@ -143,8 +135,7 @@ public class TreeLayout implements ILayout {
 	 * 
 	 * Child nodes are sorted in alpha order for visual consistency.
 	 */
-	public TreeLayout(TreeGraph<VisualNode, VisualEdge> visualGraph, double jFrac) {
-		this.jitterFraction = jFrac;
+	public TreeLayout(TreeGraph<VisualNode, VisualEdge> visualGraph) {
 		propertyMap = new HashMap<>();
 
 		sortedChildMap = new HashMap<>();
@@ -180,11 +171,7 @@ public class TreeLayout implements ILayout {
 	}
 
 	@Override
-	public void compute() {
-//		Point2D minIn = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-//		Point2D maxIn = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-//
-//		getInBounds(root, minIn, maxIn);
+	public ILayout compute() {
 
 		firstWalk(root, 0, 1);
 
@@ -192,11 +179,14 @@ public class TreeLayout implements ILayout {
 
 		secondWalk(root, null, -(Double) properties(root).getPropertyValue(Prelim), 0);
 
-		Point2D minOut = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		Point2D maxOut = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-		getLayoutBounds(minOut, maxOut);
+		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
 
-		normalise(root, minOut, maxOut, new Point2D.Double(0.0, 0.0), new Point2D.Double(1.0, 1.0));
+		getLayoutBounds(min, max);
+
+		normalise(root, min, max, new Point2D.Double(0.0, 0.0), new Point2D.Double(1.0, 1.0));
+		
+		return this;
 	}
 
 	private void getLayoutBounds(Point2D min, Point2D max) {
@@ -206,40 +196,6 @@ public class TreeLayout implements ILayout {
 			min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
 			max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
 		}
-
-		Random rnd = new Random();
-		double w = max.getX() - min.getX();
-		double h = max.getY() - min.getY();
-		double size = Math.max(w, h);
-		min.setLocation(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		max.setLocation(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-		for (SharedPropertyListImpl pl : propertyMap.values()) {
-			double delta = rnd.nextDouble() * jitterFraction * (size);
-			double x = (Double) pl.getPropertyValue(X);
-			double y = (Double) pl.getPropertyValue(Y);
-			if (rnd.nextBoolean())
-				x += delta;
-			else
-				x -= delta;
-			if (rnd.nextBoolean())
-				y += delta;
-			else
-				y -= delta;
-			pl.setProperty(X, x);
-			pl.setProperty(Y, y);
-			min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
-			max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
-		}
-
-	}
-
-	private double rescale(double value, double fromMin, double fromMax, double toMin, double toMax) {
-		double fromRange = fromMax - fromMin;
-		double toRange = toMax - toMin;
-		if (fromRange == 0.0)
-			return toRange / 2.0 + toMin;
-		double p = (value - fromMin) / fromRange;
-		return p * toRange + toMin;
 	}
 
 	private void normalise(VisualNode parent, Point2D fromMin, Point2D fromMax, Point2D toMin, Point2D toMax) {

@@ -33,10 +33,9 @@ package au.edu.anu.twuifx.mm.visualise;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.math.util.MathUtils;
-
-import com.sun.javafx.geom.Rectangle;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
@@ -61,7 +60,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
-import javafx.scene.control.Control;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
@@ -140,9 +138,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 					collapseTree(child);
 			}
 
-		pane.setPrefHeight(Control.USE_COMPUTED_SIZE);
-		pane.setPrefWidth(Control.USE_COMPUTED_SIZE);
-
 	}
 
 	@Override
@@ -182,9 +177,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				double h = pane.getHeight();
 				double ex = e.getX();
 				double ey = e.getY();
-				double nx = dragNode.getX()*w;
-				double ny = dragNode.getY()*h;
-				if (nx < w && ny < h && ex >= 0 && ey >= 0) {
+				double nx = dragNode.getX() * w;
+				double ny = dragNode.getY() * h;
+				if (ex < w && ey < h && ex >= 0 && ey >= 0) {
 					Circle dc = (Circle) dragNode.getSymbol();
 					dc.setCenterX(ex);
 					dc.setCenterY(ey);
@@ -227,6 +222,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		text.yProperty().bind(c.centerYProperty());
 		text.visibleProperty().bind(c.visibleProperty());
 		pane.getChildren().addAll(c, text);
+
 		/*
 		 * put text behind circle - can't work entirely because other circles will be
 		 * behind this text. It would require a second loop.
@@ -456,61 +452,56 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void onNewParent(VisualNode child) {
 		createTreeLines(child, showTreeLine);
 	}
-	private double rescale(double value, double fromMin, double fromMax, double toMin, double toMax) {
-		double fromRange = fromMax - fromMin;
-		double toRange = toMax - toMin;	
-		if (fromRange==0.0)
-			return toRange/2.0+toMin;
-		double p = (value - fromMin) / fromRange;
-		return p * toRange + toMin;
-	}
 
 	@Override
 	public void doLayout(double jitterFraction) {
-		new TreeLayout(visualGraph, jitterFraction).compute();
+		ILayout layout = new TreeLayout(visualGraph).compute();
+
+		Random rnd = new Random();
 		double w = pane.getWidth();
 		double h = pane.getHeight();
-		double dx = nodeRadius.get() / w;
-		double dy = nodeRadius.get() / h;
+		double nrx = nodeRadius.get() / h;
+		double nry = nodeRadius.get() / h;
+
 		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
-		for (VisualNode node : visualGraph.nodes()) {
+		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
+				node.setX(jitter(node.getX(), jitterFraction, rnd));
+				node.setY(jitter(node.getY(), jitterFraction, rnd));
 				Text text = (Text) node.getText();
-				double tw = text.getBoundsInLocal().getWidth();
-				tw = tw/w;
-				double th = text.getBoundsInLocal().getHeight();
-				th = th/h;
-				th = Math.max(th, dy);
-				double maxx = node.getX() + tw + dx;
-				double minx = node.getX();
-	
-				double maxy = node.getY();
-				double miny = node.getY()-th;
-				min.setLocation(Math.min(min.getX(), minx), Math.min(min.getY(), miny));
-				max.setLocation(Math.max(max.getX(), maxx), Math.max(max.getY(), maxy));
+				double th = Math.max(nrx, text.getLayoutBounds().getHeight() / h);
+				double tw = text.getLayoutBounds().getWidth() / w + nrx;
+				double top = node.getY() - th;
+				double bottom = node.getY() + nry;
+				double left = node.getX() - nrx;
+				double right = node.getX() + nrx + tw;
+				min.setLocation(Math.min(left, min.getX()), Math.min(top, min.getY()));
+				max.setLocation(Math.max(right, max.getX()), Math.max(bottom, max.getY()));
 			}
-		}
 
-		for (VisualNode node : visualGraph.nodes()) {
+		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
 				double x = node.getX();
+				double x1 = layout.rescale(x, min.getX(), max.getX(), 0.00, 1.0-0.05);
 				double y = node.getY();
-				y = rescale(y,min.getY(),max.getY(),0.0,1.0-dy);
-				x = rescale(x,min.getX(),max.getX(),0.0,1.0-(2*dx));
-				node.setX(x);
-				node.setY(y);
-			}
-		}
-		for (VisualNode node : visualGraph.nodes()) {
-			if (!node.isCollapsed()) {
+				double y1 = layout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
+				node.setX(x1);
+				node.setY(y1);
 				Circle c = (Circle) node.getSymbol();
 				c.centerXProperty().set(node.getX() * pane.getWidth());
 				c.centerYProperty().set(node.getY() * pane.getHeight());
 			}
-		}
-//		pane.setPrefSize(Control.USE_COMPUTED_SIZE, Control.USE_COMPUTED_SIZE);
+
 		GraphState.setChanged();
+	}
+
+	private static double jitter(double value, double jitterFraction, Random rnd) {
+		double delta = rnd.nextDouble() * jitterFraction;
+		if (rnd.nextBoolean())
+			return value + delta;
+		else
+			return value - delta;
 	}
 
 	@Override

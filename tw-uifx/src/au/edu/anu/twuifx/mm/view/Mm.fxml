@@ -109,7 +109,7 @@
 					<center>
 						<SplitPane fx:id="splitPane1" dividerPositions="0.3" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 							<items>
-								<BorderPane prefHeight="200.0" prefWidth="200.0">
+								<BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;">
 									<center>
 										<TabPane fx:id="tabPaneProperties" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
 											<tabs>
@@ -134,15 +134,15 @@
 										</TabPane>
 									</center>
 								</BorderPane>
-								<BorderPane prefHeight="200.0" prefWidth="200.0">
+								<BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;">
 									<center>
-										<ScrollPane fx:id="scrollPane" pannable="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+										<ScrollPane fx:id="scrollPane" pannable="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;" BorderPane.alignment="CENTER">
 											<content>
-                                    <StackPane fx:id="scrollContent">
+                                    <StackPane fx:id="scrollContent" style="-fx-background-color: lightgrey;">
                                        <children>
 														<Group fx:id="group">
 															<children>
-																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="600.0" minWidth="800.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: beige;" />
+																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="424.0" minWidth="600.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
 															</children>
 														</Group>
                                        </children>
