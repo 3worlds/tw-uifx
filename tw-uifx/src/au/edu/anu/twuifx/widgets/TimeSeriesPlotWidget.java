@@ -170,11 +170,7 @@ public class TimeSeriesPlotWidget extends AbstractDisplayWidget<TimeSeriesData, 
 	@Override
 	public Object getUserInterfaceContainer() {
 		seriesNames.add("clip:clop");
-		seriesNames.add("hip:hop");
-		seriesNames.add("go:slow");
 		seriesUnits.add("m/s");
-		seriesUnits.add("ha.");
-		seriesUnits.add("mph");
 		setColours();
 
 		gridPane = new GridPane();

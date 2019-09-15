@@ -30,8 +30,15 @@
 package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_LONGTU;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_SCALE;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_SHORTTU;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_TIMEORIGIN;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
@@ -40,14 +47,22 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.ymuit.ui.colour.Palette;
+import au.edu.anu.ymuit.ui.colour.PaletteTypes;
+import au.edu.anu.ymuit.util.Decimals;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.TimeScaleType;
+import fr.cnrs.iees.twcore.constants.TimeUnits;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -59,6 +74,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
@@ -68,10 +84,12 @@ import javafx.scene.text.Font;
  */
 public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> implements Widget {
 	
-	protected SingleGridWidget(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, -1);
-		// TODO Auto-generated constructor stub
-	}
+	private TimeUnits smallest;
+	private TimeUnits largest;
+	private TimeScaleType timeScale;
+	private List<TimeUnits> units;
+	private Long startTime;
+	private Label lblTime;
 
 	private Label lblName;
 	private Label lblXY;
@@ -83,8 +101,8 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
-	//private PaletteTypes paletteType;
-	//private Palette palette;
+	private PaletteTypes paletteType;
+	private Palette palette;
 	// private String formatString;
 	private double minValue;
 	private double maxValue;
@@ -100,9 +118,46 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 	private int my;
 	private String id;
 
+	public SingleGridWidget(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, -1);
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	public void setProperties(String id,SimplePropertyList properties) {
 		this.id = id;
+	}
+	@Override
+	public void onMetaDataMessage(Metadata meta) {
+		// we need an ancestor that manages time
+		smallest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
+		largest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_LONGTU.key());
+		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
+		startTime = (Long) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
+		units = new ArrayList<>();
+		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
+		for (TimeUnits allowed : allowable)
+			if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0)
+				units.add(allowed);
+
+		units.sort((first, second) -> {
+			return second.compareTo(first);
+		});
+		
+	}
+	// TODO: properly type those methods
+	@Override
+	public void onDataMessage(MapData data) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	@Override
+	public void onStatusMessage(State state) {
+		if (isSimulatorState(state, waiting)) {
+			
+		}
+		
 	}
 
 	@Override
@@ -141,14 +196,13 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 		Preferences.putDouble(id + keyDecimalPlaces, decimalPlaces);
 		Preferences.putDouble(id + keyMinValue, minValue);
 		Preferences.putDouble(id + keyMaxValue, maxValue);
-		//Preferences.putDouble(id + keyPalette, paletteType);
-
+		Preferences.putString(id + keyPalette, paletteType.name());
 	}
 
 	@Override
 	public void getPreferences() {
-		//paletteType = (PaletteTypes) pref.get(prefix + keyPalette, PaletteTypes.BLUELIMERED);
-		//palette = paletteType.getPalette();
+		paletteType = PaletteTypes.valueOf(Preferences.getString(id+ keyPalette,PaletteTypes.getDefault().name()));
+		palette = paletteType.getPalette();
 		Image image = getLegend(10, 100);
 		paletteImageView.setImage(image);
 		minValue = Preferences.getDouble(id+ keyMinValue, 0.0);
@@ -159,12 +213,9 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 		scrollPane.setHvalue(Preferences.getDouble(id+  keyScrollH, scrollPane.getHvalue()));
 		scrollPane.setVvalue(Preferences.getDouble(id+  keyScrollV, scrollPane.getVvalue()));
 		decimalPlaces =Preferences.getInt(id+  keyDecimalPlaces, 2);
-		//formatter = UiUtil.getDecimalFormat(decimalPlaces);
+		formatter = Decimals.getDecimalFormat(decimalPlaces);
 		lblLow.setText(formatter.format(minValue));
 		lblHigh.setText(formatter.format(maxValue));
-
-		//tdm.loadPreferences(pref, prefix);
-
 		resolution = Preferences.getInt(id+  keyResolution, 1);
 		//dataToCanvas();
 
@@ -196,10 +247,10 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 		WritableImage image = new WritableImage(width, height);
 		PixelWriter pw = image.getPixelWriter();
 		for (int h = 0; h < height; h++) {
-	//		Color c = palette.getColour(height - h - 1, 0, height);
-	//		for (int w = 0; w < width; w++) {
-	//			pw.setColor(w, h, c);
-	//		}
+			Color c = palette.getColour(height - h - 1, 0, height);
+			for (int w = 0; w < width; w++) {
+				pw.setColor(w, h, c);
+			}
 		}
 		return image;
 	}
@@ -247,25 +298,5 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 		}
 	}
 	
-	// TODO: properly type those methods
-	@Override
-	public void onDataMessage(MapData data) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void onMetaDataMessage(Metadata meta) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {
-			
-		}
-		
-	}
 
 }
