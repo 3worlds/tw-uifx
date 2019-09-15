@@ -39,6 +39,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
@@ -58,6 +60,7 @@ import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -83,16 +86,13 @@ import javafx.scene.text.Font;
  *
  * @date 2 Sep 2019
  */
-public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> implements Widget {
-	
+public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> implements Widget {
 
 	private Label lblName;
 	private Label lblXY;
 	private Label lblValue;
 	private Label lblHigh;
 	private Label lblLow;
-	private Number[][] numbers;
-	//private TimeDisplayManager tdm;
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
@@ -112,34 +112,44 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> imp
 	private int mx;
 	private int my;
 	private String id;
+	
+	
+	private Number[][] numbers;
+	private SortedSet<Integer> simIds;
+	private int currentSimId;
+	
 
 	public SimpleMapWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, -1);
-		// TODO Auto-generated constructor stub
+		simIds = new TreeSet<>();
+		currentSimId=-1;
 	}
+
 	@Override
-	public void setProperties(String id,SimplePropertyList properties) {
+	public void setProperties(String id, SimplePropertyList properties) {
 		this.id = id;
 	}
+
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		// we need an ancestor that manages time
-		
+		// Maybe we need an ancestor that manages time stamps for this data
+
 	}
+
 	// TODO: properly type those methods
 	@Override
 	public void onDataMessage(MapData data) {
-		// TODO Auto-generated method stub
-		
+		int sender = data.sender();
+		simIds.add(sender);
+		//currentSimId = getTrackedSimId(current);
 	}
-	
-	
+
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-			
+
 		}
-		
+
 	}
 
 	@Override
@@ -151,7 +161,6 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> imp
 		content.setCenter(buildScrollPane());
 		return content;
 	}
-
 
 	private static final String keyScaleX = "scaleX";
 	private static final String keyScaleY = "scaleY";
@@ -178,27 +187,26 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> imp
 
 	@Override
 	public void getPreferences() {
-		paletteType = PaletteTypes.valueOf(Preferences.getString(id+ keyPalette,PaletteTypes.getDefault().name()));
+		paletteType = PaletteTypes.valueOf(Preferences.getString(id + keyPalette, PaletteTypes.getDefault().name()));
 		palette = paletteType.getPalette();
 		Image image = getLegend(10, 100);
 		paletteImageView.setImage(image);
-		minValue = Preferences.getDouble(id+ keyMinValue, 0.0);
-		maxValue = Preferences.getDouble(id+  keyMaxValue, 1.0);
+		minValue = Preferences.getDouble(id + keyMinValue, 0.0);
+		maxValue = Preferences.getDouble(id + keyMaxValue, 1.0);
 
-		zoomTarget.setScaleX(Preferences.getDouble(id+ keyScaleX, zoomTarget.getScaleX()));
-		zoomTarget.setScaleY(Preferences.getDouble(id+ keyScaleY, zoomTarget.getScaleY()));
-		scrollPane.setHvalue(Preferences.getDouble(id+  keyScrollH, scrollPane.getHvalue()));
-		scrollPane.setVvalue(Preferences.getDouble(id+  keyScrollV, scrollPane.getVvalue()));
-		decimalPlaces =Preferences.getInt(id+  keyDecimalPlaces, 2);
+		zoomTarget.setScaleX(Preferences.getDouble(id + keyScaleX, zoomTarget.getScaleX()));
+		zoomTarget.setScaleY(Preferences.getDouble(id + keyScaleY, zoomTarget.getScaleY()));
+		scrollPane.setHvalue(Preferences.getDouble(id + keyScrollH, scrollPane.getHvalue()));
+		scrollPane.setVvalue(Preferences.getDouble(id + keyScrollV, scrollPane.getVvalue()));
+		decimalPlaces = Preferences.getInt(id + keyDecimalPlaces, 2);
 		formatter = Decimals.getDecimalFormat(decimalPlaces);
 		lblLow.setText(formatter.format(minValue));
 		lblHigh.setText(formatter.format(maxValue));
-		resolution = Preferences.getInt(id+  keyResolution, 1);
-		//dataToCanvas();
+		resolution = Preferences.getInt(id + keyResolution, 1);
+		// dataToCanvas();
 
-		
 	}
-	
+
 	private Pane buildStatusBar() {
 		VBox pane = new VBox();
 		HBox valuePane = new HBox();
@@ -207,19 +215,19 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> imp
 		timePane.setSpacing(5.0);
 		lblXY = makeLabel("");
 		lblValue = makeLabel("");
-		//tdm.getTimeLabel().setFont(font);
+		// tdm.getTimeLabel().setFont(font);
 		valuePane.getChildren().addAll(makeLabel("[x,y]"), lblXY, makeLabel("="), lblValue);
-		//timePane.getChildren().addAll(tdm.getTimeLabel());
+		// timePane.getChildren().addAll(tdm.getTimeLabel());
 		pane.getChildren().addAll(valuePane, timePane);
 		return pane;
 	}
+
 	private Label makeLabel(String s) {
 		Label result = new Label(s);
 		result.setFont(font);
 		return result;
 	}
-	
-	
+
 	private WritableImage getLegend(int width, int height) {
 		WritableImage image = new WritableImage(width, height);
 		PixelWriter pw = image.getPixelWriter();
@@ -231,7 +239,7 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> imp
 		}
 		return image;
 	}
-	
+
 	private Pane buildPalettePane() {
 		paletteImageView = new ImageView();
 		lblHigh = makeLabel("");
@@ -240,7 +248,7 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> imp
 		pane.setAlignment(Pos.CENTER);
 		return pane;
 	}
-	
+
 	private Pane buildNamePane() {
 		BorderPane pane = new BorderPane();
 		lblName = new Label("Grid name");
@@ -249,7 +257,7 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> imp
 		pane.setCenter(lblName);
 		return pane;
 	}
-	
+
 	private ScrollPane buildScrollPane() {
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
@@ -264,21 +272,21 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> imp
 		zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
 		return scrollPane;
 	}
-	
+
 	private void onMouseMove(MouseEvent e) {
 		int x = (int) (e.getX() / resolution);
 		int y = (int) (e.getY() / resolution);
 		lblXY.setText("[" + x + "," + y + "]");
 		if (x < mx & y < my & x >= 0 & y >= 0) {
-	//		Double d = getData(x, y);
-	//		lblValue.setText(formatter.format(d));
+			// Double d = getData(x, y);
+			// lblValue.setText(formatter.format(d));
 		}
 	}
+
 	@Override
 	public Object getMenuContainer() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }
