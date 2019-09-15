@@ -49,6 +49,7 @@ import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
+import au.edu.anu.ymuit.util.CenteredZooming;
 import au.edu.anu.ymuit.util.Decimals;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -82,21 +83,15 @@ import javafx.scene.text.Font;
  *
  * @date 2 Sep 2019
  */
-public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> implements Widget {
+public class SimpleMapWidget extends AbstractDisplayWidget<MapData,Metadata> implements Widget {
 	
-	private TimeUnits smallest;
-	private TimeUnits largest;
-	private TimeScaleType timeScale;
-	private List<TimeUnits> units;
-	private Long startTime;
-	private Label lblTime;
 
 	private Label lblName;
 	private Label lblXY;
 	private Label lblValue;
 	private Label lblHigh;
 	private Label lblLow;
-	private DoubleTable data;
+	private Number[][] numbers;
 	//private TimeDisplayManager tdm;
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
@@ -118,7 +113,7 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 	private int my;
 	private String id;
 
-	public SingleGridWidget(StateMachineEngine<StatusWidget> statusSender) {
+	public SimpleMapWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, -1);
 		// TODO Auto-generated constructor stub
 	}
@@ -129,19 +124,6 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		// we need an ancestor that manages time
-		smallest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
-		largest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_LONGTU.key());
-		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
-		startTime = (Long) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
-		units = new ArrayList<>();
-		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
-		for (TimeUnits allowed : allowable)
-			if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0)
-				units.add(allowed);
-
-		units.sort((first, second) -> {
-			return second.compareTo(first);
-		});
 		
 	}
 	// TODO: properly type those methods
@@ -170,11 +152,6 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 		return content;
 	}
 
-	@Override
-	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	private static final String keyScaleX = "scaleX";
 	private static final String keyScaleY = "scaleY";
@@ -283,7 +260,7 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 		scrollPane.setPannable(true);
 		scrollPane.setContent(content);
 		scrollPane.setMinSize(170, 170);
-		//UiUtil.zoomConfig(scrollPane, content, group, zoomTarget);
+		CenteredZooming.center(scrollPane, content, group, zoomTarget);
 		zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
 		return scrollPane;
 	}
@@ -297,6 +274,11 @@ public class SingleGridWidget extends AbstractDisplayWidget<MapData,Metadata> im
 	//		lblValue.setText(formatter.format(d));
 		}
 	}
-	
+	@Override
+	public Object getMenuContainer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
