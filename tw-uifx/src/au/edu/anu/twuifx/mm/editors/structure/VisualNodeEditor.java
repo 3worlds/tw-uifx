@@ -40,6 +40,7 @@ import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
+import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.ALNode;
@@ -139,10 +140,11 @@ public class VisualNodeEditor implements //
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<? extends TreeGraphNode> getSubClass() {
+		ClassLoader classLoader = OmugiClassLoader.getAppClassLoader();
 		if (visualNode.configHasProperty(twaSubclass)) {
 			String result = (String) visualNode.configGetPropertyValue(twaSubclass);
 			try {
-				return (Class<? extends TreeGraphNode>) Class.forName(result);
+				return (Class<? extends TreeGraphNode>) Class.forName(result,true,classLoader);
 			} catch (ClassNotFoundException e) {
 				throw new TwuifxException("Subclass not found in the system: "+result+visualNode);
 

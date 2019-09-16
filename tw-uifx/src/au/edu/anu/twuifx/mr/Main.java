@@ -92,7 +92,7 @@ public class Main {
 			String klass = pair[0];
 			String level = pair[1];
 			try {
-				Class<?> c = Class.forName(klass, false, Thread.currentThread().getContextClassLoader());
+				Class<?> c = Class.forName(klass, true, OmugiClassLoader.getAppClassLoader());
 				Level lvl = Level.parse(level);
 				// ensures the logger is in the list
 				Logger log = Logging.getLogger(c);
@@ -140,7 +140,7 @@ public class Main {
 				String klass = failedClasses.get(i);
 				Level lvl = Level.parse(failedLevels.get(i));
 				try {
-					Class<?> c = Class.forName(klass, false, OmugiClassLoader.getJarClassLoader());
+					Class<?> c = Class.forName(klass, true, OmugiClassLoader.getJarClassLoader());
 					// ensures the logger is in the list
 					Logger log = Logging.getLogger(c);
 					log.setLevel(lvl);

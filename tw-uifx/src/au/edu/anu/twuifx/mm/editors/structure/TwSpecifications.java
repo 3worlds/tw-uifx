@@ -15,6 +15,7 @@ import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import au.edu.anu.twcore.archetype.tw.NameStartsWithUpperCaseQuery;
+import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.Tree;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
@@ -145,7 +146,7 @@ public class TwSpecifications implements //
 			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
 			for (int i = 0; i < classes.size(); i++) {
 				try {
-					result.add((Class<? extends TreeNode>) Class.forName(classes.getWithFlatIndex(i)));
+					result.add((Class<? extends TreeNode>) Class.forName(classes.getWithFlatIndex(i),true,OmugiClassLoader.getAppClassLoader()));
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
