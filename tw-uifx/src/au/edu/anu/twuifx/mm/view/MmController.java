@@ -210,8 +210,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	private List<ErrorMessagable> lstErrorMsgs = new ArrayList<>();
 
-	private double drawWidth;
-	private double drawHeight;
 
 	private StringProperty userProjectPath = new SimpleStringProperty("");
 	// not used yet but just set with ComplianceManager.haveErrors();
@@ -293,12 +291,12 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	public void setFontSize(int size) {
 		this.fontSize = size;
-		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 40, fontSize));
+		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, fontSize));
 		fontProperty.set(Font.font("Verdana", fontSize));
 	}
 
 	public void setNodeRadius(int size) {
-		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 40, size));
+		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, size));
 		nodeRadiusProperty.set(size);
 	}
 	
@@ -463,18 +461,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		setButtonState();
 	}
 
-	public double getDrawingWidth() {
-		return drawWidth;
-	}
-
-	public double getDrawingHeight() {
-		return drawHeight;
-	}
-
-	public void captureDrawingSize() {
-		drawWidth = zoomTarget.getWidth();
-		drawHeight = zoomTarget.getHeight();
-	}
+	
+	
 
 	private static final String mainFrameName = "mainFrame";
 	private static final String mainMaximized = mainFrameName + "_" + "maximized";
@@ -496,8 +484,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
 			Preferences.putBoolean(nodePropertySheet.idProperty().get() + Mode,
 					(nodePropertySheet.getMode() == PropertySheet.Mode.NAME));
-			Preferences.putDouble(zoomTarget.idProperty().get() + width, zoomTarget.getWidth());
-			Preferences.putDouble(zoomTarget.idProperty().get() + height, zoomTarget.getHeight());
 			Preferences.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
 			Preferences.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
 			Preferences.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
@@ -558,11 +544,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		});
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
-
-		drawWidth = Preferences.getDouble(zoomTarget.idProperty().get() + width, zoomTarget.getMinWidth());
-		drawHeight = Preferences.getDouble(zoomTarget.idProperty().get() + height, zoomTarget.getMinHeight());
-		zoomTarget.setPrefWidth(drawWidth);
-		zoomTarget.setPrefHeight(drawHeight);
 
 		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX()));
 		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY()));

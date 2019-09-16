@@ -311,9 +311,8 @@ public abstract class StructureEditorAdapter
 		return baseSpec != null;
 	}
 
-
 	private void connectTo(Duple<String, VisualNode> p) {
-	    VisualEdge vEdge = editableNode.newEdge(p.getFirst(), p.getSecond());
+		VisualEdge vEdge = editableNode.newEdge(p.getFirst(), p.getSecond());
 		gvisualiser.onNewEdge(vEdge);
 	}
 
@@ -435,8 +434,28 @@ public abstract class StructureEditorAdapter
 	}
 
 	@Override
+	public void onCollapseTrees() {
+		for (VisualNode child : editableNode.getSelectedVisualNode().getChildren()) {
+			if (!child.isCollapsed())
+				gvisualiser.collapseTreeFrom(child);
+		}
+		controller.onTreeCollapse();
+		GraphState.setChanged();
+	}
+
+	@Override
 	public void onExpandTree(VisualNode childRoot) {
 		gvisualiser.expandTreeFrom(childRoot);
+		controller.onTreeExpand();
+		GraphState.setChanged();
+	}
+
+	@Override
+	public void onExpandTrees() {
+		for (VisualNode child : editableNode.getSelectedVisualNode().getChildren()) {
+			if (child.isCollapsed())
+				gvisualiser.expandTreeFrom(child);
+		}
 		controller.onTreeExpand();
 		GraphState.setChanged();
 	}
@@ -512,7 +531,7 @@ public abstract class StructureEditorAdapter
 		VisualNode vParent = editableNode.getSelectedVisualNode();
 		TreeGraphNode cChild = vChild.getConfigNode();
 		TreeGraphNode cParent = editableNode.getConfigNode();
-		gvisualiser.onRemoveParentLink(vChild);		
+		gvisualiser.onRemoveParentLink(vChild);
 		vParent.disconnectFrom(vChild);
 		cParent.disconnectFrom(cChild);
 		gvisualiser.getVisualGraph().onParentChanged();

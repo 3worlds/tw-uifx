@@ -71,9 +71,15 @@ public interface StructureEditable {
 
 	/* collapse tree from this node */
 	public void onCollapseTree(VisualNode childRoot);
+	
+	/* collapse all expanded trees from this node */
+	public void onCollapseTrees();
 
 	/* expand tree from this node */
 	public void onExpandTree(VisualNode childRoot);
+	
+	/* expand all collapsed trees from this node */
+	public void onExpandTrees();
 	
 	/* connect node as child of this node*/
 	public void onReconnectChild(VisualNode childNode);

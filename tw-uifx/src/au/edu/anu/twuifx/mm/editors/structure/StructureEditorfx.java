@@ -131,22 +131,37 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		if (editableNode.hasChildren()) {
 			if (editableNode.getSelectedVisualNode().hasCollaspedChild()) {
+				int count = 0;
 				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPAND);
 				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren()) {
 					if (vn.isCollapsed()) {
+						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 						mi.setOnAction(e -> onExpandTree(vn));
 					}
 				}
+				if (count>1) {
+					mu.getItems().add(new SeparatorMenuItem());
+					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
+					mi.setOnAction(e->onExpandTrees());
+				}
 			}
 			if (editableNode.getSelectedVisualNode().hasUncollapsedChildren()) {
 				Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_COLLAPSE);
+				int count = 0;
 				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren()) {
 					if (!vn.isCollapsed()) {
+						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 						mi.setOnAction(e -> onCollapseTree(vn));
 					}
 				}
+				if (count>1) {
+					mu.getItems().add(new SeparatorMenuItem());
+					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
+					mi.setOnAction(e->onCollapseTrees());
+				}
+
 			}
 
 		}
@@ -214,6 +229,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_SELECT_PARAMETERS/* */("Select parameters"), //
 		ML_SELECT_DRIVERS/*    */("Select drivers"), //
 		ML_SELECT_DECORATORS/* */("Select decorators"), //
+		ML_ALL/*               */("All"),//
 		;
 
 		private final String label;
