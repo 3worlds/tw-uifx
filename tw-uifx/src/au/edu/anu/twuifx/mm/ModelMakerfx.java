@@ -40,6 +40,7 @@ import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
+import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -47,6 +48,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -69,6 +71,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		Scene scene = new Scene(root);
 		mainStage.setScene(scene);
 		controller.setStage(mainStage);
+		mainStage.getIcons().add(new Image(Images.class.getResourceAsStream("MmIcon16.png")));
 		scene.getWindow().setOnCloseRequest((e) -> {
 			if (!controller.canClose()) {
 				e.consume();
