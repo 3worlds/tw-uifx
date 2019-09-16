@@ -43,9 +43,7 @@ import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_LONGTU;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_SCALE;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_SHORTTU;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.TimeScaleType;
