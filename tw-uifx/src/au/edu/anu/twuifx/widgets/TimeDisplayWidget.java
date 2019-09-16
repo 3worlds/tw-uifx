@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.LabelValuePairData;
+import au.edu.anu.twcore.data.runtime.MapData;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
@@ -67,7 +68,6 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 public class TimeDisplayWidget extends AbstractDisplayWidget<LabelValuePairData, Metadata> implements Widget {
 
-	private boolean metadataReceived = false;
 	private TimeUnits smallest;
 	private TimeUnits largest;
 	private TimeScaleType timeScale;
@@ -90,15 +90,24 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<LabelValuePairData,
 	 * 
 	 */
 
+	/*
+	 * NOTE: interactions from a Running state are not on the application thread.
+	 * Since we have a thread safe rendezvous system, it should be possible to
+	 * handle this behind the scenes. However, the javafx application thread does
+	 * not exist until the application is up. Therefore setting the rendezvous from
+	 * the constructor here places it in some other thread.
+	 * 
+	 */
+
 	public TimeDisplayWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		simTimes = new HashMap<>();
-		log.info("Constructor");
+		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		log.info("meta-data for TimeDisplayWidget: " + meta.toString());
+		log.info("Thread id: " + Thread.currentThread().getId());
 		smallest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
 		largest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_LONGTU.key());
 		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
@@ -112,20 +121,20 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<LabelValuePairData,
 		units.sort((first, second) -> {
 			return second.compareTo(first);
 		});
-
-		metadataReceived = true;
-		log.info("metadata received");
 	}
 
 	@Override
 	public void onDataMessage(LabelValuePairData data) {
-		log.info("data msg received");
-		if (metadataReceived) {
-			simTimes.put(data.label().getEnd(), (Long) data.value());
-			Duple<Long, Long> times = getTimes();
-			updateControls(getLabelText(times.getFirst()), getLabelText(times.getSecond()));
-		} else
-			log.severe("Missed data. Data msg received before widget has received meta-data. " + data.toString());
+		Platform.runLater(() -> {
+			runOnDataMessage(data);
+		});
+	}
+
+	private void runOnDataMessage(LabelValuePairData data) {
+		log.info("Thread id: " + Thread.currentThread().getId());
+		simTimes.put(data.label().getEnd(), (Long) data.value());
+		Duple<Long, Long> times = getTimes();
+		updateControls(getLabelText(times.getFirst()), getLabelText(times.getSecond()));
 	}
 
 	private Duple<Long, Long> getTimes() {
@@ -148,26 +157,18 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<LabelValuePairData,
 	}
 
 	private void updateControls(String slowest, String fastest) {
-		Platform.runLater(() -> {
-			updateControls0(slowest, fastest);
-		});
-	}
-
-	private void updateControls0(String slowest, String fastest) {
 		lblTimeSlowest.setText(slowest);
 		if (slowest.equals(fastest))
 			lblTimeFastest.setText("");
 		else
 			lblTimeFastest.setText(fastest);
-		log.info("Updating ui labels");
+		log.info("Thread id: " + Thread.currentThread().getId());
 	}
+
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		/*
-		 * Application thread: It is only here that you can construct fx stuff
-		 */
-		log.info("getUserInterfaceContainer");
+		log.info("Thread id: " + Thread.currentThread().getId());
 		HBox content = new HBox();
 		// top, right, bottom, and left padding
 		content.setPadding(new Insets(5, 1, 1, 2));
@@ -175,35 +176,36 @@ public class TimeDisplayWidget extends AbstractDisplayWidget<LabelValuePairData,
 		lblTimeSlowest = new Label();
 		lblTimeFastest = new Label();
 		content.getChildren().addAll(lblTimeSlowest, lblTimeFastest);
-		updateControls0(getLabelText(startTime), getLabelText(startTime));
+		updateControls(getLabelText(startTime), getLabelText(startTime));
 		return content;
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		log.info("setProperties");
+		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
 	@Override
 	public Object getMenuContainer() {
-		log.info("getMenuContainer");
+		log.info("Thread id: " + Thread.currentThread().getId());
 		return null;
 	}
 
 	@Override
 	public void putPreferences() {
-		log.info("putPreferences");
+		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
 	@Override
 	public void getPreferences() {
-		log.info("getPreferences");
+		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
-		log.info("Status message received: " + state);
+		log.info("Thread id: " + Thread.currentThread().getId() + " State: " + state);
 		if (isSimulatorState(state, waiting)) {
+			log.info("Waiting: Thread id: " + Thread.currentThread().getId());
 			simTimes.clear();
 			updateControls(getLabelText(startTime), getLabelText(startTime));
 		}

@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
@@ -58,6 +59,8 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
+import fr.ens.biologie.generic.utils.Logging;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.SortedList;
@@ -112,17 +115,18 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> im
 	private int mx;
 	private int my;
 	private String id;
-	
-	
+
 	private Number[][] numbers;
 	private SortedSet<Integer> simIds;
 	private int currentSimId;
-	
+
+	private static Logger log = Logging.getLogger(SimpleMapWidget.class);
 
 	public SimpleMapWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, -1);
 		simIds = new TreeSet<>();
-		currentSimId=-1;
+		currentSimId = -1;
+		log.info("Creation thread id: " + Thread.currentThread().getId());
 	}
 
 	@Override
@@ -136,12 +140,17 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> im
 
 	}
 
-	// TODO: properly type those methods
 	@Override
 	public void onDataMessage(MapData data) {
+		Platform.runLater(() -> {
+			runOnDataMessage(data);
+		});
+	}
+
+	private void runOnDataMessage(MapData data) {
 		int sender = data.sender();
 		simIds.add(sender);
-		//currentSimId = getTrackedSimId(current);
+
 	}
 
 	@Override
