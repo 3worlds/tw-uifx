@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.mm;
 
 import java.util.logging.Level;
 
+import au.edu.anu.twapps.mm.MMModel;
 import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Application;

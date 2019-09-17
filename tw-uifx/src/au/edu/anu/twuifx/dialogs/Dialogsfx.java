@@ -143,10 +143,9 @@ public class Dialogsfx implements IDialogs {
 	public File getExternalProjectFile() {
 		FileChooser fc = new FileChooser();
 		fc.setInitialDirectory(new File(TwPaths.USER_ROOT));
-		String[] extList = GraphFileFormats.TWG.extensions();
+		String[] extList = GraphFileFormats.TOMUGI.extensions();
 		for (String ext : extList)
-			fc.getExtensionFilters().add(
-					new FileChooser.ExtensionFilter(GraphFileFormats.TWG.toString() + " (*" + ext + ")", "*" + ext));
+			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter(ext + " (*" + ext + ")", "*" + ext));
 		fc.setSelectedExtensionFilter(fc.getExtensionFilters().get(0));
 		File file = fc.showOpenDialog(owner);
 		return file;
@@ -224,7 +223,7 @@ public class Dialogsfx implements IDialogs {
 		sp.setContent(vb);
 		dlg.getDialogPane().setContent(pane);
 		List<ToggleGroup> tgs = new ArrayList<>();
-		for (String[] ss:entries) {
+		for (String[] ss : entries) {
 			ToggleGroup tg = new ToggleGroup();
 			tgs.add(tg);
 			boolean firstSelected = false;
@@ -236,17 +235,18 @@ public class Dialogsfx implements IDialogs {
 					firstSelected = true;
 				}
 				vb.getChildren().add(rb);
-			}				
-		}	
+			}
+		}
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
 			List<String> selection = new ArrayList<>();
-			for (ToggleGroup tg:tgs) {
+			for (ToggleGroup tg : tgs) {
 				RadioButton rb = (RadioButton) tg.getSelectedToggle();
 				selection.add(rb.getText());
 			}
 			return selection;
-		};
+		}
+		;
 		return null;
 	}
 

@@ -32,9 +32,12 @@ package au.edu.anu.twuifx.mm;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.Level;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.mm.MMModel;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
+import fr.ens.biologie.generic.utils.Logging;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
@@ -102,6 +105,8 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		setDefaultFrameSize();
 		GraphState.addListener(controller);
 		mainStage.show();
+		//Logging.setLogLevel(Level.INFO, MMModel.class);
+
 	}
 
 	private void setDefaultFrameSize() {
