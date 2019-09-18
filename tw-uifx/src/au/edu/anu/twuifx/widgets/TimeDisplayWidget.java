@@ -67,7 +67,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  */
 
 public class TimeDisplayWidget extends AbstractDisplayWidget<LabelValuePairData, Metadata> implements Widget {
-
+// Rename SimpleTimeWidget?
 	private TimeUnits smallest;
 	private TimeUnits largest;
 	private TimeScaleType timeScale;

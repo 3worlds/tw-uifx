@@ -74,7 +74,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
-
+@Deprecated
 public class TimeSeriesPlotWidget extends AbstractDisplayWidget<TimeSeriesData, Metadata> implements Widget {
 	private boolean clearOnReset;
 	private GridPane gridPane;
