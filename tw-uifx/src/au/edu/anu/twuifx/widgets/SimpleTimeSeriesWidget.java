@@ -85,6 +85,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	private boolean clearOnReset;
 	private int maxColours = 20; // can be set from archetype
 	private String widgetId;
+//	private NumberAxis xAxis;
+//	private NumberAxis yAxis;
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME_SERIES);
@@ -149,7 +151,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		NumberAxis xAxis = new NumberAxis();
 		NumberAxis yAxis = new NumberAxis();
 		xAxis.setLabel("time (units?)");
-		yAxis.setLabel("what should be here?");
+		yAxis.setLabel("?");
 		chart = new LineChart<>(xAxis, yAxis);
 		chart.setCreateSymbols(false);
 		chart.setAnimated(false);
@@ -166,6 +168,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		chart.getData().add(result);
 		setLineColour(result, colour);
 		activeSeries.put(name, result);
+		if (activeSeries.size()==1)
+			chart.getYAxis().setLabel(name);
 		return result;
 	}
 
