@@ -30,10 +30,7 @@
 package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_LONGTU;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_SCALE;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_SHORTTU;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_TIMEORIGIN;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
