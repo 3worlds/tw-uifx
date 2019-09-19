@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.old;
 
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -55,7 +55,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  */
 // listens to what??
 
-
+@Deprecated
 public class LabelValuePairWidget extends AbstractDisplayWidget<Property, SimplePropertyList> implements Widget {
 
 	public LabelValuePairWidget(StateMachineEngine<StatusWidget> statusSender) {

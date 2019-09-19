@@ -105,6 +105,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<LabelValuePairData, 
 		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
+	// why all this? Dont we just need the Timer's Timeunits and multiple?
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread id: " + Thread.currentThread().getId());

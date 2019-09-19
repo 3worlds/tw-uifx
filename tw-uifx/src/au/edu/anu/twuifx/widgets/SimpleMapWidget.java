@@ -140,11 +140,11 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> im
 	@Override
 	public void onDataMessage(MapData data) {
 		Platform.runLater(() -> {
-			runOnDataMessage(data);
+			processOnDataMessage(data);
 		});
 	}
 
-	private void runOnDataMessage(MapData data) {
+	private void processOnDataMessage(MapData data) {
 		int sender = data.sender();
 		simIds.add(sender);
 

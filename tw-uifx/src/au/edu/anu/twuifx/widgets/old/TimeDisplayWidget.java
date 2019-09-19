@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.old;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

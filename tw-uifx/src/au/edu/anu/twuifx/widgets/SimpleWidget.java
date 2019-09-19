@@ -39,11 +39,14 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.ObjectData;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 
@@ -56,75 +59,82 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  */
 // listens to what??
 
-
 public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> implements Widget {
 
-	public SimpleWidget(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.VALUE_PAIR);
-	}
 
 	private Label lblName;
 	private Label lblValue;
+	private Label lblTime;
 
 	private String name = "uninitialised name";
 	private Object initialValue = new Object();
-	private Object value = initialValue;
+	private SortedSet<Integer> simIds;
+	private TimeWidgetFormatter timeFormatter;
 
 	private static Logger log = Logging.getLogger(SimpleWidget.class);
 
+	public SimpleWidget(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, DataMessageTypes.VALUE_PAIR);
+		timeFormatter = new TimeWidgetFormatter();
+		simIds = new TreeSet<>();
+	}
 	@Override
 	public void onDataMessage(ObjectData data) {
-		// of the attached simulator (dont forget there could be many simulators)
 		log.info("Data received " + data);
-		data.getKey();
-		value = data.getValue();
-		updateLabel();
+		Platform.runLater(() -> {
+			processOnDataMessage(data);
+		});
+	}
+
+	private void processOnDataMessage(ObjectData data) {
+		int sender = data.sender();
+		simIds.add(sender);
+		
+		log.info("Data processing " + data);
+		lblValue.setText(data.text());
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Meta-data received " + meta);
-//		name = (String) meta.getPropertyValue("name");
-//		initialValue = meta.getPropertyValue("value");
-		value = initialValue;
-		updateLabel();
+		timeFormatter.onMetaDataMessage(meta);
+		
+		lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+		lblName.setText((String) meta.properties().getPropertyValue("name"));
+		initialValue = meta.properties().getPropertyValue("value");
+		lblValue.setText(initialValue.toString());
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
 		log.info("Status msg received:" + state);
 		if (isSimulatorState(state, waiting)) {
-			log.info("Resetting initial value: " + initialValue + "," + state);
-			value = initialValue;
-			updateLabel();
+			Platform.runLater(()->{
+				processWaitState();
+			});
 		}
-
+	}
+	private void processWaitState() {
+		log.info("Resetting initial value: " + initialValue);
+		lblValue.setText(initialValue.toString());	
+		simIds.clear();
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
 		log.info("Prepared user interface");
 		HBox content = new HBox();
-		lblName = new Label(name);
+		lblName = new Label();
 		lblValue = new Label();
+		lblTime = new Label();
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
-		content.getChildren().addAll(lblName, lblValue);
-		updateLabel0();
+		content.getChildren().addAll(lblName, lblTime,lblValue);
 		log.info("User interface built");
 		return content;
 	}
 
-	private void updateLabel0() {
-		log.info(value.toString());
-		lblValue.setText(value.toString());
-	}
 
-	private void updateLabel() {
-		Platform.runLater(() -> {
-			updateLabel0();
-		});
-	}
 
 	@Override
 	public Object getMenuContainer() {
@@ -133,14 +143,17 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 
 	@Override
 	public void putPreferences() {
+		timeFormatter.putPreferences();
 	}
 
 	@Override
 	public void getPreferences() {
+		timeFormatter.getPreferences();
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
+		timeFormatter.setProperties(id, properties);
 	}
 
 }

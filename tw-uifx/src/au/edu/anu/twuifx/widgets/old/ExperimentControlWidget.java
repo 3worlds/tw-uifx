@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.old;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +56,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
+@Deprecated
 public class ExperimentControlWidget 
 		extends StateMachineController 
 		implements Widget {

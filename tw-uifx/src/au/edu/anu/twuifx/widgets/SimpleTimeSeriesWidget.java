@@ -109,14 +109,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		log.info("Processing data " + data);
 		long time = data.time();
 		int sender = data.sender();
-		Map<DataLabel, Number> values = data.values();
-		for (Map.Entry<DataLabel, Number> entry : values.entrySet()) {
+		data.values().entrySet().forEach(entry -> {
 			String key = entry.getKey().getEnd() + "(" + sender + ")";
 			XYChart.Series<Number, Number> series = activeSeries.get(key);
 			if (series == null)
 				series = addSeries(key, getColour(activeSeries.size() + 1));
 			series.getData().add(new Data<Number, Number>(time, entry.getValue()));
-		}
+		});
 	}
 
 	private String getColour(int i) {
@@ -168,7 +167,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		chart.getData().add(result);
 		setLineColour(result, colour);
 		activeSeries.put(name, result);
-		if (activeSeries.size()==1)
+		if (activeSeries.size() == 1)
 			chart.getYAxis().setLabel(name);
 		return result;
 	}
@@ -209,7 +208,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		if (properties.hasProperty("maxColours"))
 			maxColours = (Integer) properties.getPropertyValue("maxColours");
 	}
-
 
 	private void edit() {
 		Dialog<ButtonType> dialog = new Dialog<>();
