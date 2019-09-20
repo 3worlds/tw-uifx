@@ -29,41 +29,48 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import au.edu.anu.twcore.data.runtime.DataMessageTypes;
+import au.edu.anu.twcore.data.runtime.LabelValuePairData;
+import au.edu.anu.twcore.data.runtime.MapData;
+import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.TimeData;
+import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
+import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.TimeScaleType;
+import fr.cnrs.iees.twcore.constants.TimeUnits;
+import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.logging.Logger;
-
-import au.edu.anu.rscs.aot.graph.property.Property;
-import au.edu.anu.twcore.data.runtime.DataLabel;
-import au.edu.anu.twcore.data.runtime.DataMessageTypes;
-import au.edu.anu.twcore.data.runtime.Metadata;
-import au.edu.anu.twcore.data.runtime.ObjectData;
-import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
-import au.edu.anu.twcore.ui.runtime.StatusWidget;
-
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
  * @author Ian Davies
  *
- * @date 3 Sep 2019
+ * @date 2 Sep 2019
  */
-
 /*
  * The policy of simple widgets is:
  * 
- * 1) to follow just one sender (currentSender). That's it! The chosen sender is
- * a sub-archetype property. Therefore, these widgets will ignore data from
+ * 1) to follow just one sender. That's it! The chosen sender is
+ * a sub-archetype property. These widgets will therefore ignore data from
  * other senders.
  * 
  * Each widget should indicate the sender int on the ui.
@@ -72,104 +79,84 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  * the case of SimpleTimeWidget, a Simulator instance.
  * 
  */
-public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> implements Widget {
-	private static Logger log = Logging.getLogger(SimpleWidget.class);
 
-	private Label lblOutput;
-
-	private Object initialValue;
+public class TestWidget extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
 	private TimeWidgetFormatter timeFormatter;
-	private int currentSender;
-	private String name;
+	private Label lblTime;
+	private int sender;
+	private static Logger log = Logging.getLogger(TestWidget.class);
 
-
-	public SimpleWidget(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.VALUE_PAIR);
-		timeFormatter = new TimeWidgetFormatter();
-	}
-
-	@Override
-	public void onDataMessage(ObjectData data) {
-		log.info("Data received " + data);
-		// ignore everything else
-		if (data.sender() == currentSender)
-			Platform.runLater(() -> {
-				processOnDataMessage(data);
-			});
-	}
-
-	private void processOnDataMessage(ObjectData data) {
-		log.info("Data processing " + data);
-		lblOutput.setText(getOutputString(data.sender(), timeFormatter.getTimeText(data.time()), name, data.text()));
-	}
-
-	private String getOutputString(int sender, String time, String name, String text) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Sender: ").append(sender).append(" Time: ").append(time).append(" ").append(name).append("=")
-				.append(text);
-		return sb.toString();
+	public TestWidget(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, DataMessageTypes.TIME);
+		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		log.info("Meta-data received " + meta);
+		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.onMetaDataMessage(meta);
-		DataLabel  dl = (DataLabel) meta.properties().getPropertyValue("name");
-		name = dl.toString();
-		initialValue = meta.properties().getPropertyValue("value");
-		lblOutput.setText(getOutputString(currentSender, timeFormatter.getTimeText(timeFormatter.getInitialTime()),
-				name, initialValue.toString()));
-
 	}
 
 	@Override
-	public void onStatusMessage(State state) {
-		log.info("Status msg received:" + state);
-		if (isSimulatorState(state, waiting)) {
-			Platform.runLater(() -> {
-				processWaitState();
-			});
-		}
+	public void onDataMessage(TimeData data) {
+		if (sender==data.sender())
+		Platform.runLater(() -> {
+			processOnDataMessage(data);
+		});
 	}
 
-	private void processWaitState() {
-		log.info("Resetting initial value: " + initialValue);
-		lblOutput.setText(getOutputString(currentSender, timeFormatter.getTimeText(timeFormatter.getInitialTime()),
-				name, initialValue.toString()));
+	private void processOnDataMessage(TimeData data) {
+		log.info("Thread id: " + Thread.currentThread().getId());
+		lblTime.setText(timeFormatter.getTimeText(data.time()));
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		log.info("Prepared user interface");
+		log.info("Thread id: " + Thread.currentThread().getId());
 		HBox content = new HBox();
-		lblOutput = new Label(getOutputString(currentSender, timeFormatter.getTimeText(timeFormatter.getInitialTime()),
-				name, initialValue.toString()));
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
-		content.getChildren().addAll(lblOutput);
-		log.info("User interface built");
+		lblTime = new Label(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+		content.getChildren().addAll(lblTime);
 		return content;
 	}
 
 	@Override
+	public void setProperties(String id, SimplePropertyList properties) {
+		log.info("Thread id: " + Thread.currentThread().getId());
+		timeFormatter.setProperties(id, properties);
+		sender = (Integer) properties.getPropertyValue("sender");
+	}
+
+	@Override
 	public Object getMenuContainer() {
+		log.info("Thread id: " + Thread.currentThread().getId());
 		return null;
 	}
 
 	@Override
 	public void putPreferences() {
+		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.putPreferences();
 	}
 
 	@Override
 	public void getPreferences() {
+		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.getPreferences();
 	}
 
 	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
-		timeFormatter.setProperties(id, properties);
-		currentSender = (Integer) properties.getPropertyValue("sender");
+	public void onStatusMessage(State state) {
+		log.info("Thread id: " + Thread.currentThread().getId() + " State: " + state);
+		if (isSimulatorState(state, waiting)) {
+			Platform.runLater(() -> {
+				processOnStatusMessage();
+			});
+		}
 	}
 
+	private void processOnStatusMessage() {
+		lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+	}
 }
