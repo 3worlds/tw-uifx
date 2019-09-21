@@ -41,6 +41,7 @@ import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.LabelValuePairData;
 import au.edu.anu.twcore.data.runtime.MapData;
 import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -65,125 +66,67 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
+/*
+ * The policy of simple widgets is:
+ * 
+ * 1) to follow just one sender. That's it! The chosen sender is
+ * a sub-archetype property. These widgets will therefore ignore data from
+ * other senders.
+ * 
+ * Each widget should indicate the sender int on the ui.
+ * 
+ * 2) To receive a time value from the time model driving the dataTracker, or in
+ * the case of SimpleTimeWidget, a Simulator instance.
+ * 
+ */
 
-public class SimpleTimeWidget extends AbstractDisplayWidget<LabelValuePairData, Metadata> implements Widget {
-// Rename SimpleTimeWidget?
-	private TimeUnits smallest;
-	private TimeUnits largest;
-	private TimeScaleType timeScale;
-	private List<TimeUnits> units;
-	private Long startTime;
-
-	private Label lblTimeSlowest;
-	private Label lblTimeFastest;
-
-	private Map<String, Long> simTimes;
+public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
+	private TimeWidgetFormatter timeFormatter;
+	private Label lblTime;
+	private int sender;
 	private static Logger log = Logging.getLogger(SimpleTimeWidget.class);
-	/*
-	 * TODO: The key of the data msg should be SimulatorNode.id():<instance count>
-	 * e.g. myDynamics(3439). This way, in a swarm time display, we can provide
-	 * meaningful labels to the data series.
-	 * 
-	 * Also all widgets need to be able to respond to a reset status from the
-	 * simulator so they can clear their fields. But this can't happen before
-	 * receiving the meta-data msg
-	 * 
-	 */
-
-	/*
-	 * NOTE: interactions from a Running state are not on the application thread.
-	 * Since we have a thread safe rendezvous system, it should be possible to
-	 * handle this behind the scenes. However, the javafx application thread does
-	 * not exist until the application is up. Therefore setting the rendezvous from
-	 * the constructor here places it in some other thread.
-	 * 
-	 */
 
 	public SimpleTimeWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
-		simTimes = new HashMap<>();
+		timeFormatter = new TimeWidgetFormatter();
 		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
-	// why all this? Dont we just need the Timer's Timeunits and multiple?
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread id: " + Thread.currentThread().getId());
-		smallest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
-		largest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_LONGTU.key());
-		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
-		startTime = (Long) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
-		units = new ArrayList<>();
-		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
-		for (TimeUnits allowed : allowable)
-			if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0)
-				units.add(allowed);
-
-		units.sort((first, second) -> {
-			return second.compareTo(first);
-		});
+		timeFormatter.onMetaDataMessage(meta);
 	}
 
 	@Override
-	public void onDataMessage(LabelValuePairData data) {
+	public void onDataMessage(TimeData data) {
+		if (sender==data.sender())
 		Platform.runLater(() -> {
-			runOnDataMessage(data);
+			processOnDataMessage(data);
 		});
 	}
 
-	private void runOnDataMessage(LabelValuePairData data) {
+	private void processOnDataMessage(TimeData data) {
 		log.info("Thread id: " + Thread.currentThread().getId());
-		simTimes.put(data.label().getEnd(), (Long) data.value());
-		Duple<Long, Long> times = getTimes();
-		updateControls(getLabelText(times.getFirst()), getLabelText(times.getSecond()));
+		lblTime.setText(timeFormatter.getTimeText(data.time()));
 	}
-
-	private Duple<Long, Long> getTimes() {
-		Long min = Long.MAX_VALUE;
-		Long max = Long.MIN_VALUE;
-		for (Long time : simTimes.values()) {
-			min = Math.min(min, time);
-			max = Math.max(max, time);
-		}
-		return new Duple<Long, Long>(min, max);
-	}
-
-	private String getLabelText(Long time) {
-		if (timeScale.equals(TimeScaleType.GREGORIAN)) {
-			LocalDateTime presentDate = TimeUtil.longToDate(time, smallest);
-			return presentDate.format(TimeUtil.getGregorianFormat(smallest));
-		} else {
-			return (TimeUtil.formatExactTimeScales(time, units));
-		}
-	}
-
-	private void updateControls(String slowest, String fastest) {
-		lblTimeSlowest.setText(slowest);
-		if (slowest.equals(fastest))
-			lblTimeFastest.setText("");
-		else
-			lblTimeFastest.setText(fastest);
-		log.info("Thread id: " + Thread.currentThread().getId());
-	}
-
 
 	@Override
 	public Object getUserInterfaceContainer() {
 		log.info("Thread id: " + Thread.currentThread().getId());
 		HBox content = new HBox();
-		// top, right, bottom, and left padding
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
-		lblTimeSlowest = new Label();
-		lblTimeFastest = new Label();
-		content.getChildren().addAll(lblTimeSlowest, lblTimeFastest);
-		updateControls(getLabelText(startTime), getLabelText(startTime));
+		lblTime = new Label(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+		content.getChildren().addAll(lblTime);
 		return content;
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		log.info("Thread id: " + Thread.currentThread().getId());
+		timeFormatter.setProperties(id, properties);
+		sender = (Integer) properties.getPropertyValue("sender");
 	}
 
 	@Override
@@ -195,21 +138,26 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<LabelValuePairData, 
 	@Override
 	public void putPreferences() {
 		log.info("Thread id: " + Thread.currentThread().getId());
+		timeFormatter.putPreferences();
 	}
 
 	@Override
 	public void getPreferences() {
 		log.info("Thread id: " + Thread.currentThread().getId());
+		timeFormatter.getPreferences();
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
 		log.info("Thread id: " + Thread.currentThread().getId() + " State: " + state);
 		if (isSimulatorState(state, waiting)) {
-			log.info("Waiting: Thread id: " + Thread.currentThread().getId());
-			simTimes.clear();
-			updateControls(getLabelText(startTime), getLabelText(startTime));
+			Platform.runLater(() -> {
+				processOnStatusMessage();
+			});
 		}
+	}
 
+	private void processOnStatusMessage() {
+		lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 	}
 }
