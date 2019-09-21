@@ -56,6 +56,7 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
+import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -64,6 +65,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -111,50 +113,108 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> im
 	private static Font font = Font.font("Verdana", fontSize);
 	private int mx;
 	private int my;
-	private String id;
 
 	private Number[][] numbers;
-	private SortedSet<Integer> simIds;
-	private int currentSimId;
+	private int sender;
+	private String widgetId;
+	private WidgetTimeFormatter timeFormatter;
 
 	private static Logger log = Logging.getLogger(SimpleMapWidget.class);
 
 	public SimpleMapWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, -1);
-		simIds = new TreeSet<>();
-		currentSimId = -1;
+		timeFormatter = new WidgetTimeFormatter();
 		log.info("Creation thread id: " + Thread.currentThread().getId());
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		this.id = id;
+		this.widgetId = id;
+		sender = (Integer) properties.getPropertyValue("sender");
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		// Maybe we need an ancestor that manages time stamps for this data
-
+		timeFormatter.onMetaDataMessage(meta);
 	}
 
 	@Override
 	public void onDataMessage(MapData data) {
-		Platform.runLater(() -> {
-			processOnDataMessage(data);
-		});
+		if (sender == data.sender())
+			Platform.runLater(() -> {
+				processOnDataMessage(data);
+			});
 	}
 
 	private void processOnDataMessage(MapData data) {
-		int sender = data.sender();
-		simIds.add(sender);
+		numbers = data.map();
+		dataToCanvas();
 
+	}
+
+	private void dataToCanvas() {
+		int mapWidth = numbers.length;
+		int mapHeight = numbers[0].length;
+		resizeCanvas(mapWidth, mapHeight);
+		if (resolution == 1)
+			dataToCanvasPixels();
+		else
+			dataToCanvasRect(mapWidth, mapHeight);
+	}
+
+	private void resizeCanvas(int mapWidth, int mapHeight) {
+		if (canvas.getWidth() != (resolution * mapWidth) || canvas.getHeight() != (resolution * mapHeight)) {
+			canvas.setWidth(mapWidth * resolution);
+			canvas.setHeight(mapHeight * resolution);
+			clearCanvas();
+		}
+	}
+
+	private void clearCanvas() {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+	};
+
+	private void dataToCanvasPixels() {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		PixelWriter pw = gc.getPixelWriter();
+		for (int x = 0; x < canvas.getWidth(); x++)
+			for (int y = 0; y < canvas.getHeight(); y++) {
+				Color c = Color.TRANSPARENT;
+				if (numbers[x][y] != null) { // missing value
+					double v = (Double) numbers[x][y];
+					c = palette.getColour(v, minValue, maxValue);
+					pw.setColor(x, y, c);
+				}
+			}
+	}
+
+	private void dataToCanvasRect(int mapWidth, int mapHeight) {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		int w = resolution;
+		for (int x = 0; x < mapWidth; x++)
+			for (int y = 0; y < mapHeight; y++) {
+				Color c = Color.TRANSPARENT;
+				if (numbers[x][y] != null) {
+					double v = (Double) numbers[x][y];
+					c = palette.getColour(v, minValue, maxValue);
+					gc.setStroke(c);
+					gc.setFill(c);
+					gc.fillRect(x * w, y * w, w, w);
+				}
+			}
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-
+			Platform.runLater(() -> {
+				processWaitState();
+			});
 		}
+	}
+
+	private void processWaitState() {
 
 	}
 
@@ -180,35 +240,36 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> im
 
 	@Override
 	public void putPreferences() {
-		Preferences.putDouble(id + keyScaleX, zoomTarget.getScaleX());
-		Preferences.putDouble(id + keyScaleY, zoomTarget.getScaleY());
-		Preferences.putDouble(id + keyScrollH, scrollPane.getHvalue());
-		Preferences.putDouble(id + keyScrollV, scrollPane.getVvalue());
-		Preferences.putDouble(id + keyResolution, resolution);
-		Preferences.putDouble(id + keyDecimalPlaces, decimalPlaces);
-		Preferences.putDouble(id + keyMinValue, minValue);
-		Preferences.putDouble(id + keyMaxValue, maxValue);
-		Preferences.putString(id + keyPalette, paletteType.name());
+		Preferences.putDouble(widgetId + keyScaleX, zoomTarget.getScaleX());
+		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
+		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
+		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
+		Preferences.putDouble(widgetId + keyResolution, resolution);
+		Preferences.putDouble(widgetId + keyDecimalPlaces, decimalPlaces);
+		Preferences.putDouble(widgetId + keyMinValue, minValue);
+		Preferences.putDouble(widgetId + keyMaxValue, maxValue);
+		Preferences.putString(widgetId + keyPalette, paletteType.name());
 	}
 
 	@Override
 	public void getPreferences() {
-		paletteType = PaletteTypes.valueOf(Preferences.getString(id + keyPalette, PaletteTypes.getDefault().name()));
+		paletteType = PaletteTypes
+				.valueOf(Preferences.getString(widgetId + keyPalette, PaletteTypes.getDefault().name()));
 		palette = paletteType.getPalette();
 		Image image = getLegend(10, 100);
 		paletteImageView.setImage(image);
-		minValue = Preferences.getDouble(id + keyMinValue, 0.0);
-		maxValue = Preferences.getDouble(id + keyMaxValue, 1.0);
+		minValue = Preferences.getDouble(widgetId + keyMinValue, 0.0);
+		maxValue = Preferences.getDouble(widgetId + keyMaxValue, 1.0);
 
-		zoomTarget.setScaleX(Preferences.getDouble(id + keyScaleX, zoomTarget.getScaleX()));
-		zoomTarget.setScaleY(Preferences.getDouble(id + keyScaleY, zoomTarget.getScaleY()));
-		scrollPane.setHvalue(Preferences.getDouble(id + keyScrollH, scrollPane.getHvalue()));
-		scrollPane.setVvalue(Preferences.getDouble(id + keyScrollV, scrollPane.getVvalue()));
-		decimalPlaces = Preferences.getInt(id + keyDecimalPlaces, 2);
+		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
+		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
+		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
+		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
+		decimalPlaces = Preferences.getInt(widgetId + keyDecimalPlaces, 2);
 		formatter = Decimals.getDecimalFormat(decimalPlaces);
 		lblLow.setText(formatter.format(minValue));
 		lblHigh.setText(formatter.format(maxValue));
-		resolution = Preferences.getInt(id + keyResolution, 1);
+		resolution = Preferences.getInt(widgetId + keyResolution, 1);
 		// dataToCanvas();
 
 	}
@@ -283,10 +344,9 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> im
 		int x = (int) (e.getX() / resolution);
 		int y = (int) (e.getY() / resolution);
 		lblXY.setText("[" + x + "," + y + "]");
-		if (x < mx & y < my & x >= 0 & y >= 0) {
-			// Double d = getData(x, y);
-			// lblValue.setText(formatter.format(d));
-		}
+		if (x < mx & y < my & x >= 0 & y >= 0) 
+			 lblValue.setText(formatter.format(numbers[x][y]));
+		
 	}
 
 	@Override

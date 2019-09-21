@@ -78,21 +78,22 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 	private Label lblOutput;
 
 	private Object initialValue;
-	private TimeWidgetFormatter timeFormatter;
-	private int currentSender;
+	private WidgetTimeFormatter timeFormatter;
+	//private int sender;
 	private String name;
+	private WidgetPolicy policy;
 
 
 	public SimpleWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.VALUE_PAIR);
-		timeFormatter = new TimeWidgetFormatter();
+		timeFormatter = new WidgetTimeFormatter();
+		policy = new WidgetSimplePolicy();
 	}
 
 	@Override
 	public void onDataMessage(ObjectData data) {
 		log.info("Data received " + data);
-		// ignore everything else
-		if (data.sender() == currentSender)
+		if (policy.canProcessDataMessage(data))
 			Platform.runLater(() -> {
 				processOnDataMessage(data);
 			});
@@ -117,7 +118,7 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 		DataLabel  dl = (DataLabel) meta.properties().getPropertyValue("name");
 		name = dl.toString();
 		initialValue = meta.properties().getPropertyValue("value");
-		lblOutput.setText(getOutputString(currentSender, timeFormatter.getTimeText(timeFormatter.getInitialTime()),
+		lblOutput.setText(getOutputString(policy.sender(), timeFormatter.getTimeText(timeFormatter.getInitialTime()),
 				name, initialValue.toString()));
 
 	}
@@ -134,16 +135,15 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 
 	private void processWaitState() {
 		log.info("Resetting initial value: " + initialValue);
-		lblOutput.setText(getOutputString(currentSender, timeFormatter.getTimeText(timeFormatter.getInitialTime()),
-				name, initialValue.toString()));
+//		lblOutput.setText(getOutputString(currentSender, timeFormatter.getTimeText(timeFormatter.getInitialTime()),
+//				name, initialValue.toString()));
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
 		log.info("Prepared user interface");
 		HBox content = new HBox();
-		lblOutput = new Label(getOutputString(currentSender, timeFormatter.getTimeText(timeFormatter.getInitialTime()),
-				name, initialValue.toString()));
+		lblOutput = new Label("uninitialized");
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
 		content.getChildren().addAll(lblOutput);
@@ -169,7 +169,7 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		timeFormatter.setProperties(id, properties);
-		currentSender = (Integer) properties.getPropertyValue("sender");
+		policy.setProperties(id, properties);
 	}
 
 }

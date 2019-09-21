@@ -81,14 +81,14 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  */
 
 public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
-	private TimeWidgetFormatter timeFormatter;
+	private WidgetTimeFormatter timeFormatter;
 	private Label lblTime;
 	private int sender;
 	private static Logger log = Logging.getLogger(SimpleTimeWidget.class);
 
 	public SimpleTimeWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
-		timeFormatter = new TimeWidgetFormatter();
+		timeFormatter = new WidgetTimeFormatter();
 		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 

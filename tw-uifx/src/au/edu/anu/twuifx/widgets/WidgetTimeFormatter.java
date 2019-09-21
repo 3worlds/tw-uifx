@@ -56,7 +56,7 @@ import fr.cnrs.iees.twcore.constants.TimeUnits;
  * model that is driving the dataTracker and hence the time the associated data
  * was sent.
  */
-public class TimeWidgetFormatter implements HeadlessWidget {
+public class WidgetTimeFormatter implements HeadlessWidget {
 	private TimeUnits smallest;
 	private TimeUnits largest;
 	private TimeScaleType timeScale;
