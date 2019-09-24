@@ -56,9 +56,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
-public class SimpleControlWidget 
-		extends StateMachineController 
-		implements Widget {
+public class SimpleControlWidget extends StateMachineController implements Widget {
 
 	private Button btnRunPause;
 	private Button btnStep;
@@ -66,7 +64,7 @@ public class SimpleControlWidget
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
-	
+
 	private static Logger log = Logging.getLogger(SimpleControlWidget.class);
 
 	// NB initial state is always 'waiting' ('null' causes a crash)
@@ -74,11 +72,12 @@ public class SimpleControlWidget
 
 	public SimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
+		log.info("Thread: " + Thread.currentThread().getId());
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		log.info("Prepared user interface");
+		log.info("Thread: " + Thread.currentThread().getId());
 		runGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Play16.gif")));
 		pauseGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Pause16.gif")));
 		btnRunPause = new Button("", runGraphic);
@@ -101,34 +100,29 @@ public class SimpleControlWidget
 		HBox pane = new HBox();
 		pane.getChildren().addAll(buttons);
 		setButtonLogic();
-		log.info("User interface built");
 		return pane;
 	}
 
 	private Object handleResetPressed() {
 		// Always begin by disabling in case the next operation takes a long time
-		log.info("Reset button pressed");
-		setButtons(true,true,true,null);
-		if (state.equals(pausing.name()) | 
-			state.equals(stepping.name()) | 
-			state.equals(finished.name()))
+		log.info("Thread: " + Thread.currentThread().getId());
+		setButtons(true, true, true, null);
+		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name()))
 			sendEvent(reset.event());
 		return null;
 	}
 
 	private Object handleStepPressed() {
-		log.info("Step button pressed");
-		setButtons(true,true,true,null);
-		if (state.equals(pausing.name()) | 
-			state.equals(stepping.name()) | 
-			state.equals(waiting.name()))
+		log.info("Thread: " + Thread.currentThread().getId());
+		setButtons(true, true, true, null);
+		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name()))
 			sendEvent(step.event());
 		return null;
 	}
 
-	private Object handleRunPausePressed() {	
-		log.info("Run/Paused button pressed");
-		setButtons(true,true,true,null);
+	private Object handleRunPausePressed() {
+		log.info("Thread: " + Thread.currentThread().getId());
+		setButtons(true, true, true, null);
 		Event event = null;
 		if (state.equals(waiting.name()))
 			event = run.event();
@@ -143,7 +137,7 @@ public class SimpleControlWidget
 
 	@Override
 	public void onStatusMessage(State newState) {
-		log.info("Received status message: "+newState);
+		log.info("Thread: " + Thread.currentThread().getId()+ " State: "+newState);
 		state = newState.getName();
 		setButtonLogic();
 	}
@@ -151,6 +145,7 @@ public class SimpleControlWidget
 	private void setButtonLogic() {
 		// ensure waiting for app thread
 		Platform.runLater(() -> {
+			log.info("Thread: " + Thread.currentThread().getId());
 			if (state.equals(waiting.name())) {
 				setButtons(false, false, true, runGraphic);
 				return;
@@ -189,10 +184,11 @@ public class SimpleControlWidget
 	}
 
 	@Override
-	public void setProperties(String id,SimplePropertyList properties) {
+	public void setProperties(String id, SimplePropertyList properties) {
 	}
 
 	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
+		log.info("Thread: " + Thread.currentThread().getId());
 		btnRunPause.setDisable(runPauseDisable);
 		btnStep.setDisable(stepDisable);
 		btnReset.setDisable(resetDisable);

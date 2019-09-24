@@ -58,6 +58,7 @@ import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesData;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -85,24 +86,29 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	private boolean clearOnReset;
 	private int maxColours = 20; // can be set from archetype
 	private String widgetId;
-//	private NumberAxis xAxis;
-//	private NumberAxis yAxis;
+
+	private WidgetTimeFormatter timeFormatter;
+	private WidgetTrackingPolicy<TimeData> policy;
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME_SERIES);
+		timeFormatter = new WidgetTimeFormatter();
+		policy = new SimpleWidgetTrackingPolicy();
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Meta-data: " + meta);
+		timeFormatter.onMetaDataMessage(meta);
 	}
 
 	@Override
 	public void onDataMessage(TimeSeriesData data) {
 		log.info("Data: " + data);
-		Platform.runLater(() -> {
-			processDataMessage(data);
-		});
+		if (policy.canProcessDataMessage(data))
+			Platform.runLater(() -> {
+				processDataMessage(data);
+			});
 	}
 
 	private void processDataMessage(TimeSeriesData data) {
@@ -127,12 +133,12 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		log.info("Status msg received:" + state);
 		if (isSimulatorState(state, waiting)) {
 			Platform.runLater(() -> {
-				processWaitState();
+				processResetUI();
 			});
 		}
 	}
 
-	private void processWaitState() {
+	private void processResetUI() {
 		if (clearOnReset)
 			chart.getData().clear();
 		else
@@ -195,18 +201,26 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	@Override
 	public void putPreferences() {
 		Preferences.putBoolean(widgetId + KeyClearOnReset, clearOnReset);
+		timeFormatter.putPreferences();
+		policy.putPreferences();
+
 	}
 
 	@Override
 	public void getPreferences() {
 		clearOnReset = Preferences.getBoolean(widgetId + KeyClearOnReset, true);
+		timeFormatter.getPreferences();
+		policy.getPreferences();
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
+		timeFormatter.setProperties(id, properties);
+		policy.setProperties(id, properties);
 		if (properties.hasProperty("maxColours"))
 			maxColours = (Integer) properties.getPropertyValue("maxColours");
+		
 	}
 
 	private void edit() {

@@ -40,6 +40,9 @@
 									</image>
 								</ImageView>
 							</graphic>
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
 						</MenuItem>
 						<SeparatorMenuItem mnemonicParsing="false" />
 						<Menu fx:id="menuOpen" mnemonicParsing="false" text="Open">

@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.widgets;
 import java.util.Collection;
 
 import au.edu.anu.twcore.data.runtime.OutputData;
+import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
 // not sure about this wip
 /**
@@ -39,7 +40,19 @@ import fr.cnrs.iees.properties.SimplePropertyList;
  *
  * @date 23 Sep 2019
  */
-public  class WidgetSimpleTrackingPolicy implements WidgetTrackingPolicy<OutputData>{
+/*
+ * The policy of simple widgets is:
+ * 
+ * 1) to follow just one sender. That's it! The chosen sender is
+ * a sub-archetype property. These widgets will therefore ignore data from
+ * other senders.
+ * 
+ * Each widget should indicate the sender int on the ui.
+ * 
+ * 
+ */
+
+public  class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>{
 	private int sender;
 
 	@Override
@@ -59,7 +72,7 @@ public  class WidgetSimpleTrackingPolicy implements WidgetTrackingPolicy<OutputD
 	}
 
 	@Override
-	public boolean canProcessDataMessage(OutputData data) {
+	public boolean canProcessDataMessage(TimeData data) {
 		return sender==data.sender();
 	}
 

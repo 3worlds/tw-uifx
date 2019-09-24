@@ -66,29 +66,17 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
-/*
- * The policy of simple widgets is:
- * 
- * 1) to follow just one sender. That's it! The chosen sender is
- * a sub-archetype property. These widgets will therefore ignore data from
- * other senders.
- * 
- * Each widget should indicate the sender int on the ui.
- * 
- * 2) To receive a time value from the time model driving the dataTracker, or in
- * the case of SimpleTimeWidget, a Simulator instance.
- * 
- */
 
 public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
 	private WidgetTimeFormatter timeFormatter;
+	private WidgetTrackingPolicy<TimeData> policy;
 	private Label lblTime;
-	private int sender;
 	private static Logger log = Logging.getLogger(SimpleTimeWidget.class);
 
 	public SimpleTimeWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
+		policy = new SimpleWidgetTrackingPolicy();
 		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
@@ -100,15 +88,15 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 
 	@Override
 	public void onDataMessage(TimeData data) {
-		if (sender==data.sender())
-		Platform.runLater(() -> {
-			processOnDataMessage(data);
-		});
+		if (policy.canProcessDataMessage(data))
+			Platform.runLater(() -> {
+				processOnDataMessage(data);
+			});
 	}
 
 	private void processOnDataMessage(TimeData data) {
 		log.info("Thread id: " + Thread.currentThread().getId());
-		lblTime.setText(timeFormatter.getTimeText(data.time()));
+		lblTime.setText("(" + policy.sender() + ")" + timeFormatter.getTimeText(data.time()));
 	}
 
 	@Override
@@ -117,7 +105,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 		HBox content = new HBox();
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
-		lblTime = new Label(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+		lblTime = new Label("(" + policy.sender() + ")" + timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 		content.getChildren().addAll(lblTime);
 		return content;
 	}
@@ -126,7 +114,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	public void setProperties(String id, SimplePropertyList properties) {
 		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.setProperties(id, properties);
-		sender = (Integer) properties.getPropertyValue("sender");
+		policy.setProperties(id, properties);
 	}
 
 	@Override
@@ -139,12 +127,14 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	public void putPreferences() {
 		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.putPreferences();
+		policy.putPreferences();
 	}
 
 	@Override
 	public void getPreferences() {
 		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.getPreferences();
+		policy.getPreferences();
 	}
 
 	@Override
@@ -152,12 +142,12 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 		log.info("Thread id: " + Thread.currentThread().getId() + " State: " + state);
 		if (isSimulatorState(state, waiting)) {
 			Platform.runLater(() -> {
-				processOnStatusMessage();
+				processResetUI();
 			});
 		}
 	}
 
-	private void processOnStatusMessage() {
-		lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+	private void processResetUI() {
+		lblTime.setText("(" + policy.sender() + ")" + timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 	}
 }

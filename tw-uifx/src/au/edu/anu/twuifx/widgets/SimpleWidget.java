@@ -87,7 +87,7 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 	public SimpleWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.VALUE_PAIR);
 		timeFormatter = new WidgetTimeFormatter();
-		policy = new WidgetSimpleTrackingPolicy();
+		policy = new SimpleWidgetTrackingPolicy();
 	}
 
 	@Override
