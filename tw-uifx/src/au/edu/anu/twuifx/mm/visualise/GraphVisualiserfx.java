@@ -146,15 +146,20 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private void pushTextBack() {
 		List<Node> lstText = new ArrayList<>();
 		List<Node> lstCircle = new ArrayList<>();
+		List<Node> lstLines = new ArrayList<>();
 		for (Node n : pane.getChildren()) {
 			if (n instanceof Text)
 				lstText.add(n);
 			else if (n instanceof Circle)
 				lstCircle.add(n);
+			else if (n instanceof Line)
+				lstLines.add(n);
 		}
-		for (Node n:lstText)
+		for (Node n : lstText)
 			n.toBack();
-		for (Node n:lstCircle)
+		for (Node n : lstLines)
+			n.toBack();
+		for (Node n : lstCircle)
 			n.toFront();
 
 	}
