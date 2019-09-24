@@ -139,13 +139,23 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				if (child.isCollapsed())
 					collapseTree(child);
 			}
-		for (Node n:pane.getChildren()) {
+		pushTextBack();
+
+	}
+
+	private void pushTextBack() {
+		List<Node> lstText = new ArrayList<>();
+		List<Node> lstCircle = new ArrayList<>();
+		for (Node n : pane.getChildren()) {
 			if (n instanceof Text)
-				n.toBack();
+				lstText.add(n);
 			else if (n instanceof Circle)
-				n.toFront();
-			
+				lstCircle.add(n);
 		}
+		for (Node n:lstText)
+			n.toBack();
+		for (Node n:lstCircle)
+			n.toFront();
 
 	}
 
@@ -244,6 +254,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void onNewNode(VisualNode node) {
 		createNodeVisualisation(node);
 		createTreeLines(node, showTreeLine);
+		pushTextBack();
 	}
 
 	private void createTreeLines(VisualNode child, BooleanProperty show) {
@@ -493,7 +504,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (!node.isCollapsed()) {
 				double x = node.getX();
 				// I don't know why the labels don't line up on the rh side?
-				double x1 = layout.rescale(x, min.getX(), max.getX(), 0.00, 1.0-0.05);
+				double x1 = layout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
 				double y = node.getY();
 				double y1 = layout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
 				node.setX(x1);
