@@ -139,6 +139,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				if (child.isCollapsed())
 					collapseTree(child);
 			}
+		for (Node n:pane.getChildren()) {
+			if (n instanceof Text)
+				n.toBack();
+			else if (n instanceof Circle)
+				n.toFront();
+			
+		}
 
 	}
 
