@@ -30,7 +30,6 @@
 package au.edu.anu.twuifx.mr;
 
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.UIContainer;
 import au.edu.anu.twcore.ui.UITab;
 import au.edu.anu.twcore.ui.WidgetNode;
@@ -245,7 +244,7 @@ public class UIDeployer {
 		// maybe needs to be delayed!
 		for (SplitPane s : splitPanes) {
 			String key = splitter+s.getId();
-			UiHelpers.getSplitPanePositions(s, key);
+			UiHelpers.getSplitPanePositions(0.5, key);
 		}
 	}
 

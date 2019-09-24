@@ -104,7 +104,6 @@ import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 
-
 public class MmController implements ErrorMessageListener, IMMController, IGraphStateListener {
 
 	@FXML
@@ -198,10 +197,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	private Spinner<Integer> spinNodeSize;
-	
-    @FXML
-    private Spinner<Integer> spinJitter;
 
+	@FXML
+	private Spinner<Integer> spinJitter;
 
 	private IMMModel model;
 	private Stage stage;
@@ -209,7 +207,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	private Verbosity verbosity = Verbosity.brief;
 
 	private List<ErrorMessagable> lstErrorMsgs = new ArrayList<>();
-
 
 	private StringProperty userProjectPath = new SimpleStringProperty("");
 	// not used yet but just set with ComplianceManager.haveErrors();
@@ -225,14 +222,14 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	// TODO: make menu options and preferences entry for this choice when netbeans
 	// and IntelliJ have been tested
-	private   IDETypes ideType = IDETypes.eclipse;
+	private IDETypes ideType = IDETypes.eclipse;
 
 	@FXML
 	public void initialize() {
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
 		spinJitter.setMaxWidth(75.0);
-		
+
 		font = Font.font("Verdana", 10);
 		fontProperty = new SimpleObjectProperty<Font>(font);
 
@@ -251,15 +248,15 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 				setNodeRadius(newValue);
 			}
 		});
-		
+
 		spinJitter.valueProperty().addListener(new ChangeListener<Integer>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Integer> observable, Integer aoldValue, Integer newValue) {
 				setJitter(newValue);
-				
+
 			}
-			
+
 		});
 
 		btnLayout.setTooltip(new Tooltip("Apply layout function"));
@@ -299,10 +296,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, size));
 		nodeRadiusProperty.set(size);
 	}
-	
+
 	private void setJitter(int size) {
 		spinJitter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, size));
-		jitterProperty.set(size);			
+		jitterProperty.set(size);
 	};
 
 	private void verbosityChange(Observable t) {
@@ -341,7 +338,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			}
 		}
 	}
-
 
 	// Property to be bound to xlink lines
 	public BooleanProperty xLinksProperty() {
@@ -383,7 +379,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	void handleLayout(ActionEvent event) {
 		int size = jitterProperty.get();
 		double dSize = size;
-		dSize = dSize/100.0;
+		dSize = dSize / 100.0;
 		visualiser.doLayout(dSize);
 	}
 
@@ -461,13 +457,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		setButtonState();
 	}
 
-	
-	
-
 	private static final String mainFrameName = "mainFrame";
 	private static final String mainMaximized = mainFrameName + "_" + "maximized";
-	private static final String height = "_height";
-	private static final String width = "_width";
 	private static final String scaleX = "_scaleX";
 	private static final String scaleY = "_scaleY";
 	private static final String UserProjectPath = "userProjectPath";
@@ -494,22 +485,28 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
 			Preferences.putInt(fontSizeKey, fontSize);
 			Preferences.putInt(nodeSizeKey, nodeRadiusProperty.get());
-			Preferences.putInt(jitterKey,jitterProperty.get());
-			Preferences.putInt(tabPaneProperties.idProperty().get(), tabPaneProperties.getSelectionModel().getSelectedIndex());
+			Preferences.putInt(jitterKey, jitterProperty.get());
+			Preferences.putInt(tabPaneProperties.idProperty().get(),
+					tabPaneProperties.getSelectionModel().getSelectedIndex());
 			Preferences.flush();
 		}
 	}
 
-	// called when opening a project
+	/*
+	 * must not carry over control settings from previously opened project.
+	 * Therefore, we cannot use settings from the extant controls here such as
+	 * stage.getY() etc.
+	 */
+
 	public void getPreferences() {
 		Preferences.initialise(Project.makeProjectPreferencesFile());
-		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
-				stage.getHeight());
 		Platform.runLater(() -> {
-			stage.setX(r[0]);
-			stage.setY(r[1]);
-			stage.setWidth(r[2]);
-			stage.setHeight(r[3]);
+			double[] ws = Preferences.getDoubles(mainFrameName, DefaultWindowSettings.getX(),
+					DefaultWindowSettings.getY(), DefaultWindowSettings.getWidth(), DefaultWindowSettings.getHeight());
+			stage.setX(ws[0]);
+			stage.setY(ws[1]);
+			stage.setWidth(ws[2]);
+			stage.setHeight(ws[3]);
 			stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
 		});
 
@@ -554,8 +551,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Platform.runLater(() -> {
-					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane1,splitPane1.getId()));
-					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(splitPane2,splitPane2.getId()));
+					double s1 = Preferences.getDouble(splitPane1.getId(), DefaultWindowSettings.splitter1());
+					double s2 = Preferences.getDouble(splitPane2.getId(), DefaultWindowSettings.splitter2());
+					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(s1, splitPane1.getId()));
+					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(s2, splitPane2.getId()));
 					observable.removeListener(this);
 				});
 			}

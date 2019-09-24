@@ -26,7 +26,7 @@
 <?import javafx.scene.text.TextFlow?>
 <?import org.controlsfx.control.PropertySheet?>
 
-<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mm.view.MmController">
+<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mm.view.MmController">
 	<top>
 		<MenuBar BorderPane.alignment="CENTER">
 			<menus>
@@ -107,7 +107,7 @@
 			<items>
 				<BorderPane prefHeight="200.0" prefWidth="200.0">
 					<center>
-						<SplitPane fx:id="splitPane1" dividerPositions="0.3" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+						<SplitPane fx:id="splitPane1" dividerPositions="0.25" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 							<items>
 								<BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;">
 									<center>
@@ -142,7 +142,7 @@
                                        <children>
 														<Group fx:id="group">
 															<children>
-																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="424.0" minWidth="600.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
+																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="500.0" minWidth="880.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
 															</children>
 														</Group>
                                        </children>

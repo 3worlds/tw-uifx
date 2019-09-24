@@ -32,13 +32,11 @@ package au.edu.anu.twuifx.mr.view;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twuifx.utils.UiHelpers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;

@@ -32,12 +32,8 @@ package au.edu.anu.twuifx.mm;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
-
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.mm.MMModel;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
-import fr.ens.biologie.generic.utils.Logging;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
@@ -48,11 +44,9 @@ import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -102,26 +96,19 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		createMainWindow();
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
 		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
-		setDefaultFrameSize();
 		GraphState.addListener(controller);
+		//setDefaultFrameSize();
 		mainStage.show();
 		//Logging.setLogLevel(Level.INFO, MMModel.class);
 
 	}
 
-	private void setDefaultFrameSize() {
-		Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-		double w = screenBounds.getWidth() / 1.5;
-		// golden mean?
-//		double h = w / 1.618;
-		double h = w *0.707; // A4 landscape
-		double x = (screenBounds.getWidth() - w) / 2;
-		double y = (screenBounds.getHeight() - h) / 3;
-		mainStage.setWidth(w);
-		mainStage.setHeight(h);
-		mainStage.setX(x);
-		mainStage.setY(y);
-	}
+//	private void setDefaultFrameSize() {
+//		mainStage.setWidth(DefaultWindowSettings.getWidth());
+//		mainStage.setHeight(DefaultWindowSettings.getHeight());
+//		mainStage.setX(DefaultWindowSettings.getX());
+//		mainStage.setY(DefaultWindowSettings.getY());
+//	}
 
 	@Override
 	public void stop() {

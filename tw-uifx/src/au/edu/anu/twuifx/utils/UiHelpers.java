@@ -29,13 +29,12 @@
 package au.edu.anu.twuifx.utils;
 
 import au.edu.anu.omhtk.preferences.Preferences;
-import javafx.scene.control.SplitPane;
 
 public class UiHelpers {
-	public static double[] getSplitPanePositions(SplitPane s,String key) {
+	public static double[] getSplitPanePositions(double def,String key) {
 		double pos;
 		double[] positions = new double[1];
-		pos = Preferences.getDouble(key, s.getDividerPositions()[0]);
+		pos = Preferences.getDouble(key, def);
 		positions[0] = pos;
 		return positions;
 	}

@@ -260,11 +260,11 @@ public class TwSpecifications implements //
 		return st.contains(createdBy + PairIdentity.LABEL_NAME_STR_SEPARATOR);
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	private List<SimpleDataTreeNode> getConstraints(SimpleDataTreeNode spec, String constraintClass) {
-		return (List<SimpleDataTreeNode>) get(spec.getChildren(),
-				selectZeroOrMany(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, constraintClass))));
-	}
+//	@SuppressWarnings({ "unchecked" })
+//	private List<SimpleDataTreeNode> getConstraints(SimpleDataTreeNode spec, String constraintClass) {
+//		return (List<SimpleDataTreeNode>) get(spec.getChildren(),
+//				selectZeroOrMany(andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, constraintClass))));
+//	}
 
 	private boolean isOfClass(SimpleDataTreeNode child, String label) {
 		String ioc = (String) child.properties().getPropertyValue(aaIsOfClass);
