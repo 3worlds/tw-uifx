@@ -1,0 +1,77 @@
+_Cross-links for_ `experiment`:
+
+`baseLine -> ecology:<[underline]##__name__##>` {1}::
+This link points to a model setup that will be used as a _base line_ simulation. A base line simulation is the equivalent of a control in a real experiment, i.e. a reference case that serves as a basis to which other treatments are compared.
+
+===== Simulation duration
+
+`/3worlds/experiment/*timePeriod*` {1..*}
+
+The duration of a particular simulation is specified using a `timePeriod` node. 
+
+_Properties for_ `timePeriod`
+
+[horizontal]
+`start`:: The starting time of a simulation in `timeLine` shortest time unit grains.
+`end`::  The ending time of a simulation in `timeLine` shortest time unit grains.
+
+NOTE: Both properties are optional. If none is set, the simulation will start at time 0 and run indefinitely.
+
+_Cross-links for_ `timePeriod`:
+
+`timeRunner -> engine:<[underline]##__name__##>` {1}::
+This link tells which <<truesimulator,simulator engine>> is running the time and is going to need the start and end time information.
+
+`stopOn -> stoppingCondition:<[underline]##__name__##>` {0..1}::
+This link tells how to stop the simulation in case no `end` property is given.
+
+NOTE: The stopping condition has the priority over the `end` property. ** TODO: check this**
+
+===== Experimental design
+
+`/3worlds/experiment/*design*:<[underline]##__name__##>` {1}
+
+An experimental design specifies the method used to perform the simulations, e.g. number of replicate simulations, treatments as changes in parameter values or initial states, etc. An experimental design can be specified by using standard designs, or by passing a design description file.
+
+For more information on experimental designs for simulation experiments, we recommend reading the documentation of the R software _planor_ and _mtk_ packages (e.g. these packages could be used to generate design files for use in 3Worlds).
+
+include::ArchetypeDoc-design.adoc[]
+
+===== Experimental treatments
+
+====== Treatments
+
+`/3worlds/experiment/*treatment*:<[underline]##__name__##>` {1}
+
+An experimental treatment records a particular set of parameter values and initial state to run a simulation or a series of replicated simulations. It is the basic block of the experiment, just as in real-world experimentation.
+
+Treatements may be specified 
+
+* in full detail: this is done by specifying more than one `ecology` nodes, each `ecology` being used for a different treatment;
+
+* as (minor) changes relative to the experiment `baseLine`.
+
+_Properties for_ `treatment`
+
+[horizontal]
+`replicates`:: The number of simulations to run with this treatment setup.
+
+_Cross-links for_ `treatment`:
+
+`modelSetup -> ecology:<[underline]##__name__##>` {0..1}::
+This link points to the `ecology` node used to initialise simulations for this treatment.
+
+`deployOn -> computeThread:<[underline]##__name__##>` {1..*}::
+This link specifies on which hardware thread to deploy this treatment. **NB: not implemented so far**
+
+====== Treatments as changes relative to _baseLine_
+
+`/3worlds/experiment/treatment/*modelChange*` {0..*}
+
+Use this node to specify a treatment as a change relative to `baseLine`.
+
+WARNING: this is unimplemented. ** TODO: implement it !**
+
+WARNING: currently there is no link between treatments and design... ** TODO: implement it !**
+
+

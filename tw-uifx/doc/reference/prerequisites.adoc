@@ -1,0 +1,8 @@
+=== Prerequisites
+You must have the following software installed on your computer prior to install 3Worlds:
+
+* java JDK (**J**ava **D**evelopment **K**it), version 8 or greater (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[oracle] or http://openjdk.java.net/[open] version)
+* java fx (graphical user interface library for java: http://www.oracle.com/technetwork/java/javase/overview/javafx-overview-2158620.html[oracle] or http://openjdk.java.net/projects/openjfx/[open] version)
+* an https://www.eclipse.org/downloads/[eclipse] java code development environment. You must:
+** install https://www.eclipse.org/downloads/[eclipse]
+** install the https://www.eclipse.org/efxclipse/install.html[e(fx)clipse plugin] required to use javafx

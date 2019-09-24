@@ -1,0 +1,12 @@
+=== Running ModelMaker standalone
+
+This assumes you have downloaded `3w.zip`.
+
+. Unzip `3w.zip` in your user home directory (important), keeping the internal directory tree. This will extract a file `modelMaker.jar` and a `.3w` directory containing more jar files.
+. Double-click on `modelMaker.jar`. This should launch the ModelMaker application.
+. If this does not work, open a terminal and type `java -jar modelMaker.jar`. This should launch the ModelMaker application.
+
+The last is the preferred method as any errors that may arise will appear in the terminal window.
+// I think we could supply a bash shell and a windows .bat file to handle this - Ian
+
+*Note*: to develop your model-specific code, you will need to setup a java development environment as shown in section <<truesetting-up-a-java-development-environment-for-the-user-code,Setting up Java>>. 

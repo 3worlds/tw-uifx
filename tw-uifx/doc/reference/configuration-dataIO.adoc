@@ -1,0 +1,127 @@
+===== Data _sources_
+
+When an important amount of data must be imported at the beginning of a simulation, the direct input of data through the <<trueusing-em-load-em-to-directly-input-data-from-modelmaker,load>> node becomes impractical. The <<truethe-setup-of-an-initial-state-for-a-simulation,loadFrom>> cross-links to `dataSource` nodes enables one to import data from external files.
+
+NOTE: Currently, supported file formats are plain text `.csv`, and OpenOffice spreadsheet `.ods`. However, it is possible to develop file importers for other formats. Those interested by such developments should contact the 3Worlds developers.
+
+`/3worlds/dataIO/*dataSource*:<[underline]##__name__##>` {0..*}
+
+This node specifies a _data source_, i.e. a file, a set of files or a database connection. 
+
+WARNING: database connections and sets of files as data sources are not yet implemented.
+
+_Properties for_ `dataSource`
+
+[horizontal]
+`file`:: The name of the file where the data is to be read.
+`class`:: The type of file loader to use to read `file`.
++
+****
+_possible values_:
+[horizontal]
+`CsvFileLoader`:: read a `.csv` file
+`OdfFileLoader`:: read an `.ods` file (OpenOffice spreadsheet)
+****
+
+_Additional properties when_ `class = CsvFileLoader`
+
+[horizontal]
+`separator`:: the field separator used for this `.csv` file (default: tabulation `"\t"`)
+
+_Additional properties when_ `class = OdfFileLoader`
+
+[horizontal]
+`sheet`:: the name of the spreadsheet to load from this `.ods` file (different spreadsheets in the same `.ods` file must be specified as different `dataSource` nodes). If this property is absent or not set, the first spreadsheet will be loaded.
+
+_Additional properties when_ `class = CsvFileLoader`, `OdfFileLoader`
+
+`.csv` and `.ods` file formats both assume the data come in 2 dimensional tables with cross-references between the tables. Table columns must match parameter and driver field or table names. Table rows must match species, stage or system component instances.
+
+The following rules must be respected when preparing the data files:
+
+* The data must not contain any missing value or structural empty cells.
+* Empty lines are permitted (they are skipped).
+* Text data must not be quoted.
+* The first data line of any file or spreadsheet must contain column headers. They must match field names as defined in the 3Worlds specification file produced by `ModelMaker`.
+
+Since we do not allow for empty cells, <<truespecifying-data-structures,complex data structures>> may have to be loaded from different files/spreasheets. In particular, a different file or spreadsheet per <<truetable,set of table dimensions>> should be used. The match between different files/spreadsheets is based on some data columns containing particular identifiers, specified in the following additional properties (all optional *[NOTE: this may be wrong]*). 
+
+[horizontal]
+`idSpecies`:: header of the column containing the species names. If only this property is set, each row of the file/spreadsheet will be used to generate a different _species_ parameter set. Other column headers must match species parameter field names.
+`idStage`:: header of the column containing the stage names. If this property is set, then `idSpecies` must also be set. If only this property and `idSpecies` are set, each row of the file/spreadsheet will be used to generate a different _stage_ parameter set for the matching _species_ instance. Other column headers must match stage parameter field names.
+`idComponent`:: header of the column containing the system component ids. If this property is set, then `idSpecies` and `idStage` must also be set. Here, each row of the file/spreadsheet will be used to generate a different _system component_ instance for the matching _stage_ within _species_. Other column headers must match driver field names.
+`idRelation`:: header of the column containing the relation names *[NOTE: not yet implemented]*
+`idVariable`:: header of the column containing the driver names *[NOTE: I dont remember what I planned to use this for!]*
+
+All other columns are assumed to be read as such: they play no specific role in the file scanning process.
+
+_Additional sub-tree when_ `class = CsvFileLoader`, `OdfFileLoader`
+
+`/3worlds/dataIO/dataSource/*read*:<[underline]##__name__##>` {0..*}
+
+This node specifies that a particular parameter/driver must be read from the file/spreadsheet. The _name_ property of the `read` node must match the parameter/driver name to read. By default, when no `read` node is present, _all_ parameters/drivers found in the file/spreadsheet will be read. Use `read` nodes to restrict the number of columns to read in a data source.
+
+`/3worlds/dataIO/dataSource/*dim*:<[underline]##__name__##>` {0..*}
+
+This node is used when reading data for 3Worlds <<truetable,table>> data structures. The node name must be an integer matching the dimension declared in a <<truetable,`table`>> under the `codeSource` node. It must then have the following property:
+
+[horizontal]
+`col`:: header of the column containing the index values for this dimension.
+
+When `dim` nodes are present, the index values contained in the dimension columns specified in `col` are used to fill a table within the same 3Worlds data structure.
+
+====== Example of a _dataSource_ specification
+
+This `.csv` file:
+
+|===
+
+|stage|dim_1|fecundity|mortality|dispersal|site
+|population|0|0.1|0.2|0.1|site
+|population|1|0.1|0.5|0.1|site
+|population|2|0.2|0.5|0.2|site
+|population|3|0.5|0.01|0.5|site
+|population|4|2|0.8|1|site
+|population|5|3.5|0.56|0.5|site
+|population|6|14.0|0.02|0.01|site
+|population|7|2.5|0.001|0.5|site
+|population|8|6.2|0.03|0.2|site
+|population|9|3|0.1|0.3|site
+|===
+
+with the following specifications: 
+
+[#fig-data-source-example]
+.Example of a data source configuration.
+image::example-data-source.png[align="center"]
+
+will result in the instantiation of a single parameter set with species='site', stage='population', and data contained in an 10-cell array of records with 3 fields, fecundity, mortality and dispersal.
+
+How?
+
+* property `idSpecies` states that the column labelled 'site' is the species identifier (last column of the csv file).
+* property `idStage` states that the column labelled 'stage' is the stage identifier (first column of the csv file).
+* since there is no `idComponent` property, it means this file contains stage parameter data.
+* node `dim` with `name`=1 specifies that the data to be read go into a table
+* property `col` states that the column labelled `dim_1` contains the indices for dimension 1 of the table.
+* the `read` nodes specify that the columns labelled 'fecundity', 'dispersal' and 'mortality' are to be read. Notice that these nodes were not required, since the default behaviour would have caused all these columns to be read anyway.
+* finally, the 10 different lines with different table indices (CAUTION: the indices start at 0 for 3Worlds table data structures) will all go into the same parameter set since only one (species name, stage name) pair is given here. Hence only one stage parameter set is instantiated.
+
+===== Data _sinks_
+
+WARNING: this part of the code is under refactoring.
+
+`/3worlds/dataIO/*dataSink*:<[underline]##__name__##>` {0..*}
+
+_Properties for_ `dataSink`
+
+[horizontal]
+`class`:: A data exporter class.
+
+_Cross-links for_ `dataSink`:
+
+`dataListener -> dataTracker:<[underline]##__name__##>` {1}::
+This link tells which <<truedata-tracking,`dataTracker`>> is used to aggregate the data for output. 
+
+
+

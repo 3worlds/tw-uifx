@@ -1,0 +1,187 @@
+===== The representation of time
+
+Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called processes) to either categories or relations. Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.
+
+====== Time line
+
+`/3worlds/ecosystem/dynamics/*timeLine*:<[underline]##__name__##>` {1}
+
+Every simulator has a reference _time line_. Since different ecological processes may run according to different time models, they must refer to a common time frame for interaction to be possible among them. A `*timeLine*` defines what kind of time scale and time units can be used in a simulation. In 3Worlds, time is always discrete in the end, so that the selected values of time scale and time unit define the time _grain_ of the simulation, i.e. the duration below which events are considered simultaneous. Internally, the `ModelRunner` uses integers to represent time, with 1 = one time grain.
+
+include::ArchetypeDoc-timeLine.adoc[]
+
+====== Time models
+
+`/3worlds/ecology/engine/timeLine/*timeModel*:<[underline]##__name__##>` {1..*}
+
+Ecological processes may be run following different time models. A time model is a particular way of representing time in the simulator. Time models may differ in parameters, like e.g. two time models using different time steps; but they can also be radically different in their logic: e.g. clock-like ticking vs. event-driven simulation.
+
+include::ArchetypeDoc-timeModel.adoc[]
+
+`class`:: the type of `timeModel` to use.
++
+****
+_possible values_:
+
+[horizontal]
+`ClockTimeModel`:: Time is incremented by a constant amount _dt_. This is commonly used to simulate regular processes like growth.
+`EventTimeModel`:: Model dynamics generates _events_ and computes the date in the future at which they are going to occur. This is commonly used to generate irregular processes like fire occurrence.
+`ScenarioTimeModel`:: *Not yet implemented*.
+****
+
+_Additional properties when_ `class = ClockTimeModel`
+
+[horizontal]
+`dt`:: The constant time increment used in this `ClockTimeModel`, expressed as an integer number of `TimeModel` base unit (=`TimeModel.nTimeUnits` x `TimeModel.timeUnit`). For example, if the TimeModel has `timeUnit` = `DAY` and `nTimeUnits` = 3, `dt` is expressed in units of 3 days (e.g. `dt` = 2 means the time increment is 6 days).
++
+WARNING: if calendar time is used (`timeLine.scale` = `GREGORIAN`), then `dt` will sometimes not be constant (e.g. if `dt` = 2 `MONTH`, `dt` will vary in duration between 28 and 31 days according to the exact date).
+
+_Additional sub-tree when_ `class = EventTimeModel`
+
+`/3worlds/ecosystem/dynamics/timeLine/timeModel/*eventQueue*:<[underline]##__name__##>` {1}
+
+An `EventTimeModel` maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.
+
+// NB: is this maintained?
+_Cross-links for_ `eventQueue`
+
+`populatedBy -> function:<[underline]##__name__##>` {1..*}::
+These links indicate which ecological processes will populate the event queue with time events.
+
+====== Simulation stopping condition
+
+`/3worlds/ecosystem/dynamics/*stoppingCondition*:<[underline]##__name__##>` {0..*}
+
+A simulation may be run indefinitely (interactively), but in big simulation experiment it is useful to automatically stop the simulations according to some criterion. Besides the simplest stopping condition, reaching a maximal time value, 3Worlds provides many other possibilities to stop a simulation (e.g. based on a population size, on a variable passing a threshold value, etc.).
+
+When no stopping condition is defined, the simulation will run indefinitely.
+
+_Properties for_ `stoppingCondition`
+
+[horizontal]
+`class`:: The type of stopping condition to use
++
+****
+_possible values_:
+
+`SimpleStoppingCondition`:: 
+Simulation stops when a maximal time value is reached.
+`ValueStoppingCondition`:: 
+Simulation stops when a variable in a reference system component is reached.
+`InRangeStoppingCondition`:: 
+Simulation stops when a variable in a reference system gets within the given range.
+`OutRangeStoppingCondition`:: 
+Simulation stops when a variable in a reference system gets out of the given range.
+`MultipleOrStoppingCondition`:: 
+Compound stopping condition: simulation stops when _any_ of the elementary stopping conditions within this multiple condition's list is true.
+`MultipleAndStoppingCondition`:: 
+Compound stopping condition: simulation stops when _all_ of the elementary stopping conditions within this multiple condition's list are true.
+****
+
+_Additional properties when_ `class = SimpleStoppingCondition`
+
+[horizontal]
+`endTime`:: The time at which the simulation will stop, in time line `shortestTimeUnits`.
+
+_Additional cross-links when_ `class = ValueStoppingCondition`, `InRangeStoppingCondition`,  `OutRangeStoppingCondition`
+
+`stopSystem -> component:<[underline]##__name__##>` {1}::
+The system component in which the criterion variable will be checked to stop the simulation.
+
+_Additional properties when_ `class = ValueStoppingCondition`
+
+[horizontal]
+`stopValue`:: The value of `stopVariable` at which to stop the simulation.
+
+_Additional properties when_ `class = InRangeStoppingCondition`, `OutRangeStoppingCondition`
+
+[horizontal]
+`upper`:: The upper value of the `stopVariable` range. Only `double` values are accepted.
+`lower`:: The lower value of the `stopVariable` range. Only `double` values are accepted.
+
+_Additional cross-links when_ `class = MultipleOrStoppingCondition`, `MultipleAndStoppingCondition`
+
+`condition -> stoppingCondition:<[underline]##__name__##>` {1}::
+These links point to the stopping conditions that will be used as elementary stopping conditions by the multiple and/or stopping condition.
+
+===== The transformations of a system component
+
+Changes in a _system component_ through time may be of different kinds: changes in __state__, i.e. in its driver and decorator variables; or more radical changes where the component actually changes __category__, so becomes represented by a different set of variables. Plus, a component may have an ephemeral life (lifespan property), which means component objects are dynamically created or deleted during a simulation.
+
+To represent category changes, start and end of life, we need the concept of a __life cycle__: a series of successive discrete states decribed by different categories (starting  from non-existence and finishing alike). Notice that the life cycle is optional: if a system component is going to be represented by the same set of variables (same category) during its whole life, there is no need to attach a life cycle to it as there will be no transition to other categories.
+
+====== Life cycle
+
+`/3worlds/ecosystem/dynamics/*lifeCycle*:<[underline]##__name__##>` {0..*}
+
+As __system component__s are designed to represent -- among other things -- individual organisms, they are able to create other system components ar runtime, or to transform themselves into system component of another category assemblage. These abilities are captured in a `*lifeCycle*`, which describes the possible creations and transitions of system components of a given category set into another.
+
+Since `components` belong to `categories`, different types of system components represented by different state variables, subject to different ecological processes, can coexist in a simulation. It may occur in a particular model that one wishes to represent a transition between, e.g. development stages: think for example of a caterpillar turning into a butterfly. There are chances that you don't want to describe the caterpillar with the same variables and behaviours as the adult butterfly. The operation of transforming a system component from a selection of categories to another is called _recruitment_. Computationally, it means that the simulator must keep track of the system component's identity and age in the first stage and carry these properties on to the new system component of the second stage, and call an appropriate method to transform state variables of the first stage into the new one.
+
+_Reproduction_ is the second process by which system components of a given category set may produce other system components belonging to possibly different categories.
+
+A specification of a life cycle is made by specifying
+
+. a `categorySet` in which the categories represent the various stages of the life cycle;
+
+. `recruit` and `produce` nodes linking categories within this set to describe possible recruitment and reproduction pathways.
+
+. optionnally, a `category` can be linked to a `lifeCycle` if one wants to attach parameters to the life cycle.
+
+_Cross-links for_ `lifeCycle`
+
+`appliesTo -> categorySet:<[underline]##__name__##>` {1}::
+This links indicates which categories define the stages of the life cycle. All categories found in the `categorySet` must appear in a `recruit` or `produce` node.
+
+`belongsTo -> category:<[underline]##__name__##>` {0..*}::
+These links enable to attach parameters to a `lifeCycle`, if needed by some ecological processes. The categories targets of these links must be specific to life cycles, i.e. no `component` should refer (`belongTo` cross-link) to any of them.
+
+====== Recruitment
+
+`/3worlds/ecology/lifeCycle/*recruit*:<[underline]##__name__##>` {0..*}
+
+This node specifies that two `component` types are linked by a _recruitment_ process.
+
+_Cross-links for_ `recruit`:
+
+`from -> system:<__name__>` {1}::
+This link tells which system component type is getting changed by the recruitment.
+
+`to -> system:<__name__>` {1}::
+This link tells which system component type is the result of the recruitment.
+
+`process -> process:<__name__>` {1}::
+This link tells which ecological process is used to compute the recruitment.
+
+====== Reproduction
+
+`/3worlds/ecology/lifeCycle/*produce*:<[underline]##__name__##>` {0..*}
+
+This node specifies that two `component` types are linked by a _reproduction_ process.
+
+_Cross-links for_ `produce`:
+
+`from -> system:<__name__>` {1}::
+This link tells which system component type is producing new system components.
+
+`to -> system:<__name__>` {1}::
+This link tells which system component type is the result of the reproduction.
+
+`process -> process:<__name__>` {1}::
+This link tells which ecological process is used to compute the production of new system components.
+
+====== Example of a life cycle specification
+
+This life cycle:
+
+[#fig-life-cycle-example]
+.Example of a life cycle
+image::example-life-cycle.svg[align="center"]
+
+is specified with this graph:
+
+[#fig-life-cycle-config-example]
+.Example of a life cycle configuration
+image::example-life-cycle.png[align="center"]
+
+*[TODO: fix the graph with the missing 'to' node for vegetative reproduction + add processes]*

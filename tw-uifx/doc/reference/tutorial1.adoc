@@ -1,0 +1,347 @@
+=== Tutorial 1: Construct and run a model for the first time
+
+In this tutorial we focus on the basic housework required to build and run a model using `ModelMaker` and https://www.eclipse.org/downloads/[eclipse]. We will use `ModelMaker` to create a 3Worlds project and construct a configuration file. We will then use https://www.eclipse.org/downloads/[eclipse] to create a Java project and then link `ModelMaker` to this project. We then finish by writing a few lines of java code with https://www.eclipse.org/downloads/[eclipse], running the model and checking the results.
+
+==== Creating a model configuration
+
+. Start `ModelMaker`.
+. Create a new project (`Main menu: Projects -> new`)
+. When prompted enter `tut1`. A single black node called  `3Worlds:tut1` now appears in the _graph_ window. 
+
++
+[#fig-screenshot-1]
+image::tutorial1-shot1.png[align="center"]
+
++
+This node will be the root of a graph that represents the configuration. All nodes are identified in the graph display using a _label:name_ pair. The _label_ is the type of node, representing its role in the configuration, while the _name_ is the unique identifier for a node of the given type (for example `person:claudine` or `kangaroo:skippy`). In addition, a list of tasks remaining to be completed appears at the bottom of the main `ModelMaker` window (_Compliance tasks_). This list grows and shrinks as the as the developing configuration is checked against the 3Worlds specifications.  A check takes place every time the graph or its properties change. On the left-hand side of the main window are two _Property editors_.  It is here that values are entered for the properties of the graph nodes created in the following steps. Only some nodes have properties and at this stage there are none to edit. 
+
+
+====
+It is worth pausing here to see the directories and files that appear when a project is created.  
+[#fig-screenshot-2]
+image::tutorial1-shot2.png[align="center"]
+
+The project root directory is called `.3w` and was created when `3w.zip` was unzipped. The dot indicates it’s a hidden directory so you will need to do what ever is required by your operating system to show hidden files. Within `.3w` there is now a directory called something like `project_tut1_18D6C7B0A519-000001650DB5CA2F-0000`. Every project directory begins with the key word `project` and then the name of the project you entered (`tut1` in this case). The series of hexadecimal numbers are an encoded creation date and instance number. At the moment all that you need to know is that _this system makes it impossible to overwrite a project because the project directory name will always be **unique**_. Inside this directory are 3 files: `tut1.dsl` (the configuration file we are constructing), `layout.dsl` (contains visualisation data for `ModelMaker` to display the configuration). When you close a project (quit `ModelMaker` or change to a different project), a preferences file is created (`MM.dsl`) containing project settings such as the size of windows and the position of controls. There are two other directories which will be discussed later. These three files are text files and you can open them with a simple text editor. However, _you should never need to edit them and it is likely to lead to *problems* for your project if you do_. You can safely delete project directories unless the project is currently open in `ModelMaker` or the project simulator has been launched.
+====
+
+Returning to `ModelMaker`, you will see the project name is displayed in the window title along with the creation date (decoded as a readable time stamp from the project directory discussed in above). The compliance task list currently shows four nodes are required. This list can be dealt with in any order you chose but for now, we will first add an `ecology` node.
+
+[start=4]
+. *Ecology*: Right-click on the `3worlds:tut1` node and select `new -> ecology` from the popup menu. You 
+are then prompted for a name for this node. The default name is the label name. Accept this and click `ok`. 
+The mouse pointer immediately becomes a cross-hair. `ModelMaker` is asking where you want to place this node. 
+Move to some place within the graph display and left-click the mouse. The `ecology:ecology1` node appears 
+(lime green) connected by a dark green line to the root node (black). 
+
++
+[#fig-screenshot-3]
+image::tutorial1-shot3.png[align="center"]
+
++
+Green lines indicate a _parent/child_ (hierarchical) relationship throughout the graph. All nodes are colour coded by category. Nodes that are children of `ecology` for example, are in the ecology category and will be the same lime green. All nodes, except the root node, are children of some parent. You can only create nodes by right-clicking on a parent and choosing a new node from the available options. The local menu varies according to the possibilities allowed by the 3Worlds specifications. This is one of the ways `ModelMaker` ensures that the developing configuration file is valid and greatly simplifies an otherwise very complex situation. 
+
++
+The specifications actually allow more than one `ecology` node. You can go mad if you like, and create and delete nodes to your hearts content using the popup menus. To clean up and return to this place in the tutorial, you can not only delete single nodes but also entire trees below a parent node. You can also collapse/expand all nodes in a tree and export or import them to and from disk. This can be useful for assembling models from saved sub-trees.
+
+. Right click the root name and create another `ecology` as in 4). The prompt will add an incremented number to the name to make sure the _label:name_ pair remains unique with in the configuration file.
+
+. We won’t use this second `ecology` node so right click on it and select `delete`. You can’t edit the name of a node but if you want to change it, simply delete and recreate the node.
+
+The addition of the `ecology` node has added more items to the compliance task list. However, we will ignore this for now and focus on creating the required nodes from the root. The `ecology` node and its sub-trees contain all ecological concepts defined in your model. For more information on this and other node types, see the <<truereference-of-3worlds-configuration,reference>> section. 
+
+[start=7]
+. *Code source*: Right click on the root node and select `new -> codeSource`, accept the default name and place it somewhere in the graph window. All nodes in the `codeSource` category are light gray. 
+
++
+[#fig-screenshot-4]
+image::tutorial1-shot4.png[align="center"]
+
++
+Note the change in the task list. Adding `codeSource` did not add any more tasks to the list (but removed one – this task). The `codeSource` node will become the parent of all data and process types that will supply the necessary information for `ModelMaker` to make the required Java files.
+
+. *Experiment*: Right click again on the graph root and select `new -> experiment` and proceed as before. All nodes in the `experiment` category (children of `experiment`) will be the same (gold) colour. This section of the configuration will determine how the model is run. This could be anything from a simple single run to a factorial experiment or may reference a file that contains other information.
+
+. *User interface*: Again, right-click on the root node and create a new `userInterface` node. In this category we can design the user interface and choose the _widgets_ necessary to control the model and display results. _Widgets_ are autonomous components of a user interface that can be freely assembled to customize the user interface to your needs.
+
+[#fig-screenshot-5]
+image::tutorial1-shot5.png[align="center"]
+
+We now have a minimum set of children of the configuration root. You can delete and recreate any of these nodes
+at any time, with the exception of the root node. If you select the tab `All editable properties` (AEP), you 
+will see there is only one property displayed (memory).  This is a property of the `ecology:ecology1` node with a default value of 0. More on this later but for now leave the value at 0. Notice that, after these edits, the main window title has a star added (unsaved). Press `ctrl-S` to save (or select `Projects -> Save`). Use `Save as...` if you want to save the project under a new name. You can save it under the same name if you like. Because the new project will have a different time stamp, it won’t overwrite the previous project.
+
+[start=10]
+. *Cross-links*: Many nodes require information from nodes other than their children or parents. In the task 
+list is currently a requirement to add an edge from experiment to ecology. To create this, right click on 
+experiment:experiment and select `connect to -> baseline - > ecology:ecology1`. A gray line will appear with 
+the name ‘baseline’ between these two nodes. All cross-linked lines are gray.
+
+====
+At the bottom of the graph display is a set of controls:
+
+[#fig-screenshot-6]
+image::tutorial1-shot6.png[align="center"]
+
+. The `X` shows/hides the cross-link lines. As the graph becomes more crowded, you may want to hide these for clarity. 
+
+. The `<` shows/hides the parent/child lines. Usually you want these displayed. 
+
+. The `L` button applies a layout method for displaying hierarchical graphs. The layout function displays children from top to bottom in alphabetical order. The layout will not be applied to any nodes not connected to the graph root.
+
+. Reapplying the layout (`L)` may cause the graph to be bigger than the display. You can zoom the graph display in and out by holding down the `ctrl` key while turning the mouse wheel. If the graph is larger than the display, you can drag it around using the mouse (left button down). Having readjusted the graph position or magnification, you can change the font or node size to suit. Whenever the layout is reapplied, there will be a small change in the horizontal position of nodes. This is just a random jiggle added to prevent vertical lines from being one on top of the other. 
+
+. When the mouse floats over a node, the node becomes highlighted (red). When highlighted, you can drag the node anywhere with in the display.
+
+. If you left-click on a highlighted node, its properties will be displayed in the _Selected Properties editor_ (SPE) display on the right-hand side of the _Property editor_ window. This display will show not only editable properties (if there are any) but any other non-editable properties including the node’s label, name and sometimes other properties. 
+All these control settings are automatically recorded in the project preferences file (`MM.dsl`) so when you reopen this project, its appearance will be as you left it. 
+====
+
+We will now proceed to develop the configuration by addressing all the tasks in the task list, until we have a minimal valid graph. 
+
+[start=11]
+. *Experiment design*:  Right-click on `experiment:experiment1` and add a new design node. In addition to the name, you will be prompted for a choice between a predefined experiment type and a file name. Choose `type`. Left-click on the new design node and look at its properties with the SPE.  
+
++
+[#fig-screenshot-7]
+image::tutorial1-shot7.png[align="center"]
+
++
+The `type` property is shown there and the default value is  `singleRun`. The drop down list for this property shows that `crossFactorial` is also an option. 
+
+====
+Sometimes, more convenient way to examine properties is with the other property editor `All editable properties` 
+(AEP). Click on this tab and you will see the `design:design1#type` property (`singleRun`) and the 
+`ecology:ecology1#memory` property (`0`). As more nodes are added to the graph, the list of properties can become
+overwhelming. In this case you can display properties by category (click the icon next to the search box in the
+AEP). There are only two categories containing properties that can be edited at this time: `ecology:ecology1` 
+and `experiment:experiment1`.
+====
+
+[start=12]
+. *Experiment time period*: Use the experiment node to add a `timePeriod` node to the graph. Once done there will
+appear a request to add an edge from this node to `ecology:/engine:` in the task list. However, we don’t have such a node at this time so we should move over to the `ecology` node. 
+
+. *Ecology engine*: Create an `engine` from the `ecology` node. This is the simulator that will manage executing processes at the appropriate time. 
+
+. *Engine time line*: Select `engine` and create a new `timeLine`. The only requirement of an engine is that is has a _time line_ to define the type of _time scale_ within which the processes can be coordinated by various _time models_. Once this has been done, a bunch of new tasks appear. The default time scale type is `MONO_UNIT` and we need to select a particular unit. The task list indicates it can be anything from Microsecond to Millennium. For now, we will just choose `YEAR` for both the shortest and longest time unit. 
+
++
+[#fig-screenshot-8]
+image::tutorial1-shot8.png[align="center"]
+
+. In the AEP, select `ecology:ecology1` category. Set the properties for longest and shortest time unit to `YEAR`. In fact, for the `MONO_UNIT` time scale, the longest and shortest units must be the same. There are many choices of time scale but they basically fall into two classes: those containing _regular_ subdivisions of time or a _Gregorian_ time scale (the usual occidental calendar), where months and years can vary in their number of days.
+
+. *Cross-link from timePeriod to engine*: We can now create the link between these to nodes. You can only create 
+a cross-link in `ModelMaker` starting with the `From` node. Right-click on `timePeriod:timePeriod1` and select 
+`connect to - > periodFor - > engine:engine1`. This allows the engine to know the start and end times of the 
+experiment. There are many other ways that an experiment can end and we will discuss this later. Next we need a 
+process that will be executed when the model runs.
+
+. *Ecological process*: Select the `ecology` node and create a new `process`. On this occasion we will give it the name `step`. Next we need a _time model_ to manage the `step` process.
+
+. *Time model*: Select the `timeLine` node and create a new `timeModel`. Name it `step` as well and select `ClockTimeModel` as the model type. Save your work.
+
+. *Property errors and other tasks*: the Task list has grown somewhat so now we will attend to a few simple things. The new time model has some invalid values. Set `dt` (the time step) to 1 (year), `nTimeUnits` to 1 (year – there can be any number of years in a step) and the `timeUnit` to  `YEAR` so it accords with the `timeLine`. The `timeLine` has a _grain_ size (could be any factor number of years); set it to 1. You can also add an edge from `process:step` to `timeModel:step` (`Connect to -> drivenBy -> timeModel:step`)
+
+. In the AEP click on the category button next to the Search field. You’ll now see two categories of properties:
+`ecology:ecology1` and `experiment:experiment1`. Click the arrow on the `experiment` category and it will expand
+to show all properties of nodes in this category. Click on the edit button next to the 
+`timePeriod:timePeriod1#end` property. A small dialog opens to set the end time for the experiment. Set a value of 100. 
+The `y` is an abbreviation for `YEARS` which is what we have chosen in the `timeLine`.
+
+. The `ecology` and `codeSource` trees are usually the most complicated to build. So before working on them, we will finish with the user interface. 
+
+. To hide parts of the graph that we’re not working on (sub-trees) you can select a node and collapse all 
+children of that node. Select `experiment:experiment1`, right-click and select `collapse`. You will notice that
+the properties of experiment and its children have been removed from the AEP. Do the same with the 
+`ecology:ecology1` node.
+
+. *Tool bar*: right-click on `userInterface:userInterface1` and create a `ToolBarTop`.
+
+. *Control widget*: right-click on `ToolBarTop:ToolBarTop1` and create a new widget call `controller`. Select 
+`SimpleSimCtrlWidget` from the drop down list when prompted. 
+
+. Select the `ToolBarTop:ToolBarTop1` node again and make a widget called `timer`. 
+Select `timeDisplayWidgetfx` this time.
+
+. When you run this model, widgets can appear in any arbitrary order in their containers (in this case the
+ `ToolBarTop`). To prevent this and ensure the UI will have a consistent appearance, edit the `order` properties in
+  the `userInterface` category for these two widgets. Make the controller 0 (the default) and the timer 1. 
+
+. Both these widgets require a cross-link to the ecology engine. Select each widget in turn and connect them 
+to the `ecology:engine1`.
+
++
+[#fig-screenshot-9]
+image::tutorial1-shot9.png[align="center"]
+
+. Collapse the `userInterface` and `experiment` nodes, expand the `ecology` node and hide the `X` links. Tidy up the graph by reapplying the layout (L). Save your work.
+
+We will create a minimal model in this first tutorial: a model with one process, one time model, one parameter and one state variable. The specifications provide for considerable complexity in defining multiple ecosystems, species and the various life stages they may move through. We will leave all that for another tutorial so we can focus in the procedures of model construction and deployment. However, in codeSource, we can’t avoid defining some data structures and therefore we now need some initial idea of a model. We will implement the simplest of chaos equations, the http://www.bendov.info/cours/chaos/logistic.htm[discrete-time logistic growth model]: 
+
+_x~t+1~ = k.x~t~(1-x~t~)_
+
+We have one parameter _k_ and one state variable _x_ that requires an initial state _x~0~ > 0_.
+
+[start=29]
+. From the `codeSource` node create a `record` named `pars` and a second `record` called `vars`. You must create a _record_ before you can make data fields. _Fields_ cannot exist outside a record definition, even, as in this case, the record contains only one field. Records can also contain _tables_ and tables can contain records _ad infinitum_.
+
+. From `pars` create a field called `k`.
+
+. From `vars` a field called `x`. Both will be of type `Double` by default (‘double precision’ floating point numbers). 
+
+. From the `ecology` node, create a `partition`. Accept the default name. From `partition` create a `category` node. Again accept the default name. The use of _partitions_ and _categories_ is a simple way of defining complex relationships between data and processes. This will become clearer in later tutorials. For now, we just need one of each.
+
+. We now define what constitutes a _driver_ (a state variable) and what is a _parameter_ for this `category`. Right-click on the category node and select `connect to - > drivers → record:vars`.
+
+. To define the _parameters_ repeat the above but select `connect to - > parameters → record:pars`.
+
+. Show the cross-links (`X`) and examine the edge names to be sure you haven’t selected the wrong option. If you have, just right-click on the `category` node and select `disconnect from...` to undo the error. 
+
+. Assign the `category` to the `process`: Returning to the task list there is a requirement to connect the 
+`process:step` to a `category` (or `relation`). Right click on the `process` node and select 
+`connect to - > appliesTo - > category:category1`.
+
+. Define a process _function_: The task list requires a child node of `process:step` of either 
+`function` or `dataTracker`. _DataTrackers_ are a means of sending data from a `process` to a `widget` in the 
+user interface or to file. They are like a virtual data logger used in field studies. They can perform quite 
+complex operations just as can real data loggers. We will come to that later but for now we need to define a 
+function that is run by this `process`. Right-click on `process:step` and create a new `function`. Call it 
+`step` like its parent. When asked if you want a `userClassName` property, answer `no`. This is important. If 
+you made a mistake, delete the node and repeat this step.
+
+. Define the `function` _class_: There are many types of functions available in 3Worlds. We will use the 
+`changeState` function. There is now a requirement in the task list that says `function:step` must have either 
+a property `className` or an edge to a `functionSpec`. Having said `no` above to including a `userClassName` property, 
+we now need to define a function specification. Function specifications are created in the `codeSource` category. 
+Right-click on the `codeSource` node and create a new `functionSpec`, again called `step`. In the AEP you can 
+see (under the `codeSource:codeSource1` category) that the function type is `ChangeState` - the default. To make 
+the link between the `function:step` and the `functionSpec:step`, right click on `function:step` and select 
+`connect to - > specifiedBy - > functionSpec:step`.
+
++
+[#fig-screenshot-10]
+image::tutorial1-shot10.png[align="center"]
+
+. There are now just two tasks remaining in the task list: we need a _system_ and an _initial state_. Complete 
+those two tasks by creating the required child nodes to `ecology:ecology1`.
+
+. Collapse the `codeSource` node, hide the `X` links and reapply the layout.
+
+. *System*:  A `system` is the thing being simulated. In our case it’s just the current and next value of `x`. The last task then, is to connect this `system` to a `category` where the system structure is defined. Complete this last task now.
+
+.  *The configuration is now valid!* The red light next to the `check` button at the bottom left of the main window is now green and the model is ready to run.
+
++
+[#fig-screenshot-10b]
+image::tutorial1-shot10b.png[align="center"]
+
+==== Running a model
+
+[start=43]
+. Save your work (only a saved configuration can be run) and click the `Create and run simulator` button. The simulator will now appear as a separate application. Click the run arrow (this is the `SimpleSimulationControllerWidget` that was added to the  user interface back at step 24) and the model will run for 100 years (cf step 20). The time is displayed in the timer widget (cf step 25).
+
++
+[#fig-screenshot-11]
+image::tutorial1-shot11.png[align="center"]
+
+====
+Some new files will have been created at this stage. Open a file manager and navigate to
+`.3w/project_tut1<date stamp>`:
+
+[#fig-screenshot-12]
+image::tutorial1-shot12.png[align="center"]
+
+[%autowidth]
+|===
+
+| `tut1.dsl` | the configuration file we have been developing 
+| `layout.dsl` | the visualisation of tut1.dsl for display in ModelMaker
+| `MM.dsl` | the project preferences
+| `userProject.jar` |java source and class files generated when we reached step 42 above
+| `data.jar` | any data files used by the project. Empty for this tutorial
+| `simulator.jar` | a manifest of the above jars plus threeWorlds.jar and its dependencies. This is the jar that runs at step 43 above
+| `local/java` | the java files and classes added to userProject.jar
+| `local/runTime` | created when running the simulator for the first time
+| `preferences.dsl` | preferences for the simulator – window size and position of controls etc...
+| `init-default.twg` | a text file containing the starting state of all state variables. We only have one in this tutorial : `x`
+| `param-default.twg` | a text file containing all parmeters. We only have one in this tutorial : `k`
+|===
+	
+You can open the java files in a text editor (`local/java/code/tut1/ecology/*.java`) to see what `ModelMaker` has created. `Pars.java` is an implementation of the Pars record and contains the field `k`. Likewise `Vars.java` contains the field `x`. These two files are always generated by `ModelMaker`. _If you edit them in any way, your edits will be overwritten by_ `ModelMaker`. The third file, `Step.java`, is a _template_ file. We will edit this file later in https://www.eclipse.org/downloads/[eclipse] to implement the Chaos equation above. 
+
+WARNING: Don’t try and edit in a simple text editor as `ModelMaker` will rely on https://www.eclipse.org/downloads/[eclipse] to compile and create the associated class file. In https://www.eclipse.org/downloads/[eclipse] you can edit this file as you please as long as you don’t change its  Java class.
+====
+
+You may be surprised to find there is little you can do with the simulator except run, pause, continue and reset a simulation: that is, all you can do essentially, is run the experiment and examine the results.  The one other thing you can do is pause the simulation and save the current state to a new initial state file.
+
+*[TODO: rewrite the initial state stuff - points 44 and 45]*
+
+Note that the contents of the initial state file are determined by the project configuration file (`tut1.dsl`). Changes to the configuration, specifically records and tables defined under the `codeSource` category, will result in changes to the initial state file. The simulator will attempt to handle this and issue warnings where differences have been encountered. You should deal with these warnings before relying on your results.
+
+It's no use running the simulator again at the moment because we have yet to implement the chaos equation. This is were we begin writing Java code in https://www.eclipse.org/downloads/[eclipse]. 
+
+[start=46]
+. Open eclipse, create a workspace (if you have not already done so) and create a new Java project called `Chaos`. We should probably call it the same name as our 3Worlds project (`tut1`)  but at the moment it is simpler to give it a different name to distinguish between Java projects and ModelMaker projects in this tutorial. However, naming the Java and 3Worlds project the same, will help avoid confusion when you have many projects..
+
+. We first need to add the 3Worlds libraries to the Chaos project. Right-click on the `Chaos` project and select `preferences`.
+
+. Choose `Java Build Path` and select the `Libraries` tab.
+
+. Open the `Add External Jars`, navigate to the `.3w` directory and include `threeWorlds.jar` and `tw-dep.jar`.
+
+. Click `Ok` and close then `Apply` and `close`.
+
+. **Linking `tut1` project to `Chaos` java project**: Open the `tut1` project in `ModelMaker` (if not already open).
+
+. Select `Preferences - > Java Project - > connect`. Navigate to the workspace containing the `Chaos` project, select it and click `Open`. You will now see the main window title of `ModelMaker` has changed to indicate this link to the `Chaos` project. 
+
++
+[#fig-screenshot-13]
+image::tutorial1-shot13.png[align="center"]
+
++
+This link will be saved in the `MM.dsl` preferences file after quitting `ModelMaker`. If you link to some directory that is not an eclipse project, you will get an error message.
+
+. Return to https://www.eclipse.org/downloads/[eclipse], right-click on the `Chaos` project and select `Refresh`. Under the `src` directory you will now see the three java files created previously by `ModelMaker`. These were transferred when the link was set in `ModelMaker`.
+
+. Open `Step.java`. You will see this is a `ChangeStateFunction` class (cf.  38). If you change the type of function to something other than `ChangeState` in `ModelMaker`, this file, and any changes you have made to it, will be saved under a new name called `Step.orig_0`. This is to avoid the complications of trying to move your changes to a new file (where they may not in fact be appropriate) but without losing your work. The number will increment each time this situation happens *[NOT DONE YET]* to prevent overwrites.
+
+. Add the following code within the `changeState()` method:
++
+[source,java]
+----
+Pars pars = (Pars) focal.parameters();
+Vars current = (Vars)focal.currentState();
+Vars next = (Vars)focal.nextState();
+next.x(pars.k()*current.x()*(1-current.x()));
+----
+
+. Save your work. Saving your java file will ensure eclipse creates the associated class file for inclusion in the simulator.jar when you next launch it from ModelMaker.
+
+. *Plot the output*: Before running the simulator again, a final task is to display a time series of `x`. For this we must attach a _data tracker_ to `process:step`, modify a property to indicate the data to track and add a chart widget to the UI to view the time series.
+
+. Right-click on `process:step` and create a new `dataTracker` node. Accept the defaults in the ensuing prompts. 
+
+. A new task message will appear asking to set a valid value for `reporting period`. Go to the AEP and enter a value of 1 for this property. For reasons of efficiency, a dataTracker can buffer the data it collects and send it to a widget in fewer time steps. 
+
+. In the AEP display, edit the dataTracker:dataTracker_1#track property and select the only available option: `x`. *[TODO]*
+
+. Collapse all nodes and expand the userInterface node. From this node create a new `TopLeftPanel`.
+
+. Select the `TopLeftPanel` node and create a widget. Name it `plot` and select `timeSeriesPlotWidgetfx` from 
+the available list. You can add as many widgets as you like to a panel. Each will appear in its own tab.
+There are 6 regions of the Simulator window where widgets can be placed: four panels (for large widgets): `TopLeftPanel`, `TopRightPanel`,
+`BottomLeftPanel` and `BottomRightPanel`; and two toolbars (for small widgets): `ToolBarTop` and 
+`ToolBarBottom`. This seems a good compromise between flexibility and ease of use.
+
+. A new task message appears indicating this node must be connected to an `engine` node. This is to provide state
+information from the `engine` to the `widget` so that, for example, the plot will be cleared when the engine is
+reset (by the controller widget).
+
+. We also need to connect to the `dataTracker`. This is not mandatory *[TODO WHY?]*, but nothing will show 
+unless this is done. Right-click on the plot node and select `connect to -> channelListener - > dataTracker:dataTracker1`.
+
+. Save your work and run the simulator. *[TODO screen capture]*
+
+

@@ -1,0 +1,98 @@
+:xrefstyle: short
+
+=== Configuration options: reference
+
+In this section, 
+
+* node and edge labels are indicated in `*bold*`
+* text in triangular brackets (`<>`) mean a user-defined value is expected; the text usually specifies what kind of value is expected (e.g. `<__name__>` for a name, `<__int__>` for an integer number, etc.). If the text is required, it will be [underline]##underlined##, otherwise it is optional
+* a _multiplicity_ in curly braces {} tells how many times the item may appear in a configuration: 
+[horizontal]
+{1}:: exactly one item is required
+{0..1}:: the item is optional, i.e. one or zero is required
+{1..*}:: one to many items are required
+{0..*}:: any number of items is possible
+* levels in the tree hierarchy are indicated by slashes `/`.
+
+==== The _3Worlds_ node
+
+`/*3worlds*:<[underline]##__name__##>` {1}
+
+This node is the root of any 3Worlds configuration file (<<fig-root-example>>). The name will appear in ``ModelMaker``'s main window title, in the *project directory name* and in the *configuration graph file*. The name is requested and set when creating a new project (`Projects>New` menu entry in `ModelMaker`).
+
+[#fig-root-example]
+.The base tree of any 3Worlds configuration
+image::example-root.png[align="center"]
+
+
+==== The _ecosystem_ node
+
+`/3worlds/*ecosystem*:<[underline]##__name__##>` {1..*}
+
+This node and its sub-tree contains all the ecological concepts used to define a simulation model: what entities are modelled, what biological processes apply to them, at what time step they should run. The name is used to differentiate models as a simulation experiment may involve more than one model.
+
+A 3Worlds ecosystem is constructed as a population of 'biological entities', called _system components_, which establish interactions called _system relations_. Components and relations have _variables_ that may change value over time, according to various _ecological processes_ attached to components. In other words, an ecosystem is represented as a _dynamic graph_ which changes state and structure over time. To reflect this, `*ecosystem*` has two sub-trees called `*structure*` and `*dynamics*`
+
+==== The _ecosystem/structure_ node
+
+`/3worlds/ecosystem/*structure*:<[underline]##__name__##>` {1}
+
+This node and its sub-tree contains the description of the system component and relation types. It is based on the concept of __category__. A category is a set of components with an identical description, e.g. the same set of state variables or the same growth function. 
+
+include::configuration-ecosystem-structure.adoc[]
+
+==== The _ecosystem/dynamics_ node
+
+`/3worlds/ecosystem/*dynamics*:<[underline]##__name__##>` {1}
+
+This node and its sub-tree contains the description of the processes that will change the state of the system and create its dynamics. It is based on the concepts of __time model__, __ecological process__, and __life cycle__. Internally, the `*dynamics*` node is the __simulator__, i.e. the object which, when kicked to do so, will make all the computations necessary to run a simulation.
+
+include::configuration-ecosystem-dynamics.adoc[]
+
+==== The _codeSource_ node
+
+`/3worlds/*codeSource*` {1..*}
+
+This node and its sub-tree contains specifications for automatic code generation needed to implement a particular model. Most of its nodes have cross-references to nodes of the `*ecology*` sub-tree. The multiplicity allows users to organise their code specifications into meaningful units
+
+include::configuration-codeSource.adoc[]
+
+==== The _dataIO_ node
+
+`/3worlds/*dataIO*` {1..*}
+
+This node and its sub-tree contains links to external data sources (usually files) required by a simulation experiment, either for data input or output. Most of its nodes have cross-references to nodes of the `*ecology*` sub-tree. The multiplicity allows users to organise their data sets into meaningful units.
+
+include::configuration-dataIO.adoc[]
+
+==== The _experiment_ node
+
+WARNING: This part is still under construction
+
+`/3worlds/*experiment*:<[underline]##__name__##>` {1..*}
+
+This node and its sub-tree describe the experimental design to run using a given _model_ and external data sets. Typically, il will tell `ModelRunner` how many simulations should be run, possibly varying some parameters of the model according to some plan. The name is used to differentiate simulation experiments in a meaningful way. *TODO[It will appear in output directory names ?]*.
+
+The `*experiment*` node must have a cross-reference edge labelled `*baseLine*` {1}  to an `*ecology*` node. The model configuration contained in this `*ecology*` sub-tree will be used as the reference, "base line" simulation in the experiment - similar to a control treatment in a real-world experiment.
+
+The default, simplest, simulation experiment is just to run a single simulation of the baseLine model.
+
+include::configuration-experiment.adoc[]
+
+==== The _userInterface_ node
+
+`/3worlds/*userInterface*:<__name__>` {1}
+
+This node and its sub-tree specifies the look of the `ModelRunner` user interface. `ModelRunner` is highly configurable and can show many graphs during a simulation run, for example as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.
+
+include::configuration-gui.adoc[]
+
+==== The _hardware_ node
+
+WARNING: This part is still under construction. The default settings should be used.
+
+`/3worlds/*hardware*:<[underline]##__name__##>` {1..*}
+
+This node and its sub-tree specifies how the experiment should be distributed on available harware. **At the time of writing, only deployment to a single computer can be done**.
+
+

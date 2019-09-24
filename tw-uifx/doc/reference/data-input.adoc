@@ -1,0 +1,12 @@
+There are five different ways of feeding `ModelRunner` with data to start a simulation experiment.
+
+==== Let the model decide
+
+==== Provide parameters and initial state through ModelMaker
+
+==== Import data from external sources
+
+==== Use previously saved initial states
+
+==== Generate an initialState using the InitWizard
+

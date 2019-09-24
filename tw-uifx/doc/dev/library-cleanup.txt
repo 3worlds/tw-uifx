@@ -1,0 +1,8 @@
+1) synchronize all projects with file system (F5, refresh)
+2) wipe out ivy cache (delete local and cache directories)
+3) delete all content in lib directories of all projects
+4) regenerate all jars, THEN run ivy>refresh on every project, all this in dependency order 
+6) delete tw-dep.jar, ModelMaker.jar and ModelRunner.jar
+7) regenerate them with TwSetup (few minutes)
+
+if I edit the timeLine after having edited the StoppingCondition endTime, the time scale in Stoppingcondition doesnt get updated (eg switching from MONO_UNIT to GREGORIAN in timeline doenst affect StoppingCondition which still displays MONO_UNIT)

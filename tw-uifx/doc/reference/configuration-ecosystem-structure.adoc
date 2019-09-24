@@ -1,0 +1,89 @@
+===== The __category__ and related concepts: specification of groups of entities
+
+3Worlds uses these concepts to specify and generate the ecological entities manipulated during a simulations. 
+
+====== Category
+
+`.../categorySet/*category*:<[underline]##__name__##>` {1..*}
+
+A `*category*` is simply a name attached to a set of objects sharing common properties. Practically, these common properties are _state variables_, _parameters_ and dynamic behaviours (or _processes_). Categories, grouped into ``*categorySet*``s, constitute a user-defined _classification_ of _system component types_ relevant for a particular model.
+
+To make this classification useful, we attach _parameters_ and _state variables_ to categories. State variables are variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (_e.g._ biomass, age, sex, social status...). They will vary during a simulation. Parameters do not vary during a simulation; they are characteristic of a group of system components sharing them -- conceptually, a 'species' (e.g. average individual growth rate, mortality rate...).
+
+Practically, this means that any instance of a system component of a given category will implement the state variables of this category and share parameters with other system components of the same 'species'.
+
+The exact data structures for state variables and parameters are specified under the <<truethe-em-dataDefinition-em-node,dataDefinition>> node and linked to the category through the following:
+
+_Cross-links for_ `category`:
+
+`parameters -> record:<[underline]##__name__##>` {0..1}::
+This link tells which record data structure (in <<truethe-em-codesource-em-node,codeSource>>) is used to store parameters.
+
+`drivers -> record:<[underline]##__name__##>` {0..1}::
+
+`decorators -> record:<[underline]##__name__##>` {0..1}::
+Similarly, these links tell which data structure in <<truethe-em-dataDefinition-em-node,dataDefinition>> is used to store state variables. State variables are further classified into _drivers_, i.e. variables that _drive_ the dynamics of the system; and _decorators_, i.e. secondary state variables which values are computed from those of the drivers, only reflecting the dynamics of the drivers.
+
+A category may be defined with no parameters, drivers or decorators, but it would be pretty useless to have neither of them.
+
+====== CategorySet
+
+`/3worlds/ecosystem/structure/*categorySet*:<[underline]##__name__##>` {1..*}
+
+Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can't be both. For this reason, _exclusive_ categories are grouped into `*categorySets*`. A categorySet is _a set of **mutually exclusive** categories_. Further, it may apply only to categories of a particular type (categorySet). Hence categories can be nested:
+
+`.../category/*categorySet*:<[underline]##__name__##>` {0..*}
+
+====== RelationType
+
+`/3worlds/ecosystem/structure/*relationType*:<[underline]##__name__##>` {0..*}
+
+A `*relationType*` is just a name representing a meaningful link between two categories. It is specified by giving it a name and cross-linking it to the relevant categories with `fromCategory` and `toCategory` cross-links. Note that a relationType can link more than one 'from' categories to more than one 'to' categories if required. RelationTypes are used to implement specific processes acting on ecological entities (for example, a predation process).
+
+_Cross-links for_ `relationType`:
+
+`fromCategory -> category:<__name__>` {1..*}::
+This link tells which categories are at the start of the relation.
+
+`toCategory -> category:<__name__>` {1..*}::
+This link tells which categories are at the end of the relation 
+
+_Properties for_ `relationType`:
+
+[horizontal]
+`lifespan`:: This property specifies if this type of relation will stay attached to its `systemComponents` during all their life, or may get created and deleted during their lifespan.
++
+****
+include::ArchetypeDoc-system-LifespanType.adoc[]
+****
+
+
+====== Example: a category tree
+
+On this diagram (generated with `ModelMaker`), hierarchical links are in green and cross-links are in black.
+
+[#fig-category-example]
+.Example of a configuration with category sets, categories and relations
+image::example-category.png[align="center"]
+
+In this example, a _plant_ can be a _C3 tree_ but cannot be simultaneously a _grass_ and a _liana_. Similarly, an _animal_ cannot be both _herbivore_ and _carnivore_. The _predation_ relation links an _animal_ of any kind (the prey) to a _carnivore_ (its predator).
+
+===== The specification of ecological entities: _system components_
+
+====== System component
+
+`/3worlds/ecosystem/structure/*component*:<[underline]##__name__##>` {1..*}
+
+3Worlds simulates a _system_ made of _system components_. These are the things which are instantiated at run time, hold state variables, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach _categories_ to _system components_. The rules prevailing to build up categories hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the _plant_ and _tree_ categories, but not to the _animal_ and _tree_ categories.
+
+_Cross-links_ for `component`:
+
+`belongsTo -> category:<__name__>` {1..*}::
+This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the _C3_ category automatically implies the system component is also a _plant_).
+
+`initialiser -> initialiser:<__name__>` {0..1}::
+Use this optional link to specify a function to initialise state variables of a `component` at the beginning of a simulation.
+
+include::ArchetypeDoc-system.adoc[]
+
+

@@ -1,0 +1,83 @@
+3Worlds provides a series of interface _widgets_, i.e. graphical ojects that can be assembled to yield a usable **g**raphical **u**ser **i**nterface (GUI). Examples of widgets are: a window to display time series graphs, or XY maps, or simulation control buttons, or progress bars, etc... The basic `ModelRunner` GUI just provides places where to put widgets: a _tool bar_, a _status bar_, four _quadrants_, and _tabs_ within quadrants. _Widgets_ can be placed inside the _tool bar_, the _status bar_, or _tabs_.
+
+[#fig-GUI-ModelRunner]
+.The ModelRunner graphical user interface.
+image::GUI-ModelRunner.png[align="center"]
+*TODO: improve this figure*
+
+===== Tool bar
+
+`/3worlds/userInterface/*toolBar*` {1}
+
+The tool bar (always present) appears at the top of the GUI. Widgets placed there will appear beside each other *[in random order ?]*. The tool bar is typically the place where to put (small) widgets that must always remain visible at all time (as e.g., the widget containing the simulation controller buttons).
+
+===== Status bar
+
+`/3worlds/userInterface/*statusBar*` {0..1}
+
+The status bar, appearing at the bottom of the GUI *[TODO: check this!]*, is optional. It is meant to show quick information about the simulation run (like the current time step or the overall completion).
+
+===== Tabs
+
+`/3worlds/userInterface/*tab*` {0..*}
+
+Tabs are placed within four quadrants. They are meant to host large widgets, typically output graphs and maps. Within a quadrant, tabs appear on top of each other, i.e. only the content of the top tab is visible. *[NOTE: in the archetype there is no requirement for a name for tabs -  I suggest it should be a requirement that a tab has a name]*
+
+include::ArchetypeDoc-tab.adoc[]
+
+===== Widgets
+
+`/3worlds/userInterface/.../*widget*` {0..*}
+
+Widgets are the interesting part of the GUI configuration since they do the real work. A widget may be placed inside the `toolBar`, `statusBar`, or any `tab`.
+
+_Properties for_ `widget`
+
+[horizontal]
+`order`:: An integer *[what's it used for?]*
+`class`:: A widget class
++
+****
+_possible values_:
+[horizontal]
+`TimeDisplayWidgetfx`:: display simulation time
+`SimpleSimulationControlWidgetfx`:: control a single simulation
+`TimeSeriesPlotWidgetfx`:: plot time series output
+`LabelValuePair`:: *???*
+`SingleGridWidget`:: *???*
+****
+
+_Cross-links for_ `widget`:
+
+`dataListener -> dataTracker:<[underline]##__name__##>` {0..*}::
+This link tells the widget where to get the data from.
+
+====== Time display
+
+_Cross-links for_ `TimeDisplayWidgetfx`:
+
+`timeListener -> engine:<[underline]##__name__##>` {1}::
+This link tells the widget where to get the time values from.
+
+====== Simulation control
+
+_Cross-links for_ `SimpleSimulationControlWidgetfx`:
+
+`stateMachineListener -> engine:<[underline]##__name__##>` {1}::
+This link tells the widget which engine it is going to control.
+
+====== Plotting time series data
+
+_Cross-links for_ `TimeSeriesPlotWidgetfx`:
+
+`stateMachineListener -> engine:<[underline]##__name__##>` {1}::
+This link tells the widget where to get simulation status information (e.g. when the simulation is over, reset, paused, etc.)
+
+====== [Value pair widget]
+
+_Cross-links for_ `LabelValuePair`:
+
+`stateMachineListener -> engine:<[underline]##__name__##>` {1}::
+This link tells the widget where to get simulation status information (e.g. when the simulation is over, reset, paused, etc.)
+
+
