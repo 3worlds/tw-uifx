@@ -49,21 +49,25 @@ This node and its sub-tree contains the description of the processes that will c
 
 include::configuration-ecosystem-dynamics.adoc[]
 
-==== The _codeSource_ node
+
+WARNING: *Old version of documentation after this line - dont read.*
+
+
+==== The _codeSource_ node 
 
 `/3worlds/*codeSource*` {1..*}
 
 This node and its sub-tree contains specifications for automatic code generation needed to implement a particular model. Most of its nodes have cross-references to nodes of the `*ecology*` sub-tree. The multiplicity allows users to organise their code specifications into meaningful units
 
-include::configuration-codeSource.adoc[]
+// include::configuration-codeSource.adoc[]
 
-==== The _dataIO_ node
+==== The _dataIO_ node 
 
 `/3worlds/*dataIO*` {1..*}
 
 This node and its sub-tree contains links to external data sources (usually files) required by a simulation experiment, either for data input or output. Most of its nodes have cross-references to nodes of the `*ecology*` sub-tree. The multiplicity allows users to organise their data sets into meaningful units.
 
-include::configuration-dataIO.adoc[]
+// include::configuration-dataIO.adoc[]
 
 ==== The _experiment_ node
 
@@ -77,7 +81,7 @@ The `*experiment*` node must have a cross-reference edge labelled `*baseLine*` {
 
 The default, simplest, simulation experiment is just to run a single simulation of the baseLine model.
 
-include::configuration-experiment.adoc[]
+// include::configuration-experiment.adoc[]
 
 ==== The _userInterface_ node
 
@@ -85,7 +89,7 @@ include::configuration-experiment.adoc[]
 
 This node and its sub-tree specifies the look of the `ModelRunner` user interface. `ModelRunner` is highly configurable and can show many graphs during a simulation run, for example as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.
 
-include::configuration-gui.adoc[]
+// include::configuration-gui.adoc[]
 
 ==== The _hardware_ node
 

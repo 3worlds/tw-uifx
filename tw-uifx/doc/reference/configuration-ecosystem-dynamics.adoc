@@ -114,61 +114,65 @@ To represent category changes, start and end of life, we need the concept of a _
 
 `/3worlds/ecosystem/dynamics/*lifeCycle*:<[underline]##__name__##>` {0..*}
 
-As __system component__s are designed to represent -- among other things -- individual organisms, they are able to create other system components ar runtime, or to transform themselves into system component of another category assemblage. These abilities are captured in a `*lifeCycle*`, which describes the possible creations and transitions of system components of a given category set into another.
+As __system component__s are designed to represent -- among other things -- individual organisms, they are able to create other system components ar runtime, or to transform themselves into a system component of another category assemblage. These abilities are captured in a `*lifeCycle*`, which describes the possible creations and transitions of system components of a given category set into another.
 
-Since `components` belong to `categories`, different types of system components represented by different state variables, subject to different ecological processes, can coexist in a simulation. It may occur in a particular model that one wishes to represent a transition between, e.g. development stages: think for example of a caterpillar turning into a butterfly. There are chances that you don't want to describe the caterpillar with the same variables and behaviours as the adult butterfly. The operation of transforming a system component from a selection of categories to another is called _recruitment_. Computationally, it means that the simulator must keep track of the system component's identity and age in the first stage and carry these properties on to the new system component of the second stage, and call an appropriate method to transform state variables of the first stage into the new one.
+Since `components` belong to `categories`, different types of system components represented by different state variables, subject to different ecological processes, can coexist in a simulation. It may occur in a particular model that one wishes to represent a transition between, e.g. development stages: think for example of a caterpillar turning into a butterfly. There are chances that you don't want to describe the caterpillar with the same variables and behaviours as the adult butterfly. The operation of transforming a system component from a selection of categories to another is called _recruitment_. Computationally, it means that the simulator must keep track of the system component's identity and age in the first stage and carry these properties on to the new system component of the second stage, and call an appropriate function to transform state variables of the first stage into the new one.
 
-_Reproduction_ is the second process by which system components of a given category set may produce other system components belonging to possibly different categories.
+_Reproduction_ is the second process by which system components of a given group of categories may produce other system components belonging to possibly different categories.
 
-A specification of a life cycle is made by specifying
+A specification of a life cycle requires:
 
 . a `categorySet` in which the categories represent the various stages of the life cycle;
 
-. `recruit` and `produce` nodes linking categories within this set to describe possible recruitment and reproduction pathways.
+. `recruit` and `produce` nodes linking categories within this set to describe possible recruitment and reproduction pathways;
 
 . optionnally, a `category` can be linked to a `lifeCycle` if one wants to attach parameters to the life cycle.
 
 _Cross-links for_ `lifeCycle`
 
 `appliesTo -> categorySet:<[underline]##__name__##>` {1}::
-This links indicates which categories define the stages of the life cycle. All categories found in the `categorySet` must appear in a `recruit` or `produce` node.
+This links indicates which categories define the stages of the life cycle. `recruit` or `produce` nodes can only link categories of this set.
 
 `belongsTo -> category:<[underline]##__name__##>` {0..*}::
-These links enable to attach parameters to a `lifeCycle`, if needed by some ecological processes. The categories targets of these links must be specific to life cycles, i.e. no `component` should refer (`belongTo` cross-link) to any of them.
+These links enable to attach parameters to a `lifeCycle`, if needed by some ecological processes. The categories targets of these links must be specific to life cycles, i.e. no `component` or `process` should refer (`belongTo` cross-link) to any of them.
 
 ====== Recruitment
 
-`/3worlds/ecology/lifeCycle/*recruit*:<[underline]##__name__##>` {0..*}
+`/3worlds/ecosystem/dynamics/lifeCycle/*recruit*:<[underline]##__name__##>` {0..*}
 
-This node specifies that two `component` types are linked by a _recruitment_ process.
+This node specifies that two categories of the life cycle `categorySet` are linked by a _recruitment_ process.
 
 _Cross-links for_ `recruit`:
 
-`from -> system:<__name__>` {1}::
+`fromCategory -> category:<__name__>` {1}::
 This link tells which system component type is getting changed by the recruitment.
 
-`to -> system:<__name__>` {1}::
+`toCategory -> category:<__name__>` {1}::
 This link tells which system component type is the result of the recruitment.
 
-`process -> process:<__name__>` {1}::
-This link tells which ecological process is used to compute the recruitment.
+NOTE: multiple targets are possible from the same category, i.e. a component of a category may recruit to different categories. E.g., a bee larva can recruit to a worker or a queen.
+
+`effectedBy -> process:<__name__>` {1}::
+This link tells which ecological process is used to compute the recruitment. This process must implement at least one**[maximum one? it returns a category name]** `ChangeCategoryDecision` function (cf <<a,TODO>>).
 
 ====== Reproduction
 
-`/3worlds/ecology/lifeCycle/*produce*:<[underline]##__name__##>` {0..*}
+`/3worlds/ecosystem/dynamics/lifeCycle/*produce*:<[underline]##__name__##>` {0..*}
 
-This node specifies that two `component` types are linked by a _reproduction_ process.
+This node specifies that two categories of the life cycle `categorySet` are linked by a _reproduction_ process.
 
 _Cross-links for_ `produce`:
 
-`from -> system:<__name__>` {1}::
+`fromCategory -> category:<__name__>` {1}::
 This link tells which system component type is producing new system components.
 
-`to -> system:<__name__>` {1}::
+`toCategory -> category:<__name__>` {1}::
 This link tells which system component type is the result of the reproduction.
 
-`process -> process:<__name__>` {1}::
-This link tells which ecological process is used to compute the production of new system components.
+NOTE: multiple targets are possible from the same category, i.e. a component of a category may produce components of different categories. E.g., a tree can produce seedlings through sexual reproduction and root suckers through vegetative reproduction.
+
+`effectedBy -> process:<__name__>` {1}::
+This link tells which ecological process is used to compute the production of new system components. This process must implement at least one `CreateOtherDecision` function (cf <<a,TODO>>).
 
 ====== Example of a life cycle specification
 
@@ -184,4 +188,204 @@ is specified with this graph:
 .Example of a life cycle configuration
 image::example-life-cycle.png[align="center"]
 
-*[TODO: fix the graph with the missing 'to' node for vegetative reproduction + add processes]*
+===== Ecological processes
+
+====== Process
+
+`/3worlds/ecosystem/dynamics/timeLine/timeModel/*process*:<[underline]##__name__##>` {1..*}
+
+_Processes_ are used in 3Worlds to compute change in _system components_. Each process acts on system components of a particular group of categories (cf. <<truecategory,Category>>, <<truesystem-component,System Component>>) and is scheduled by a particular time model (cf. <<truetime-representation,time representation>>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (time models). A `process` is run according to its parent `timeModel`.
+
+_Cross-links for_ `process`
+
+A process can act on a single system component at a time (called the _focal_ system component), or on a pair of components linked by a relation (called the _focal_ and the _other_ system components). This is specified using the `appliesTo` cross-link (one at least must be present):
+
+`appliesTo -> category:<[underline]##__name__##>` {0..*}::
+These links indicate the categories of system components that will be acted on by the process.
+`appliesTo -> relation:<[underline]##__name__##>` {0..1}::
+This link indicates to which relation type between system component the process applies.
+`dependsOn -> process:<[underline]##__name__##>` {0..*}::
+This link tells that the process must be activated _after_ the processes targeted by the links. Use this link to organize computations when there are dependencies between them.
+
+====== Function
+
+`/3worlds/ecosystem/dynamics/timeLine/timeModel/*function*:<[underline]##__name__##>` {1..*}
+
+This node is used to specify the details of the computations made in a `process`. The `process` defines which system components are going to be activated and at what time in the simulation course; the `function` defines which computations, in detail, will be applied to the system components of that process. This enables to build complex computations applying to one component (a series of ``function``s within a `process`) in the context of a particular subset of components (`process`).
+
+There are different types of functions, differing by the way they affect system components and relations. This is specified by setting the `type` property to the desired function type.
+
+include::ArchetypeDoc-function.adoc[]
+
+The selection of a function type will trigger the generation of a java source file *[WHERE?]* for a class having the name specified in the `function` node name.
+
+CAUTION: The name of a function must be a valid java class name, starting with an uppercase letter.
+
+This java source file is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function. 
+
+All the generated function classes look like this:
+
+[source,java]
+----
+package system1;
+
+import au.edu.anu.rscs.aot.collections.tables.*;
+import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
+import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
+
+/*
+[... some big comment...]
+* Class Function1
+* Model "system1" -  - Mon Sep 23 09:05:33 CEST 2019
+* CAUTION: Edit this template but do not change class declaration.
+*/
+
+public class Function1 extends ChangeStateFunction {
+
+	@Override
+	public void changeState(double t, double dt, SystemComponent focal) {
+		// INSERT YOUR CODE HERE
+	}
+
+}
+----
+
+In this example, "**system1**" was the name given to the `ecosystem` node, while "**Function1**" was the name given to the `function` node. The `type` property set for the `function` was "**ChangeState**", as shown by the generated code. Other function types would have caused the generation of different methods in the class. These methods differ in their arguments and in the way they are used by the simulator:
+
+* In _all_ function type methods, the first and second argument are _the current time_ _**t**_ and __current time step **dt**__, passed by the simulator as double values in units of the `timeModel` of the parent `process` of the `function`.
+
+* For all function types which process applies to categories (`appliesTo ->  category`), i.e. `ChangeCategoryDecision`, `ChangeState`, `DeleteDecision`, `CreateOtherDecision`, there is an additional argument, the system component which will be affected by the computations, called __focal__.
+
+* For all function types which process applies to relations (`appliesTo ->  relationType`), i.e. `ChangeOtherCategoryDecision`, `ChangeOtherState`, `DeleteOtherDecision`, `ChangeRelationState`, `MaintainRelationDecision`, and for `RelateToDecision`, there  is another additional argument, a second system component, the one at the other end of the relation starting from __focal__, called __other__.
+
+* In addition to these arguments, every function class has a protected field called `localContext` that contain contextual data that may be used in computations. The local context data consist in:
+
+** __ecosystem__-level data, i.e. ecosystem parameters, state variables, population data (= number of system components, of newly created and deleted ones), and name;
+
+** __life cycle__-level data, i.e. life cycle parameters, state variables *[NB:not yet],* population data, and name;
+
+** __group__-level data, i.e. group parameters, state variables, population data, and name. A group represents here components sharing the same categories and same parameter set (eg _species_ characteristics for living organisms).
+
+* The `changeState(...)` method of the `ChangeState` and `ChangeRelationState` function types, and the `changeOtherState(...)` method of the `ChangeOtherState` function type,  are expected to compute changes in state variables of the _focal_ component or relation *[NB: this is not yet implemented for relations]*, or the _other_ component in the case of the `ChangeOtherState` function. The state variables are found in `focal.currentState()`, a read-only set of values, and new values may be computed into `focal.nextState()`.
+
+* The `delete(...)` method of the `DeleteDecision` and `DeleteOtherDecision` must return a `boolean` value. If `true` is returned, this will trigger the removal of the _focal_ (for `DeleteDecision`) or _other_ component (for `DeleteOtherDecision`). 
+
+TIP: In all `...Decision` functions except `CreateOtherDecision`, a helper method called `decide(double proba)` is available. This method will return true with probability `proba` and can be used to return a boolean result based on a probability computation. This method uses the in-built <<a,random stream facility>> of 3Worlds.
+
+* The `nNew(...)` method of the `CreateOtherDecision` function takes an extra argument called `newType`, which is the category name of the newly created component, as per the life cycle. `nNew(...)` returns a number of new components to create as a decimal number (`double`): the _integral part_ directly translates into a number of new components, while the _decimal part_ is used as a probability of an extra new component. This way, very low fecundity probabilities can be simulated.
+
+TIP: If there are >1 possible descendant categories, the `nNew(...)` method will be called as many times, with the `newType` parameter changing accordingly. The `nNew(...)` method must be prepared to handle multiple choices in such case (for example with a `switch` statement).
+
+* The `changeCategory(...)` method of the `ChangeCategoryDecision` and `ChangeOtherCategoryDecision` function types returns a category name (`String`), that of the new recruit. This name must be consistent with the life cycle information. After the function is executed, the  _focal_ (for `ChangeCategoryDecision`) or the _other_ (for `ChangeOtherCategoryDecision`) component is recruited to its new category.
+
+* The `maintainRelation(...)` method of the `MaintainRelationDecision` and the `relate(...)` method of the `RelateToDecision` both return a `boolean` value. If `true` is returned, the relation is maintained/set between the two components, otherwise it is removed/not set.**[TODO: a lot to add when indexers come in]**
+
+====== Function consequences
+
+`/3worlds/ecology/process/function/*consequence*:<[underline]##__name__##>` {0..*}
+
+Some functions may imply consequences: for example, a decision to delete another system component may be followed by a change in state based on the deleting component's state at the time it is deleted. Such functions that are only activated when certain events take place are called _consequences_ and may be specified by a child node to a function. Here also, rules apply:
+
+[width="100%",options="header",cols="1,1,2"]
+|====================
+| function | consequence  |  use to
+| `changeState` |  |  
+| `changeRelationState` | |
+| `changeOtherState` |  |
+| `deleteDecision` .2+| `changeOtherState`  .2+|  carry over values to another component linked by a `returnsTo` relation
+| `deleteOtherDecision`
+.3+| `createOtherDecision` | `changeState` |  set the initial state of the new component
+|  `changeOtherState` |  set values to the new component according to parent  (_focal_) state
+|  `relateToDecision` |  set a `parentTo` relation between new component and parent
+| `changeCategoryDecision` .2+| `changeOtherState` .2+|  carry over and compute values from the former component (__focal__) to the new recruit
+| `changeOtherCategoryDecision`
+| `maintainRelationDecision` |  |  
+| `relateToDecision` |  |  
+|====================
+
+====== Data tracking
+
+*[TO DO]*
+
+===== The setup of an initial state for a simulation
+
+// WARNING: this section is under dynamics, but maybe it's not the best place to put it.
+*[TO DO: check the consistency of all this]*
+
+====== Initial state
+
+`/3worlds/ecosystem/dynamics/*initialState*:<__name__>` {0..1}
+
+To run a simulation, an initial population of `components` must be provided. Nodes under the `initialState` node are used to input data to create such an initial state. The initial state is kept in memory by the simulator, and is re-loaded at every reset prior to a new simulation of the simulator.
+
+// IMPORTANT: Please note that 3Worlds allows for five different ways of initialising a simulation. These methods are explained in detail in section <<truefeeding-the-model-with-data,feeding the system with data>>).
+
+====== Group
+
+`/3worlds/.../initialState/*group*:<__name__>` {0..*}
+
+Initial system components belong to groups of individual components with common characteristics. A group is either:
+
+. a number of components that share the same selection of categories and the same parameter set
+
+. or a group of previous type groups (1), belonging to the same life cycle.
+
+_Cross-links for_ `group`:
+
+`groupOf -> component:<__name__>` {0..1}::
+This link tells which `component` node defines the individual components of this group (type 1 above).
+
+`cycle -> lifeCycle:<__name__>` {0..1}::
+This link tells which `lifeCycle` node defines the grouping of 'groupOf'-type groups (type 2 above).
+
+CAUTION: Exactly one of these cross-links must be present for every group.
+
+Type (1) groups may be nested into type (2) groups, i.e.:
+
+`/3worlds/.../initialState/group/*group*:<__name__>` {1..*}
+
+====== Individual
+
+`/3worlds/.../initialState/**individual**:<__name__>` {0..*}
+
+`/3worlds/.../initialState/group/**individual**:<__name__>` {0..*}
+
+`/3worlds/.../initialState/group/group/**individual**:<__name__>` {0..*}
+
+This node specifies an instance of a _system component_ to be created at the beginning of a simulation.
+
+_Cross-links for_ `individual`:
+
+`instanceOf -> component:<__name__>` {0..1}::
+This link tells which `component` node defines this individual component.
+
+====== Parameters
+
+Parameter sets define a group: they are constant values which are shared by all individual members of a group.
+
+`/3worlds/.../initialState/**parameterValues**:<__name__>` {0..*}
+
+Use this node to attach a set of parameters to the whole ecosystem. There will be only one of such parameter sets in any given simulator. In user-defined functions, these parameters are available through the `focalContext.ecosystemParameters` field.
+
+CAUTION: all focalContext fields may be null if no value was provided at initialisation. Any user-edited function code must check for this possibility when using these fields.
+
+`/3worlds/.../group/**parameterValues**:<__name__>` {0..*}
+
+Use this node to attach a set of parameters to a group. Each different `__name__` will create a different parameter set. Depending on the group type, these parameters are available through `focalContext.lifeCycleParameters` of `focalContext.groupParameters` in the user-defined functions.
+
+`/3worlds/.../individual/**parameterValues**:<__name__>` {0..*}
+
+Use this node to attach a set of parameters to an individual system component. 
+
+CAUTION: this implies that this system component is unique of its kind, and no other component is allowed to share these parameter values.
+
+*[TODO: check this is not a flaw - how do we access these parameters ?]*
+
+====== Variables
+
+`/3worlds/.../individual/**variableValues**:<__name__>` {0..*}
+
+Use this node to attach a set of initial driver values to an individual system component. A new component will be created for every different value of `__name__`.
+
+*[TO DO: loading from files...]*
+
