@@ -139,11 +139,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				if (child.isCollapsed())
 					collapseTree(child);
 			}
-		pushTextBack();
+		resetZorder();
 
 	}
 
-	private void pushTextBack() {
+	private void resetZorder() {
 		List<Node> lstText = new ArrayList<>();
 		List<Node> lstCircle = new ArrayList<>();
 		List<Node> lstLines = new ArrayList<>();
@@ -259,7 +259,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void onNewNode(VisualNode node) {
 		createNodeVisualisation(node);
 		createTreeLines(node, showTreeLine);
-		pushTextBack();
+		resetZorder();
 	}
 
 	private void createTreeLines(VisualNode child, BooleanProperty show) {
@@ -460,7 +460,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onNewEdge(VisualEdge edge) {
 		createGraphLine(edge, showGraphLine);
-
+		resetZorder();
 	}
 
 	// Is this ever used???
@@ -476,6 +476,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onNewParent(VisualNode child) {
 		createTreeLines(child, showTreeLine);
+		resetZorder();
 	}
 
 	@Override
