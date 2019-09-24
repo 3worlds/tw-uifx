@@ -139,6 +139,28 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				if (child.isCollapsed())
 					collapseTree(child);
 			}
+		resetZorder();
+
+	}
+
+	private void resetZorder() {
+		List<Node> lstText = new ArrayList<>();
+		List<Node> lstCircle = new ArrayList<>();
+		List<Node> lstLines = new ArrayList<>();
+		for (Node n : pane.getChildren()) {
+			if (n instanceof Text)
+				lstText.add(n);
+			else if (n instanceof Circle)
+				lstCircle.add(n);
+			else if (n instanceof Line)
+				lstLines.add(n);
+		}
+		for (Node n : lstText)
+			n.toBack();
+		for (Node n : lstLines)
+			n.toBack();
+		for (Node n : lstCircle)
+			n.toFront();
 
 	}
 
@@ -237,6 +259,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void onNewNode(VisualNode node) {
 		createNodeVisualisation(node);
 		createTreeLines(node, showTreeLine);
+		resetZorder();
 	}
 
 	private void createTreeLines(VisualNode child, BooleanProperty show) {
@@ -437,7 +460,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onNewEdge(VisualEdge edge) {
 		createGraphLine(edge, showGraphLine);
-
+		resetZorder();
 	}
 
 	// Is this ever used???
@@ -453,6 +476,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onNewParent(VisualNode child) {
 		createTreeLines(child, showTreeLine);
+		resetZorder();
 	}
 
 	@Override
@@ -486,7 +510,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (!node.isCollapsed()) {
 				double x = node.getX();
 				// I don't know why the labels don't line up on the rh side?
-				double x1 = layout.rescale(x, min.getX(), max.getX(), 0.00, 1.0-0.05);
+				double x1 = layout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
 				double y = node.getY();
 				double y1 = layout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
 				node.setX(x1);
