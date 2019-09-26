@@ -29,36 +29,23 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
-import au.edu.anu.twcore.data.runtime.LabelValuePairData;
-import au.edu.anu.twcore.data.runtime.MapData;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.twcore.constants.TimeScaleType;
-import fr.cnrs.iees.twcore.constants.TimeUnits;
-import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
@@ -96,16 +83,15 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 
 	private void processOnDataMessage(TimeData data) {
 		log.info("Thread id: " + Thread.currentThread().getId());
-		lblTime.setText("(" + policy.sender() + ") " + timeFormatter.getTimeText(data.time()));
+		lblTime.setText(formatOutput(data.time()));
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
 		log.info("Thread id: " + Thread.currentThread().getId());
 		HBox content = new HBox();
-		content.setPadding(new Insets(5, 1, 1, 2));
-		content.setSpacing(5);
-		lblTime = new Label("(" + policy.sender() + ")" + timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+		content.setPadding(new Insets(4, 1, 1, 2));
+		lblTime = new Label(formatOutput(timeFormatter.getInitialTime()));
 		content.getChildren().addAll(lblTime);
 		return content;
 	}
@@ -119,20 +105,17 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 
 	@Override
 	public Object getMenuContainer() {
-		log.info("Thread id: " + Thread.currentThread().getId());
 		return null;
 	}
 
 	@Override
 	public void putPreferences() {
-		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.putPreferences();
 		policy.putPreferences();
 	}
 
 	@Override
 	public void getPreferences() {
-		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.getPreferences();
 		policy.getPreferences();
 	}
@@ -141,13 +124,17 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	public void onStatusMessage(State state) {
 		log.info("Thread id: " + Thread.currentThread().getId() + " State: " + state);
 		if (isSimulatorState(state, waiting)) {
-			Platform.runLater(() -> {
-				processResetUI();
-			});
+			processResetUI();
 		}
 	}
 
 	private void processResetUI() {
-		lblTime.setText("(" + policy.sender() + ")" + timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+		log.info("ResetUI: Thread id: " + Thread.currentThread().getId());
+		lblTime.setText(formatOutput(timeFormatter.getInitialTime()));
 	}
+
+	private String formatOutput(long time) {
+		return "(" + policy.sender() + ") " + timeFormatter.getTimeText(time);
+	}
+
 }
