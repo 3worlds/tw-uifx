@@ -105,7 +105,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 
 	private Object handleResetPressed() {
 		// Always begin by disabling in case the next operation takes a long time
-		log.info("Thread: " + Thread.currentThread().getId());
+		log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
 		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name()))
 			sendEvent(reset.event());
@@ -113,7 +113,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	private Object handleStepPressed() {
-		log.info("Thread: " + Thread.currentThread().getId());
+		log.info("handleStepPressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
 		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name()))
 			sendEvent(step.event());
@@ -121,7 +121,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	private Object handleRunPausePressed() {
-		log.info("Thread: " + Thread.currentThread().getId());
+		log.info("handleRunPausePressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
 		Event event = null;
 		if (state.equals(waiting.name()))
@@ -143,9 +143,9 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	private void setButtonLogic() {
-		// ensure waiting for app thread
+		// ensure waiting for app thread i.e. only needed when 'running'
 		Platform.runLater(() -> {
-			log.info("Thread: " + Thread.currentThread().getId());
+			log.info("setButtonLogic: State: "+ state+", Thread: " + Thread.currentThread().getId());
 			if (state.equals(waiting.name())) {
 				setButtons(false, false, true, runGraphic);
 				return;
@@ -188,7 +188,6 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
-		log.info("Thread: " + Thread.currentThread().getId());
 		btnRunPause.setDisable(runPauseDisable);
 		btnStep.setDisable(stepDisable);
 		btnReset.setDisable(resetDisable);

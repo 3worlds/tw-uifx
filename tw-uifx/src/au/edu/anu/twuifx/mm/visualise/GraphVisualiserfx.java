@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.mm.visualise;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -49,6 +50,7 @@ import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -247,12 +249,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		text.visibleProperty().bind(c.visibleProperty());
 		pane.getChildren().addAll(c, text);
 
-		/*
-		 * put text behind circle - can't work entirely because other circles will be
-		 * behind this text. It would require a second loop.
-		 */
-		c.toFront();
-		text.toBack();
 	}
 
 	@Override
@@ -284,7 +280,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			line.visibleProperty().bind(show);
 
 			pane.getChildren().add(line);
-			line.toBack();
 
 		}
 	}
@@ -309,7 +304,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Line line = new Line();
 		Text text = new Text(newLabel);
 		text.fontProperty().bind(font);
-		;
 		edge.setVisualElements(line, text);
 		// TODO use property here
 		line.setStroke(graphEdgeColor);
@@ -323,8 +317,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		line.visibleProperty().bind(show);
 
+		// bind text position to the mid-point of the line
 		text.xProperty().bind(fromCircle.centerXProperty().add(toCircle.centerXProperty()).divide(2.0));
 		text.yProperty().bind(fromCircle.centerYProperty().add(toCircle.centerYProperty()).divide(2.0));
+
 		text.visibleProperty().bind(line.visibleProperty());
 
 		// hide text when positions make text too cramped
@@ -344,8 +340,54 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 			}
 		});
+
+		arrangeLineText(startNode, endNode);
 		pane.getChildren().addAll(line, text);
-		line.toBack();
+
+	}
+
+	private void arrangeLineText(VisualNode startNode, VisualNode endNode) {
+		List<VisualEdge> edges = new ArrayList<>();
+		for (ALEdge e : startNode.edges(Direction.OUT))
+			if (e.endNode().id().equals(endNode.id()))
+				edges.add((VisualEdge) e);
+		for (ALEdge e : endNode.edges(Direction.OUT))
+			if (e.endNode().id().equals(startNode.id()))
+				edges.add((VisualEdge) e);
+		if (edges.size() <= 1)
+			// nothing to do
+			return;
+		// sort to ensure consistent presentation
+		edges.sort(new Comparator<VisualEdge>() {
+
+			@Override
+			public int compare(VisualEdge e1, VisualEdge e2) {
+				Text t1 = (Text) e1.getText();
+				Text t2 = (Text) e2.getText();
+				return t1.getText().compareTo(t2.getText());
+			}
+		});
+
+		// Set the first edge text as per normal i.e mid point of line.
+		// Then stack all the remaining texts below it.
+		Circle fromCircle = (Circle) startNode.getSymbol();
+		Circle toCircle = (Circle) endNode.getSymbol();
+
+		VisualEdge firstEdge = edges.get(0);
+		Text anchorText = (Text) firstEdge.getText();
+		anchorText.xProperty().unbind();
+		anchorText.yProperty().unbind();
+		anchorText.xProperty().bind(fromCircle.centerXProperty().add(toCircle.centerXProperty()).divide(2.0));
+		anchorText.yProperty().bind(fromCircle.centerYProperty().add(toCircle.centerYProperty()).divide(2.0));
+		for (int i = 1; i < edges.size(); i++) {
+			Text lastText = (Text) edges.get(i - 1).getText();
+			Text nextText = (Text) edges.get(i).getText();
+			nextText.xProperty().unbind();
+			nextText.yProperty().unbind();
+			nextText.xProperty().bind(lastText.xProperty());
+			nextText.yProperty().bind(lastText.yProperty().add(nextText.boundsInLocalProperty().get().getHeight()));
+//			System.out.println(nextText.getText());
+		}
 
 	}
 
