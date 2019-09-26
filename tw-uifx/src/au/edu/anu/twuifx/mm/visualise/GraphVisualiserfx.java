@@ -346,51 +346,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	}
 
-	private void arrangeLineText(VisualNode startNode, VisualNode endNode) {
-		List<VisualEdge> edges = new ArrayList<>();
-		for (ALEdge e : startNode.edges(Direction.OUT))
-			if (e.endNode().id().equals(endNode.id()))
-				edges.add((VisualEdge) e);
-		for (ALEdge e : endNode.edges(Direction.OUT))
-			if (e.endNode().id().equals(startNode.id()))
-				edges.add((VisualEdge) e);
-		if (edges.size() <= 1)
-			// nothing to do
-			return;
-		// sort to ensure consistent presentation
-		edges.sort(new Comparator<VisualEdge>() {
-
-			@Override
-			public int compare(VisualEdge e1, VisualEdge e2) {
-				Text t1 = (Text) e1.getText();
-				Text t2 = (Text) e2.getText();
-				return t1.getText().compareTo(t2.getText());
-			}
-		});
-
-		// Set the first edge text as per normal i.e mid point of line.
-		// Then stack all the remaining texts below it.
-		Circle fromCircle = (Circle) startNode.getSymbol();
-		Circle toCircle = (Circle) endNode.getSymbol();
-
-		VisualEdge firstEdge = edges.get(0);
-		Text anchorText = (Text) firstEdge.getText();
-		anchorText.xProperty().unbind();
-		anchorText.yProperty().unbind();
-		anchorText.xProperty().bind(fromCircle.centerXProperty().add(toCircle.centerXProperty()).divide(2.0));
-		anchorText.yProperty().bind(fromCircle.centerYProperty().add(toCircle.centerYProperty()).divide(2.0));
-		for (int i = 1; i < edges.size(); i++) {
-			Text lastText = (Text) edges.get(i - 1).getText();
-			Text nextText = (Text) edges.get(i).getText();
-			nextText.xProperty().unbind();
-			nextText.yProperty().unbind();
-			nextText.xProperty().bind(lastText.xProperty());
-			nextText.yProperty().bind(lastText.yProperty().add(nextText.boundsInLocalProperty().get().getHeight()));
-//			System.out.println(nextText.getText());
-		}
-
-	}
-
 	protected void textPropertyChange(Line line, Text text, VisualNode startNode, VisualNode endNode) {
 		boolean collapsed = startNode.isCollapsed() || endNode.isCollapsed();
 		double[] p1 = { line.getStartX(), line.getStartY() };
@@ -505,13 +460,76 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		resetZorder();
 	}
 
-	// TODO Bug in waiting. We must handle binding if the edge to be deleted is the anchor node of other edges!!!
 	@Override
 	public void removeView(VisualEdge edge) {
+		removeFromBinding(edge);
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) edge.getText());
 		sceneNodes.add((Node) edge.getSymbol());
 		pane.getChildren().removeAll(sceneNodes);
+	}
+
+	private void removeFromBinding(VisualEdge edge) {
+		List<VisualEdge> edges = getReplicateEdges((VisualNode) edge.startNode(), (VisualNode) edge.endNode());
+		if (edges.size() == 1)
+			return;
+		edges.remove(edge);
+		stackEdges(edges);
+	}
+
+	private List<VisualEdge> getReplicateEdges(VisualNode startNode, VisualNode endNode) {
+		List<VisualEdge> result = new ArrayList<>();
+		for (ALEdge e : startNode.edges(Direction.OUT))
+			if (e.endNode().id().equals(endNode.id()))
+				result.add((VisualEdge) e);
+		for (ALEdge e : endNode.edges(Direction.OUT))
+			if (e.endNode().id().equals(startNode.id()))
+				result.add((VisualEdge) e);
+		return result;
+	}
+
+	private void arrangeLineText(VisualNode startNode, VisualNode endNode) {
+		List<VisualEdge> edges = getReplicateEdges(startNode, endNode);
+		if (edges.size() <= 1)
+			// nothing to do
+			return;
+		stackEdges(edges);
+	}
+
+	private void stackEdges(List<VisualEdge> edges) {
+		edges.sort(new Comparator<VisualEdge>() {
+
+			@Override
+			public int compare(VisualEdge e1, VisualEdge e2) {
+				Text t1 = (Text) e1.getText();
+				Text t2 = (Text) e2.getText();
+				return t1.getText().compareTo(t2.getText());
+			}
+		});
+
+		// Set the first edge text as per normal i.e mid point of line.
+		// Then stack all the remaining texts below it.
+
+		VisualEdge firstEdge = edges.get(0);
+		VisualNode startNode = (VisualNode) firstEdge.startNode();
+		VisualNode endNode = (VisualNode) firstEdge.endNode();
+		Circle fromCircle = (Circle) startNode.getSymbol();
+		Circle toCircle = (Circle) endNode.getSymbol();
+
+		Text anchorText = (Text) firstEdge.getText();
+		anchorText.xProperty().unbind();
+		anchorText.yProperty().unbind();
+		anchorText.xProperty().bind(fromCircle.centerXProperty().add(toCircle.centerXProperty()).divide(2.0));
+		anchorText.yProperty().bind(fromCircle.centerYProperty().add(toCircle.centerYProperty()).divide(2.0));
+		for (int i = 1; i < edges.size(); i++) {
+			Text lastText = (Text) edges.get(i - 1).getText();
+			Text nextText = (Text) edges.get(i).getText();
+			nextText.xProperty().unbind();
+			nextText.yProperty().unbind();
+			nextText.xProperty().bind(lastText.xProperty());
+			nextText.yProperty().bind(lastText.yProperty().add(nextText.boundsInLocalProperty().get().getHeight()));
+//			System.out.println(nextText.getText());
+		}
 
 	}
 
