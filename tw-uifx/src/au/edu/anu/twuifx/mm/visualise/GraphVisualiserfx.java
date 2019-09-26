@@ -505,7 +505,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		resetZorder();
 	}
 
-	// Is this ever used???
+	// TODO Bug in waiting. We must handle binding if the edge to be deleted is the anchor node of other edges!!!
 	@Override
 	public void removeView(VisualEdge edge) {
 		List<Node> sceneNodes = new ArrayList<>();
