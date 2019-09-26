@@ -96,7 +96,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 
 	private void processOnDataMessage(TimeData data) {
 		log.info("Thread id: " + Thread.currentThread().getId());
-		lblTime.setText("(" + policy.sender() + ")" + timeFormatter.getTimeText(data.time()));
+		lblTime.setText("(" + policy.sender() + ") " + timeFormatter.getTimeText(data.time()));
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 		HBox content = new HBox();
 		content.setPadding(new Insets(5, 1, 1, 2));
 		content.setSpacing(5);
-		lblTime = new Label("uninitialised time origin");
+		lblTime = new Label("(" + policy.sender() + ")" + timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 		content.getChildren().addAll(lblTime);
 		return content;
 	}
