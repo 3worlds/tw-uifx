@@ -67,20 +67,20 @@ public class WidgetTimeFormatter implements HeadlessWidget {
 	 * Well - I did this long ago for a reason but the reason is not really clear to
 	 * me now. We will see - but i think its to factor large time values (a week of
 	 * seconds) into something understandable e.g 1 day, 2 hours, 4 minutes and 34
-	 * seconds. i.e. the formatter would (could) show "d:1, h:2, m:4, s:34" instead
+	 * seconds - whatever the TimeScaleType allows i.e. the formatter would (could) show "d:1, h:2, min:4, s:34" instead
 	 * of 93874 sec
 	 * 
 	 * So the user can choose and this choice might be a setting from the arch or
 	 * user settable here. Probably not here because a change in the config will
 	 * mean the preference is not longer valid. So the user could set the largest to
-	 * hours to show as "h:26, m:4, s:34" etc
+	 * hours to show as "h:26, m:4, s:34" etc. Anyway, this widget could have setting which was to factor or not.
+	 * If factor then pass the largest allowed by the TimeScaleType, otherwise pass the smallest? Not sure yet.
 	 * 
 	 * Ok so "largest" is the largest (allowed) value the user wants to see.
 	 * 
 	 * NOTE every timeUnit has an abbreviation for this purpose. To be short, units
-	 * such as month and year are m and y but if they not not Gregorian months they
-	 * have a tick mark to highlight this. Some of these abbrev are wrong bimonth
-	 * should be bmo
+	 * such as month and year are m and y but if they not Gregorian months they
+	 * have a tick mark to highlight this. 
 	 */
 	public String getTimeText(Long time) {
 		if (timeScale.equals(TimeScaleType.GREGORIAN)) {

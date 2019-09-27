@@ -48,6 +48,7 @@ import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.ObjectData;
+import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 
@@ -79,10 +80,9 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 
 	private Object initialValue;
 	private WidgetTimeFormatter timeFormatter;
-	//private int sender;
+	// private int sender;
 	private String name;
-	private WidgetTrackingPolicy policy;
-
+	private WidgetTrackingPolicy<TimeData> policy;
 
 	public SimpleWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.VALUE_PAIR);
@@ -115,26 +115,22 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Meta-data received " + meta);
 		timeFormatter.onMetaDataMessage(meta);
-		DataLabel  dl = (DataLabel) meta.properties().getPropertyValue("name");
-		name = dl.toString();
-		initialValue = meta.properties().getPropertyValue("value");
-		lblOutput.setText(getOutputString(policy.sender(), timeFormatter.getTimeText(timeFormatter.getInitialTime()),
-				name, initialValue.toString()));
-
+//		DataLabel  dl = (DataLabel) meta.properties().getPropertyValue("name");
+//		name = dl.toString();
+//		initialValue = meta.properties().getPropertyValue("value");
+		lblOutput.setText("uninitialised until data msg received");
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
 		log.info("Status msg received:" + state);
 		if (isSimulatorState(state, waiting)) {
-			Platform.runLater(() -> {
-				processWaitState();
-			});
+			processWaitState();
 		}
 	}
 
 	private void processWaitState() {
-		log.info("Resetting initial value: " + initialValue);
+		log.info("Would like to reset to initial value but we don't know what it is!");
 //		lblOutput.setText(getOutputString(currentSender, timeFormatter.getTimeText(timeFormatter.getInitialTime()),
 //				name, initialValue.toString()));
 	}

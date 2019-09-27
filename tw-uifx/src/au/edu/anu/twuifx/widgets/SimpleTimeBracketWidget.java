@@ -41,6 +41,7 @@ import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.LabelValuePairData;
 import au.edu.anu.twcore.data.runtime.MapData;
 import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -66,42 +67,22 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  * @date 2 Sep 2019
  */
 
-public class SimpleTimeBracketWidget extends AbstractDisplayWidget<LabelValuePairData, Metadata> implements Widget {
-// Rename SimpleTimeWidget?
-	private TimeUnits smallest;
-	private TimeUnits largest;
-	private TimeScaleType timeScale;
-	private List<TimeUnits> units;
-	private Long startTime;
+public class SimpleTimeBracketWidget extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
+
+	private WidgetTimeFormatter timeFormatter;
+	private WidgetTrackingPolicy<TimeData> policy;
 
 	private Label lblTimeSlowest;
 	private Label lblTimeFastest;
 
 	private Map<String, Long> simTimes;
 	private static Logger log = Logging.getLogger(SimpleTimeBracketWidget.class);
-	/*
-	 * TODO: The key of the data msg should be SimulatorNode.id():<instance count>
-	 * e.g. myDynamics(3439). This way, in a swarm time display, we can provide
-	 * meaningful labels to the data series.
-	 * 
-	 * Also all widgets need to be able to respond to a reset status from the
-	 * simulator so they can clear their fields. But this can't happen before
-	 * receiving the meta-data msg
-	 * 
-	 */
-
-	/*
-	 * NOTE: interactions from a Running state are not on the application thread.
-	 * Since we have a thread safe rendezvous system, it should be possible to
-	 * handle this behind the scenes. However, the javafx application thread does
-	 * not exist until the application is up. Therefore setting the rendezvous from
-	 * the constructor here places it in some other thread.
-	 * 
-	 */
 
 	public SimpleTimeBracketWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
-		simTimes = new HashMap<>();
+		timeFormatter = new WidgetTimeFormatter();
+		policy = new BracketWidgetTrackingPolicy();
+
 		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
@@ -109,33 +90,23 @@ public class SimpleTimeBracketWidget extends AbstractDisplayWidget<LabelValuePai
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread id: " + Thread.currentThread().getId());
-		smallest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
-		largest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_LONGTU.key());
-		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
-		startTime = (Long) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
-		units = new ArrayList<>();
-		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
-		for (TimeUnits allowed : allowable)
-			if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0)
-				units.add(allowed);
-
-		units.sort((first, second) -> {
-			return second.compareTo(first);
-		});
+		timeFormatter.onMetaDataMessage(meta);
 	}
 
 	@Override
-	public void onDataMessage(LabelValuePairData data) {
-		Platform.runLater(() -> {
-			runOnDataMessage(data);
-		});
+	public void onDataMessage(TimeData data) {
+		if (policy.canProcessDataMessage(data)) {
+			Platform.runLater(() -> {
+				processOnDataMessage(data);
+			});
+		}
 	}
 
-	private void runOnDataMessage(LabelValuePairData data) {
+	private void processOnDataMessage(TimeData data) {
 		log.info("Thread id: " + Thread.currentThread().getId());
-		simTimes.put(data.label().getEnd(), (Long) data.value());
-		Duple<Long, Long> times = getTimes();
-		updateControls(getLabelText(times.getFirst()), getLabelText(times.getSecond()));
+//		simTimes.put(data.label().getEnd(), (Long) data.value());
+//		Duple<Long, Long> times = getTimes();
+//		updateControls(getLabelText(times.getFirst()), getLabelText(times.getSecond()));
 	}
 
 	private Duple<Long, Long> getTimes() {
@@ -148,25 +119,16 @@ public class SimpleTimeBracketWidget extends AbstractDisplayWidget<LabelValuePai
 		return new Duple<Long, Long>(min, max);
 	}
 
-	private String getLabelText(Long time) {
-		if (timeScale.equals(TimeScaleType.GREGORIAN)) {
-			LocalDateTime presentDate = TimeUtil.longToDate(time, smallest);
-			return presentDate.format(TimeUtil.getGregorianFormat(smallest));
-		} else {
-			return (TimeUtil.formatExactTimeScales(time, units));
-		}
-	}
 
-	private void updateControls(String slowest, String fastest) {
-		lblTimeSlowest.setText(slowest);
-		if (slowest.equals(fastest))
-			lblTimeFastest.setText("");
-		else
-			lblTimeFastest.setText(fastest);
-		log.info("Thread id: " + Thread.currentThread().getId());
-	}
-
-
+//	private void updateControls(String slowest, String fastest) {
+//		lblTimeSlowest.setText(slowest);
+//		if (slowest.equals(fastest))
+//			lblTimeFastest.setText("");
+//		else
+//			lblTimeFastest.setText(fastest);
+//		log.info("Thread id: " + Thread.currentThread().getId());
+//	}
+//
 	@Override
 	public Object getUserInterfaceContainer() {
 		log.info("Thread id: " + Thread.currentThread().getId());
@@ -177,7 +139,7 @@ public class SimpleTimeBracketWidget extends AbstractDisplayWidget<LabelValuePai
 		lblTimeSlowest = new Label();
 		lblTimeFastest = new Label();
 		content.getChildren().addAll(lblTimeSlowest, lblTimeFastest);
-		updateControls(getLabelText(startTime), getLabelText(startTime));
+//		updateControls(getLabelText(startTime), getLabelText(startTime));
 		return content;
 	}
 
@@ -208,7 +170,7 @@ public class SimpleTimeBracketWidget extends AbstractDisplayWidget<LabelValuePai
 		if (isSimulatorState(state, waiting)) {
 			log.info("Waiting: Thread id: " + Thread.currentThread().getId());
 			simTimes.clear();
-			updateControls(getLabelText(startTime), getLabelText(startTime));
+//			updateControls(getLabelText(startTime), getLabelText(startTime));
 		}
 
 	}
