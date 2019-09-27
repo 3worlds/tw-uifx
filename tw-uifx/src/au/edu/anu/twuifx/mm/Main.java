@@ -30,18 +30,50 @@
 package au.edu.anu.twuifx.mm;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import au.edu.anu.twapps.mm.MMModel;
+import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Application;
 
 public class Main {
+	private static String usage = "Usage:\n" + Main.class.getName()
+			+ "default logging level, class:level.";
 
 	public static void main(String[] args) {
 		// Flaky I know but...
 		ProjectJarGenerator.mainClass = au.edu.anu.twuifx.mr.Main.class.getName();
-		Logging.setDefaultLogLevel(Level.OFF);
-		Logging.setLogLevel(Level.OFF);
+		// pass logging args on to deployed MR
+		MMModel.mmArgs = args;
+
+		
+		// enact logging args 
+		if (args.length > 0)
+			Logging.setDefaultLogLevel(Level.parse(args[0]));
+		else
+			Logging.setDefaultLogLevel(Level.OFF);
+		
+		for (int i = 1; i<args.length;i++) {
+			String[] pair = args[i].split(":");
+			if (pair.length != 2) {
+				System.out.println(usage);
+				System.exit(-1);
+			}
+			String klass = pair[0];
+			String level = pair[1];
+			try {
+				Class<?> c = Class.forName(klass,true,OmugiClassLoader.getAppClassLoader());
+				Level lvl = Level.parse(level);
+				Logger log = Logging.getLogger(c);
+				log.setLevel(lvl);
+			} catch(ClassNotFoundException e) {
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
+		
 		Application.launch(ModelMakerfx.class);
 	}
 
