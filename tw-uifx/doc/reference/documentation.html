@@ -909,10 +909,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect3">
 <h4 id="truea-tree-structure"><a class="anchor" href="#truea-tree-structure"></a>3.1.1. A tree structure&#8230;&#8203;</h4>
 <div class="paragraph">
-<p><strong>TODO</strong>: refactor all this 23/9/2019</p>
-</div>
-<div class="paragraph">
-<p>The configuration of a 3Worlds <em>simulation experiment</em> is organised as a tree (<em>cf.</em> figure <a href="#fig-configuration-tree">Figure 1</a>). Each tree <em>node</em> specifies a subset of the parameters of the whole configuration. Each <em>node</em> has <em>child nodes</em> linked through a <em>tree edge</em>, so that large pieces of configuration can be broken down into the relevant details. At each level of this hierarchy, <em>properties</em> can be attached to <em>nodes</em>.</p>
+<p>The configuration of a 3Worlds <em>simulation experiment</em> is organised as a tree (<em>cf.</em> <a href="#fig-configuration-tree">Figure 1</a>). Each tree <em>node</em> specifies a subset of the parameters of the whole configuration. Each <em>node</em> has <em>child nodes</em> linked through a <em>tree edge</em>, so that large pieces of configuration can be broken down into the relevant details. At each level of this hierarchy, <em>properties</em> can be attached to <em>nodes</em>.</p>
 </div>
 <div class="paragraph">
 <p><em>Nodes</em> have a <em>label</em> and a <em>name</em> that are displayed in the <code>ModelMaker</code> interface as <code>label:name</code>:</p>
@@ -923,7 +920,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p>The <em>label</em> specifies what role this particular <em>node</em> plays in the whole configuration. For example, the <em>node</em> labelled <code>experiment</code> is used to configure a <em>simulation experiment</em>.</p>
 </li>
 <li>
-<p>The <em>name</em> is used to differentiate <em>nodes</em> that have the same <em>label</em>. It is optional for certain types of <em>nodes</em>. For example, a configuration could have two <em>simulation experiments</em>, one named <code>baseLine</code> and one named <code>my favourite experiment</code>.</p>
+<p>The <em>name</em> is used to differentiate <em>nodes</em>. It must be unique over the whole configuration tree. By default, ModelMaker generates unique names (by adding a number to the name if replicates are found). For example, a configuration could have two <em>simulation experiments</em>, one named <code>baseLine</code> and one named <code>my favourite experiment</code>.</p>
 </li>
 </ul>
 </div>
@@ -932,21 +929,27 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </div>
 <div id="fig-configuration-tree" class="imageblock text-center">
 <div class="content">
-<img src="dsl-tree.svg" alt="dsl tree">
+<img src="dsl-tree2.svg" alt="dsl tree2">
 </div>
 <div class="title">Figure 1. Tree structure of a simulation experiment configuration in 3Worlds</div>
 </div>
 <div class="paragraph">
-<p>The configuration tree is stored in a file in a specially designed text format, ending with the extension <code>.dsl</code> or <code>.twg</code>. Such files are produced by <code>ModelMaker</code> and can then be exchanged and imported into <code>ModelMaker</code> via the <code>Projects&gt;Import&#8230;&#8203;</code> menu entry. Their format is human-readable, but they must <strong>never</strong> be edited with another software than <code>ModelMaker</code> - <strong>the risk is to corrupt all your configuration</strong> and be unable to run it (or even edit it with <code>ModelMaker</code> again).</p>
+<p>The configuration tree is stored in a file in a specially designed text format, ending with the extension <code>.ugt</code> or <code>.twg</code>. Such files are produced by <code>ModelMaker</code> and can then be exchanged and imported into <code>ModelMaker</code> via the <code>Projects&gt;Import&#8230;&#8203;</code> menu entry. Their format is human-readable, but they must <strong>never</strong> be edited with another software than <code>ModelMaker</code> - <strong>the risk is to corrupt all your configuration</strong> and be unable to run it (or even edit it with <code>ModelMaker</code> again).</p>
 </div>
 <div class="paragraph">
-<p>Each <em>node</em> in the configuration has a particular meaning for <code>ModelRunner</code>: the configuration must comply with certain rules and constraints, the first one being the particular set of <em>nodes</em> that have been designed and appear on figure <a href="#fig-configuration-tree">Figure 1</a>. The detailed meaning of all <em>nodes</em> and their <em>properties</em> is described in section <a href="#truereference-of-3worlds-configuration">3Worlds reference</a>.</p>
+<p>Each <em>node</em> in the configuration has a particular meaning for <code>ModelRunner</code>: the configuration must comply with certain rules and constraints, the first one being the particular set of <em>nodes</em> that have been designed and appear on <a href="#fig-configuration-tree">Figure 1</a>. The detailed meaning of all <em>nodes</em> and their <em>properties</em> is described in section <a href="#truereference-of-3worlds-configuration">3Worlds reference</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truewith-cross-links"><a class="anchor" href="#truewith-cross-links"></a>3.1.2. &#8230;&#8203;with cross-links</h4>
 <div class="paragraph">
-<p>Actually, the 3Worlds configuration is not stritcly hierarchical: according to their role in <code>ModelRunner</code>, some configuration <em>nodes</em> need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference <em>edges</em> to be defined, that overlay with the strict hierarchical structure of the tree. As a result fo these cross links, the whole configuration is a <em>graph</em> rather than a tree.</p>
+<p>Actually, the 3Worlds configuration is not stritcly hierarchical (<em>cf.</em> <a href="#fig-configuration-tree2">Figure 2</a>): according to their role in <code>ModelRunner</code>, some configuration <em>nodes</em> need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference <em>edges</em> to be defined, that overlay with the strict hierarchical structure of the tree. As a result fo these cross links, the whole configuration is a <em>graph</em> rather than a tree.</p>
+</div>
+<div id="fig-configuration-tree2" class="imageblock text-center">
+<div class="content">
+<img src="dsl-tree2links.svg" alt="dsl tree2links">
+</div>
+<div class="title">Figure 2. Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes</div>
 </div>
 <div class="paragraph">
 <p><em>Edges</em> representing cross links have a <em>label</em>, <em>name</em>, and may have <em>properties</em> just as <em>nodes</em> do. The detailed meaning of all cross-reference <em>edges</em> and their <em>properties</em> is described in section <a href="#  ">[  ]</a>.</p>
@@ -1028,13 +1031,13 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>/<strong>3worlds</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
-<p>This node is the root of any 3Worlds configuration file (<a href="#fig-root-example">Figure 2</a>). The name will appear in <code>ModelMaker</code>'s main window title, in the <strong>project directory name</strong> and in the <strong>configuration graph file</strong>. The name is requested and set when creating a new project (<code>Projects&gt;New</code> menu entry in <code>ModelMaker</code>).</p>
+<p>This node is the root of any 3Worlds configuration file (<a href="#fig-root-example">Figure 3</a>). The name will appear in <code>ModelMaker</code>'s main window title, in the <strong>project directory name</strong> and in the <strong>configuration graph file</strong>. The name is requested and set when creating a new project (<code>Projects&gt;New</code> menu entry in <code>ModelMaker</code>).</p>
 </div>
 <div id="fig-root-example" class="imageblock text-center">
 <div class="content">
 <img src="example-root.png" alt="example root">
 </div>
-<div class="title">Figure 2. The base tree of any 3Worlds configuration</div>
+<div class="title">Figure 3. The base tree of any 3Worlds configuration</div>
 </div>
 </div>
 <div class="sect3">
@@ -1186,7 +1189,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="content">
 <img src="example-category.png" alt="example category">
 </div>
-<div class="title">Figure 3. Example of a configuration with category sets, categories and relations</div>
+<div class="title">Figure 4. Example of a configuration with category sets, categories and relations</div>
 </div>
 <div class="paragraph">
 <p>In this example, a <em>plant</em> can be a <em>C3 tree</em> but cannot be simultaneously a <em>grass</em> and a <em>liana</em>. Similarly, an <em>animal</em> cannot be both <em>herbivore</em> and <em>carnivore</em>. The <em>predation</em> relation links an <em>animal</em> of any kind (the prey) to a <em>carnivore</em> (its predator).</p>
@@ -2013,7 +2016,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="content">
 <img src="example-life-cycle.svg" alt="example life cycle">
 </div>
-<div class="title">Figure 4. Example of a life cycle</div>
+<div class="title">Figure 5. Example of a life cycle</div>
 </div>
 <div class="paragraph">
 <p>is specified with this graph:</p>
@@ -2022,7 +2025,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="content">
 <img src="example-life-cycle.png" alt="example life cycle">
 </div>
-<div class="title">Figure 5. Example of a life cycle configuration</div>
+<div class="title">Figure 6. Example of a life cycle configuration</div>
 </div>
 </div>
 </div>
@@ -2686,7 +2689,7 @@ This part is still under construction. The default settings should be used.
 <div id="footer">
 <div id="footer-text">
 Version 1.1<br>
-Last updated 2019-09-24 15:36:08 +0200
+Last updated 2019-09-27 17:14:43 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
