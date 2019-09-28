@@ -386,20 +386,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
 		model.doDeploy();
-		// if (!GraphState.hasChanged()) {
-		// DeployComplianceManager.clear();
-		// btnDeploy.setDisable(true);
-		// Runnable task = () -> {
-		// modelMaker.createSimulatorAndDeploy();
-		// Platform.runLater(() -> {
-		// btnDeploy.setDisable(false);
-		// });
-		// };
-		// ExecutorService executor = Executors.newSingleThreadExecutor();
-		// executor.execute(task);
-		// } else
-		// Dialogs.errorAlert("Run simulator", "", "Project must be saved before
-		// creating simulator");
 	}
 
 	private void updateOpenProjectsMenu(Menu menuOpen) {
@@ -545,7 +531,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX()));
 		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY()));
-		// get splitPans later after UI has settled down
+		// get splitPanes later after UI has settled down
 		splitPane1.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
