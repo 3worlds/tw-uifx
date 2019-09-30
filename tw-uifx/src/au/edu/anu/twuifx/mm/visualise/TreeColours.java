@@ -38,11 +38,11 @@ import javafx.scene.paint.Color;
 public class TreeColours {
 	private static Map<String,Color> nodeColours= new HashMap<>();
 	static {
-		nodeColours.put(ConfigurationNodeLabels.N_DYNAMICS.label(), Color.CHARTREUSE);
+		nodeColours.put(ConfigurationNodeLabels.N_DYNAMICS.label(), Color.LIME);
 		nodeColours.put(ConfigurationNodeLabels.N_STRUCTURE.label(), Color.GREEN);
 		nodeColours.put(ConfigurationNodeLabels.N_DATADEFINITION.label(), Color.LIGHTGREY);
 		nodeColours.put(ConfigurationNodeLabels.N_EXPERIMENT.label(), Color.GOLDENROD);
-		nodeColours.put(ConfigurationNodeLabels.N_UI.label(), Color.THISTLE);
+		nodeColours.put(ConfigurationNodeLabels.N_UI.label(), Color.WHITE);
 	}
 	public static Color getCategoryColor(String key){
 		if (!nodeColours.containsKey(key))
