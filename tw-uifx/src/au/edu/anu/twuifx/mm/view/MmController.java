@@ -824,4 +824,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		setButtonState();
 	}
 
+	@Override
+	public void onNodeRenamed() {
+		initialisePropertySheets();
+		setButtonState();		
+	}
+
 }

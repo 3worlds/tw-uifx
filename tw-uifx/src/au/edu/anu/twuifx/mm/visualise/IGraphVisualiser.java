@@ -64,5 +64,7 @@ public interface IGraphVisualiser {
 	public void doLayout(double jitterFaction);
 
 	public void onRemoveParentLink(VisualNode vnChild);
+	
+	public void onNodeRenamed(VisualNode vNode);
 
 }

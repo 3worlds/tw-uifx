@@ -45,6 +45,7 @@ import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
+import au.edu.anu.twapps.mm.visualGraph.VisualGraphFactory;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
@@ -54,6 +55,7 @@ import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.ExpungeableFactory;
+import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
@@ -317,7 +319,7 @@ public abstract class StructureEditorAdapter
 	}
 
 	private String promptForNewNode(String label, String promptName) {
-		return Dialogs.getText("New '" + label + "' node", "", "Name:", promptName);
+		return Dialogs.getText("'" + label + "' node name.", "", "Name:", promptName);
 	}
 
 	private Class<? extends TreeNode> promptForClass(List<Class<? extends TreeNode>> subClasses,
@@ -332,10 +334,9 @@ public abstract class StructureEditorAdapter
 			return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec) {
+	private String getNewName(String childLabel,SimpleDataTreeNode childBaseSpec) {
 		// default name is label with 1 appended
+		
 		String promptId = childLabel + "1";
 		boolean captialize = specifications.nameStartsWithUpperCase(childBaseSpec);
 		if (captialize)
@@ -345,10 +346,10 @@ public abstract class StructureEditorAdapter
 		while (modified) {
 			String userName = promptForNewNode(childLabel, promptId);
 			if (userName == null)
-				return;// cancel
+				return null;// cancel
 			userName = userName.trim();
 			if (userName.equals(""))
-				return; // implicit cancel
+				return null; // implicit cancel
 			// userName = promptId;
 			if (captialize)
 				userName = WordUtils.capitalize(userName);
@@ -356,9 +357,14 @@ public abstract class StructureEditorAdapter
 			modified = !newName.equals(userName);
 			promptId = newName;
 		}
-		// prompt for property creation options:
-		// TODO One dialog for all options.
-		// look for subclass
+		return promptId;
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec) {
+		String promptId = getNewName(childLabel,childBaseSpec);
+		if (promptId==null)
+			return;
 		String childClassName = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
 		Class<? extends TreeNode> subClass = null;
 		List<Class<? extends TreeNode>> subClasses = specifications.getSubClassesOf(childBaseSpec);
@@ -394,9 +400,6 @@ public abstract class StructureEditorAdapter
 		}
 
 		controller.onNewNode(newChild);
-
-//		GraphState.setChanged();
-//		ConfigGraph.validateGraph();
 	}
 
 	@Override
@@ -424,6 +427,23 @@ public abstract class StructureEditorAdapter
 		controller.onNodeDeleted();
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
+	}
+	@Override
+	public void onRenameNode() {
+		String userName =  getNewName(editableNode.cClassId(),baseSpec);
+		if (userName!=null) {
+			renameNode(userName,editableNode.getSelectedVisualNode());		
+			gvisualiser.onNodeRenamed(editableNode.getSelectedVisualNode());
+			controller.onNodeRenamed();
+			GraphState.setChanged();
+			ConfigGraph.validateGraph();
+	}
+	}
+	private void renameNode(String uniqueId, VisualNode vNode) {
+		VisualGraphFactory vf = (VisualGraphFactory) vNode.factory();
+		vf.replaceId(uniqueId, vNode.id());		
+		TwConfigFactory cf = (TwConfigFactory) vNode.getConfigNode().factory();
+		cf.replaceId(uniqueId, vNode.getConfigNode().id());
 	}
 
 	@Override

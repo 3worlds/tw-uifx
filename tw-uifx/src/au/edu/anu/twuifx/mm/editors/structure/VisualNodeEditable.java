@@ -50,6 +50,8 @@ public interface VisualNodeEditable {
 	 * normally true unless this is the configuration root (3worlds:<projectName>)
 	 */
 	public boolean canDelete();
+	
+	public boolean canRename();
 
 	/* true if the this node can have more children of this label */
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel);

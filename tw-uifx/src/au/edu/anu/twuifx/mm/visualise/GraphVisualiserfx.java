@@ -598,4 +598,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		vnChild.removeParentLine();
 		pane.getChildren().removeAll(sceneNodes);
 	}
+
+	@Override
+	public void onNodeRenamed(VisualNode vNode) {
+		Text text = (Text) vNode.getText();
+		text.setText(vNode.getDisplayText(false));
+	}
 }

@@ -81,6 +81,10 @@ public class VisualNodeEditor implements //
 	public boolean canDelete() {
 		return !visualNode.cClassId().equals(N_ROOT.label());
 	}
+	@Override
+	public boolean canRename() {
+		return !visualNode.cClassId().equals(N_ROOT.label());
+	}
 
 	@Override
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {

@@ -67,6 +67,8 @@ public interface StructureEditable {
 	/* delete this node */
 	public void onDeleteNode();
 	
+	public void onRenameNode();
+	
 	public void onDeleteTree(VisualNode root);
 
 	/* collapse tree from this node */

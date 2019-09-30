@@ -73,7 +73,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		boolean section1Entries = !filteredChildSpecs.isEmpty() || !filteredEdgeSpecs.isEmpty()
 				|| !orphanedChildren.isEmpty();
 		boolean section2Entries = editableNode.hasChildren() || !filteredChildSpecs.isEmpty();
-		boolean section3Entries = editableNode.hasChildren() || editableNode.canDelete();
+		boolean section3Entries = editableNode.hasChildren() || editableNode.canDelete() || editableNode.canRename();
 
 		if (!filteredChildSpecs.isEmpty()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_NODE);
@@ -140,10 +140,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						mi.setOnAction(e -> onExpandTree(vn));
 					}
 				}
-				if (count>1) {
+				if (count > 1) {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
-					mi.setOnAction(e->onExpandTrees());
+					mi.setOnAction(e -> onExpandTrees());
 				}
 			}
 			if (editableNode.getSelectedVisualNode().hasUncollapsedChildren()) {
@@ -156,10 +156,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						mi.setOnAction(e -> onCollapseTree(vn));
 					}
 				}
-				if (count>1) {
+				if (count > 1) {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
-					mi.setOnAction(e->onCollapseTrees());
+					mi.setOnAction(e -> onCollapseTrees());
 				}
 
 			}
@@ -173,6 +173,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_DELETE);
 			mi.setOnAction((e) -> {
 				onDeleteNode();
+			});
+		}
+
+		if (editableNode.canRename()) {
+			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_RENAME);
+			mi.setOnAction((e) -> {
+				onRenameNode();
 			});
 		}
 
@@ -221,7 +228,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_EXPAND/*            */("Expand"), //
 		ML_COLLAPSE/*          */("Collapse"), //
 		// --------------------------------------------
-		ML_DELETE_EDGE/*       */("Delete edge"), //
+		ML_RENAME /*      */ ("Rename"), ML_DELETE_EDGE/*       */("Delete edge"), //
 		ML_DELETE_CHILD/*      */("Delete child link"), //
 		ML_DELETE_TREE/*-      */("Delete tree"), //
 		ML_DELETE/*            */("Delete"), //
