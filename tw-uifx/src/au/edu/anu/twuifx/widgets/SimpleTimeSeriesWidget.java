@@ -115,13 +115,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		log.info("Processing data " + data);
 		long time = data.time();
 		int sender = data.sender();
-		data.values().entrySet().forEach(entry -> {
-			String key = entry.getKey().getEnd() + "(" + sender + ")";
-			XYChart.Series<Number, Number> series = activeSeries.get(key);
-			if (series == null)
-				series = addSeries(key, getColour(activeSeries.size() + 1));
-			series.getData().add(new Data<Number, Number>(time, entry.getValue()));
-		});
+//		data.values().entrySet().forEach(entry -> {
+//			String key = entry.getKey().getEnd() + "(" + sender + ")";
+//			XYChart.Series<Number, Number> series = activeSeries.get(key);
+//			if (series == null)
+//				series = addSeries(key, getColour(activeSeries.size() + 1));
+//			series.getData().add(new Data<Number, Number>(time, entry.getValue()));
+//		});
 	}
 
 	private String getColour(int i) {

@@ -128,7 +128,7 @@ public class TimeSeriesPlotWidget extends AbstractDisplayWidget<TimeSeriesData, 
 	public void onDataMessage(TimeSeriesData data) {
 		log.info("Data received: " + data);
 		// I thought we would have an ordered list of data instead of a Map<>
-		addData(data.time(), data.values());
+//		addData(data.time(), data.values());
 	}
 
 	private void addData(long time, Map<DataLabel, Number> numbers) {
