@@ -440,10 +440,10 @@ public abstract class StructureEditorAdapter
 	}
 	}
 	private void renameNode(String uniqueId, VisualNode vNode) {
-		VisualGraphFactory vf = (VisualGraphFactory) vNode.factory();
-		vf.replaceId(uniqueId, vNode.id());		
-		TwConfigFactory cf = (TwConfigFactory) vNode.getConfigNode().factory();
-		cf.replaceId(uniqueId, vNode.getConfigNode().id());
+//		VisualGraphFactory vf = (VisualGraphFactory) vNode.factory();
+//		vf.replaceId(uniqueId, vNode.id());		
+//		TwConfigFactory cf = (TwConfigFactory) vNode.getConfigNode().factory();
+//		cf.replaceId(uniqueId, vNode.getConfigNode().id());
 	}
 
 	@Override
