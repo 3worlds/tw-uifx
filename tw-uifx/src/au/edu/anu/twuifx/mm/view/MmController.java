@@ -486,6 +486,17 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	public void getPreferences() {
 		Preferences.initialise(Project.makeProjectPreferencesFile());
+		String prjtmp = Preferences.getString(UserProjectPath, "");
+		// should store in preferences??
+		if (!prjtmp.equals("")) {
+			UserProjectLink.unlinkUserProject();
+			if (UserProjectLinkFactory.makeEnv(new File(prjtmp), ideType)) {
+				userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
+			} else
+				userProjectPath.set("");
+		} else
+			userProjectPath.set("");
+
 		Platform.runLater(() -> {
 			double[] ws = Preferences.getDoubles(mainFrameName, DefaultWindowSettings.getX(),
 					DefaultWindowSettings.getY(), DefaultWindowSettings.getWidth(), DefaultWindowSettings.getHeight());
@@ -515,16 +526,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 				md = PropertySheet.Mode.NAME;
 			allElementsPropertySheet.setMode(md);
 
-			String prjtmp = Preferences.getString(UserProjectPath, "");
-			// should store in preferences??
-			if (!prjtmp.equals("")) {
-				UserProjectLink.unlinkUserProject();
-				if (UserProjectLinkFactory.makeEnv(new File(prjtmp), ideType)) {
-					userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
-				} else
-					userProjectPath.set("");
-			} else
-				userProjectPath.set("");
 		});
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
