@@ -96,8 +96,8 @@ public class SimplePropertyItem implements Item {
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
 //			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
-			ConfigGraph.validateGraph();
 			GraphState.setChanged();
+			ConfigGraph.validateGraph();
 		}
 	}
 

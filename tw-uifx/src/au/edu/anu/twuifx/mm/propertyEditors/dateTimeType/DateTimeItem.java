@@ -37,6 +37,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.ecosystem.dynamics.TimeLine;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -116,6 +117,7 @@ public class DateTimeItem extends SimplePropertyItem {
 		if (oldValue.getDateTime() != newValue.getDateTime()) {
 //			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
+			GraphState.setChanged();
 			ConfigGraph.validateGraph();
 		}
 	}
