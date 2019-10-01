@@ -54,7 +54,7 @@ import au.edu.anu.twcore.archetype.tw.ExclusiveCategoryQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twcore.root.ExpungeableFactory;
+import au.edu.anu.twcore.root.EditableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.Node;
@@ -65,6 +65,9 @@ import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.properties.ResizeablePropertyList;
+import fr.cnrs.iees.properties.SimplePropertyList;
+
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 import fr.ens.biologie.generic.utils.Duple;
 
@@ -334,9 +337,9 @@ public abstract class StructureEditorAdapter
 			return null;
 	}
 
-	private String getNewName(String childLabel,SimpleDataTreeNode childBaseSpec) {
+	private String getNewName(String childLabel, SimpleDataTreeNode childBaseSpec) {
 		// default name is label with 1 appended
-		
+
 		String promptId = childLabel + "1";
 		boolean captialize = specifications.nameStartsWithUpperCase(childBaseSpec);
 		if (captialize)
@@ -359,11 +362,12 @@ public abstract class StructureEditorAdapter
 		}
 		return promptId;
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec) {
-		String promptId = getNewName(childLabel,childBaseSpec);
-		if (promptId==null)
+		String promptId = getNewName(childLabel, childBaseSpec);
+		if (promptId == null)
 			return;
 		String childClassName = (String) childBaseSpec.properties().getPropertyValue(aaIsOfClass);
 		Class<? extends TreeNode> subClass = null;
@@ -428,22 +432,49 @@ public abstract class StructureEditorAdapter
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
 	}
+
 	@Override
 	public void onRenameNode() {
-		String userName =  getNewName(editableNode.cClassId(),baseSpec);
-		if (userName!=null) {
-			renameNode(userName,editableNode.getSelectedVisualNode());		
+		String userName = getNewName(editableNode.cClassId(), baseSpec);
+		if (userName != null) {
+			renameNode(userName, editableNode.getSelectedVisualNode());
 			gvisualiser.onNodeRenamed(editableNode.getSelectedVisualNode());
 			controller.onNodeRenamed();
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
+		}
 	}
-	}
-	private void renameNode(String uniqueId, VisualNode vNode) {
-//		VisualGraphFactory vf = (VisualGraphFactory) vNode.factory();
-//		vf.replaceId(uniqueId, vNode.id());		
-//		TwConfigFactory cf = (TwConfigFactory) vNode.getConfigNode().factory();
-//		cf.replaceId(uniqueId, vNode.getConfigNode().id());
+
+	private void renameNode(String uniqueId, VisualNode oldNode) {
+		Dialogs.warnAlert(oldNode.getDisplayText(false), "Node renaming not yet implemented", "");
+		// To avoid allowing access to an nodes idendity class, ids can't be
+		// manipulated. Therefore we must
+		// create a clone, delete the old one and install the new.
+		// We should wait until there are complaints as there will be when its
+		// discovered how
+		// messy importing graph fragments is!
+		// ;
+
+//		oldNode.rename(uniqueId); This would be nice!
+		// This is a huge mess
+//		VisualGraphFactory vf = (VisualGraphFactory) oldNode.factory();
+//		VisualNode visualNode = vf.makeNode(uniqueId);
+//		
+//
+//		TwConfigFactory cf 
+
+		// get the parent, get all the children etc etc
+//		for (String key : oldNode.properties().getKeysAsSet()) 
+//			newNode.properties().setProperty(key, oldNode.cProperties().getProperty(key));
+//		
+//		ResizeablePropertyList newProperties = (ResizeablePropertyList) newNode.getConfigNode().properties();
+//		SimplePropertyList oldProperties = oldNode.getConfigNode().properties();
+//		for (String key: oldNode.getConfigNode().properties().getKeysAsSet()) 
+//			newProperties.addProperty(key, oldProperties.getPropertyValue(key));
+//
+//		deleteNode(editableNode.getSelectedVisualNode());
+//		controller.onNodeDeleted();
+//		controller.onNewNode(newNode);
 	}
 
 	@Override
@@ -512,8 +543,8 @@ public abstract class StructureEditorAdapter
 		// Remove visual elements before disconnecting
 		gvisualiser.removeView(vEdge);
 		// Remove ids before disconnecting;
-		ExpungeableFactory vf = (ExpungeableFactory) vEdge.factory();
-		ExpungeableFactory cf = (ExpungeableFactory) cEdge.factory();
+		EditableFactory vf = (EditableFactory) vEdge.factory();
+		EditableFactory cf = (EditableFactory) cEdge.factory();
 		vf.expungeEdge(vEdge);
 		cf.expungeEdge(cEdge);
 		vEdge.disconnect();
