@@ -723,6 +723,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	private void initialisePropertySheets() {
 		fillGraphPropertySheet();
+		fillNodePropertySheet(null);
 	}
 
 	private Cursor setCursor(Cursor cursor) {

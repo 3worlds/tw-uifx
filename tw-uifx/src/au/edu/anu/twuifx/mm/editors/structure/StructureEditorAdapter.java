@@ -56,12 +56,14 @@ import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.EditableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
+import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
@@ -69,6 +71,7 @@ import fr.cnrs.iees.properties.ResizeablePropertyList;
 import fr.cnrs.iees.properties.SimplePropertyList;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import fr.ens.biologie.generic.utils.Duple;
 
 /**ChildXorPropertyQuery.java      				implement in GSE:DONE
@@ -445,36 +448,28 @@ public abstract class StructureEditorAdapter
 		}
 	}
 
-	private void renameNode(String uniqueId, VisualNode oldNode) {
-		Dialogs.warnAlert(oldNode.getDisplayText(false), "Node renaming not yet implemented", "");
-		// To avoid allowing access to an nodes idendity class, ids can't be
-		// manipulated. Therefore we must
-		// create a clone, delete the old one and install the new.
-		// We should wait until there are complaints as there will be when its
-		// discovered how
-		// messy importing graph fragments is!
-		// ;
+	private void renameNode(String uniqueId, VisualNode vNode) {
+		TreeGraphDataNode cNode = vNode.getConfigNode();
+		// warn of linked project directory name change
+		if (UserProjectLink.haveUserProject()) {
+			if (cNode.classId().equals(N_SYSTEM.label())) {
+				Dialogs.warnAlert("Linked project '" + UserProjectLink.projectRoot().getName() + "'",
+						"Renaming directory '" + cNode.id() + "' to '" + uniqueId + "' in project '"
+								+ UserProjectLink.projectRoot().getName() + "'",
+						"Update relevant source code in\n'" + uniqueId + "' with code from '" + cNode.id()
+								+ "'\nbefore attempting to rename this node again.\n");
 
-//		oldNode.rename(uniqueId); This would be nice!
-		// This is a huge mess
-//		VisualGraphFactory vf = (VisualGraphFactory) oldNode.factory();
-//		VisualNode visualNode = vf.makeNode(uniqueId);
-//		
-//
-//		TwConfigFactory cf 
-
-		// get the parent, get all the children etc etc
-//		for (String key : oldNode.properties().getKeysAsSet()) 
-//			newNode.properties().setProperty(key, oldNode.cProperties().getProperty(key));
-//		
-//		ResizeablePropertyList newProperties = (ResizeablePropertyList) newNode.getConfigNode().properties();
-//		SimplePropertyList oldProperties = oldNode.getConfigNode().properties();
-//		for (String key: oldNode.getConfigNode().properties().getKeysAsSet()) 
-//			newProperties.addProperty(key, oldProperties.getPropertyValue(key));
-//
-//		deleteNode(editableNode.getSelectedVisualNode());
-//		controller.onNodeDeleted();
-//		controller.onNewNode(newNode);
+			}
+			if (cNode.classId().equals(N_RECORD.label()) || cNode.classId().equals(N_TABLE.label())) {
+				Dialogs.warnAlert("Linked project '" + UserProjectLink.projectRoot().getName() + "'",
+						"Renaming code file from  '" + cNode.id() + "' to '" + uniqueId + "' in project '"
+								+ UserProjectLink.projectRoot().getName() + "'",
+						"'" + cNode.id() + "' is now redundant and can be removed from project '"
+								+ UserProjectLink.projectRoot().getName() + "'.");
+			}
+		}
+		cNode.rename(cNode.id(), uniqueId);
+		vNode.rename(vNode.id(), uniqueId);
 	}
 
 	@Override
