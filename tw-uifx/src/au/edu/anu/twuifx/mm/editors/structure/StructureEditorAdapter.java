@@ -56,6 +56,7 @@ import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.root.EditableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
+import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
@@ -70,6 +71,7 @@ import fr.cnrs.iees.properties.ResizeablePropertyList;
 import fr.cnrs.iees.properties.SimplePropertyList;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import fr.ens.biologie.generic.utils.Duple;
 
 /**ChildXorPropertyQuery.java      				implement in GSE:DONE
@@ -448,8 +450,26 @@ public abstract class StructureEditorAdapter
 
 	private void renameNode(String uniqueId, VisualNode vNode) {
 		TreeGraphDataNode cNode = vNode.getConfigNode();
+		// warn of linked project directory name change
+		if (UserProjectLink.haveUserProject()) {
+			if (cNode.classId().equals(N_SYSTEM.label())) {
+				Dialogs.warnAlert("Linked project '" + UserProjectLink.projectRoot().getName() + "'",
+						"Renaming directory '" + cNode.id() + "' to '" + uniqueId + "' in project '"
+								+ UserProjectLink.projectRoot().getName() + "'",
+						"Update relevant source code in\n'" + uniqueId + "' with code from '" + cNode.id()
+								+ "'\nbefore attempting to rename this node again.\n");
+
+			}
+			if (cNode.classId().equals(N_RECORD.label()) || cNode.classId().equals(N_TABLE.label())) {
+				Dialogs.warnAlert("Linked project '" + UserProjectLink.projectRoot().getName() + "'",
+						"Renaming code file from  '" + cNode.id() + "' to '" + uniqueId + "' in project '"
+								+ UserProjectLink.projectRoot().getName() + "'",
+						"'" + cNode.id() + "' is now redundant and can be removed from project '"
+								+ UserProjectLink.projectRoot().getName() + "'.");
+			}
+		}
 		cNode.rename(cNode.id(), uniqueId);
-		vNode.rename(vNode.id(),uniqueId); 
+		vNode.rename(vNode.id(), uniqueId);
 	}
 
 	@Override
