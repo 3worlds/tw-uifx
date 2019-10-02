@@ -455,7 +455,7 @@ public abstract class StructureEditorAdapter
 								+ "'\nbefore attempting to rename this node again.\n");
 
 			}
-			if (cNode.classId().equals(N_RECORD.label()) || cNode.classId().equals(N_TABLE.label())) {
+			if (cNode.classId().equals(N_RECORD.label())) {
 				Dialogs.warnAlert("Linked project '" + UserProjectLink.projectRoot().getName() + "'",
 						"Renaming code file from  '" + cNode.id() + "' to '" + uniqueId + "' in project '"
 								+ UserProjectLink.projectRoot().getName() + "'",
