@@ -42,7 +42,7 @@ import javafx.scene.layout.HBox;
 import java.util.logging.Logger;
 
 import au.edu.anu.rscs.aot.graph.property.Property;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 

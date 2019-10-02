@@ -33,7 +33,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import au.edu.anu.twcore.data.runtime.OutputData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
 // not sure about this wip

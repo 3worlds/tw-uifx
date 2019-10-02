@@ -29,36 +29,24 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
-import au.edu.anu.twcore.data.runtime.LabelValuePairData;
-import au.edu.anu.twcore.data.runtime.MapData;
+import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.twcore.constants.TimeScaleType;
-import fr.cnrs.iees.twcore.constants.TimeUnits;
-import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
@@ -109,15 +97,15 @@ public class SimpleTimeBracketWidget extends AbstractDisplayWidget<TimeData, Met
 //		updateControls(getLabelText(times.getFirst()), getLabelText(times.getSecond()));
 	}
 
-	private Duple<Long, Long> getTimes() {
-		Long min = Long.MAX_VALUE;
-		Long max = Long.MIN_VALUE;
-		for (Long time : simTimes.values()) {
-			min = Math.min(min, time);
-			max = Math.max(max, time);
-		}
-		return new Duple<Long, Long>(min, max);
-	}
+//	private Duple<Long, Long> getTimes() {
+//		Long min = Long.MAX_VALUE;
+//		Long max = Long.MIN_VALUE;
+//		for (Long time : simTimes.values()) {
+//			min = Math.min(min, time);
+//			max = Math.max(max, time);
+//		}
+//		return new Duple<Long, Long>(min, max);
+//	}
 
 
 //	private void updateControls(String slowest, String fastest) {

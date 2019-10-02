@@ -39,7 +39,6 @@ import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
@@ -55,11 +54,10 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.twcore.data.runtime.DataLabel;
+import au.edu.anu.twcore.data.runtime.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesData;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 

@@ -30,18 +30,10 @@
 package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
-
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
 import au.edu.anu.twcore.data.runtime.MapData;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
@@ -54,21 +46,14 @@ import au.edu.anu.ymuit.util.Decimals;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.twcore.constants.TimeScaleType;
-import fr.cnrs.iees.twcore.constants.TimeUnits;
-import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;

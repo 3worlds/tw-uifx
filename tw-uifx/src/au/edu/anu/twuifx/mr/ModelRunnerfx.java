@@ -88,7 +88,7 @@ public class ModelRunnerfx extends Application {
 		// we need the ordered list of nodes to initialise
 		// AotList<TreeGraphDataNode> list =
 		// config.getInitialiser().getInitialisationList();
-		int i = 1;
+//		int i = 1;
 //		double size = list.size();
 //		for (TreeGraphDataNode n : list) {
 //			try {
