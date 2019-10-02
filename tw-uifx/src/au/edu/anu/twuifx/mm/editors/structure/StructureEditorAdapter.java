@@ -62,6 +62,7 @@ import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
@@ -445,36 +446,10 @@ public abstract class StructureEditorAdapter
 		}
 	}
 
-	private void renameNode(String uniqueId, VisualNode oldNode) {
-		Dialogs.warnAlert(oldNode.getDisplayText(false), "Node renaming not yet implemented", "");
-		// To avoid allowing access to an nodes idendity class, ids can't be
-		// manipulated. Therefore we must
-		// create a clone, delete the old one and install the new.
-		// We should wait until there are complaints as there will be when its
-		// discovered how
-		// messy importing graph fragments is!
-		// ;
-
-//		oldNode.rename(uniqueId); This would be nice!
-		// This is a huge mess
-//		VisualGraphFactory vf = (VisualGraphFactory) oldNode.factory();
-//		VisualNode visualNode = vf.makeNode(uniqueId);
-//		
-//
-//		TwConfigFactory cf 
-
-		// get the parent, get all the children etc etc
-//		for (String key : oldNode.properties().getKeysAsSet()) 
-//			newNode.properties().setProperty(key, oldNode.cProperties().getProperty(key));
-//		
-//		ResizeablePropertyList newProperties = (ResizeablePropertyList) newNode.getConfigNode().properties();
-//		SimplePropertyList oldProperties = oldNode.getConfigNode().properties();
-//		for (String key: oldNode.getConfigNode().properties().getKeysAsSet()) 
-//			newProperties.addProperty(key, oldProperties.getPropertyValue(key));
-//
-//		deleteNode(editableNode.getSelectedVisualNode());
-//		controller.onNodeDeleted();
-//		controller.onNewNode(newNode);
+	private void renameNode(String uniqueId, VisualNode vNode) {
+		TreeGraphDataNode cNode = vNode.getConfigNode();
+		cNode.rename(cNode.id(), uniqueId);
+		vNode.rename(vNode.id(),uniqueId); 
 	}
 
 	@Override
