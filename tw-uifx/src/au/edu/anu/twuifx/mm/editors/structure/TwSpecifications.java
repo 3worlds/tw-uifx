@@ -34,15 +34,15 @@ public class TwSpecifications implements //
 	@Override
 	public SimpleDataTreeNode getSpecsOf(String cClassId, String createdBy, TreeNode root,
 			Set<String> discoveredFiles) {
-		for (TreeNode child : root.getChildren()) {
-			if (isOfClass((SimpleDataTreeNode) child, cClassId)) {
+		for (TreeNode childSpec : root.getChildren()) {
+			if (isOfClass((SimpleDataTreeNode) childSpec, cClassId)) {
 				if (createdBy == null)
-					return (SimpleDataTreeNode) child;
-				if (parentTableContains((SimpleDataTreeNode) child, createdBy))
-					return (SimpleDataTreeNode) child;
+					return (SimpleDataTreeNode) childSpec;
+				if (parentTableContains((SimpleDataTreeNode) childSpec, createdBy))
+					return (SimpleDataTreeNode) childSpec;
 			}
 			// search subArchetypes
-			List<SimpleDataTreeNode> saConstraints = (List<SimpleDataTreeNode>) get(child.getChildren(),
+			List<SimpleDataTreeNode> saConstraints = (List<SimpleDataTreeNode>) get(childSpec.getChildren(),
 					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getQueryStringTableEntries(constraint);

@@ -69,54 +69,6 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import fr.ens.biologie.generic.utils.Duple;
 
-/**ChildXorPropertyQuery.java      				implement in GSE:DONE
- * StringTable(([2]"record","dataElementType"))
- * uses: 
- * 1) node creation: filterPropertyStringTableOptions
- * 2) filteredChildren: to allow/forbid record as child
- */
-
-/**ExclusiveCategoryQuery.java					implement in GSE: DONE
-*mustSatisfyQuery exclusiveCategoryCheckSpec
-*	className = String("au.edu.anu.twcore.archetype.tw.ExclusiveCategoryQuery")
-*		
-* 1) in filterEdge		
-
- * "component" cannot have out edges to categories within the same categorySet
-*/
-
-/**OutNodeXorQuery.java							implement in GSE: DONE
-mustSatisfyQuery processToRelationOrCategorySpec
-	className = String("au.edu.anu.twcore.archetype.tw.OutNodeXorQuery")
-	nodeLabel1 = String("category")
-	nodeLabel2 = String("relationType")
-	
-	1) filter edge nodes
-*/
-
-/**ChildXorQuery.java				not used	implement in GSE
-*/
-
-/**EdgeXorPropertyQuery.java		not used	implement in GSE
-*/
-
-/**ParentHasPropertyValueQuery.java				implement in GSE??
-
-  		mustSatisfyQuery parentMustBeMultipleStoppingCondition
-			className = String("au.edu.anu.twcore.archetype.tw.ParentHasPropertyValueQuery")
-			property = String("subclass")
-			values = StringTable(([2]"au.edu.anu.twcore.ecosystem.runtime.stop.MultipleOrStoppingCondition",+
-			"au.edu.anu.twcore.ecosystem.runtime.stop.MultipleAndStoppingCondition"))
-*/
-
-/**
- * PropertyXorQuery.java implement in GSE: DONE
- * 
- * mustSatisfyQuery dimIsInRangeQuerySpec className =
- * String("au.edu.anu.twcore.archetype.tw.PropertyXorQuery") proplist =
- * StringTable(([2]file,type))
- */
-
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
 	// TODO logging
@@ -161,6 +113,8 @@ public abstract class StructureEditorAdapter
 	public List<SimpleDataTreeNode> filterChildSpecs(Iterable<SimpleDataTreeNode> childSpecs) {
 		// childXorPropertyQuerySpec
 		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
+		// we wont to filter out children mentioned in the baseSpec parentNode that are
+		// not in the subclass parent node
 		List<String[]> tables = specifications.getQueryStringTables(baseSpec, ChildXorPropertyQuery.class);
 		tables.addAll(specifications.getQueryStringTables(subClassSpec, ChildXorPropertyQuery.class));
 		for (SimpleDataTreeNode childSpec : childSpecs) {
