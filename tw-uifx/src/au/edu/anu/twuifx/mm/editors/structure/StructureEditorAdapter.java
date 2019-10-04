@@ -113,8 +113,6 @@ public abstract class StructureEditorAdapter
 	public List<SimpleDataTreeNode> filterChildSpecs(Iterable<SimpleDataTreeNode> childSpecs) {
 		// childXorPropertyQuerySpec
 		List<SimpleDataTreeNode> result = new ArrayList<SimpleDataTreeNode>();
-		// we wont to filter out children mentioned in the baseSpec parentNode that are
-		// not in the subclass parent node
 		List<String[]> tables = specifications.getQueryStringTables(baseSpec, ChildXorPropertyQuery.class);
 		tables.addAll(specifications.getQueryStringTables(subClassSpec, ChildXorPropertyQuery.class));
 		for (SimpleDataTreeNode childSpec : childSpecs) {
