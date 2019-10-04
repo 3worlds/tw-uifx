@@ -100,6 +100,7 @@ import fr.cnrs.iees.graph.DataHolder;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
@@ -430,6 +431,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleSaveAs(ActionEvent event) {
 		model.doSaveAs();
+		for (VisualNode root: visualGraph.roots())
+			if (root.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))				
+		visualiser.onNodeRenamed(root);
 		setButtonState();
 	}
 
