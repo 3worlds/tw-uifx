@@ -400,19 +400,21 @@ public abstract class StructureEditorAdapter
 		// warn of linked project directory name change
 		if (UserProjectLink.haveUserProject()) {
 			if (cNode.classId().equals(N_SYSTEM.label())) {
-				Dialogs.warnAlert("Linked project '" + UserProjectLink.projectRoot().getName() + "'",
-						"Renaming directory '" + cNode.id() + "' to '" + uniqueId + "' in project '"
-								+ UserProjectLink.projectRoot().getName() + "'",
+				String remoteProject = UserProjectLink.projectRoot().getName();
+				Dialogs.warnAlert("Linked project '" + remoteProject + "'",
+						"Renaming directory '" + cNode.id() + "' to '" + uniqueId + "' in project '" + remoteProject
+								+ "'",
 						"Update relevant source code in\n'" + uniqueId + "' with code from '" + cNode.id()
 								+ "'\nbefore attempting to rename this node again.\n");
 
 			}
-			if (cNode.classId().equals(N_RECORD.label())) {
-				Dialogs.warnAlert("Linked project '" + UserProjectLink.projectRoot().getName() + "'",
+			if (cNode.classId().equals(N_RECORD.label()) || cNode.classId().equals(N_INITIALISER.label())) {
+				String remoteProject = UserProjectLink.projectRoot().getName();
+				Dialogs.warnAlert("Linked project '" + remoteProject + "'",
 						"Renaming code file from  '" + cNode.id() + "' to '" + uniqueId + "' in project '"
 								+ UserProjectLink.projectRoot().getName() + "'",
-						"'" + cNode.id() + "' is now redundant and can be removed from project '"
-								+ UserProjectLink.projectRoot().getName() + "'.");
+						"'" + cNode.id() + "' is now redundant and can be removed from project '" + remoteProject
+								+ "'.");
 			}
 		}
 		cNode.rename(cNode.id(), uniqueId);
