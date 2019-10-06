@@ -114,6 +114,11 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 				units.add(unit);
 		}
 
+		// we need to factor current value string into an array of integers to set values for the spinner!
+		// This may be tricky
+		//Long currentSetting = Long.parseLong(currentValue);
+		//int[] factors = TimeUtil.factorTime(currentSetting,dtItem.getTimeScaleType(),validUnits);
+		
 		List<Duple<TimeUnits, Spinner<Integer>>> lstSpinners = new ArrayList<>();
 		int i = 0;
 		for (TimeUnits unit : units) {
