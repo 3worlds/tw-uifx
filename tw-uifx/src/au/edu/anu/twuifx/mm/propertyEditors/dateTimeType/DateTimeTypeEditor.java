@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.mm.propertyEditors.dateTimeType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -120,10 +121,19 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
 		List<TimeUnits> units = new ArrayList<>();
 		for (TimeUnits unit : validUnits) {
-			if ((dtItem.getTUMin().compareTo(unit) <= 0) && (dtItem.getTUMax().compareTo(unit) >= 0))
+			if ((dtItem.getTUMin().compareTo(unit) <= 0) /*&& (dtItem.getTUMax().compareTo(unit) >= 0)*/)
 				if (!forbidden.contains(unit))
 					units.add(unit);
 		}
+		units.sort(new Comparator<TimeUnits>() {
+
+			@Override
+			public int compare(TimeUnits t1, TimeUnits t2) {
+				// biggest to smallest
+				return t1.compareTo(t2);
+			}
+			
+		});
 
 		long currentSetting = Long.parseLong(currentValue);
 		long[] factors = null;
