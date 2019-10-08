@@ -32,8 +32,10 @@ package au.edu.anu.twuifx.mm.propertyEditors.dateTimeType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -88,12 +90,12 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 			ConfigGraph.validateGraph();
 		}
 	}
-	
+
 	private String editDateTime(String currentValue) {
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
-		//dlg.initOwner(Dialogs);
-		ButtonType ok = new ButtonType("Ok",ButtonData.OK_DONE);
+		// dlg.initOwner(Dialogs);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		BorderPane pane = new BorderPane();
 		dlg.getDialogPane().setContent(pane);
@@ -105,20 +107,32 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 
 		GridPane grid = new GridPane();
 		pane.setCenter(grid);
-		
-		// sorted smallest to largest
-		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
-		SortedSet<TimeUnits> units = new TreeSet<>();
-		for (TimeUnits unit : validUnits) {
-			if ((dtItem.getTUMin().compareTo(unit) <= 0) && (dtItem.getTUMax().compareTo(unit) >= 0))
-				units.add(unit);
+		Set<TimeUnits> forbidden = new HashSet<>();
+		if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)){
+			forbidden.add(TimeUnits.DECADE);
+			forbidden.add(TimeUnits.CENTURY);
+			forbidden.add(TimeUnits.MILLENNIUM);
+			forbidden.add(TimeUnits.WEEK);
+			forbidden.add(TimeUnits.MILLISECOND);
 		}
 
-		// we need to factor current value string into an array of integers to set values for the spinner!
-		// This may be tricky
-		//Long currentSetting = Long.parseLong(currentValue);
-		//int[] factors = TimeUtil.factorTime(currentSetting,dtItem.getTimeScaleType(),validUnits);
-		
+		// sorted smallest to largest
+		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
+		List<TimeUnits> units = new ArrayList<>();
+		for (TimeUnits unit : validUnits) {
+			if ((dtItem.getTUMin().compareTo(unit) <= 0) && (dtItem.getTUMax().compareTo(unit) >= 0))
+				if (!forbidden.contains(unit))
+				 units.add(unit);
+		}
+
+		long currentSetting = Long.parseLong(currentValue);
+		long[] factors = null;
+		if (!dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN))
+			factors = TimeUtil.factorExactTime(currentSetting, units);
+		else
+			// TODO: Unlikely to work - requires testing.
+			factors = TimeUtil.factorInexactTime(currentSetting, units);
+
 		List<Duple<TimeUnits, Spinner<Integer>>> lstSpinners = new ArrayList<>();
 		int i = 0;
 		for (TimeUnits unit : units) {
@@ -126,12 +140,14 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 			spinner.setEditable(true);
 			SpinnerValueFactory<Integer> factory;
 			if (units.size() == 1)
-				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE, 0);
+				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE,
+						(int) factors[i]);
 			else
-				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1000, 1000, 0);
+				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1000, 1000, (int) factors[i]);
 
 			spinner.setValueFactory(factory);
 			spinner.setMaxWidth(100);
+
 			// handles null when spinner is +-ed
 			spinner.valueProperty().addListener(
 					(observableValue, oldValue, newValue) -> handleSpin(spinner, observableValue, oldValue, newValue));
@@ -179,6 +195,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 		return currentValue;
 
 	}
+
 	private void handleSpin(Spinner<Integer> spinner, ObservableValue<?> observableValue, Number oldValue,
 			Number newValue) {
 		try {
