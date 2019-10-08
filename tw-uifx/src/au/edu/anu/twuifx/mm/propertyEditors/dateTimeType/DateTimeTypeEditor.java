@@ -127,12 +127,18 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 
 		long currentSetting = Long.parseLong(currentValue);
 		long[] factors = null;
-		if (!dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN))
+		if (!units.isEmpty()) {
+		if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN))
 			factors = TimeUtil.factorExactTime(currentSetting, units);
 		else
 			// TODO: Unlikely to work - requires testing.
 			factors = TimeUtil.factorInexactTime(currentSetting, units);
-
+		}
+		if (units.isEmpty()) {
+			units.add(TimeUnits.UNSPECIFIED);
+			factors = new long[1];
+			factors[0] = currentSetting;
+		}
 		List<Duple<TimeUnits, Spinner<Integer>>> lstSpinners = new ArrayList<>();
 		int i = 0;
 		for (TimeUnits unit : units) {
