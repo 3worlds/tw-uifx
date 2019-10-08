@@ -108,7 +108,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 		GridPane grid = new GridPane();
 		pane.setCenter(grid);
 		Set<TimeUnits> forbidden = new HashSet<>();
-		if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)){
+		if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)) {
 			forbidden.add(TimeUnits.DECADE);
 			forbidden.add(TimeUnits.CENTURY);
 			forbidden.add(TimeUnits.MILLENNIUM);
@@ -122,17 +122,16 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 		for (TimeUnits unit : validUnits) {
 			if ((dtItem.getTUMin().compareTo(unit) <= 0) && (dtItem.getTUMax().compareTo(unit) >= 0))
 				if (!forbidden.contains(unit))
-				 units.add(unit);
+					units.add(unit);
 		}
 
 		long currentSetting = Long.parseLong(currentValue);
 		long[] factors = null;
 		if (!units.isEmpty()) {
-		if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN))
-			factors = TimeUtil.factorExactTime(currentSetting, units);
-		else
-			// TODO: Unlikely to work - requires testing.
-			factors = TimeUtil.factorInexactTime(currentSetting, units);
+			if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN))
+				factors = TimeUtil.factorInexactTime(currentSetting, units);
+			else
+				factors = TimeUtil.factorExactTime(currentSetting, units);
 		}
 		if (units.isEmpty()) {
 			units.add(TimeUnits.UNSPECIFIED);
