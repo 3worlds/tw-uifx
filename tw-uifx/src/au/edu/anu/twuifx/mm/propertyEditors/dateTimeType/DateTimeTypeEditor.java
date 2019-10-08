@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.mm.propertyEditors.dateTimeType;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -129,7 +130,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 
 			@Override
 			public int compare(TimeUnits t1, TimeUnits t2) {
-				// biggest to smallest
+				// smallest to largest
 				return t1.compareTo(t2);
 			}
 			
@@ -158,7 +159,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE,
 						(int) factors[i]);
 			else
-				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1000, 1000, (int) factors[i]);
+				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE, (int) factors[i]);
 
 			spinner.setValueFactory(factory);
 			spinner.setMaxWidth(100);
@@ -174,8 +175,8 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 					spinner.increment(0);
 			});
 			lstSpinners.add(new Duple<TimeUnits, Spinner<Integer>>(unit, spinner));
-			grid.add(new Label(unit.abbreviation()), units.size() - i, 0);
-			grid.add(spinner, units.size() - i, 1);
+			grid.add(new Label(unit.abbreviation()),units.size()- i, 0);
+			grid.add(spinner,units.size()- i, 1);
 			i++;
 		}
 		dlg.setResizable(true);
@@ -192,7 +193,14 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 					}
 				}
 			} else {
+				List<Duple<TimeUnits,Integer>> results = new ArrayList<>();
+				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners){
+					results.add(new Duple<TimeUnits,Integer>(duple.getFirst(),duple.getSecond().getValue()));
+				}
+				LocalDateTime dateTime = TimeUtil.DateTime(results);
+				time = TimeUtil.dateToLong(dateTime, dtItem.getTUMin(), epochTime);
 				// TODO probable crash: to be checked. Should use epochTime
+				// LocalDateTime of(int year, Month month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond) 
 				LocalDateTime epochTime = TimeUtil.longToDate(0, dtItem.getTUMin());
 				LocalDateTime dateTime = epochTime;
 				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners) {
