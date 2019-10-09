@@ -52,7 +52,7 @@ public class StatsTypeEditor extends AbstractPropertyEditor<String, LabelButtonC
 	}
 
 	public StatsTypeEditor(Item property) {
-		this(property, new LabelButtonControl("Open16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		view.setOnAction(e -> onAction());
 	}
