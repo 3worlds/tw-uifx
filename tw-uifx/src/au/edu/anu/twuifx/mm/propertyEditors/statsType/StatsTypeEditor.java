@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.mm.propertyEditors.statsType;
 
 import org.controlsfx.control.ListSelectionView;
+import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -40,16 +41,19 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.scene.layout.Pane;
 
 public class StatsTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
-	private static LabelButtonControl view = new LabelButtonControl("Ellipsis16.gif", Images.imagePackage);
+	
+	private  LabelButtonControl view;
 
-	public StatsTypeEditor(StatsTypeItem property, LabelButtonControl control) {
-		super(property, control);
+	public StatsTypeEditor(Item property, Pane control) {
+		super(property, (LabelButtonControl) control);
 	}
 
-	public StatsTypeEditor(StatsTypeItem property) {
-		this(property, view);
+	public StatsTypeEditor(Item property) {
+		this(property, new LabelButtonControl("Open16.gif", Images.imagePackage));
+		view = this.getEditor();
 		view.setOnAction(e -> onAction());
 	}
 

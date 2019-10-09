@@ -63,6 +63,11 @@ public class StatsTypeItem extends SimplePropertyItem {
 			ConfigGraph.validateGraph();
 		}
 	}
+	@Override
+	public Object getValue() {
+		StatisticalAggregatesSet sas = (StatisticalAggregatesSet) node.properties().getPropertyValue(key);
+		return sas.toString();
+	}
 
 	@Override
 	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
