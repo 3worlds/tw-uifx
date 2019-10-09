@@ -110,6 +110,12 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 		GridPane grid = new GridPane();
 		pane.setCenter(grid);
 		Set<TimeUnits> forbidden = new HashSet<>();
+		if (!(dtItem.getTUMin().compareTo(TimeUnits.DECADE)>=0)) {
+			forbidden.add(TimeUnits.DECADE);
+			forbidden.add(TimeUnits.CENTURY);
+			forbidden.add(TimeUnits.MILLENNIUM);			
+		}
+
 		if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)) {
 			forbidden.add(TimeUnits.DECADE);
 			forbidden.add(TimeUnits.CENTURY);
@@ -122,7 +128,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
 		List<TimeUnits> units = new ArrayList<>();
 		for (TimeUnits unit : validUnits) {
-			if ((dtItem.getTUMin().compareTo(unit) <= 0) /*&& (dtItem.getTUMax().compareTo(unit) >= 0)*/)
+			if ((dtItem.getTUMin().compareTo(unit) <= 0) /* && (dtItem.getTUMax().compareTo(unit) >= 0) */)
 				if (!forbidden.contains(unit))
 					units.add(unit);
 		}
@@ -133,7 +139,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 				// smallest to largest
 				return t1.compareTo(t2);
 			}
-			
+
 		});
 
 		long currentSetting = Long.parseLong(currentValue);
@@ -159,7 +165,8 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE,
 						(int) factors[i]);
 			else
-				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE, (int) factors[i]);
+				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE,
+						(int) factors[i]);
 
 			spinner.setValueFactory(factory);
 			spinner.setMaxWidth(100);
@@ -175,8 +182,8 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 					spinner.increment(0);
 			});
 			lstSpinners.add(new Duple<TimeUnits, Spinner<Integer>>(unit, spinner));
-			grid.add(new Label(unit.abbreviation()),units.size()- i, 0);
-			grid.add(spinner,units.size()- i, 1);
+			grid.add(new Label(unit.abbreviation()), units.size() - i, 0);
+			grid.add(spinner, units.size() - i, 1);
 			i++;
 		}
 		dlg.setResizable(true);
@@ -193,24 +200,15 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 					}
 				}
 			} else {
-				List<Duple<TimeUnits,Integer>> results = new ArrayList<>();
-				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners){
-					results.add(new Duple<TimeUnits,Integer>(duple.getFirst(),duple.getSecond().getValue()));
-				}
-				LocalDateTime dateTime = TimeUtil.DateTime(results);
-				time = TimeUtil.dateToLong(dateTime, dtItem.getTUMin(), epochTime);
-				// TODO probable crash: to be checked. Should use epochTime
-				// LocalDateTime of(int year, Month month, int dayOfMonth, int hour, int minute, int second, int nanoOfSecond) 
-				LocalDateTime epochTime = TimeUtil.longToDate(0, dtItem.getTUMin());
-				LocalDateTime dateTime = epochTime;
+				LocalDateTime baseDateTime = TimeUtil.longToDate(currentSetting, dtItem.getTUMin());
+				LocalDateTime dateTime = TimeUtil.longToDate(currentSetting, dtItem.getTUMin());
 				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners) {
-					Integer n = duple.getSecond().getValue();
-					if (n != 0) {
-						TimeUnits tu = duple.getFirst();
-						dateTime = TimeUtil.getIncrementedDate(dateTime, tu, n);
-					}
+					long n = TimeUtil.getDateTimeField(baseDateTime, duple.getFirst());
+					long diff = duple.getSecond().getValue() - n;
+					if (diff != 0)
+						dateTime = TimeUtil.getIncrementedDate(dateTime, duple.getFirst(), diff);
 				}
-				time = TimeUtil.dateToLong(dateTime, dtItem.getTUMin(), epochTime);
+				time = TimeUtil.dateToLong(dateTime, dtItem.getTUMin(), baseDateTime);
 			}
 			return time.toString();
 

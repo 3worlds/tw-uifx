@@ -59,7 +59,11 @@ public class DateTimeItem extends SimplePropertyItem {
 
 	public DateTimeItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
 		super(key, n, canEdit, category, description);
-		TimeLine timeline = findSingleTimeLine();
+		TimeLine timeline = null;
+		if (n.classId().equals(N_TIMELINE.label()))
+			timeline = (TimeLine) n;
+		else
+			timeline = findSingleTimeLine();
 		if (timeline != null) {
 			timeScale = (TimeScaleType) timeline.properties().getPropertyValue(P_TIMELINE_SCALE.key());
 			tuMin = (TimeUnits) timeline.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
