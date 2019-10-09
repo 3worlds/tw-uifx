@@ -110,10 +110,10 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 		GridPane grid = new GridPane();
 		pane.setCenter(grid);
 		Set<TimeUnits> forbidden = new HashSet<>();
-		if (!(dtItem.getTUMin().compareTo(TimeUnits.DECADE)>=0)) {
+		if (!(dtItem.getTUMin().compareTo(TimeUnits.DECADE) >= 0)) {
 			forbidden.add(TimeUnits.DECADE);
 			forbidden.add(TimeUnits.CENTURY);
-			forbidden.add(TimeUnits.MILLENNIUM);			
+			forbidden.add(TimeUnits.MILLENNIUM);
 		}
 
 		if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)) {
@@ -123,15 +123,18 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 			forbidden.add(TimeUnits.WEEK);
 			forbidden.add(TimeUnits.MILLISECOND);
 		}
-
-		// sorted smallest to largest
 		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
+		if (dtItem.getTimeScaleType().equals(TimeScaleType.MONO_UNIT))
+			for (TimeUnits unit : validUnits)
+				if (!dtItem.getTUMin().equals(unit))
+					forbidden.add(unit);
+
+
 		List<TimeUnits> units = new ArrayList<>();
-		for (TimeUnits unit : validUnits) {
-			if ((dtItem.getTUMin().compareTo(unit) <= 0) /* && (dtItem.getTUMax().compareTo(unit) >= 0) */)
-				if (!forbidden.contains(unit))
+		for (TimeUnits unit : validUnits)
+			if (!forbidden.contains(unit))
+				if ((dtItem.getTUMin().compareTo(unit) <= 0) && dtItem.getTUMax().compareTo(unit) >= 0)
 					units.add(unit);
-		}
 		units.sort(new Comparator<TimeUnits>() {
 
 			@Override
