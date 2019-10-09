@@ -38,6 +38,7 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.HeadlessWidget;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 
@@ -95,7 +96,8 @@ public class WidgetTimeFormatter implements HeadlessWidget {
 		smallest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
 		largest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_LONGTU.key());
 		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
-		startTime = (Long) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
+		DateTimeType dtt = (DateTimeType) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
+		startTime = dtt.getDateTime();
 		units = new ArrayList<>();
 		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
 		for (TimeUnits allowed : allowable)
