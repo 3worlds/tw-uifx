@@ -69,7 +69,7 @@ public class VersionSettings {
 //		{"org.openjfx", "javafx-web", "11+", "_os"},
 //		{"org.openjfx", "javafx-media", "11+", "_os"},
 //		{"org.openjfx", "javafx-swing", "11+", "_os"},
-		{"org.controlsfx", "controlsfx", "[11.0.0,)", null},
+		{"org.controlsfx", "controlsfx", "11+", null},
 	    {"org.apache.commons","commons-math", "2.+", null}
 	};
 	
