@@ -42,6 +42,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -431,9 +432,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	void handleSaveAs(ActionEvent event) {
 		model.doSaveAs();
-		for (VisualNode root: visualGraph.roots())
-			if (root.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))				
-		visualiser.onNodeRenamed(root);
+		for (VisualNode root : visualGraph.roots())
+			if (root.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))
+				visualiser.onNodeRenamed(root);
 		setButtonState();
 	}
 
@@ -553,27 +554,29 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	}
 
-	public PropertySheet getNodePropertySheet() {
-		return nodePropertySheet;
-	}
+//	public PropertySheet getNodePropertySheet() {
+//		return nodePropertySheet;
+//	}
 
-	public PropertySheet getAllElementsPropertySheet() {
-		return allElementsPropertySheet;
+//	public PropertySheet getAllElementsPropertySheet() {
+//		return allElementsPropertySheet;
+//
+//	}
 
-	}
-
+	// not used i think
 	@Override
 	public String getUserProjectPath() {
 		return userProjectPath.get();
 	}
 
+	// humm... suspect. Should refer to UserProjectLink
 	public StringProperty getUserProjectPathProperty() {
 		return userProjectPath;
 	}
 
-	public boolean haveUserProject() {
-		return !userProjectPath.get().equals("");
-	}
+//	public boolean haveUserProject() {
+//		return !userProjectPath.get().equals("");
+//	}
 
 	private Text getMessageText(ErrorMessagable msg) {
 		Text t = new Text(msg.message(verbosity) + "\n");
@@ -620,6 +623,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		allElementsPropertySheet.getItems().clear();
 		zoomTarget.getChildren().clear();
 		visualGraph = null;
+		lastSelectedNode = null;
 		setButtonState();
 	}
 
@@ -665,6 +669,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		}
 	}
 
+
 	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable) {
 
 		ObservableList<Item> result = FXCollections.observableArrayList();
@@ -708,26 +713,21 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	private Item makeItemType(String key, TreeGraphDataNode n, boolean editable, String category, String description) {
 		Object value = n.properties().getPropertyValue(key);
-		// TODO other Item types to come...
 		if (value instanceof FileType) {
-			FileTypeItem fti = new FileTypeItem(key, n, true, category, description);
-			// FileType ft = (FileType) value; not sure how we can manage extensions. There
-			// is no 'type' info to distinguish this node.
-			// fti.setExtensions(ft.getExtensions());
+			FileTypeItem fti = new FileTypeItem(this, key, n, true, category, description);
 			return fti;
 		} else if (value instanceof StatisticalAggregatesSet)
-			return new StatsTypeItem(key, n, true, category, description);
+			return new StatsTypeItem(this, key, n, true, category, description);
 		else if (value instanceof DateTimeType) {
-			return new DateTimeItem(key, n, true, category, description);
-		} else if (value instanceof StringTable) {
-			// return new StringTableTypeItem(key, n, true, category, description);
-		}
-		return new SimplePropertyItem(key, n, editable, category, description);
+			return new DateTimeItem(this, key, n, true, category, description);
+		} else
+			return new SimplePropertyItem(this, key, n, editable, category, description);
 	}
 
 	private void initialisePropertySheets() {
+		lastSelectedNode = null;
 		fillGraphPropertySheet();
-		fillNodePropertySheet(null);
+		fillNodePropertySheet(lastSelectedNode);
 	}
 
 	private Cursor setCursor(Cursor cursor) {
@@ -746,9 +746,12 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		return model.canClose();
 	}
 
+	private VisualNode lastSelectedNode = null;
+
 	@Override
 	public void onNodeSelected(VisualNode node) {
-		fillNodePropertySheet(node);
+		lastSelectedNode = node;
+		fillNodePropertySheet(lastSelectedNode);
 	}
 
 	private VisualNode newNode;
@@ -766,6 +769,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			visualiser.onNewNode(newNode);
 			zoomTarget.setCursor(Cursor.DEFAULT);
 			newNode = null;
+			lastSelectedNode = newNode;
 			initialisePropertySheets();
 			setButtonState();
 			GraphState.setChanged();
@@ -775,18 +779,21 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@Override
 	public void onNodeDeleted() {
+		lastSelectedNode = null;
 		initialisePropertySheets();
 		setButtonState();
 	}
 
 	@Override
 	public void onTreeCollapse() {
+		lastSelectedNode = null;
 		initialisePropertySheets();
 		setButtonState();
 	}
 
 	@Override
 	public void onTreeExpand() {
+		lastSelectedNode = null;
 		initialisePropertySheets();
 		setButtonState();
 	}
@@ -799,7 +806,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	public void setButtonState() {
 		boolean isOpen = Project.isOpen();
 		boolean saveable = !GraphState.changed() & isOpen;
-		boolean isConnected = haveUserProject();
+		boolean isConnected = UserProjectLink.haveUserProject();
 		miSetCodePath.setDisable(isConnected);
 		miDisconnect.setDisable(!isConnected);
 		menuItemSave.setDisable(saveable);
@@ -833,7 +840,18 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@Override
 	public void onNodeRenamed() {
 		initialisePropertySheets();
-		setButtonState();		
+		setButtonState();
+	}
+
+	@Override
+	public void onItemEdit(Object changedItem) {
+		Item item = (Item) changedItem;
+		if (nodePropertySheet.getItems().contains(item))
+			fillGraphPropertySheet();
+		else if (allElementsPropertySheet.getItems().contains(item)) {
+			fillNodePropertySheet(lastSelectedNode);
+
+		}
 	}
 
 }

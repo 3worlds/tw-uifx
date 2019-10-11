@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
+import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.ecosystem.dynamics.TimeLine;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -57,8 +58,8 @@ public class DateTimeItem extends SimplePropertyItem {
 	private TimeUnits tuMin = TimeUnits.defaultValue();
 	private TimeUnits tuMax = TimeUnits.defaultValue();
 
-	public DateTimeItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
-		super(key, n, canEdit, category, description);
+	public DateTimeItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
+		super(controller,key, n, canEdit, category, description);
 		TimeLine timeline = null;
 		if (n.classId().equals(N_TIMELINE.label()))
 			timeline = (TimeLine) n;
@@ -119,10 +120,10 @@ public class DateTimeItem extends SimplePropertyItem {
 		DateTimeType oldValue = (DateTimeType) node.properties().getPropertyValue(key);
 		DateTimeType newValue = DateTimeType.valueOf((String) value);
 		if (oldValue.getDateTime() != newValue.getDateTime()) {
-//			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
+			controller.onItemEdit(this);
 		}
 	}
 

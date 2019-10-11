@@ -34,6 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet.Item;
 
+import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 //import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -51,13 +52,15 @@ public class SimplePropertyItem implements Item {
 	protected boolean isEditable;
 	protected String category;
 	private String description;
+	protected IMMController controller;
 
-	public SimplePropertyItem(String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
+	public SimplePropertyItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
 		this.node = n;
 		this.key = key;
 		this.isEditable = canEdit;
 		this.category = category;
 		this.description=description;
+		this.controller = controller;
 	}
 
 	@Override
@@ -94,10 +97,10 @@ public class SimplePropertyItem implements Item {
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
-//			node.addProperty(key, newValue);
 			node.properties().setProperty(key, newValue);
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
+			controller.onItemEdit(this);
 		}
 	}
 
