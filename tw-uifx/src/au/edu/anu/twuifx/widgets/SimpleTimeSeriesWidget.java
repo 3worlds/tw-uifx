@@ -216,9 +216,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		this.widgetId = id;
 		timeFormatter.setProperties(id, properties);
 		policy.setProperties(id, properties);
-		if (properties.hasProperty("maxColours"))
-			maxColours = (Integer) properties.getPropertyValue("maxColours");
-		
+		maxColours = 20;
+
 	}
 
 	private void edit() {

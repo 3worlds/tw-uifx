@@ -24,7 +24,6 @@ treegraph // saved by OmugiGraphExporter on Thu Oct 10 14:09:56 CEST 2019
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget widget2
-				maxColours = java.lang.Integer(0)
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(10)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
