@@ -113,6 +113,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		log.info("Processing data " + data);
 		long time = data.time();
 		int sender = data.sender();
+		System.out.println("processDataMessage is not yet implemented.");
 //		data.values().entrySet().forEach(entry -> {
 //			String key = entry.getKey().getEnd() + "(" + sender + ")";
 //			XYChart.Series<Number, Number> series = activeSeries.get(key);
