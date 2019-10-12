@@ -93,6 +93,7 @@ import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
+import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
@@ -105,6 +106,7 @@ import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
+import fr.cnrs.iees.twcore.constants.TrackerType;
 
 public class MmController implements ErrorMessageListener, IMMController, IGraphStateListener {
 
@@ -554,14 +556,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	}
 
-//	public PropertySheet getNodePropertySheet() {
-//		return nodePropertySheet;
-//	}
-
-//	public PropertySheet getAllElementsPropertySheet() {
-//		return allElementsPropertySheet;
-//
-//	}
 
 	// not used i think
 	@Override
@@ -574,9 +568,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		return userProjectPath;
 	}
 
-//	public boolean haveUserProject() {
-//		return !userProjectPath.get().equals("");
-//	}
 
 	private Text getMessageText(ErrorMessagable msg) {
 		Text t = new Text(msg.message(verbosity) + "\n");
@@ -669,7 +660,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		}
 	}
 
-
 	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable) {
 
 		ObservableList<Item> result = FXCollections.observableArrayList();
@@ -677,7 +667,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			if (node.properties().getPropertyValue(key) != null) {
 				boolean editable = model.propertyEditable(node.classId(), key);
 				if (editable || showNonEditable) {
-					String propertyDesciption = "";// TODO: Property description should be from the archetype?
+					String propertyDesciption = "Desciption property from archtype";
 					result.add(makeItemType(key, node, editable, category, propertyDesciption));
 				}
 			}
@@ -720,6 +710,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			return new StatsTypeItem(this, key, n, true, category, description);
 		else if (value instanceof DateTimeType) {
 			return new DateTimeItem(this, key, n, true, category, description);
+		} else if (value instanceof TrackerType) {
+			return new TrackerTypeItem(this, key, n, true, category, description);
 		} else
 			return new SimplePropertyItem(this, key, n, editable, category, description);
 	}

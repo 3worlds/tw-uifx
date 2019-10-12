@@ -60,7 +60,7 @@ treegraph // saved by OmugiGraphExporter on Thu Oct 10 14:09:56 CEST 2019
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-							track = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"x"))
+							track = fr.cnrs.iees.twcore.constants.TrackerType(([1]"x"))
 							viewOthers = java.lang.Boolean(false)
 						function Function1
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)

@@ -28,88 +28,49 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors;
+package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
 
 import java.util.Optional;
 
-import org.controlsfx.control.PropertySheet.Item;
+import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-//import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import javafx.beans.value.ObservableValue;
+import fr.cnrs.iees.twcore.constants.TrackerType;
 
 /**
- * Author Ian Davies
+ * @author Ian Davies
  *
- * Date 14 Feb. 2019
+ * @date 12 Oct 2019
  */
-public class SimplePropertyItem implements Item {
-	protected TreeGraphDataNode node;
-	protected String key;
-	protected boolean isEditable;
-	protected String category;
-	private String description;
-	private IMMController controller;
+public class TrackerTypeItem extends SimplePropertyItem {
 
-	public SimplePropertyItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
-		this.node = n;
-		this.key = key;
-		this.isEditable = canEdit;
-		this.category = category;
-		this.description=description;
-		this.controller = controller;
-	}
-
-	@Override
-	public boolean isEditable() {
-		return isEditable;
-	}
-
-	@Override
-	public Class<?> getType() {
-		return node.properties().getPropertyClass(key);
-	}
-
-	@Override
-	public String getCategory() {
-		return category;
-	}
-
-	@Override
-	public String getName() {
-		return node.classId()+":"+node.id() + "#" + key;
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
-	}
-
-	@Override
-	public Object getValue() {
-		return node.properties().getPropertyValue(key);
+	public TrackerTypeItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category,
+			String description) {
+		super(controller, key, n, canEdit, category, description);
 	}
 
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
-		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
-			onUpdateProperty(newValue);
+		if (!oldValue.toString().equals(newValue.toString())) {
+			TrackerType tt = TrackerType.valueOf((String) newValue);
+			onUpdateProperty(tt);
 		}
 	}
 
 	@Override
-	public Optional<ObservableValue<? extends Object>> getObservableValue() {
-		return Optional.empty();
+	public Object getValue() {
+		TrackerType tt = (TrackerType) node.properties().getPropertyValue(key);
+		return tt.toString();
 	}
-	
-	protected void onUpdateProperty(Object value) {
-		node.properties().setProperty(key, value);
-		controller.onItemEdit(this);
-		GraphState.setChanged();
-		ConfigGraph.validateGraph();
+
+	@Override
+	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
+		return Optional.of(TrackerTypeEditor.class);
 	}
+
 }

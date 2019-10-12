@@ -116,14 +116,11 @@ public class DateTimeItem extends SimplePropertyItem {
 
 	@Override
 	public void setValue(Object value) {
-		// TODO This will be wrong - check later
+		// TODO This will be wrong - check later ?? What?
 		DateTimeType oldValue = (DateTimeType) node.properties().getPropertyValue(key);
 		DateTimeType newValue = DateTimeType.valueOf((String) value);
 		if (oldValue.getDateTime() != newValue.getDateTime()) {
-			node.properties().setProperty(key, newValue);
-			GraphState.setChanged();
-			ConfigGraph.validateGraph();
-			controller.onItemEdit(this);
+			onUpdateProperty(newValue);
 		}
 	}
 

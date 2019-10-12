@@ -28,88 +28,50 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors;
 
-import java.util.Optional;
+package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
 
 import org.controlsfx.control.PropertySheet.Item;
+import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-//import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twcore.graphState.GraphState;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twuifx.images.Images;
+import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.layout.Pane;
 
 /**
- * Author Ian Davies
+ * @author Ian Davies
  *
- * Date 14 Feb. 2019
+ * @date 13 Oct 2019
  */
-public class SimplePropertyItem implements Item {
-	protected TreeGraphDataNode node;
-	protected String key;
-	protected boolean isEditable;
-	protected String category;
-	private String description;
-	private IMMController controller;
+public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
-	public SimplePropertyItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
-		this.node = n;
-		this.key = key;
-		this.isEditable = canEdit;
-		this.category = category;
-		this.description=description;
-		this.controller = controller;
+	private LabelButtonControl view;
+
+	public TrackerTypeEditor(Item property, Pane control) {
+		super(property, (LabelButtonControl) control);
 	}
 
-	@Override
-	public boolean isEditable() {
-		return isEditable;
+	public TrackerTypeEditor(Item property) {
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		view = this.getEditor();
+		view.setOnAction(e -> onAction());
+	}
+
+	private Object onAction() {
+		Dialogs.infoAlert("DataTracker", "track", "Not implemented");
+		return view;
 	}
 
 	@Override
-	public Class<?> getType() {
-		return node.properties().getPropertyClass(key);
+	public void setValue(String value) {
+		getEditor().setText(value);
 	}
 
 	@Override
-	public String getCategory() {
-		return category;
+	protected ObservableValue<String> getObservableValue() {
+		return getEditor().getTextProperty();
 	}
 
-	@Override
-	public String getName() {
-		return node.classId()+":"+node.id() + "#" + key;
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
-	}
-
-	@Override
-	public Object getValue() {
-		return node.properties().getPropertyValue(key);
-	}
-
-	@Override
-	public void setValue(Object newValue) {
-		Object oldValue = getValue();
-		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
-			onUpdateProperty(newValue);
-		}
-	}
-
-	@Override
-	public Optional<ObservableValue<? extends Object>> getObservableValue() {
-		return Optional.empty();
-	}
-	
-	protected void onUpdateProperty(Object value) {
-		node.properties().setProperty(key, value);
-		controller.onItemEdit(this);
-		GraphState.setChanged();
-		ConfigGraph.validateGraph();
-	}
 }

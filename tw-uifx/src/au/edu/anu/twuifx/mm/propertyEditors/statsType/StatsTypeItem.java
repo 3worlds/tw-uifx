@@ -58,10 +58,7 @@ public class StatsTypeItem extends SimplePropertyItem {
 		String oldString = oldValue.toString();
 		if (!oldString.equals(newString)) {
 			StatisticalAggregatesSet newValue = StatisticalAggregatesSet.valueOf((String) newString);
-			node.properties().setProperty(key, newValue);
-			GraphState.setChanged();
-			ConfigGraph.validateGraph();
-			controller.onItemEdit(this);
+			onUpdateProperty(newValue);
 		}
 	}
 	@Override
