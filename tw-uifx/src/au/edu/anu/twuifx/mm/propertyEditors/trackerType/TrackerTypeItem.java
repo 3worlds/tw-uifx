@@ -35,8 +35,6 @@ import java.util.Optional;
 import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.TrackerType;
@@ -60,6 +58,9 @@ public class TrackerTypeItem extends SimplePropertyItem {
 			TrackerType tt = TrackerType.valueOf((String) newValue);
 			onUpdateProperty(tt);
 		}
+	}
+	public TreeGraphDataNode getNode() {
+		return node;
 	}
 
 	@Override
