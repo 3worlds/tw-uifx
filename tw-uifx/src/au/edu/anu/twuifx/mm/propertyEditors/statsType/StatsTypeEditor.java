@@ -39,13 +39,15 @@ import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
+import impl.org.controlsfx.skin.ListSelectionViewSkin;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.layout.Pane;
 
 public class StatsTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
-	
-	private  LabelButtonControl view;
+
+	private LabelButtonControl view;
 
 	public StatsTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -81,9 +83,20 @@ public class StatsTypeEditor extends AbstractPropertyEditor<String, LabelButtonC
 				src.add(sa);
 		}
 		if (Dialogs.editList(getProperty().getName(), "", "", listView)) {
-			if (!trg.isEmpty()) {
+			/*
+			 * Using this dirty trick:
+			 * 
+			 * https://groups.google.com/forum/#!topic/controlsfx-dev/u556GrRwUSw
+			 */
+			@SuppressWarnings("unchecked")
+			ListSelectionViewSkin<StatisticalAggregates> skin = (ListSelectionViewSkin<StatisticalAggregates>) listView
+					.getSkin();
+			MultipleSelectionModel<StatisticalAggregates> trgModel = skin.getTargetListView().getSelectionModel();
+			trgModel.selectAll();
+
+			if (!trgModel.isEmpty()) {
 				sas.values().clear();
-				for (StatisticalAggregates sa : trg) {
+				for (StatisticalAggregates sa : trgModel.getSelectedItems()) {
 					sas.values().add(sa);
 				}
 				return sas.toString();
