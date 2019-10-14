@@ -1,0 +1,102 @@
+treegraph // saved by OmugiGraphExporter on Mon Oct 14 12:21:28 AEDT 2019
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds testdatadefinition
+	userInterface ui
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget timeSeries
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+		top top1
+			widget time
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+	experiment exp
+		timePeriod period
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design design1
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system sys
+		parameterClass = java.lang.String()
+		dynamics dyn
+			timeLine tl
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel clock
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+					process proc
+						function Func
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys.Func)
+						dataTracker dt
+							groupBy = fr.cnrs.iees.twcore.constants.Grouping(NO_GROUPING)
+							select = fr.cnrs.iees.twcore.constants.SamplingMode(FIRST)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							track = fr.cnrs.iees.twcore.constants.TrackerType(([1]x))
+							viewOthers = java.lang.Boolean(false)
+			initialState state
+				individual instance
+					variableValues values
+						x = java.lang.Double(1.0)
+		structure struc
+			categorySet set
+				category cat
+			component comp
+				driverClass = java.lang.String(code.sys.Rec)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+	dataDefinition dd
+		record Rec
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(Rec)
+			field x
+				max = java.lang.Double(0.0)
+				min = java.lang.Double(0.0)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			table eTbl
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+			table rtbl
+				record RecTbl
+					field a
+						max = java.lang.Double(0.0)
+						min = java.lang.Double(0.0)
+						precision = java.lang.Double(0.0)
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+						units = java.lang.String()
+					field b
+						max = java.lang.Double(0.0)
+						min = java.lang.Double(0.0)
+						precision = java.lang.Double(0.0)
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+						units = java.lang.String()
+		dimensioner dim1
+			size = java.lang.Integer(5)
+
+// CROSS-LINKS
+[individual:instance] instanceOf instanceOf1 [component:comp]
+[widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
+[table:rtbl] sizedBy sizedBy2 [dimensioner:dim1]
+[table:eTbl] sizedBy sizedBy1 [dimensioner:dim1]
+[category:cat] drivers drivers1 [record:Rec]
+[experiment:exp] baseLine baseLine1 [system:sys]
+[component:comp] belongsTo belongsTo1 [category:cat]
+[process:proc] appliesTo appliesTo1 [category:cat]
+[widget:time] trackTime trackTime1 [dynamics:dyn]
