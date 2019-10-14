@@ -205,7 +205,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		if (depth == 0)
 			fieldList.addAll(fields);
 		else
-			structList.add(record);
+			structList.add(record);// TODO we don't want to add this if it ONLY has a table
 		@SuppressWarnings("unchecked")
 		List<TableNode> tables = (List<TableNode>) get(record.getChildren(),
 				selectZeroOrMany(hasTheLabel(ConfigurationNodeLabels.N_TABLE.label())));
