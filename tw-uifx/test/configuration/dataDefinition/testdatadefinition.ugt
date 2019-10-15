@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Mon Oct 14 12:21:28 AEDT 2019
+treegraph // saved by OmugiGraphExporter on Wed Oct 16 06:45:27 AEDT 2019
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -59,44 +59,57 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 12:21:28 AEDT 2019
 			categorySet set
 				category cat
 			component comp
-				driverClass = java.lang.String(code.sys.Rec)
+				driverClass = java.lang.String(code.sys.R1)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dd
-		record Rec
+		record R1
 			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(Rec)
-			field x
+			generatedClassName = java.lang.String(R1)
+			table t2
+				record R2
+					field f2
+						max = java.lang.Double(0.0)
+						min = java.lang.Double(0.0)
+						precision = java.lang.Double(0.0)
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+						units = java.lang.String()
+					field f3
+						max = java.lang.Double(0.0)
+						min = java.lang.Double(0.0)
+						precision = java.lang.Double(0.0)
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+						units = java.lang.String()
+					table t4
+						dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+					table t3
+						dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+			field f1
 				max = java.lang.Double(0.0)
 				min = java.lang.Double(0.0)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			table eTbl
+			table t1
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-			table rtbl
-				record RecTbl
-					field a
-						max = java.lang.Double(0.0)
-						min = java.lang.Double(0.0)
-						precision = java.lang.Double(0.0)
-						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-						units = java.lang.String()
-					field b
-						max = java.lang.Double(0.0)
-						min = java.lang.Double(0.0)
-						precision = java.lang.Double(0.0)
-						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-						units = java.lang.String()
-		dimensioner dim1
+		dimensioner d3
+			size = java.lang.Integer(15)
+		dimensioner d1
 			size = java.lang.Integer(5)
+		dimensioner d2
+			size = java.lang.Integer(10)
 
 // CROSS-LINKS
+[table:t4] sizedBy sizedBy5 [dimensioner:d1]
+[table:t4] sizedBy sizedBy7 [dimensioner:d3]
+[table:t4] sizedBy sizedBy6 [dimensioner:d2]
 [individual:instance] instanceOf instanceOf1 [component:comp]
 [widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
-[table:rtbl] sizedBy sizedBy2 [dimensioner:dim1]
-[table:eTbl] sizedBy sizedBy1 [dimensioner:dim1]
-[category:cat] drivers drivers1 [record:Rec]
+[category:cat] drivers drivers1 [record:R1]
 [experiment:exp] baseLine baseLine1 [system:sys]
 [component:comp] belongsTo belongsTo1 [category:cat]
 [process:proc] appliesTo appliesTo1 [category:cat]
+[table:t1] sizedBy sizedBy1 [dimensioner:d1]
+[table:t2] sizedBy sizedBy2 [dimensioner:d1]
 [widget:time] trackTime trackTime1 [dynamics:dyn]
+[table:t3] sizedBy sizedBy3 [dimensioner:d1]
+[table:t3] sizedBy sizedBy4 [dimensioner:d2]
