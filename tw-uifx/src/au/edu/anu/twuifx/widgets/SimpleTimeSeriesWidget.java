@@ -39,6 +39,7 @@ import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
@@ -54,6 +55,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesData;
@@ -97,6 +99,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Meta-data: " + meta);
+		// no meta data message is being sent
 		timeFormatter.onMetaDataMessage(meta);
 	}
 
@@ -113,14 +116,15 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		log.info("Processing data " + data);
 		long time = data.time();
 		int sender = data.sender();
-		System.out.println("processDataMessage is not yet implemented.");
-//		data.values().entrySet().forEach(entry -> {
-//			String key = entry.getKey().getEnd() + "(" + sender + ")";
-//			XYChart.Series<Number, Number> series = activeSeries.get(key);
-//			if (series == null)
-//				series = addSeries(key, getColour(activeSeries.size() + 1));
-//			series.getData().add(new Data<Number, Number>(time, entry.getValue()));
-//		});
+		// how do i know what type of value it is
+		String key = data.itemLabel().toString();
+		for (Double v:data.getDoubleValues()) {
+			DataLabel dl = data.itemLabel();
+			XYChart.Series<Number,Number> series = activeSeries.get(key);
+			if (series ==null)
+				series = addSeries(key,getColour(activeSeries.size()+1));
+			series.getData().add(new Data<Number, Number>(time, v));
+		}
 	}
 
 	private String getColour(int i) {
