@@ -59,6 +59,7 @@ import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesData;
+import au.edu.anu.twcore.data.runtime.TimeSeriesMetadata;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -89,6 +90,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
+	
+	private TimeSeriesMetadata tsmeta = null;
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME_SERIES);
@@ -100,7 +103,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Meta-data: " + meta);
 		// no meta data message is being sent
+		// Well - now the metadata is sent and contains all the TimeLine + TimeModel + DataTracker
+		// properties - I let you deal with the time data
 		timeFormatter.onMetaDataMessage(meta);
+		// this record contains the ordering of the variables in the data messages
+		tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
 	}
 
 	@Override
@@ -116,7 +123,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		log.info("Processing data " + data);
 		long time = data.time();
 		int sender = data.sender();
-		// how do i know what type of value it is
+		// how do i know what type of value it is -- cf below.
 		String key = data.itemLabel().toString();
 		for (Double v:data.getDoubleValues()) {
 			DataLabel dl = data.itemLabel();
@@ -124,6 +131,16 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 			if (series ==null)
 				series = addSeries(key,getColour(activeSeries.size()+1));
 			series.getData().add(new Data<Number, Number>(time, v));
+		}
+		// I dont know how you get the time label from the metadata, it's your business
+		// this is how you should process the data
+		if (tsmeta!=null) {
+			double x = data.time(); 
+			for (DataLabel dl:tsmeta.doubleNames()) { // --> this gives the name (as a datalabel
+				double y = data.getDoubleValues()[tsmeta.indexOf(dl)]; // --> this reads the piece of data matching the name
+			}
+			// same for intNames()
+			// same for stringNames() - if you can process them.
 		}
 	}
 
