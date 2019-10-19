@@ -34,6 +34,7 @@ import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
@@ -49,12 +50,15 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -63,6 +67,7 @@ import au.edu.anu.twcore.data.runtime.TimeSeriesMetadata;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
@@ -74,14 +79,14 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /*
  * One chart for all series. Bad luck if the y axis ranges are very different.
- * Best used for a single series with repeat (replicate?) simulatons
+ * Best used for a single series with repeat (replicate?) simulations
  */
 public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData, Metadata> implements Widget {
 
 	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget.class);
 
 	private LineChart<Number, Number> chart;
-	private Map<String, XYChart.Series<Number, Number>> activeSeries;
+	private List<XYChart.Series<Number, Number>> activeDoubleSeries;
 	private String[] colours;
 	// clear or keep data showing from previous run(s)
 	private boolean clearOnReset;
@@ -90,7 +95,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
-	
+
 	private TimeSeriesMetadata tsmeta = null;
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
@@ -101,13 +106,25 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
+		// NOTE: The first time this msg arrives is at first step not at start up ie. on Reset;
 		log.info("Meta-data: " + meta);
-		// no meta data message is being sent
-		// Well - now the metadata is sent and contains all the TimeLine + TimeModel + DataTracker
-		// properties - I let you deal with the time data
-		timeFormatter.onMetaDataMessage(meta);
 		// this record contains the ordering of the variables in the data messages
 		tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+		for (DataLabel dl : tsmeta.doubleNames()) {
+			String name = dl.getEnd();
+			String colour = getColour(activeDoubleSeries.size() + 1);
+			addSeries(name, colour);
+		}
+		// same for intNames - can't we just have Numbers or is it too expensive?
+		timeFormatter.onMetaDataMessage(meta);
+//		
+		for (String key : meta.properties().getKeysAsArray()) {
+			Property p = meta.properties().getProperty(key);
+			System.out.println(key + ", " + p.getClass().getSimpleName() + ", " + p.getValue());
+		}
+		
+		
+
 	}
 
 	@Override
@@ -121,26 +138,16 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	private void processDataMessage(TimeSeriesData data) {
 		log.info("Processing data " + data);
-		long time = data.time();
 		int sender = data.sender();
-		// how do i know what type of value it is -- cf below.
-		String key = data.itemLabel().toString();
-		for (Double v:data.getDoubleValues()) {
-			DataLabel dl = data.itemLabel();
-			XYChart.Series<Number,Number> series = activeSeries.get(key);
-			if (series ==null)
-				series = addSeries(key,getColour(activeSeries.size()+1));
-			series.getData().add(new Data<Number, Number>(time, v));
-		}
-		// I dont know how you get the time label from the metadata, it's your business
 		// this is how you should process the data
-		if (tsmeta!=null) {
-			double x = data.time(); 
-			for (DataLabel dl:tsmeta.doubleNames()) { // --> this gives the name (as a datalabel
-				double y = data.getDoubleValues()[tsmeta.indexOf(dl)]; // --> this reads the piece of data matching the name
-			}
-			// same for intNames()
-			// same for stringNames() - if you can process them.
+		// if (tsmeta != null) { well... should crash here if not set
+		// can only handle doubles here. Will have to keep a separate list for Integers.
+		// Strings would be something else ordinal y with a label??
+		double x = data.time();
+		for (DataLabel dl : tsmeta.doubleNames()) {
+			double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
+			XYChart.Series<Number, Number> series = activeDoubleSeries.get(tsmeta.indexOf(dl));
+			series.getData().add(new Data<Number, Number>(x, y));
 		}
 	}
 
@@ -162,15 +169,17 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		if (clearOnReset)
 			chart.getData().clear();
 		else
-			for (XYChart.Series<Number, Number> series : activeSeries.values())
+//			for (XYChart.Series<Number, Number> series : activeSeries.values())
+			for (XYChart.Series<Number, Number> series : activeDoubleSeries)
 				setLineColour(series, "lightgray");
-		activeSeries.clear();
+		activeDoubleSeries.clear();
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
 		colours = ColourContrast.allContrastingColourNames(Color.LIGHTGRAY, maxColours);
-		activeSeries = new HashMap<>();
+//		activeSeries = new HashMap<>();
+		activeDoubleSeries = new ArrayList<>();
 		log.info("Prepared user interface");
 		BorderPane content = new BorderPane();
 		NumberAxis xAxis = new NumberAxis();
@@ -180,7 +189,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		chart = new LineChart<>(xAxis, yAxis);
 		chart.setCreateSymbols(false);
 		chart.setAnimated(false);
-		chart.legendVisibleProperty().set(true);
+		chart.legendVisibleProperty().set(false);
 		setFontSize(10);
 		chart.setTitle("What should be here?");
 		content.setCenter(chart);
@@ -192,8 +201,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		result.setName(name);
 		chart.getData().add(result);
 		setLineColour(result, colour);
-		activeSeries.put(name, result);
-		if (activeSeries.size() == 1)
+//		activeSeries.put(name, result);
+		activeDoubleSeries.add(result);
+		if (activeDoubleSeries.size() == 1)
 			chart.getYAxis().setLabel(name);
 		return result;
 	}
