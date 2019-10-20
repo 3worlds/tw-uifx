@@ -88,10 +88,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	private LineChart<Number, Number> chart;
 	private Map<String, XYChart.Series<Number, Number>> activeSeries;
+	/* a set of colours, chosen by the uit for their contrast in RGB space */
 	private String[] colours;
-	// clear or keep data showing from previous run(s)
+	/* clear or keep data showing from previous run(s) */
 	private boolean clearOnReset;
-	private int maxColours = 20; // can be set from archetype
+	private int maxColours = 20;
 	private String widgetId;
 
 	private WidgetTimeFormatter timeFormatter;
@@ -107,15 +108,10 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-
-		// NOTE: The first time this msg arrives is at first step not at start up ie. on
-		// Reset. Therefore the controls remain uninitialised until run/step is pressed
-		// Actually, this occurs before onReset message so we are loosing our colour
-		// settings.
-		// We need to move that task to here.
+		// this is now effectively a reset method.
 		log.info("Meta-data: " + meta);
 		Platform.runLater(() -> {
-			processResetUI();
+			clearPreviousResults();
 			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
 			for (DataLabel dl : tsmeta.doubleNames()) {
 				String key = dl.getEnd() + "_d";
@@ -128,32 +124,21 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 				addSeries(key, colour);
 			}
 			timeFormatter.onMetaDataMessage(meta);
-
 		});
-//		// this record contains the ordering of the variables in the data messages
-//		tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
-//		for (DataLabel dl : tsmeta.doubleNames()) {
-//			String key = dl.getEnd() + "_d";
-//			String colour = getColour(activeSeries.size() + 1);
-//			addSeries(key, colour);
-//		}
-//		for (DataLabel dl : tsmeta.intNames()) {
-//			String key = dl.getEnd() + "_i";
-//			String colour = getColour(activeSeries.size() + 1);
-//			addSeries(key, colour);
-//		}
-		// same for intNames - can't we just have Numbers or is it too expensive?
-//		
-//		for (String key : meta.properties().getKeysAsArray()) {
-//			Property p = meta.properties().getProperty(key);
-//			System.out.println(key + ", " + p.getClass().getSimpleName() + ", " + p.getValue());
-//		}
+	}
 
+	private void clearPreviousResults() {
+		if (clearOnReset)
+			chart.getData().clear();
+		else
+			for (XYChart.Series<Number, Number> series : activeSeries.values())
+				setLineColour(series, "lightgrey");
+		activeSeries.clear();
 	}
 
 	@Override
 	public void onDataMessage(TimeSeriesData data) {
-		log.info("Data: " + data);
+		// log.info("Data: " + data);
 		if (policy.canProcessDataMessage(data))
 			Platform.runLater(() -> {
 				processDataMessage(data);
@@ -161,12 +146,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	}
 
 	private void processDataMessage(TimeSeriesData data) {
-		log.info("Processing data " + data);
+		// log.info("Processing data " + data);
 		int sender = data.sender();
-		// this is how you should process the data
-		// if (tsmeta != null) { well... should crash here if not set
-		// can only handle doubles here. Will have to keep a separate list for Integers.
-		// Strings would be something else ordinal y with a label??
 		double x = data.time();
 		for (DataLabel dl : tsmeta.doubleNames()) {
 			double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
@@ -188,24 +169,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void onStatusMessage(State state) {
-		log.info("Status msg received:" + state);
-		if (isSimulatorState(state, waiting)) {
-			// cf onMetaDataMessage. we no longer have anything to do here even though it
-			// makes more sense to do it here it really does not matter
-			// It means widgets no longer need a this message
-//			Platform.runLater(() -> {
-//				processResetUI();
-//			});
-		}
-	}
-
-	private void processResetUI() {
-		if (clearOnReset)
-			chart.getData().clear();
-		else
-			for (XYChart.Series<Number, Number> series : activeSeries.values())
-				setLineColour(series, "lightgrey");
-		activeSeries.clear();
+		/*
+		 * this msg arrives AFTER onMetaDataMsg. Thus the work of that method will
+		 * override this so there is no longer any point to this method... but there may
+		 * be one day.
+		 */
 	}
 
 	@Override

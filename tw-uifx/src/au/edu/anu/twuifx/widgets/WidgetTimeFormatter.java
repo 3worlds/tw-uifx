@@ -131,5 +131,8 @@ public class WidgetTimeFormatter implements HeadlessWidget {
 		// TODO Auto-generated method stub
 
 	};
+//	public String getTimeName() {
+//		timeScale.
+//	}
 
 }
