@@ -37,6 +37,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -86,7 +87,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget.class);
 
 	private LineChart<Number, Number> chart;
-	private List<XYChart.Series<Number, Number>> activeDoubleSeries;
+	private Map<String, XYChart.Series<Number, Number>> activeSeries;
 	private String[] colours;
 	// clear or keep data showing from previous run(s)
 	private boolean clearOnReset;
@@ -106,24 +107,47 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		// NOTE: The first time this msg arrives is at first step not at start up ie. on Reset;
+
+		// NOTE: The first time this msg arrives is at first step not at start up ie. on
+		// Reset. Therefore the controls remain uninitialised until run/step is pressed
+		// Actually, this occurs before onReset message so we are loosing our colour
+		// settings.
+		// We need to move that task to here.
 		log.info("Meta-data: " + meta);
-		// this record contains the ordering of the variables in the data messages
-		tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
-		for (DataLabel dl : tsmeta.doubleNames()) {
-			String name = dl.getEnd();
-			String colour = getColour(activeDoubleSeries.size() + 1);
-			addSeries(name, colour);
-		}
+		Platform.runLater(() -> {
+			processResetUI();
+			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+			for (DataLabel dl : tsmeta.doubleNames()) {
+				String key = dl.getEnd() + "_d";
+				String colour = getColour(activeSeries.size() + 1);
+				addSeries(key, colour);
+			}
+			for (DataLabel dl : tsmeta.intNames()) {
+				String key = dl.getEnd() + "_i";
+				String colour = getColour(activeSeries.size() + 1);
+				addSeries(key, colour);
+			}
+			timeFormatter.onMetaDataMessage(meta);
+
+		});
+//		// this record contains the ordering of the variables in the data messages
+//		tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+//		for (DataLabel dl : tsmeta.doubleNames()) {
+//			String key = dl.getEnd() + "_d";
+//			String colour = getColour(activeSeries.size() + 1);
+//			addSeries(key, colour);
+//		}
+//		for (DataLabel dl : tsmeta.intNames()) {
+//			String key = dl.getEnd() + "_i";
+//			String colour = getColour(activeSeries.size() + 1);
+//			addSeries(key, colour);
+//		}
 		// same for intNames - can't we just have Numbers or is it too expensive?
-		timeFormatter.onMetaDataMessage(meta);
 //		
-		for (String key : meta.properties().getKeysAsArray()) {
-			Property p = meta.properties().getProperty(key);
-			System.out.println(key + ", " + p.getClass().getSimpleName() + ", " + p.getValue());
-		}
-		
-		
+//		for (String key : meta.properties().getKeysAsArray()) {
+//			Property p = meta.properties().getProperty(key);
+//			System.out.println(key + ", " + p.getClass().getSimpleName() + ", " + p.getValue());
+//		}
 
 	}
 
@@ -146,7 +170,14 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		double x = data.time();
 		for (DataLabel dl : tsmeta.doubleNames()) {
 			double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
-			XYChart.Series<Number, Number> series = activeDoubleSeries.get(tsmeta.indexOf(dl));
+			String key = dl.getEnd() + "_d";
+			XYChart.Series<Number, Number> series = activeSeries.get(key);
+			series.getData().add(new Data<Number, Number>(x, y));
+		}
+		for (DataLabel dl : tsmeta.intNames()) {
+			double y = data.getIntValues()[tsmeta.indexOf(dl)];
+			String key = dl.getEnd() + "_i";
+			XYChart.Series<Number, Number> series = activeSeries.get(key);
 			series.getData().add(new Data<Number, Number>(x, y));
 		}
 	}
@@ -159,9 +190,12 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	public void onStatusMessage(State state) {
 		log.info("Status msg received:" + state);
 		if (isSimulatorState(state, waiting)) {
-			Platform.runLater(() -> {
-				processResetUI();
-			});
+			// cf onMetaDataMessage. we no longer have anything to do here even though it
+			// makes more sense to do it here it really does not matter
+			// It means widgets no longer need a this message
+//			Platform.runLater(() -> {
+//				processResetUI();
+//			});
 		}
 	}
 
@@ -169,17 +203,16 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		if (clearOnReset)
 			chart.getData().clear();
 		else
-//			for (XYChart.Series<Number, Number> series : activeSeries.values())
-			for (XYChart.Series<Number, Number> series : activeDoubleSeries)
-				setLineColour(series, "lightgray");
-		activeDoubleSeries.clear();
+			for (XYChart.Series<Number, Number> series : activeSeries.values())
+				setLineColour(series, "lightgrey");
+		activeSeries.clear();
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
 		colours = ColourContrast.allContrastingColourNames(Color.LIGHTGRAY, maxColours);
 //		activeSeries = new HashMap<>();
-		activeDoubleSeries = new ArrayList<>();
+		activeSeries = new HashMap<>();
 		log.info("Prepared user interface");
 		BorderPane content = new BorderPane();
 		NumberAxis xAxis = new NumberAxis();
@@ -196,15 +229,18 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		return content;
 	}
 
-	private XYChart.Series<Number, Number> addSeries(String name, String colour) {
+	private XYChart.Series<Number, Number> addSeries(String key, String colour) {
 		XYChart.Series<Number, Number> result = new XYChart.Series<Number, Number>();
+		String name = key.split("_")[0];
 		result.setName(name);
 		chart.getData().add(result);
 		setLineColour(result, colour);
-//		activeSeries.put(name, result);
-		activeDoubleSeries.add(result);
-		if (activeDoubleSeries.size() == 1)
-			chart.getYAxis().setLabel(name);
+		activeSeries.put(key, result);
+//		if (activeSeries.size() == 1) {
+//			
+//			chart.getYAxis().setLabel(name);
+//			chart.setTitle(name);
+//		}
 		return result;
 	}
 
