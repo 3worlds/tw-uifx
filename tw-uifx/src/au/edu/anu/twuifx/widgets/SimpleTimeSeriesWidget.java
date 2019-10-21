@@ -34,6 +34,8 @@ import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames;
+import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -65,6 +67,7 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesMetadata;
+import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -87,6 +90,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget.class);
 
 	private LineChart<Number, Number> chart;
+	/* lookup table to associate var name with series */
 	private Map<String, XYChart.Series<Number, Number>> activeSeries;
 	/* a set of colours, chosen by the uit for their contrast in RGB space */
 	private String[] colours;
@@ -110,21 +114,50 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	public void onMetaDataMessage(Metadata meta) {
 		// this is now effectively a reset method.
 		log.info("Meta-data: " + meta);
+		peek(meta);
 		Platform.runLater(() -> {
 			clearPreviousResults();
 			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+			List<String> ynames = new ArrayList<>();
 			for (DataLabel dl : tsmeta.doubleNames()) {
-				String key = dl.getEnd() + "_d";
+				String key = dl.toString();
+				ynames.add(key);
 				String colour = getColour(activeSeries.size() + 1);
 				addSeries(key, colour);
 			}
 			for (DataLabel dl : tsmeta.intNames()) {
-				String key = dl.getEnd() + "_i";
+				String key = dl.toString();
+				ynames.add(key);
 				String colour = getColour(activeSeries.size() + 1);
 				addSeries(key, colour);
 			}
+			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+			String xAxisName = TimeUtil.timeUnitName(tu, nTu);
+			chart.getXAxis().setLabel(TimeUtil.timeUnitName(tu, nTu));
+			String yAxisName = String.join("/", ynames);
+			chart.getYAxis().setLabel(yAxisName);
+			String chartTitle = "("+yAxisName+")/("+xAxisName+")";
+			chart.setTitle(chartTitle);
 			timeFormatter.onMetaDataMessage(meta);
 		});
+	}
+
+	private void peek(Metadata meta) {
+		TimeSeriesMetadata ts_meta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+		for (String key : meta.properties().getKeysAsSet()) {
+			System.out.println(key + ": " + meta.properties().getPropertyClassName(key) + ": "
+					+ meta.properties().getPropertyValue(key));
+		}
+		for (DataLabel dl : ts_meta.doubleNames()) {
+			System.out.println("doubleNames: "+dl);
+		}
+		for (DataLabel dl : ts_meta.intNames()) {
+			System.out.println("intNames: "+dl);
+		}
+
+		System.out.println("nDouble: "+ts_meta.nDouble());
+		System.out.println("nInt: "+ts_meta.nInt());
 	}
 
 	private void clearPreviousResults() {
@@ -151,13 +184,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		double x = data.time();
 		for (DataLabel dl : tsmeta.doubleNames()) {
 			double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
-			String key = dl.getEnd() + "_d";
+			String key = dl.getEnd();
 			XYChart.Series<Number, Number> series = activeSeries.get(key);
 			series.getData().add(new Data<Number, Number>(x, y));
 		}
 		for (DataLabel dl : tsmeta.intNames()) {
 			double y = data.getIntValues()[tsmeta.indexOf(dl)];
-			String key = dl.getEnd() + "_i";
+			String key = dl.getEnd();
 			XYChart.Series<Number, Number> series = activeSeries.get(key);
 			series.getData().add(new Data<Number, Number>(x, y));
 		}
@@ -179,31 +212,29 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	@Override
 	public Object getUserInterfaceContainer() {
 		colours = ColourContrast.allContrastingColourNames(Color.LIGHTGRAY, maxColours);
-//		activeSeries = new HashMap<>();
 		activeSeries = new HashMap<>();
 		log.info("Prepared user interface");
 		BorderPane content = new BorderPane();
 		NumberAxis xAxis = new NumberAxis();
 		NumberAxis yAxis = new NumberAxis();
-		xAxis.setLabel("time (units?)");
+		xAxis.setLabel("?");
 		yAxis.setLabel("?");
 		chart = new LineChart<>(xAxis, yAxis);
 		chart.setCreateSymbols(false);
 		chart.setAnimated(false);
 		chart.legendVisibleProperty().set(false);
 		setFontSize(10);
-		chart.setTitle("What should be here?");
+		chart.setTitle("?");
 		content.setCenter(chart);
 		return content;
 	}
 
-	private XYChart.Series<Number, Number> addSeries(String key, String colour) {
+	private XYChart.Series<Number, Number> addSeries(String name, String colour) {
 		XYChart.Series<Number, Number> result = new XYChart.Series<Number, Number>();
-		String name = key.split("_")[0];
 		result.setName(name);
 		chart.getData().add(result);
 		setLineColour(result, colour);
-		activeSeries.put(key, result);
+		activeSeries.put(name, result);
 //		if (activeSeries.size() == 1) {
 //			
 //			chart.getYAxis().setLabel(name);
