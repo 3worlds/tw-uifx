@@ -39,6 +39,10 @@ import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -55,9 +59,15 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -103,18 +113,20 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	private WidgetTrackingPolicy<TimeData> policy;
 
 	private TimeSeriesMetadata tsmeta = null;
+	private BlockingQueue<TimeSeriesData> buffer;
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME_SERIES);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
+		buffer = new LinkedBlockingQueue<TimeSeriesData>(/*1024*/);
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		// this is now effectively a reset method.
 		log.info("Meta-data: " + meta);
-		peek(meta);
+//		peek(meta);
 		Platform.runLater(() -> {
 			clearPreviousResults();
 			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
@@ -137,27 +149,10 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 			chart.getXAxis().setLabel(TimeUtil.timeUnitName(tu, nTu));
 			String yAxisName = String.join("/", ynames);
 			chart.getYAxis().setLabel(yAxisName);
-			String chartTitle = "("+yAxisName+")/("+xAxisName+")";
+			String chartTitle = "(" + yAxisName + ")/(" + xAxisName + ")";
 			chart.setTitle(chartTitle);
 			timeFormatter.onMetaDataMessage(meta);
 		});
-	}
-
-	private void peek(Metadata meta) {
-		TimeSeriesMetadata ts_meta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
-		for (String key : meta.properties().getKeysAsSet()) {
-			System.out.println(key + ": " + meta.properties().getPropertyClassName(key) + ": "
-					+ meta.properties().getPropertyValue(key));
-		}
-		for (DataLabel dl : ts_meta.doubleNames()) {
-			System.out.println("doubleNames: "+dl);
-		}
-		for (DataLabel dl : ts_meta.intNames()) {
-			System.out.println("intNames: "+dl);
-		}
-
-		System.out.println("nDouble: "+ts_meta.nDouble());
-		System.out.println("nInt: "+ts_meta.nInt());
 	}
 
 	private void clearPreviousResults() {
@@ -172,13 +167,45 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	@Override
 	public void onDataMessage(TimeSeriesData data) {
 		// log.info("Data: " + data);
-		if (policy.canProcessDataMessage(data))
-			Platform.runLater(() -> {
-				processDataMessage(data);
-			});
+
+		if (policy.canProcessDataMessage(data)) {
+			try {
+				Thread.yield();
+				buffer.put(data);
+				Platform.runLater(() -> {
+					processBuffer();
+				});
+
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
-	private void processDataMessage(TimeSeriesData data) {
+	private synchronized void processBuffer(){
+		System.out.println("Buffer size: " + buffer.size());
+//		while (!buffer.isEmpty())
+//			processDataMessage(buffer.take());
+		for (TimeSeriesData ts : buffer) {
+			processDataMessage(ts);
+		}
+		buffer.clear();
+//		while (!buffer.isEmpty()) {
+//			//System.out.println("Buffer size: " + buffer.size());
+//			TimeSeriesData d;
+//			try {
+//				d = buffer.take();
+//				processDataMessage(d);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//		}
+	}
+
+	private void processDataMessage(final TimeSeriesData data) {
 		// log.info("Processing data " + data);
 		int sender = data.sender();
 		double x = data.time();
@@ -300,6 +327,23 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		if (result.get().equals(ok)) {
 			clearOnReset = chxClearOnReset.isSelected();
 		}
+	}
+
+	private void peek(Metadata meta) {
+		TimeSeriesMetadata ts_meta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+		for (String key : meta.properties().getKeysAsSet()) {
+			System.out.println(key + ": " + meta.properties().getPropertyClassName(key) + ": "
+					+ meta.properties().getPropertyValue(key));
+		}
+		for (DataLabel dl : ts_meta.doubleNames()) {
+			System.out.println("doubleNames: " + dl);
+		}
+		for (DataLabel dl : ts_meta.intNames()) {
+			System.out.println("intNames: " + dl);
+		}
+
+		System.out.println("nDouble: " + ts_meta.nDouble());
+		System.out.println("nInt: " + ts_meta.nInt());
 	}
 
 }
