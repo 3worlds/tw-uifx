@@ -34,14 +34,12 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(Rec)
 			field x
-				max = java.lang.Double(0.0)
-				min = java.lang.Double(0.0)
+				range = fr.ens.biologie.generic.utils.Interval([0.0,1])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field n
-				max = java.lang.Double(0.0)
-				min = java.lang.Double(0.0)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..2)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 	system sys
