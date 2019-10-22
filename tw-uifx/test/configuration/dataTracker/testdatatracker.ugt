@@ -1,7 +1,11 @@
 treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 
+// Test file for a simple straightforward datatracker
+// cf in the function specification below the code to add in the user project
+
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	
 // TREE
 3worlds testdatatracker
 	experiment exp
@@ -64,7 +68,15 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 							viewOthers = java.lang.Boolean(false)
 						function Func
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys.Func)
+							userClassName = java.lang.String(code.sys.Func)		
+//
+// Copy and paste this text in the changeState(...) method of the generated Func.java class
+// in order to see things displayed in the SimpleTimeSeriesWidget
+//
+//		System.out.println("current = "+((Rec)focal.currentState()).x());
+//		((Rec)focal.nextState()).x(Math.random());
+//		System.out.println("next = "+((Rec)focal.nextState()).x());
+//
 		structure struc
 			component comp
 				driverClass = java.lang.String(code.sys.Rec)
