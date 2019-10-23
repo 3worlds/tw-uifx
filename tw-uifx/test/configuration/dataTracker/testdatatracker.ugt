@@ -1,6 +1,7 @@
 treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 
-// Test file for a simple straightforward datatracker
+// Test file for a simple straightforward datatracker (TimeSeriesDataTracker)
+// 1 data tracker, 1 variable to track (x:double)
 // cf in the function specification below the code to add in the user project
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -34,8 +35,7 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(Rec)
 			field x
-				max = java.lang.Double(0.0)
-				min = java.lang.Double(0.0)
+				range = fr.ens.biologie.generic.utils.Interval([0.0,1])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()

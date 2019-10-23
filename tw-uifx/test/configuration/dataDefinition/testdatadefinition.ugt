@@ -68,14 +68,12 @@ treegraph // saved by OmugiGraphExporter on Wed Oct 16 06:45:27 AEDT 2019
 			table t2
 				record R2
 					field f2
-						max = java.lang.Double(0.0)
-						min = java.lang.Double(0.0)
+						range = fr.ens.biologie.generic.utils.Interval([0.0,1])
 						precision = java.lang.Double(0.0)
 						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 						units = java.lang.String()
 					field f3
-						max = java.lang.Double(0.0)
-						min = java.lang.Double(0.0)
+						range = fr.ens.biologie.generic.utils.Interval([0.0,1])
 						precision = java.lang.Double(0.0)
 						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 						units = java.lang.String()
@@ -84,8 +82,7 @@ treegraph // saved by OmugiGraphExporter on Wed Oct 16 06:45:27 AEDT 2019
 					table t3
 						dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 			field f1
-				max = java.lang.Double(0.0)
-				min = java.lang.Double(0.0)
+				range = fr.ens.biologie.generic.utils.Interval([0.0,100])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
