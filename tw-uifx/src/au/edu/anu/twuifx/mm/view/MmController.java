@@ -72,6 +72,7 @@ import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
@@ -92,6 +93,7 @@ import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
+import au.edu.anu.twuifx.mm.propertyEditors.rangeType.IntervalItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
@@ -107,6 +109,7 @@ import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
+import fr.ens.biologie.generic.utils.Interval;
 
 public class MmController implements ErrorMessageListener, IMMController, IGraphStateListener {
 
@@ -556,7 +559,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	}
 
-
 	// not used i think
 	@Override
 	public String getUserProjectPath() {
@@ -567,7 +569,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	public StringProperty getUserProjectPathProperty() {
 		return userProjectPath;
 	}
-
 
 	private Text getMessageText(ErrorMessagable msg) {
 		Text t = new Text(msg.message(verbosity) + "\n");
@@ -701,6 +702,14 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		allElementsPropertySheet.getItems().setAll(obsList);
 	}
 
+	/*
+	 * I think it's high time, massive fraud was met with massive punishment.
+	 * Following the latest news about the handiwork of developers operating in
+	 * Canberra(CT 23/10/19), perhaps, rather than handing out fines that amount to
+	 * pocket money for these people, and endless Dickensian court cases designed to
+	 * exhaust the funds of their hapless victims, some time spent in the 'slammer'
+	 * might make the CEOs sit up and pay attention.
+	 */
 	private Item makeItemType(String key, TreeGraphDataNode n, boolean editable, String category, String description) {
 		Object value = n.properties().getPropertyValue(key);
 		if (value instanceof FileType) {
@@ -712,6 +721,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			return new DateTimeItem(this, key, n, true, category, description);
 		} else if (value instanceof TrackerType) {
 			return new TrackerTypeItem(this, key, n, true, category, description);
+		} else if (value instanceof Interval) {
+			return new IntervalItem(this, key, n, true, category, description);
 		} else
 			return new SimplePropertyItem(this, key, n, editable, category, description);
 	}
