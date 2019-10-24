@@ -290,7 +290,7 @@ public abstract class StructureEditorAdapter
 	private String getNewName(String childLabel, SimpleDataTreeNode childBaseSpec) {
 		// default name is label with 1 appended
 
-		String promptId = childLabel + "1";
+		String promptId = childLabel.replaceAll("[aeiou]", "") + "1";
 		boolean captialize = specifications.nameStartsWithUpperCase(childBaseSpec);
 		if (captialize)
 			promptId = WordUtils.capitalize(promptId);

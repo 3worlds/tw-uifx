@@ -46,7 +46,8 @@ public class TwSpecifications implements //
 					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getQueryStringTableEntries(constraint);
-				String fname = pars.get(2);
+				
+				String fname = pars.get(pars.size()-1);
 				// prevent infinite recursion
 				if (!discoveredFiles.contains(fname)) {
 					discoveredFiles.add(fname);
