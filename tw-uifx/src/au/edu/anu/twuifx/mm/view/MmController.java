@@ -702,14 +702,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		allElementsPropertySheet.getItems().setAll(obsList);
 	}
 
-	/*
-	 * I think it's high time, massive fraud was met with massive punishment.
-	 * Following the latest news about the handiwork of developers operating in
-	 * Canberra(CT 23/10/19), perhaps, rather than handing out fines that amount to
-	 * pocket money for these people, and endless Dickensian court cases designed to
-	 * exhaust the funds of their hapless victims, some time spent in the 'slammer'
-	 * might make the CEOs sit up and pay attention.
-	 */
 	private Item makeItemType(String key, TreeGraphDataNode n, boolean editable, String category, String description) {
 		Object value = n.properties().getPropertyValue(key);
 		if (value instanceof FileType) {
