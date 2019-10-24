@@ -26,7 +26,7 @@
 <?import javafx.scene.text.TextFlow?>
 <?import org.controlsfx.control.PropertySheet?>
 
-<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mm.view.MmController">
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mm.view.MmController">
 	<top>
 		<MenuBar BorderPane.alignment="CENTER">
 			<menus>
@@ -106,13 +106,13 @@
 		</ToolBar>
 	</bottom>
 	<center>
-		<SplitPane fx:id="splitPane2" dividerPositions="0.75" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+		<SplitPane fx:id="splitPane2" dividerPositions="0.75" orientation="VERTICAL" BorderPane.alignment="CENTER">
 			<items>
-				<BorderPane prefHeight="200.0" prefWidth="200.0">
+				<BorderPane>
 					<center>
-						<SplitPane fx:id="splitPane1" dividerPositions="0.25" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+						<SplitPane fx:id="splitPane1" dividerPositions="0.25" BorderPane.alignment="CENTER">
 							<items>
-								<BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;">
+								<BorderPane style="-fx-background-color: lightgrey;">
 									<center>
 										<TabPane fx:id="tabPaneProperties" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
 											<tabs>
@@ -137,7 +137,7 @@
 										</TabPane>
 									</center>
 								</BorderPane>
-								<BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;">
+								<BorderPane style="-fx-background-color: lightgrey;">
 									<center>
 										<ScrollPane fx:id="scrollPane" pannable="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;" BorderPane.alignment="CENTER">
 											<content>
@@ -173,11 +173,11 @@
 						</SplitPane>
 					</center>
 				</BorderPane>
-				<BorderPane prefHeight="200.0" prefWidth="200.0">
+				<BorderPane>
                <center>
-										<BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+										<BorderPane BorderPane.alignment="CENTER">
 											<top>
-												<ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+												<ToolBar BorderPane.alignment="CENTER">
 													<items>
                               <Label text="Compliance tasks " />
                               <Separator orientation="VERTICAL" />
@@ -189,7 +189,7 @@
 												</ToolBar>
 											</top>
                      <center>
-                        <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <ScrollPane BorderPane.alignment="CENTER">
                            <content>
                               <TextFlow fx:id="textFlowErrorMsgs" prefWidth="600.0" />
                            </content>
