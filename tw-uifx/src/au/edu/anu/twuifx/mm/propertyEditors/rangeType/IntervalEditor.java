@@ -30,6 +30,8 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.rangeType;
 
+import java.util.Optional;
+
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
@@ -37,7 +39,17 @@ import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
+import fr.ens.biologie.generic.utils.Interval;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
 public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
@@ -69,132 +81,40 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	}
 
 	private String editDateTime(String currentValue) {
-//		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
-//		dlg.setTitle(getProperty().getName());
+		Interval interval = Interval.valueOf(currentValue);
+		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
+		dlg.setTitle(getProperty().getName());
 //		// dlg.initOwner(Dialogs);
-//		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
-//		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-//		BorderPane pane = new BorderPane();
-//		dlg.getDialogPane().setContent(pane);
-//		HBox top = new HBox();
-//		pane.setTop(top);
-//		top.setAlignment(Pos.CENTER);
-//		top.setSpacing(5);
-//		top.getChildren().addAll(new Label("Time scale:"), new Label(dtItem.getTimeScaleType().name()));
-//
-//		GridPane grid = new GridPane();
-//		pane.setCenter(grid);
-//		Set<TimeUnits> forbidden = new HashSet<>();
-//		if (!(dtItem.getTUMin().compareTo(TimeUnits.DECADE) >= 0)) {
-//			forbidden.add(TimeUnits.DECADE);
-//			forbidden.add(TimeUnits.CENTURY);
-//			forbidden.add(TimeUnits.MILLENNIUM);
-//		}
-//
-//		if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)) {
-//			forbidden.add(TimeUnits.DECADE);
-//			forbidden.add(TimeUnits.CENTURY);
-//			forbidden.add(TimeUnits.MILLENNIUM);
-//			forbidden.add(TimeUnits.WEEK);
-//			forbidden.add(TimeUnits.MILLISECOND);
-//		}
-//		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
-//		if (dtItem.getTimeScaleType().equals(TimeScaleType.MONO_UNIT))
-//			for (TimeUnits unit : validUnits)
-//				if (!dtItem.getTUMin().equals(unit))
-//					forbidden.add(unit);
-//
-//
-//		List<TimeUnits> units = new ArrayList<>();
-//		for (TimeUnits unit : validUnits)
-//			if (!forbidden.contains(unit))
-//				if ((dtItem.getTUMin().compareTo(unit) <= 0) && dtItem.getTUMax().compareTo(unit) >= 0)
-//					units.add(unit);
-//		units.sort(new Comparator<TimeUnits>() {
-//
-//			@Override
-//			public int compare(TimeUnits t1, TimeUnits t2) {
-//				// smallest to largest
-//				return t1.compareTo(t2);
-//			}
-//
-//		});
-//
-//		long currentSetting = Long.parseLong(currentValue);
-//		long[] factors = null;
-//		if (!units.isEmpty()) {
-//			if (dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN))
-//				factors = TimeUtil.factorInexactTime(currentSetting, units);
-//			else
-//				factors = TimeUtil.factorExactTime(currentSetting, units);
-//		}
-//		if (units.isEmpty()) {
-//			units.add(TimeUnits.UNSPECIFIED);
-//			factors = new long[1];
-//			factors[0] = currentSetting;
-//		}
-//		List<Duple<TimeUnits, Spinner<Integer>>> lstSpinners = new ArrayList<>();
-//		int i = 0;
-//		for (TimeUnits unit : units) {
-//			Spinner<Integer> spinner = new Spinner<>();
-//			spinner.setEditable(true);
-//			SpinnerValueFactory<Integer> factory;
-//			if (units.size() == 1)
-//				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE,
-//						(int) factors[i]);
-//			else
-//				factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(-Integer.MAX_VALUE, Integer.MAX_VALUE,
-//						(int) factors[i]);
-//
-//			spinner.setValueFactory(factory);
-//			spinner.setMaxWidth(100);
-//
-//			// handles null when spinner is +-ed
-//			spinner.valueProperty().addListener(
-//					(observableValue, oldValue, newValue) -> handleSpin(spinner, observableValue, oldValue, newValue));
-//
-//			// This forces the edited value to be committed when losing focus (i.e. leaving
-//			// the dlg)
-//			spinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
-//				if (!newValue)
-//					spinner.increment(0);
-//			});
-//			lstSpinners.add(new Duple<TimeUnits, Spinner<Integer>>(unit, spinner));
-//			grid.add(new Label(unit.abbreviation()), units.size() - i, 0);
-//			grid.add(spinner, units.size() - i, 1);
-//			i++;
-//		}
-//		dlg.setResizable(true);
-//		Optional<ButtonType> result = dlg.showAndWait();
-//		if (result.get().equals(ok)) {
-//			// we assume the shortest is the base unit
-//			Long time = 0L;
-//			if (!dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)) {
-//				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners) {
-//					Integer n = duple.getSecond().getValue();
-//					if (n != 0) {
-//						Long factor = TimeUtil.timeUnitExactConversionFactor(duple.getFirst(), dtItem.getTUMin());
-//						time += (factor * n);
-//					}
-//				}
-//			} else {
-//				LocalDateTime baseDateTime = TimeUtil.longToDate(currentSetting, dtItem.getTUMin());
-//				LocalDateTime dateTime = TimeUtil.longToDate(currentSetting, dtItem.getTUMin());
-//				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners) {
-//					long n = TimeUtil.getDateTimeField(baseDateTime, duple.getFirst());
-//					long diff = duple.getSecond().getValue() - n;
-//					if (diff != 0)
-//						dateTime = TimeUtil.getIncrementedDate(dateTime, duple.getFirst(), diff);
-//				}
-//				time = TimeUtil.dateToLong(dateTime, dtItem.getTUMin(), baseDateTime);
-//			}
-//			return time.toString();
-//
-//		}
-		return currentValue;
-
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane content = new BorderPane();
+		dlg.getDialogPane().setContent(content);
+		GridPane grid = new GridPane();
+		content.setCenter(grid);
+		
+		TextField tfFrom = new TextField("*");
+		String tt ="*";
+		String ft = "*";
+		Double inf = interval.inf();
+		Double sup = interval.sup();
+		if (!inf.equals(Double.NEGATIVE_INFINITY))
+			ft=inf.toString();
+		if (!sup.equals(Double.POSITIVE_INFINITY))
+			tt = sup.toString();
+		TextField tfTo = new TextField();
+		tfFrom.setText(ft);
+		tfTo.setText(tt);
+		grid.add(new Label("From:"), 0, 0);
+		grid.add(tfFrom, 1, 0);
+		grid.add(new Label("To:"), 0, 1);
+		grid.add(tfTo, 1, 1);
+		dlg.setResizable(true);
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
+			return currentValue;
+		} else
+			return currentValue;
 	}
-
 
 	@Override
 	public void setValue(String value) {

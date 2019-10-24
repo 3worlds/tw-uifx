@@ -59,7 +59,6 @@ public class IntervalItem extends SimplePropertyItem {
 
 	@Override
 	public void setValue(Object value) {
-		// TODO This will be wrong - check later ?? What?
 		Interval oldValue = (Interval) node.properties().getPropertyValue(key);
 		Interval newValue = Interval.valueOf((String) value);
 		if (!oldValue.equals(newValue)) {
