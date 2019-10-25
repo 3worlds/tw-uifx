@@ -85,6 +85,8 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	}
 
 	private String editInterval(String currentValue) {
+		// TODO put change listeners on infinite check boxes to hide relevant open cb
+		// and other infinite check box
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
 		dlg.initOwner((Window) Dialogs.owner());
@@ -110,6 +112,39 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		CheckBox cbHighOpen = new CheckBox("[");
 		CheckBox cbPosInf = new CheckBox("+∞");
 		CheckBox cbNegInf = new CheckBox("-∞");
+		cbNegInf.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue) {
+				cbPosInf.setVisible(false);
+				cbLowOpen.setVisible(false);
+				tfLow.setVisible(false);
+			} else {
+				cbPosInf.setVisible(true);
+				cbLowOpen.setVisible(true);
+				tfLow.setVisible(true);
+				try {
+					Double tmp = Double.parseDouble(tfLow.getText());
+				} catch (NumberFormatException e) {
+					tfLow.setText("0.0");
+				}
+			}
+		});
+		cbPosInf.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue) {
+				cbNegInf.setVisible(false);
+				cbHighOpen.setVisible(false);
+				tfHigh.setVisible(false);
+			} else {
+				cbNegInf.setVisible(true);
+				cbHighOpen.setVisible(true);
+				tfHigh.setVisible(true);
+				try {
+					Double tmp = Double.parseDouble(tfHigh.getText());
+				} catch (NumberFormatException e) {
+					tfHigh.setText("0.0");
+				}
+			}
+		});
+
 		if (interval.halfOpenInf())
 			cbLowOpen.setSelected(true);
 		if (interval.halfOpenSup())
@@ -118,17 +153,13 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 			cbNegInf.setSelected(true);
 		if (high.equals(Double.POSITIVE_INFINITY))
 			cbPosInf.setSelected(true);
-		tfHigh.editableProperty().bind(cbPosInf.selectedProperty().not());
-		tfHigh.disableProperty().bind(tfHigh.editableProperty().not());
-		tfLow.editableProperty().bind(cbNegInf.selectedProperty().not());
-		tfLow.disableProperty().bind(tfLow.editableProperty().not());
 		tfLow.setText(txtLow);
 		tfHigh.setText(txtHigh);
 		grid.add(cbPosInf, 0, 0);
 		grid.add(cbLowOpen, 1, 0);
 		grid.add(tfLow, 2, 0);
-		//grid.add(new Label("Low:"), 0, 0);
-		//grid.add(new Label("High:"), 0, 1);
+		// grid.add(new Label("Low:"), 0, 0);
+		// grid.add(new Label("High:"), 0, 1);
 		grid.add(tfHigh, 3, 0);
 		grid.add(cbHighOpen, 4, 0);
 		grid.add(cbNegInf, 5, 0);
@@ -179,22 +210,22 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 				/* open ]x,y[ */
 				interval = Interval.open(low, high);
 			} else if (halfOpenInf && !halfOpenSup && !negInf && !posInf) {
-				/* open inf ]x,y]*/
+				/* open inf ]x,y] */
 				interval = Interval.halfOpenInf(low, high);
 			} else if (!halfOpenInf && halfOpenSup && !negInf && !posInf) {
-				/* open sup [x,y[*/
+				/* open sup [x,y[ */
 				interval = Interval.halfOpenSup(low, high);
 			} else if (!halfOpenSup && negInf) {
-				/*"]-∞,high]"*/
+				/* "]-∞,high]" */
 				interval = Interval.toNegInf(high);
 			} else if (!halfOpenInf && !negInf && posInf) {
-				/*[low,+∞[*/
+				/* [low,+∞[ */
 				interval = Interval.toPosInf(low);
 			} else if (halfOpenSup && negInf) {
-				/*]-∞,high[*/
+				/* ]-∞,high[ */
 				interval = Interval.openToNegInf(high);
 			} else if (halfOpenInf && posInf) {
-				/*]low,+∞[*/
+				/* ]low,+∞[ */
 				interval = Interval.openToPosInf(low);
 			} else
 				return currentValue;
