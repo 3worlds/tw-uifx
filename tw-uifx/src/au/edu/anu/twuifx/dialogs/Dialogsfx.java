@@ -250,4 +250,9 @@ public class Dialogsfx implements IDialogs {
 		return null;
 	}
 
+	@Override
+	public Object owner() {
+		return owner;
+	}
+
 }
