@@ -28,7 +28,7 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors.rangeType;
+package au.edu.anu.twuifx.mm.propertyEditors.intervalType;
 
 import java.util.Optional;
 
@@ -76,7 +76,7 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	private void onAction() {
 		String oldString = (String) dtItem.getValue();
 		String newString = oldString;
-		newString = editDateTime(oldString);
+		newString = editInterval(oldString);
 		if (!newString.equals(oldString)) {
 			setValue(newString);
 			// GraphState.setChanged();
@@ -84,7 +84,7 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		}
 	}
 
-	private String editDateTime(String currentValue) {
+	private String editInterval(String currentValue) {
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
 		dlg.initOwner((Window) Dialogs.owner());
@@ -99,41 +99,106 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		String txtLow = "";
 		String txtHigh = "";
 		Double low = interval.inf();
-		Double high = interval.sup();
+		Double high = interval.sup();// ?? wrong
 		if (!low.equals(Double.NEGATIVE_INFINITY))
 			txtLow = low.toString();
 		if (!high.equals(Double.POSITIVE_INFINITY))
 			txtHigh = high.toString();
 		TextField tfLow = new TextField("");
 		TextField tfHigh = new TextField();
-		CheckBox cbLow = new CheckBox("Inclusive");
-		CheckBox cbHigh = new CheckBox("Inclusive");
-		CheckBox cbLowInf = new CheckBox("Infinite");
-		CheckBox cbHighInf = new CheckBox("Infinite");
+		CheckBox cbLowOpen = new CheckBox("]");
+		CheckBox cbHighOpen = new CheckBox("[");
+		CheckBox cbPosInf = new CheckBox("+∞");
+		CheckBox cbNegInf = new CheckBox("-∞");
+		if (interval.halfOpenInf())
+			cbLowOpen.setSelected(true);
+		if (interval.halfOpenSup())
+			cbHighOpen.setSelected(true);
+		if (low.equals(Double.NEGATIVE_INFINITY))
+			cbNegInf.setSelected(true);
+		if (high.equals(Double.POSITIVE_INFINITY))
+			cbPosInf.setSelected(true);
+		tfHigh.editableProperty().bind(cbPosInf.selectedProperty().not());
+		tfHigh.disableProperty().bind(tfHigh.editableProperty().not());
+		tfLow.editableProperty().bind(cbNegInf.selectedProperty().not());
+		tfLow.disableProperty().bind(tfLow.editableProperty().not());
 		tfLow.setText(txtLow);
 		tfHigh.setText(txtHigh);
 		grid.add(new Label("Low:"), 0, 0);
 		grid.add(tfLow, 1, 0);
-		grid.add(cbLow, 2, 0);
-		grid.add(cbLowInf, 3, 0);
+		grid.add(cbLowOpen, 2, 0);
+		grid.add(cbPosInf, 3, 0);
 		grid.add(new Label("High:"), 0, 1);
 		grid.add(tfHigh, 1, 1);
-		grid.add(cbHigh, 2, 1);
-		grid.add(cbHighInf, 3, 1);
+		grid.add(cbHighOpen, 2, 1);
+		grid.add(cbNegInf, 3, 1);
 		GridPane.setMargin(tfLow, new Insets(0, 5, 0, 0));
-		GridPane.setMargin(cbLow, new Insets(0, 5, 0, 0));
+		GridPane.setMargin(cbLowOpen, new Insets(0, 5, 0, 0));
 		GridPane.setMargin(tfHigh, new Insets(0, 5, 0, 0));
-		GridPane.setMargin(cbHigh, new Insets(0, 5, 0, 0));
-		GridPane.setMargin(cbLowInf, new Insets(0, 5, 0, 0));
-		GridPane.setMargin(cbHighInf, new Insets(0, 5, 0, 0));
+		GridPane.setMargin(cbHighOpen, new Insets(0, 5, 0, 0));
+		GridPane.setMargin(cbPosInf, new Insets(0, 5, 0, 0));
+		GridPane.setMargin(cbNegInf, new Insets(0, 5, 0, 0));
 		dlg.setResizable(true);
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
-			txtLow = tfLow.getText();
-			txtHigh = tfHigh.getText();
+			boolean halfOpenInf = cbLowOpen.isSelected();
+			boolean halfOpenSup = cbHighOpen.isSelected();
+			boolean posInf = cbPosInf.isSelected();
+			boolean negInf = cbNegInf.isSelected();
+			try {
+				low = Double.parseDouble(tfLow.getText());
+			} catch (NumberFormatException e) {
+				low = Double.NEGATIVE_INFINITY;
+			}
+			try {
+				high = Double.parseDouble(tfHigh.getText());
+			} catch (NumberFormatException e) {
+				high = Double.POSITIVE_INFINITY;
+			}
+			if (posInf)
+				high = Double.POSITIVE_INFINITY;
+			if (negInf)
+				low = Double.NEGATIVE_INFINITY;
 
-			// Interval interval = new Interval();
-			return currentValue;
+			// Can't be both
+			if (posInf && negInf) {
+				Dialogs.errorAlert("Interval error", "", "Both bounds cannot be infinite");
+				return currentValue;
+			}
+
+			// low must be lower than high.
+			if (low > high) {
+				Double tmp = high;
+				high = low;
+				low = tmp;
+			}
+			if (!halfOpenInf && !halfOpenSup && !negInf && !posInf) {
+				/* Simple closed [x,y] */
+				interval = Interval.closed(low, high);
+			} else if (halfOpenInf && halfOpenSup && !negInf && !posInf) {
+				/* open ]x,y[ */
+				interval = Interval.open(low, high);
+			} else if (halfOpenInf && !halfOpenSup && !negInf && !posInf) {
+				/* open inf ]x,y]*/
+				interval = Interval.halfOpenInf(low, high);
+			} else if (!halfOpenInf && halfOpenSup && !negInf && !posInf) {
+				/* open sup [x,y[*/
+				interval = Interval.halfOpenSup(low, high);
+			} else if (!halfOpenSup && negInf) {
+				/*"]-∞,high]"*/
+				interval = Interval.toNegInf(high);
+			} else if (!halfOpenInf && !negInf && posInf) {
+				/*[low,+∞[*/
+				interval = Interval.toPosInf(low);
+			} else if (halfOpenSup && negInf) {
+				/*]-∞,high[*/
+				interval = Interval.openToNegInf(high);
+			} else if (halfOpenInf && posInf) {
+				/*]low,+∞[*/
+				interval = Interval.openToPosInf(low);
+			} else
+				return currentValue;
+			return interval.toString();
 		} else
 			return currentValue;
 	}

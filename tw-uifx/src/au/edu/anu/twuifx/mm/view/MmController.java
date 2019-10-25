@@ -93,7 +93,7 @@ import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
-import au.edu.anu.twuifx.mm.propertyEditors.rangeType.IntervalItem;
+import au.edu.anu.twuifx.mm.propertyEditors.intervalType.IntervalItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;

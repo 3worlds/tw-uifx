@@ -28,7 +28,7 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors.rangeType;
+package au.edu.anu.twuifx.mm.propertyEditors.intervalType;
 
 import java.util.Optional;
 
