@@ -79,13 +79,13 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 // Copy and paste this text in the changeState(...) method of the generated Func.java class
 // in order to see things displayed in the SimpleTimeSeriesWidget
 //
-//	System.out.println("current = "+((Rec)focal.currentState()).x()
-//		+" "+((Rec)focal.currentState()).n());
-//	double x = Math.random();
-//	((Rec)focal.nextState()).x(x);
-//	((Rec)focal.nextState()).n((int)(Math.round(x*8)/4));
-//	System.out.println("next = "+((Rec)focal.nextState()).x()
-//		+" "+((Rec)focal.nextState()).n());
+//		System.out.println(getClass().getSimpleName()+"	Time	"+t);
+//		Rec var = (Rec) focal.nextState();
+//		double x = Math.random();
+//		double xx = ((Rec)focal.currentState()).tx().get(0);
+//		var.tx().set(x,0);
+//		var.tx().set(2*x, 1);
+//		var.tx().set((xx+x)/2,2);
 //
 		structure struc
 			component comp
