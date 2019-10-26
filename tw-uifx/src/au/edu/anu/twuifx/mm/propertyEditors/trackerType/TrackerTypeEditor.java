@@ -31,16 +31,20 @@
 package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.controlsfx.control.ListSelectionView;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.data.Field;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twcore.data.TableNode;
+import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
@@ -59,6 +63,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
@@ -69,11 +74,9 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
  * @date 13 Oct 2019
  */
 public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
-	private enum DataType {
-		DT_FIELD, DT_TABLE, DT_STRUCT;
-	}
 
 	private LabelButtonControl view;
+	private List<Record> catRecords;
 
 	public TrackerTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -83,103 +86,67 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		view.setOnAction(e -> onAction());
-	}
-
-	private ListSelectionView<String> buildTab(TabPane tabPane, String title) {
-		Tab tab = new Tab(title);
-		tabPane.getTabs().add(tab);
-		ListSelectionView<String> list = new ListSelectionView<>();
-		BorderPane p = new BorderPane();
-		tab.setContent(p);
-		p.setCenter(list);
-		return list;
-	}
-
-	private DataType getDataType(String s) {
-		// we don't yet know how we will parse this
-		// field = does not contain[]
-		// table does contain []
-		// a structure? Perhaps should begin with a dot and must have [];
-		if (!s.contains(SaveableAsText.SQUARE_BRACKETS + ""))
-			return DataType.DT_FIELD;
-		if (s.contains("."))
-			return DataType.DT_STRUCT;
-		return DataType.DT_TABLE;
+		catRecords = getRootRecords();
 	}
 
 	private Object onAction() {
-		Tuple<List<Field>, List<TableNode>, List<TreeGraphDataNode>> items = getDrivers();
+		if (catRecords.isEmpty()) {
+			Dialogs.errorAlert(getProperty().getName(), "Property setting",
+					"This property cannot be edited until the\n process drivers are defined.");
+			return null;
+		}
+		BorderPane contents = new BorderPane();
+		ListSelectionView<String> listViewData = new ListSelectionView<>();
+		ObservableList<String> srcData = listViewData.getSourceItems();
+		ObservableList<String> trgData = listViewData.getTargetItems();
+		contents.setCenter(listViewData);
+		HBox hbox = new HBox();
+		contents.setBottom(hbox);
 
-		TabPane tabPane = new TabPane();
-		ListSelectionView<String> listViewFields = buildTab(tabPane, "Fields");
-		ObservableList<String> srcFields = listViewFields.getSourceItems();
-		ObservableList<String> trgFields = listViewFields.getTargetItems();
-
-		ListSelectionView<String> listViewTables = buildTab(tabPane, "Tables");
-		ObservableList<String> srcTables = listViewTables.getSourceItems();
-		ObservableList<String> trgTables = listViewTables.getTargetItems();
-
-		ListSelectionView<String> listViewStruct = buildTab(tabPane, "Structures");
-		ObservableList<String> srcStruct = listViewStruct.getSourceItems();
-		ObservableList<String> trgStruct = listViewStruct.getTargetItems();
-
+		Map<DataLabel, Integer> items = getDrivers();
 		TrackerTypeItem tti = (TrackerTypeItem) this.getProperty();
 		TrackerType tt = TrackerType.valueOf((String) tti.getValue());
+		fillSrcData(tt, srcData);
 
-		for (int i = 0; i < tt.size(); i++) {
-			String s = tt.getWithFlatIndex(i);
-			switch (getDataType(s)) {
-			case DT_FIELD: {
-				trgFields.add(s);
-				break;
-			}
-			case DT_TABLE: {
-				trgTables.add(s);// no way of knowing the indexing
-				break;
-			}
-			case DT_STRUCT: {
-				trgStruct.add(s);// no way of knowing the indexing
-				break;
-			}
-			default: {
-				throw new TwuifxException("Unrecognized tracking entry: '" + s + "'.");
-			}
-			}
-		}
-		// WIP!
-		// simple fields of the root record
-		for (Field field : items.getFirst()) {
-			String s = field.id();
-			if (!trgFields.contains(s))
-				srcFields.add(s);
-		}
-		// simple tables of the root record
-		// we will need some index selection ui
-		for (TableNode table : items.getSecond()) {
-			String s = table.id();
-			srcTables.add(s);
-		}
-		// recursive structures of tables and records
-		// we will need some index selection ui
-		for (TreeGraphDataNode struc : items.getThird()) {
-			// for the moment i just add a '.' in front to indicate its nature.
-			String s = "." + struc.id();
-			srcStruct.add(s);
-		}
+		items.entrySet().forEach(entry -> {
+			String s = entry.getKey().getEnd();
+			if (!trgData.contains(s))
+				srcData.add(s);
+		});
 
-		if (Dialogs.editList(getProperty().getName(), "", "", tabPane)) {
+		if (Dialogs.editList(getProperty().getName(), "", "", contents)) {
 			// build a string from the items in the lists.
 
 		}
 		return null;
 	}
 
-	private Tuple<List<Field>, List<TableNode>, List<TreeGraphDataNode>> getDrivers() {
-		List<Field> fieldList = new ArrayList<>();
-		List<TableNode> tableList = new ArrayList<>();
-		List<TreeGraphDataNode> structList = new ArrayList<>();
-		Tuple<List<Field>, List<TableNode>, List<TreeGraphDataNode>> result = new Tuple<List<Field>, List<TableNode>, List<TreeGraphDataNode>>(
-				fieldList, tableList, structList);
+	private TreeGraphDataNode findNode(String id) {
+		for (TreeGraphDataNode node: ConfigGraph.getGraph().nodes()) {
+			if (node.id().equals(id))
+				return node;
+		}
+		return null;
+	}
+	private void fillSrcData(TrackerType tt, ObservableList<String> srcData) {
+		for (int i = 0; i < tt.size(); i++) {
+			String s = tt.getWithFlatIndex(i);
+			DataLabel dl = new DataLabel();
+			TreeGraphDataNode node = findNode(s);
+			//wip
+			
+//			dl.append(rootRecord.id());
+//			buildDataLabel(rootRecord, dl, s);
+		}
+	}
+
+	private void buildDataLabel(Record record, DataLabel dl, String s) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private List<Record> getRootRecords() {
+		List<Record> result = new ArrayList<>();
 		TrackerTypeItem item = (TrackerTypeItem) getProperty();
 		TreeGraphDataNode process = (TreeGraphDataNode) item.getNode().getParent();
 		if (process != null) {
@@ -189,23 +156,34 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			for (TreeGraphDataNode cat : cats) {
 				Record record = (Record) get(cat.edges(Direction.OUT),
 						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())), endNode());
-				if (record != null) {
-					recurseRecord(0, fieldList, tableList, structList, record);
-				}
+				if (record != null)
+					result.add(record);
 			}
 		}
+		return result;
+	}
+
+	private Map<DataLabel, Integer> getDrivers() {
+		// list all fields and tables with their total dimensions.
+		List<Field> fieldList = new ArrayList<>();
+		List<TableNode> tableList = new ArrayList<>();
+		List<TreeGraphDataNode> structList = new ArrayList<>();
+		Map<DataLabel, Integer> result = new HashMap<>();
+		TrackerTypeItem item = (TrackerTypeItem) getProperty();
+		//recurseRecord(0, fieldList, tableList, structList, rootRecord);
 		return result;
 	}
 
 	private void recurseRecord(int depth, List<Field> fieldList, List<TableNode> tableList,
 			List<TreeGraphDataNode> structList, TreeGraphDataNode record) {
 		@SuppressWarnings("unchecked")
+
 		List<Field> fields = (List<Field>) get(record.getChildren(),
 				selectZeroOrMany(hasTheLabel(ConfigurationNodeLabels.N_FIELD.label())));
 		if (depth == 0)
 			fieldList.addAll(fields);
-		else
-			structList.add(record);// TODO we don't want to add this if it ONLY has a table
+//		else
+//			structList.add(record);// TODO we don't want to add this if it ONLY has a table
 		@SuppressWarnings("unchecked")
 		List<TableNode> tables = (List<TableNode>) get(record.getChildren(),
 				selectZeroOrMany(hasTheLabel(ConfigurationNodeLabels.N_TABLE.label())));

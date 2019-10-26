@@ -208,7 +208,7 @@ public abstract class StructureEditorAdapter
 		if (currentChoice == null)
 			return true;
 		// Can't change to other choice
-		if (!currentChoice.equals(proposedEndNode.classId()))
+		if (!currentChoice.equals(proposedEndNode.cClassId()))
 			return false;
 		return true;
 	}
@@ -239,7 +239,6 @@ public abstract class StructureEditorAdapter
 					return false;
 			}
 		}
-		;
 		return true;
 	}
 
