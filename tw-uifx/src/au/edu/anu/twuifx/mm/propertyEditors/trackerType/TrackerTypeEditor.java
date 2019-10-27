@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.controlsfx.control.ListSelectionView;
 import org.controlsfx.control.PropertySheet.Item;
@@ -45,26 +46,26 @@ import au.edu.anu.twcore.data.Field;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twcore.data.TableNode;
 import au.edu.anu.twcore.data.runtime.DataLabel;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels;
-import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
-import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import fr.cnrs.iees.twcore.constants.TrackerType;
-import fr.ens.biologie.generic.SaveableAsText;
 import fr.ens.biologie.generic.utils.Duple;
-import fr.ens.biologie.generic.utils.Tuple;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
@@ -106,13 +107,37 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		Map<DataLabel, Integer> items = getDrivers();
 		TrackerTypeItem tti = (TrackerTypeItem) this.getProperty();
 		TrackerType tt = TrackerType.valueOf((String) tti.getValue());
-		fillSrcData(tt, srcData);
+		fillSrcData(tt, trgData);
 
-		items.entrySet().forEach(entry -> {
+		int maxDim = 0;
+		for (Map.Entry<DataLabel, Integer> entry : items.entrySet()) {
+			int dim = entry.getValue();
+			maxDim = Math.max(maxDim, dim);
 			String s = entry.getKey().getEnd();
 			if (!trgData.contains(s))
-				srcData.add(s);
-		});
+				srcData.add(entry.getKey().getEnd());
+		}
+		List<Duple<CheckBox, Spinner>> indices = new ArrayList<>();
+		for (int i = 0; i < maxDim; i++) {
+			CheckBox cb = new CheckBox("const.");
+			Spinner<Integer> sp = new Spinner<>();
+			sp.setEditable(true);
+			SpinnerValueFactory<Integer> factory;
+			factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, (int) 0);
+			sp.setValueFactory(factory);
+			sp.setMaxWidth(100);
+			VBox vbox = new VBox();
+			vbox.getChildren().addAll(cb, sp);
+			hbox.getChildren().add(vbox);
+			indices.add(new Duple<CheckBox, Spinner>(cb, sp));
+			cb.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue) 
+				sp.setVisible(true);
+			else
+				sp.setVisible(false);
+			});
+			cb.setSelected(true);
+		}
 
 		if (Dialogs.editList(getProperty().getName(), "", "", contents)) {
 			// build a string from the items in the lists.
@@ -122,27 +147,43 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private TreeGraphDataNode findNode(String id) {
-		for (TreeGraphDataNode node: ConfigGraph.getGraph().nodes()) {
+		for (TreeGraphDataNode node : ConfigGraph.getGraph().nodes()) {
 			if (node.id().equals(id))
 				return node;
 		}
 		return null;
 	}
-	private void fillSrcData(TrackerType tt, ObservableList<String> srcData) {
+
+	private void fillSrcData(TrackerType tt, ObservableList<String> list) {
 		for (int i = 0; i < tt.size(); i++) {
 			String s = tt.getWithFlatIndex(i);
-			DataLabel dl = new DataLabel();
-			TreeGraphDataNode node = findNode(s);
-			//wip
-			
-//			dl.append(rootRecord.id());
-//			buildDataLabel(rootRecord, dl, s);
+			TreeNode node = findNode(s);
+			if (node != null) {
+				Duple<DataLabel, Integer> entry = getEntry(node);
+				list.add(entry.getFirst().getEnd());
+			}
 		}
 	}
 
-	private void buildDataLabel(Record record, DataLabel dl, String s) {
-		// TODO Auto-generated method stub
-
+	private Duple<DataLabel, Integer> getEntry(TreeNode node) {
+		int dims = 0;
+		if (node instanceof TableNode)
+			dims += countDims((TableNode) node);
+		// duplicate code from here
+		Stack<TreeNode> stack = new Stack<>();
+		stack.push(node);
+		while (node.getParent() != null && !node.getParent().classId().equals(N_DATADEFINITION.label())) {
+			node = node.getParent();
+			stack.push(node);
+			if (node instanceof TableNode)
+				dims += countDims((TableNode) node);
+		}
+		DataLabel dl = new DataLabel();
+		while (!stack.isEmpty()) {
+			TreeNode p = stack.pop();
+			dl.append(p.id());
+		}
+		return new Duple<>(dl, dims);
 	}
 
 	private List<Record> getRootRecords() {
@@ -164,39 +205,41 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private Map<DataLabel, Integer> getDrivers() {
-		// list all fields and tables with their total dimensions.
-		List<Field> fieldList = new ArrayList<>();
-		List<TableNode> tableList = new ArrayList<>();
-		List<TreeGraphDataNode> structList = new ArrayList<>();
 		Map<DataLabel, Integer> result = new HashMap<>();
-		TrackerTypeItem item = (TrackerTypeItem) getProperty();
-		//recurseRecord(0, fieldList, tableList, structList, rootRecord);
+		for (Record record : catRecords) {
+			recurseRecord(record, result);
+		}
 		return result;
 	}
 
-	private void recurseRecord(int depth, List<Field> fieldList, List<TableNode> tableList,
-			List<TreeGraphDataNode> structList, TreeGraphDataNode record) {
+	private void recurseRecord(Record record, Map<DataLabel, Integer> items) {
 		@SuppressWarnings("unchecked")
 
-		List<Field> fields = (List<Field>) get(record.getChildren(),
-				selectZeroOrMany(hasTheLabel(ConfigurationNodeLabels.N_FIELD.label())));
-		if (depth == 0)
-			fieldList.addAll(fields);
-//		else
-//			structList.add(record);// TODO we don't want to add this if it ONLY has a table
+		List<Field> fields = (List<Field>) get(record.getChildren(), selectZeroOrMany(hasTheLabel(N_FIELD.label())));
+		for (Field field : fields) {
+			Duple<DataLabel, Integer> entry = getEntry(field);
+			items.put(entry.getFirst(), entry.getSecond());
+		}
 		@SuppressWarnings("unchecked")
 		List<TableNode> tables = (List<TableNode>) get(record.getChildren(),
-				selectZeroOrMany(hasTheLabel(ConfigurationNodeLabels.N_TABLE.label())));
+				selectZeroOrMany(hasTheLabel(N_TABLE.label())));
 		for (TableNode table : tables) {
-			if (!table.hasChildren())
-				if (depth == 0)
-					tableList.add(table);
-				else
-					structList.add(table);
-			else // well there can only be one but why not
-				for (TreeNode childRecord : table.getChildren())
-					recurseRecord(depth + 1, fieldList, tableList, structList, (TreeGraphDataNode) childRecord);
+			if (!table.hasChildren()) {
+				Duple<DataLabel, Integer> entry = getEntry(table);
+				items.put(entry.getFirst(), entry.getSecond());
+			} else
+				// there can only be one but...
+				for (TreeNode child : table.getChildren()) {
+					recurseRecord((Record) child, items);
+				}
 		}
+	}
+
+	private int countDims(TableNode n) {
+		int count = 0;
+		for (ALEdge edge : n.edges(Direction.OUT))
+			count++;
+		return count;
 	}
 
 	@Override

@@ -39,6 +39,7 @@ import au.edu.anu.twapps.dialogs.IDialogs;
 import au.edu.anu.twapps.dialogs.YesNoCancel;
 import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.io.GraphFileFormats;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -174,18 +175,24 @@ public class Dialogsfx implements IDialogs {
 	}
 
 	@Override
-	public boolean editList(String title, String header, String content, Object listView) {
-		Control view = (Control) listView;
+	public boolean editList(String title, String header, String content, Object element) {
+		
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle(title);
 		dialog.setHeaderText(header);
 		dialog.setContentText(content);
+		dialog.initOwner(owner);
+	if (element instanceof Control) {
+			BorderPane pane = new BorderPane();
+			dialog.getDialogPane().setContent(pane);
+			pane.setCenter((Control)element);
+		}
+		else {
+			dialog.getDialogPane().setContent((Node) element);
+		}
+			
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		BorderPane pane = new BorderPane();
-		dialog.getDialogPane().setContent(pane);
-		dialog.initOwner(owner);
-		pane.setCenter(view);
 		Optional<ButtonType> result = dialog.showAndWait();
 		return result.get().equals(ok);
 	}
