@@ -147,7 +147,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 			String xAxisName = TimeUtil.timeUnitName(tu, nTu);
 			chart.getXAxis().setLabel(TimeUtil.timeUnitName(tu, nTu));
-			String yAxisName = String.join("/", ynames);
+			String yAxisName = String.join(",", ynames);
 			chart.getYAxis().setLabel(yAxisName);
 			String chartTitle = "(" + yAxisName + ")/(" + xAxisName + ")";
 			chart.setTitle(chartTitle);
@@ -184,7 +184,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	}
 
 	private synchronized void processBuffer(){
-		System.out.println("Buffer size: " + buffer.size());
+//		System.out.println("Buffer size: " + buffer.size());
 //		while (!buffer.isEmpty())
 //			processDataMessage(buffer.take());
 		for (TimeSeriesData ts : buffer) {
@@ -212,13 +212,15 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		for (DataLabel dl : tsmeta.doubleNames()) {
 			double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
 			String key = dl.getEnd();
+//			System.out.println(key+"="+y);
 			XYChart.Series<Number, Number> series = activeSeries.get(key);
 			series.getData().add(new Data<Number, Number>(x, y));
 		}
 		for (DataLabel dl : tsmeta.intNames()) {
-			double y = data.getIntValues()[tsmeta.indexOf(dl)];
+			long y = data.getIntValues()[tsmeta.indexOf(dl)];
 			String key = dl.getEnd();
-			XYChart.Series<Number, Number> series = activeSeries.get(key);
+//			System.out.println(key+"="+y);
+		XYChart.Series<Number, Number> series = activeSeries.get(key);
 			series.getData().add(new Data<Number, Number>(x, y));
 		}
 	}

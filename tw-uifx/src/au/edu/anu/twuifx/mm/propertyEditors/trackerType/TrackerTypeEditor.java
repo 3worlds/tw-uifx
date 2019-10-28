@@ -127,7 +127,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 					if (!item.contains("[")) {
 						inputList.getItems().remove(item);
 					}
-					System.out.println("Make tracker table entry!");
+
 				}
 			}
 		});
@@ -135,11 +135,9 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			String item = outputList.getSelectionModel().getSelectedItem();
 			if (item != null) {
 				outputList.getItems().remove(item);
-				System.out.println("Remove tracker table entry!");
 				if (!item.contains("["))// only move 0d back to list
 					if (!inputList.getItems().contains(item)) {
 						inputList.getItems().add(item);
-						System.out.println("move to input!");
 					}
 			}
 		});
