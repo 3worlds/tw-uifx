@@ -146,8 +146,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 		TrackerTypeItem tti = (TrackerTypeItem) getProperty();
 		TrackerType tt = TrackerType.valueOf((String) tti.getValue());
-		fillOutputListData(tt, outputList);
-
+		fillOutputList(tt, outputList);
 		drivers = getDrivers();
 		int maxDim = fillInputList(inputList, outputList);
 
@@ -246,16 +245,10 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		return null;
 	}
 
-	private void fillOutputListData(TrackerType tt, ListView<String> list) {
-		for (int i = 0; i < tt.size(); i++) {
-			String s = tt.getWithFlatIndex(i);
-			TreeNode node = findNode(s);
-			if (node != null) {
-				Duple<DataLabel, Integer> entry = getEntry(node);
-				list.getItems().add(entry.getFirst().getEnd());
-			}
+	private void fillOutputList(TrackerType tt, ListView<String> list) {
+		for (int i = 0; i < tt.size(); i++) 
+				list.getItems().add(tt.getWithFlatIndex(i));
 		}
-	}
 
 	private Duple<DataLabel, Integer> getEntry(TreeNode node) {
 		int dims = 0;
