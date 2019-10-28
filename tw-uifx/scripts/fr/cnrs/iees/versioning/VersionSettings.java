@@ -70,7 +70,12 @@ public class VersionSettings {
 //		{"org.openjfx", "javafx-media", "11+", "_os"},
 //		{"org.openjfx", "javafx-swing", "11+", "_os"},
 		{"org.controlsfx", "controlsfx", "11+", null},
-	    {"org.apache.commons","commons-math", "2.+", null}
+	    {"org.apache.commons","commons-math", "2.+", null},
+	    {"de.gsi", "chartfx", "11.0.4", null},
+	    {"de.gsi", "chartfx-samples", "11.0.4", null},
+	    {"de.gsi.chart", "chartfx-chart", "11.0.4", null},
+	    {"de.gsi.dataset", "chartfx-dataset", "11.0.4", null},
+	    {"de.gsi.math", "chartfx-math", "11.0.4", null}
 	};
 	
 	/** The name of the main class to put in the jar manifest, if any. This enables users to

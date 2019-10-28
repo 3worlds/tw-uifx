@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.3.3 (Mon Oct 28 11:53:11 CET 2019)
+ ant and ivy scripts for project <tw-uifx> version 0.3.2 (Thu Oct 17 09:21:27 CEST 2019)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -47,7 +47,7 @@
 			<manifest>
 				<attribute name="Implementation-Vendor" value="CNRS/ANU"/>
 				<attribute name="Implementation-Title" value="au.edu.anu.tw-uifx"/>
-				<attribute name="Implementation-Version" value="0.3.3"/>
+				<attribute name="Implementation-Version" value="0.3.2"/>
 				<attribute name="Built-By" value="${user.name}"/>
  			</manifest>
 		</jar>
