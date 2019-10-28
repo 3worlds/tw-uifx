@@ -36,10 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.controlsfx.control.ListSelectionView;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.data.Field;
@@ -57,11 +57,15 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Duple;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -78,6 +82,8 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 	private LabelButtonControl view;
 	private List<Record> catRecords;
+	private Map<DataLabel, Integer> drivers;
+	private List<Duple<CheckBox, Spinner<Integer>>> indices;
 
 	public TrackerTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -97,27 +103,57 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			return null;
 		}
 		BorderPane contents = new BorderPane();
-		ListSelectionView<String> listViewData = new ListSelectionView<>();
-		ObservableList<String> srcData = listViewData.getSourceItems();
-		ObservableList<String> trgData = listViewData.getTargetItems();
-		contents.setCenter(listViewData);
+		ListView<String> inputList = new ListView<>();
+		ListView<String> outputList = new ListView<>();
+		inputList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		outputList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
 		HBox hbox = new HBox();
 		contents.setBottom(hbox);
+		GridPane grid = new GridPane();
+		contents.setCenter(grid);
+		grid.add(inputList, 0, 0);
+		VBox btnBx = new VBox();
+		grid.add(btnBx, 1, 0);
+		grid.add(outputList, 2, 0);
+		Button btnTo = new Button(">");
+		Button btnFrom = new Button("<");
+		btnTo.setOnAction(e -> {
+			String item = inputList.getSelectionModel().getSelectedItem();
+			if (item != null) {
+				item += getCurrentIndexStr();
+				if (!outputList.getItems().contains(item)) {
+					outputList.getItems().add(item);
+					if (!item.contains("[")) {
+						inputList.getItems().remove(item);
+					}
+					System.out.println("Make tracker table entry!");
+				}
+			}
+		});
+		btnFrom.setOnAction(e -> {
+			String item = outputList.getSelectionModel().getSelectedItem();
+			if (item != null) {
+				outputList.getItems().remove(item);
+				System.out.println("Remove tracker table entry!");
+				if (!item.contains("["))// only move 0d back to list
+					if (!inputList.getItems().contains(item)) {
+						inputList.getItems().add(item);
+						System.out.println("move to input!");
+					}
+			}
+		});
 
-		Map<DataLabel, Integer> items = getDrivers();
-		TrackerTypeItem tti = (TrackerTypeItem) this.getProperty();
+		btnBx.getChildren().addAll(btnTo, btnFrom);
+
+		TrackerTypeItem tti = (TrackerTypeItem) getProperty();
 		TrackerType tt = TrackerType.valueOf((String) tti.getValue());
-		fillSrcData(tt, trgData);
+		fillOutputListData(tt, outputList);
 
-		int maxDim = 0;
-		for (Map.Entry<DataLabel, Integer> entry : items.entrySet()) {
-			int dim = entry.getValue();
-			maxDim = Math.max(maxDim, dim);
-			String s = entry.getKey().getEnd();
-			if (!trgData.contains(s))
-				srcData.add(entry.getKey().getEnd());
-		}
-		List<Duple<CheckBox, Spinner>> indices = new ArrayList<>();
+		drivers = getDrivers();
+		int maxDim = fillInputList(inputList, outputList);
+
+		indices = new ArrayList<>();
 		for (int i = 0; i < maxDim; i++) {
 			CheckBox cb = new CheckBox("const.");
 			Spinner<Integer> sp = new Spinner<>();
@@ -129,21 +165,79 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			VBox vbox = new VBox();
 			vbox.getChildren().addAll(cb, sp);
 			hbox.getChildren().add(vbox);
-			indices.add(new Duple<CheckBox, Spinner>(cb, sp));
+			indices.add(new Duple<CheckBox, Spinner<Integer>>(cb, sp));
 			cb.selectedProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue) 
-				sp.setVisible(true);
-			else
-				sp.setVisible(false);
+				if (newValue)
+					sp.setVisible(true);
+				else
+					sp.setVisible(false);
 			});
 			cb.setSelected(true);
 		}
 
-		if (Dialogs.editList(getProperty().getName(), "", "", contents)) {
-			// build a string from the items in the lists.
+		MultipleSelectionModel<String> srcModel = inputList.getSelectionModel();
+		srcModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+			int dim = getDims(srcModel.getSelectedItem());
+			for (int i = 0; i < indices.size(); i++) {
+				Duple<CheckBox, Spinner<Integer>> idxctrl = indices.get(i);
+				if (dim > i) {
+					idxctrl.getFirst().setVisible(true);
+					idxctrl.getFirst().setSelected(true);
+				} else {
+					idxctrl.getFirst().setVisible(false);
+					idxctrl.getFirst().setSelected(false);
+				}
+			}
+		});
 
+		if (Dialogs.editList(getProperty().getName(), "", "", contents)) {
+			Dimensioner dim = new Dimensioner(outputList.getItems().size());
+			Dimensioner[] dims = { dim };
+			TrackerType result = new TrackerType(dims);
+			for (int i = 0; i < outputList.getItems().size(); i++)
+				result.set(outputList.getItems().get(i), i);
+			setValue(result.toString());
 		}
 		return null;
+	}
+
+	private String getCurrentIndexStr() {
+		String result = "";
+		int dims = 0;
+		for (Duple<CheckBox, Spinner<Integer>> ctrls : indices) {
+			if (ctrls.getFirst().isVisible()) {
+				dims++;
+				result += "|";
+				if (ctrls.getFirst().isSelected()) {
+					String idx = ctrls.getSecond().getValue().toString();
+					result += idx;
+				}
+			}
+		}
+		if (dims > 0) {
+			return result.replaceFirst("\\|", "[") + "]";
+		} else
+			return result;
+	}
+
+	private int fillInputList(ListView<String> inputList, ListView<String> outputList) {
+		int maxDim = 0;
+		for (Map.Entry<DataLabel, Integer> entry : drivers.entrySet()) {
+			int dim = entry.getValue();
+			maxDim = Math.max(maxDim, dim);
+			String s = entry.getKey().getEnd();
+			if (!outputList.getItems().contains(s))
+				inputList.getItems().add(entry.getKey().getEnd());
+		}
+		return maxDim;
+	}
+
+	private int getDims(String id) {
+		for (Map.Entry<DataLabel, Integer> entry : drivers.entrySet()) {
+			if (entry.getKey().getEnd().equals(id))
+				return entry.getValue();
+		}
+		return -1;
 	}
 
 	private TreeGraphDataNode findNode(String id) {
@@ -154,13 +248,13 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		return null;
 	}
 
-	private void fillSrcData(TrackerType tt, ObservableList<String> list) {
+	private void fillOutputListData(TrackerType tt, ListView<String> list) {
 		for (int i = 0; i < tt.size(); i++) {
 			String s = tt.getWithFlatIndex(i);
 			TreeNode node = findNode(s);
 			if (node != null) {
 				Duple<DataLabel, Integer> entry = getEntry(node);
-				list.add(entry.getFirst().getEnd());
+				list.getItems().add(entry.getFirst().getEnd());
 			}
 		}
 	}
