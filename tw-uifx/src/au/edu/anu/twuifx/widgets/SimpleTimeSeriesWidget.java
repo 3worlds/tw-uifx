@@ -120,12 +120,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		buffer = new LinkedBlockingQueue<TimeSeriesData>(/*1024*/);
+		log.info("Thread: " + Thread.currentThread().getId());		
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		// this is now effectively a reset method.
-		log.info("Meta-data: " + meta);
+		log.info("Thread: " + Thread.currentThread().getId()+" Meta-data: " + meta);
 //		peek(meta);
 		Platform.runLater(() -> {
 			clearPreviousResults();
@@ -166,7 +167,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void onDataMessage(TimeSeriesData data) {
-		// log.info("Data: " + data);
+		log.info("Thread: " + Thread.currentThread().getId()+" DATA: "+data);
 
 		if (policy.canProcessDataMessage(data)) {
 			try {
@@ -206,7 +207,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	}
 
 	private void processDataMessage(final TimeSeriesData data) {
-		// log.info("Processing data " + data);
+//		 log.info("Processing data " + data);
 		int sender = data.sender();
 		double x = data.time();
 		for (DataLabel dl : tsmeta.doubleNames()) {
@@ -231,7 +232,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void onStatusMessage(State state) {
-		/*
+		 log.info(state.toString());
+	/*
 		 * this msg arrives AFTER onMetaDataMsg. Thus the work of that method will
 		 * override this so there is no longer any point to this method... but there may
 		 * be one day.
@@ -240,6 +242,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public Object getUserInterfaceContainer() {
+		log.info("Thread: " + Thread.currentThread().getId());
+
 		colours = ColourContrast.allContrastingColourNames(Color.LIGHTGRAY, maxColours);
 		activeSeries = new HashMap<>();
 		log.info("Prepared user interface");
@@ -294,6 +298,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void putPreferences() {
+		log.info("Thread: " + Thread.currentThread().getId());
 		Preferences.putBoolean(widgetId + KeyClearOnReset, clearOnReset);
 		timeFormatter.putPreferences();
 		policy.putPreferences();
@@ -302,6 +307,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void getPreferences() {
+		log.info("Thread: " + Thread.currentThread().getId());
 		clearOnReset = Preferences.getBoolean(widgetId + KeyClearOnReset, true);
 		timeFormatter.getPreferences();
 		policy.getPreferences();
@@ -309,6 +315,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
+		log.info("Thread: " + Thread.currentThread().getId());
 		this.widgetId = id;
 		timeFormatter.setProperties(id, properties);
 		policy.setProperties(id, properties);
