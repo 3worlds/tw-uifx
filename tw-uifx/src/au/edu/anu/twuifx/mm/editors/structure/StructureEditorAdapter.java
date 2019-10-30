@@ -107,6 +107,9 @@ public abstract class StructureEditorAdapter
 
 		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editableNode.getSubClass());
 		this.gvisualiser = gv;
+		System.out.println("BaseSpec: "+baseSpec);
+		System.out.println("SubSpec: "+subClassSpec);
+		
 	}
 
 	@Override

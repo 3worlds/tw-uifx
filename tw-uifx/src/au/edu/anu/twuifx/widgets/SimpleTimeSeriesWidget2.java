@@ -35,6 +35,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMOD
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.logging.Logger;
 
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
@@ -56,6 +57,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
+import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
@@ -77,18 +79,19 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 	// these should be created in metadata msg or getUserInterfaceContainer ?
 	// That is, they must be created after fx application thread is running.
 	private Timer timer;// dont need this
-	private BorderPane content;
 	private XYChart chart;
 	private List<CircularDoubleErrorDataSet> seriesList;
 	private TimeSeriesMetadata tsmeta;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
+	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget2.class);
 
 	protected SimpleTimeSeriesWidget2(StateMachineEngine<StatusWidget> statusSender, int dataType) {
 		super(statusSender, dataType);
 		seriesList = new ArrayList<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
+		log.info("Thread: " + Thread.currentThread().getId());
 	}
 
 	@Override
@@ -122,66 +125,39 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 	public void onMetaDataMessage(Metadata meta) {
 		// clear data from last run - here we could use the lovely 'history' method
 		// supplied with chartfx - TODO
+		log.info("Thread: " + Thread.currentThread().getId()+" Meta-data: " + meta);
 		for (CircularDoubleErrorDataSet series : seriesList)
 			series.reset();
 
 		// this occurs EVERY reset so take care not to recreate axis etc
 		if (!initialMessage) {
-			createChart(meta);
-			content.setCenter(chart);
+			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+			List<ErrorDataSetRenderer> renderers = new ArrayList<>();
+			for (DataLabel dl : tsmeta.doubleNames()) {
+				String key = dl.toString();
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet("name [units]", BUFFER_CAPACITY);
+				seriesList.add(ds);
+				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+				initErrorDataSetRenderer(renderer);
+				renderer.getDatasets().add(ds);
+				renderers.add(renderer);
+			}
+			for (DataLabel dl : tsmeta.intNames()) {
+				String key = dl.toString();
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet("name [units]", BUFFER_CAPACITY);
+				seriesList.add(ds);
+				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+				initErrorDataSetRenderer(renderer);
+				renderer.getDatasets().add(ds);
+				renderers.add(renderer);
+			}
+			for (ErrorDataSetRenderer r : renderers)
+				chart.getRenderers().add(r);
+			timeFormatter.onMetaDataMessage(meta);
 			initialMessage = true;
 		}
 	}
 
-	private void createChart(Metadata meta) {
-		// Platform.runLater(() -> {
-		// get all names in the list as before
-		tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
-		List<ErrorDataSetRenderer> renderers = new ArrayList<>();
-		for (DataLabel dl : tsmeta.doubleNames()) {
-			String key = dl.toString();
-			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet("name [units]", BUFFER_CAPACITY);
-			seriesList.add(ds);
-			ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
-			initErrorDataSetRenderer(renderer);
-			renderer.getDatasets().add(ds);
-			renderers.add(renderer);
-		}
-		for (DataLabel dl : tsmeta.intNames()) {
-			String key = dl.toString();
-			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet("name [units]", BUFFER_CAPACITY);
-			seriesList.add(ds);
-			ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
-			initErrorDataSetRenderer(renderer);
-			renderer.getDatasets().add(ds);
-			renderers.add(renderer);
-
-		}
-		timeFormatter.onMetaDataMessage(meta);
-		TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-		int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-		
-		DefaultNumericAxis yAxis1 = new DefaultNumericAxis("ylabel", "yunits");
-		DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", TimeUtil.timeUnitName(tu, nTu));
-		xAxis1.setAutoRangeRounding(false);
-		xAxis1.setTickLabelRotation(45);
-		xAxis1.setMinorTickCount(30);
-		xAxis1.invertAxis(false);
-		xAxis1.setTimeAxis(true);
-		yAxis1.setForceZeroInRange(true);
-		yAxis1.setAutoRangeRounding(true);
-		//yAxis1.getAxisLabel().setText(arg0);we can create the chart and axis earilier
-		//yAxis1.setUnit(value);
-		
-		// can't create a chart without axes
-		chart = new XYChart(xAxis1, yAxis1);
-		chart.legendVisibleProperty().set(true);
-		chart.setAnimated(false);
-		chart.setTitle("title");
-		
-		for (ErrorDataSetRenderer r : renderers)
-			chart.getRenderers().add(r);
-	}
 
 	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
 		r.setErrorType(ErrorStyle.NONE);
@@ -201,7 +177,25 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		content = new BorderPane();
+		BorderPane content = new BorderPane();
+		DefaultNumericAxis yAxis1 = new DefaultNumericAxis("?", "?");
+		DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
+		xAxis1.setAutoRangeRounding(false);
+		xAxis1.setTickLabelRotation(45);
+		xAxis1.setMinorTickCount(30);
+		xAxis1.invertAxis(false);
+		xAxis1.setTimeAxis(true);
+
+		yAxis1.setForceZeroInRange(true);
+		yAxis1.setAutoRangeRounding(true);
+		
+		// can't create a chart without axes
+		chart = new XYChart(xAxis1, yAxis1);
+		chart.legendVisibleProperty().set(true);
+		chart.setAnimated(false);
+		chart.setTitle("title");
+		content.setCenter(chart);
+
 		return content;
 	}
 
