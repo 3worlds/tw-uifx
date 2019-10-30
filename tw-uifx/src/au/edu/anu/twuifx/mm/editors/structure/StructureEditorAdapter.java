@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.commons.text.WordUtils;
 
@@ -68,10 +69,11 @@ import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import fr.ens.biologie.generic.utils.Duple;
+import fr.ens.biologie.generic.utils.Logging;
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
-	// TODO logging
+	private static Logger log = Logging.getLogger(StructureEditorAdapter.class);
 
 	/* what we need to know from the archetype graph */
 	protected Specifications specifications;
@@ -107,9 +109,8 @@ public abstract class StructureEditorAdapter
 
 		this.subClassSpec = specifications.getSubSpecsOf(baseSpec, editableNode.getSubClass());
 		this.gvisualiser = gv;
-		System.out.println("BaseSpec: "+baseSpec);
-		System.out.println("SubSpec: "+subClassSpec);
-		
+		log.info("BaseSpec: "+baseSpec);
+		log.info("SubSpec: "+subClassSpec);		
 	}
 
 	@Override
@@ -211,8 +212,10 @@ public abstract class StructureEditorAdapter
 		if (currentChoice == null)
 			return true;
 		// Can't change to other choice
-		if (!currentChoice.equals(proposedEndNode.cClassId()))
+		if (!currentChoice.equals(proposedEndNode.cClassId())) {
+			log.info("Fail");
 			return false;
+		}
 		return true;
 	}
 
@@ -238,8 +241,10 @@ public abstract class StructureEditorAdapter
 			if (edge.getConfigEdge().classId().equals(E_BELONGSTO.label())) {
 				VisualNode myCat = (VisualNode) edge.endNode();
 				VisualNode myCatSet = myCat.getParent();
-				if (proposedCatSet.id().equals(myCatSet.id()))
+				if (proposedCatSet.id().equals(myCatSet.id())) {
+					log.info("Fail");
 					return false;
+				}
 			}
 		}
 		return true;
