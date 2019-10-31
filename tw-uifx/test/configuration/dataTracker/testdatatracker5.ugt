@@ -92,14 +92,10 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 //	System.out.println(getClass().getSimpleName()+"	Time	"+t);
 //	Rec var = (Rec) focal.nextState();
 //	double x = Math.random();
-//	var.tx().set(x,0,0);
-//	Rec var = (Rec) focal.nextState();
-//	double x = Math.random();
-//	var.tx().set(x,0,0);
-//	for (int i=0; i<var.tx().size(0); i++)
-//		for (int j=0; j<var.tx().size(1); j++) {
-//			var.tx().set(x+i*0.03+j*0.1, i,j);
-//		}
+//	for (int i=0; i<var.ty().size(0); i++) {
+//		var.ty().get(i).z(x+i*0.1);
+//	}
+//	var.n(2);
 //
 		structure struc
 			component comp

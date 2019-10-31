@@ -34,16 +34,9 @@ import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
-import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -59,19 +52,14 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -82,8 +70,6 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
-
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
  * @author Ian Davies
@@ -208,18 +194,18 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 
 	private void processDataMessage(final TimeSeriesData data) {
 //		 log.info("Processing data " + data);
-		int sender = data.sender();
+//		int sender = data.sender();
 		double x = data.time();
 		for (DataLabel dl : tsmeta.doubleNames()) {
 			double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
-			String key = dl.getEnd();
+			String key = dl.toString();
 //			System.out.println(key+"="+y);
 			XYChart.Series<Number, Number> series = activeSeries.get(key);
 			series.getData().add(new Data<Number, Number>(x, y));
 		}
 		for (DataLabel dl : tsmeta.intNames()) {
 			long y = data.getIntValues()[tsmeta.indexOf(dl)];
-			String key = dl.getEnd();
+			String key = dl.toString();
 //			System.out.println(key+"="+y);
 		XYChart.Series<Number, Number> series = activeSeries.get(key);
 			series.getData().add(new Data<Number, Number>(x, y));
@@ -239,7 +225,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		 * be one day.
 		 */
 	}
-
+	
 	@Override
 	public Object getUserInterfaceContainer() {
 		log.info("Thread: " + Thread.currentThread().getId());
@@ -338,21 +324,21 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		}
 	}
 
-	private void peek(Metadata meta) {
-		TimeSeriesMetadata ts_meta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
-		for (String key : meta.properties().getKeysAsSet()) {
-			System.out.println(key + ": " + meta.properties().getPropertyClassName(key) + ": "
-					+ meta.properties().getPropertyValue(key));
-		}
-		for (DataLabel dl : ts_meta.doubleNames()) {
-			System.out.println("doubleNames: " + dl);
-		}
-		for (DataLabel dl : ts_meta.intNames()) {
-			System.out.println("intNames: " + dl);
-		}
-
-		System.out.println("nDouble: " + ts_meta.nDouble());
-		System.out.println("nInt: " + ts_meta.nInt());
-	}
+//	private void peek(Metadata meta) {
+//		TimeSeriesMetadata ts_meta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+//		for (String key : meta.properties().getKeysAsSet()) {
+//			System.out.println(key + ": " + meta.properties().getPropertyClassName(key) + ": "
+//					+ meta.properties().getPropertyValue(key));
+//		}
+//		for (DataLabel dl : ts_meta.doubleNames()) {
+//			System.out.println("doubleNames: " + dl);
+//		}
+//		for (DataLabel dl : ts_meta.intNames()) {
+//			System.out.println("intNames: " + dl);
+//		}
+//
+//		System.out.println("nDouble: " + ts_meta.nDouble());
+//		System.out.println("nInt: " + ts_meta.nInt());
+//	}
 
 }
