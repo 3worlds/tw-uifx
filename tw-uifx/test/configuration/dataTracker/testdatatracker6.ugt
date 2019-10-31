@@ -1,0 +1,119 @@
+treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
+
+// Test file for a simple datatracker (TimeSeriesDataTracker) tracking a table variable
+// 1 data tracker, 1 variables to track (tx[1..3]:double)
+// cf in the function specification below the code to add in the user project
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	
+// TREE
+3worlds testdatatracker6
+	experiment exp
+		timePeriod period
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design design1
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	userInterface ui
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget timeSeries
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+		top top1
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+	dataDefinition dd
+		record Rec
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(Rec)
+			table tx
+				range = fr.ens.biologie.generic.utils.Interval([0.0,1])
+				precision = java.lang.Double(0.0)
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field n
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..2)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			table ty
+				record record2
+					field col
+						type = fr.cnrs.iees.twcore.constants.DataElementType(String)
+					field t
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+					field z
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+		dimensioner dimer
+			size = java.lang.Integer(5)
+		dimensioner dim2
+			size = java.lang.Integer(6)
+	system sys
+		parameterClass = java.lang.String()
+		dynamics dyn
+			initialState state
+				individual instance
+					variableValues values
+						n = java.lang.Integer(4)
+			timeLine tl
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel clock
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+					process proc
+						dataTracker dt
+							groupBy = fr.cnrs.iees.twcore.constants.Grouping(NO_GROUPING)
+							select = fr.cnrs.iees.twcore.constants.SamplingMode(FIRST)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							track = fr.cnrs.iees.twcore.constants.TrackerType(([3]ty[2;4]>z,ty>t,tx[1|2:4]))
+							viewOthers = java.lang.Boolean(false)
+						function Func
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys.Func)		
+//
+// Copy and paste this text in the changeState(...) method of the generated Func.java class
+// in order to see things displayed in the SimpleTimeSeriesWidget
+//
+//	Rec var = (Rec) focal.nextState();
+//	double x = Math.random();
+//	for (int i=0; i<var.ty().size(0); i++) {
+//		var.ty().get(i).z(x+i*0.1);
+//		var.ty().get(i).t(i/x*0.1);
+//	}
+//	for (int i=0; i<var.tx().size(0); i++)
+//		for (int j=0; j<var.tx().size(1); j++)
+//			var.tx().set(-Math.random(),i,j);
+//
+		structure struc
+			component comp
+				driverClass = java.lang.String(code.sys.Rec)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			categorySet set
+				category cat
+
+// CROSS-LINKS
+[table:tx] sizedBy sizedBy1 [dimensioner:dimer]
+[table:tx] sizedBy sizedBy2 [dimensioner:dim2]
+[table:ty] sizedBy sizedBy3 [dimensioner:dimer]
+[component:comp] belongsTo belongsTo1 [category:cat]
+[experiment:exp] baseLine baseLine1 [system:sys]
+[individual:instance] instanceOf instanceOf1 [component:comp]
+[widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
+[category:cat] drivers drivers1 [record:Rec]
+[process:proc] appliesTo appliesTo1 [category:cat]
+[widget:time] trackTime trackTime1 [dynamics:dyn]
