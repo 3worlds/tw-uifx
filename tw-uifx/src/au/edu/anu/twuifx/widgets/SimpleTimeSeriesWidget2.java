@@ -33,7 +33,9 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMOD
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_TU;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.logging.Logger;
 
@@ -43,6 +45,7 @@ import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesMetadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
@@ -51,8 +54,10 @@ import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.renderer.ErrorStyle;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
+import de.gsi.chart.renderer.spi.HistoryDataSetRenderer;
 import de.gsi.dataset.spi.AbstractDataSet;
 import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
+import de.gsi.dataset.spi.RollingDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -80,15 +85,15 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 	// That is, they must be created after fx application thread is running.
 	private Timer timer;// dont need this
 	private XYChart chart;
-	private List<CircularDoubleErrorDataSet> seriesList;
+	private Map<String, RollingDataSet> seriesMap;
 	private TimeSeriesMetadata tsmeta;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget2.class);
 
-	protected SimpleTimeSeriesWidget2(StateMachineEngine<StatusWidget> statusSender, int dataType) {
-		super(statusSender, dataType);
-		seriesList = new ArrayList<>();
+	public SimpleTimeSeriesWidget2(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, DataMessageTypes.TIME_SERIES);
+		seriesMap = new HashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		log.info("Thread: " + Thread.currentThread().getId());
@@ -115,7 +120,15 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 
 	@Override
 	public void onDataMessage(TimeSeriesData data) {
-		// TODO Auto-generated method stub
+		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
+		if (policy.canProcessDataMessage(data)) {
+			double[] x = {data.time()};
+			for (DataLabel dl : tsmeta.doubleNames()) {
+				double[] y = {data.getDoubleValues()[tsmeta.indexOf(dl)]};
+				RollingDataSet ds = seriesMap.get(dl.getEnd());
+//				ds.add(x,y);
+			}
+		}
 
 	}
 
@@ -125,9 +138,10 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 	public void onMetaDataMessage(Metadata meta) {
 		// clear data from last run - here we could use the lovely 'history' method
 		// supplied with chartfx - TODO
-		log.info("Thread: " + Thread.currentThread().getId()+" Meta-data: " + meta);
-		for (CircularDoubleErrorDataSet series : seriesList)
-			series.reset();
+		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
+		seriesMap.entrySet().forEach(entry -> {
+			entry.getValue().clear();
+		});
 
 		// this occurs EVERY reset so take care not to recreate axis etc
 		if (!initialMessage) {
@@ -135,18 +149,23 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 			List<ErrorDataSetRenderer> renderers = new ArrayList<>();
 			for (DataLabel dl : tsmeta.doubleNames()) {
 				String key = dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet("name [units]", BUFFER_CAPACITY);
-				seriesList.add(ds);
-				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+				RollingDataSet ds = new RollingDataSet(key);
+				// CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key,
+				// BUFFER_CAPACITY);
+				seriesMap.put(key, ds);
+				HistoryDataSetRenderer renderer = new HistoryDataSetRenderer();
+//			    ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
 				initErrorDataSetRenderer(renderer);
 				renderer.getDatasets().add(ds);
 				renderers.add(renderer);
 			}
 			for (DataLabel dl : tsmeta.intNames()) {
 				String key = dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet("name [units]", BUFFER_CAPACITY);
-				seriesList.add(ds);
-				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+				RollingDataSet ds = new RollingDataSet(key);
+//				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
+				seriesMap.put(key, ds);
+				HistoryDataSetRenderer renderer = new HistoryDataSetRenderer();
+//				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
 				initErrorDataSetRenderer(renderer);
 				renderer.getDatasets().add(ds);
 				renderers.add(renderer);
@@ -158,8 +177,8 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 		}
 	}
 
-
-	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
+	private void initErrorDataSetRenderer(final HistoryDataSetRenderer r) {
+//		private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
 		r.setErrorType(ErrorStyle.NONE);
 		r.setDashSize(MIN_PIXEL_DISTANCE);
 		r.setPointReduction(true);
@@ -171,7 +190,7 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 	@Override
 	public void onStatusMessage(State state) {
 		// TODO Auto-generated method stub
-		// on Finished push the last data from buffer to chart
+		// if Finished push the last data from buffer to chart
 
 	}
 
@@ -181,19 +200,20 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 		DefaultNumericAxis yAxis1 = new DefaultNumericAxis("?", "?");
 		DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
 		xAxis1.setAutoRangeRounding(false);
-		xAxis1.setTickLabelRotation(45);
-		xAxis1.setMinorTickCount(30);
 		xAxis1.invertAxis(false);
-		xAxis1.setTimeAxis(true);
+		// for gregorian we may need something else here
+//		xAxis1.setTickLabelRotation(45);
+//		xAxis1.setMinorTickCount(30);
+//		xAxis1.setTimeAxis(true);
 
 		yAxis1.setForceZeroInRange(true);
 		yAxis1.setAutoRangeRounding(true);
-		
+
 		// can't create a chart without axes
 		chart = new XYChart(xAxis1, yAxis1);
 		chart.legendVisibleProperty().set(true);
 		chart.setAnimated(false);
-		chart.setTitle("title");
+		// chart.setTitle("title");
 		content.setCenter(chart);
 
 		return content;
