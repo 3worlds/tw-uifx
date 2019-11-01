@@ -61,6 +61,7 @@ import de.gsi.dataset.spi.RollingDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -85,7 +86,7 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 	// That is, they must be created after fx application thread is running.
 	private Timer timer;// dont need this
 	private XYChart chart;
-	private Map<String, RollingDataSet> seriesMap;
+	private Map<String, CircularDoubleErrorDataSet> seriesMap;
 	private TimeSeriesMetadata tsmeta;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
@@ -122,12 +123,20 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 	public void onDataMessage(TimeSeriesData data) {
 		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
 		if (policy.canProcessDataMessage(data)) {
-			double[] x = {data.time()};
+			final double x = data.time();
 			for (DataLabel dl : tsmeta.doubleNames()) {
-				double[] y = {data.getDoubleValues()[tsmeta.indexOf(dl)]};
-				RollingDataSet ds = seriesMap.get(dl.getEnd());
-//				ds.add(x,y);
+				CircularDoubleErrorDataSet ds = seriesMap.get(dl.toString());
+				if (!ds.isAutoNotification()) 
+					ds.setAutoNotifaction(false);
+				final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
+				final double ey = 1;
+				ds.add(x, y, ey, ey);
 			}
+			Platform.runLater(() -> {
+				seriesMap.entrySet().forEach(entry -> {
+					entry.getValue().setAutoNotifaction(true);
+				});
+			});
 		}
 
 	}
@@ -140,7 +149,7 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 		// supplied with chartfx - TODO
 		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
 		seriesMap.entrySet().forEach(entry -> {
-			entry.getValue().clear();
+			entry.getValue().reset();
 		});
 
 		// this occurs EVERY reset so take care not to recreate axis etc
@@ -149,23 +158,21 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 			List<ErrorDataSetRenderer> renderers = new ArrayList<>();
 			for (DataLabel dl : tsmeta.doubleNames()) {
 				String key = dl.toString();
-				RollingDataSet ds = new RollingDataSet(key);
-				// CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key,
-				// BUFFER_CAPACITY);
+				log.info("Tracking: " + key);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
 				seriesMap.put(key, ds);
-				HistoryDataSetRenderer renderer = new HistoryDataSetRenderer();
-//			    ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
 				initErrorDataSetRenderer(renderer);
 				renderer.getDatasets().add(ds);
 				renderers.add(renderer);
 			}
 			for (DataLabel dl : tsmeta.intNames()) {
 				String key = dl.toString();
-				RollingDataSet ds = new RollingDataSet(key);
-//				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
+				log.info("Tracking: " + key);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
 				seriesMap.put(key, ds);
-				HistoryDataSetRenderer renderer = new HistoryDataSetRenderer();
-//				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+//				HistoryDataSetRenderer renderer = new HistoryDataSetRenderer();
+				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
 				initErrorDataSetRenderer(renderer);
 				renderer.getDatasets().add(ds);
 				renderers.add(renderer);
@@ -177,7 +184,7 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 		}
 	}
 
-	private void initErrorDataSetRenderer(final HistoryDataSetRenderer r) {
+	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
 //		private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
 		r.setErrorType(ErrorStyle.NONE);
 		r.setDashSize(MIN_PIXEL_DISTANCE);
@@ -190,7 +197,8 @@ public class SimpleTimeSeriesWidget2 extends AbstractDisplayWidget<TimeSeriesDat
 	@Override
 	public void onStatusMessage(State state) {
 		// TODO Auto-generated method stub
-		// if Finished push the last data from buffer to chart
+		//SimulatorStatus.Final;
+		// if final push the last data from buffer to chart
 
 	}
 
