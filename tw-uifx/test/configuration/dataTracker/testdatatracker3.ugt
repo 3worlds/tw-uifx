@@ -45,6 +45,7 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 				units = java.lang.String()
 		dimensioner dimer
 			size = java.lang.Integer(3)
+			rank = java.lang.Integer(0)
 	system sys
 		parameterClass = java.lang.String()
 		dynamics dyn

@@ -68,6 +68,7 @@ import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Logging;
 
@@ -351,6 +352,7 @@ public abstract class StructureEditorAdapter
 
 		for (SimpleDataTreeNode propertySpec : propertySpecs) {
 			String key = (String) propertySpec.properties().getPropertyValue(aaHasName);
+			System.out.println(key);
 			if (key.equals(twaSubclass))
 				newChild.addProperty(twaSubclass, subClass.getName());
 			else {
@@ -359,8 +361,24 @@ public abstract class StructureEditorAdapter
 				newChild.addProperty(key, defValue);
 			}
 		}
+		if (newChild.cClassId().equals(N_DIMENSIONER.label())) {
+			setDefaultDimRank(newChild);
+		}
 
 		controller.onNewNode(newChild);
+	}
+
+	private void setDefaultDimRank(VisualNode newChild2) {
+		int mxRank= 0;
+		for (TreeGraphNode n:ConfigGraph.getGraph().nodes()) {
+			if (n.classId().equals(N_DIMENSIONER.label())) {
+				TreeGraphDataNode dn = (TreeGraphDataNode)n;
+				int r = (Integer)dn.properties().getPropertyValue(P_DIMENSIONER_RANK.key());
+				mxRank = Math.max(r, mxRank);
+			}
+			newChild.getConfigNode().properties().setProperty(P_DIMENSIONER_RANK.key(), mxRank+1);
+		}
+		
 	}
 
 	@Override

@@ -176,21 +176,21 @@ public class Dialogsfx implements IDialogs {
 
 	@Override
 	public boolean editList(String title, String header, String content, Object element) {
-		
+
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle(title);
 		dialog.setHeaderText(header);
 		dialog.setContentText(content);
 		dialog.initOwner(owner);
-	if (element instanceof Control) {
+		if (element instanceof Control) {
 			BorderPane pane = new BorderPane();
 			dialog.getDialogPane().setContent(pane);
-			pane.setCenter((Control)element);
-		}
-		else {
+			pane.setCenter((Control) element);
+		} else {
 			dialog.getDialogPane().setContent((Node) element);
 		}
-			
+
+		dialog.setResizable(true);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		Optional<ButtonType> result = dialog.showAndWait();

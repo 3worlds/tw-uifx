@@ -53,8 +53,10 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 		dimensioner dimer
 			size = java.lang.Integer(3)
+			rank = java.lang.Integer(1)
 		dimensioner dim2
 			size = java.lang.Integer(12)
+			rank = java.lang.Integer(0)
 	system sys
 		parameterClass = java.lang.String()
 		dynamics dyn
