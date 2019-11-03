@@ -352,7 +352,7 @@ public abstract class StructureEditorAdapter
 
 		for (SimpleDataTreeNode propertySpec : propertySpecs) {
 			String key = (String) propertySpec.properties().getPropertyValue(aaHasName);
-			System.out.println(key);
+//			System.out.println(key);
 			if (key.equals(twaSubclass))
 				newChild.addProperty(twaSubclass, subClass.getName());
 			else {
@@ -361,6 +361,11 @@ public abstract class StructureEditorAdapter
 				newChild.addProperty(key, defValue);
 			}
 		}
+//		if (!newChild.configHasProperty(twaSubclass)) {
+//			
+//			
+//		}
+
 		if (newChild.cClassId().equals(N_DIMENSIONER.label())) {
 			setDefaultDimRank(newChild);
 		}

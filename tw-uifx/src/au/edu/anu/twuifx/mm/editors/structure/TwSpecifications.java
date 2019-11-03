@@ -46,8 +46,8 @@ public class TwSpecifications implements //
 					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getQueryStringTableEntries(constraint);
-				
-				String fname = pars.get(pars.size()-1);
+
+				String fname = pars.get(pars.size() - 1);
 				// prevent infinite recursion
 				if (!discoveredFiles.contains(fname)) {
 					discoveredFiles.add(fname);
@@ -64,25 +64,25 @@ public class TwSpecifications implements //
 	@SuppressWarnings("unchecked")
 	@Override
 	public SimpleDataTreeNode getSubSpecsOf(SimpleDataTreeNode baseSpecs, Class<? extends TreeNode> subClass) {
-		//multiple stopping condtions have many entries of IsOfClass
+		// multiple stopping condtions have many entries of IsOfClass
 		if (subClass != null) {
 			String parent = (String) baseSpecs.properties().getPropertyValue(aaIsOfClass);
 			Tree<?> subClassTree = getSubArchetype(baseSpecs, subClass);
-			if (subClassTree==null)
+			if (subClassTree == null)
 				return null;
-			List<SimpleDataTreeNode> specs= (List<SimpleDataTreeNode>) get(subClassTree.root().getChildren(),
+			List<SimpleDataTreeNode> specs = (List<SimpleDataTreeNode>) get(subClassTree.root().getChildren(),
 					selectOneOrMany(hasProperty(aaIsOfClass, parent)));
-			if (specs.size()==1)
+			if (specs.size() == 1)
 				return specs.get(0);
 			else {
-				for (SimpleDataTreeNode spec:specs) {
+				for (SimpleDataTreeNode spec : specs) {
 					StringTable t = (StringTable) spec.properties().getPropertyValue(aaHasParent);
 					if (t.contains(parent + PairIdentity.LABEL_NAME_SEPARATOR)) {
 						return spec;
 					}
-				}				
+				}
 			}
-				
+
 		}
 		return null;
 	}
@@ -147,7 +147,8 @@ public class TwSpecifications implements //
 			StringTable classes = (StringTable) constraint.properties().getPropertyValue(twaValues);
 			for (int i = 0; i < classes.size(); i++) {
 				try {
-					result.add((Class<? extends TreeNode>) Class.forName(classes.getWithFlatIndex(i),true,OmugiClassLoader.getAppClassLoader()));
+					result.add((Class<? extends TreeNode>) Class.forName(classes.getWithFlatIndex(i), true,
+							OmugiClassLoader.getAppClassLoader()));
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -243,8 +244,13 @@ public class TwSpecifications implements //
 				selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 		for (SimpleDataTreeNode constraint : constraints) {
 			StringTable pars = (StringTable) constraint.properties().getPropertyValue(twaParameters);
+			// f)*()(* this is a mess
+			if (constraint.properties().hasProperty("value")) {
+				// do we ha
+			}
+
 			if (pars.getWithFlatIndex(1).equals(subClass.getName())) {
-				return TWA.getSubArchetype(pars.get(2));
+				return TWA.getSubArchetype(pars.get((pars.size() - 1)));
 			}
 		}
 //		throw new TwuifxException("Sub archetype graph not found for " + subClass.getName());
@@ -296,8 +302,8 @@ public class TwSpecifications implements //
 		List<Duple<String, String>> result = new ArrayList<>();
 		for (SimpleDataTreeNode query : queries) {
 			if (query.properties().hasProperty(twaNodeLabel1) && query.properties().hasProperty(twaNodeLabel2)) {
-				result.add(new Duple<String,String>((String)query.properties().getPropertyValue(twaNodeLabel1),
-						(String)query.properties().getPropertyValue(twaNodeLabel2)));
+				result.add(new Duple<String, String>((String) query.properties().getPropertyValue(twaNodeLabel1),
+						(String) query.properties().getPropertyValue(twaNodeLabel2)));
 			}
 		}
 		return result;

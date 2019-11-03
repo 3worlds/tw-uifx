@@ -81,6 +81,7 @@ public class VisualNodeEditor implements //
 	public boolean canDelete() {
 		return !visualNode.cClassId().equals(N_ROOT.label());
 	}
+
 	@Override
 	public boolean canRename() {
 		return !visualNode.cClassId().equals(N_ROOT.label());
@@ -90,13 +91,12 @@ public class VisualNodeEditor implements //
 	public boolean moreChildrenAllowed(IntegerRange range, String childLabel) {
 		List<VisualNode> lst = new ArrayList<>();
 		for (VisualNode child : visualNode.getChildren()) {
-			String label =child.cClassId();
+			String label = child.cClassId();
 			if (label.equals(childLabel))
 				lst.add(child);
 		}
 		return range.inRange(lst.size() + 1);
 	}
-
 
 	@Override
 	public Iterable<VisualNode> graphRoots() {
@@ -117,7 +117,6 @@ public class VisualNodeEditor implements //
 	public boolean isCollapsed() {
 		return visualNode.isCollapsed();
 	}
-
 
 	@Override
 	public VisualNode newChild(String label, String proposedId) {
@@ -148,13 +147,14 @@ public class VisualNodeEditor implements //
 		if (visualNode.configHasProperty(twaSubclass)) {
 			String result = (String) visualNode.configGetPropertyValue(twaSubclass);
 			try {
-				return (Class<? extends TreeGraphNode>) Class.forName(result,true,classLoader);
+				return (Class<? extends TreeGraphNode>) Class.forName(result, true, classLoader);
 			} catch (ClassNotFoundException e) {
-				throw new TwuifxException("Subclass not found in the system: "+result+visualNode);
+				throw new TwuifxException("Subclass not found in the system: " + result + visualNode);
 
 			}
-		} else
-			return null;
+		} else {
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -179,9 +179,7 @@ public class VisualNodeEditor implements //
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterable<VisualNode> getOutNodes() {
-		return (Iterable<VisualNode>) get(visualNode.edges(Direction.OUT),
-				selectZeroOrMany(),
-				edgeListEndNodes()); 
+		return (Iterable<VisualNode>) get(visualNode.edges(Direction.OUT), selectZeroOrMany(), edgeListEndNodes());
 	}
 
 	@Override
@@ -191,13 +189,13 @@ public class VisualNodeEditor implements //
 
 	@Override
 	public VisualEdge newEdge(String label, VisualNode vEnd) {
-		return visualNode.newEdge(label,vEnd);
+		return visualNode.newEdge(label, vEnd);
 	}
 
 	@Override
 	public void reconnectChild(VisualNode vnChild) {
 		visualNode.reconnectChild(vnChild);
-		
+
 	}
 
 }
