@@ -24,6 +24,7 @@ import fr.ens.biologie.generic.utils.Duple;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 public class TwSpecifications implements //
 		Specifications, //
@@ -34,6 +35,10 @@ public class TwSpecifications implements //
 	@Override
 	public SimpleDataTreeNode getSpecsOf(String cClassId, String createdBy, TreeNode root,
 			Set<String> discoveredFiles) {
+		List<TreeNode> lst = (List<TreeNode>) get(root.getChildren(), selectZeroOrMany(hasTheLabel("hasNode")));
+//		for (TreeNode tn:lst) {
+//			System.out.println(tn.id());
+//		}
 		for (TreeNode childSpec : root.getChildren()) {
 			if (isOfClass((SimpleDataTreeNode) childSpec, cClassId)) {
 				if (createdBy == null)
@@ -46,15 +51,16 @@ public class TwSpecifications implements //
 					selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
 			for (SimpleDataTreeNode constraint : saConstraints) {
 				List<String> pars = getQueryStringTableEntries(constraint);
-
-				String fname = pars.get(pars.size() - 1);
-				// prevent infinite recursion
-				if (!discoveredFiles.contains(fname)) {
-					discoveredFiles.add(fname);
-					Tree<?> tree = (Tree<?>) TWA.getSubArchetype(fname);
-					SimpleDataTreeNode result = getSpecsOf(cClassId, createdBy, tree.root(), discoveredFiles);
-					if (result != null)
-						return result;
+				if (pars.get(0).equals(P_SA_SUBCLASS.key())) {
+					String fname = pars.get(pars.size() - 1);
+					// prevent infinite recursion
+					if (!discoveredFiles.contains(fname)) {
+						discoveredFiles.add(fname);
+						Tree<?> tree = (Tree<?>) TWA.getSubArchetype(fname);
+						SimpleDataTreeNode result = getSpecsOf(cClassId, createdBy, tree.root(), discoveredFiles);
+						if (result != null)
+							return result;
+					}
 				}
 			}
 		}
@@ -242,16 +248,14 @@ public class TwSpecifications implements //
 	private Tree<? extends TreeNode> getSubArchetype(SimpleDataTreeNode spec, Class<? extends TreeNode> subClass) {
 		List<SimpleDataTreeNode> constraints = (List<SimpleDataTreeNode>) get(spec.getChildren(),
 				selectZeroOrMany(hasProperty(aaClassName, CheckSubArchetypeQuery.class.getName())));
+
 		for (SimpleDataTreeNode constraint : constraints) {
 			StringTable pars = (StringTable) constraint.properties().getPropertyValue(twaParameters);
-			// f)*()(* this is a mess
-			if (constraint.properties().hasProperty("value")) {
-				// do we ha
-			}
-
-			if (pars.getWithFlatIndex(1).equals(subClass.getName())) {
-				return TWA.getSubArchetype(pars.get((pars.size() - 1)));
-			}
+			// We only want to add an SA if the pars.get(0)==subclass
+			if (pars.get(0).equals(P_SA_SUBCLASS.key()))
+				if (pars.getWithFlatIndex(1).equals(subClass.getName())) {
+					return TWA.getSubArchetype(pars.get((pars.size() - 1)));
+				}
 		}
 //		throw new TwuifxException("Sub archetype graph not found for " + subClass.getName());
 		return null;
