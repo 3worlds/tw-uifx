@@ -40,12 +40,12 @@ public class RollingBufferSample extends Application {
     public static final int UPDATE_PERIOD = 40; // [ms]
     public static final int BUFFER_CAPACITY = 750; // 750 samples @ 25 Hz <->
                                                    // 30 s
-    public final CircularDoubleErrorDataSet rollingBufferDipoleCurrent = new CircularDoubleErrorDataSet(
+    public final CircularDoubleErrorDataSet dataSet_rollingBufferDipoleCurrent = new CircularDoubleErrorDataSet(
             "dipole current [A]", RollingBufferSample.BUFFER_CAPACITY);
-    public final CircularDoubleErrorDataSet rollingBufferBeamIntensity = new CircularDoubleErrorDataSet(
+    public final CircularDoubleErrorDataSet dataSet_rollingBufferBeamIntensity = new CircularDoubleErrorDataSet(
             "beam intensity [ppp]", RollingBufferSample.BUFFER_CAPACITY);
-    private final ErrorDataSetRenderer beamIntensityRenderer = new ErrorDataSetRenderer();
-    private final ErrorDataSetRenderer dipoleCurrentRenderer = new ErrorDataSetRenderer();
+    private final ErrorDataSetRenderer renderer_beamIntensity = new ErrorDataSetRenderer();
+    private final ErrorDataSetRenderer renderer_dipoleCurrent = new ErrorDataSetRenderer();
     final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("beam intensity", "ppp");
     final DefaultNumericAxis yAxis2 = new DefaultNumericAxis("dipole current", "A");
     protected Timer timer;
@@ -87,30 +87,30 @@ public class RollingBufferSample extends Application {
     public BorderPane initComponents(Scene scene) {
         final BorderPane root = new BorderPane();
         generateData();
-        initErrorDataSetRenderer(beamIntensityRenderer);
-        initErrorDataSetRenderer(dipoleCurrentRenderer);
+        initErrorDataSetRenderer(renderer_beamIntensity);
+        initErrorDataSetRenderer(renderer_dipoleCurrent);
 
         final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time");
         xAxis1.setAutoRangeRounding(false);
         xAxis1.setTickLabelRotation(45);
         xAxis1.setMinorTickCount(30);
         xAxis1.invertAxis(false);
-        xAxis1.setTimeAxis(true);
+        xAxis1.setTimeAxis(false);//true
         yAxis2.setSide(Side.RIGHT);
         yAxis2.setAnimated(false);
         // N.B. it's important to set secondary axis on the 2nd renderer before
         // adding the renderer to the chart
-        dipoleCurrentRenderer.getAxes().add(yAxis2);
+        renderer_dipoleCurrent.getAxes().add(yAxis2);
 
         final XYChart chart = new XYChart(xAxis1, yAxis1);
         chart.legendVisibleProperty().set(true);
         chart.setAnimated(false);
-        chart.getRenderers().set(0, beamIntensityRenderer);
-        chart.getRenderers().add(dipoleCurrentRenderer);
+        chart.getRenderers().set(0, renderer_beamIntensity);
+        chart.getRenderers().add(renderer_dipoleCurrent);
         chart.getPlugins().add(new EditAxis());
 
-        beamIntensityRenderer.getDatasets().add(rollingBufferBeamIntensity);
-        dipoleCurrentRenderer.getDatasets().add(rollingBufferDipoleCurrent);
+        renderer_beamIntensity.getDatasets().add(dataSet_rollingBufferBeamIntensity);
+        renderer_dipoleCurrent.getDatasets().add(dataSet_rollingBufferDipoleCurrent);
 
         // set localised time offset
         if (xAxis1.isTimeAxis() && xAxis1.getAxisLabelFormatter() instanceof DefaultTimeFormatter) {
@@ -148,8 +148,8 @@ public class RollingBufferSample extends Application {
         startTimer.setOnAction(evt -> {
             if (timer == null) {
                 timer = new Timer();
-                rollingBufferBeamIntensity.reset();
-                rollingBufferDipoleCurrent.reset();
+                dataSet_rollingBufferBeamIntensity.reset();
+                dataSet_rollingBufferDipoleCurrent.reset();
                 timer.scheduleAtFixedRate(getTask(), 0, UPDATE_PERIOD);
             } else {
                 timer.cancel();
@@ -265,28 +265,28 @@ public class RollingBufferSample extends Application {
                                                                     // for
                                                                     // resolution
 
-        if (rollingBufferDipoleCurrent.getDataCount() == 0) {
-            rollingBufferBeamIntensity.setAutoNotifaction(false);
-            rollingBufferDipoleCurrent.setAutoNotifaction(false);
+        if (dataSet_rollingBufferDipoleCurrent.getDataCount() == 0) {
+            dataSet_rollingBufferBeamIntensity.setAutoNotifaction(false);
+            dataSet_rollingBufferDipoleCurrent.setAutoNotifaction(false);
             for (int n = RollingBufferSample.N_SAMPLES; n >= 0; --n) {
                 final double t = now - n * RollingBufferSample.UPDATE_PERIOD / 1000.0;
                 final double y = 25 * RollingBufferSample.rampFunctionDipoleCurrent(t);
                 final double y2 = 100 * RollingBufferSample.rampFunctionBeamIntensity(t);
                 final double ey = 1;
-                rollingBufferDipoleCurrent.add(t, y, ey, ey);
-                rollingBufferBeamIntensity.add(t, y2, ey, ey);
+                dataSet_rollingBufferDipoleCurrent.add(t, y, ey, ey);
+                dataSet_rollingBufferBeamIntensity.add(t, y2, ey, ey);
             }
-            rollingBufferBeamIntensity.setAutoNotifaction(true);
-            rollingBufferDipoleCurrent.setAutoNotifaction(true);
+            dataSet_rollingBufferBeamIntensity.setAutoNotifaction(true);
+            dataSet_rollingBufferDipoleCurrent.setAutoNotifaction(true);
         } else {
-            rollingBufferDipoleCurrent.setAutoNotifaction(false);
+            dataSet_rollingBufferDipoleCurrent.setAutoNotifaction(false);
             final double t = now;
             final double y = 25 * RollingBufferSample.rampFunctionDipoleCurrent(t);
             final double y2 = 100 * RollingBufferSample.rampFunctionBeamIntensity(t);
             final double ey = 1;
-            rollingBufferDipoleCurrent.add(t, y, ey, ey);
-            rollingBufferBeamIntensity.add(t, y2, ey, ey);
-            rollingBufferDipoleCurrent.setAutoNotifaction(true);
+            dataSet_rollingBufferDipoleCurrent.add(t, y, ey, ey);
+            dataSet_rollingBufferBeamIntensity.add(t, y2, ey, ey);
+            dataSet_rollingBufferDipoleCurrent.setAutoNotifaction(true);
         }
         ProcessingProfiler.getTimeDiff(startTime, "adding data into DataSet");
     }
