@@ -123,15 +123,18 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	public void onDataMessage(final TimeSeriesData data) {
 		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
 		if (policy.canProcessDataMessage(data)) {
-//			Platform.runLater(() -> {
+			Platform.runLater(() -> {
 				final double x = data.time();
 				for (DataLabel dl : tsmeta.doubleNames()) {
 					CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
+//					ds.setAutoNotifaction(false);
 					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
 					final double ey = 1;
 					ds.add(x, y, ey, ey);
+//					ds.setAutoNotifaction(true);
 				}
-//			});
+				
+			});
 		}
 	}
 
@@ -181,7 +184,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	}
 
 	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
-//		private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
 		r.setErrorType(ErrorStyle.NONE);
 		r.setDashSize(MIN_PIXEL_DISTANCE);
 		r.setPointReduction(true);
@@ -203,7 +205,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		BorderPane content = new BorderPane();
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("?", "?");
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
-		xAxis1.setAutoRangeRounding(false);
+		xAxis1.setAutoRangeRounding(true);
 		xAxis1.setTimeAxis(false);
 		xAxis1.invertAxis(false);
 		xAxis1.setTickLabelRotation(45);
