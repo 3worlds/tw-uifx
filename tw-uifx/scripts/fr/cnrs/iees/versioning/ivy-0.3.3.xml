@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.3.4 (Tue Nov 05 16:57:52 CET 2019)
+ ant and ivy scripts for project <tw-uifx> version 0.3.3 (Mon Oct 28 11:53:11 CET 2019)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -13,7 +13,7 @@
 
 	<info	organisation="au.edu.anu.tw-uifx"
 			module="tw-uifx"
-			revision="0.3.4"
+			revision="0.3.3"
 			status="integration">
 		<license name="gpl3" url="https://www.gnu.org/licenses/gpl-3.0.txt"/>
 		<description>This module contains only fx code for the UI of ModelMaker and ModelRunner.</description>
