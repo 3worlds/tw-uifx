@@ -42,7 +42,7 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twcore.data.Field;
+import au.edu.anu.twcore.data.FieldNode;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twcore.data.TableNode;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -300,8 +300,8 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	private void recurseRecord(Record record, Map<DataLabel, Integer> items) {
 		@SuppressWarnings("unchecked")
 
-		List<Field> fields = (List<Field>) get(record.getChildren(), selectZeroOrMany(hasTheLabel(N_FIELD.label())));
-		for (Field field : fields) {
+		List<FieldNode> fields = (List<FieldNode>) get(record.getChildren(), selectZeroOrMany(hasTheLabel(N_FIELD.label())));
+		for (FieldNode field : fields) {
 			Duple<DataLabel, Integer> entry = getEntry(field);
 			items.put(entry.getFirst(), entry.getSecond());
 		}
