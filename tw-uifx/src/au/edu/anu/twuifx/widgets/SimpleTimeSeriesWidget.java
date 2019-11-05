@@ -159,6 +159,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 				initErrorDataSetRenderer(renderer);
 				renderer.getDatasets().add(ds);
 				renderers.add(renderer);
+				ds.reset();//?
 			}
 			for (DataLabel dl : tsmeta.intNames()) {
 				String key = dl.toString();
@@ -170,6 +171,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 				initErrorDataSetRenderer(renderer);
 				renderer.getDatasets().add(ds);
 				renderers.add(renderer);
+				ds.reset();//?
 			}
 			for (ErrorDataSetRenderer r : renderers)
 				chart.getRenderers().add(r);
