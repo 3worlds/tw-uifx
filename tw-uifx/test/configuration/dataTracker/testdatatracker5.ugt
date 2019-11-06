@@ -53,10 +53,8 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 		dimensioner dimer
 			size = java.lang.Integer(3)
-			rank = java.lang.Integer(1)
 		dimensioner dim2
 			size = java.lang.Integer(12)
-			rank = java.lang.Integer(0)
 	system sys
 		parameterClass = java.lang.String()
 		dynamics dyn
@@ -108,8 +106,11 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 
 // CROSS-LINKS
 [table:tx] sizedBy sizedBy1 [dimensioner:dimer]
+	rank = java.lang.Integer(1)
 [table:tx] sizedBy sizedBy2 [dimensioner:dim2]
+	rank = java.lang.Integer(0)
 [table:ty] sizedBy sizedBy3 [dimensioner:dimer]
+	rank = java.lang.Integer(1)
 [component:comp] belongsTo belongsTo1 [category:cat]
 [experiment:exp] baseLine baseLine1 [system:sys]
 [individual:instance] instanceOf instanceOf1 [component:comp]

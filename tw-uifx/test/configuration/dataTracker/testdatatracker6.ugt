@@ -81,7 +81,6 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dd
 		dimensioner dim2
-			rank = java.lang.Integer(0)
 			size = java.lang.Integer(6)
 		record Rec
 			dynamic = java.lang.Boolean(true)
@@ -104,14 +103,16 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 		dimensioner dimer
-			rank = java.lang.Integer(1)
 			size = java.lang.Integer(5)
 
 // CROSS-LINKS
 [individual:instance] instanceOf instanceOf1 [component:comp]
 [table:tx] sizedBy sizedBy1 [dimensioner:dimer]
+	rank = java.lang.Integer(1)
 [table:tx] sizedBy sizedBy2 [dimensioner:dim2]
+	rank = java.lang.Integer(0)
 [table:ty] sizedBy sizedBy3 [dimensioner:dimer]
+	rank = java.lang.Integer(0)
 [widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
 [category:cat] drivers drivers1 [record:Rec]
 [experiment:exp] baseLine baseLine1 [system:sys]

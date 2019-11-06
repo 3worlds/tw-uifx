@@ -56,8 +56,8 @@ public class VersionSettings {
 	protected static String[][] DEPS = { 
 		{"fr.ens.biologie", "generics", "[0.1.12,)", null},
 		{"au.edu.anu.rscs.aot", "omugi", "[0.2.14,)", null},
-		{"fr.cnrs.iees.tw-core", "tw-core", "[0.3.5,)", null},
-		{"au.edu.anu.rscs.aot", "aot", "[0.1.6,)", null},
+		{"fr.cnrs.iees.tw-core", "tw-core", "[0.3.6,)", null},
+		{"au.edu.anu.rscs.aot", "aot", "[0.1.7,)", null},
 		{"au.edu.anu.tw-apps", "tw-apps", "[0.2.1,)", null},
 		{"au.edu.anu.rscs.aot", "qgraph", "[0.1.3,)", null},	
 		{"au.edu.anu.ymuit", "ymuit", "[0.1.6,)", null},
