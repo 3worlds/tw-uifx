@@ -353,11 +353,13 @@ public abstract class StructureEditorAdapter
 		for (SimpleDataTreeNode propertySpec : propertySpecs) {
 			String key = (String) propertySpec.properties().getPropertyValue(aaHasName);
 //			System.out.println(key);
-			if (key.equals(twaSubclass))
-				newChild.addProperty(twaSubclass, subClass.getName());
-			else {
+			if (key.equals(twaSubclass)) {
+				log.info("Add property: "+ subClass.getName());
+				newChild.addProperty(twaSubclass, key);
+			}else {
 				String type = (String) propertySpec.properties().getPropertyValue(aaType);
 				Object defValue = ValidPropertyTypes.getDefaultValue(type);
+				log.info("Add property: "+ key);
 				newChild.addProperty(key, defValue);
 			}
 		}
