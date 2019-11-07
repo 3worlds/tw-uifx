@@ -232,15 +232,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "");
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
 		xAxis1.setAutoRangeRounding(true);
-//		xAxis1.setTimeAxis(false);
-		yAxis1.setAutoRangeRounding(true);
-//		xAxis1.setTimeAxis(false);
 		xAxis1.setTimeAxis(false);
 		xAxis1.invertAxis(false);
 		// These numbers can be very large
 		xAxis1.setTickLabelRotation(45);
 		// for gregorian we may need something else here
-//		xAxis1.setMinorTickCount(30);
 //		xAxis1.setTimeAxis(true);
 
 		yAxis1.setForceZeroInRange(true);
@@ -250,9 +246,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		chart = new XYChart(xAxis1, yAxis1);
 		chart.legendVisibleProperty().set(true);
 		chart.setAnimated(false);
-		//chart.getCanvasForeground().setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0), CornerRadii.EMPTY, Insets.EMPTY)));
-		//chart.getPlotBackground().setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0), CornerRadii.EMPTY, Insets.EMPTY)));
-		// chart.setTitle("title");
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
 
