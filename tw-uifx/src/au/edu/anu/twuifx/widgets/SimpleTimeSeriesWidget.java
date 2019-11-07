@@ -123,10 +123,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		if (policy.canProcessDataMessage(data)) {
 
 			/*
-			 * TODO does not seem to work. Maybe skip if only one dataset. If more than one
-			 * then switch off all except the first. This should then comply with the
-			 * RollingBufferSample example. But be careful of order: can't trust
-			 * dataSetMap.values(); 
+			 * TODO Still some problems with how we manage this.
 			 * 
 			 */
 
@@ -144,6 +141,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 					final double ey = 1;
 					ds.add(x, y, ey, ey);
 				}
+				
 				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
 					if (!ds.equals(dontTouch))
 						ds.setAutoNotifaction(true);
