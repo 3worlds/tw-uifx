@@ -34,6 +34,7 @@ import java.util.Set;
 
 import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.ens.biologie.generic.utils.Duple;
@@ -108,5 +109,8 @@ public interface Specifications {
 
 	/*Returns a list of Duple<NodeLabel1,NodeLabel2> optons for the given query list*/
 	public List<Duple<String, String>> getNodeLabelDuples(List<SimpleDataTreeNode> queries);
+
+	public void filterRequiredPropertyQuery(VisualNode vnode, SimpleDataTreeNode baseSpec,
+			SimpleDataTreeNode subSpec);
 
 }

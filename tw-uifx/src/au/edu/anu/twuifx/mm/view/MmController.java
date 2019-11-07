@@ -518,7 +518,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		});
 
 		setFontSize(Preferences.getInt(fontSizeKey, 10));
-		setNodeRadius(Preferences.getInt(nodeSizeKey, 10));
+		setNodeRadius(Preferences.getInt(nodeSizeKey, 5));
 		setJitter(Preferences.getInt(jitterKey, 1));
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));

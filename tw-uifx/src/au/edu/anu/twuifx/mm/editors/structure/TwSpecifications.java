@@ -3,6 +3,7 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
@@ -10,16 +11,20 @@ import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+//import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
 import au.edu.anu.twcore.archetype.tw.IsInValueSetQuery;
 import au.edu.anu.twcore.archetype.tw.NameStartsWithUpperCaseQuery;
+import au.edu.anu.twcore.archetype.tw.RequirePropertyQuery;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.Tree;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
+import fr.cnrs.iees.properties.ExtendablePropertyList;
 import fr.ens.biologie.generic.utils.Duple;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
@@ -198,12 +203,17 @@ public class TwSpecifications implements //
 			if (selectedKeys == null)
 				return false;
 			Iterator<SimpleDataTreeNode> iter = propertySpecs.iterator();
+			String keyHandled = null;
 			while (iter.hasNext()) {
 				SimpleDataTreeNode ps = iter.next();
 				String key = (String) ps.properties().getPropertyValue(aaHasName);
 				String optionalKey = getSelectedEntry(key, selectedKeys, entries);
-				if (optionalKey != null && !optionalKey.equals(key))
-					iter.remove();
+				if (!Objects.equals(optionalKey, keyHandled)) {
+					if (optionalKey != null && !optionalKey.equals(key))
+						iter.remove();
+					else if (keyHandled == null)
+						keyHandled = optionalKey;
+				}
 			}
 		}
 		return true;
@@ -294,6 +304,8 @@ public class TwSpecifications implements //
 	@Override
 	public List<SimpleDataTreeNode> getQueries(SimpleDataTreeNode spec, Class<? extends Query>... queries) {
 		List<SimpleDataTreeNode> result = new ArrayList<>();
+		if (spec==null)
+			return result;
 		for (Class<? extends Query> query : queries) {
 			result.addAll((List<SimpleDataTreeNode>) get(spec.getChildren(), selectZeroOrMany(
 					andQuery(hasTheLabel(aaMustSatisfyQuery), hasProperty(aaClassName, query.getName())))));
@@ -311,5 +323,32 @@ public class TwSpecifications implements //
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void filterRequiredPropertyQuery(VisualNode vnode, SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec) {
+		 List<SimpleDataTreeNode> queries = getQueries(baseSpec, RequirePropertyQuery.class);
+		 queries.addAll(getQueries(subSpec, RequirePropertyQuery.class));
+		 ExtendablePropertyList props = (ExtendablePropertyList) vnode.cProperties();
+		 for (SimpleDataTreeNode query:queries) {
+			 StringTable conditions = (StringTable)query.properties().getPropertyValue(twaConditions);
+				String p1 = conditions.getWithFlatIndex(0);
+				String p2 = conditions.getWithFlatIndex(1);
+				String[] stringValues = new String[conditions.size()-2];
+				for (int i=2; i<conditions.size(); i++)
+					stringValues[i-2] = conditions.getWithFlatIndex(i);
+				if (props.hasProperty(p1))
+					if (props.hasProperty(p2)) {
+						String value = props.getPropertyValue(p2).toString();
+						boolean satisfied= false;
+						for (int i = 0;i<stringValues.length;i++) {
+							if (value.equals(stringValues[i]))
+								satisfied = true;				
+						}
+						if (!satisfied)
+							props.removeProperty(p1);
+					}
+		 }
+		
 	}
 }

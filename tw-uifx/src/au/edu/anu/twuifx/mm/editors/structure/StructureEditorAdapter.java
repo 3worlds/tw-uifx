@@ -339,11 +339,15 @@ public abstract class StructureEditorAdapter
 		}
 		SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec, subClass);
 		// unfiltered propertySpecs
+		
 		Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecsOf(childBaseSpec, childSubSpec);
 		if (!specifications.filterPropertyStringTableOptions(propertySpecs, childBaseSpec, childSubSpec,
 				childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, ChildXorPropertyQuery.class,
 				PropertyXorQuery.class))
 			return;// cancel
+//		mustSatisfyQuery NumberTableUnitsSpecCondition
+//		   className = String("au.edu.anu.twcore.archetype.tw.RequirePropertyQuery")
+//		   conditions = StringTable(([8]"units","dataElementType","Double","Float","Integer","Long","Short","Byte"))		
 
 		// make the node
 		newChild = editableNode.newChild(childLabel, promptId);
@@ -363,87 +367,11 @@ public abstract class StructureEditorAdapter
 				newChild.addProperty(key, defValue);
 			}
 		}
-		/*
-		 * hasNode recordFieldSpec isOfClass = String("field")
-		 * 
-		 * hasProperty
-		 * 
-		 * hasName = String("type") type = String("DataElementType")
-		 * 
-		 * StringTable(([2]"type","3wSA-RealFieldMetadata.ugt"))
-		 * 
-		 * value = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-		 * 
-		 * --------------------------
-		 * 
-		 * hasNode tableSpec isOfClass = String("table") *
-		 * 
-		 * hasProperty dataElementTypeSpec
-		 * 
-		 * hasName = String("dataElementType")
-		 * 
-		 * type = String("DataElementType")
-		 * 
-		 * StringTable(([2]"dataElementType","3wSA-RealTableMetadata.ugt"))
-		 * 
-		 * value = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-		 *
-		 */
-		/*
-		 * 
-		 * TODO How to handle non-subclass SAs. These SAs, unlike subclass SAs, are in
-		 * the root of the archetype (why i don't know) i.e. they are already
-		 * instantiated in the main arch and therefore they should not be opened and
-		 * loaded into the MAP of SAs in TWA. So, what to do?
-		 * 
-		 * 1) check if base spec has SA query with first par not equal to 'subclass'
-		 * 
-		 * 2) See if node instance has a property key equal to par.get(0). Should be an
-		 * exception if this is not the case.
-		 * 
-		 * 3) Find which query is relevant to the actual property class in the node
-		 * instance (i.e all other properties should exist at this time) by looking at
-		 * the 'value' property.
-		 * 
-		 * 4) select all hasNodes of this isOfClass excepting this baseClassSpec. Here
-		 * we come unstuck because we don't know how the map the value entry to a
-		 * hasNode in the archetype. The only way to do this is ignore what's in the main
-		 * arch and load the SA again. Oh well, I shuoldn't have prevented non-subclass
-		 * SAs from loading into the TWA SA lookup. So I ignore the entries of this
-		 * 'isOfClass' (bug in waiting) and load the sa and add the properties ot the
-		 * newly created node.
-		 * 
-		 * 
-		 * 
-		 * 
-		 */
-
-//		if (!newChild.configHasProperty(twaSubclass)) {
-//			
-//			
-//		}
-		// Not sure yet if this is a good idea. Perhaps the user should decide the order
-		// prompted by a query
-//
-//		if (newChild.cClassId().equals(N_DIMENSIONER.label())) {
-//			setDefaultDimRank(newChild);
-//		}
+		
+		specifications.filterRequiredPropertyQuery(newChild,childBaseSpec,childSubSpec);
 
 		controller.onNewNode(newChild);
 	}
-// If we do this its better done by examining the appropriate query
-//	private void setDefaultDimRank(VisualNode newChild2) {
-//		int mxRank = 0;
-//		for (TreeGraphNode n : ConfigGraph.getGraph().nodes()) {
-//			if (n.classId().equals(N_DIMENSIONER.label())) {
-//				TreeGraphDataNode dn = (TreeGraphDataNode) n;
-//				int r = (Integer) dn.properties().getPropertyValue(P_DIMENSIONER_RANK.key());
-//				mxRank = Math.max(r, mxRank);
-//			}
-//			newChild.getConfigNode().properties().setProperty(P_DIMENSIONER_RANK.key(), mxRank + 1);
-//		}
-//
-//	}
 
 	@Override
 	public void onNewEdge(Duple<String, VisualNode> duple) {
