@@ -616,6 +616,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		zoomTarget.getChildren().clear();
 		visualGraph = null;
 		lastSelectedNode = null;
+		UserProjectLink.unlinkUserProject();
 		setButtonState();
 	}
 
