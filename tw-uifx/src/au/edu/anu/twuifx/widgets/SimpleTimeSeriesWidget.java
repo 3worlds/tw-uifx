@@ -57,8 +57,14 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.ens.biologie.generic.utils.Logging;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 
 /**
  * @author Ian Davies
@@ -120,30 +126,29 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 			 * TODO does not seem to work. Maybe skip if only one dataset. If more than one
 			 * then switch off all except the first. This should then comply with the
 			 * RollingBufferSample example. But be careful of order: can't trust
-			 * dataSetMap.values(); We should create a separate ArrayList or get one value
-			 * and switch of all except this one;
+			 * dataSetMap.values(); 
 			 * 
 			 */
 
-			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
+			Platform.runLater(() -> {
+				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
-			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-				if (!ds.equals(dontTouch))
-					ds.setAutoNotifaction(false);
+				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+					if (!ds.equals(dontTouch))
+						ds.setAutoNotifaction(false);
 
-//			Platform.runLater(() -> {
-			final double x = data.time();
-			for (DataLabel dl : tsmeta.doubleNames()) {
-				CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
-				final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
-				final double ey = 1;
-				ds.add(x, y, ey, ey);
-			}
-			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-				if (!ds.equals(dontTouch))
-					ds.setAutoNotifaction(true);
+				final double x = data.time();
+				for (DataLabel dl : tsmeta.doubleNames()) {
+					CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
+					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
+					final double ey = 1;
+					ds.add(x, y, ey, ey);
+				}
+				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+					if (!ds.equals(dontTouch))
+						ds.setAutoNotifaction(true);
 
-//			});
+			});
 		}
 	}
 
@@ -164,14 +169,14 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
 			for (DataLabel dl : tsmeta.doubleNames()) {
 				String key = dl.toString();
-				log.info("Tracking: " + key);
+//				log.info("Tracking: " + key);
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
 				dataSetMap.put(key, ds);
 			}
 
 			for (DataLabel dl : tsmeta.intNames()) {
 				String key = dl.toString();
-				log.info("Tracking: " + key);
+//				log.info("Tracking: " + key);
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
 				dataSetMap.put(key, ds);
 			}
@@ -226,7 +231,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	@Override
 	public Object getUserInterfaceContainer() {
 		BorderPane content = new BorderPane();
-		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("?", "?");
+		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "");
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
 		xAxis1.setAutoRangeRounding(true);
 //		xAxis1.setTimeAxis(false);
@@ -247,6 +252,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		chart = new XYChart(xAxis1, yAxis1);
 		chart.legendVisibleProperty().set(true);
 		chart.setAnimated(false);
+		//chart.getCanvasForeground().setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0), CornerRadii.EMPTY, Insets.EMPTY)));
+		//chart.getPlotBackground().setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0), CornerRadii.EMPTY, Insets.EMPTY)));
 		// chart.setTitle("title");
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
