@@ -274,8 +274,8 @@ public abstract class StructureEditorAdapter
 		return baseSpec != null;
 	}
 
-	private void connectTo(Duple<String, VisualNode> p) {
-		VisualEdge vEdge = editableNode.newEdge(p.getFirst(), p.getSecond());
+	private void connectTo(String id,Duple<String, VisualNode> p) {
+		VisualEdge vEdge = editableNode.newEdge(id,p.getFirst(), p.getSecond());
 		gvisualiser.onNewEdge(vEdge);
 	}
 
@@ -295,24 +295,26 @@ public abstract class StructureEditorAdapter
 			return null;
 	}
 
-	private String getNewName(String childLabel, SimpleDataTreeNode childBaseSpec) {
+	private String getNewName(String label, SimpleDataTreeNode childBaseSpec) {
 		// default name is label with 1 appended
 
-		String promptId = childLabel.replaceAll("[aeiou]", "") + "1";
-		boolean captialize = specifications.nameStartsWithUpperCase(childBaseSpec);
-		if (captialize)
+		String promptId = label.replaceAll("[aeiou]", "") + "1";
+		boolean capitalize = false;
+		if (childBaseSpec!=null)
+			capitalize = specifications.nameStartsWithUpperCase(childBaseSpec);
+		if (capitalize)
 			promptId = WordUtils.capitalize(promptId);
 		boolean modified = true;
 		promptId = editableNode.proposeAnId(promptId);
 		while (modified) {
-			String userName = promptForNewNode(childLabel, promptId);
+			String userName = promptForNewNode(label, promptId);
 			if (userName == null)
 				return null;// cancel
 			userName = userName.trim();
 			if (userName.equals(""))
 				return null; // implicit cancel
 			// userName = promptId;
-			if (captialize)
+			if (capitalize)
 				userName = WordUtils.capitalize(userName);
 			String newName = editableNode.proposeAnId(userName);
 			modified = !newName.equals(userName);
@@ -374,10 +376,13 @@ public abstract class StructureEditorAdapter
 	}
 
 	@Override
-	public void onNewEdge(Duple<String, VisualNode> duple) {
+	public void onNewEdge(Duple<String, VisualNode> details) {
 		if (editableNode.isCollapsed())
 			gvisualiser.expandTreeFrom(editableNode.getSelectedVisualNode());
-		connectTo(duple);
+		String id = getNewName(details.getFirst(),null);
+		if (id==null)
+			return;
+		connectTo(id,details);
 		ConfigGraph.validateGraph();
 		GraphState.setChanged();
 	}

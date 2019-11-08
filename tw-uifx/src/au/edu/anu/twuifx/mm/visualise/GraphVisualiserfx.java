@@ -95,7 +95,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private static final Double animateDuration = 500.0;
 	private final IMMController controller;
 
-	private boolean edgeClassOnly = true;
+	private boolean edgeClassOnly = false;
 	private boolean nodeClassOnly = false;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //

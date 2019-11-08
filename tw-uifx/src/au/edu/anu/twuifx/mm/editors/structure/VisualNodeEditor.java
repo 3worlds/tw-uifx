@@ -188,8 +188,8 @@ public class VisualNodeEditor implements //
 	}
 
 	@Override
-	public VisualEdge newEdge(String label, VisualNode vEnd) {
-		return visualNode.newEdge(label, vEnd);
+	public VisualEdge newEdge(String id, String label, VisualNode vEnd) {
+		return visualNode.newEdge(id, label,vEnd);
 	}
 
 	@Override

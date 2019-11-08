@@ -82,7 +82,7 @@ public interface VisualNodeEditable {
 
 	public String cClassId();
 	
-	public VisualEdge newEdge(String label, VisualNode vEnd);
+	public VisualEdge newEdge(String id, String label,VisualNode vEnd);
 
 	public void reconnectChild(VisualNode vnChild);
 
