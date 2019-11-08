@@ -101,6 +101,10 @@ import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.graph.DataHolder;
+import fr.cnrs.iees.graph.Direction;
+import fr.cnrs.iees.graph.ElementAdapter;
+import fr.cnrs.iees.graph.impl.ALDataEdge;
+import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -665,6 +669,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable) {
 
 		ObservableList<Item> result = FXCollections.observableArrayList();
+		
 		for (String key : node.properties().getKeysAsSet())
 			if (node.properties().getPropertyValue(key) != null) {
 				boolean editable = model.propertyEditable(node.classId(), key);
@@ -673,6 +678,19 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 					result.add(makeItemType(key, node, editable, category, propertyDesciption));
 				}
 			}
+			
+		// get the out edges here
+		for (ALEdge edge: node.edges(Direction.OUT))
+			if (edge instanceof ALDataEdge) {
+				ALDataEdge dataEdge = (ALDataEdge)edge;
+				for (String key : dataEdge.properties().getKeysAsSet()) {
+					boolean editable =  model.propertyEditable(edge.classId(), key);
+					if (editable || showNonEditable) {
+						result.add(makeItemType(key,dataEdge,editable, category,"Something"));
+					}
+				}
+			}
+
 		result.sort((first, second) -> {
 			return first.getName().compareTo(second.getName());
 		});
@@ -703,21 +721,21 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		allElementsPropertySheet.getItems().setAll(obsList);
 	}
 
-	private Item makeItemType(String key, TreeGraphDataNode n, boolean editable, String category, String description) {
-		Object value = n.properties().getPropertyValue(key);
+	private Item makeItemType(String key, DataHolder element, boolean editable, String category, String description) {
+		Object value = element.properties().getPropertyValue(key);
 		if (value instanceof FileType) {
-			FileTypeItem fti = new FileTypeItem(this, key, n, true, category, description);
+			FileTypeItem fti = new FileTypeItem(this, key, (ElementAdapter) element, true, category, description);
 			return fti;
 		} else if (value instanceof StatisticalAggregatesSet)
-			return new StatsTypeItem(this, key, n, true, category, description);
+			return new StatsTypeItem(this, key, (ElementAdapter) element, true, category, description);
 		else if (value instanceof DateTimeType) {
-			return new DateTimeItem(this, key, n, true, category, description);
+			return new DateTimeItem(this, key, (ElementAdapter) element, true, category, description);
 		} else if (value instanceof TrackerType) {
-			return new TrackerTypeItem(this, key, n, true, category, description);
+			return new TrackerTypeItem(this, key, (ElementAdapter) element, true, category, description);
 		} else if (value instanceof Interval) {
-			return new IntervalItem(this, key, n, true, category, description);
+			return new IntervalItem(this, key, (ElementAdapter) element, true, category, description);
 		} else
-			return new SimplePropertyItem(this, key, n, editable, category, description);
+			return new SimplePropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}
 
 	private void initialisePropertySheets() {

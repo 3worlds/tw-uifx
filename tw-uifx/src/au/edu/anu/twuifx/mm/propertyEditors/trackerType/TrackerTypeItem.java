@@ -36,7 +36,8 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.ElementAdapter;
+//import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 
 /**
@@ -46,9 +47,9 @@ import fr.cnrs.iees.twcore.constants.TrackerType;
  */
 public class TrackerTypeItem extends SimplePropertyItem {
 
-	public TrackerTypeItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category,
+	public TrackerTypeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
 			String description) {
-		super(controller, key, n, canEdit, category, description);
+		super(controller, key, element, canEdit, category, description);
 	}
 
 	@Override
@@ -59,13 +60,13 @@ public class TrackerTypeItem extends SimplePropertyItem {
 			onUpdateProperty(tt);
 		}
 	}
-	public TreeGraphDataNode getNode() {
-		return node;
+	public ElementAdapter getElement() {
+		return element;
 	}
 
 	@Override
 	public Object getValue() {
-		TrackerType tt = (TrackerType) node.properties().getPropertyValue(key);
+		TrackerType tt = (TrackerType) getElementProperties().getPropertyValue(key);
 		return tt.toString();
 	}
 

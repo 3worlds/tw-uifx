@@ -37,7 +37,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.FileType;
 import javafx.stage.FileChooser;
 
@@ -55,9 +55,9 @@ public class FileTypeItem extends SimplePropertyItem {
 
 	private FileType fileType;
 
-	public FileTypeItem(IMMController controller,String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
-		super(controller,key, n, canEdit, category, description);
-		fileType = (FileType) node.properties().getPropertyValue(key);
+	public FileTypeItem(IMMController controller,String key, ElementAdapter element, boolean canEdit, String category, String description) {
+		super(controller,key, element, canEdit, category, description);
+		fileType = (FileType)getElementProperties().getPropertyValue(key);
 		exts = new ArrayList<>();
 		exts.add(new FileChooser.ExtensionFilter("All files", "*.*"));
 	}

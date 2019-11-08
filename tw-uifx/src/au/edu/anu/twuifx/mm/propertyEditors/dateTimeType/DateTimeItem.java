@@ -38,8 +38,8 @@ import org.controlsfx.property.editor.PropertyEditor;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.ecosystem.dynamics.TimeLine;
-import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -58,11 +58,11 @@ public class DateTimeItem extends SimplePropertyItem {
 	private TimeUnits tuMin = TimeUnits.defaultValue();
 	private TimeUnits tuMax = TimeUnits.defaultValue();
 
-	public DateTimeItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
-		super(controller,key, n, canEdit, category, description);
+	public DateTimeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
+		super(controller,key, element, canEdit, category, description);
 		TimeLine timeline = null;
-		if (n.classId().equals(N_TIMELINE.label()))
-			timeline = (TimeLine) n;
+		if (element.classId().equals(N_TIMELINE.label()))
+			timeline = (TimeLine) element;
 		else
 			timeline = findSingleTimeLine();
 		if (timeline != null) {
@@ -111,13 +111,12 @@ public class DateTimeItem extends SimplePropertyItem {
 
 	@Override
 	public Object getValue() {
-		return node.properties().getPropertyValue(key).toString();
+		return super.getValue().toString();
 	}
 
 	@Override
 	public void setValue(Object value) {
-		// TODO This will be wrong - check later ?? What?
-		DateTimeType oldValue = (DateTimeType) node.properties().getPropertyValue(key);
+		DateTimeType oldValue = (DateTimeType) getElementProperties().getPropertyValue(key);
 		DateTimeType newValue = DateTimeType.valueOf((String) value);
 		if (oldValue.getDateTime() != newValue.getDateTime()) {
 			onUpdateProperty(newValue);

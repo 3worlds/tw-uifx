@@ -36,7 +36,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 
 /**
@@ -46,13 +46,13 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
  */
 public class StatsTypeItem extends SimplePropertyItem {
 
-	public StatsTypeItem(IMMController controller,String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
-		super(controller,key, n, canEdit, category, description);
+	public StatsTypeItem(IMMController controller,String key, ElementAdapter element, boolean canEdit, String category, String description) {
+		super(controller,key, element, canEdit, category, description);
 	}
 
 	@Override
 	public void setValue(Object newString) {
-		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) node.properties().getPropertyValue(key);
+		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) getElementProperties().getPropertyValue(key);
 		String oldString = oldValue.toString();
 		if (!oldString.equals(newString)) {
 			StatisticalAggregatesSet newValue = StatisticalAggregatesSet.valueOf((String) newString);
@@ -61,8 +61,7 @@ public class StatsTypeItem extends SimplePropertyItem {
 	}
 	@Override
 	public Object getValue() {
-		StatisticalAggregatesSet sas = (StatisticalAggregatesSet) node.properties().getPropertyValue(key);
-		return sas.toString();
+		return super.getValue().toString();
 	}
 
 	@Override

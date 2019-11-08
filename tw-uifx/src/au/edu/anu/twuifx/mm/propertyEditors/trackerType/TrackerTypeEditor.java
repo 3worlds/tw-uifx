@@ -274,7 +274,8 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	private List<Record> getRootRecords() {
 		List<Record> result = new ArrayList<>();
 		TrackerTypeItem item = (TrackerTypeItem) getProperty();
-		TreeGraphDataNode process = (TreeGraphDataNode) item.getNode().getParent();
+		TreeGraphDataNode trackerNode = (TreeGraphDataNode) item.getElement();
+		TreeNode process = trackerNode.getParent();
 		if (process != null) {
 			@SuppressWarnings("unchecked")
 			List<TreeGraphDataNode> cats = (List<TreeGraphDataNode>) get(process.edges(Direction.OUT),

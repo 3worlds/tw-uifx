@@ -36,9 +36,11 @@ import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-//import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
+import fr.cnrs.iees.graph.ElementAdapter;
+import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.properties.SimplePropertyList;
 import javafx.beans.value.ObservableValue;
 
 /**
@@ -47,15 +49,15 @@ import javafx.beans.value.ObservableValue;
  * Date 14 Feb. 2019
  */
 public class SimplePropertyItem implements Item {
-	protected TreeGraphDataNode node;
+	protected ElementAdapter element;
 	protected String key;
 	protected boolean isEditable;
 	protected String category;
 	private String description;
 	private IMMController controller;
 
-	public SimplePropertyItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
-		this.node = n;
+	public SimplePropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
+		this.element = element;
 		this.key = key;
 		this.isEditable = canEdit;
 		this.category = category;
@@ -70,17 +72,18 @@ public class SimplePropertyItem implements Item {
 
 	@Override
 	public Class<?> getType() {
-		return node.properties().getPropertyClass(key);
+		return getElementProperties().getPropertyClass(key);
 	}
 
 	@Override
 	public String getCategory() {
 		return category;
 	}
+	
 
 	@Override
 	public String getName() {
-		return node.classId()+":"+node.id() + "#" + key;
+		return element.classId()+":"+element.id() + "#" + key;
 	}
 
 	@Override
@@ -90,7 +93,7 @@ public class SimplePropertyItem implements Item {
 
 	@Override
 	public Object getValue() {
-		return node.properties().getPropertyValue(key);
+		return getElementProperties().getPropertyValue(key);
 	}
 
 	@Override
@@ -107,9 +110,20 @@ public class SimplePropertyItem implements Item {
 	}
 	
 	protected void onUpdateProperty(Object value) {
-		node.properties().setProperty(key, value);
+		getElementProperties().setProperty(key,value);
 		controller.onItemEdit(this);
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
+	}
+	public SimplePropertyList getElementProperties() {
+		if (element instanceof TreeGraphDataNode) {
+			TreeGraphDataNode node = (TreeGraphDataNode) element;
+			return node.properties();
+		} else if (element instanceof ALDataEdge) {
+			ALDataEdge edge = (ALDataEdge) element;
+			return edge.properties();
+		}
+		return null;
+
 	}
 }

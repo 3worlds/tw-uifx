@@ -36,7 +36,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.ElementAdapter;
 import fr.ens.biologie.generic.utils.Interval;
 
 /**
@@ -46,20 +46,18 @@ import fr.ens.biologie.generic.utils.Interval;
  */
 public class IntervalItem extends SimplePropertyItem {
 
-	public IntervalItem(IMMController controller, String key, TreeGraphDataNode n, boolean canEdit, String category, String description) {
-		super(controller,key, n, canEdit, category, description);
+	public IntervalItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
+		super(controller,key, element, canEdit, category, description);
 	}
-
-
 
 	@Override
 	public Object getValue() {
-		return node.properties().getPropertyValue(key).toString();
+		return super.getValue().toString();
 	}
 
 	@Override
 	public void setValue(Object value) {
-		Interval oldValue = (Interval) node.properties().getPropertyValue(key);
+		Interval oldValue = (Interval) getElementProperties().getPropertyValue(key);
 		Interval newValue = Interval.valueOf((String) value);
 		if (!oldValue.equals(newValue)) {
 			onUpdateProperty(newValue);
