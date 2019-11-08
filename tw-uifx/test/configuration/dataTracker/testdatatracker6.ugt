@@ -121,6 +121,6 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 [widget:time] trackTime trackTime1 [dynamics:dyn]
 [dataTracker:dt] trackField [field:t]
 [dataTracker:dt] trackTable [table:tx]
-	index = StringTable(([1]"[1|2:4]"))
+	index = TrackerType(([1]"[1|2:4]"))
 [dataTracker:dt] trackField [field:z]	
-	index = StringTable(([1]"[1;4]"))
+	index = TrackerType(([1]"[1;4]"))

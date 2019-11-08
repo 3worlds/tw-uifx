@@ -99,7 +99,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	private Object onAction() {
 		if (catRecords.isEmpty()) {
 			Dialogs.errorAlert(getProperty().getName(), "Property setting",
-					"This property cannot be edited until the\n process drivers are defined.");
+					"Not implemented yet.");
 			return null;
 		}
 		BorderPane contents = new BorderPane();
@@ -273,20 +273,20 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 	private List<Record> getRootRecords() {
 		List<Record> result = new ArrayList<>();
-		TrackerTypeItem item = (TrackerTypeItem) getProperty();
-		TreeGraphDataNode trackerNode = (TreeGraphDataNode) item.getElement();
-		TreeNode process = trackerNode.getParent();
-		if (process != null) {
-			@SuppressWarnings("unchecked")
-			List<TreeGraphDataNode> cats = (List<TreeGraphDataNode>) get(process.edges(Direction.OUT),
-					selectZeroOrMany(hasTheLabel(ConfigurationEdgeLabels.E_APPLIESTO.label())), edgeListEndNodes());
-			for (TreeGraphDataNode cat : cats) {
-				Record record = (Record) get(cat.edges(Direction.OUT),
-						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())), endNode());
-				if (record != null)
-					result.add(record);
-			}
-		}
+//		TrackerTypeItem item = (TrackerTypeItem) getProperty();
+//		TreeGraphDataNode trackerNode = (TreeGraphDataNode) item.getElement();
+//		TreeNode process = trackerNode.getParent();
+//		if (process != null) {
+//			@SuppressWarnings("unchecked")
+//			List<TreeGraphDataNode> cats = (List<TreeGraphDataNode>) get(process.edges(Direction.OUT),
+//					selectZeroOrMany(hasTheLabel(ConfigurationEdgeLabels.E_APPLIESTO.label())), edgeListEndNodes());
+//			for (TreeGraphDataNode cat : cats) {
+//				Record record = (Record) get(cat.edges(Direction.OUT),
+//						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())), endNode());
+//				if (record != null)
+//					result.add(record);
+//			}
+//		}
 		return result;
 	}
 
