@@ -93,6 +93,7 @@ import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
+import au.edu.anu.twuifx.mm.propertyEditors.integerRangeType.IntegerRangeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.intervalType.IntervalItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
@@ -734,6 +735,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			return new TrackerTypeItem(this, key, (ElementAdapter) element, true, category, description);
 		} else if (value instanceof Interval) {
 			return new IntervalItem(this, key, (ElementAdapter) element, true, category, description);
+		} else if (value instanceof IntegerRange) {
+			return new IntegerRangeItem(this, key, (ElementAdapter) element, true, category, description);
 		} else
 			return new SimplePropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}
