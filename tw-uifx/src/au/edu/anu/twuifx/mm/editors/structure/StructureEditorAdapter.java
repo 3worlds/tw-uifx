@@ -59,6 +59,7 @@ import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -66,11 +67,13 @@ import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.properties.ExtendablePropertyList;
+
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
-//import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Logging;
+import fr.ens.biologie.generic.utils.Tuple;
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
@@ -161,14 +164,14 @@ public abstract class StructureEditorAdapter
 		return result;
 	}
 
-	// @Override
-	public List<Duple<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs) {
+	@Override
+	public List<Tuple<String, VisualNode, SimpleDataTreeNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs) {
 		// 1) Do the constraints allow this edge to exist?
 		// 2) does multiplicity allow for this edge?
 		// 3) do we have available end nodes?
 		// Test cases:
 		// 1) Table: dimensioner 1..*
-		List<Duple<String, VisualNode>> result = new ArrayList<>();
+		List<Tuple<String, VisualNode, SimpleDataTreeNode>> result = new ArrayList<>();
 		for (SimpleDataTreeNode edgeSpec : edgeSpecs) {
 			String toNodeRef = (String) edgeSpec.properties().getPropertyValue(aaToNode);
 			String edgeLabel = (String) edgeSpec.properties().getPropertyValue(aaIsOfClass);
@@ -178,13 +181,15 @@ public abstract class StructureEditorAdapter
 					if (!editableNode.hasOutEdgeTo(endNode, edgeLabel)) {
 						if (satisfyExclusiveCategoryQuery(edgeSpec, endNode, edgeLabel))
 							if (satisfyOutNodeXorQuery(edgeSpec, endNode, edgeLabel))
-								result.add(new Duple<String, VisualNode>(edgeLabel, endNode));
+								result.add(new Tuple<String, VisualNode, SimpleDataTreeNode>(edgeLabel, endNode,
+										edgeSpec));
 					}
 			}
 		}
-		Collections.sort(result, new Comparator<Duple<String, VisualNode>>() {
+		Collections.sort(result, new Comparator<Tuple<String, VisualNode, SimpleDataTreeNode>>() {
 			@Override
-			public int compare(Duple<String, VisualNode> o1, Duple<String, VisualNode> o2) {
+			public int compare(Tuple<String, VisualNode, SimpleDataTreeNode> o1,
+					Tuple<String, VisualNode, SimpleDataTreeNode> o2) {
 				String s1 = o1.getFirst() + o1.getSecond();
 				String s2 = o2.getFirst() + o2.getSecond();
 				return s1.compareToIgnoreCase(s2);
@@ -274,11 +279,6 @@ public abstract class StructureEditorAdapter
 		return baseSpec != null;
 	}
 
-	private void connectTo(String id,Duple<String, VisualNode> p) {
-		VisualEdge vEdge = editableNode.newEdge(id,p.getFirst(), p.getSecond());
-		gvisualiser.onNewEdge(vEdge);
-	}
-
 	private String promptForNewNode(String label, String promptName) {
 		return Dialogs.getText("'" + label + "' node name.", "", "Name:", promptName);
 	}
@@ -300,7 +300,7 @@ public abstract class StructureEditorAdapter
 
 		String promptId = label.replaceAll("[aeiou]", "") + "1";
 		boolean capitalize = false;
-		if (childBaseSpec!=null)
+		if (childBaseSpec != null)
 			capitalize = specifications.nameStartsWithUpperCase(childBaseSpec);
 		if (capitalize)
 			promptId = WordUtils.capitalize(promptId);
@@ -341,7 +341,7 @@ public abstract class StructureEditorAdapter
 		}
 		SimpleDataTreeNode childSubSpec = specifications.getSubSpecsOf(childBaseSpec, subClass);
 		// unfiltered propertySpecs
-		
+
 		Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecsOf(childBaseSpec, childSubSpec);
 		if (!specifications.filterPropertyStringTableOptions(propertySpecs, childBaseSpec, childSubSpec,
 				childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, ChildXorPropertyQuery.class,
@@ -360,31 +360,52 @@ public abstract class StructureEditorAdapter
 			String key = (String) propertySpec.properties().getPropertyValue(aaHasName);
 //			System.out.println(key);
 			if (key.equals(twaSubclass)) {
-				log.info("Add property: "+ subClass.getName());
+				log.info("Add property: " + subClass.getName());
 				newChild.addProperty(twaSubclass, key);
-			}else {
+			} else {
 				String type = (String) propertySpec.properties().getPropertyValue(aaType);
 				Object defValue = ValidPropertyTypes.getDefaultValue(type);
-				log.info("Add property: "+ key);
+				log.info("Add property: " + key);
 				newChild.addProperty(key, defValue);
 			}
 		}
-		
-		specifications.filterRequiredPropertyQuery(newChild,childBaseSpec,childSubSpec);
+
+		specifications.filterRequiredPropertyQuery(newChild, childBaseSpec, childSubSpec);
 
 		controller.onNewNode(newChild);
 	}
 
 	@Override
-	public void onNewEdge(Duple<String, VisualNode> details) {
+	public void onNewEdge(Tuple<String, VisualNode, SimpleDataTreeNode> details) {
 		if (editableNode.isCollapsed())
 			gvisualiser.expandTreeFrom(editableNode.getSelectedVisualNode());
-		String id = getNewName(details.getFirst(),null);
-		if (id==null)
+		String id = getNewName(details.getFirst(), null);
+		if (id == null)
 			return;
-		connectTo(id,details);
+		connectTo(id, details);
+		
 		ConfigGraph.validateGraph();
 		GraphState.setChanged();
+	}
+
+	private void connectTo(String id, Tuple<String, VisualNode, SimpleDataTreeNode> p) {
+		VisualEdge vEdge = editableNode.newEdge(id, p.getFirst(), p.getSecond());
+		if (vEdge.getConfigEdge() instanceof ALDataEdge) {
+			ALDataEdge edge = (ALDataEdge) vEdge.getConfigEdge();
+			ExtendablePropertyList props = (ExtendablePropertyList)edge.properties();
+			Iterable<SimpleDataTreeNode> propertySpecs = specifications.getPropertySpecsOf(p.getThird(), null);
+			for (SimpleDataTreeNode propertySpec : propertySpecs) {
+				String key = (String) propertySpec.properties().getPropertyValue(aaHasName);
+					String type = (String) propertySpec.properties().getPropertyValue(aaType);
+					Object defValue = ValidPropertyTypes.getDefaultValue(type);
+					log.info("Add property: " + key);
+					//TODO No processing of edge queries yet!
+					props.addProperty(key, defValue);
+				}
+			controller.onNewEdge(vEdge);
+		}
+		gvisualiser.onNewEdge(vEdge);
+
 	}
 
 	private void deleteNode(VisualNode vNode) {
@@ -519,7 +540,12 @@ public abstract class StructureEditorAdapter
 
 	@Override
 	public void onDeleteEdge(VisualEdge edge) {
+		boolean mayHaveProperties = false;
+		if (edge.getConfigEdge() instanceof ALDataEdge)
+			mayHaveProperties=true;
 		deleteEdge(edge);
+		if (mayHaveProperties)
+			controller.onEdgeDeleted();
 		GraphState.setChanged();
 		ConfigGraph.validateGraph();
 	}

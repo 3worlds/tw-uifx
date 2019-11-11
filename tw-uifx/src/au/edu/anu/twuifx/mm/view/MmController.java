@@ -868,4 +868,17 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		}
 	}
 
+	@Override
+	public void onNewEdge(VisualEdge e) {
+		initialisePropertySheets();
+		setButtonState();
+	}
+
+	@Override
+	public void onEdgeDeleted() {
+		initialisePropertySheets();
+		setButtonState();
+		
+	}
+
 }

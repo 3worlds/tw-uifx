@@ -35,6 +35,7 @@ import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.ens.biologie.generic.utils.Duple;
+import fr.ens.biologie.generic.utils.Tuple;
 
 /**
  * Author Ian Davies
@@ -51,7 +52,7 @@ public interface StructureEditable {
 	public List<SimpleDataTreeNode> filterChildSpecs(Iterable<SimpleDataTreeNode> childNodeSpecs);
 
 	 /* Filters a list of edgeSpecs to produce a list of duples of edge labels and end nodes */
-	public List<Duple<String, VisualNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs);
+	public List<Tuple<String, VisualNode,SimpleDataTreeNode>> filterEdgeSpecs(Iterable<SimpleDataTreeNode> edgeSpecs);
 
 	/* list of nodes that are eligible children of the edit node*/
 	public List<VisualNode> orphanedChildList(Iterable<SimpleDataTreeNode> childSpecs);
@@ -60,7 +61,7 @@ public interface StructureEditable {
 	public void onNewChild(String childLabel, SimpleDataTreeNode childBaseSpec);
 
 	/* add edge called String,to an end node */
-	public void onNewEdge(Duple<String, VisualNode> duple);
+	public void onNewEdge(Tuple<String, VisualNode,SimpleDataTreeNode> details);
 	
 	public void onDeleteEdge(VisualEdge edge);
 

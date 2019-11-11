@@ -44,6 +44,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseEvent;
 import fr.ens.biologie.generic.utils.Duple;
+import fr.ens.biologie.generic.utils.Tuple;
 
 /**
  * Author Ian Davies
@@ -69,7 +70,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
 		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
-		List<Duple<String, VisualNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
+		List<Tuple<String, VisualNode,SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
 		boolean section1Entries = !filteredChildSpecs.isEmpty() || !filteredEdgeSpecs.isEmpty()
 				|| !orphanedChildren.isEmpty();
 		boolean section2Entries = editableNode.hasChildren() || !filteredChildSpecs.isEmpty();
@@ -87,7 +88,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		if (!filteredEdgeSpecs.isEmpty()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_EDGE);
-			for (Duple<String, VisualNode> p : filteredEdgeSpecs) {
+			for (Tuple<String, VisualNode,SimpleDataTreeNode> p : filteredEdgeSpecs) {
 				MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().getDisplayText(false));
 				mi.setOnAction((e) -> {
 					onNewEdge(p);
@@ -267,5 +268,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			return result;
 		}
 	}
+
 
 }
