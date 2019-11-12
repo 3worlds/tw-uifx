@@ -366,7 +366,7 @@ public abstract class StructureEditorAdapter
 				newChild.addProperty(key, defValue);
 			}
 		}
-
+		System.out.println(newChild.getConfigNode());
 		specifications.filterRequiredPropertyQuery(newChild, childBaseSpec, childSubSpec);
 
 		controller.onNewNode(newChild);

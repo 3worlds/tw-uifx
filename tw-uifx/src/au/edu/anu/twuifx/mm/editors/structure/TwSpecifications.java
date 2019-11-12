@@ -26,6 +26,8 @@ import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.properties.ExtendablePropertyList;
+import fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames;
+import fr.cnrs.iees.twcore.constants.DataElementType;
 import fr.ens.biologie.generic.utils.Duple;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
@@ -305,7 +307,7 @@ public class TwSpecifications implements //
 	@Override
 	public List<SimpleDataTreeNode> getQueries(SimpleDataTreeNode spec, Class<? extends Query>... queries) {
 		List<SimpleDataTreeNode> result = new ArrayList<>();
-		if (spec==null)
+		if (spec == null)
 			return result;
 		for (Class<? extends Query> query : queries) {
 			result.addAll((List<SimpleDataTreeNode>) get(spec.getChildren(), selectZeroOrMany(
@@ -328,34 +330,55 @@ public class TwSpecifications implements //
 
 	@Override
 	public void filterRequiredPropertyQuery(VisualNode vnode, SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec) {
-		 List<SimpleDataTreeNode> queries = getQueries(baseSpec, RequirePropertyQuery.class);
-		 queries.addAll(getQueries(subSpec, RequirePropertyQuery.class));
-		 Set<String> pset = new HashSet<>();
-		 for (SimpleDataTreeNode query:queries) {
-			 StringTable conditions = (StringTable)query.properties().getPropertyValue(twaConditions);
-			 pset.add(conditions.getWithFlatIndex(1));
-		 }
-		 
-		 ExtendablePropertyList props = (ExtendablePropertyList) vnode.cProperties();
-		 for (SimpleDataTreeNode query:queries) {
-			 StringTable conditions = (StringTable)query.properties().getPropertyValue(twaConditions);
-				String p1 = conditions.getWithFlatIndex(0);
-				String p2 = conditions.getWithFlatIndex(1);
-				String[] stringValues = new String[conditions.size()-2];
-				for (int i=2; i<conditions.size(); i++)
-					stringValues[i-2] = conditions.getWithFlatIndex(i);
-				if (props.hasProperty(p1))
-					if (props.hasProperty(p2)) {
-						String value = props.getPropertyValue(p2).toString();
-						boolean satisfied= false;
-						for (int i = 0;i<stringValues.length;i++) {
-							if (value.equals(stringValues[i]))
-								satisfied = true;				
-						}
-						if (!satisfied)
-							props.removeProperty(p1);
+		List<SimpleDataTreeNode> queries = getQueries(baseSpec, RequirePropertyQuery.class);
+
+		queries.addAll(getQueries(subSpec, RequirePropertyQuery.class));
+		Set<String> pset = new HashSet<>();
+		for (SimpleDataTreeNode query : queries) {
+			StringTable conditions = (StringTable) query.properties().getPropertyValue(twaConditions);
+			String key = conditions.getWithFlatIndex(1);
+			if (!pset.contains(key)) {
+				pset.add(key);
+				Object obj = vnode.configGetPropertyValue(key);
+				// works with obj ==null
+				if (obj instanceof DataElementType) {
+					String[] list = new String[DataElementType.keySet().size()];
+					for (DataElementType det : DataElementType.values()) {
+						list[det.ordinal()] = det.toString();
 					}
-		 }
-		
+					// stupid design all this;
+					int choice = Dialogs.getListChoice(list, "Select", obj.getClass().getSimpleName(), "");
+					if (choice >= 0) {
+						for (DataElementType det : DataElementType.values()) {
+							if (det.ordinal() == choice) {
+								vnode.getConfigNode().properties().setProperty(key, det);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		ExtendablePropertyList props = (ExtendablePropertyList) vnode.cProperties();
+		for (SimpleDataTreeNode query : queries) {
+			StringTable conditions = (StringTable) query.properties().getPropertyValue(twaConditions);
+			String p1 = conditions.getWithFlatIndex(0);
+			String p2 = conditions.getWithFlatIndex(1);
+			String[] stringValues = new String[conditions.size() - 2];
+			for (int i = 2; i < conditions.size(); i++)
+				stringValues[i - 2] = conditions.getWithFlatIndex(i);
+			if (props.hasProperty(p1))
+				if (props.hasProperty(p2)) {
+					String value = props.getPropertyValue(p2).toString();
+					boolean satisfied = false;
+					for (int i = 0; i < stringValues.length; i++)
+						if (value.equals(stringValues[i]))
+							satisfied = true;
+					if (!satisfied)
+						props.removeProperty(p1);
+				}
+		}
+
 	}
 }
