@@ -1,6 +1,7 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -329,6 +330,12 @@ public class TwSpecifications implements //
 	public void filterRequiredPropertyQuery(VisualNode vnode, SimpleDataTreeNode baseSpec, SimpleDataTreeNode subSpec) {
 		 List<SimpleDataTreeNode> queries = getQueries(baseSpec, RequirePropertyQuery.class);
 		 queries.addAll(getQueries(subSpec, RequirePropertyQuery.class));
+		 Set<String> pset = new HashSet<>();
+		 for (SimpleDataTreeNode query:queries) {
+			 StringTable conditions = (StringTable)query.properties().getPropertyValue(twaConditions);
+			 pset.add(conditions.getWithFlatIndex(1));
+		 }
+		 
 		 ExtendablePropertyList props = (ExtendablePropertyList) vnode.cProperties();
 		 for (SimpleDataTreeNode query:queries) {
 			 StringTable conditions = (StringTable)query.properties().getPropertyValue(twaConditions);

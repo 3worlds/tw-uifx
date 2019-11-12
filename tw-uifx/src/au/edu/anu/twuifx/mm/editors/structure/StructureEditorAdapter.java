@@ -347,9 +347,6 @@ public abstract class StructureEditorAdapter
 				childClassName + PairIdentity.LABEL_NAME_SEPARATOR + promptId, ChildXorPropertyQuery.class,
 				PropertyXorQuery.class))
 			return;// cancel
-//		mustSatisfyQuery NumberTableUnitsSpecCondition
-//		   className = String("au.edu.anu.twcore.archetype.tw.RequirePropertyQuery")
-//		   conditions = StringTable(([8]"units","dataElementType","Double","Float","Integer","Long","Short","Byte"))		
 
 		// make the node
 		newChild = editableNode.newChild(childLabel, promptId);
