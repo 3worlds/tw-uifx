@@ -45,6 +45,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -91,141 +92,82 @@ public class IntegerRangeEditor extends AbstractPropertyEditor<String, LabelButt
 		content.setCenter(grid);
 
 		IntegerRange range = IntegerRange.valueOf(currentValue);
-		String txtLow = "";
-		String txtHigh = "";
 		int low = range.getFirst();
 		int high = range.getLast();
-		
-//		if (!low.equals(Double.NEGATIVE_INFINITY))
-//			txtLow = low.toString();
-//		if (!high.equals(Double.POSITIVE_INFINITY))
-//			txtHigh = high.toString();
-//		TextField tfLow = new TextField("");
-//		TextField tfHigh = new TextField();
-//		CheckBox cbLowOpen = new CheckBox("]");
-//		CheckBox cbHighOpen = new CheckBox("[");
-//		CheckBox cbPosInf = new CheckBox("+∞");
-//		CheckBox cbNegInf = new CheckBox("-∞");
-//		cbNegInf.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//			if (newValue) {
-//				cbPosInf.setVisible(false);
-//				cbLowOpen.setVisible(false);
-//				tfLow.setVisible(false);
-//			} else {
-//				cbPosInf.setVisible(true);
-//				cbLowOpen.setVisible(true);
-//				tfLow.setVisible(true);
-//				try {
-//					Double tmp = Double.parseDouble(tfLow.getText());
-//				} catch (NumberFormatException e) {
-//					tfLow.setText("0.0");
-//				}
-//			}
-//		});
-//		cbPosInf.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//			if (newValue) {
-//				cbNegInf.setVisible(false);
-//				cbHighOpen.setVisible(false);
-//				tfHigh.setVisible(false);
-//			} else {
-//				cbNegInf.setVisible(true);
-//				cbHighOpen.setVisible(true);
-//				tfHigh.setVisible(true);
-//				try {
-//					Double tmp = Double.parseDouble(tfHigh.getText());
-//				} catch (NumberFormatException e) {
-//					tfHigh.setText("0.0");
-//				}
-//			}
-//		});
 
-//		if (interval.halfOpenInf())
-//			cbLowOpen.setSelected(true);
-//		if (interval.halfOpenSup())
-//			cbHighOpen.setSelected(true);
-//		if (low.equals(Double.NEGATIVE_INFINITY))
-//			cbNegInf.setSelected(true);
-//		if (high.equals(Double.POSITIVE_INFINITY))
-//			cbPosInf.setSelected(true);
-//		tfLow.setText(txtLow);
-//		tfHigh.setText(txtHigh);
-//		grid.add(cbPosInf, 0, 0);
-//		grid.add(cbLowOpen, 1, 0);
-//		grid.add(tfLow, 2, 0);
-//		// grid.add(new Label("Low:"), 0, 0);
-//		// grid.add(new Label("High:"), 0, 1);
-//		grid.add(tfHigh, 3, 0);
-//		grid.add(cbHighOpen, 4, 0);
-//		grid.add(cbNegInf, 5, 0);
+		TextField tfLow = new TextField();
+		TextField tfHigh = new TextField();
+		tfLow.textProperty().addListener((observable, oldValue, newValue) -> {
+		    if (newValue.matches("-?\\d*")) return;
+		    tfLow.setText(newValue.replaceAll("[^\\d]", ""));
+		});
+		tfHigh.textProperty().addListener((observable, oldValue, newValue) -> {
+		    if (newValue.matches("-?\\d*")) return;
+		    tfHigh.setText(newValue.replaceAll("[^\\d]", ""));
+		});
+		CheckBox cbLowMin = new CheckBox("MIN INTEGER");
+		CheckBox cbHighMax = new CheckBox("*");
+		cbLowMin.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue) {
+				tfLow.setVisible(false);
+			} else {
+				tfLow.setVisible(true);
+				try {
+					Double tmp = Double.parseDouble(tfLow.getText());
+				} catch (NumberFormatException e) {
+					tfLow.setText("0");
+				}
+			}
+		});
+		cbHighMax.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue) {
+				tfHigh.setVisible(false);
+			} else {
+				tfHigh.setVisible(true);
+				try {
+					Double tmp = Double.parseDouble(tfHigh.getText());
+				} catch (NumberFormatException e) {
+					tfHigh.setText("0");
+				}
+			}
+		});
+
+		if (range.getFirst() == Integer.MIN_VALUE)
+			cbLowMin.setSelected(true);
+		else {
+			cbLowMin.setSelected(false);
+			tfLow.setText(String.valueOf(range.getFirst()));
+		}
+		if (range.getLast() == Integer.MAX_VALUE)
+			cbHighMax.setSelected(true);
+		else {
+			cbHighMax.setSelected(false);
+			tfHigh.setText(String.valueOf(range.getLast()));
+		}
+		grid.add(cbLowMin, 0, 0);
+		grid.add(tfLow, 1, 0);
+		grid.add(new Label(".."), 2, 0);
+		grid.add(tfHigh, 3, 0);
+		grid.add(cbHighMax, 4, 0);
 //		GridPane.setMargin(tfLow, new Insets(0, 5, 0, 0));
 //		GridPane.setMargin(cbLowOpen, new Insets(0, 5, 0, 0));
 //		GridPane.setMargin(tfHigh, new Insets(0, 5, 0, 0));
 //		GridPane.setMargin(cbHighOpen, new Insets(0, 5, 0, 0));
 //		GridPane.setMargin(cbPosInf, new Insets(0, 5, 0, 0));
 //		GridPane.setMargin(cbNegInf, new Insets(0, 5, 0, 0));
-//		dlg.setResizable(true);
-//		Optional<ButtonType> result = dlg.showAndWait();
-//		if (result.get().equals(ok)) {
-//			boolean halfOpenInf = cbLowOpen.isSelected();
-//			boolean halfOpenSup = cbHighOpen.isSelected();
-//			boolean posInf = cbPosInf.isSelected();
-//			boolean negInf = cbNegInf.isSelected();
-//			try {
-//				low = Double.parseDouble(tfLow.getText());
-//			} catch (NumberFormatException e) {
-//				low = Double.NEGATIVE_INFINITY;
-//			}
-//			try {
-//				high = Double.parseDouble(tfHigh.getText());
-//			} catch (NumberFormatException e) {
-//				high = Double.POSITIVE_INFINITY;
-//			}
-//			if (posInf)
-//				high = Double.POSITIVE_INFINITY;
-//			if (negInf)
-//				low = Double.NEGATIVE_INFINITY;
-//
-//			// Can't be both
-//			if (posInf && negInf) {
-//				Dialogs.errorAlert("Interval error", "", "Both bounds cannot be infinite");
-//				return currentValue;
-//			}
-//
-//			// low must be lower than high.
-//			if (low > high) {
-//				Double tmp = high;
-//				high = low;
-//				low = tmp;
-//			}
-//			if (!halfOpenInf && !halfOpenSup && !negInf && !posInf) {
-//				/* Simple closed [x,y] */
-//				interval = Interval.closed(low, high);
-//			} else if (halfOpenInf && halfOpenSup && !negInf && !posInf) {
-//				/* open ]x,y[ */
-//				interval = Interval.open(low, high);
-//			} else if (halfOpenInf && !halfOpenSup && !negInf && !posInf) {
-//				/* open inf ]x,y] */
-//				interval = Interval.halfOpenInf(low, high);
-//			} else if (!halfOpenInf && halfOpenSup && !negInf && !posInf) {
-//				/* open sup [x,y[ */
-//				interval = Interval.halfOpenSup(low, high);
-//			} else if (!halfOpenSup && negInf) {
-//				/* "]-∞,high]" */
-//				interval = Interval.toNegInf(high);
-//			} else if (!halfOpenInf && !negInf && posInf) {
-//				/* [low,+∞[ */
-//				interval = Interval.toPosInf(low);
-//			} else if (halfOpenSup && negInf) {
-//				/* ]-∞,high[ */
-//				interval = Interval.openToNegInf(high);
-//			} else if (halfOpenInf && posInf) {
-//				/* ]low,+∞[ */
-//				interval = Interval.openToPosInf(low);
-//			} else
-//				return currentValue;
-//			return interval.toString();
-//		} else
-			return currentValue;
+		dlg.setResizable(true);
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
+			low = Integer.MIN_VALUE;
+			high = Integer.MAX_VALUE; 
+			if (!cbLowMin.isSelected())
+				low = Integer.parseInt(tfLow.getText());
+			if (!cbHighMax.isSelected())
+				high = Integer.parseInt(tfHigh.getText());
+			range = new IntegerRange(low,high);
+			return range.toString();	
+		}
+		return currentValue;
 	}
 
 	@Override

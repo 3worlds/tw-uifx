@@ -347,7 +347,7 @@ public class TwSpecifications implements //
 						list[det.ordinal()] = det.toString();
 					}
 					// stupid design all this;
-					int choice = Dialogs.getListChoice(list, "Select", obj.getClass().getSimpleName(), "");
+					int choice = Dialogs.getListChoice(list, vnode.getDisplayText(false),key, obj.getClass().getSimpleName());
 					if (choice >= 0) {
 						for (DataElementType det : DataElementType.values()) {
 							if (det.ordinal() == choice) {

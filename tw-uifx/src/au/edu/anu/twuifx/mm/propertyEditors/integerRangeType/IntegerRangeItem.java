@@ -58,7 +58,7 @@ public class IntegerRangeItem extends SimplePropertyItem {
 	@Override
 	public void setValue(Object value) {
 		IntegerRange oldValue = (IntegerRange) getElementProperties().getPropertyValue(key);
-		IntegerRange newValue = IntegerRange.valueOf((String) value);
+		IntegerRange newValue = IntegerRange.valueOf(value.toString());
 		if (!oldValue.equals(newValue)) {
 			onUpdateProperty(newValue);
 		}
