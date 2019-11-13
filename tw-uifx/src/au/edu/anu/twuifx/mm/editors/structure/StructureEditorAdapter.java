@@ -297,8 +297,9 @@ public abstract class StructureEditorAdapter
 
 	private String getNewName(String label, SimpleDataTreeNode childBaseSpec) {
 		// default name is label with 1 appended
-
-		String promptId = label.replaceAll("[aeiou]", "") + "1";
+		String post = label.substring(1, label.length());
+		String pre = label.substring(0,1);
+		String promptId = pre.toLowerCase()+post.replaceAll("[aeiou]", "") + "1";
 		boolean capitalize = false;
 		if (childBaseSpec != null)
 			capitalize = specifications.nameStartsWithUpperCase(childBaseSpec);
