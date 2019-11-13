@@ -52,7 +52,7 @@ treegraph // saved by OmugiGraphExporter on Wed Oct 16 06:45:27 AEDT 2019
 							track = fr.cnrs.iees.twcore.constants.TrackerType(([1]f1))
 							viewOthers = java.lang.Boolean(false)
 			initialState state
-				individual instance
+				component instance
 					variableValues values
 						x = java.lang.Double(1.0)
 		structure struc
@@ -99,7 +99,7 @@ treegraph // saved by OmugiGraphExporter on Wed Oct 16 06:45:27 AEDT 2019
 [table:t4] sizedBy sizedBy5 [dimensioner:d1]
 [table:t4] sizedBy sizedBy7 [dimensioner:d3]
 [table:t4] sizedBy sizedBy6 [dimensioner:d2]
-[individual:instance] instanceOf instanceOf1 [componentType:comp]
+[component:instance] instanceOf instanceOf1 [componentType:comp]
 [widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
 [category:cat] drivers drivers1 [record:R1]
 [experiment:exp] baseLine baseLine1 [system:sys]

@@ -50,7 +50,7 @@ treegraph // Minimal default running configuration for ModelMaker
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							viewOthers = java.lang.Boolean(false)
 			initialState defaultState
-				individual defaultComponent
+				component defaultComponent
 					variableValues values
 						x = java.lang.Double(0.0)
 		structure defaultStructure
@@ -67,7 +67,7 @@ treegraph // Minimal default running configuration for ModelMaker
 				units = java.lang.String()
 
 // CROSS-LINKS
-[individual:defaultComponent] instanceOf [componentType:defaultComponentType]
+[component:defaultComponent] instanceOf [componentType:defaultComponentType]
 [widget:timeSeries] trackSeries [dataTracker:dt]
 [category:defaultCategory] drivers [record:defaultRecord]
 [experiment:defaultExperiment] baseLine [system:defaultSystem]

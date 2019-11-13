@@ -47,7 +47,7 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 		parameterClass = java.lang.String()
 		dynamics dyn
 			initialState state
-				individual instance
+				component instance
 					variableValues values
 						x = java.lang.Double(1.0)
 			timeLine tl
@@ -94,7 +94,7 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 // CROSS-LINKS
 [componentType:comp] belongsTo belongsTo1 [category:cat]
 [experiment:exp] baseLine baseLine1 [system:sys]
-[individual:instance] instanceOf instanceOf1 [componentType:comp]
+[component:instance] instanceOf instanceOf1 [componentType:comp]
 [widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
 [category:cat] drivers drivers1 [record:Rec]
 [process:proc] appliesTo appliesTo1 [category:cat]
