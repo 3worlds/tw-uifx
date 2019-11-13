@@ -87,7 +87,7 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 //		var.tx().set((xx+x)/2,2);
 //
 		structure struc
-			component comp
+			componentType comp
 				driverClass = java.lang.String(code.sys.Rec)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			categorySet set
@@ -96,9 +96,9 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 // CROSS-LINKS
 [table:tx] sizedBy sizedBy1 [dimensioner:dimer]
 	rank = java.lang.Integer(0)
-[component:comp] belongsTo belongsTo1 [category:cat]
+[componentType:comp] belongsTo belongsTo1 [category:cat]
 [experiment:exp] baseLine baseLine1 [system:sys]
-[individual:instance] instanceOf instanceOf1 [component:comp]
+[individual:instance] instanceOf instanceOf1 [componentType:comp]
 [widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
 [category:cat] drivers drivers1 [record:Rec]
 [process:proc] appliesTo appliesTo1 [category:cat]

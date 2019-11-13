@@ -56,7 +56,7 @@ treegraph // Minimal default running configuration for ModelMaker
 		structure defaultStructure
 			categorySet defaultCategorySet
 				category defaultCategory
-			component defaultComponent
+			componentType defaultComponentType
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition defaultDataDefinition
 		record defaultRecord
@@ -67,11 +67,11 @@ treegraph // Minimal default running configuration for ModelMaker
 				units = java.lang.String()
 
 // CROSS-LINKS
-[individual:defaultComponent] instanceOf [component:defaultComponent]
+[individual:defaultComponent] instanceOf [componentType:defaultComponentType]
 [widget:timeSeries] trackSeries [dataTracker:dt]
 [category:defaultCategory] drivers [record:defaultRecord]
 [experiment:defaultExperiment] baseLine [system:defaultSystem]
-[component:defaultComponent] belongsTo [category:defaultCategory]
+[componentType:defaultComponentType] belongsTo [category:defaultCategory]
 [process:defaultProcess] appliesTo [category:defaultCategory]
 [widget:time] trackTime [dynamics:defaultDynamics]
 [dataTracker:dt] trackField [field:x]

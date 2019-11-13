@@ -58,7 +58,7 @@ treegraph // saved by OmugiGraphExporter on Wed Oct 16 06:45:27 AEDT 2019
 		structure struc
 			categorySet set
 				category cat
-			component comp
+			componentType comp
 				driverClass = java.lang.String(code.sys.R1)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dd
@@ -99,11 +99,11 @@ treegraph // saved by OmugiGraphExporter on Wed Oct 16 06:45:27 AEDT 2019
 [table:t4] sizedBy sizedBy5 [dimensioner:d1]
 [table:t4] sizedBy sizedBy7 [dimensioner:d3]
 [table:t4] sizedBy sizedBy6 [dimensioner:d2]
-[individual:instance] instanceOf instanceOf1 [component:comp]
+[individual:instance] instanceOf instanceOf1 [componentType:comp]
 [widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
 [category:cat] drivers drivers1 [record:R1]
 [experiment:exp] baseLine baseLine1 [system:sys]
-[component:comp] belongsTo belongsTo1 [category:cat]
+[componentType:comp] belongsTo belongsTo1 [category:cat]
 [process:proc] appliesTo appliesTo1 [category:cat]
 [table:t1] sizedBy sizedBy1 [dimensioner:d1]
 [table:t2] sizedBy sizedBy2 [dimensioner:d1]
