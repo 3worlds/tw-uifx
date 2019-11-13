@@ -114,11 +114,11 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		CheckBox cbNegInf = new CheckBox("-∞");
 		cbNegInf.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue) {
-				cbPosInf.setVisible(false);
+				//cbPosInf.setVisible(false);
 				cbLowOpen.setVisible(false);
 				tfLow.setVisible(false);
 			} else {
-				cbPosInf.setVisible(true);
+				//cbPosInf.setVisible(true);
 				cbLowOpen.setVisible(true);
 				tfLow.setVisible(true);
 				try {
@@ -130,11 +130,11 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		});
 		cbPosInf.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue) {
-				cbNegInf.setVisible(false);
+				//cbNegInf.setVisible(false);
 				cbHighOpen.setVisible(false);
 				tfHigh.setVisible(false);
 			} else {
-				cbNegInf.setVisible(true);
+				//cbNegInf.setVisible(true);
 				cbHighOpen.setVisible(true);
 				tfHigh.setVisible(true);
 				try {
