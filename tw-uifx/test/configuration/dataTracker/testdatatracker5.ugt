@@ -80,7 +80,6 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-							track = fr.cnrs.iees.twcore.constants.TrackerType(([2]n,ty[2]>z))
 							viewOthers = java.lang.Boolean(false)
 						function Func
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
@@ -118,3 +117,6 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 [category:cat] drivers drivers1 [record:Rec]
 [process:proc] appliesTo appliesTo1 [category:cat]
 [widget:time] trackTime trackTime1 [dynamics:dyn]
+[dataTracker:dt] trackField [field:n]
+[dataTracker:dt] trackField [field:z]
+	index = TrackerType(([1]"[2]"))
