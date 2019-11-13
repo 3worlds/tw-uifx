@@ -12,8 +12,8 @@
       <line style="fill: none; stroke-opacity: 1; stroke-width: 2; stroke: #000000" x1="561.434" y1="-13.9651" x2="433.662" y2="86.6785"/>
       <polygon style="fill: #000000; fill-opacity: 1; stroke-opacity: 1; stroke-width: 2; stroke: #000000" fill-rule="evenodd" points="427.77,91.3193 432.532,81.2037 433.662,86.6785 438.719,89.0594 "/>
     </g>
-    <text font-size="27.0933" style="fill: #000000; fill-opacity: 1; stroke: none;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="377.71" y="140.125">
-      <tspan x="377.71" y="140.125">ecosystem</tspan>
+    <text font-size="27.0933" style="fill: #000000; fill-opacity: 1; stroke: none;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="377.71" y="139.731">
+      <tspan x="377.71" y="139.731">system</tspan>
     </text>
     <ellipse style="fill: #000000; fill-opacity: 1; stroke-opacity: 1; stroke-width: 4; stroke: #000000" cx="627.442" cy="-65.9574" rx="82.0196" ry="82.0196"/>
     <g>
@@ -130,8 +130,9 @@
       <tspan x="-92.9386" y="218.485">category</tspan>
     </text>
     <ellipse style="fill: #a9b932; fill-opacity: 1; stroke-opacity: 1; stroke-width: 2; stroke: #a9b932" cx="42.1474" cy="286.955" rx="30.625" ry="30.625"/>
-    <text font-size="13.5467" style="fill: #000000; fill-opacity: 1; stroke: none;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="42.1474" y="291.656">
-      <tspan x="42.1474" y="291.656">component</tspan>
+    <text font-size="13.5467" style="fill: #000000; fill-opacity: 1; stroke: none;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="42.1474" y="282.992">
+      <tspan x="42.1474" y="282.992">component</tspan>
+      <tspan x="42.1474" y="299.925">Type</tspan>
     </text>
     <g>
       <line style="fill: none; stroke-opacity: 1; stroke-width: 2; stroke: #000000" x1="139.472" y1="217.148" x2="75.7021" y2="262.887"/>
@@ -238,8 +239,8 @@
       <polygon style="fill: #000000; fill-opacity: 1; stroke-opacity: 1; stroke-width: 1.6; stroke: #000000" fill-rule="evenodd" points="316.584,682.272 316.158,673.338 319.009,676.784 323.476,676.57 "/>
     </g>
     <ellipse style="fill: #dcf050; fill-opacity: 1; stroke-opacity: 1; stroke-width: 2; stroke: #dcf050" cx="308.644" cy="700.246" rx="16.9" ry="16.9"/>
-    <text font-size="7.90222" style="fill: #000000; fill-opacity: 1; stroke: none;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="308.644" y="702.971">
-      <tspan x="308.644" y="702.971">individual</tspan>
+    <text font-size="7.90222" style="fill: #000000; fill-opacity: 1; stroke: none;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="308.644" y="702.855">
+      <tspan x="308.644" y="702.855">component</tspan>
     </text>
     <ellipse style="fill: #dcf050; fill-opacity: 1; stroke-opacity: 1; stroke-width: 2; stroke: #dcf050" cx="235.952" cy="640.26" rx="13.3116" ry="13.3116"/>
     <text font-size="7.33778" style="fill: #000000; fill-opacity: 1; stroke: none;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="235.952" y="638.224">

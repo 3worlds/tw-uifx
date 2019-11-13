@@ -4,7 +4,7 @@ Simulation is about mimicking the dynamics of a real system. Here, dynamics is s
 
 ====== Time line
 
-`/3worlds/ecosystem/dynamics/*timeLine*:<[underline]##__name__##>` {1}
+`/3worlds/system/dynamics/*timeLine*:<[underline]##__name__##>` {1}
 
 Every simulator has a reference _time line_. Since different ecological processes may run according to different time models, they must refer to a common time frame for interaction to be possible among them. A `*timeLine*` defines what kind of time scale and time units can be used in a simulation. In 3Worlds, time is always discrete in the end, so that the selected values of time scale and time unit define the time _grain_ of the simulation, i.e. the duration below which events are considered simultaneous. Internally, the `ModelRunner` uses integers to represent time, with 1 = one time grain.
 
@@ -12,7 +12,7 @@ include::ArchetypeDoc-timeLine.adoc[]
 
 ====== Time models
 
-`/3worlds/ecology/engine/timeLine/*timeModel*:<[underline]##__name__##>` {1..*}
+`/3worlds/system/dynamics/timeLine/*timeModel*:<[underline]##__name__##>` {1..*}
 
 Ecological processes may be run following different time models. A time model is a particular way of representing time in the simulator. Time models may differ in parameters, like e.g. two time models using different time steps; but they can also be radically different in their logic: e.g. clock-like ticking vs. event-driven simulation.
 
@@ -38,7 +38,7 @@ WARNING: if calendar time is used (`timeLine.scale` = `GREGORIAN`), then `dt` wi
 
 _Additional sub-tree when_ `class = EventTimeModel`
 
-`/3worlds/ecosystem/dynamics/timeLine/timeModel/*eventQueue*:<[underline]##__name__##>` {1}
+`/3worlds/system/dynamics/timeLine/timeModel/*eventQueue*:<[underline]##__name__##>` {1}
 
 An `EventTimeModel` maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.
 
@@ -50,7 +50,7 @@ These links indicate which ecological processes will populate the event queue wi
 
 ====== Simulation stopping condition
 
-`/3worlds/ecosystem/dynamics/*stoppingCondition*:<[underline]##__name__##>` {0..*}
+`/3worlds/system/dynamics/*stoppingCondition*:<[underline]##__name__##>` {0..*}
 
 A simulation may be run indefinitely (interactively), but in big simulation experiment it is useful to automatically stop the simulations according to some criterion. Besides the simplest stopping condition, reaching a maximal time value, 3Worlds provides many other possibilities to stop a simulation (e.g. based on a population size, on a variable passing a threshold value, etc.).
 
@@ -112,7 +112,7 @@ To represent category changes, start and end of life, we need the concept of a _
 
 ====== Life cycle
 
-`/3worlds/ecosystem/dynamics/*lifeCycle*:<[underline]##__name__##>` {0..*}
+`/3worlds/system/dynamics/*lifeCycle*:<[underline]##__name__##>` {0..*}
 
 As __system component__s are designed to represent -- among other things -- individual organisms, they are able to create other system components ar runtime, or to transform themselves into a system component of another category assemblage. These abilities are captured in a `*lifeCycle*`, which describes the possible creations and transitions of system components of a given category set into another.
 
@@ -138,7 +138,7 @@ These links enable to attach parameters to a `lifeCycle`, if needed by some ecol
 
 ====== Recruitment
 
-`/3worlds/ecosystem/dynamics/lifeCycle/*recruit*:<[underline]##__name__##>` {0..*}
+`/3worlds/system/dynamics/lifeCycle/*recruit*:<[underline]##__name__##>` {0..*}
 
 This node specifies that two categories of the life cycle `categorySet` are linked by a _recruitment_ process.
 
@@ -157,7 +157,7 @@ This link tells which ecological process is used to compute the recruitment. Thi
 
 ====== Reproduction
 
-`/3worlds/ecosystem/dynamics/lifeCycle/*produce*:<[underline]##__name__##>` {0..*}
+`/3worlds/system/dynamics/lifeCycle/*produce*:<[underline]##__name__##>` {0..*}
 
 This node specifies that two categories of the life cycle `categorySet` are linked by a _reproduction_ process.
 
@@ -192,7 +192,7 @@ image::example-life-cycle.png[align="center"]
 
 ====== Process
 
-`/3worlds/ecosystem/dynamics/timeLine/timeModel/*process*:<[underline]##__name__##>` {1..*}
+`/3worlds/system/dynamics/timeLine/timeModel/*process*:<[underline]##__name__##>` {1..*}
 
 _Processes_ are used in 3Worlds to compute change in _system components_. Each process acts on system components of a particular group of categories (cf. <<truecategory,Category>>, <<truesystem-component,System Component>>) and is scheduled by a particular time model (cf. <<truetime-representation,time representation>>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (time models). A `process` is run according to its parent `timeModel`.
 
@@ -209,7 +209,7 @@ This link tells that the process must be activated _after_ the processes targete
 
 ====== Function
 
-`/3worlds/ecosystem/dynamics/timeLine/timeModel/*function*:<[underline]##__name__##>` {1..*}
+`/3worlds/system/dynamics/timeLine/timeModel/*function*:<[underline]##__name__##>` {1..*}
 
 This node is used to specify the details of the computations made in a `process`. The `process` defines which system components are going to be activated and at what time in the simulation course; the `function` defines which computations, in detail, will be applied to the system components of that process. This enables to build complex computations applying to one component (a series of ``function``s within a `process`) in the context of a particular subset of components (`process`).
 
@@ -250,7 +250,7 @@ public class Function1 extends ChangeStateFunction {
 }
 ----
 
-In this example, "**system1**" was the name given to the `ecosystem` node, while "**Function1**" was the name given to the `function` node. The `type` property set for the `function` was "**ChangeState**", as shown by the generated code. Other function types would have caused the generation of different methods in the class. These methods differ in their arguments and in the way they are used by the simulator:
+In this example, "**system1**" was the name given to the `system` node, while "**Function1**" was the name given to the `function` node. The `type` property set for the `function` was "**ChangeState**", as shown by the generated code. Other function types would have caused the generation of different methods in the class. These methods differ in their arguments and in the way they are used by the simulator:
 
 * In _all_ function type methods, the first and second argument are _the current time_ _**t**_ and __current time step **dt**__, passed by the simulator as double values in units of the `timeModel` of the parent `process` of the `function`.
 
@@ -260,7 +260,7 @@ In this example, "**system1**" was the name given to the `ecosystem` node, while
 
 * In addition to these arguments, every function class has a protected field called `localContext` that contain contextual data that may be used in computations. The local context data consist in:
 
-** __ecosystem__-level data, i.e. ecosystem parameters, state variables, population data (= number of system components, of newly created and deleted ones), and name;
+** __system__-level data, i.e. system parameters, state variables, population data (= number of system components, of newly created and deleted ones), and name;
 
 ** __life cycle__-level data, i.e. life cycle parameters, state variables *[NB:not yet],* population data, and name;
 
@@ -282,7 +282,7 @@ TIP: If there are >1 possible descendant categories, the `nNew(...)` method will
 
 ====== Function consequences
 
-`/3worlds/ecology/process/function/*consequence*:<[underline]##__name__##>` {0..*}
+`/3worlds/.../process/function/*consequence*:<[underline]##__name__##>` {0..*}
 
 Some functions may imply consequences: for example, a decision to delete another system component may be followed by a change in state based on the deleting component's state at the time it is deleted. Such functions that are only activated when certain events take place are called _consequences_ and may be specified by a child node to a function. Here also, rules apply:
 
@@ -314,7 +314,7 @@ Some functions may imply consequences: for example, a decision to delete another
 
 ====== Initial state
 
-`/3worlds/ecosystem/dynamics/*initialState*:<__name__>` {0..1}
+`/3worlds/system/dynamics/*initialState*:<__name__>` {0..1}
 
 To run a simulation, an initial population of `components` must be provided. Nodes under the `initialState` node are used to input data to create such an initial state. The initial state is kept in memory by the simulator, and is re-loaded at every reset prior to a new simulation of the simulator.
 
@@ -373,7 +373,7 @@ CAUTION: all focalContext fields may be null if no value was provided at initial
 
 Use this node to attach a set of parameters to a group. Each different `__name__` will create a different parameter set. Depending on the group type, these parameters are available through `focalContext.lifeCycleParameters` of `focalContext.groupParameters` in the user-defined functions.
 
-`/3worlds/.../individual/**parameterValues**:<__name__>` {0..*}
+`/3worlds/.../component/**parameterValues**:<__name__>` {0..*}
 
 Use this node to attach a set of parameters to an individual system component. 
 
@@ -383,7 +383,7 @@ CAUTION: this implies that this system component is unique of its kind, and no o
 
 ====== Variables
 
-`/3worlds/.../individual/**variableValues**:<__name__>` {0..*}
+`/3worlds/.../component/**variableValues**:<__name__>` {0..*}
 
 Use this node to attach a set of initial driver values to an individual system component. A new component will be created for every different value of `__name__`.
 

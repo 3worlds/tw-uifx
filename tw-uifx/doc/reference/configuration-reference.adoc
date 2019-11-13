@@ -25,25 +25,25 @@ This node is the root of any 3Worlds configuration file (<<fig-root-example>>). 
 image::example-root.png[align="center"]
 
 
-==== The _ecosystem_ node
+==== The _system_ node
 
-`/3worlds/*ecosystem*:<[underline]##__name__##>` {1..*}
+`/3worlds/*system*:<[underline]##__name__##>` {1..*}
 
 This node and its sub-tree contains all the ecological concepts used to define a simulation model: what entities are modelled, what biological processes apply to them, at what time step they should run. The name is used to differentiate models as a simulation experiment may involve more than one model.
 
-A 3Worlds ecosystem is constructed as a population of 'biological entities', called _system components_, which establish interactions called _system relations_. Components and relations have _variables_ that may change value over time, according to various _ecological processes_ attached to components. In other words, an ecosystem is represented as a _dynamic graph_ which changes state and structure over time. To reflect this, `*ecosystem*` has two sub-trees called `*structure*` and `*dynamics*`
+A 3Worlds ecosystem is constructed as a population of 'biological entities', called _system components_, which establish interactions called _system relations_. Components and relations have _variables_ that may change value over time, according to various _ecological processes_ attached to components. In other words, an ecosystem is represented as a _dynamic graph_ which changes state and structure over time. To reflect this, `*system*` has two sub-trees called `*structure*` and `*dynamics*`
 
-==== The _ecosystem/structure_ node
+==== The _system/structure_ node
 
-`/3worlds/ecosystem/*structure*:<[underline]##__name__##>` {1}
+`/3worlds/system/*structure*:<[underline]##__name__##>` {1}
 
 This node and its sub-tree contains the description of the system component and relation types. It is based on the concept of __category__. A category is a set of components with an identical description, e.g. the same set of state variables or the same growth function. 
 
 include::configuration-ecosystem-structure.adoc[]
 
-==== The _ecosystem/dynamics_ node
+==== The _system/dynamics_ node
 
-`/3worlds/ecosystem/*dynamics*:<[underline]##__name__##>` {1}
+`/3worlds/system/*dynamics*:<[underline]##__name__##>` {1}
 
 This node and its sub-tree contains the description of the processes that will change the state of the system and create its dynamics. It is based on the concepts of __time model__, __ecological process__, and __life cycle__. Internally, the `*dynamics*` node is the __simulator__, i.e. the object which, when kicked to do so, will make all the computations necessary to run a simulation.
 

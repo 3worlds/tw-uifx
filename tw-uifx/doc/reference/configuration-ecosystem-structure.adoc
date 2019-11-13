@@ -28,7 +28,7 @@ A category may be defined with no parameters, drivers or decorators, but it woul
 
 ====== CategorySet
 
-`/3worlds/ecosystem/structure/*categorySet*:<[underline]##__name__##>` {1..*}
+`/3worlds/system/structure/*categorySet*:<[underline]##__name__##>` {1..*}
 
 Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can't be both. For this reason, _exclusive_ categories are grouped into `*categorySets*`. A categorySet is _a set of **mutually exclusive** categories_. Further, it may apply only to categories of a particular type (categorySet). Hence categories can be nested:
 
@@ -36,7 +36,7 @@ Some categories must be exclusive of each other: for example, an ecological enti
 
 ====== RelationType
 
-`/3worlds/ecosystem/structure/*relationType*:<[underline]##__name__##>` {0..*}
+`/3worlds/system/structure/*relationType*:<[underline]##__name__##>` {0..*}
 
 A `*relationType*` is just a name representing a meaningful link between two categories. It is specified by giving it a name and cross-linking it to the relevant categories with `fromCategory` and `toCategory` cross-links. Note that a relationType can link more than one 'from' categories to more than one 'to' categories if required. RelationTypes are used to implement specific processes acting on ecological entities (for example, a predation process).
 
@@ -72,17 +72,17 @@ In this example, a _plant_ can be a _C3 tree_ but cannot be simultaneously a _gr
 
 ====== System component
 
-`/3worlds/ecosystem/structure/*component*:<[underline]##__name__##>` {1..*}
+`/3worlds/system/structure/*componentType*:<[underline]##__name__##>` {1..*}
 
 3Worlds simulates a _system_ made of _system components_. These are the things which are instantiated at run time, hold state variables, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach _categories_ to _system components_. The rules prevailing to build up categories hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the _plant_ and _tree_ categories, but not to the _animal_ and _tree_ categories.
 
-_Cross-links_ for `component`:
+_Cross-links_ for `componentType`:
 
 `belongsTo -> category:<__name__>` {1..*}::
 This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the _C3_ category automatically implies the system component is also a _plant_).
 
 `initialiser -> initialiser:<__name__>` {0..1}::
-Use this optional link to specify a function to initialise state variables of a `component` at the beginning of a simulation.
+Use this optional link to specify a function to initialise state variables of a `componentType` at the beginning of a simulation.
 
 include::ArchetypeDoc-system.adoc[]
 

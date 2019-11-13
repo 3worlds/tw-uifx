@@ -462,7 +462,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truerunning-modelmaker-standalone">2.3. Running ModelMaker standalone</a></li>
 <li><a href="#truesetting-up-a-java-development-environment-for-the-user-code">Setting up a java development environment for the user code</a>
 <ul class="sectlevel3">
-<li><a href="#truesetting-up-an-eclipse-ide-for-3worlds">Setting up an eclipse IDE for 3Worlds</a></li>
+<li><a href="#truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds">Setting up an eclipse <em>i</em>ntegrated <em>d</em>evelopment <em>e</em>nvironment (IDE) for 3Worlds</a></li>
 <li><a href="#truerunning-modelmaker-from-eclipse">Running ModelMaker from eclipse</a></li>
 <li><a href="#truelinking-user-code-with-model-configuration">Linking user code with model configuration</a></li>
 <li><a href="#truedebugging-and-testing-user-code">Debugging and testing user code</a></li>
@@ -483,9 +483,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#trueconfiguration-options-reference">3.3. Configuration options: reference</a>
 <ul class="sectlevel3">
 <li><a href="#truethe-3worlds-node">3.3.1. The <em>3Worlds</em> node</a></li>
-<li><a href="#truethe-ecosystem-node">3.3.2. The <em>ecosystem</em> node</a></li>
-<li><a href="#truethe-ecosystemstructure-node">3.3.3. The <em>ecosystem/structure</em> node</a></li>
-<li><a href="#truethe-ecosystemdynamics-node">3.3.4. The <em>ecosystem/dynamics</em> node</a></li>
+<li><a href="#truethe-system-node">3.3.2. The <em>system</em> node</a></li>
+<li><a href="#truethe-systemstructure-node">3.3.3. The <em>system/structure</em> node</a></li>
+<li><a href="#truethe-systemdynamics-node">3.3.4. The <em>system/dynamics</em> node</a></li>
 <li><a href="#truethe-codesource-node">3.3.5. The <em>codeSource</em> node</a></li>
 <li><a href="#truethe-dataio-node">3.3.6. The <em>dataIO</em> node</a></li>
 <li><a href="#truethe-experiment-node">3.3.7. The <em>experiment</em> node</a></li>
@@ -667,7 +667,7 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclips
 <div class="ulist">
 <ul>
 <li>
-<p>java JDK (<strong>J</strong>ava <strong>D</strong>evelopment <strong>K</strong>it), version 8 or greater (<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">oracle</a> or <a href="http://openjdk.java.net/">open</a> version)</p>
+<p>java JDK (<strong>J</strong>ava <strong>D</strong>evelopment <strong>K</strong>it), version 11 or greater (<a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">oracle</a> or <a href="http://openjdk.java.net/">open</a> version)</p>
 </li>
 <li>
 <p>java fx (graphical user interface library for java: <a href="http://www.oracle.com/technetwork/java/javase/overview/javafx-overview-2158620.html">oracle</a> or <a href="http://openjdk.java.net/projects/openjfx/">open</a> version)</p>
@@ -706,19 +706,48 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclips
 </li>
 </ol>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This way of launching 3Worlds is sensitive to the relative location of <code>modelMaker.jar</code> and the other jars that are in the <code>.3w</code> directory, ie <code>modelMaker.jar</code> <strong>must</strong> be exactly one directory above <code>.3w</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To remove this constraint, you can bypass <code>modelMaker.jar</code> by directly launching it from the jars contained in <code>.3w</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">java -cp .3w/tw-dep.jar au.edu.anu.twuifx.mm.Main</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>The last is the preferred method as any errors that may arise will appear in the terminal window.</p>
 </div>
-<div class="paragraph">
-<p><strong>Note</strong>: to develop your model-specific code, you will need to setup a java development environment as shown in section <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Setting up Java</a>.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+to develop your model-specific code, you will need to setup a java development environment as shown in section <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Setting up Java</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
 <h3 id="truesetting-up-a-java-development-environment-for-the-user-code"><a class="anchor" href="#truesetting-up-a-java-development-environment-for-the-user-code"></a>Setting up a java development environment for the user code</h3>
 <div class="sect3">
-<h4 id="truesetting-up-an-eclipse-ide-for-3worlds"><a class="anchor" href="#truesetting-up-an-eclipse-ide-for-3worlds"></a>Setting up an eclipse IDE for 3Worlds</h4>
+<h4 id="truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds"><a class="anchor" href="#truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds"></a>Setting up an eclipse <em>i</em>ntegrated <em>d</em>evelopment <em>e</em>nvironment (IDE) for 3Worlds</h4>
 <div class="paragraph">
-<p>This assumes you have downloaded <code>UserCodeRunner.java</code>, <code>threeWorlds.jar</code> and <code>tw-dep.jar</code>.</p>
+<p>This assumes you have downloaded <code>UserCodeRunner.java</code> and <code>tw-dep.jar</code>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -792,10 +821,7 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclips
 <p>Click on the <code>Add external JARs&#8230;&#8203;</code> button; this open a file selection dialog box</p>
 </li>
 <li>
-<p>In the file selection dialog box, browse and select <code>threeWorlds.jar</code></p>
-</li>
-<li>
-<p>Repeat the two previous operations for <code>tw-dep.jar</code></p>
+<p>In the file selection dialog box, browse and select <code>tw-dep.jar</code></p>
 </li>
 <li>
 <p>Click the <code>Apply and Close</code> button</p>
@@ -812,7 +838,7 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclips
 <div class="sect3">
 <h4 id="truerunning-modelmaker-from-eclipse"><a class="anchor" href="#truerunning-modelmaker-from-eclipse"></a>Running ModelMaker from eclipse</h4>
 <div class="paragraph">
-<p>ModelMaker can be run as a standalone application, or from eclipse since it is included in the <code>threeWorlds.jar</code> library required to developed the user code.</p>
+<p>ModelMaker can be run as a standalone application, or from eclipse since it is included in the <code>tw-dep.jar</code> library required to develop the user code.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -820,10 +846,13 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclips
 <p>In the <code>package explorer</code> window, expand the <code>Referenced libraries</code> entry</p>
 </li>
 <li>
-<p>Right-click on the <code>threeWorlds.jar</code> entry, select <code>Run as &#8594; Java Application</code>. This opens a dialog box</p>
+<p>Right-click on the <code>tw-dep.jar</code> entry, select <code>Run as &#8594; Java Application</code>. This opens a dialog box</p>
 </li>
 <li>
-<p>In the dialog box, type <code>ModelMakerfx</code> and click <code>OK</code></p>
+<p>In the dialog box, type <em>Main</em></p>
+</li>
+<li>
+<p>In the list of matching items, select <code>Main - au.edu.anu.twuifx.mm</code> and click <code>OK</code></p>
 </li>
 <li>
 <p>If a dialog box appears warning for errors, click <code>Proceed</code>. This launches the ModelMaker application</p>
@@ -869,12 +898,24 @@ When you want to edit your code in eclipse, you must first <strong>refresh</stro
 <p>right-click on it and select <code>Refresh</code></p>
 </li>
 <li>
-<p>or, alternatively: press the F5 key</p>
+<p>or, alternatively: press the <strong>F5</strong> key</p>
 </li>
 </ul>
 </div>
 </li>
 </ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You don&#8217;t <strong>have</strong> to do this. We provide it as a facility if you want to run ModelMaker from eclipse rather than directly for some profound reason of your own.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -886,16 +927,27 @@ It requires two command line arguments (we assume that you know how to setup and
 <div class="ulist">
 <ul>
 <li>
-<p>the name of the directory of the 3Worlds project as created by <code>ModelMaker</code> (e.g. <em>project_test_model_9_D89EF3043496-000001636846F7AF-0000</em>). This project directory is located under the <code>.3w</code> directory automatically created by <code>ModelMaker</code> as its working directory</p>
+<p>the name of the directory of the 3Worlds project as created by <code>ModelMaker</code> (e.g. <em>project_test_model9_2019-09-05-08-50-20-458</em>). This project directory is located under the <code>.3w</code> directory automatically created by <code>ModelMaker</code> as its working directory</p>
 </li>
 <li>
-<p>the name of the model configuration file in this directory (e.g. <em>test_model_9.dsl</em>)</p>
+<p>the name of the model configuration file in this directory (e.g. <em>test_model_9.ugt</em>)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>With this, the user code should be executed as a test simulation by <code>UserCodeRunner</code>.
-Further edits and modifications of the configuration can be made in <code>ModelMaker</code>, but do not forget to keep the eclipse project content synchronized with the ModelMaker project by refreshing the eclipse project as often as necessary.</p>
+<p>With this, the user code should be executed as a test simulation by <code>UserCodeRunner</code>.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Further edits and modifications of the configuration can be made in <code>ModelMaker</code>, but do not forget to keep the eclipse project content synchronized with the ModelMaker project by refreshing the eclipse project as often as necessary.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -920,7 +972,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p>The <em>label</em> specifies what role this particular <em>node</em> plays in the whole configuration. For example, the <em>node</em> labelled <code>experiment</code> is used to configure a <em>simulation experiment</em>.</p>
 </li>
 <li>
-<p>The <em>name</em> is used to differentiate <em>nodes</em>. It must be unique over the whole configuration tree. By default, ModelMaker generates unique names (by adding a number to the name if replicates are found). For example, a configuration could have two <em>simulation experiments</em>, one named <code>baseLine</code> and one named <code>my favourite experiment</code>.</p>
+<p>The <em>name</em> is used to differentiate <em>nodes</em>. It must be unique over the whole configuration tree. By default, ModelMaker generates unique names (by adding a number to the name if replicates are found).</p>
 </li>
 </ul>
 </div>
@@ -934,10 +986,10 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="title">Figure 1. Tree structure of a simulation experiment configuration in 3Worlds</div>
 </div>
 <div class="paragraph">
-<p>The configuration tree is stored in a file in a specially designed text format, ending with the extension <code>.ugt</code> or <code>.twg</code>. Such files are produced by <code>ModelMaker</code> and can then be exchanged and imported into <code>ModelMaker</code> via the <code>Projects&gt;Import&#8230;&#8203;</code> menu entry. Their format is human-readable, but they must <strong>never</strong> be edited with another software than <code>ModelMaker</code> - <strong>the risk is to corrupt all your configuration</strong> and be unable to run it (or even edit it with <code>ModelMaker</code> again).</p>
+<p>The configuration tree is stored in a file in a specially designed text format, ending with the extension <code>.ugt</code> or <code>.twg</code>. Such files are produced by <code>ModelMaker</code> and can then be exchanged and imported into <code>ModelMaker</code> via the <code>Projects &#8594; Import&#8230;&#8203;</code> menu entry. Their format is human-readable, but they must <strong>never</strong> be edited with another software than <code>ModelMaker</code> - <strong>the risk is to corrupt all your configuration</strong> and be unable to run it (or even edit it with <code>ModelMaker</code> again).</p>
 </div>
 <div class="paragraph">
-<p>Each <em>node</em> in the configuration has a particular meaning for <code>ModelRunner</code>: the configuration must comply with certain rules and constraints, the first one being the particular set of <em>nodes</em> that have been designed and appear on <a href="#fig-configuration-tree">Figure 1</a>. The detailed meaning of all <em>nodes</em> and their <em>properties</em> is described in section <a href="#truereference-of-3worlds-configuration">3Worlds reference</a>.</p>
+<p>Each node in the configuration has a particular meaning for <code>ModelRunner</code>: the configuration must comply with certain rules and constraints, the first one being the particular set of <em>nodes</em> that have been designed and appear on <a href="#fig-configuration-tree">Figure 1</a>. The detailed meaning of all <em>nodes</em> and their <em>properties</em> is described in section <a href="#truereference-of-3worlds-configuration">3Worlds reference</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -952,7 +1004,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="title">Figure 2. Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes</div>
 </div>
 <div class="paragraph">
-<p><em>Edges</em> representing cross links have a <em>label</em>, <em>name</em>, and may have <em>properties</em> just as <em>nodes</em> do. The detailed meaning of all cross-reference <em>edges</em> and their <em>properties</em> is described in section <a href="#  ">[  ]</a>.</p>
+<p><em>Edges</em> representing cross links have a <em>label</em>, <em>name</em>, and may have <em>properties</em> just as <em>nodes</em> do. The detailed meaning of all cross-reference <em>edges</em> and their <em>properties</em> is described in section <a href="#Configuration options: reference">[Configuration options: reference]</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1041,21 +1093,21 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </div>
 </div>
 <div class="sect3">
-<h4 id="truethe-ecosystem-node"><a class="anchor" href="#truethe-ecosystem-node"></a>3.3.2. The <em>ecosystem</em> node</h4>
+<h4 id="truethe-system-node"><a class="anchor" href="#truethe-system-node"></a>3.3.2. The <em>system</em> node</h4>
 <div class="paragraph">
-<p><code>/3worlds/<strong>ecosystem</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/<strong>system</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p>This node and its sub-tree contains all the ecological concepts used to define a simulation model: what entities are modelled, what biological processes apply to them, at what time step they should run. The name is used to differentiate models as a simulation experiment may involve more than one model.</p>
 </div>
 <div class="paragraph">
-<p>A 3Worlds ecosystem is constructed as a population of 'biological entities', called <em>system components</em>, which establish interactions called <em>system relations</em>. Components and relations have <em>variables</em> that may change value over time, according to various <em>ecological processes</em> attached to components. In other words, an ecosystem is represented as a <em>dynamic graph</em> which changes state and structure over time. To reflect this, <code><strong>ecosystem</strong></code> has two sub-trees called <code><strong>structure</strong></code> and <code><strong>dynamics</strong></code></p>
+<p>A 3Worlds ecosystem is constructed as a population of 'biological entities', called <em>system components</em>, which establish interactions called <em>system relations</em>. Components and relations have <em>variables</em> that may change value over time, according to various <em>ecological processes</em> attached to components. In other words, an ecosystem is represented as a <em>dynamic graph</em> which changes state and structure over time. To reflect this, <code><strong>system</strong></code> has two sub-trees called <code><strong>structure</strong></code> and <code><strong>dynamics</strong></code></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="truethe-ecosystemstructure-node"><a class="anchor" href="#truethe-ecosystemstructure-node"></a>3.3.3. The <em>ecosystem/structure</em> node</h4>
+<h4 id="truethe-systemstructure-node"><a class="anchor" href="#truethe-systemstructure-node"></a>3.3.3. The <em>system/structure</em> node</h4>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/<strong>structure</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
+<p><code>/3worlds/system/<strong>structure</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
 <p>This node and its sub-tree contains the description of the system component and relation types. It is based on the concept of <em>category</em>. A category is a set of components with an identical description, e.g. the same set of state variables or the same growth function.</p>
@@ -1105,7 +1157,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect5">
 <h6 id="truecategoryset"><a class="anchor" href="#truecategoryset"></a>CategorySet</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/structure/<strong>categorySet</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/system/structure/<strong>categorySet</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p>Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can&#8217;t be both. For this reason, <em>exclusive</em> categories are grouped into <code><strong>categorySets</strong></code>. A categorySet is <em>a set of <strong>mutually exclusive</strong> categories</em>. Further, it may apply only to categories of a particular type (categorySet). Hence categories can be nested:</p>
@@ -1117,7 +1169,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect5">
 <h6 id="truerelationtype"><a class="anchor" href="#truerelationtype"></a>RelationType</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/structure/<strong>relationType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/system/structure/<strong>relationType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>A <code><strong>relationType</strong></code> is just a name representing a meaningful link between two categories. It is specified by giving it a name and cross-linking it to the relevant categories with <code>fromCategory</code> and <code>toCategory</code> cross-links. Note that a relationType can link more than one 'from' categories to more than one 'to' categories if required. RelationTypes are used to implement specific processes acting on ecological entities (for example, a predation process).</p>
@@ -1201,13 +1253,13 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect5">
 <h6 id="truesystem-component"><a class="anchor" href="#truesystem-component"></a>System component</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/structure/<strong>component</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/system/structure/<strong>componentType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p>3Worlds simulates a <em>system</em> made of <em>system components</em>. These are the things which are instantiated at run time, hold state variables, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach <em>categories</em> to <em>system components</em>. The rules prevailing to build up categories hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the <em>plant</em> and <em>tree</em> categories, but not to the <em>animal</em> and <em>tree</em> categories.</p>
 </div>
 <div class="paragraph">
-<p><em>Cross-links</em> for <code>component</code>:</p>
+<p><em>Cross-links</em> for <code>componentType</code>:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -1217,7 +1269,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </dd>
 <dt class="hdlist1"><code>initialiser &#8594; initialiser:&lt;<em>name</em>&gt;</code> {0..1}</dt>
 <dd>
-<p>Use this optional link to specify a function to initialise state variables of a <code>component</code> at the beginning of a simulation.</p>
+<p>Use this optional link to specify a function to initialise state variables of a <code>componentType</code> at the beginning of a simulation.</p>
 </dd>
 </dl>
 </div>
@@ -1267,9 +1319,9 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </div>
 </div>
 <div class="sect3">
-<h4 id="truethe-ecosystemdynamics-node"><a class="anchor" href="#truethe-ecosystemdynamics-node"></a>3.3.4. The <em>ecosystem/dynamics</em> node</h4>
+<h4 id="truethe-systemdynamics-node"><a class="anchor" href="#truethe-systemdynamics-node"></a>3.3.4. The <em>system/dynamics</em> node</h4>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/<strong>dynamics</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
+<p><code>/3worlds/system/<strong>dynamics</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
 <p>This node and its sub-tree contains the description of the processes that will change the state of the system and create its dynamics. It is based on the concepts of <em>time model</em>, <em>ecological process</em>, and <em>life cycle</em>. Internally, the <code><strong>dynamics</strong></code> node is the <em>simulator</em>, i.e. the object which, when kicked to do so, will make all the computations necessary to run a simulation.</p>
@@ -1282,7 +1334,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect5">
 <h6 id="truetime-line"><a class="anchor" href="#truetime-line"></a>Time line</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/<strong>timeLine</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
+<p><code>/3worlds/system/dynamics/<strong>timeLine</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
 <p>Every simulator has a reference <em>time line</em>. Since different ecological processes may run according to different time models, they must refer to a common time frame for interaction to be possible among them. A <code><strong>timeLine</strong></code> defines what kind of time scale and time units can be used in a simulation. In 3Worlds, time is always discrete in the end, so that the selected values of time scale and time unit define the time <em>grain</em> of the simulation, i.e. the duration below which events are considered simultaneous. Internally, the <code>ModelRunner</code> uses integers to represent time, with 1 = one time grain.</p>
@@ -1600,7 +1652,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect5">
 <h6 id="truetime-models"><a class="anchor" href="#truetime-models"></a>Time models</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecology/engine/timeLine/<strong>timeModel</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/system/dynamics/timeLine/<strong>timeModel</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p>Ecological processes may be run following different time models. A time model is a particular way of representing time in the simulator. Time models may differ in parameters, like e.g. two time models using different time steps; but they can also be radically different in their logic: e.g. clock-like ticking vs. event-driven simulation.</p>
@@ -1710,7 +1762,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <p><em>Additional sub-tree when</em> <code>class = EventTimeModel</code></p>
 </div>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/timeLine/timeModel/<strong>eventQueue</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
+<p><code>/3worlds/system/dynamics/timeLine/timeModel/<strong>eventQueue</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
 <p>An <code>EventTimeModel</code> maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.</p>
@@ -1730,7 +1782,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <div class="sect5">
 <h6 id="truesimulation-stopping-condition"><a class="anchor" href="#truesimulation-stopping-condition"></a>Simulation stopping condition</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/<strong>stoppingCondition</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/system/dynamics/<strong>stoppingCondition</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>A simulation may be run indefinitely (interactively), but in big simulation experiment it is useful to automatically stop the simulations according to some criterion. Besides the simplest stopping condition, reaching a maximal time value, 3Worlds provides many other possibilities to stop a simulation (e.g. based on a population size, on a variable passing a threshold value, etc.).</p>
@@ -1876,7 +1928,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <div class="sect5">
 <h6 id="truelife-cycle"><a class="anchor" href="#truelife-cycle"></a>Life cycle</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/<strong>lifeCycle</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/system/dynamics/<strong>lifeCycle</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>As <em>system component</em>s are designed to represent&#8201;&#8212;&#8201;among other things&#8201;&#8212;&#8201;individual organisms, they are able to create other system components ar runtime, or to transform themselves into a system component of another category assemblage. These abilities are captured in a <code><strong>lifeCycle</strong></code>, which describes the possible creations and transitions of system components of a given category set into another.</p>
@@ -1922,7 +1974,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <div class="sect5">
 <h6 id="truerecruitment"><a class="anchor" href="#truerecruitment"></a>Recruitment</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/lifeCycle/<strong>recruit</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/system/dynamics/lifeCycle/<strong>recruit</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>This node specifies that two categories of the life cycle <code>categorySet</code> are linked by a <em>recruitment</em> process.</p>
@@ -1966,7 +2018,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="sect5">
 <h6 id="truereproduction"><a class="anchor" href="#truereproduction"></a>Reproduction</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/lifeCycle/<strong>produce</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/system/dynamics/lifeCycle/<strong>produce</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>This node specifies that two categories of the life cycle <code>categorySet</code> are linked by a <em>reproduction</em> process.</p>
@@ -2034,7 +2086,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="sect5">
 <h6 id="trueprocess"><a class="anchor" href="#trueprocess"></a>Process</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/timeLine/timeModel/<strong>process</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/system/dynamics/timeLine/timeModel/<strong>process</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p><em>Processes</em> are used in 3Worlds to compute change in <em>system components</em>. Each process acts on system components of a particular group of categories (cf. <a href="#truecategory">Category</a>, <a href="#truesystem-component">System Component</a>) and is scheduled by a particular time model (cf. <a href="#truetime-representation">time representation</a>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (time models). A <code>process</code> is run according to its parent <code>timeModel</code>.</p>
@@ -2065,7 +2117,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="sect5">
 <h6 id="truefunction"><a class="anchor" href="#truefunction"></a>Function</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/timeLine/timeModel/<strong>function</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/system/dynamics/timeLine/timeModel/<strong>function</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p>This node is used to specify the details of the computations made in a <code>process</code>. The <code>process</code> defines which system components are going to be activated and at what time in the simulation course; the <code>function</code> defines which computations, in detail, will be applied to the system components of that process. This enables to build complex computations applying to one component (a series of <code>function</code>s within a <code>process</code>) in the context of a particular subset of components (<code>process</code>).</p>
@@ -2234,7 +2286,7 @@ public class Function1 extends ChangeStateFunction {
 </div>
 </div>
 <div class="paragraph">
-<p>In this example, "<strong>system1</strong>" was the name given to the <code>ecosystem</code> node, while "<strong>Function1</strong>" was the name given to the <code>function</code> node. The <code>type</code> property set for the <code>function</code> was "<strong>ChangeState</strong>", as shown by the generated code. Other function types would have caused the generation of different methods in the class. These methods differ in their arguments and in the way they are used by the simulator:</p>
+<p>In this example, "<strong>system1</strong>" was the name given to the <code>system</code> node, while "<strong>Function1</strong>" was the name given to the <code>function</code> node. The <code>type</code> property set for the <code>function</code> was "<strong>ChangeState</strong>", as shown by the generated code. Other function types would have caused the generation of different methods in the class. These methods differ in their arguments and in the way they are used by the simulator:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2252,7 +2304,7 @@ public class Function1 extends ChangeStateFunction {
 <div class="ulist">
 <ul>
 <li>
-<p><em>ecosystem</em>-level data, i.e. ecosystem parameters, state variables, population data (= number of system components, of newly created and deleted ones), and name;</p>
+<p><em>system</em>-level data, i.e. system parameters, state variables, population data (= number of system components, of newly created and deleted ones), and name;</p>
 </li>
 <li>
 <p><em>life cycle</em>-level data, i.e. life cycle parameters, state variables <strong>[NB:not yet],</strong> population data, and name;</p>
@@ -2316,7 +2368,7 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 <div class="sect5">
 <h6 id="truefunction-consequences"><a class="anchor" href="#truefunction-consequences"></a>Function consequences</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecology/process/function/<strong>consequence</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/&#8230;&#8203;/process/function/<strong>consequence</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>Some functions may imply consequences: for example, a decision to delete another system component may be followed by a change in state based on the deleting component&#8217;s state at the time it is deleted. Such functions that are only activated when certain events take place are called <em>consequences</em> and may be specified by a child node to a function. Here also, rules apply:</p>
@@ -2407,7 +2459,7 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 <div class="sect5">
 <h6 id="trueinitial-state"><a class="anchor" href="#trueinitial-state"></a>Initial state</h6>
 <div class="paragraph">
-<p><code>/3worlds/ecosystem/dynamics/<strong>initialState</strong>:&lt;<em>name</em>&gt;</code> {0..1}</p>
+<p><code>/3worlds/system/dynamics/<strong>initialState</strong>:&lt;<em>name</em>&gt;</code> {0..1}</p>
 </div>
 <div class="paragraph">
 <p>To run a simulation, an initial population of <code>components</code> must be provided. Nodes under the <code>initialState</code> node are used to input data to create such an initial state. The initial state is kept in memory by the simulator, and is re-loaded at every reset prior to a new simulation of the simulator.</p>
@@ -2521,7 +2573,7 @@ all focalContext fields may be null if no value was provided at initialisation. 
 <p>Use this node to attach a set of parameters to a group. Each different <code><em>name</em></code> will create a different parameter set. Depending on the group type, these parameters are available through <code>focalContext.lifeCycleParameters</code> of <code>focalContext.groupParameters</code> in the user-defined functions.</p>
 </div>
 <div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/individual/<strong>parameterValues</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+<p><code>/3worlds/&#8230;&#8203;/component/<strong>parameterValues</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>Use this node to attach a set of parameters to an individual system component.</p>
@@ -2545,7 +2597,7 @@ this implies that this system component is unique of its kind, and no other comp
 <div class="sect5">
 <h6 id="truevariables"><a class="anchor" href="#truevariables"></a>Variables</h6>
 <div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/individual/<strong>variableValues</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+<p><code>/3worlds/&#8230;&#8203;/component/<strong>variableValues</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>Use this node to attach a set of initial driver values to an individual system component. A new component will be created for every different value of <code><em>name</em></code>.</p>
@@ -2689,7 +2741,7 @@ This part is still under construction. The default settings should be used.
 <div id="footer">
 <div id="footer-text">
 Version 1.1<br>
-Last updated 2019-09-27 17:14:43 +0200
+Last updated 2019-11-13 14:19:45 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
