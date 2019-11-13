@@ -211,7 +211,7 @@ public class TwSpecifications implements //
 				SimpleDataTreeNode ps = iter.next();
 				String key = (String) ps.properties().getPropertyValue(aaHasName);
 				String optionalKey = getSelectedEntry(key, selectedKeys, entries);
-				if (!Objects.equals(optionalKey, keyHandled)) {
+				if (!Objects.equals(key, keyHandled)) {
 					if (optionalKey != null && !optionalKey.equals(key))
 						iter.remove();
 					else if (keyHandled == null)
