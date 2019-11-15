@@ -95,6 +95,7 @@ import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.integerRangeType.IntegerRangeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.intervalType.IntervalItem;
+import au.edu.anu.twuifx.mm.propertyEditors.populationType.PopTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
@@ -112,6 +113,7 @@ import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
+import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Interval;
@@ -729,6 +731,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			return fti;
 		} else if (value instanceof StatisticalAggregatesSet)
 			return new StatsTypeItem(this, key, (ElementAdapter) element, true, category, description);
+		else if (value instanceof PopulationVariablesSet)
+			return new PopTypeItem(this, key, (ElementAdapter) element, true, category, description);
 		else if (value instanceof DateTimeType) {
 			return new DateTimeItem(this, key, (ElementAdapter) element, true, category, description);
 		} else if (value instanceof TrackerType) {
