@@ -81,9 +81,15 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
 	private LabelButtonControl view;
-	private List<Record> catRecords;
+	//private List<Record> catRecords;
 	private Map<DataLabel, Integer> drivers;
 	private List<Duple<CheckBox, Spinner<Integer>>> indices;
+	/*- element is either a 
+	 * 1) TrackField (edge classId E_TRACKFIELD must have endNode classId N_FIELD)
+	 * 2) TrackTable (edge classId E_TRACKTABLE must have endNode N_TABLE - must have DataElementType property)
+	 * 3) TrackPopulation (edge classId E_TRACKPOP. Must have endNode : N_INITIALSTATE, N_GROUP, N_COMPONENT (componententTYpe must be permanent)
+	 * wait and see for 3). 
+	 */
 
 	public TrackerTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -93,15 +99,15 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		view.setOnAction(e -> onAction());
-		catRecords = getRootRecords();
+		//catRecords = getRootRecords();
 	}
 
 	private Object onAction() {
-		if (catRecords.isEmpty()) {
-			Dialogs.errorAlert(getProperty().getName(), "Property setting",
-					"Not implemented yet.");
-			return null;
-		}
+//		if (catRecords.isEmpty()) {
+//			Dialogs.errorAlert(getProperty().getName(), "Property setting",
+//					"Not implemented yet.");
+//			return null;
+//		}
 		BorderPane contents = new BorderPane();
 		ListView<String> inputList = new ListView<>();
 		ListView<String> outputList = new ListView<>();
@@ -147,7 +153,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		TrackerTypeItem tti = (TrackerTypeItem) getProperty();
 		TrackerType tt = TrackerType.valueOf((String) tti.getValue());
 		fillOutputList(tt, outputList);
-		drivers = getDrivers();
+//		drivers = getDrivers();
 		int maxDim = fillInputList(inputList, outputList);
 
 		indices = new ArrayList<>();
@@ -290,13 +296,13 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		return result;
 	}
 
-	private Map<DataLabel, Integer> getDrivers() {
-		Map<DataLabel, Integer> result = new HashMap<>();
-		for (Record record : catRecords) {
-			recurseRecord(record, result);
-		}
-		return result;
-	}
+//	private Map<DataLabel, Integer> getDrivers() {
+//		Map<DataLabel, Integer> result = new HashMap<>();
+//		for (Record record : catRecords) {
+//			recurseRecord(record, result);
+//		}
+//		return result;
+//	}
 
 	private void recurseRecord(Record record, Map<DataLabel, Integer> items) {
 		@SuppressWarnings("unchecked")

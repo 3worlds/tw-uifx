@@ -537,7 +537,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 				md = PropertySheet.Mode.NAME;
 			nodePropertySheet.setMode(md);
 
-			m = Preferences.getBoolean(allElementsPropertySheet.idProperty().get() + Mode, true);
+			m = Preferences.getBoolean(allElementsPropertySheet.idProperty().get() + Mode, false);
 			md = PropertySheet.Mode.CATEGORY;
 			if (m)
 				md = PropertySheet.Mode.NAME;
