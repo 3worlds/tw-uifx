@@ -32,18 +32,11 @@
 			<menus>
 				<Menu mnemonicParsing="false" text="Projects">
 					<items>
-						<MenuItem fx:id="menuNewProject" mnemonicParsing="false" onAction="#handleNewProject" text="New">
-							<graphic>
-								<ImageView pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../images/New16.gif" />
-									</image>
-								</ImageView>
-							</graphic>
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-						</MenuItem>
+                  <Menu fx:id="menuNew" mnemonicParsing="false" text="New">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                  </Menu>
 						<SeparatorMenuItem mnemonicParsing="false" />
 						<Menu fx:id="menuOpen" mnemonicParsing="false" text="Open">
 							<items>

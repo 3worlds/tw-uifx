@@ -1,0 +1,8 @@
+treegraph // saved by OmugiGraphExporter on Mon Nov 18 06:46:23 AEDT 2019
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds vide
+
+// CROSS-LINKS

@@ -99,6 +99,7 @@ import au.edu.anu.twuifx.mm.propertyEditors.populationType.PopTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
+import au.edu.anu.twuifx.modelLibrary.LibraryTable;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import au.edu.anu.ymuit.util.CenteredZooming;
@@ -130,8 +131,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	private BorderPane rootPane;
 
 	@FXML
-	private MenuItem menuNewProject;
-
+	private Menu menuNew;
+	
 	@FXML
 	private Menu menuOpen;
 
@@ -240,6 +241,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	public void initialize() {
+		
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
 		spinJitter.setMaxWidth(75.0);
@@ -278,6 +280,8 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		btnChildLinks.setTooltip(new Tooltip("Show/hide parent-child edges"));
 		// Set a handler to update the menu when openMenu is shown
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
+		buildNewMenu();
+		
 
 		// This class has all the housework for managing graph
 		model = new MMModel(this);
@@ -297,6 +301,22 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		// Setup zooming from the graph display pane (zoomTarget)
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
+
+	}
+	private void buildNewMenu() {
+		Map<MenuItem, LibraryTable> map = new HashMap<>();
+		menuNew.getItems().clear();
+		for (LibraryTable entry: LibraryTable.values()) {
+			MenuItem mi = new MenuItem(entry.displayName());
+			mi.setMnemonicParsing(false);
+			map.put(mi,entry);
+			menuNew.getItems().add(mi);
+			mi.setOnAction((e)->{
+				LibraryTable lt = map.get(e.getSource());
+				// get inputstream
+				// pass to mmModelnew
+			});
+		}
 
 	}
 
@@ -672,7 +692,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable) {
 
 		ObservableList<Item> result = FXCollections.observableArrayList();
-		
+
 		for (String key : node.properties().getKeysAsSet())
 			if (node.properties().getPropertyValue(key) != null) {
 				boolean editable = model.propertyEditable(node.classId(), key);
@@ -681,15 +701,15 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 					result.add(makeItemType(key, node, editable, category, propertyDesciption));
 				}
 			}
-			
+
 		// get the out edges here
-		for (ALEdge edge: node.edges(Direction.OUT))
+		for (ALEdge edge : node.edges(Direction.OUT))
 			if (edge instanceof ALDataEdge) {
-				ALDataEdge dataEdge = (ALDataEdge)edge;
+				ALDataEdge dataEdge = (ALDataEdge) edge;
 				for (String key : dataEdge.properties().getKeysAsSet()) {
-					boolean editable =  model.propertyEditable(edge.classId(), key);
+					boolean editable = model.propertyEditable(edge.classId(), key);
 					if (editable || showNonEditable) {
-						result.add(makeItemType(key,dataEdge,editable, category,"Something"));
+						result.add(makeItemType(key, dataEdge, editable, category, "Something"));
 					}
 				}
 			}
@@ -885,7 +905,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	public void onEdgeDeleted() {
 		initialisePropertySheets();
 		setButtonState();
-		
+
 	}
 
 }
