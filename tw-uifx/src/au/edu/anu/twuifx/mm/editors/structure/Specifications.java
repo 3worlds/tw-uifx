@@ -113,4 +113,6 @@ public interface Specifications {
 	public void filterRequiredPropertyQuery(VisualNode vnode, SimpleDataTreeNode baseSpec,
 			SimpleDataTreeNode subSpec);
 
+//	public List<Duple<String[],String[]>> getEdgeLabelDuples(List<SimpleDataTreeNode> queries);
+
 }

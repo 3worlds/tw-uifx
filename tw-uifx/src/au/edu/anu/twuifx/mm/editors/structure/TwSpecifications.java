@@ -13,7 +13,6 @@ import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-//import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.CheckSubArchetypeQuery;
@@ -26,7 +25,6 @@ import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.properties.ExtendablePropertyList;
-import fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames;
 import fr.cnrs.iees.twcore.constants.DataElementType;
 import fr.ens.biologie.generic.utils.Duple;
 
@@ -43,7 +41,7 @@ public class TwSpecifications implements //
 	@Override
 	public SimpleDataTreeNode getSpecsOf(String cClassId, String createdBy, TreeNode root,
 			Set<String> discoveredFiles) {
-		List<TreeNode> lst = (List<TreeNode>) get(root.getChildren(), selectZeroOrMany(hasTheLabel("hasNode")));
+//		List<TreeNode> lst = (List<TreeNode>) get(root.getChildren(), selectZeroOrMany(hasTheLabel("hasNode")));
 //		for (TreeNode tn:lst) {
 //			System.out.println(tn.id());
 //		}
@@ -316,6 +314,34 @@ public class TwSpecifications implements //
 		return result;
 	}
 
+	/*-
+	  	mustSatisfyQuery trackItemConditionSpec
+			className = String("au.edu.anu.twcore.archetype.tw.OutEdgeXorQuery")
+			edgeLabel1 = String("trackPopulation")
+			edgeLabel2 = StringTable(([2]"trackField","trackTable"))
+	
+	 */
+	
+//	private String[] getAsStrings(SimplePropertyList properties, String key) {
+//		String[] result;
+//		Class<?> c = properties.getPropertyClass(key);
+//		if (c.equals(String.class)) {
+//			result = new String[1];
+//			result[0]= (String) properties.getPropertyValue(key);
+//		} else {
+//			StringTable st = (StringTable) properties.getPropertyValue(key);
+//			result= new String[st.size()];
+//			for (int i=0;i<result.length;i++)
+//				result[i] = st.getWithFlatIndex(i);
+//		}
+//		return result;
+//	}
+
+	/*-
+	 * className = String("au.edu.anu.twcore.archetype.tw.OutNodeXorQuery")
+	 * nodeLabel1 = String("componentType")
+	 * nodeLabel2 = String("lifeCycle")
+	 */
 	@Override
 	public List<Duple<String, String>> getNodeLabelDuples(List<SimpleDataTreeNode> queries) {
 		List<Duple<String, String>> result = new ArrayList<>();
@@ -347,7 +373,8 @@ public class TwSpecifications implements //
 						list[det.ordinal()] = det.toString();
 					}
 					// stupid design all this;
-					int choice = Dialogs.getListChoice(list, vnode.getDisplayText(false),key, obj.getClass().getSimpleName());
+					int choice = Dialogs.getListChoice(list, vnode.getDisplayText(false), key,
+							obj.getClass().getSimpleName());
 					if (choice >= 0) {
 						for (DataElementType det : DataElementType.values()) {
 							if (det.ordinal() == choice) {
