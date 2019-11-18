@@ -305,6 +305,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
 		menuNew.getItems().clear();
@@ -314,12 +315,9 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 			map.put(mi, entry);
 			menuNew.getItems().add(mi);
 			mi.setOnAction((e) -> {
-				LibraryTable libTab = map.get(e.getSource());
-				libTab.fileName();
 				if (model.canClose()) {
 					TreeGraph<TreeGraphDataNode, ALEdge> templateGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
-							.importGraph(libTab.fileName(), LibraryTable.class);
-
+							.importGraph(map.get(e.getSource()).fileName(), LibraryTable.class);
 					model.doNewProject(templateGraph);
 					setButtonState();
 				}
