@@ -1,0 +1,46 @@
+treegraph // saved by OmugiGraphExporter on Mon Nov 18 11:06:27 AEDT 2019
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds deBase
+	dataDefinition dtDef
+		record rcrd1
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(vars)
+	experiment exp
+		timePeriod duration
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(9)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn1
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system system
+		driverClass = java.lang.String(code.system.Vars)
+		parameterClass = java.lang.String(code.system.Pars)
+		dynamics dyn
+		structure struct
+			componentType type
+				driverClass = java.lang.String(code.system.Vars)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				parameterClass = java.lang.String(code.system.Pars)
+			categorySet ctgrySt
+				category ctgry
+	userInterface gui
+		top toolBar
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+		tab output
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget timeSeries
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+
+// CROSS-LINKS
+[experiment:exp] baseLine baseline [system:system]
+[widget:time] trackTime tracks1 [dynamics:dyn]

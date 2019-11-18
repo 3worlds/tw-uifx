@@ -89,6 +89,7 @@ import au.edu.anu.twcore.errorMessaging.Verbosity;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
@@ -111,6 +112,7 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.graph.io.GraphImporter;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
@@ -132,7 +134,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	private Menu menuNew;
-	
+
 	@FXML
 	private Menu menuOpen;
 
@@ -241,7 +243,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	public void initialize() {
-		
+
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
 		spinJitter.setMaxWidth(75.0);
@@ -281,7 +283,6 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		// Set a handler to update the menu when openMenu is shown
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
 		buildNewMenu();
-		
 
 		// This class has all the housework for managing graph
 		model = new MMModel(this);
@@ -303,18 +304,25 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		// are prefs saved regardless of graphState??
 
 	}
+
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
 		menuNew.getItems().clear();
-		for (LibraryTable entry: LibraryTable.values()) {
+		for (LibraryTable entry : LibraryTable.values()) {
 			MenuItem mi = new MenuItem(entry.displayName());
 			mi.setMnemonicParsing(false);
-			map.put(mi,entry);
+			map.put(mi, entry);
 			menuNew.getItems().add(mi);
-			mi.setOnAction((e)->{
-				LibraryTable lt = map.get(e.getSource());
-				// get inputstream
-				// pass to mmModelnew
+			mi.setOnAction((e) -> {
+				LibraryTable libTab = map.get(e.getSource());
+				libTab.fileName();
+				if (model.canClose()) {
+					TreeGraph<TreeGraphDataNode, ALEdge> templateGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
+							.importGraph(libTab.fileName(), LibraryTable.class);
+
+					model.doNewProject(templateGraph);
+					setButtonState();
+				}
 			});
 		}
 
@@ -449,11 +457,11 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		}
 	}
 
-	@FXML
-	void handleNewProject(ActionEvent event) {
-		model.doNewProject();
-		setButtonState();
-	}
+//	@FXML
+//	void handleNewProject(ActionEvent event) {
+//		model.doNewProject();
+//		setButtonState();
+//	}
 
 	@FXML
 	void handleSave(ActionEvent event) {

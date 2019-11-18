@@ -1,0 +1,86 @@
+treegraph // saved by OmugiGraphExporter on Mon Nov 18 10:43:35 AEDT 2019
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds physiqueSimple
+	dataDefinition dtDef
+		record vars
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(vars)
+			field y
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(?)
+		record pars
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(pars)
+			field x
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+	experiment exp
+		timePeriod duration
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(9)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn1
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system system
+		driverClass = java.lang.String(code.system.Vars)
+		parameterClass = java.lang.String(code.system.Pars)
+		dynamics dyn
+			timeLine tmLn
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel clock
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
+					process proc
+						dataTracker tracker
+							groupBy = fr.cnrs.iees.twcore.constants.Grouping(NO_GROUPING)
+							select = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							viewOthers = java.lang.Boolean(false)
+		structure struct
+			componentType type
+				driverClass = java.lang.String(code.system.Vars)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				parameterClass = java.lang.String(code.system.Pars)
+			categorySet ctgrySt
+				category ctgry
+	userInterface gui
+		top toolBar
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+		tab output
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget timeSeries
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+
+// CROSS-LINKS
+[componentType:type] belongsTo blngsT1 [category:ctgry]
+[widget:timeSeries] trackSeries tracks2 [dataTracker:tracker]
+[dataTracker:tracker] trackField tracks [field:y]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]""))
+[experiment:exp] baseLine baseline [system:system]
+[process:proc] appliesTo applsT1 [category:ctgry]
+[system:system] belongsTo blngsT2 [category:ctgry]
+[category:ctgry] drivers drvrs1 [record:vars]
+[category:ctgry] parameters prmtrs1 [record:pars]
+[widget:time] trackTime tracks1 [dynamics:dyn]

@@ -149,7 +149,7 @@
                            <bottom>
                               <ToolBar BorderPane.alignment="CENTER">
                                 <items>
-												<Button fx:id="btnLayout" disable="true" mnemonicParsing="false" onAction="#handleLayout" text="L" />
+												<Button fx:id="btnLayout" disable="true" onAction="#handleLayout" text="_L" />
                                     <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
                                     <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
                                     <Label text="Font size:" />
