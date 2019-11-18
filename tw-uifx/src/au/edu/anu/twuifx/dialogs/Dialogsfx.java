@@ -262,4 +262,14 @@ public class Dialogsfx implements IDialogs {
 		return owner;
 	}
 
+	@Override
+	public File exportFile(String title, String promptDir, String promptFileName) {
+		FileChooser fc = new FileChooser();
+		fc.setTitle(title);
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tree graph files (*.utg)", "*.utg"));
+		fc.setInitialDirectory(new File(promptDir));
+		fc.setInitialFileName(promptFileName);
+		return fc.showSaveDialog(owner);
+	}
+
 }

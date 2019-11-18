@@ -36,11 +36,11 @@ package au.edu.anu.twuifx.modelLibrary;
  */
 // Lookup struc for entries in ModelMaker "New" menu. Display order is the declaration order in this enum.
 public enum LibraryTable {
-	Empty(/*             */"Empty",/*                    */"vide.ugt"), //
-	Basic1(/*            */"Basic 1",/*                  */"deBase1.ugt"), //
-	Basic2(/*            */"Basic 2",/*                  */"deBase2.ugt"), //
-	SimplePhysical(/*    */"Basic physical model",/*     */ "physiqueSimple.ugt"), //
-	TestTrack7(/*        */"Data tracker 7",/*           */ "traqueurDeDonnées7.ugt"), //
+	Empty(/*             */"Empty",/*                    */"vide.utg"), //
+	Basic1(/*            */"Basic 1",/*                  */"deBase1.utg"), //
+	Basic2(/*            */"Basic 2",/*                  */"deBase2.utg"), //
+	SimplePhysical(/*    */"Basic physical model",/*     */ "physiqueSimple.utg"), //
+	TestTrack7(/*        */"Data tracker 7",/*           */ "traqueurDeDonnées7.utg"), //
 	;
 
 	private final String displayName;

@@ -29,6 +29,7 @@
 
 package au.edu.anu.twuifx.mm.editors.structure;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,6 +60,7 @@ import au.edu.anu.twcore.archetype.tw.OutEdgeXorQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.root.EditableFactory;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
@@ -212,7 +214,7 @@ public abstract class StructureEditorAdapter
 		List<SimpleDataTreeNode> queries = specifications.getQueries((SimpleDataTreeNode) edgeSpec.getParent(),
 				OutEdgeXorQuery.class);
 		for (SimpleDataTreeNode query : queries) {
-			if (queryReferencesLabel(proposedEdgeLabel, query,twaEdgeLabel1,twaEdgeLabel2)) {
+			if (queryReferencesLabel(proposedEdgeLabel, query, twaEdgeLabel1, twaEdgeLabel2)) {
 				Set<String> qp1 = new HashSet<>();
 				Set<String> qp2 = new HashSet<>();
 				qp1.addAll(getEdgeLabelRefs(query.properties(), twaEdgeLabel1));
@@ -246,7 +248,7 @@ public abstract class StructureEditorAdapter
 		return true;
 	}
 
-	private boolean queryReferencesLabel(String entry, SimpleDataTreeNode query,String key1, String key2) {
+	private boolean queryReferencesLabel(String entry, SimpleDataTreeNode query, String key1, String key2) {
 		Set<String> refs = new HashSet<>();
 		refs.addAll(getEdgeLabelRefs(query.properties(), key1));
 		refs.addAll(getEdgeLabelRefs(query.properties(), key2));
@@ -635,6 +637,13 @@ public abstract class StructureEditorAdapter
 
 	@Override
 	public void onExportTree(VisualNode root) {
+		/*-
+		 * 1) get a file name OUTSIDE .3w
+		 * 
+		 * */
+		String filePrompt = root.getDisplayText(false).replace(":", "_");
+		File dir = Dialogs.exportFile("Export "+ root.getDisplayText(false)+" tree.", TwPaths.USER_ROOT,filePrompt);
+		
 		Dialogs.infoAlert("Export Tree", "Not implemented yet", "");
 	}
 
