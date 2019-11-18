@@ -44,6 +44,7 @@ import org.apache.commons.text.WordUtils;
 
 import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.rscs.aot.queries.Query;
 import au.edu.anu.rscs.aot.queries.base.OrQuery;
 import au.edu.anu.rscs.aot.util.IntegerRange;
@@ -60,8 +61,10 @@ import au.edu.anu.twcore.archetype.tw.OutEdgeXorQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.root.EditableFactory;
+import au.edu.anu.twcore.root.TwConfigFactory;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.Direction;
@@ -74,6 +77,7 @@ import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.graph.io.impl.OmugiGraphExporter;
 import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import fr.cnrs.iees.properties.ExtendablePropertyList;
@@ -637,30 +641,43 @@ public abstract class StructureEditorAdapter
 
 	@Override
 	public void onExportTree(VisualNode root) {
-		/*-
-		 * 1) get a file name OUTSIDE .3w
-		 * 
-		 * */
-		String filePrompt = root.getDisplayText(false).replace(":", "_")+".utg";
+		String filePrompt = root.getDisplayText(false).replace(":", "_") + ".utg";
 		File file = Dialogs.exportFile("Export " + root.getDisplayText(false) + " tree.", TwPaths.USER_ROOT,
 				filePrompt);
-		if (file ==null)
+		if (file == null)
 			return;
 		if (file.getAbsolutePath().contains(".3w/"))
 			Dialogs.infoAlert("Export", "Cannot export to a project directory", file.getAbsolutePath());
 		else {
-			exportTree(file,root);
+			exportTree(file, root);
 		}
 	}
 
 	private void exportTree(File file, VisualNode root) {
-		/*-
-		 * 	ConfigGraph.setGraph(new TreeGraph<TreeGraphDataNode, ALEdge>(new TwConfigFactory()));
-		NodeFactory cf = ConfigGraph.getGraph().nodeFactory();
-		cf.makeNode(cf.nodeClass(N_ROOT.label()), newId);
+		TreeGraph<TreeGraphDataNode, ALEdge> exportGraph = new TreeGraph<TreeGraphDataNode, ALEdge>(
+				new TwConfigFactory());
+		TwConfigFactory factory = (TwConfigFactory) ConfigGraph.getGraph().nodeFactory();
+		cloneTree(factory, null,root.getConfigNode(), exportGraph);
+		new OmugiGraphExporter(file).exportGraph(exportGraph);
+	}
 
-		 * */
-		
+	private static void cloneTree(TwConfigFactory factory, TreeGraphDataNode exportParent,TreeGraphDataNode configNode,
+			TreeGraph<TreeGraphDataNode, ALEdge> graph) {
+		TreeGraphDataNode clone = (TreeGraphDataNode) factory.makeNode(factory.nodeClass(configNode.classId()),
+				configNode.id());
+		graph.addNode(clone);// It seems the javaDoc is not correct for this function.
+		if (configNode.properties() instanceof ExtendablePropertyList) {
+			ExtendablePropertyList configProps = (ExtendablePropertyList) configNode.properties();
+			ExtendablePropertyList cloneProps = (ExtendablePropertyList) clone.properties();
+			for (String key:configProps.getKeysAsArray()) {
+				cloneProps.addProperty(key, configProps.getPropertyValue(key));			
+			}
+		} else
+			System.out.println(configNode.classId()+ " does not have ext prop list.");
+		clone.connectParent(exportParent);
+		for (TreeNode child:configNode.getChildren()) {
+			cloneTree(factory,clone,(TreeGraphDataNode)child,graph);
+		}
 	}
 
 	@Override
