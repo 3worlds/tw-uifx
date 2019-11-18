@@ -73,6 +73,7 @@ import fr.cnrs.iees.graph.Node;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.ALEdge;
+import fr.cnrs.iees.graph.impl.ALNode;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -315,17 +316,6 @@ public abstract class StructureEditorAdapter
 		return null;
 	}
 
-	private String getCurrentEdgeLabelXORChoice(List<Duple<String[], String[]>> entries) {
-		Set<String> currentLabels = new HashSet<>();
-		for (VisualEdge edge : editableNode.getOutEdges()) {
-			String edgeLabel = edge.getConfigEdge().classId();
-
-			currentLabels.add(edge.getConfigEdge().classId());
-		}
-		;
-
-		return null;
-	}
 
 	@SuppressWarnings("unchecked")
 	private boolean satisfyExclusiveCategoryQuery(SimpleDataTreeNode edgeSpec, VisualNode proposedEndNode,
@@ -654,17 +644,42 @@ public abstract class StructureEditorAdapter
 	}
 
 	private void exportTree(File file, VisualNode root) {
+		//The scope is shared because of crap constructors in TwConfigFactory
 		TreeGraph<TreeGraphDataNode, ALEdge> exportGraph = new TreeGraph<TreeGraphDataNode, ALEdge>(
-				new TwConfigFactory());
-		TwConfigFactory factory = (TwConfigFactory) ConfigGraph.getGraph().nodeFactory();
-		cloneTree(factory, null,root.getConfigNode(), exportGraph);
+				new TwConfigFactory("export"));
+		TwConfigFactory factory = (TwConfigFactory) exportGraph.nodeFactory();
+		List<ALEdge> outEdges = new ArrayList<>();
+		cloneTree(factory, null,root.getConfigNode(), exportGraph,outEdges);
+		
+		for (ALEdge edge:outEdges) {
+			TreeGraphDataNode exportEndNode = getNode(exportGraph,edge.endNode());
+			TreeGraphDataNode exportStartNode = getNode(exportGraph,edge.startNode());
+			if (exportEndNode !=null && exportStartNode!=null) {
+				ALEdge exportEdge = (ALEdge) factory.makeEdge(factory.edgeClass(edge.classId()), exportStartNode, exportEndNode,edge.id());
+				System.out.println(exportEdge.getClass().getName());
+			}
+		}
+		for (ALEdge edge :exportGraph.edges()){
+			System.out.println(edge);
+		};
 		new OmugiGraphExporter(file).exportGraph(exportGraph);
 	}
 
+	private TreeGraphDataNode getNode(TreeGraph<TreeGraphDataNode, ALEdge> graph, ALNode exportNode) {
+		for (TreeGraphDataNode n:graph.nodes()) {
+			if (n.id().equals(exportNode.id()))
+					return (TreeGraphDataNode) exportNode;
+		}
+		return null;
+	}
+
 	private static void cloneTree(TwConfigFactory factory, TreeGraphDataNode exportParent,TreeGraphDataNode configNode,
-			TreeGraph<TreeGraphDataNode, ALEdge> graph) {
+			TreeGraph<TreeGraphDataNode, ALEdge> graph,List<ALEdge> outEdges) {
 		TreeGraphDataNode clone = (TreeGraphDataNode) factory.makeNode(factory.nodeClass(configNode.classId()),
 				configNode.id());
+		for (ALEdge  edge:configNode.edges(Direction.OUT)) {
+			outEdges.add(edge);
+		}
 		graph.addNode(clone);// It seems the javaDoc is not correct for this function.
 		if (configNode.properties() instanceof ExtendablePropertyList) {
 			ExtendablePropertyList configProps = (ExtendablePropertyList) configNode.properties();
@@ -676,7 +691,7 @@ public abstract class StructureEditorAdapter
 			System.out.println(configNode.classId()+ " does not have ext prop list.");
 		clone.connectParent(exportParent);
 		for (TreeNode child:configNode.getChildren()) {
-			cloneTree(factory,clone,(TreeGraphDataNode)child,graph);
+			cloneTree(factory,clone,(TreeGraphDataNode)child,graph,outEdges);
 		}
 	}
 
