@@ -641,10 +641,26 @@ public abstract class StructureEditorAdapter
 		 * 1) get a file name OUTSIDE .3w
 		 * 
 		 * */
-		String filePrompt = root.getDisplayText(false).replace(":", "_");
-		File dir = Dialogs.exportFile("Export "+ root.getDisplayText(false)+" tree.", TwPaths.USER_ROOT,filePrompt);
+		String filePrompt = root.getDisplayText(false).replace(":", "_")+".utg";
+		File file = Dialogs.exportFile("Export " + root.getDisplayText(false) + " tree.", TwPaths.USER_ROOT,
+				filePrompt);
+		if (file ==null)
+			return;
+		if (file.getAbsolutePath().contains(".3w/"))
+			Dialogs.infoAlert("Export", "Cannot export to a project directory", file.getAbsolutePath());
+		else {
+			exportTree(file,root);
+		}
+	}
+
+	private void exportTree(File file, VisualNode root) {
+		/*-
+		 * 	ConfigGraph.setGraph(new TreeGraph<TreeGraphDataNode, ALEdge>(new TwConfigFactory()));
+		NodeFactory cf = ConfigGraph.getGraph().nodeFactory();
+		cf.makeNode(cf.nodeClass(N_ROOT.label()), newId);
+
+		 * */
 		
-		Dialogs.infoAlert("Export Tree", "Not implemented yet", "");
 	}
 
 	@Override
