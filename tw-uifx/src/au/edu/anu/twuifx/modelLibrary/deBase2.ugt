@@ -3,7 +3,7 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 11:06:27 AEDT 2019
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
-3worlds deBase
+3worlds deBase2
 	dataDefinition dtDef
 		record rcrd1
 			dynamic = java.lang.Boolean(true)
