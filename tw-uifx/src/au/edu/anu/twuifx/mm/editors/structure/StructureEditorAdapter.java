@@ -56,6 +56,7 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.archetype.tw.ChildXorPropertyQuery;
+import au.edu.anu.twcore.archetype.tw.EndNodeHasPropertyQuery;
 import au.edu.anu.twcore.archetype.tw.ExclusiveCategoryQuery;
 import au.edu.anu.twcore.archetype.tw.OutEdgeXorQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
@@ -197,8 +198,9 @@ public abstract class StructureEditorAdapter
 						if (satisfyExclusiveCategoryQuery(edgeSpec, endNode, edgeLabel))
 							if (satisfyOutNodeXorQuery(edgeSpec, endNode, edgeLabel))
 								if (satisfyOutEdgeXorQuery(edgeSpec, endNode, edgeLabel))
-									result.add(new Tuple<String, VisualNode, SimpleDataTreeNode>(edgeLabel, endNode,
-											edgeSpec));
+									if (satisfyEndNodeHasPropertyQuery(edgeSpec, endNode, edgeLabel))
+										result.add(new Tuple<String, VisualNode, SimpleDataTreeNode>(edgeLabel, endNode,
+												edgeSpec));
 					}
 			}
 		}
@@ -211,8 +213,22 @@ public abstract class StructureEditorAdapter
 				return s1.compareToIgnoreCase(s2);
 			}
 		});
-
 		return result;
+	}
+
+	/*-	mustSatisfyQuery leafTableSpec
+			className = String("au.edu.anu.twcore.archetype.tw.EndNodeHasPropertyQuery")
+			propname = String("dataElementType")
+	 */
+	private boolean satisfyEndNodeHasPropertyQuery(SimpleDataTreeNode edgeSpec, VisualNode endNode, String edgeLabel) {
+		List<SimpleDataTreeNode> queries = specifications.getQueries((SimpleDataTreeNode) edgeSpec,
+				EndNodeHasPropertyQuery.class);
+		for (SimpleDataTreeNode query : queries) {
+			String key = (String) query.properties().getPropertyValue(twaPropName);
+			if (!endNode.configHasProperty(key))
+				return false;
+		}
+		return true;
 	}
 
 	private boolean satisfyOutEdgeXorQuery(SimpleDataTreeNode edgeSpec, VisualNode endNode, String proposedEdgeLabel) {
