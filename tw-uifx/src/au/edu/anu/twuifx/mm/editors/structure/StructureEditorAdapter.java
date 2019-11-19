@@ -84,6 +84,7 @@ import fr.cnrs.iees.identity.impl.PairIdentity;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import fr.cnrs.iees.properties.ExtendablePropertyList;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.properties.impl.SimplePropertyListImpl;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
@@ -654,59 +655,65 @@ public abstract class StructureEditorAdapter
 		if (file.getAbsolutePath().contains(".3w/"))
 			Dialogs.infoAlert("Export", "Cannot export to a project directory", file.getAbsolutePath());
 		else {
-			exportTree(file, root);
+			exportTree(file, root.getConfigNode());
 		}
 	}
 
-	private void exportTree(File file, VisualNode root) {
+	private void exportTree(File file, TreeGraphDataNode root) {
 		TwConfigFactory factory = new TwConfigFactory();
-		TreeGraph<TreeGraphDataNode, ALEdge> exportGraph = new TreeGraph<TreeGraphDataNode, ALEdge>(factory);
-		List<ALEdge> outEdges = new ArrayList<>();
+		TreeGraph<TreeGraphDataNode, ALDataEdge> exportGraph = new TreeGraph<TreeGraphDataNode, ALDataEdge>(factory);
+		List<ALDataEdge> configOutEdges = new ArrayList<>();
 
-		cloneTree(factory, null, root.getConfigNode(), exportGraph, outEdges);
+		cloneTree(factory, null, root, exportGraph, configOutEdges);
 
-		for (ALEdge edge : outEdges) {
-			TreeGraphDataNode exportEndNode = getNode(exportGraph, edge.endNode());
-			TreeGraphDataNode exportStartNode = getNode(exportGraph, edge.startNode());
-			if (exportEndNode != null && exportStartNode != null) {
-				ALEdge exportEdge = (ALEdge) factory.makeEdge(factory.edgeClass(edge.classId()), exportStartNode,
-						exportEndNode, edge.id());
-				// for some reason, end/start node edgelist aren't being updated.
-				exportGraph.addEdge(exportStartNode, exportEndNode, exportEdge);
+		// Look for outedges within the sub-tree
+		for (ALDataEdge configEdge : configOutEdges) {
+			TreeGraphDataNode cloneStartNode = getNode(exportGraph, configEdge.startNode());
+			TreeGraphDataNode cloneEndNode = getNode(exportGraph, configEdge.endNode());
+			if (cloneEndNode != null && cloneStartNode != null) {
+				ALDataEdge cloneEdge = (ALDataEdge) factory.makeEdge(factory.edgeClass(configEdge.classId()),
+						cloneStartNode, cloneEndNode, configEdge.id());
+
+				// Add edge properties
+				SimplePropertyListImpl configProps = (SimplePropertyListImpl) configEdge.properties();
+				ExtendablePropertyList cloneProps = (ExtendablePropertyList) cloneEdge.properties();
+				for (String key : configProps.getKeysAsArray()) {
+					cloneProps.addProperty(key, configProps.getPropertyValue(key));
+				}
 			}
 		}
-		for (ALEdge edge : exportGraph.edges())
-			System.out.println(edge);
 
 		new OmugiGraphExporter(file).exportGraph(exportGraph);
 	}
 
-	private static void cloneTree(TwConfigFactory factory, TreeGraphDataNode exportParent, TreeGraphDataNode configNode,
-			TreeGraph<TreeGraphDataNode, ALEdge> graph, List<ALEdge> outEdges) {
-		TreeGraphDataNode clone = (TreeGraphDataNode) factory.makeNode(factory.nodeClass(configNode.classId()),
+	private static void cloneTree(TwConfigFactory factory, TreeGraphDataNode cloneParent, TreeGraphDataNode configNode,
+			TreeGraph<TreeGraphDataNode, ALDataEdge> graph, List<ALDataEdge> outEdges) {
+
+		TreeGraphDataNode cloneNode = (TreeGraphDataNode) factory.makeNode(factory.nodeClass(configNode.classId()),
 				configNode.id());
-		for (ALEdge edge : configNode.edges(Direction.OUT)) {
-			outEdges.add(edge);
-		}
-		graph.addNode(clone);// It seems the javaDoc is not correct for this function.
-		if (configNode.properties() instanceof ExtendablePropertyList) {
-			ExtendablePropertyList configProps = (ExtendablePropertyList) configNode.properties();
-			ExtendablePropertyList cloneProps = (ExtendablePropertyList) clone.properties();
-			for (String key : configProps.getKeysAsArray()) {
-				cloneProps.addProperty(key, configProps.getPropertyValue(key));
-			}
-		} else
-			System.out.println(configNode.classId() + " does not have ext prop list.");
-		clone.connectParent(exportParent);
-		for (TreeNode child : configNode.getChildren()) {
-			cloneTree(factory, clone, (TreeGraphDataNode) child, graph, outEdges);
-		}
+
+		// store any out edges to check if they are within the export sub-tree
+		for (ALEdge edge : configNode.edges(Direction.OUT))
+			outEdges.add((ALDataEdge) edge);
+
+		// clone node properties
+		ExtendablePropertyList configProps = (ExtendablePropertyList) configNode.properties();
+		ExtendablePropertyList cloneProps = (ExtendablePropertyList) cloneNode.properties();
+		for (String key : configProps.getKeysAsArray())
+			cloneProps.addProperty(key, configProps.getPropertyValue(key));
+
+		// clone tree structure
+		cloneNode.connectParent(cloneParent);
+
+		for (TreeNode configChild : configNode.getChildren())
+			cloneTree(factory, cloneNode, (TreeGraphDataNode) configChild, graph, outEdges);
+
 	}
 
-	private TreeGraphDataNode getNode(TreeGraph<TreeGraphDataNode, ALEdge> graph, ALNode exportNode) {
-		for (TreeGraphDataNode n : graph.nodes()) {
-			if (n.id().equals(exportNode.id()))
-				return (TreeGraphDataNode) exportNode;
+	private TreeGraphDataNode getNode(TreeGraph<TreeGraphDataNode, ALDataEdge> exportGraph, ALNode configNode) {
+		for (TreeGraphDataNode cloneNode : exportGraph.nodes()) {
+			if (cloneNode.id().equals(configNode.id()))
+				return (TreeGraphDataNode) cloneNode;
 		}
 		return null;
 	}
