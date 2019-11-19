@@ -144,7 +144,7 @@ public class Dialogsfx implements IDialogs {
 	public File getExternalProjectFile() {
 		FileChooser fc = new FileChooser();
 		fc.setInitialDirectory(new File(TwPaths.USER_ROOT));
-		String[] extList = GraphFileFormats.TOMUGI.extensions();
+		String[] extList = GraphFileFormats.TGOMUGI.extensions();
 		for (String ext : extList)
 			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter(ext + " (*" + ext + ")", "*" + ext));
 		fc.setSelectedExtensionFilter(fc.getExtensionFilters().get(0));

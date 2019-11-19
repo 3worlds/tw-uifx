@@ -81,6 +81,7 @@ import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.graph.io.impl.OmugiGraphExporter;
 import fr.cnrs.iees.identity.impl.PairIdentity;
+import fr.cnrs.iees.io.FileImporter;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import fr.cnrs.iees.properties.ExtendablePropertyList;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -648,8 +649,7 @@ public abstract class StructureEditorAdapter
 	@Override
 	public void onExportTree(VisualNode root) {
 		String filePrompt = root.getDisplayText(false).replace(":", "_") + ".utg";
-		File file = Dialogs.exportFile("Export " + root.getDisplayText(false) + " tree.", TwPaths.USER_ROOT,
-				filePrompt);
+		File file = Dialogs.exportFile("", TwPaths.USER_ROOT, filePrompt);
 		if (file == null)
 			return;
 		if (file.getAbsolutePath().contains(".3w/"))
@@ -661,24 +661,27 @@ public abstract class StructureEditorAdapter
 
 	private void exportTree(File file, TreeGraphDataNode root) {
 		TwConfigFactory factory = new TwConfigFactory();
-		TreeGraph<TreeGraphDataNode, ALDataEdge> exportGraph = new TreeGraph<TreeGraphDataNode, ALDataEdge>(factory);
-		List<ALDataEdge> configOutEdges = new ArrayList<>();
+		TreeGraph<TreeGraphDataNode, ALEdge> exportGraph = new TreeGraph<TreeGraphDataNode, ALEdge>(factory);
+		List<ALEdge> configOutEdges = new ArrayList<>();
 
 		cloneTree(factory, null, root, exportGraph, configOutEdges);
 
 		// Look for outedges within the sub-tree
-		for (ALDataEdge configEdge : configOutEdges) {
+		for (ALEdge configEdge : configOutEdges) {
 			TreeGraphDataNode cloneStartNode = getNode(exportGraph, configEdge.startNode());
 			TreeGraphDataNode cloneEndNode = getNode(exportGraph, configEdge.endNode());
 			if (cloneEndNode != null && cloneStartNode != null) {
 				ALDataEdge cloneEdge = (ALDataEdge) factory.makeEdge(factory.edgeClass(configEdge.classId()),
 						cloneStartNode, cloneEndNode, configEdge.id());
 
-				// Add edge properties
-				SimplePropertyListImpl configProps = (SimplePropertyListImpl) configEdge.properties();
-				ExtendablePropertyList cloneProps = (ExtendablePropertyList) cloneEdge.properties();
-				for (String key : configProps.getKeysAsArray()) {
-					cloneProps.addProperty(key, configProps.getPropertyValue(key));
+				if (configEdge instanceof ALDataEdge) {
+					// Add edge properties
+					ALDataEdge de = (ALDataEdge)configEdge;
+					SimplePropertyListImpl configProps = (SimplePropertyListImpl) de.properties();
+					ExtendablePropertyList cloneProps = (ExtendablePropertyList) cloneEdge.properties();
+					for (String key : configProps.getKeysAsArray()) {
+						cloneProps.addProperty(key, configProps.getPropertyValue(key));
+					}
 				}
 			}
 		}
@@ -687,14 +690,14 @@ public abstract class StructureEditorAdapter
 	}
 
 	private static void cloneTree(TwConfigFactory factory, TreeGraphDataNode cloneParent, TreeGraphDataNode configNode,
-			TreeGraph<TreeGraphDataNode, ALDataEdge> graph, List<ALDataEdge> outEdges) {
+			TreeGraph<TreeGraphDataNode, ALEdge> graph, List<ALEdge> outEdges) {
 
 		TreeGraphDataNode cloneNode = (TreeGraphDataNode) factory.makeNode(factory.nodeClass(configNode.classId()),
 				configNode.id());
 
 		// store any out edges to check if they are within the export sub-tree
 		for (ALEdge edge : configNode.edges(Direction.OUT))
-			outEdges.add((ALDataEdge) edge);
+			outEdges.add(edge);
 
 		// clone node properties
 		ExtendablePropertyList configProps = (ExtendablePropertyList) configNode.properties();
@@ -710,7 +713,7 @@ public abstract class StructureEditorAdapter
 
 	}
 
-	private TreeGraphDataNode getNode(TreeGraph<TreeGraphDataNode, ALDataEdge> exportGraph, ALNode configNode) {
+	private TreeGraphDataNode getNode(TreeGraph<TreeGraphDataNode, ALEdge> exportGraph, ALNode configNode) {
 		for (TreeGraphDataNode cloneNode : exportGraph.nodes()) {
 			if (cloneNode.id().equals(configNode.id()))
 				return (TreeGraphDataNode) cloneNode;
@@ -727,6 +730,19 @@ public abstract class StructureEditorAdapter
 	}
 
 	private boolean treeImport(VisualNode parent, SimpleDataTreeNode childSpec) {
+		File importFile = Dialogs.getExternalProjectFile();
+		if (importFile == null)
+			return false;
+		TreeGraph<TreeGraphDataNode, ALEdge> importGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
+				.loadGraphFromFile(importFile);
+		String label = (String) childSpec.properties().getPropertyValue(aaIsOfClass);
+		if (!label.equals(importGraph.root().classId())) {
+			Dialogs.errorAlert("Import error", "Incompatible file","Tree with root '"+ label + "' requested but root of this file is '"+importGraph.root().classId()+ "'.");
+			return false;
+		}
+		
+		// check childspec isOfClass value == importGraph.root().classId();
+
 		Dialogs.infoAlert("Import Tree", "Not implemented yet", "");
 		return false;
 	}
