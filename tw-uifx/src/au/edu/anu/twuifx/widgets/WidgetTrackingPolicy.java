@@ -32,8 +32,6 @@ package au.edu.anu.twuifx.widgets;
 import java.util.Collection;
 
 import au.edu.anu.twcore.ui.runtime.HeadlessWidget;
-import fr.cnrs.iees.properties.SimplePropertyList;
-//not sure about this wip
 
 public interface WidgetTrackingPolicy<T> extends HeadlessWidget{
 	

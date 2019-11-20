@@ -31,7 +31,6 @@
 package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -52,7 +51,6 @@ import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Duple;

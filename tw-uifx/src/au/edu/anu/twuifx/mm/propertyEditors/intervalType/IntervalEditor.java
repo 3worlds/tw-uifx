@@ -36,23 +36,18 @@ import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.ens.biologie.generic.utils.Interval;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
@@ -122,7 +117,7 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 				cbLowOpen.setVisible(true);
 				tfLow.setVisible(true);
 				try {
-					Double tmp = Double.parseDouble(tfLow.getText());
+					Double.parseDouble(tfLow.getText());
 				} catch (NumberFormatException e) {
 					tfLow.setText("0.0");
 				}
@@ -138,7 +133,7 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 				cbHighOpen.setVisible(true);
 				tfHigh.setVisible(true);
 				try {
-					Double tmp = Double.parseDouble(tfHigh.getText());
+					Double.parseDouble(tfHigh.getText());
 				} catch (NumberFormatException e) {
 					tfHigh.setText("0.0");
 				}

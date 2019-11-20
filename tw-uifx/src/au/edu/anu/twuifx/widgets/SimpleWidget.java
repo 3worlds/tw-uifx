@@ -39,12 +39,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import au.edu.anu.rscs.aot.graph.property.Property;
-import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.ObjectData;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -78,7 +74,7 @@ public class SimpleWidget extends AbstractDisplayWidget<ObjectData, Metadata> im
 
 	private Label lblOutput;
 
-	private Object initialValue;
+	//private Object initialValue;
 	private WidgetTimeFormatter timeFormatter;
 	// private int sender;
 	private String name;

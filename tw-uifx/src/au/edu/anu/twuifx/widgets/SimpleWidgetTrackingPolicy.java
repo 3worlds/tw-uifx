@@ -31,7 +31,6 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.Collection;
 
-import au.edu.anu.twcore.data.runtime.OutputData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
 // not sure about this wip

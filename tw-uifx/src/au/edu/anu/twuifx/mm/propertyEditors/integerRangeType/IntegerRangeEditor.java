@@ -40,7 +40,6 @@ import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -113,7 +112,7 @@ public class IntegerRangeEditor extends AbstractPropertyEditor<String, LabelButt
 			} else {
 				tfLow.setVisible(true);
 				try {
-					Double tmp = Double.parseDouble(tfLow.getText());
+					Double.parseDouble(tfLow.getText());
 				} catch (NumberFormatException e) {
 					tfLow.setText("0");
 				}
@@ -125,7 +124,7 @@ public class IntegerRangeEditor extends AbstractPropertyEditor<String, LabelButt
 			} else {
 				tfHigh.setVisible(true);
 				try {
-					Double tmp = Double.parseDouble(tfHigh.getText());
+					Double.parseDouble(tfHigh.getText());
 				} catch (NumberFormatException e) {
 					tfHigh.setText("0");
 				}
