@@ -414,6 +414,11 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 
 	@FXML
 	void handleLayout(ActionEvent event) {
+		doLayout();
+	}
+
+	@Override
+	public void doLayout() {
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 100.0;
