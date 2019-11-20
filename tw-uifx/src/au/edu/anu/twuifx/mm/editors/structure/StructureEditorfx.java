@@ -32,10 +32,12 @@ package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
 import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
+import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
+import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
-import au.edu.anu.twuifx.mm.visualise.IGraphVisualiser;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
