@@ -46,9 +46,6 @@ import org.apache.commons.text.WordUtils;
 
 import au.edu.anu.rscs.aot.archetype.ArchetypeArchetypeConstants;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
-import au.edu.anu.rscs.aot.graph.property.Property;
-import au.edu.anu.rscs.aot.queries.Query;
-import au.edu.anu.rscs.aot.queries.base.OrQuery;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
@@ -65,7 +62,6 @@ import au.edu.anu.twcore.archetype.tw.OutEdgeXorQuery;
 import au.edu.anu.twcore.archetype.tw.OutNodeXorQuery;
 import au.edu.anu.twcore.archetype.tw.PropertyXorQuery;
 import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.root.EditableFactory;
 import au.edu.anu.twcore.root.TwConfigFactory;
@@ -95,9 +91,6 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Logging;
 import fr.ens.biologie.generic.utils.Tuple;
-
-import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
-import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
 
 public abstract class StructureEditorAdapter
 		implements StructureEditable, TwArchetypeConstants, ArchetypeArchetypeConstants {
@@ -225,6 +218,7 @@ public abstract class StructureEditorAdapter
 			className = String("au.edu.anu.twcore.archetype.tw.EndNodeHasPropertyQuery")
 			propname = String("dataElementType")
 	 */
+	@SuppressWarnings("unchecked")
 	private boolean satisfyEndNodeHasPropertyQuery(SimpleDataTreeNode edgeSpec, VisualNode endNode, String edgeLabel) {
 		List<SimpleDataTreeNode> queries = specifications.getQueries((SimpleDataTreeNode) edgeSpec,
 				EndNodeHasPropertyQuery.class);
@@ -236,6 +230,7 @@ public abstract class StructureEditorAdapter
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean satisfyOutEdgeXorQuery(SimpleDataTreeNode edgeSpec, VisualNode endNode, String proposedEdgeLabel) {
 		List<SimpleDataTreeNode> queries = specifications.getQueries((SimpleDataTreeNode) edgeSpec.getParent(),
 				OutEdgeXorQuery.class);
@@ -665,7 +660,6 @@ public abstract class StructureEditorAdapter
 	private void exportTree(File file, TreeGraphDataNode root) {
 		TwConfigFactory factory = new TwConfigFactory();
 		TreeGraph<TreeGraphDataNode, ALEdge> exportGraph = new TreeGraph<TreeGraphDataNode, ALEdge>(factory);
-		Map<ALEdge, List<VisualNode>> edgeDetails = new HashMap<>();
 		List<ALEdge> configOutEdges = new ArrayList<>();
 
 		cloneTree(factory, null, root, exportGraph, configOutEdges);
@@ -677,16 +671,7 @@ public abstract class StructureEditorAdapter
 			if (cloneEndNode != null && cloneStartNode != null) {
 				ALDataEdge cloneEdge = (ALDataEdge) factory.makeEdge(factory.edgeClass(configEdge.classId()),
 						cloneStartNode, cloneEndNode, configEdge.id());
-
-				if (configEdge instanceof ALDataEdge) {
-					// Add edge properties
-					ALDataEdge de = (ALDataEdge) configEdge;
-					SimplePropertyListImpl configProps = (SimplePropertyListImpl) de.properties();
-					ExtendablePropertyList cloneProps = (ExtendablePropertyList) cloneEdge.properties();
-					for (String key : configProps.getKeysAsArray()) {
-						cloneProps.addProperty(key, configProps.getPropertyValue(key));
-					}
-				}
+				cloneEdgeProperties(configEdge, cloneEdge);
 			}
 		}
 
@@ -696,22 +681,21 @@ public abstract class StructureEditorAdapter
 	private static void cloneTree(TwConfigFactory factory, TreeGraphDataNode cloneParent, TreeGraphDataNode configNode,
 			TreeGraph<TreeGraphDataNode, ALEdge> graph, List<ALEdge> outEdges) {
 
+		// make the node
 		TreeGraphDataNode cloneNode = (TreeGraphDataNode) factory.makeNode(factory.nodeClass(configNode.classId()),
 				configNode.id());
 
-		// store any out edges to check if they are within the export sub-tree
+		// store any out edges to check later if they are within the export sub-tree
 		for (ALEdge edge : configNode.edges(Direction.OUT))
 			outEdges.add(edge);
 
 		// clone node properties
-		ExtendablePropertyList configProps = (ExtendablePropertyList) configNode.properties();
-		ExtendablePropertyList cloneProps = (ExtendablePropertyList) cloneNode.properties();
-		for (String key : configProps.getKeysAsArray())
-			cloneProps.addProperty(key, configProps.getPropertyValue(key));
+		cloneNodeProperties(configNode, cloneNode);
 
 		// clone tree structure
 		cloneNode.connectParent(cloneParent);
 
+		// follow tree
 		for (TreeNode configChild : configNode.getChildren())
 			cloneTree(factory, cloneNode, (TreeGraphDataNode) configChild, graph, outEdges);
 
@@ -729,18 +713,17 @@ public abstract class StructureEditorAdapter
 	public void onImportTree(SimpleDataTreeNode childSpec) {
 		TreeGraph<TreeGraphDataNode, ALEdge> importGraph = getImportGraph(childSpec);
 		if (importGraph != null) {
-			importGraph(importGraph, editableNode.getSelectedVisualNode(), childSpec);
+			importGraph(importGraph, editableNode.getSelectedVisualNode());
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
 		}
 	}
 
-	private void importGraph(TreeGraph<TreeGraphDataNode, ALEdge> configSubGraph, VisualNode vParent,
-			SimpleDataTreeNode rootSpec) {
+	private void importGraph(TreeGraph<TreeGraphDataNode, ALEdge> configSubGraph, VisualNode vParent) {
 		// Only trees are exported not graph lists. Therefore, it is proper to do this
 		// by recursion
 
-		// List<Duple<VisualNode, ALEdge>> outEdgeDetails = new ArrayList<>();
+		// Store edge info for later processing
 		Map<ALEdge, VisualNode> outEdgeMap = new HashMap<>();
 		Map<ALEdge, VisualNode> inEdgeMap = new HashMap<>();
 
@@ -748,6 +731,7 @@ public abstract class StructureEditorAdapter
 		TwConfigFactory cFactory = (TwConfigFactory) cParent.factory();
 		VisualGraphFactory vFactory = (VisualGraphFactory) vParent.factory();
 		TreeGraphDataNode importNode = configSubGraph.root();
+		// follow tree
 		importTree(importNode, cParent, vParent, cFactory, vFactory, outEdgeMap, inEdgeMap);
 		// clone any edges found
 		outEdgeMap.entrySet().forEach(entry -> {
@@ -762,22 +746,35 @@ public abstract class StructureEditorAdapter
 					importEdge.id());
 			VisualEdge newVEdge = vFactory.makeEdge(vStart, vEnd, newCEdge.id());
 			newVEdge.setConfigEdge(newCEdge);
-			// Add properties
-			if (importEdge instanceof ALDataEdge) {
-				// Add edge properties
-				ALDataEdge importDataEdge = (ALDataEdge) importEdge;
-				ALDataEdge cDataEdge = (ALDataEdge) newCEdge;
-				SimplePropertyListImpl importProps = (SimplePropertyListImpl) importDataEdge.properties();
-				ExtendablePropertyList cProps = (ExtendablePropertyList) cDataEdge.properties();
-				for (String key : importProps.getKeysAsArray())
-					cProps.addProperty(key, importProps.getPropertyValue(key));
-			}
+			cloneEdgeProperties(importEdge, newCEdge);
 			gvisualiser.onNewEdge(newVEdge);
 		});
 
 	}
 
-	private void importTree(TreeGraphDataNode importNode, TreeGraphDataNode cParent, VisualNode vParent,
+	private static void cloneEdgeProperties(ALEdge from, ALEdge to) {
+		if (from instanceof ALDataEdge) {
+			// Add edge properties
+			ALDataEdge fromDataEdge = (ALDataEdge) from;
+			ALDataEdge toDataEdge = (ALDataEdge) to;
+			SimplePropertyListImpl fromProps = (SimplePropertyListImpl) fromDataEdge.properties();
+			ExtendablePropertyList toProps = (ExtendablePropertyList) toDataEdge.properties();
+			for (String key : fromProps.getKeysAsArray())
+				toProps.addProperty(key, fromProps.getPropertyValue(key));
+		}
+
+	}
+
+	private static void cloneNodeProperties(TreeGraphDataNode from, TreeGraphDataNode to) {
+		// clone node properties
+		ExtendablePropertyList fromProps = (ExtendablePropertyList) from.properties();
+		ExtendablePropertyList toProps = (ExtendablePropertyList) to.properties();
+		for (String key : fromProps.getKeysAsArray())
+			toProps.addProperty(key, fromProps.getPropertyValue(key));
+
+	}
+
+	private  void importTree(TreeGraphDataNode importNode, TreeGraphDataNode cParent, VisualNode vParent,
 			TwConfigFactory cFactory, VisualGraphFactory vFactory, Map<ALEdge, VisualNode> outEdgeMap,
 			Map<ALEdge, VisualNode> inEdgeMap) {
 		// NB: ids will change depending on scope.
@@ -792,23 +789,21 @@ public abstract class StructureEditorAdapter
 		newVNode.setCollapse(false);
 		newVNode.setPosition(Math.random() * 0.5, Math.random() * 0.5);
 		// Collect outEdges and pair with visual node.
-		// Can't depend on ids! Might be tricky
+		// Can't depend on ids! Match the imported edge with the newly created visual
+		// node at time of creation.
 		for (ALEdge outEdge : importNode.edges(Direction.OUT))
 			outEdgeMap.put(outEdge, newVNode);
 		for (ALEdge inEdge : importNode.edges(Direction.IN))
 			inEdgeMap.put(inEdge, newVNode);
 
 		// clone node properties
-		ExtendablePropertyList importProps = (ExtendablePropertyList) importNode.properties();
-		ExtendablePropertyList cloneProps = (ExtendablePropertyList) newCNode.properties();
-		for (String key : importProps.getKeysAsArray())
-			cloneProps.addProperty(key, importProps.getPropertyValue(key));
+		cloneNodeProperties(importNode, newCNode);
 
 		// update visual display
 		gvisualiser.onNewNode(newVNode);
 
 		for (TreeNode importChild : importNode.getChildren())
-			importTree((TreeGraphDataNode) importChild, newCNode, newVNode, cFactory, vFactory, outEdgeMap,inEdgeMap);
+			importTree((TreeGraphDataNode) importChild, newCNode, newVNode, cFactory, vFactory, outEdgeMap, inEdgeMap);
 	}
 
 	@SuppressWarnings("unchecked")
