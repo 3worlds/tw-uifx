@@ -34,9 +34,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -52,6 +54,7 @@ import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
+import au.edu.anu.twapps.mm.visualGraph.VisualGraphFactory;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
@@ -662,6 +665,7 @@ public abstract class StructureEditorAdapter
 	private void exportTree(File file, TreeGraphDataNode root) {
 		TwConfigFactory factory = new TwConfigFactory();
 		TreeGraph<TreeGraphDataNode, ALEdge> exportGraph = new TreeGraph<TreeGraphDataNode, ALEdge>(factory);
+		Map<ALEdge, List<VisualNode>> edgeDetails = new HashMap<>();
 		List<ALEdge> configOutEdges = new ArrayList<>();
 
 		cloneTree(factory, null, root, exportGraph, configOutEdges);
@@ -676,7 +680,7 @@ public abstract class StructureEditorAdapter
 
 				if (configEdge instanceof ALDataEdge) {
 					// Add edge properties
-					ALDataEdge de = (ALDataEdge)configEdge;
+					ALDataEdge de = (ALDataEdge) configEdge;
 					SimplePropertyListImpl configProps = (SimplePropertyListImpl) de.properties();
 					ExtendablePropertyList cloneProps = (ExtendablePropertyList) cloneEdge.properties();
 					for (String key : configProps.getKeysAsArray()) {
@@ -723,28 +727,105 @@ public abstract class StructureEditorAdapter
 
 	@Override
 	public void onImportTree(SimpleDataTreeNode childSpec) {
-		if (treeImport(editableNode.getSelectedVisualNode(), childSpec)) {
+		TreeGraph<TreeGraphDataNode, ALEdge> importGraph = getImportGraph(childSpec);
+		if (importGraph != null) {
+			importGraph(importGraph, editableNode.getSelectedVisualNode(), childSpec);
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
 		}
 	}
 
-	private boolean treeImport(VisualNode parent, SimpleDataTreeNode childSpec) {
+	private void importGraph(TreeGraph<TreeGraphDataNode, ALEdge> configSubGraph, VisualNode vParent,
+			SimpleDataTreeNode rootSpec) {
+		// Only trees are exported not graph lists. Therefore, it is proper to do this
+		// by recursion
+
+		// List<Duple<VisualNode, ALEdge>> outEdgeDetails = new ArrayList<>();
+		Map<ALEdge, VisualNode> outEdgeMap = new HashMap<>();
+		Map<ALEdge, VisualNode> inEdgeMap = new HashMap<>();
+
+		TreeGraphDataNode cParent = vParent.getConfigNode();
+		TwConfigFactory cFactory = (TwConfigFactory) cParent.factory();
+		VisualGraphFactory vFactory = (VisualGraphFactory) vParent.factory();
+		TreeGraphDataNode importNode = configSubGraph.root();
+		importTree(importNode, cParent, vParent, cFactory, vFactory, outEdgeMap, inEdgeMap);
+		// clone any edges found
+		outEdgeMap.entrySet().forEach(entry -> {
+			// get start/end nodes
+			ALEdge importEdge = entry.getKey();
+			VisualNode vStart = entry.getValue();
+			VisualNode vEnd = inEdgeMap.get(importEdge);
+			TreeGraphDataNode cStart = vStart.getConfigNode();
+			TreeGraphDataNode cEnd = vEnd.getConfigNode();
+			// make edges
+			ALEdge newCEdge = (ALEdge) cFactory.makeEdge(cFactory.edgeClass(importEdge.classId()), cStart, cEnd,
+					importEdge.id());
+			VisualEdge newVEdge = vFactory.makeEdge(vStart, vEnd, newCEdge.id());
+			newVEdge.setConfigEdge(newCEdge);
+			// Add properties
+			if (importEdge instanceof ALDataEdge) {
+				// Add edge properties
+				ALDataEdge importDataEdge = (ALDataEdge) importEdge;
+				ALDataEdge cDataEdge = (ALDataEdge) newCEdge;
+				SimplePropertyListImpl importProps = (SimplePropertyListImpl) importDataEdge.properties();
+				ExtendablePropertyList cProps = (ExtendablePropertyList) cDataEdge.properties();
+				for (String key : importProps.getKeysAsArray())
+					cProps.addProperty(key, importProps.getPropertyValue(key));
+			}
+			gvisualiser.onNewEdge(newVEdge);
+		});
+
+	}
+
+	private void importTree(TreeGraphDataNode importNode, TreeGraphDataNode cParent, VisualNode vParent,
+			TwConfigFactory cFactory, VisualGraphFactory vFactory, Map<ALEdge, VisualNode> outEdgeMap,
+			Map<ALEdge, VisualNode> inEdgeMap) {
+		// NB: ids will change depending on scope.
+		TreeGraphDataNode newCNode = (TreeGraphDataNode) cFactory.makeNode(cFactory.nodeClass(importNode.classId()),
+				importNode.id());
+		VisualNode newVNode = vFactory.makeNode(newCNode.id());
+		newCNode.connectParent(cParent);
+		newVNode.connectParent(vParent);
+		newVNode.setCreatedBy(cParent.classId());
+		newVNode.setConfigNode(newCNode);
+		newVNode.setCategory();
+		newVNode.setCollapse(false);
+		newVNode.setPosition(Math.random() * 0.5, Math.random() * 0.5);
+		// Collect outEdges and pair with visual node.
+		// Can't depend on ids! Might be tricky
+		for (ALEdge outEdge : importNode.edges(Direction.OUT))
+			outEdgeMap.put(outEdge, newVNode);
+		for (ALEdge inEdge : importNode.edges(Direction.IN))
+			inEdgeMap.put(inEdge, newVNode);
+
+		// clone node properties
+		ExtendablePropertyList importProps = (ExtendablePropertyList) importNode.properties();
+		ExtendablePropertyList cloneProps = (ExtendablePropertyList) newCNode.properties();
+		for (String key : importProps.getKeysAsArray())
+			cloneProps.addProperty(key, importProps.getPropertyValue(key));
+
+		// update visual display
+		gvisualiser.onNewNode(newVNode);
+
+		for (TreeNode importChild : importNode.getChildren())
+			importTree((TreeGraphDataNode) importChild, newCNode, newVNode, cFactory, vFactory, outEdgeMap,inEdgeMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	private TreeGraph<TreeGraphDataNode, ALEdge> getImportGraph(SimpleDataTreeNode childSpec) {
 		File importFile = Dialogs.getExternalProjectFile();
 		if (importFile == null)
-			return false;
+			return null;
 		TreeGraph<TreeGraphDataNode, ALEdge> importGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
 				.loadGraphFromFile(importFile);
+		// check the root node class is the same as that in the spec
 		String label = (String) childSpec.properties().getPropertyValue(aaIsOfClass);
 		if (!label.equals(importGraph.root().classId())) {
-			Dialogs.errorAlert("Import error", "Incompatible file","Tree with root '"+ label + "' requested but root of this file is '"+importGraph.root().classId()+ "'.");
-			return false;
+			Dialogs.errorAlert("Import error", "Incompatible file", "Tree with root '" + label
+					+ "' requested but root of this file is '" + importGraph.root().classId() + "'.");
+			return null;
 		}
-		
-		// check childspec isOfClass value == importGraph.root().classId();
-
-		Dialogs.infoAlert("Import Tree", "Not implemented yet", "");
-		return false;
+		return importGraph;
 	}
 
 	@Override
