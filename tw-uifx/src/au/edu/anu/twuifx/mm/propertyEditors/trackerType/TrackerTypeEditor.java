@@ -45,6 +45,7 @@ import au.edu.anu.twcore.data.FieldNode;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twcore.data.TableNode;
 import au.edu.anu.twcore.data.runtime.DataLabel;
+import au.edu.anu.twcore.ui.TrackFieldEdge;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.graph.Direction;
@@ -149,57 +150,68 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		btnBx.getChildren().addAll(btnTo, btnFrom);
 
 		TrackerTypeItem tti = (TrackerTypeItem) getProperty();
-		TrackerType tt = TrackerType.valueOf((String) tti.getValue());
-		fillOutputList(tt, outputList);
+		if (tti.getElement() instanceof TrackFieldEdge) {
+			// fields and tables don't require a list in input options as there is only one: a table or a field
+			// In this case we need to know the total dimensions of the structure.
+			TrackFieldEdge edge = (TrackFieldEdge)tti.getElement();		
+			FieldNode fieldNode = (FieldNode) edge.endNode();
+			TrackerType tt = TrackerType.valueOf((String) tti.getValue());
+			// we just add the id of the field/table node to the input list
+			// thin inputlist is 
+			return null;
+		} else 
+			return null;
+		
+		//fillOutputList(tt, outputList);
 //		drivers = getDrivers();
-		int maxDim = fillInputList(inputList, outputList);
+		//int maxDim = fillInputList(inputList, outputList);
 
-		indices = new ArrayList<>();
-		for (int i = 0; i < maxDim; i++) {
-			CheckBox cb = new CheckBox("const.");
-			Spinner<Integer> sp = new Spinner<>();
-			sp.setEditable(true);
-			SpinnerValueFactory<Integer> factory;
-			factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, (int) 0);
-			sp.setValueFactory(factory);
-			sp.setMaxWidth(100);
-			VBox vbox = new VBox();
-			vbox.getChildren().addAll(cb, sp);
-			hbox.getChildren().add(vbox);
-			indices.add(new Duple<CheckBox, Spinner<Integer>>(cb, sp));
-			cb.selectedProperty().addListener((observable, oldValue, newValue) -> {
-				if (newValue)
-					sp.setVisible(true);
-				else
-					sp.setVisible(false);
-			});
-			cb.setSelected(true);
-		}
+		//indices = new ArrayList<>();
+//		for (int i = 0; i < maxDim; i++) {
+//			CheckBox cb = new CheckBox("const.");
+//			Spinner<Integer> sp = new Spinner<>();
+//			sp.setEditable(true);
+//			SpinnerValueFactory<Integer> factory;
+//			factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, (int) 0);
+//			sp.setValueFactory(factory);
+//			sp.setMaxWidth(100);
+//			VBox vbox = new VBox();
+//			vbox.getChildren().addAll(cb, sp);
+//			hbox.getChildren().add(vbox);
+//			indices.add(new Duple<CheckBox, Spinner<Integer>>(cb, sp));
+//			cb.selectedProperty().addListener((observable, oldValue, newValue) -> {
+//				if (newValue)
+//					sp.setVisible(true);
+//				else
+//					sp.setVisible(false);
+//			});
+//			cb.setSelected(true);
+//		}
 
-		MultipleSelectionModel<String> srcModel = inputList.getSelectionModel();
-		srcModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-			int dim = getDims(srcModel.getSelectedItem());
-			for (int i = 0; i < indices.size(); i++) {
-				Duple<CheckBox, Spinner<Integer>> idxctrl = indices.get(i);
-				if (dim > i) {
-					idxctrl.getFirst().setVisible(true);
-					idxctrl.getFirst().setSelected(true);
-				} else {
-					idxctrl.getFirst().setVisible(false);
-					idxctrl.getFirst().setSelected(false);
-				}
-			}
-		});
-
-		if (Dialogs.editList(getProperty().getName(), "", "", contents)) {
-			Dimensioner dim = new Dimensioner(outputList.getItems().size());
-			Dimensioner[] dims = { dim };
-			TrackerType result = new TrackerType(dims);
-			for (int i = 0; i < outputList.getItems().size(); i++)
-				result.set(outputList.getItems().get(i), i);
-			setValue(result.toString());
-		}
-		return null;
+//		MultipleSelectionModel<String> srcModel = inputList.getSelectionModel();
+//		srcModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+//			int dim = getDims(srcModel.getSelectedItem());
+//			for (int i = 0; i < indices.size(); i++) {
+//				Duple<CheckBox, Spinner<Integer>> idxctrl = indices.get(i);
+//				if (dim > i) {
+//					idxctrl.getFirst().setVisible(true);
+//					idxctrl.getFirst().setSelected(true);
+//				} else {
+//					idxctrl.getFirst().setVisible(false);
+//					idxctrl.getFirst().setSelected(false);
+//				}
+//			}
+//		});
+//
+//		if (Dialogs.editList(getProperty().getName(), "", "", contents)) {
+//			Dimensioner dim = new Dimensioner(outputList.getItems().size());
+//			Dimensioner[] dims = { dim };
+//			TrackerType result = new TrackerType(dims);
+//			for (int i = 0; i < outputList.getItems().size(); i++)
+//				result.set(outputList.getItems().get(i), i);
+//			setValue(result.toString());
+//		}
+//		return null;
 	}
 
 	private String getCurrentIndexStr() {
