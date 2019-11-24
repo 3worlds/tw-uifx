@@ -70,6 +70,9 @@ import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.errorMessaging.ErrorList;
+import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
+import au.edu.anu.rscs.aot.errorMessaging.ErrorMessagable;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
@@ -81,10 +84,8 @@ import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.errorMessaging.ComplianceManager;
-import au.edu.anu.twcore.errorMessaging.ErrorMessagable;
-import au.edu.anu.twcore.errorMessaging.ErrorMessageListener;
-import au.edu.anu.twcore.errorMessaging.Verbosity;
+import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
+import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
@@ -118,7 +119,7 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Interval;
 
-public class MmController implements ErrorMessageListener, IMMController, IGraphStateListener {
+public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -215,6 +216,10 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	@FXML
 	private Spinner<Integer> spinJitter;
 
+	public enum Verbosity {
+		brief, medium, full;
+	}
+
 	private IMMModel model;
 	private Stage stage;
 	private ToggleGroup tgArchetype;
@@ -295,7 +300,7 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 		});
 
 		// Listen for error msgs from validategraph
-		ComplianceManager.addListener(this);
+		ErrorList.addListener(this);
 		// Setup zooming from the graph display pane (zoomTarget)
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
@@ -606,7 +611,25 @@ public class MmController implements ErrorMessageListener, IMMController, IGraph
 	}
 
 	private Text getMessageText(ErrorMessagable msg) {
-		Text t = new Text(msg.message(verbosity) + "\n");
+
+		Text t;
+		switch (verbosity) {
+		case brief: {
+			t = new Text(msg.verbose1() + "\n");
+			break;
+		}
+		case medium: {
+			t = new Text(msg.verbose2() + "\n");
+			break;
+		}
+		default: {
+			msg.code()
+			if (mbem.type().equals(ModelBuildErrors.SPECIFICATION)) {
+				t = new Text(msg.toString() + "\n");
+			}
+		}
+		}
+
 		return t;
 	}
 
