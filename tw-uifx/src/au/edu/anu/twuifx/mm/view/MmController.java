@@ -84,8 +84,6 @@ import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
-import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
@@ -623,10 +621,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			break;
 		}
 		default: {
-			msg.code()
-			if (mbem.type().equals(ModelBuildErrors.SPECIFICATION)) {
 				t = new Text(msg.toString() + "\n");
-			}
 		}
 		}
 
@@ -639,7 +634,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 			@Override
 			public int compare(ErrorMessagable m1, ErrorMessagable m2) {
-				return m1.message(verbosity).compareToIgnoreCase(m2.message(verbosity));
+				// keep the same order regardless of the verbosity
+				return m1.verbose1().compareToIgnoreCase(m2.verbose1());
 			}
 		});
 
