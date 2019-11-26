@@ -613,15 +613,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Text t;
 		switch (verbosity) {
 		case brief: {
-			t = new Text(msg.verbose1() + "\n");
+			t = new Text(msg.verbose1() + "\n\n");
 			break;
 		}
 		case medium: {
-			t = new Text(msg.verbose2() + "\n");
+			t = new Text(msg.verbose2() + "\n\n");
 			break;
 		}
 		default: {
-				t = new Text(msg.toString() + "\n");
+				t = new Text(msg.toString() + "\n\n");
 		}
 		}
 
