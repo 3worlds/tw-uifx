@@ -20,7 +20,7 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 10:43:35 AEDT 2019
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(?)
 	experiment exp
 		timePeriod duration
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(9)
