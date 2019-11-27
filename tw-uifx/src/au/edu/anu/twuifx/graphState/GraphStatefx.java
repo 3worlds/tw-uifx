@@ -32,6 +32,9 @@ package au.edu.anu.twuifx.graphState;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.edu.anu.rscs.aot.errorMessaging.ErrorList;
+import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
+import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.IGraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
@@ -98,6 +101,7 @@ public class GraphStatefx implements IGraphState {
 	@Override
 	public void setChanged() {
 		propertyHasChanged.setValue(true);
+		ErrorList.add(new ModelBuildErrorMsg(ModelBuildErrors.DEPLOY_PROJECT_UNSAVED));
 		setTitle();
 	}
 	
