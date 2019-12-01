@@ -31,39 +31,54 @@
 package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Stack;
 
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.rscs.aot.collections.tables.IndexString;
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
+import au.edu.anu.twcore.data.DimNode;
 import au.edu.anu.twcore.data.FieldNode;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twcore.data.TableNode;
 import au.edu.anu.twcore.data.runtime.DataLabel;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.ui.TrackFieldEdge;
+import au.edu.anu.twcore.ui.TrackPopulationEdge;
+import au.edu.anu.twcore.ui.TrackTableEdge;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.TreeNode;
+import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
+import fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Duple;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.stage.Window;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
@@ -76,9 +91,11 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
 	private LabelButtonControl view;
-	//private List<Record> catRecords;
+	private List<Record> catRecords;
 	private Map<DataLabel, Integer> drivers;
 	private List<Duple<CheckBox, Spinner<Integer>>> indices;
+	private ALDataEdge trackerEdge;
+	private TrackerType currentTT;
 	/*- element is either a 
 	 * 1) TrackField (edge classId E_TRACKFIELD must have endNode classId N_FIELD)
 	 * 2) TrackTable (edge classId E_TRACKTABLE must have endNode N_TABLE - must have DataElementType property)
@@ -94,251 +111,165 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		view.setOnAction(e -> onAction());
-		//catRecords = getRootRecords();
 	}
 
 	private Object onAction() {
-//		if (catRecords.isEmpty()) {
-//			Dialogs.errorAlert(getProperty().getName(), "Property setting",
-//					"Not implemented yet.");
-//			return null;
-//		}
-		BorderPane contents = new BorderPane();
-		ListView<String> inputList = new ListView<>();
-		ListView<String> outputList = new ListView<>();
-		inputList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		outputList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		TrackerTypeItem item = (TrackerTypeItem) getProperty();
+		trackerEdge = (ALDataEdge) item.getElement();
+		catRecords = getRootRecords();
 
-		HBox hbox = new HBox();
-		contents.setBottom(hbox);
-		GridPane grid = new GridPane();
-		contents.setCenter(grid);
-		grid.add(inputList, 0, 0);
-		VBox btnBx = new VBox();
-		grid.add(btnBx, 1, 0);
-		grid.add(outputList, 2, 0);
-		Button btnTo = new Button(">");
-		Button btnFrom = new Button("<");
-		btnTo.setOnAction(e -> {
-			String item = inputList.getSelectionModel().getSelectedItem();
-			if (item != null) {
-				item += getCurrentIndexStr();
-				if (!outputList.getItems().contains(item)) {
-					outputList.getItems().add(item);
-					if (!item.contains("[")) {
-						inputList.getItems().remove(item);
-					}
+		currentTT = (TrackerType) trackerEdge.properties().getPropertyValue(P_TRACKEDGE_INDEX.key());
 
-				}
+		if (catRecords.isEmpty()) {
+			Dialogs.errorAlert(getProperty().getName(), "Property setting",
+					"Not able to edit this property until associated category drivers are defined.");
+			return null;
+		}
+		if (trackerEdge.classId().equals(E_TRACKFIELD.label()))
+			return editTrackField((TrackFieldEdge) trackerEdge);
+		else if (trackerEdge.classId().equals(E_TRACKTABLE.label()))
+			return editTrackTable((TrackTableEdge) trackerEdge);
+		else
+			return editTrackPopulation((TrackPopulationEdge) trackerEdge);
+	}
+
+	private int[] collectDims(TreeNode leaf) {
+		List<DimNode> dimList = new ArrayList<>();
+		collectDims(leaf, dimList);
+
+		dimList.sort(new Comparator<DimNode>() {
+
+			@Override
+			public int compare(DimNode d1, DimNode d2) {
+				int o1 = (Integer) d1.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
+				int o2 = (Integer) d2.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
+				return Integer.compare(01, 02);
 			}
 		});
-		btnFrom.setOnAction(e -> {
-			String item = outputList.getSelectionModel().getSelectedItem();
-			if (item != null) {
-				outputList.getItems().remove(item);
-				if (!item.contains("["))// only move 0d back to list
-					if (!inputList.getItems().contains(item)) {
-						inputList.getItems().add(item);
-					}
-			}
-		});
-
-		btnBx.getChildren().addAll(btnTo, btnFrom);
-
-		TrackerTypeItem tti = (TrackerTypeItem) getProperty();
-		if (tti.getElement() instanceof TrackFieldEdge) {
-			// fields and tables don't require a list in input options as there is only one: a table or a field
-			// In this case we need to know the total dimensions of the structure.
-			TrackFieldEdge edge = (TrackFieldEdge)tti.getElement();		
-			FieldNode fieldNode = (FieldNode) edge.endNode();
-			TrackerType tt = TrackerType.valueOf((String) tti.getValue());
-			// we just add the id of the field/table node to the input list
-			// thin inputlist is 
-			return null;
-		} else 
-			return null;
-		
-		//fillOutputList(tt, outputList);
-//		drivers = getDrivers();
-		//int maxDim = fillInputList(inputList, outputList);
-
-		//indices = new ArrayList<>();
-//		for (int i = 0; i < maxDim; i++) {
-//			CheckBox cb = new CheckBox("const.");
-//			Spinner<Integer> sp = new Spinner<>();
-//			sp.setEditable(true);
-//			SpinnerValueFactory<Integer> factory;
-//			factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, (int) 0);
-//			sp.setValueFactory(factory);
-//			sp.setMaxWidth(100);
-//			VBox vbox = new VBox();
-//			vbox.getChildren().addAll(cb, sp);
-//			hbox.getChildren().add(vbox);
-//			indices.add(new Duple<CheckBox, Spinner<Integer>>(cb, sp));
-//			cb.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//				if (newValue)
-//					sp.setVisible(true);
-//				else
-//					sp.setVisible(false);
-//			});
-//			cb.setSelected(true);
-//		}
-
-//		MultipleSelectionModel<String> srcModel = inputList.getSelectionModel();
-//		srcModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-//			int dim = getDims(srcModel.getSelectedItem());
-//			for (int i = 0; i < indices.size(); i++) {
-//				Duple<CheckBox, Spinner<Integer>> idxctrl = indices.get(i);
-//				if (dim > i) {
-//					idxctrl.getFirst().setVisible(true);
-//					idxctrl.getFirst().setSelected(true);
-//				} else {
-//					idxctrl.getFirst().setVisible(false);
-//					idxctrl.getFirst().setSelected(false);
-//				}
-//			}
-//		});
-//
-//		if (Dialogs.editList(getProperty().getName(), "", "", contents)) {
-//			Dimensioner dim = new Dimensioner(outputList.getItems().size());
-//			Dimensioner[] dims = { dim };
-//			TrackerType result = new TrackerType(dims);
-//			for (int i = 0; i < outputList.getItems().size(); i++)
-//				result.set(outputList.getItems().get(i), i);
-//			setValue(result.toString());
-//		}
-//		return null;
+		int[] result = new int[dimList.size()];
+		// reverse the order
+		for (int i = dimList.size() - 1; i >= 0; i--) {
+			DimNode dm = dimList.get(i);
+			int size = (Integer) dm.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
+			result[result.length - i - 1] = size;
+		}
+		return result;
 	}
 
-	private String getCurrentIndexStr() {
-		String result = "";
-		int dims = 0;
-		for (Duple<CheckBox, Spinner<Integer>> ctrls : indices) {
-			if (ctrls.getFirst().isVisible()) {
-				dims++;
-				result += "|";
-				if (ctrls.getFirst().isSelected()) {
-					String idx = ctrls.getSecond().getValue().toString();
-					result += idx;
-				}
+	private void collectDims(TreeNode node, List<DimNode> result) {
+		if (node instanceof FieldNode) {
+			collectDims(node.getParent(), result);
+
+		} else if (node instanceof TableNode) {
+			TableNode table = (TableNode) node;
+			@SuppressWarnings("unchecked")
+			List<DimNode> dims = (List<DimNode>) get(table.edges(Direction.OUT), edgeListEndNodes(),
+					selectZeroOrMany(hasTheLabel(N_DIMENSIONER.label())));
+			result.addAll(dims);
+			collectDims(node.getParent(), result);
+		} else if (node instanceof Record) {
+			if (!node.getParent().classId().equals(N_DATADEFINITION.label())) {
+				collectDims(node.getParent(), result);
 			}
 		}
-		if (dims > 0) {
-			return result.replaceFirst("\\|", "[") + "]";
-		} else
-			return result;
+
 	}
 
-	private int fillInputList(ListView<String> inputList, ListView<String> outputList) {
-		int maxDim = 0;
-		for (Map.Entry<DataLabel, Integer> entry : drivers.entrySet()) {
-			int dim = entry.getValue();
-			maxDim = Math.max(maxDim, dim);
-			String s = entry.getKey().getEnd();
-			if (!outputList.getItems().contains(s))
-				inputList.getItems().add(entry.getKey().getEnd());
-		}
-		return maxDim;
-	}
-
-	private int getDims(String id) {
-		for (Map.Entry<DataLabel, Integer> entry : drivers.entrySet()) {
-			if (entry.getKey().getEnd().equals(id))
-				return entry.getValue();
-		}
-		return -1;
-	}
-
-	private TreeGraphDataNode findNode(String id) {
-		for (TreeGraphDataNode node : ConfigGraph.getGraph().nodes()) {
-			if (node.id().equals(id))
-				return node;
-		}
+	private Object editTrackPopulation(TrackPopulationEdge trackerEdge) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private void fillOutputList(TrackerType tt, ListView<String> list) {
-		for (int i = 0; i < tt.size(); i++) 
-				list.getItems().add(tt.getWithFlatIndex(i));
+	private Object editTrackTable(TrackTableEdge trackerEdge) {
+		int[] sizes = collectDims((TreeNode) trackerEdge.endNode());
+		if (nameMismatch(sizes))
+			updateEntry(sizes);
+
+		// Ok put up a textfield to take and validate the user string
+		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
+		dlg.setTitle(trackerEdge.classId() + ":" + trackerEdge.id());
+		dlg.initOwner((Window) Dialogs.owner());
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane content = new BorderPane();
+		GridPane grid = new GridPane();
+		content.setCenter(grid);
+		dlg.getDialogPane().setContent(content);
+		String txt = "[";
+		for (int s : sizes) {
+			txt += "0.." + (s) + "|";
+		}
+		txt = txt.substring(0, txt.length() - 1) + "]";
+		grid.add(new Label("Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id()), 0, 0);
+		grid.add(new Label(txt), 0, 1);
+		grid.add(new TextField(currentTT.getWithFlatIndex(0)), 0, 2);
+		grid.add(new Button("Validate"), 1, 2);
+
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
+
 		}
 
-	private Duple<DataLabel, Integer> getEntry(TreeNode node) {
-		int dims = 0;
-		if (node instanceof TableNode)
-			dims += countDims((TableNode) node);
-		// duplicate code from here
-		Stack<TreeNode> stack = new Stack<>();
-		stack.push(node);
-		while (node.getParent() != null && !node.getParent().classId().equals(N_DATADEFINITION.label())) {
-			node = node.getParent();
-			stack.push(node);
-			if (node instanceof TableNode)
-				dims += countDims((TableNode) node);
+		return null;
+	}
+
+	private Object editTrackField(TrackFieldEdge trackEdge) {
+		int[] sizes = collectDims((TreeNode) trackEdge.endNode());
+		if (nameMismatch(sizes))
+			updateEntry(sizes);
+
+		if (sizes.length <= 0)
+			return null;
+		return null;
+	}
+
+	private boolean nameMismatch(int[] sizes) {
+		if (sizes.length <= 0)
+			return (!"".equals(currentTT.getWithFlatIndex(0)));
+		else {
+			String indexStr = currentTT.getWithFlatIndex(0);
+			try {
+				IndexString.stringToIndex(indexStr, sizes);
+				return false;
+			} catch (Exception e) {
+				return true;
+			}
 		}
-		DataLabel dl = new DataLabel();
-		while (!stack.isEmpty()) {
-			TreeNode p = stack.pop();
-			dl.append(p.id());
+	}
+
+	private void updateEntry(int[] sizes) {
+		String newEntry = "";
+		if (sizes.length > 0) {
+			// [||||... etc]
+			newEntry = "[";
+			for (int i : sizes)
+				newEntry += "|";
+			newEntry = newEntry.substring(0, newEntry.length() - 1);
+			newEntry += "]";
 		}
-		return new Duple<>(dl, dims);
+		currentTT.setWithFlatIndex(newEntry, 0);
+		GraphState.setChanged();
 	}
 
 	private List<Record> getRootRecords() {
 		List<Record> result = new ArrayList<>();
-//		TrackerTypeItem item = (TrackerTypeItem) getProperty();
-//		TreeGraphDataNode trackerNode = (TreeGraphDataNode) item.getElement();
-//		TreeNode process = trackerNode.getParent();
-//		if (process != null) {
-//			@SuppressWarnings("unchecked")
-//			List<TreeGraphDataNode> cats = (List<TreeGraphDataNode>) get(process.edges(Direction.OUT),
-//					selectZeroOrMany(hasTheLabel(ConfigurationEdgeLabels.E_APPLIESTO.label())), edgeListEndNodes());
-//			for (TreeGraphDataNode cat : cats) {
-//				Record record = (Record) get(cat.edges(Direction.OUT),
-//						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())), endNode());
-//				if (record != null)
-//					result.add(record);
-//			}
-//		}
+		TreeNode trackerNode = (TreeNode) trackerEdge.startNode();
+		TreeNode process = trackerNode.getParent();
+		if (process != null) {
+			@SuppressWarnings("unchecked")
+			List<TreeGraphDataNode> categories = (List<TreeGraphDataNode>) get(process.edges(Direction.OUT),
+					selectZeroOrMany(hasTheLabel(ConfigurationEdgeLabels.E_APPLIESTO.label())), edgeListEndNodes());
+			for (TreeGraphDataNode category : categories) {
+				Record record = (Record) get(category.edges(Direction.OUT),
+						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())), endNode());
+				if (record != null)
+					result.add(record);
+			}
+		}
 		return result;
 	}
 
-//	private Map<DataLabel, Integer> getDrivers() {
-//		Map<DataLabel, Integer> result = new HashMap<>();
-//		for (Record record : catRecords) {
-//			recurseRecord(record, result);
-//		}
-//		return result;
-//	}
-
-	private void recurseRecord(Record record, Map<DataLabel, Integer> items) {
-		@SuppressWarnings("unchecked")
-
-		List<FieldNode> fields = (List<FieldNode>) get(record.getChildren(), selectZeroOrMany(hasTheLabel(N_FIELD.label())));
-		for (FieldNode field : fields) {
-			Duple<DataLabel, Integer> entry = getEntry(field);
-			items.put(entry.getFirst(), entry.getSecond());
-		}
-		@SuppressWarnings("unchecked")
-		List<TableNode> tables = (List<TableNode>) get(record.getChildren(),
-				selectZeroOrMany(hasTheLabel(N_TABLE.label())));
-		for (TableNode table : tables) {
-			if (!table.hasChildren()) {
-				Duple<DataLabel, Integer> entry = getEntry(table);
-				items.put(entry.getFirst(), entry.getSecond());
-			} else
-				// there can only be one but...
-				for (TreeNode child : table.getChildren()) {
-					recurseRecord((Record) child, items);
-				}
-		}
-	}
-
-	private int countDims(TableNode n) {
-		int count = 0;
-		for (ALEdge edge : n.edges(Direction.OUT))
-			count++;
-		return count;
-	}
+	// ---------------------------------------------------
 
 	@Override
 	public void setValue(String value) {
