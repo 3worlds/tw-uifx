@@ -179,100 +179,17 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private Object editTrackPopulation(TrackPopulationEdge trackerEdge) {
-		// TODO Auto-generated method stub
+		Dialogs.errorAlert(trackerEdge.id(), "Not yet implemented", "");
 		return null;
 	}
 
 	private Object editTrackTable(TrackTableEdge trackerEdge) {
-		int[] sizes = collectDims((TreeNode) trackerEdge.endNode());
-		if (nameMismatch(sizes))
-			updateEntry(sizes);
-
-		// Ok put up a textfield to take and validate the user string
-		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
-		dlg.setResizable(true);
-		dlg.setTitle(trackerEdge.classId() + ":" + trackerEdge.id());
-		dlg.initOwner((Window) Dialogs.owner());
-		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
-		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		BorderPane content = new BorderPane();
-		GridPane grid = new GridPane();
-		content.setCenter(grid);
-		dlg.getDialogPane().setContent(content);
-		String txt = "[";
-		for (int s : sizes) {
-			txt += "0.." + (s - 1) + "|";
-		}
-		txt = txt.substring(0, txt.length() - 1) + "]";
-		grid.add(new Label(
-				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (Inclusive)"),
-				0, 0);
-
-		grid.add(new Label(txt), 0, 1);
-		TextField txfInput = new TextField(currentTT.getWithFlatIndex(0));
-		grid.add(txfInput, 0, 2);
-		Button btnValidate = new Button("Validate");
-		grid.add(btnValidate, 1, 2);
-		Label lblError = new Label("");
-		grid.add(lblError, 0, 3);
-
-		btnValidate.setOnAction((e) -> {
-			try {
-				IndexString.stringToIndex(txfInput.getText(), sizes);
-				lblError.setText("");
-			} catch (Exception excpt){
-				lblError.setText(excpt.getMessage());
-			}
-		});
-
-		Optional<ButtonType> result = dlg.showAndWait();
-		if (result.get().equals(ok)) {
-			try {
-				IndexString.stringToIndex(txfInput.getText(), sizes);
-			} catch (Exception exctp) {
-				Dialogs.errorAlert(trackerEdge.classId() + ":" + trackerEdge.id(), "Format error", exctp.getMessage());
-				return null;
-			}
-			String entry = txfInput.getText();
-			String value = "([1]"+entry+")";	
-			setValue(value);
-		}
+		runDlg();
 		return null;
 	}
 
 	private Object editTrackField(TrackFieldEdge trackEdge) {
-		int[] sizes = collectDims((TreeNode) trackEdge.endNode());
-		if (nameMismatch(sizes))
-			updateEntry(sizes);
-
-		if (sizes.length <= 0)
-			return null;
-		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
-		dlg.setTitle(trackerEdge.classId() + ":" + trackerEdge.id());
-		dlg.initOwner((Window) Dialogs.owner());
-		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
-		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		BorderPane content = new BorderPane();
-		GridPane grid = new GridPane();
-		content.setCenter(grid);
-		dlg.getDialogPane().setContent(content);
-		String txt = "[";
-		for (int s : sizes) {
-			txt += "0.." + (s - 1) + "|";
-		}
-		txt = txt.substring(0, txt.length() - 1) + "]";
-		grid.add(new Label(
-				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (Inclusive)"),
-				0, 0);
-
-		grid.add(new Label(txt), 0, 1);
-		grid.add(new TextField(currentTT.getWithFlatIndex(0)), 0, 2);
-		grid.add(new Button("Validate"), 1, 2);
-
-		Optional<ButtonType> result = dlg.showAndWait();
-		if (result.get().equals(ok)) {
-
-		}
+		runDlg();
 		return null;
 	}
 
@@ -335,4 +252,63 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		return getEditor().getTextProperty();
 	}
 
+	private void runDlg() {
+		int[] sizes = collectDims((TreeNode) trackerEdge.endNode());
+		if (nameMismatch(sizes))
+			updateEntry(sizes);
+		if (sizes.length<=0) {
+			// nothing to do
+			return;
+		}
+
+		// Ok put up a textfield to take and validate the user string
+		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
+		dlg.setResizable(true);
+		dlg.setTitle(trackerEdge.classId() + ":" + trackerEdge.id());
+		dlg.initOwner((Window) Dialogs.owner());
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane content = new BorderPane();
+		GridPane grid = new GridPane();
+		content.setCenter(grid);
+		dlg.getDialogPane().setContent(content);
+		String txt = "[";
+		for (int s : sizes) {
+			txt += "0.." + (s - 1) + "|";
+		}
+		txt = txt.substring(0, txt.length() - 1) + "]";
+		grid.add(new Label(
+				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (Inclusive)"),
+				0, 0);
+
+		grid.add(new Label(txt), 0, 1);
+		TextField txfInput = new TextField(currentTT.getWithFlatIndex(0));
+		grid.add(txfInput, 0, 2);
+		Button btnValidate = new Button("Validate");
+		grid.add(btnValidate, 1, 2);
+		Label lblError = new Label("");
+		grid.add(lblError, 0, 3);
+
+		btnValidate.setOnAction((e) -> {
+			try {
+				IndexString.stringToIndex(txfInput.getText(), sizes);
+				lblError.setText("");
+			} catch (Exception excpt) {
+				lblError.setText(excpt.getMessage());
+			}
+		});
+
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
+			try {
+				IndexString.stringToIndex(txfInput.getText(), sizes);
+			} catch (Exception exctp) {
+				Dialogs.errorAlert(trackerEdge.classId() + ":" + trackerEdge.id(), "Format error", exctp.getMessage());
+				return;
+			}
+			String entry = txfInput.getText();
+			String value = "([1]" + entry + ")";
+			setValue(value);
+		}
+	}
 }
