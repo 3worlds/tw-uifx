@@ -35,14 +35,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Stack;
-
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.IndexString;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.data.DimNode;
 import au.edu.anu.twcore.data.FieldNode;
 import au.edu.anu.twcore.data.Record;
@@ -57,7 +54,6 @@ import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALDataEdge;
-import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
@@ -70,7 +66,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
@@ -136,18 +131,8 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	private int[] collectDims(TreeNode leaf) {
 		List<DimNode> dimList = new ArrayList<>();
 		collectDims(leaf, dimList);
-
-		dimList.sort(new Comparator<DimNode>() {
-
-			@Override
-			public int compare(DimNode d1, DimNode d2) {
-				int o1 = (Integer) d1.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
-				int o2 = (Integer) d2.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
-				return Integer.compare(01, 02);
-			}
-		});
 		int[] result = new int[dimList.size()];
-		// reverse the order
+		// reverse the order - TODO check
 		for (int i = dimList.size() - 1; i >= 0; i--) {
 			DimNode dm = dimList.get(i);
 			int size = (Integer) dm.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
@@ -165,6 +150,24 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			@SuppressWarnings("unchecked")
 			List<DimNode> dims = (List<DimNode>) get(table.edges(Direction.OUT), edgeListEndNodes(),
 					selectZeroOrMany(hasTheLabel(N_DIMENSIONER.label())));
+			// sort within table order
+			// TODO this will be wrong for multi-table trees as deepest tables should be
+			// first (ie. closest to DataDef node)
+			dims.sort(new Comparator<DimNode>() {
+
+				@Override
+				public int compare(DimNode d1, DimNode d2) {
+					int o1 = (Integer) d1.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
+					int o2 = (Integer) d2.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
+					if (o1 > o2)
+						return -1;
+					else if (o2 > o1)
+						return 1;
+					else
+						return 0;
+//					return Integer.compare(o1, o2);
+				}
+			});
 			result.addAll(dims);
 			collectDims(node.getParent(), result);
 		} else if (node instanceof Record) {
@@ -187,6 +190,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 		// Ok put up a textfield to take and validate the user string
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
+		dlg.setResizable(true);
 		dlg.setTitle(trackerEdge.classId() + ":" + trackerEdge.id());
 		dlg.initOwner((Window) Dialogs.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
@@ -197,19 +201,42 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		dlg.getDialogPane().setContent(content);
 		String txt = "[";
 		for (int s : sizes) {
-			txt += "0.." + (s) + "|";
+			txt += "0.." + (s - 1) + "|";
 		}
 		txt = txt.substring(0, txt.length() - 1) + "]";
-		grid.add(new Label("Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id()), 0, 0);
+		grid.add(new Label(
+				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (Inclusive)"),
+				0, 0);
+
 		grid.add(new Label(txt), 0, 1);
-		grid.add(new TextField(currentTT.getWithFlatIndex(0)), 0, 2);
-		grid.add(new Button("Validate"), 1, 2);
+		TextField txfInput = new TextField(currentTT.getWithFlatIndex(0));
+		grid.add(txfInput, 0, 2);
+		Button btnValidate = new Button("Validate");
+		grid.add(btnValidate, 1, 2);
+		Label lblError = new Label("");
+		grid.add(lblError, 0, 3);
+
+		btnValidate.setOnAction((e) -> {
+			try {
+				IndexString.stringToIndex(txfInput.getText(), sizes);
+				lblError.setText("");
+			} catch (Exception excpt){
+				lblError.setText(excpt.getMessage());
+			}
+		});
 
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
-
+			try {
+				IndexString.stringToIndex(txfInput.getText(), sizes);
+			} catch (Exception exctp) {
+				Dialogs.errorAlert(trackerEdge.classId() + ":" + trackerEdge.id(), "Format error", exctp.getMessage());
+				return null;
+			}
+			String entry = txfInput.getText();
+			String value = "([1]"+entry+")";	
+			setValue(value);
 		}
-
 		return null;
 	}
 
@@ -220,6 +247,32 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 		if (sizes.length <= 0)
 			return null;
+		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
+		dlg.setTitle(trackerEdge.classId() + ":" + trackerEdge.id());
+		dlg.initOwner((Window) Dialogs.owner());
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane content = new BorderPane();
+		GridPane grid = new GridPane();
+		content.setCenter(grid);
+		dlg.getDialogPane().setContent(content);
+		String txt = "[";
+		for (int s : sizes) {
+			txt += "0.." + (s - 1) + "|";
+		}
+		txt = txt.substring(0, txt.length() - 1) + "]";
+		grid.add(new Label(
+				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (Inclusive)"),
+				0, 0);
+
+		grid.add(new Label(txt), 0, 1);
+		grid.add(new TextField(currentTT.getWithFlatIndex(0)), 0, 2);
+		grid.add(new Button("Validate"), 1, 2);
+
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
+
+		}
 		return null;
 	}
 
@@ -248,6 +301,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			newEntry += "]";
 		}
 		currentTT.setWithFlatIndex(newEntry, 0);
+		setValue(currentTT.toString());
 		GraphState.setChanged();
 	}
 
