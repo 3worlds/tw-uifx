@@ -75,12 +75,9 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
 					process proc
 						dataTracker dt
-							groupBy = fr.cnrs.iees.twcore.constants.Grouping(NO_GROUPING)
-							select = fr.cnrs.iees.twcore.constants.SamplingMode(FIRST)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-							viewOthers = java.lang.Boolean(false)
 						function Func
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Func)		
