@@ -38,6 +38,7 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.IndexString;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.DimNode;
@@ -128,54 +129,28 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			return editTrackPopulation((TrackPopulationEdge) trackerEdge);
 	}
 
-	private int[] collectDims(TreeNode leaf) {
-		List<DimNode> dimList = new ArrayList<>();
-		collectDims(leaf, dimList);
-		int[] result = new int[dimList.size()];
+	private int[][] collectDims(TreeNode parent) {
+//		List<DimNode> dimList = new ArrayList<>();
+		List<int[]> dimList = new ArrayList<>();
+		while (parent != null) {
+			if (parent instanceof TableNode) {
+				// presumably, these are now sorted
+				Dimensioner[] dims = ((TableNode) parent).dimensioners();
+				int[] dd = new int[dims.length];
+				dimList.add(dd);
+				for (int j = 0; j < dd.length; j++)
+					dd[j] = dims[j].getLength();
+			}
+			parent = parent.getParent();
+		}
+
+		int[][] result = new int[dimList.size()][];
 		// reverse the order - TODO check
 		for (int i = dimList.size() - 1; i >= 0; i--) {
-			DimNode dm = dimList.get(i);
-			int size = (Integer) dm.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
-			result[result.length - i - 1] = size;
+			int[] dd = dimList.get(i);
+			result[result.length - i - 1] = dd;
 		}
 		return result;
-	}
-
-	private void collectDims(TreeNode node, List<DimNode> result) {
-		if (node instanceof FieldNode) {
-			collectDims(node.getParent(), result);
-
-		} else if (node instanceof TableNode) {
-			TableNode table = (TableNode) node;
-			@SuppressWarnings("unchecked")
-			List<DimNode> dims = (List<DimNode>) get(table.edges(Direction.OUT), edgeListEndNodes(),
-					selectZeroOrMany(hasTheLabel(N_DIMENSIONER.label())));
-			// sort within table order
-			// TODO this will be wrong for multi-table trees as deepest tables should be
-			// first (ie. closest to DataDef node)
-			dims.sort(new Comparator<DimNode>() {
-
-				@Override
-				public int compare(DimNode d1, DimNode d2) {
-					int o1 = (Integer) d1.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
-					int o2 = (Integer) d2.properties().getPropertyValue(P_DIMENSIONER_SIZE.key());
-					if (o1 > o2)
-						return -1;
-					else if (o2 > o1)
-						return 1;
-					else
-						return 0;
-//					return Integer.compare(o1, o2);
-				}
-			});
-			result.addAll(dims);
-			collectDims(node.getParent(), result);
-		} else if (node instanceof Record) {
-			if (!node.getParent().classId().equals(N_DATADEFINITION.label())) {
-				collectDims(node.getParent(), result);
-			}
-		}
-
 	}
 
 	private Object editTrackPopulation(TrackPopulationEdge trackerEdge) {
@@ -193,13 +168,15 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		return null;
 	}
 
-	private boolean nameMismatch(int[] sizes) {
+	private boolean nameMismatch(int[][] sizes) {
 		if (sizes.length <= 0)
 			return (!"".equals(currentTT.getWithFlatIndex(0)));
 		else {
-			String indexStr = currentTT.getWithFlatIndex(0);
 			try {
-				IndexString.stringToIndex(indexStr, sizes);
+				for (int i = 0; i < currentTT.size(); i++) {
+					String indexStr = currentTT.getWithFlatIndex(0);
+					IndexString.stringToIndex(indexStr, sizes[i]);
+				}
 				return false;
 			} catch (Exception e) {
 				return true;
@@ -207,17 +184,19 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		}
 	}
 
-	private void updateEntry(int[] sizes) {
-		String newEntry = "";
-		if (sizes.length > 0) {
-			// [||||... etc]
-			newEntry = "[";
-			for (int i : sizes)
+	private void updateEntry(int[][] sizes) {
+		// need a new TrackerType
+		Dimensioner[] dims = { new Dimensioner(sizes.length) };
+		TrackerType newTT = new TrackerType(dims);
+		for (int i = 0; i < sizes.length; i++) {
+			String newEntry = "[";
+			for (int j = 0; j < sizes[i].length; j++)
 				newEntry += "|";
 			newEntry = newEntry.substring(0, newEntry.length() - 1);
 			newEntry += "]";
+			newTT.setWithFlatIndex(newEntry, i);
 		}
-		currentTT.setWithFlatIndex(newEntry, 0);
+		currentTT = newTT;
 		setValue(currentTT.toString());
 		GraphState.setChanged();
 	}
@@ -253,10 +232,11 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private void runDlg() {
-		int[] sizes = collectDims((TreeNode) trackerEdge.endNode());
+		// needs to be int[][] i.e. tables by indexes
+		int[][] sizes = collectDims((TreeNode) trackerEdge.endNode());
 		if (nameMismatch(sizes))
 			updateEntry(sizes);
-		if (sizes.length<=0) {
+		if (sizes.length <= 0) {
 			// nothing to do
 			return;
 		}
@@ -272,17 +252,28 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		GridPane grid = new GridPane();
 		content.setCenter(grid);
 		dlg.getDialogPane().setContent(content);
-		String txt = "[";
-		for (int s : sizes) {
-			txt += "0.." + (s - 1) + "|";
+
+		String hintText = "";
+		for (int i = 0; i < sizes.length; i++) {
+			String txt = "[";
+			for (int s : sizes[i]) {
+				txt += "0;" + (s - 1) + "|";
+			}
+			txt = txt.substring(0, txt.length() - 1) + "],";
+			hintText += txt;
 		}
-		txt = txt.substring(0, txt.length() - 1) + "]";
+		hintText = hintText.substring(0, hintText.length() - 1);
+
 		grid.add(new Label(
 				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (Inclusive)"),
 				0, 0);
 
-		grid.add(new Label(txt), 0, 1);
-		TextField txfInput = new TextField(currentTT.getWithFlatIndex(0));
+		grid.add(new Label(hintText), 0, 1);
+		String s = "";
+		for (int i = 0; i < currentTT.size(); i++)
+			s += currentTT.getWithFlatIndex(i) + ",";
+		s = s.substring(0, s.length() - 1);
+		TextField txfInput = new TextField(s);
 		grid.add(txfInput, 0, 2);
 		Button btnValidate = new Button("Validate");
 		grid.add(btnValidate, 1, 2);
@@ -290,25 +281,34 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		grid.add(lblError, 0, 3);
 
 		btnValidate.setOnAction((e) -> {
-			try {
-				IndexString.stringToIndex(txfInput.getText(), sizes);
-				lblError.setText("");
-			} catch (Exception excpt) {
-				lblError.setText(excpt.getMessage());
-			}
+			String result = validateEntry(txfInput.getText(), sizes);
+			lblError.setText(result);
 		});
 
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
-			try {
-				IndexString.stringToIndex(txfInput.getText(), sizes);
-			} catch (Exception exctp) {
-				Dialogs.errorAlert(trackerEdge.classId() + ":" + trackerEdge.id(), "Format error", exctp.getMessage());
+			String vstr = validateEntry(txfInput.getText(), sizes);
+			if (!"".equals(vstr))
 				return;
-			}
 			String entry = txfInput.getText();
-			String value = "([1]" + entry + ")";
+			String value = "(["+sizes.length+"]" + entry + ")";
 			setValue(value);
 		}
+	}
+
+	private String validateEntry(String input, int[][] sizes) {
+		String[] parts = input.split(",");
+		if (parts.length != sizes.length) {
+			return parts.length + " terms entered but " + sizes.length + " required.";
+		}
+		for (int i = 0; i < parts.length; i++) {
+			try {
+				IndexString.stringToIndex(parts[i], sizes[i]);
+			} catch (Exception excpt) {
+				return excpt.getMessage();
+			}
+		}
+		return "";
+
 	}
 }
