@@ -94,7 +94,7 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 02 09:41:00 AEDT 2019
 [componentType:type] belongsTo blngsT1 [category:ctgry]
 [widget:timeSeries] trackSeries tracks2 [dataTracker:tracker]
 [dataTracker:tracker] trackTable trckTbl1 [table:tbl3]
-	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[|||||]"))
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([2]"[||]","[||]"))
 [dataTracker:tracker] trackField trckFld1 [field:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[||]"))
 [experiment:exp] baseLine baseline [system:system]
