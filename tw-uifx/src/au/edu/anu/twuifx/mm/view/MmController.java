@@ -556,7 +556,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		});
 
 		setFontSize(Preferences.getInt(fontSizeKey, 10));
-		setNodeRadius(Preferences.getInt(nodeSizeKey, 5));
+		setNodeRadius(Preferences.getInt(nodeSizeKey, 8));
 		setJitter(Preferences.getInt(jitterKey, 1));
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
