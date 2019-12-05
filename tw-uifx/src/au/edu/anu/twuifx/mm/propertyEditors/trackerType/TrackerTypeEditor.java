@@ -257,7 +257,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		for (int i = 0; i < sizes.length; i++) {
 			String txt = "[";
 			for (int s : sizes[i]) {
-				txt += "0;" + (s - 1) + "|";
+				txt += "0:" + (s - 1) + "|";
 			}
 			txt = txt.substring(0, txt.length() - 1) + "],";
 			hintText += txt;
@@ -297,7 +297,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	
-	private static String illegalChars = "[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ(*&^$#@!)/:]";
+	private static String illegalChars = "[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ(*&^$#@!)/_]";
 	private String validateEntry(String input, int[][] sizes) {
 		
 		String[] parts = input.split(",");
