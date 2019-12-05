@@ -92,12 +92,6 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	private List<Duple<CheckBox, Spinner<Integer>>> indices;
 	private ALDataEdge trackerEdge;
 	private TrackerType currentTT;
-	/*- element is either a 
-	 * 1) TrackField (edge classId E_TRACKFIELD must have endNode classId N_FIELD)
-	 * 2) TrackTable (edge classId E_TRACKTABLE must have endNode N_TABLE - must have DataElementType property)
-	 * 3) TrackPopulation (edge classId E_TRACKPOP. Must have endNode : N_INITIALSTATE, N_GROUP, N_COMPONENT (componententTYpe must be permanent)
-	 * wait and see for 3). 
-	 */
 
 	public TrackerTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -109,24 +103,17 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		view.setOnAction(e -> onAction());
 	}
 
-	private Object onAction() {
+	private void onAction() {
 		TrackerTypeItem item = (TrackerTypeItem) getProperty();
 		trackerEdge = (ALDataEdge) item.getElement();
 		catRecords = getRootRecords();
-
 		currentTT = (TrackerType) trackerEdge.properties().getPropertyValue(P_TRACKEDGE_INDEX.key());
-
 		if (catRecords.isEmpty()) {
 			Dialogs.errorAlert(getProperty().getName(), "Property setting",
 					"Not able to edit this property until associated category drivers are defined.");
-			return null;
+			return;
 		}
-		if (trackerEdge.classId().equals(E_TRACKFIELD.label()))
-			return editTrackField((TrackFieldEdge) trackerEdge);
-		else if (trackerEdge.classId().equals(E_TRACKTABLE.label()))
-			return editTrackTable((TrackTableEdge) trackerEdge);
-		else
-			return editTrackPopulation((TrackPopulationEdge) trackerEdge);
+		runDlg();
 	}
 
 	private int[][] collectDims(TreeNode parent) {
@@ -153,30 +140,13 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		return result;
 	}
 
-	private Object editTrackPopulation(TrackPopulationEdge trackerEdge) {
-		Dialogs.errorAlert(trackerEdge.id(), "Not yet implemented", "");
-		return null;
-	}
-
-	private Object editTrackTable(TrackTableEdge trackerEdge) {
-		runDlg();
-		return null;
-	}
-
-	private Object editTrackField(TrackFieldEdge trackEdge) {
-		runDlg();
-		return null;
-	}
-
 	private boolean nameMismatch(int[][] sizes) {
 		if (sizes.length <= 0)
 			return (!"".equals(currentTT.getWithFlatIndex(0)));
 		else {
 			try {
-				for (int i = 0; i < currentTT.size(); i++) {
-					String indexStr = currentTT.getWithFlatIndex(0);
-					IndexString.stringToIndex(indexStr, sizes[i]);
-				}
+				for (int i = 0; i < currentTT.size(); i++)
+					IndexString.stringToIndex(currentTT.getWithFlatIndex(i), sizes[i]);
 				return false;
 			} catch (Exception e) {
 				return true;
@@ -291,15 +261,15 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			if (!"".equals(vstr))
 				return;
 			String entry = txfInput.getText();
-			String value = "(["+sizes.length+"]" + entry + ")";
+			String value = "([" + sizes.length + "]" + entry + ")";
 			setValue(value);
 		}
 	}
 
-	
-	private static String illegalChars = "[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ(*&^$#@!)/_]";
+	private static String illegalChars = "[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ(*&^$#@!?><~+=)/_]";
+
 	private String validateEntry(String input, int[][] sizes) {
-		
+
 		String[] parts = input.split(",");
 		if (parts.length != sizes.length) {
 			return parts.length + " terms entered but " + sizes.length + " required.";
@@ -308,7 +278,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			try {
 				String test = parts[i].replaceAll(illegalChars, "");
 				if (!test.equals(parts[i]))
-					return parts[i]+" contains illegal characters.";
+					return parts[i] + " contains illegal characters.";
 				IndexString.stringToIndex(parts[i], sizes[i]);
 			} catch (Exception excpt) {
 				return excpt.getMessage();
