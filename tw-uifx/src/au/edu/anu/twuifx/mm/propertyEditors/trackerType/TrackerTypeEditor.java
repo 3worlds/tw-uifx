@@ -296,13 +296,19 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		}
 	}
 
+	
+	private static String illegalChars = "[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ(*&^$#@!)/:]";
 	private String validateEntry(String input, int[][] sizes) {
+		
 		String[] parts = input.split(",");
 		if (parts.length != sizes.length) {
 			return parts.length + " terms entered but " + sizes.length + " required.";
 		}
 		for (int i = 0; i < parts.length; i++) {
 			try {
+				String test = parts[i].replaceAll(illegalChars, "");
+				if (!test.equals(parts[i]))
+					return parts[i]+" contains illegal characters.";
 				IndexString.stringToIndex(parts[i], sizes[i]);
 			} catch (Exception excpt) {
 				return excpt.getMessage();
