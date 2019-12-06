@@ -92,7 +92,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 		HBox content = new HBox();
 		content.setPadding(new Insets(4, 1, 1, 2));
 		lblTime = new Label(formatOutput(timeFormatter.getInitialTime()));
-		content.getChildren().addAll(lblTime);
+		content.getChildren().addAll(new Label("Simulator time: "),lblTime);
 		return content;
 	}
 
@@ -134,7 +134,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	}
 
 	private String formatOutput(long time) {
-		return "(" + policy.sender() + ") " + timeFormatter.getTimeText(time);
+		return "[" + policy.sender() + "] " + timeFormatter.getTimeText(time);
 	}
 
 }
