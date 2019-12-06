@@ -44,11 +44,16 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
@@ -61,21 +66,20 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  * Displays a table of data - largely for debugging. This replaces label/value
  * pair widget
  */
-public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metadata> implements Widget {
+public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metadata> implements Widget {
 	private TimeSeriesMetadata tsmeta;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
-	private static Logger log = Logging.getLogger(SimpleD0Widget.class);
+	private static Logger log = Logging.getLogger(SimpleDM0Widget.class);
 	private TableView table;
 	private Label lblTime;
 
-	public SimpleD0Widget(StateMachineEngine<StatusWidget> statusSender) {
+	public SimpleDM0Widget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME_SERIES);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		log.info("Thread: " + Thread.currentThread().getId());
 	}
-
 
 	@Override
 	public void onDataMessage(TimeSeriesData data) {
@@ -88,6 +92,8 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 	}
 
 	private boolean initialMessage = false;
+
+	private ObservableList<LabelValue> data;
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
@@ -96,7 +102,11 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
 			Platform.runLater(() -> {
 				timeFormatter.onMetaDataMessage(meta);
-
+				data =FXCollections.observableArrayList(
+			            new LabelValue("x", "0"),
+			            new LabelValue("y", "0")
+				        );
+				table.setItems(data);
 				initialMessage = true;
 			});
 		}
@@ -115,13 +125,17 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 	public Object getUserInterfaceContainer() {
 		table = new TableView();
 		TableColumn col1 = new TableColumn("Name");
+		col1.setCellValueFactory(new PropertyValueFactory<LabelValue, String>("label"));
 		TableColumn col2 = new TableColumn("Value");
+		col2.setCellValueFactory(new PropertyValueFactory<LabelValue, String>("value"));		
 		table.getColumns().addAll(col1, col2);
 		VBox content = new VBox();
 		content.setSpacing(5);
 		content.setPadding(new Insets(10, 0, 0, 10));
-		lblTime = new Label("HEY - NO DATA IS BEING SENT");
-		content.getChildren().addAll(table, lblTime);
+		HBox hbox = new HBox();
+		lblTime = new Label("HEY - NO DATA IS BEING SENT!!!");
+		hbox.getChildren().addAll(new Label("Tracker time: "),lblTime);
+		content.getChildren().addAll(table, hbox);
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);
@@ -133,6 +147,7 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 	public Object getMenuContainer() {
 		return null;
 	}
+
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 	}
@@ -143,6 +158,32 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 
 	@Override
 	public void getPreferences() {
+	}
+
+	public static class LabelValue {
+		private final SimpleStringProperty label;
+		private final SimpleStringProperty value;
+
+		public LabelValue(String label, String value) {
+			this.label = new SimpleStringProperty(label);
+			this.value = new SimpleStringProperty(value);
+		}
+
+		public String getLabel() {
+			return label.get();
+		}
+
+		public void setLabel(String label) {
+			this.label.set(label);
+		}
+
+		public String getValue() {
+			return value.get();
+		}
+
+		public void setValue(String value) {
+			this.value.set(value);
+		}
 	}
 
 }
