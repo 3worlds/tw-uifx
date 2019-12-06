@@ -31,9 +31,7 @@
 package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
@@ -41,33 +39,21 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.IndexString;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twcore.data.DimNode;
-import au.edu.anu.twcore.data.FieldNode;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twcore.data.TableNode;
-import au.edu.anu.twcore.data.runtime.DataLabel;
-import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twcore.ui.TrackFieldEdge;
-import au.edu.anu.twcore.ui.TrackPopulationEdge;
-import au.edu.anu.twcore.ui.TrackTableEdge;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
-import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels;
 import fr.cnrs.iees.twcore.constants.TrackerType;
-import fr.ens.biologie.generic.utils.Duple;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -88,8 +74,6 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 	private LabelButtonControl view;
 	private List<Record> catRecords;
-	private Map<DataLabel, Integer> drivers;
-	private List<Duple<CheckBox, Spinner<Integer>>> indices;
 	private ALDataEdge trackerEdge;
 	private TrackerType currentTT;
 
@@ -113,7 +97,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 					"Not able to edit this property until associated category drivers are defined.");
 			return;
 		}
-		runDlg();
+		edit();
 	}
 
 	private int[][] collectDims(TreeNode parent) {
@@ -132,7 +116,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		}
 
 		int[][] result = new int[dimList.size()][];
-		// reverse the order - TODO check
+		// reverse the order
 		for (int i = dimList.size() - 1; i >= 0; i--) {
 			int[] dd = dimList.get(i);
 			result[result.length - i - 1] = dd;
@@ -140,36 +124,20 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		return result;
 	}
 
-	private boolean nameMismatch(int[][] sizes) {
-		if (sizes.length <= 0)
-			return (!"".equals(currentTT.getWithFlatIndex(0)));
-		else {
-			try {
-				for (int i = 0; i < currentTT.size(); i++)
-					IndexString.stringToIndex(currentTT.getWithFlatIndex(i), sizes[i]);
-				return false;
-			} catch (Exception e) {
-				return true;
-			}
-		}
-	}
 
-	private void updateEntry(int[][] sizes) {
-		// need a new TrackerType
-		Dimensioner[] dims = { new Dimensioner(sizes.length) };
-		TrackerType newTT = new TrackerType(dims);
-		for (int i = 0; i < sizes.length; i++) {
-			String newEntry = "[";
-			for (int j = 0; j < sizes[i].length; j++)
-				newEntry += "|";
-			newEntry = newEntry.substring(0, newEntry.length() - 1);
-			newEntry += "]";
-			newTT.setWithFlatIndex(newEntry, i);
-		}
-		currentTT = newTT;
-		setValue(currentTT.toString());
-		GraphState.setChanged();
-	}
+//	private String makeDefault(int[][] sizes) {
+//		Dimensioner[] dims = { new Dimensioner(sizes.length) };
+//		String result="";
+//		for (int i = 0; i < sizes.length; i++) {
+//			String newEntry = "[";
+//			for (int j = 0; j < sizes[i].length; j++)
+//				newEntry += "|";
+//			newEntry = newEntry.substring(0, newEntry.length() - 1);
+//			newEntry += "]";
+//			result+=newEntry+",";
+//		}
+//		return result.substring(0,result.length()-1);
+//	}
 
 	private List<Record> getRootRecords() {
 		List<Record> result = new ArrayList<>();
@@ -201,17 +169,13 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		return getEditor().getTextProperty();
 	}
 
-	private void runDlg() {
-		// needs to be int[][] i.e. tables by indexes
+	private void edit() {
 		int[][] sizes = collectDims((TreeNode) trackerEdge.endNode());
-		if (nameMismatch(sizes))
-			updateEntry(sizes);
 		if (sizes.length <= 0) {
 			// nothing to do
 			return;
 		}
 
-		// Ok put up a textfield to take and validate the user string
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
 		dlg.setTitle(trackerEdge.classId() + ":" + trackerEdge.id());
@@ -235,7 +199,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		hintText = hintText.substring(0, hintText.length() - 1);
 
 		grid.add(new Label(
-				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (Inclusive)"),
+				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (range inclusive)"),
 				0, 0);
 
 		grid.add(new Label(hintText), 0, 1);
@@ -249,17 +213,17 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		grid.add(btnValidate, 1, 2);
 		Label lblError = new Label("");
 		grid.add(lblError, 0, 3);
-
 		btnValidate.setOnAction((e) -> {
 			String result = validateEntry(txfInput.getText(), sizes);
 			lblError.setText(result);
+			if ("".equals(result))
+				dlg.getDialogPane().lookupButton(ok).setDisable(false);
+			else
+				dlg.getDialogPane().lookupButton(ok).setDisable(true);
 		});
 
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
-			String vstr = validateEntry(txfInput.getText(), sizes);
-			if (!"".equals(vstr))
-				return;
 			String entry = txfInput.getText();
 			String value = "([" + sizes.length + "]" + entry + ")";
 			setValue(value);

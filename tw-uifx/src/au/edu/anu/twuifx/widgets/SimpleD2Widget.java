@@ -73,7 +73,7 @@ import javafx.scene.text.Font;
  *
  * @date 2 Sep 2019
  */
-public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> implements Widget {
+public class SimpleD2Widget extends AbstractDisplayWidget<MapData, Metadata> implements Widget {
 
 	private Label lblName;
 	private Label lblXY;
@@ -104,9 +104,9 @@ public class SimpleMapWidget extends AbstractDisplayWidget<MapData, Metadata> im
 	private String widgetId;
 	private WidgetTimeFormatter timeFormatter;
 
-	private static Logger log = Logging.getLogger(SimpleMapWidget.class);
+	private static Logger log = Logging.getLogger(SimpleD2Widget.class);
 
-	public SimpleMapWidget(StateMachineEngine<StatusWidget> statusSender) {
+	public SimpleD2Widget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, -1);
 		timeFormatter = new WidgetTimeFormatter();
 		log.info("Creation thread id: " + Thread.currentThread().getId());
