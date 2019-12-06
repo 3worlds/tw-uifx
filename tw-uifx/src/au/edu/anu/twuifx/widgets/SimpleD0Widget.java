@@ -49,8 +49,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
  * @author Ian Davies
@@ -76,23 +76,6 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 		log.info("Thread: " + Thread.currentThread().getId());
 	}
 
-	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void putPreferences() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void getPreferences() {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void onDataMessage(TimeSeriesData data) {
@@ -105,12 +88,12 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 	}
 
 	private boolean initialMessage = false;
-
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
 		// clear the table - probably in a ui thread!
 		if (!initialMessage) {
+			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
 			Platform.runLater(() -> {
 				timeFormatter.onMetaDataMessage(meta);
 
@@ -122,6 +105,10 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 	@Override
 	public void onStatusMessage(State state) {
 		log.info("Thread: " + Thread.currentThread().getId() + " State: " + state);
+		if (isSimulatorState(state, waiting))
+			Platform.runLater(() -> {
+				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+			});
 	}
 
 	@Override
@@ -134,7 +121,7 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 		content.setSpacing(5);
 		content.setPadding(new Insets(10, 0, 0, 10));
 		lblTime = new Label("HEY - NO DATA IS BEING SENT");
-		content.getChildren().addAll(table,lblTime);
+		content.getChildren().addAll(table, lblTime);
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);
@@ -144,8 +131,18 @@ public class SimpleD0Widget extends AbstractDisplayWidget<TimeSeriesData, Metada
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void setProperties(String id, SimplePropertyList properties) {
+	}
+
+	@Override
+	public void putPreferences() {
+	}
+
+	@Override
+	public void getPreferences() {
 	}
 
 }
