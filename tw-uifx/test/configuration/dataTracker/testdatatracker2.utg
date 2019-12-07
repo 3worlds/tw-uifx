@@ -3,6 +3,18 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 // Test file for a simple datatracker (TimeSeriesDataTracker)
 // 1 data tracker, 2 variables to track (x:double, n:integer)
 // cf in the function specification below the code to add in the user project
+//
+// Copy and paste this text in the changeState(...) method of the generated Func.java class
+// in order to see things displayed in the SimpleTimeSeriesWidget
+//
+//	System.out.println("current = "+((Rec)focal.currentState()).x()
+//		+" "+((Rec)focal.currentState()).n());
+//	double x = Math.random();
+//	((Rec)focal.nextState()).x(x);
+//	((Rec)focal.nextState()).n((int)(Math.round(x*8)/4));
+//	System.out.println("next = "+((Rec)focal.nextState()).x()
+//		+" "+((Rec)focal.nextState()).n());
+//
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -69,18 +81,6 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 						function Func
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Func)		
-//
-// Copy and paste this text in the changeState(...) method of the generated Func.java class
-// in order to see things displayed in the SimpleTimeSeriesWidget
-//
-//	System.out.println("current = "+((Rec)focal.currentState()).x()
-//		+" "+((Rec)focal.currentState()).n());
-//	double x = Math.random();
-//	((Rec)focal.nextState()).x(x);
-//	((Rec)focal.nextState()).n((int)(Math.round(x*8)/4));
-//	System.out.println("next = "+((Rec)focal.nextState()).x()
-//		+" "+((Rec)focal.nextState()).n());
-//
 		structure struc
 			componentType comp
 				driverClass = java.lang.String(code.sys.Rec)

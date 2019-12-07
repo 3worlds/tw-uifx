@@ -244,7 +244,8 @@ public class UIDeployer {
 		// maybe needs to be delayed!
 		for (SplitPane s : splitPanes) {
 			String key = splitter+s.getId();
-			UiHelpers.getSplitPanePositions(0.5, key);
+			double[] pos = UiHelpers.getSplitPanePositions(0.5, key);
+			s.setDividerPositions(pos);
 		}
 	}
 
@@ -254,7 +255,6 @@ public class UIDeployer {
 		for (SplitPane s:splitPanes) {
 			String key =  splitter+s.getId();
 			Preferences.putDouble(key, s.getDividerPositions()[0]);
-	
 		}
 	}
 

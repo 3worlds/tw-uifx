@@ -3,6 +3,20 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 // Test file for a simple datatracker (TimeSeriesDataTracker) tracking a table variable
 // 1 data tracker, 1 variables to track (tx[1..3]:double)
 // cf in the function specification below the code to add in the user project
+//
+// Copy and paste this text in the changeState(...) method of the generated Func.java class
+// in order to see things displayed in the SimpleTimeSeriesWidget
+//
+//	Rec var = (Rec) focal.nextState();
+//	double x = Math.random();
+//	for (int i=0; i<var.ty().size(0); i++) {
+//		var.ty().get(i).z(x+i*0.1);
+//		var.ty().get(i).t(i/x*0.1);
+//	}
+//	for (int i=0; i<var.tx().size(0); i++)
+//		for (int j=0; j<var.tx().size(1); j++)
+//			var.tx().set(-Math.random(),i,j);
+//
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -47,20 +61,6 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 						function Func
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Func)
-//
-// Copy and paste this text in the changeState(...) method of the generated Func.java class
-// in order to see things displayed in the SimpleTimeSeriesWidget
-//
-//	Rec var = (Rec) focal.nextState();
-//	double x = Math.random();
-//	for (int i=0; i<var.ty().size(0); i++) {
-//		var.ty().get(i).z(x+i*0.1);
-//		var.ty().get(i).t(i/x*0.1);
-//	}
-//	for (int i=0; i<var.tx().size(0); i++)
-//		for (int j=0; j<var.tx().size(1); j++)
-//			var.tx().set(-Math.random(),i,j);
-//
 						dataTracker dt
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)

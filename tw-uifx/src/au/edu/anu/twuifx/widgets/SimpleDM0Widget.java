@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.logging.Logger;
 
+import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.TimeSeriesData;
@@ -71,7 +72,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private static Logger log = Logging.getLogger(SimpleDM0Widget.class);
-	private TableView table;
+	private TableView<LabelValue> table;
 	private Label lblTime;
 
 	public SimpleDM0Widget(StateMachineEngine<StatusWidget> statusSender) {
@@ -81,33 +82,43 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 		log.info("Thread: " + Thread.currentThread().getId());
 	}
 
+	private boolean initialMessage = false;
+	private ObservableList<LabelValue> tableData;
+
+	@Override
+	public void onMetaDataMessage(Metadata meta) {
+		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
+		// clear the table - probably in a ui thread!
+		if (!initialMessage) {
+			Platform.runLater(() -> {
+				tableData = FXCollections.observableArrayList();
+				tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+				timeFormatter.onMetaDataMessage(meta);
+				for (DataLabel dl : tsmeta.doubleNames())
+					tableData.add(new LabelValue(dl.toString(), "0.0"));
+				for (DataLabel dl : tsmeta.intNames())
+					tableData.add(new LabelValue(dl.toString(), "0"));
+				table.setItems(tableData);
+				initialMessage = true;
+			});
+		}
+	}
+
 	@Override
 	public void onDataMessage(TimeSeriesData data) {
 		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
-			});
-		}
-	}
+				for (DataLabel dl : tsmeta.doubleNames()) {
+					Double value = data.getDoubleValues()[tsmeta.indexOf(dl)];
+					tableData.get(tsmeta.indexOf(dl)).setValue(value.toString());
+				}
+				for (DataLabel dl : tsmeta.intNames()) {
+					Long value = data.getIntValues()[tsmeta.indexOf(dl)];
+					tableData.get(tsmeta.indexOf(dl)).setValue(value.toString());
+				}
 
-	private boolean initialMessage = false;
-
-	private ObservableList<LabelValue> data;
-	@Override
-	public void onMetaDataMessage(Metadata meta) {
-		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
-		// clear the table - probably in a ui thread!
-		if (!initialMessage) {
-			tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
-			Platform.runLater(() -> {
-				timeFormatter.onMetaDataMessage(meta);
-				data =FXCollections.observableArrayList(
-			            new LabelValue("x", "0"),
-			            new LabelValue("y", "0")
-				        );
-				table.setItems(data);
-				initialMessage = true;
 			});
 		}
 	}
@@ -121,26 +132,27 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 			});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getUserInterfaceContainer() {
-		table = new TableView();
-		TableColumn col1 = new TableColumn("Name");
+		table = new TableView<LabelValue>();
+		TableColumn<LabelValue, String> col1 = new TableColumn<>("Label");
 		col1.setCellValueFactory(new PropertyValueFactory<LabelValue, String>("label"));
-		TableColumn col2 = new TableColumn("Value");
-		col2.setCellValueFactory(new PropertyValueFactory<LabelValue, String>("value"));		
+		TableColumn<LabelValue, String> col2 = new TableColumn<>("Value");
+		col2.setCellValueFactory(new PropertyValueFactory<LabelValue, String>("value"));
 		table.getColumns().addAll(col1, col2);
 		VBox content = new VBox();
 		content.setSpacing(5);
 		content.setPadding(new Insets(10, 0, 0, 10));
 		HBox hbox = new HBox();
-		lblTime = new Label("HEY - NO DATA IS BEING SENT!!!");
-		hbox.getChildren().addAll(new Label("Tracker time: "),lblTime);
+		lblTime = new Label("uninitialised");
+		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime);
 		content.getChildren().addAll(table, hbox);
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);
 		sp.setContent(content);
-		return content;
+		return sp;
 	}
 
 	@Override
@@ -160,7 +172,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 	public void getPreferences() {
 	}
 
-	public static class LabelValue {
+	protected static class LabelValue {
 		private final SimpleStringProperty label;
 		private final SimpleStringProperty value;
 

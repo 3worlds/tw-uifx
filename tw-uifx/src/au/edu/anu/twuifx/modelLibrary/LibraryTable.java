@@ -39,8 +39,7 @@ public enum LibraryTable {
 	Empty(/*             */"Empty",/*                    */"vide.utg"), //
 	Basic1(/*            */"Basic 1",/*                  */"deBase1.utg"), //
 	Basic2(/*            */"Basic 2",/*                  */"deBase2.utg"), //
-	SimplePhysical(/*    */"Basic physical model",/*     */ "physiqueSimple.utg"), //
-	TestTrack7(/*        */"Data tracker 7",/*           */ "traqueurDeDonnées7.utg"), //
+	SimplePhysical(/*    */"Basic physical model",/*     */"physiqueSimple.utg"), //
 	;
 
 	private final String displayName;

@@ -3,6 +3,20 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 // Test file for a simple datatracker (TimeSeriesDataTracker) tracking populationData
 // 1 data tracker, 
 // cf in the function specification below the code to add in the user project
+//
+// Copy and paste this text in the changeState(...) method of the generated Func.java class
+// in order to see things displayed in the SimpleTimeSeriesWidget
+//
+//	Rec var = (Rec) focal.nextState();
+//	double x = Math.random();
+//	for (int i=0; i<var.ty().size(0); i++) {
+//		var.ty().get(i).z(x+i*0.1);
+//		var.ty().get(i).t(i/x*0.1);
+//	}
+//	for (int i=0; i<var.tx().size(0); i++)
+//		for (int j=0; j<var.tx().size(1); j++)
+//			var.tx().set(-Math.random(),i,j);
+//
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -15,6 +29,10 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			widget table
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 		top top1
 			widget time
 				order = java.lang.Integer(1)
@@ -47,20 +65,6 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 						function Func
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Func)
-//
-// Copy and paste this text in the changeState(...) method of the generated Func.java class
-// in order to see things displayed in the SimpleTimeSeriesWidget
-//
-//	Rec var = (Rec) focal.nextState();
-//	double x = Math.random();
-//	for (int i=0; i<var.ty().size(0); i++) {
-//		var.ty().get(i).z(x+i*0.1);
-//		var.ty().get(i).t(i/x*0.1);
-//	}
-//	for (int i=0; i<var.tx().size(0); i++)
-//		for (int j=0; j<var.tx().size(1); j++)
-//			var.tx().set(-Math.random(),i,j);
-//
 						dataTracker dt
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
@@ -91,8 +95,8 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 			table tx
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				precision = java.lang.Double(0.0)
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
 				units = java.lang.String()
 			field n
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..2)
@@ -109,11 +113,12 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 	rank = java.lang.Integer(0)
 [table:ty] sizedBy sizedBy3 [dimensioner:dimer]
 	rank = java.lang.Integer(0)
+[dataTracker:dt] trackPopulation  [initialState:state]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [widget:timeSeries] trackSeries trackSeries1 [dataTracker:dt]
 [category:cat] drivers drivers1 [record:Rec]
 [experiment:exp] baseLine baseLine1 [system:sys]
+[widget:table] trackSeries trckSrs1 [dataTracker:dt]
 [componentType:comp] belongsTo belongsTo1 [category:cat]
 [process:proc] appliesTo appliesTo1 [category:cat]
 [widget:time] trackTime trackTime1 [dynamics:dyn]
-[dataTracker:dt] trackPopulation [initialState:state]
-	variables = PopulationVariablesSet({COUNT,NADDED,NREMOVED})

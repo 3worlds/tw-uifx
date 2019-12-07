@@ -1,5 +1,7 @@
 treegraph // saved by OmugiGraphExporter on Mon Dec 02 09:41:00 AEDT 2019
 
+// Purpose: to check the order of table indexing is correct
+
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
