@@ -24,7 +24,7 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 3worlds testdatatracker7
 	userInterface ui
 		tab tab1
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 			widget timeSeries
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)

@@ -44,6 +44,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
+import fr.ens.biologie.generic.utils.Statistics;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -72,7 +73,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private static Logger log = Logging.getLogger(SimpleDM0Widget.class);
-	private TableView<LabelValue> table;
+	private TableView<TableData> table;
 	private Label lblTime;
 
 	public SimpleDM0Widget(StateMachineEngine<StatusWidget> statusSender) {
@@ -83,7 +84,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 	}
 
 	private boolean initialMessage = false;
-	private ObservableList<LabelValue> tableData;
+	private ObservableList<TableData> tableDataList;
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
@@ -91,14 +92,16 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 		// clear the table - probably in a ui thread!
 		if (!initialMessage) {
 			Platform.runLater(() -> {
-				tableData = FXCollections.observableArrayList();
+				tableDataList = FXCollections.observableArrayList();
 				tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
 				timeFormatter.onMetaDataMessage(meta);
+
 				for (DataLabel dl : tsmeta.doubleNames())
-					tableData.add(new LabelValue(dl.toString(), "0.0"));
+					tableDataList.add(new TableData(dl.toString()));
 				for (DataLabel dl : tsmeta.intNames())
-					tableData.add(new LabelValue(dl.toString(), "0"));
-				table.setItems(tableData);
+					tableDataList.add(new TableData(dl.toString()));
+
+				table.setItems(tableDataList);
 				initialMessage = true;
 			});
 		}
@@ -111,14 +114,20 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 			Platform.runLater(() -> {
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
 				for (DataLabel dl : tsmeta.doubleNames()) {
-					Double value = data.getDoubleValues()[tsmeta.indexOf(dl)];
-					tableData.get(tsmeta.indexOf(dl)).setValue(value.toString());
+					int idx = tsmeta.indexOf(dl);
+					Double value = data.getDoubleValues()[idx];
+					TableData td = tableDataList.get(idx);
+					td.stats.add(value);
+					td.setValue(value);
 				}
 				for (DataLabel dl : tsmeta.intNames()) {
-					Long value = data.getIntValues()[tsmeta.indexOf(dl)];
-					tableData.get(tsmeta.indexOf(dl)).setValue(value.toString());
+					int idx = tsmeta.indexOf(dl);
+					TableData td = tableDataList.get(idx);
+					Long value = data.getIntValues()[idx];
+					td.stats.add(value);
+					td.setValue(value);
 				}
-
+				table.refresh();
 			});
 		}
 	}
@@ -135,12 +144,30 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getUserInterfaceContainer() {
-		table = new TableView<LabelValue>();
-		TableColumn<LabelValue, String> col1 = new TableColumn<>("Label");
-		col1.setCellValueFactory(new PropertyValueFactory<LabelValue, String>("label"));
-		TableColumn<LabelValue, String> col2 = new TableColumn<>("Value");
-		col2.setCellValueFactory(new PropertyValueFactory<LabelValue, String>("value"));
-		table.getColumns().addAll(col1, col2);
+		table = new TableView<TableData>();
+		TableColumn<TableData, String> col1Label = new TableColumn<>("Label");
+		col1Label.setCellValueFactory(new PropertyValueFactory<TableData, String>("label"));
+
+		TableColumn<TableData, String> col2Value = new TableColumn<>("Value");
+		col2Value.setCellValueFactory(new PropertyValueFactory<TableData, String>("value"));
+
+		TableColumn<TableData, String> col3Min = new TableColumn<>("Min");
+		col3Min.setCellValueFactory(new PropertyValueFactory<TableData, String>("min"));
+
+		TableColumn<TableData, String> col4Max = new TableColumn<>("Max");
+		col4Max.setCellValueFactory(new PropertyValueFactory<TableData, String>("max"));
+		// avg,var,sum
+		TableColumn<TableData, String> col5Avg = new TableColumn<>("Avg");
+		col5Avg.setCellValueFactory(new PropertyValueFactory<TableData, String>("avg"));
+
+		TableColumn<TableData, String> col6Var = new TableColumn<>("Var");
+		col6Var.setCellValueFactory(new PropertyValueFactory<TableData, String>("var"));
+
+		TableColumn<TableData, String> col7Sum = new TableColumn<>("Sum");
+		col7Sum.setCellValueFactory(new PropertyValueFactory<TableData, String>("sum"));
+
+		table.getColumns().addAll(col1Label, col2Value, col3Min, col4Max, col5Avg, col6Var, col7Sum);
+
 		VBox content = new VBox();
 		content.setSpacing(5);
 		content.setPadding(new Insets(10, 0, 0, 10));
@@ -172,30 +199,59 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 	public void getPreferences() {
 	}
 
-	protected static class LabelValue {
-		private final SimpleStringProperty label;
-		private final SimpleStringProperty value;
+	protected static class TableData {
+		// These don't really need to be properties as they are not 'listened' to. It's
+		// the list that is observed.
+		private final SimpleStringProperty labelProperty;
+		private final SimpleStringProperty valueProperty;
+		private final Statistics stats;
 
-		public LabelValue(String label, String value) {
-			this.label = new SimpleStringProperty(label);
-			this.value = new SimpleStringProperty(value);
+		public TableData(String label) {
+			this.labelProperty = new SimpleStringProperty(label);
+			this.valueProperty = new SimpleStringProperty();
+			this.stats = new Statistics();
 		}
 
 		public String getLabel() {
-			return label.get();
+			return labelProperty.get();
 		}
 
 		public void setLabel(String label) {
-			this.label.set(label);
+			this.labelProperty.set(label);
 		}
 
 		public String getValue() {
-			return value.get();
+			return valueProperty.get();
 		}
 
-		public void setValue(String value) {
-			this.value.set(value);
+		public void setValue(Number value) {
+			this.valueProperty.set(value.toString());
 		}
+
+		public double getMin() {
+			return stats.min();
+		}
+
+		public double getMax() {
+			return  stats.max();
+		}
+
+		public double getAvg() {
+			return stats.average();
+		}
+
+		public double getVar() {
+			return stats.variance();
+		}
+
+		public double getSum() {
+			return stats.sum();
+		}
+
+		public Statistics getStatistics() {
+			return stats;
+		}
+
 	}
 
 }
