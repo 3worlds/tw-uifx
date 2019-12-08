@@ -906,7 +906,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	public void onNodeRenamed() {
+	public void onElementRenamed() {
 		initialisePropertySheets();
 		setButtonState();
 	}

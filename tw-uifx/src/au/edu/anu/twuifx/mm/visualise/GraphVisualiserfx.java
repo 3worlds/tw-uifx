@@ -605,4 +605,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Text text = (Text) vNode.getText();
 		text.setText(vNode.getDisplayText(false));
 	}
+	
+	@Override
+	public void onEdgeRenamed(VisualEdge vEdge) {
+		Text text = (Text)vEdge.getText();
+		text.setText(vEdge.getDisplayText(false));
+	}
 }

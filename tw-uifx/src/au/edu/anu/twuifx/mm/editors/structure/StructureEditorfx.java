@@ -184,6 +184,18 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				onRenameNode();
 			});
 		}
+		
+		if (editableNode.hasOutEdges()) {
+			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_RENAMEEDGE);
+			for (VisualEdge edge:editableNode.getOutEdges()) {
+				VisualNode vn = (VisualNode) edge.endNode();
+				MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
+				mi.setOnAction((e) -> {
+					onRenameEdge(edge);
+				});
+
+			}
+		}
 
 		if (editableNode.hasOutEdges()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_EDGE);
@@ -229,7 +241,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_EXPAND/*            */("Expand"), //
 		ML_COLLAPSE/*          */("Collapse"), //
 		// --------------------------------------------
-		ML_RENAME /*      */ ("Rename"), ML_DELETE_EDGE/*       */("Delete edge"), //
+		ML_RENAME /*           */ ("Rename"), 
+		ML_RENAMEEDGE/*        */("Rename edge"),
+		ML_DELETE_EDGE/*       */("Delete edge"), //
 		ML_DELETE_CHILD/*      */("Delete child link"), //
 		ML_DELETE_TREE/*-      */("Delete tree"), //
 		ML_DELETE/*            */("Delete"), //
