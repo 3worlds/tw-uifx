@@ -43,6 +43,9 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 10:43:35 AEDT 2019
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
 					process proc
+						function Func
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.Func)
 						dataTracker tracker
 							groupBy = fr.cnrs.iees.twcore.constants.Grouping(NO_GROUPING)
 							select = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
@@ -50,9 +53,6 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 10:43:35 AEDT 2019
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							viewOthers = java.lang.Boolean(false)
-						function Func
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.system.Func)
 		structure struct
 			componentType type
 				driverClass = java.lang.String(code.system.Vars)
@@ -70,11 +70,15 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 10:43:35 AEDT 2019
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
 		tab output
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 			widget timeSeries
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			widget table
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 
 // CROSS-LINKS
 [componentType:type] belongsTo blngsT1 [category:ctgry]
@@ -82,6 +86,7 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 10:43:35 AEDT 2019
 [dataTracker:tracker] trackField tracks [field:y]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]""))
 [experiment:exp] baseLine baseline [system:system]
+[widget:table] trackSeries trckSrs1 [dataTracker:tracker]
 [process:proc] appliesTo applsT1 [category:ctgry]
 [system:system] belongsTo blngsT2 [category:ctgry]
 [category:ctgry] drivers drvrs1 [record:vars]

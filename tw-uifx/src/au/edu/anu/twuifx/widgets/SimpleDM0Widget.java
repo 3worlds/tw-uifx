@@ -89,10 +89,8 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
-		// clear the table - probably in a ui thread!
-		
-			Platform.runLater(() -> {
-				if (!initialMessage) {
+		Platform.runLater(() -> {
+			if (!initialMessage) {
 				tableDataList = FXCollections.observableArrayList();
 				tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
 				timeFormatter.onMetaDataMessage(meta);
@@ -104,16 +102,16 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 
 				table.setItems(tableDataList);
 				initialMessage = true;
-				} else {
-					// reset the statistics and the initialvalue (if we had one)
-					for (TableData td:tableDataList) {
-						td.stats.reset();
-						td.setValue(0);
-					}
-					table.refresh();
+			} else {
+				// reset the statistics and the initialvalue (if we had one)
+				for (TableData td : tableDataList) {
+					td.stats.reset();
+					td.setValue(0);
 				}
-			});
-		
+				table.refresh();
+			}
+		});
+
 	}
 
 	@Override
@@ -242,7 +240,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 		}
 
 		public double getMax() {
-			return  stats.max();
+			return stats.max();
 		}
 
 		public double getAvg() {
