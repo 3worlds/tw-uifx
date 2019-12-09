@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Mon Nov 18 11:06:27 AEDT 2019
+treegraph // saved by OmugiGraphExporter on Mon Dec 09 11:35:45 AEDT 2019
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -34,13 +34,7 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 11:06:27 AEDT 2019
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
-		tab output
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget timeSeries
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 
 // CROSS-LINKS
-[experiment:exp] baseLine baseline [system:system]
 [widget:time] trackTime tracks1 [dynamics:dyn]
+[experiment:exp] baseLine baseline [system:system]

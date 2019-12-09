@@ -172,22 +172,22 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			cm.getItems().add(new SeparatorMenuItem());
 
 		if (editableNode.canDelete()) {
-			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_DELETE);
+			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_DELETE_NODE);
 			mi.setOnAction((e) -> {
 				onDeleteNode();
 			});
 		}
 
 		if (editableNode.canRename()) {
-			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_RENAME);
+			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_RENAME_NODE);
 			mi.setOnAction((e) -> {
 				onRenameNode();
 			});
 		}
-		
+
 		if (editableNode.hasOutEdges()) {
-			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_RENAMEEDGE);
-			for (VisualEdge edge:editableNode.getOutEdges()) {
+			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_RENAME_EDGE);
+			for (VisualEdge edge : editableNode.getOutEdges()) {
 				VisualNode vn = (VisualNode) edge.endNode();
 				MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
 				mi.setOnAction((e) -> {
@@ -238,19 +238,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// --------------------------------------------
 		ML_IMPORT_TREE/*       */("Import tree"), // spec
 		ML_EXPORT_TREE/*       */("Export tree"), // spec
-		ML_EXPAND/*            */("Expand"), //
-		ML_COLLAPSE/*          */("Collapse"), //
+		ML_EXPAND/*            */("Expand"), // config
+		ML_COLLAPSE/*          */("Collapse"), // config
 		// --------------------------------------------
-		ML_RENAME /*           */ ("Rename"), 
-		ML_RENAMEEDGE/*        */("Rename edge"),
-		ML_DELETE_EDGE/*       */("Delete edge"), //
-		ML_DELETE_CHILD/*      */("Delete child link"), //
-		ML_DELETE_TREE/*-      */("Delete tree"), //
-		ML_DELETE/*            */("Delete"), //
-
-		ML_SELECT_PARAMETERS/* */("Select parameters"), //
-		ML_SELECT_DRIVERS/*    */("Select drivers"), //
-		ML_SELECT_DECORATORS/* */("Select decorators"), //
+		ML_RENAME_NODE /*      */("Rename node"), // config
+		ML_RENAME_EDGE/*       */("Rename edge"), // config
+		ML_DELETE_EDGE/*       */("Delete edge"), // config
+		ML_DELETE_CHILD/*      */("Delete child link"), // config
+		ML_DELETE_TREE/*-      */("Delete tree"), // config
+		ML_DELETE_NODE/*       */("Delete node"), // config
+		// --------------------------------------------
 		ML_ALL/*               */("All"),//
 		;
 

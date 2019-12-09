@@ -94,6 +94,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 				tableDataList = FXCollections.observableArrayList();
 				tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
 				timeFormatter.onMetaDataMessage(meta);
+				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 
 				for (DataLabel dl : tsmeta.doubleNames())
 					tableDataList.add(new TableData(dl.toString()));

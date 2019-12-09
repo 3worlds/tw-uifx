@@ -5,7 +5,7 @@ import javafx.stage.Screen;
 
 public class DefaultWindowSettings {
 	private static Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-	private static double w = 1210;
+	private static double w = 1220;
 	private static double h =840;
 	private static double x = (screenBounds.getWidth() - w) / 2;
 	private static double y = (screenBounds.getHeight() - h) / 3;
