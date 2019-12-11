@@ -36,6 +36,11 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 
+/**
+ * @author Ian Davies
+ *
+ * @date 11 Dec 2019
+ */
 public class UiHelpers {
 	public static double[] getSplitPanePositions(double def, String key) {
 		double pos;
