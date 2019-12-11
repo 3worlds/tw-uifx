@@ -116,6 +116,7 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Interval;
+import impl.org.controlsfx.skin.PropertySheetSkin;
 
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 
@@ -243,7 +244,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	public void initialize() {
-
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
 		spinJitter.setMaxWidth(75.0);
@@ -500,6 +500,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String nodeSizeKey = "nodeSize";
 	private static final String jitterKey = "jitter";
 	private static final String Mode = "_mode";
+	private static final String AccordionSelection = "_AccSel";
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
@@ -522,6 +523,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putInt(jitterKey, jitterProperty.get());
 			Preferences.putInt(tabPaneProperties.idProperty().get(),
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
+			Preferences.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
 			Preferences.flush();
 		}
 	}
@@ -532,9 +534,18 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	 * stage.getY() etc.
 	 */
 
+//	private void printClasses(Node n) {
+//		System.out.println(n.getClass());
+//		if (n instanceof Region)
+//			for (Node c : ((Region) n).getChildren()) {
+//				printClasses(c);
+//			}
+//	}
+
 	public void getPreferences() {
 		Preferences.initialise(Project.makeProjectPreferencesFile());
 		String prjtmp = Preferences.getString(UserProjectPath, "");
+
 		// should store in preferences??
 		if (!prjtmp.equals("")) {
 			UserProjectLink.unlinkUserProject();
@@ -573,7 +584,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			if (m)
 				md = PropertySheet.Mode.NAME;
 			allElementsPropertySheet.setMode(md);
-
+			int idx = Preferences.getInt(AccordionSelection, 0);
+			UiHelpers.setExpandedPane(allElementsPropertySheet, idx);
 		});
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
@@ -621,7 +633,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			break;
 		}
 		default: {
-				t = new Text(msg.toString() + "\n\n");
+			t = new Text(msg.toString() + "\n\n");
 		}
 		}
 

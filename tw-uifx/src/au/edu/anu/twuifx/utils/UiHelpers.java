@@ -28,15 +28,41 @@
  **************************************************************************/
 package au.edu.anu.twuifx.utils;
 
+import org.controlsfx.control.PropertySheet;
+
 import au.edu.anu.omhtk.preferences.Preferences;
+import impl.org.controlsfx.skin.PropertySheetSkin;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 
 public class UiHelpers {
-	public static double[] getSplitPanePositions(double def,String key) {
+	public static double[] getSplitPanePositions(double def, String key) {
 		double pos;
 		double[] positions = new double[1];
 		pos = Preferences.getDouble(key, def);
 		positions[0] = pos;
 		return positions;
+	}
+
+	public static int getExpandedPaneIndex(PropertySheet sheet) {
+		if (!sheet.getMode().equals(PropertySheet.Mode.CATEGORY))
+			return -1;
+		PropertySheetSkin skin = (PropertySheetSkin) sheet.getSkin();
+		BorderPane content = (BorderPane) skin.getChildren().get(0);
+		ScrollPane sp = (ScrollPane) content.getCenter();
+		Accordion accordion = (Accordion) sp.getContent();
+		return accordion.getPanes().indexOf(accordion.getExpandedPane());
+	}
+
+	public static void setExpandedPane(PropertySheet sheet, int idx) {
+		if (!sheet.getMode().equals(PropertySheet.Mode.CATEGORY))
+			return;
+		PropertySheetSkin skin = (PropertySheetSkin) sheet.getSkin();
+		BorderPane content = (BorderPane) skin.getChildren().get(0);
+		ScrollPane sp = (ScrollPane) content.getCenter();
+		Accordion accordion = (Accordion) sp.getContent();
+		accordion.setExpandedPane(accordion.getPanes().get(idx));
 	}
 
 }

@@ -92,7 +92,14 @@
 		<ToolBar BorderPane.alignment="CENTER">
 			<items>
 				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Check" />
-				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Deploy" />
+				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Deploy">
+               <graphic>
+                  <ImageView pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/ApplicationDeploy16.gif" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
 				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.5" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
             <Label fx:id="lblStatus" />
 			</items>
