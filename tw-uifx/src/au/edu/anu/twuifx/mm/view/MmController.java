@@ -116,7 +116,6 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Interval;
-import impl.org.controlsfx.skin.PropertySheetSkin;
 
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 
