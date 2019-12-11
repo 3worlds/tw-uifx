@@ -47,22 +47,23 @@ public class UiHelpers {
 
 	public static int getExpandedPaneIndex(PropertySheet sheet) {
 		if (!sheet.getMode().equals(PropertySheet.Mode.CATEGORY))
-			return -1;
-		PropertySheetSkin skin = (PropertySheetSkin) sheet.getSkin();
-		BorderPane content = (BorderPane) skin.getChildren().get(0);
-		ScrollPane sp = (ScrollPane) content.getCenter();
-		Accordion accordion = (Accordion) sp.getContent();
+			return 0;
+		Accordion accordion = getAccordion(sheet);
 		return accordion.getPanes().indexOf(accordion.getExpandedPane());
 	}
 
 	public static void setExpandedPane(PropertySheet sheet, int idx) {
 		if (!sheet.getMode().equals(PropertySheet.Mode.CATEGORY))
 			return;
+		Accordion accordion = getAccordion(sheet);
+		accordion.setExpandedPane(accordion.getPanes().get(idx));
+	}
+
+	private static Accordion getAccordion(PropertySheet sheet) {
 		PropertySheetSkin skin = (PropertySheetSkin) sheet.getSkin();
 		BorderPane content = (BorderPane) skin.getChildren().get(0);
 		ScrollPane sp = (ScrollPane) content.getCenter();
-		Accordion accordion = (Accordion) sp.getContent();
-		accordion.setExpandedPane(accordion.getPanes().get(idx));
+		return (Accordion) sp.getContent();
 	}
 
 }
