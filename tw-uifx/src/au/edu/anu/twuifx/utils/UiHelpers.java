@@ -61,6 +61,7 @@ public class UiHelpers {
 		if (!sheet.getMode().equals(PropertySheet.Mode.CATEGORY))
 			return;
 		Accordion accordion = getAccordion(sheet);
+		if (idx<accordion.getPanes().size())
 		accordion.setExpandedPane(accordion.getPanes().get(idx));
 	}
 
