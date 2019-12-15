@@ -70,6 +70,7 @@ import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorList;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorMessagable;
@@ -89,6 +90,7 @@ import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.StringTable.StringTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.integerRangeType.IntegerRangeItem;
@@ -799,8 +801,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			return new IntervalItem(this, key, (ElementAdapter) element, true, category, description);
 		} else if (value instanceof IntegerRange) {
 			return new IntegerRangeItem(this, key, (ElementAdapter) element, true, category, description);
-		} else
-			return new SimplePropertyItem(this, key, (ElementAdapter) element, editable, category, description);
+		} else if (value instanceof StringTable) {
+			StringTable st = (StringTable) value;
+			if (st.getDimensioners().length == 1)
+				return new StringTableItem(this, key, (ElementAdapter) element, true, category, description);
+		}
+		return new SimplePropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}
 
 	private void initialisePropertySheets() {
