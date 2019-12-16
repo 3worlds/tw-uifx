@@ -585,7 +585,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			if (m)
 				md = PropertySheet.Mode.NAME;
 			allElementsPropertySheet.setMode(md);
-			int idx = Preferences.getInt(AccordionSelection, 0);
+			int idx = Preferences.getInt(AccordionSelection, -1);
 			UiHelpers.setExpandedPane(allElementsPropertySheet, idx);
 		});
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
