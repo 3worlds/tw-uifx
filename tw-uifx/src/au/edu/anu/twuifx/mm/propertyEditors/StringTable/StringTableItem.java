@@ -57,10 +57,13 @@ public class StringTableItem extends SimplePropertyItem {
 
 	@Override
 	public void setValue(Object value) {
-		StringTable oldValue = (StringTable) getElementProperties().getPropertyValue(key);
-		StringTable newValue = StringTable.valueOf((String) value);
+		String newValue = (String)value;
+		StringTable oldTable = (StringTable) getElementProperties().getPropertyValue(key);
+		String oldValue = oldTable.toString();
+		// NB Tables do not have an equals() function!
 		if (!oldValue.equals(newValue)){
-			onUpdateProperty(newValue);
+			StringTable newTable = StringTable.valueOf(newValue);
+			onUpdateProperty(newTable);
 		}
 	}
 
