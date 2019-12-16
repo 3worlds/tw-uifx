@@ -38,6 +38,7 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -51,10 +52,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
+import static fr.cnrs.iees.io.parsing.TextGrammar.*;
 
 public class StringTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private StringTableItem dtItem;
+	private char[][] bdel ;
+	private  char[] isep;
 
 	public StringTableEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -64,13 +68,21 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		dtItem = (StringTableItem) this.getProperty();
+		bdel = new char[2][2];
+		isep = new char[2];
+		bdel[Table.DIMix] = DIM_BLOCK_DELIMITERS;
+		bdel[Table.TABLEix] = TABLE_BLOCK_DELIMITERS;
+
+		isep[Table.DIMix] = DIM_ITEM_SEPARATOR;
+		isep[Table.TABLEix] = TABLE_ITEM_SEPARATOR;
+
 		// we need to find the timeline to create the meta-data for time editing
 		view.setOnAction(e -> onAction());
 	}
 
 	private void onAction() {
 		StringTable newTable = editTable(StringTable.valueOf((String) dtItem.getValue()));
-		setValue(newTable.toString());
+		setValue(newTable.toSaveableString(bdel, isep));
 	}
 
 	private StringTable editTable(StringTable currentValue) {
@@ -85,10 +97,10 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		dlg.getDialogPane().setContent(pane);
 		dlg.setResizable(true);
 		String s = "";
-		for (int i = 0; i<currentValue.size();i++) {
+		for (int i = 0; i < currentValue.size(); i++) {
 			s += currentValue.getWithFlatIndex(i);
-			if (i<currentValue.size()-1)
-				s+="\n";		
+			if (i < currentValue.size() - 1)
+				s += "\n";
 		}
 		textArea.setText(s);
 		Optional<ButtonType> result = dlg.showAndWait();
@@ -96,18 +108,17 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 			s = textArea.getText();
 			List<String> entries = new ArrayList<>();
 			String[] parts = s.split("\\n");
-			for (String p:parts) {
+			for (String p : parts) {
 				p = p.trim();
-				if (p.length()>0)
+				if (p.length() > 0)
 					entries.add(p);
 			}
 			if (entries.isEmpty())
-				entries.add("null");
+				entries.add("");
 			StringTable newValue = new StringTable(new Dimensioner(entries.size()));
-			for (int i=0;i<entries.size();i++)
+			for (int i = 0; i < entries.size(); i++)
 				newValue.setByInt(entries.get(i), i);
 			return newValue;
-
 		}
 		return currentValue;
 

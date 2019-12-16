@@ -85,8 +85,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 		newString = editDateTime(oldString);
 		if (!newString.equals(oldString)) {
 			setValue(newString);
-			GraphState.setChanged();
-			ConfigGraph.validateGraph();
+			getProperty().setValue(newString);
 		}
 	}
 
