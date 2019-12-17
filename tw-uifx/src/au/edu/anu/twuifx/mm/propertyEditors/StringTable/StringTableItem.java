@@ -30,11 +30,17 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.StringTable;
 
+import static fr.cnrs.iees.io.parsing.TextGrammar.DIM_BLOCK_DELIMITERS;
+import static fr.cnrs.iees.io.parsing.TextGrammar.DIM_ITEM_SEPARATOR;
+import static fr.cnrs.iees.io.parsing.TextGrammar.TABLE_BLOCK_DELIMITERS;
+import static fr.cnrs.iees.io.parsing.TextGrammar.TABLE_ITEM_SEPARATOR;
+
 import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
@@ -45,9 +51,15 @@ import fr.cnrs.iees.graph.ElementAdapter;
  * @date 15 Dec 2019
  */
 public class StringTableItem extends SimplePropertyItem {
+	protected char[][] bdel = new char[2][2];
+	protected char[] isep = new char[2];
 
 	public StringTableItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
 		super(controller,key, element, canEdit, category, description);
+		bdel[Table.DIMix] = DIM_BLOCK_DELIMITERS;
+		bdel[Table.TABLEix] = TABLE_BLOCK_DELIMITERS;
+		isep[Table.DIMix] = DIM_ITEM_SEPARATOR;
+		isep[Table.TABLEix] = TABLE_ITEM_SEPARATOR;
 	}
 
 	@Override
@@ -62,7 +74,7 @@ public class StringTableItem extends SimplePropertyItem {
 		String oldValue = oldTable.toString();
 		// NB Tables do not have an equals() function!
 		if (!oldValue.equals(newValue)){
-			StringTable newTable = StringTable.valueOf(newValue);
+			StringTable newTable = StringTable.valueOf(newValue,bdel,isep);
 			onUpdateProperty(newTable);
 		}
 	}

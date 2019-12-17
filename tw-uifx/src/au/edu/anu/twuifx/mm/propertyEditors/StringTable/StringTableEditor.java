@@ -38,10 +38,7 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
-import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.beans.value.ObservableValue;
@@ -52,14 +49,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
-import static fr.cnrs.iees.io.parsing.TextGrammar.*;
 
 public class StringTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private StringTableItem dtItem;
-	private char[][] bdel ;
-	private  char[] isep;
-
 	public StringTableEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
@@ -68,21 +61,14 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		dtItem = (StringTableItem) this.getProperty();
-		bdel = new char[2][2];
-		isep = new char[2];
-		bdel[Table.DIMix] = DIM_BLOCK_DELIMITERS;
-		bdel[Table.TABLEix] = TABLE_BLOCK_DELIMITERS;
-
-		isep[Table.DIMix] = DIM_ITEM_SEPARATOR;
-		isep[Table.TABLEix] = TABLE_ITEM_SEPARATOR;
 
 		// we need to find the timeline to create the meta-data for time editing
 		view.setOnAction(e -> onAction());
 	}
 
 	private void onAction() {
-		StringTable newTable = editTable(StringTable.valueOf((String) dtItem.getValue()));
-		setValue(newTable.toSaveableString(bdel, isep));
+		StringTable newTable = editTable(StringTable.valueOf((String) dtItem.getValue(),dtItem.bdel, dtItem.isep));
+		setValue(newTable.toSaveableString(dtItem.bdel, dtItem.isep));
 	}
 
 	private StringTable editTable(StringTable currentValue) {

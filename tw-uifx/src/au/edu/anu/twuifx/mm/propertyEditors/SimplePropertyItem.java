@@ -34,6 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet.Item;
 
+import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -42,6 +43,10 @@ import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import javafx.beans.value.ObservableValue;
+import static fr.cnrs.iees.io.parsing.TextGrammar.DIM_BLOCK_DELIMITERS;
+import static fr.cnrs.iees.io.parsing.TextGrammar.DIM_ITEM_SEPARATOR;
+import static fr.cnrs.iees.io.parsing.TextGrammar.TABLE_BLOCK_DELIMITERS;
+import static fr.cnrs.iees.io.parsing.TextGrammar.TABLE_ITEM_SEPARATOR;
 
 /**
  * Author Ian Davies
@@ -55,6 +60,7 @@ public class SimplePropertyItem implements Item {
 	protected String category;
 	private String description;
 	private IMMController controller;
+
 
 	public SimplePropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
 		this.element = element;
