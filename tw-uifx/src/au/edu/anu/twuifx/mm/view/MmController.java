@@ -49,14 +49,20 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -75,6 +81,7 @@ import au.edu.anu.rscs.aot.errorMessaging.ErrorList;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorMessagable;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.rscs.aot.util.Resources;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
@@ -89,6 +96,7 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.userProject.UserProjectLink;
+import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.StringTable.StringTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
@@ -118,8 +126,9 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Interval;
-
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
+	@FXML
+	private MenuItem miAbout;
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -950,6 +959,29 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		initialisePropertySheets();
 		setButtonState();
 
+	}
+
+	@FXML
+	void onAbout(ActionEvent event) {
+//		WebView browser = new WebView();
+//	    WebEngine webEngine = browser.getEngine();
+		Dialog<ButtonType> dlg = new Dialog<>();
+		dlg.initOwner((Window) Dialogs.owner());
+		dlg.setTitle("About ModelRunner");
+		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
+		HBox content = new HBox();
+		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
+		imageView.preserveRatioProperty().set(true);
+		TextArea textArea = new TextArea();
+		textArea.setWrapText(true);
+		List<String> lines = Resources.getTextResource("aboutMM.txt", Images.class);
+		for (String line : lines)
+			textArea.appendText(line);
+		content.getChildren().addAll(imageView, textArea);
+		dlg.getDialogPane().setContent(content);
+		dlg.getDialogPane().getButtonTypes().addAll(done);
+		dlg.setResizable(true);
+		dlg.showAndWait();
 	}
 
 }

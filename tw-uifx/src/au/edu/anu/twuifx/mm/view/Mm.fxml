@@ -85,6 +85,11 @@
                     </items>
                   </Menu>
                </items></Menu>
+            <Menu mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="About" />
+              </items>
+            </Menu>
 			</menus>
 		</MenuBar>
 	</top>
