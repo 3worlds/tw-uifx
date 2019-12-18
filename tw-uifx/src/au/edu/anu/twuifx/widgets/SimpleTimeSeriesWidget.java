@@ -39,8 +39,8 @@ import java.util.logging.Logger;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.data.runtime.TimeSeriesData;
-import au.edu.anu.twcore.data.runtime.TimeSeriesMetadata;
+import au.edu.anu.twcore.data.runtime.Output0DData;
+import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
@@ -68,7 +68,7 @@ import javafx.scene.layout.BorderPane;
  * 
  *       Trial of chart-fx based on the "RollingBufferSample"
  */
-public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData, Metadata> implements Widget {
+public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {
 
 	private int BUFFER_CAPACITY = 100;// pref mm/mr or both
 	// drop overlayed points
@@ -80,7 +80,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 //	private Timer timer;// dont need this
 	private XYChart chart;
 	private Map<String, CircularDoubleErrorDataSet> dataSetMap;
-	private TimeSeriesMetadata tsmeta;
+	private Output0DMetadata tsmeta;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget.class);
@@ -113,7 +113,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 	}
 
 	@Override
-	public void onDataMessage(final TimeSeriesData data) {
+	public void onDataMessage(final Output0DData data) {
 		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
 		if (policy.canProcessDataMessage(data)) {
 
@@ -166,7 +166,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<TimeSeriesData
 		// etc
 		if (!initialMessage) {
 			Platform.runLater(() -> {
-				tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+				tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 				for (DataLabel dl : tsmeta.doubleNames()) {
 					String key = dl.toString();
 //				log.info("Tracking: " + key);

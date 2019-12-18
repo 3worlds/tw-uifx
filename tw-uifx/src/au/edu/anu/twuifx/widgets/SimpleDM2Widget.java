@@ -34,7 +34,7 @@ import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.twcore.data.runtime.MapData;
+import au.edu.anu.twcore.data.runtime.Output2DData;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -73,7 +73,7 @@ import javafx.scene.text.Font;
  *
  * @date 2 Sep 2019
  */
-public class SimpleDM2Widget extends AbstractDisplayWidget<MapData, Metadata> implements Widget {
+public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadata> implements Widget {
 
 	private Label lblName;
 	private Label lblXY;
@@ -124,14 +124,14 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<MapData, Metadata> im
 	}
 
 	@Override
-	public void onDataMessage(MapData data) {
+	public void onDataMessage(Output2DData data) {
 		if (sender == data.sender())
 			Platform.runLater(() -> {
 				processOnDataMessage(data);
 			});
 	}
 
-	private void processOnDataMessage(MapData data) {
+	private void processOnDataMessage(Output2DData data) {
 		numbers = data.map();
 		dataToCanvas();
 

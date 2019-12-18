@@ -34,8 +34,8 @@ import java.util.logging.Logger;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.data.runtime.TimeSeriesData;
-import au.edu.anu.twcore.data.runtime.TimeSeriesMetadata;
+import au.edu.anu.twcore.data.runtime.Output0DData;
+import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -68,8 +68,8 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  * Displays a table of data - largely for debugging. This replaces label/value
  * pair widget
  */
-public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metadata> implements Widget {
-	private TimeSeriesMetadata tsmeta;
+public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {
+	private Output0DMetadata tsmeta;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private static Logger log = Logging.getLogger(SimpleDM0Widget.class);
@@ -92,7 +92,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 		Platform.runLater(() -> {
 			if (!initialMessage) {
 				tableDataList = FXCollections.observableArrayList();
-				tsmeta = (TimeSeriesMetadata) meta.properties().getPropertyValue(TimeSeriesMetadata.TSMETA);
+				tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 				timeFormatter.onMetaDataMessage(meta);
 				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 
@@ -116,7 +116,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<TimeSeriesData, Metad
 	}
 
 	@Override
-	public void onDataMessage(TimeSeriesData data) {
+	public void onDataMessage(Output0DData data) {
 		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
