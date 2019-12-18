@@ -1,7 +1,0 @@
-ModelMaker is a tool for constructing models of ecosystems.
-
-Models and all the associated infrustructure such as a user interface, are designed using a graph to represent model components and their relationships.
-
-We should use an html display here but this means we need   //		{"org.openjfx", "javafx-web", "[11,)", "_os"},
-//		{"org.openjfx", "javafx-media", "[11,)", "_os"},
-//		{"org.openjfx", "javafx-swing", "[11,)", "_os"},

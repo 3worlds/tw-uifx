@@ -972,12 +972,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		HBox content = new HBox();
 		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
 		imageView.preserveRatioProperty().set(true);
-		TextArea textArea = new TextArea();
-		textArea.setWrapText(true);
-		List<String> lines = Resources.getTextResource("aboutMM.txt", Images.class);
-		for (String line : lines)
-			textArea.appendText(line);
-		content.getChildren().addAll(imageView, textArea);
+		TextFlow textFlow = new TextFlow();
+		//textArea.setWrapText(true);
+		content.getChildren().addAll(imageView, textFlow);
 		dlg.getDialogPane().setContent(content);
 		dlg.getDialogPane().getButtonTypes().addAll(done);
 		dlg.setResizable(true);
