@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Wed Dec 18 17:08:16 CET 2019
+treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -7,18 +7,21 @@ treegraph // saved by OmugiGraphExporter on Wed Dec 18 17:08:16 CET 2019
 	userInterface ui
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget timeSeries3
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
-			widget timeSeries2
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 			widget timeSeries
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			container cntnr1
+				order = java.lang.Integer(1)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				widget timeSeries3
+					order = java.lang.Integer(1)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+				widget timeSeries2
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 		top top1
 			widget time
 				order = java.lang.Integer(1)
