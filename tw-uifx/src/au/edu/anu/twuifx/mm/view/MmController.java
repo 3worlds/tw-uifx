@@ -75,13 +75,14 @@ import java.util.Objects;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 
+import javafx.scene.effect.DropShadow;
+
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorList;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorMessagable;
 import au.edu.anu.rscs.aot.util.IntegerRange;
-import au.edu.anu.rscs.aot.util.Resources;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
@@ -126,6 +127,7 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Interval;
+
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 	@FXML
 	private MenuItem miAbout;
@@ -967,17 +969,61 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //	    WebEngine webEngine = browser.getEngine();
 		Dialog<ButtonType> dlg = new Dialog<>();
 		dlg.initOwner((Window) Dialogs.owner());
-		dlg.setTitle("About ModelRunner");
+		dlg.setTitle("About ModelMaker");
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		HBox content = new HBox();
 		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
 		imageView.preserveRatioProperty().set(true);
 		TextFlow textFlow = new TextFlow();
-		//textArea.setWrapText(true);
+		textFlow.setPrefWidth(400);
+		textFlow.setTextAlignment(TextAlignment.CENTER);
+		textFlow.setLineSpacing(10);
+		DropShadow dropShadow = new DropShadow();
+		dropShadow.setOffsetX(4);
+		dropShadow.setOffsetY(6);
+		dropShadow.setHeight(5);
+		Text text_1 = new Text("ModelMaker\n");
+		text_1.setEffect(dropShadow);
+		text_1.setFont(Font.font("Helvetica", 30));
+
+		Text text_2 = new Text("\"Though the organisms may claim our primary interest, " + //
+				"when we are trying to think fundamentally, we cannot separate them from their special environment, " + //
+				"with which they form one physical system\"");
+
+		text_2.setFont(Font.font("Helvetica", FontPosture.ITALIC, 12));
+
+		Text text_3 = new Text(" A. G. Tanlsey (1935).\n");
+		text_3.setFont(Font.font("Helvetica", 12));
+
+		Text text_4 = new Text(
+				"ModelMaker is one part of the 3Worlds software suite, and is used for constructing models of ecosystems: models that we believe, accord with Tansley's original meaning of the term 'ecosystem'. "
+						+ //
+						"Using the formalism of a graph, models of any ecosystem can be constructed together with the necessary infrustructure for model execution such as data structures, file management and the user interface."
+						+ //
+						"\n");
+		Text text_4a = new Text(
+				"We have designed an archetype we believe follows from Tansley’s concept of the ecosystem - a recursive and multi-scale system of interacting entities. \n"
+						+ //
+						"Despite great freedom in model construction, the specification constraints imposed by the archetype greatly assists in model comparison exercises. "
+						+ //
+						"This allows common but difficult questions such as: " + //
+						"why should two models, ostensibly constructed for the same purpose, differ in their outputs? "
+						+ //
+						"How does a change in temporal or spatial scale affect projections? " + //
+						"How does adding or removing sub-systems change model projections? \n" + //
+						"Models developed in 3Worlds are always comparable, which is rarely the case in large model intercomparison exercises.\n");
+
+		text_4.setFont(Font.font("Helvetica", 12));
+
+		Text text_5 = new Text("Authors: J. Gignoux, I. Davies and S. Flint");
+
+		textFlow.getChildren().addAll(text_1, text_2, text_3, text_4, text_4a, text_5);
+
+		// textArea.setWrapText(true);
 		content.getChildren().addAll(imageView, textFlow);
 		dlg.getDialogPane().setContent(content);
 		dlg.getDialogPane().getButtonTypes().addAll(done);
-		dlg.setResizable(true);
+		// dlg.setResizable(true);
 		dlg.showAndWait();
 	}
 

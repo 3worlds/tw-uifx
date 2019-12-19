@@ -55,7 +55,7 @@ public class GraphStatefx implements IGraphState {
 	private BooleanProperty propertyHasChanged = new SimpleBooleanProperty(false);
 	private StringProperty propertyTitle = new SimpleStringProperty("");
 	private StringProperty propertyJavaPath = new SimpleStringProperty("");
-	private List<IGraphStateListener> listeners=new ArrayList<>();
+	private List<IGraphStateListener> listeners = new ArrayList<>();
 
 	public GraphStatefx(StringProperty propertyTitle, StringProperty propertyJavaPath) {
 		if (propertyTitle != null)
@@ -83,12 +83,12 @@ public class GraphStatefx implements IGraphState {
 					title = "*" + title;
 				if (!propertyTitle.getValue().isEmpty()) {
 					if (!propertyJavaPath.getValue().isEmpty()) {
-							title = title + "<o-o-o>" + propertyJavaPath.get();
+						title = title + "<o-o-o>" + propertyJavaPath.get();
 					}
 					propertyTitle.setValue(title);
 				}
 			}
-		onChange();
+			onChange();
 		});
 
 	}
@@ -101,10 +101,11 @@ public class GraphStatefx implements IGraphState {
 	@Override
 	public void setChanged() {
 		propertyHasChanged.setValue(true);
-		ErrorList.add(new ModelBuildErrorMsg(ModelBuildErrors.DEPLOY_PROJECT_UNSAVED));
+		if (!ErrorList.haveErrors())
+			ErrorList.add(new ModelBuildErrorMsg(ModelBuildErrors.DEPLOY_PROJECT_UNSAVED));
 		setTitle();
 	}
-	
+
 	@Override
 	public void clear() {
 		propertyHasChanged.setValue(false);
@@ -114,14 +115,14 @@ public class GraphStatefx implements IGraphState {
 	@Override
 	public void addListener(IGraphStateListener l) {
 		listeners.add(l);
-		
+
 	}
 
 	@Override
 	public void onChange() {
 		for (IGraphStateListener l : listeners)
 			l.onStateChange(propertyHasChanged.getValue());
-		
+
 	}
 
 }
