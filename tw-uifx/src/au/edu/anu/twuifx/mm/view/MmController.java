@@ -96,6 +96,7 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
@@ -204,7 +205,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private Button btnDeploy;
 
 	@FXML
-	private TextFlow textFlowErrorMsgs;
+	private TextArea textAreaErrorMsgs;
 
 	@FXML
 	private RadioButton rb1;
@@ -362,17 +363,21 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			verbosity = Verbosity.medium;
 		else
 			verbosity = Verbosity.full;
-		textFlowErrorMsgs.getChildren().clear();
+//		textFlowErrorMsgs.getChildren().clear();
+		textAreaErrorMsgs.clear();
 		sortErrors();
 		for (ErrorMessagable msg : lstErrorMsgs)
-			textFlowErrorMsgs.getChildren().add(getMessageText(msg));
+			textAreaErrorMsgs.appendText(getMessageText(msg));
 	}
 
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
+		String header = "'"+Project.getDisplayName() + "' is now disconnected from Java project '" + UserProjectLink.projectRoot().getName()
+		+ "'.";
 		UserProjectLink.unlinkUserProject();
 		ConfigGraph.validateGraph();
+		Dialogs.infoAlert("Project disconnected", header, "");
 		;
 	}
 
@@ -386,6 +391,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				if (UserProjectLinkFactory.makeEnv(jprjFile, ideType)) {
 					userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
 					ConfigGraph.validateGraph();
+					String header = "'"+Project.getDisplayName() + "' is now connected to Java project '" + jprjFile.getName()
+							+ "'.";
+					String content = "Make sure '" + TwPaths.TW_DEP_JAR + "' is in the build path of '" + jprjFile.getName()
+							+ "' and refresh/clean '"+jprjFile.getName()+"' from the IDE.";
+					Dialogs.infoAlert("Project connected", header, content);
 				}
 			}
 		}
@@ -632,20 +642,24 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		return userProjectPath;
 	}
 
-	private Text getMessageText(ErrorMessagable msg) {
+	private String getMessageText(ErrorMessagable msg) {
 
-		Text t;
+		//Text t;
+		String t="";
 		switch (verbosity) {
 		case brief: {
-			t = new Text(msg.verbose1() + "\n\n");
+//			t = new Text(msg.verbose1() + "\n\n");
+			t = msg.verbose1() + "\n\n";
 			break;
 		}
 		case medium: {
-			t = new Text(msg.verbose2() + "\n\n");
+//			t = new Text(msg.verbose2() + "\n\n");
+			t =msg.verbose2() + "\n\n";
 			break;
 		}
 		default: {
-			t = new Text(msg.toString() + "\n\n");
+//			t = new Text(msg.toString() + "\n\n");
+			t = msg.toString() + "\n\n";
 		}
 		}
 
@@ -669,15 +683,18 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onReceiveMsg(ErrorMessagable msg) {
 		lstErrorMsgs.add(msg);
 		sortErrors();
-		ObservableList<Node> children = textFlowErrorMsgs.getChildren();
-		children.clear();
+		textAreaErrorMsgs.clear();
+//		ObservableList<Node> children = textFlowErrorMsgs.getChildren();
+//		children.clear();
 		for (ErrorMessagable m : lstErrorMsgs)
-			children.add(getMessageText(m));
+			textAreaErrorMsgs.appendText(getMessageText(m));
+			//children.add(getMessageText(m));
 	}
 
 	@Override
 	public void onClear() {
-		textFlowErrorMsgs.getChildren().clear();
+		textAreaErrorMsgs.clear();
+		//textFlowErrorMsgs.getChildren().clear();
 		lstErrorMsgs.clear();
 	}
 	// ===============================================
