@@ -1,7 +1,41 @@
 treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 
+// Test file for 3 datatrackers (DataTracker0D) with a population of individuals
+//
+//=================================================================================================
+// Copy and paste this text in the changeState(...) method of the generated Growth.java class
+// in order to see things displayed in the SimpleTimeSeriesWidget
+//
+//			Plantrec ctvar = (Plantrec) focal.currentState();
+//			Plantrec nxtvar = (Plantrec) focal.nextState();
+//			double bm = ctvar.biomass()*1.1;
+//			if (bm>ctvar.height())
+//				bm=0.1;
+//			nxtvar.biomass(bm);
+//			nxtvar.height(Math.random());
+//		}
+//
+// Copy and paste this text in the delete(...) method of the generated Mortality.java class
+// in order to see things displayed in the SimpleTimeSeriesWidget
+//
+//		    int NMAX = 10;
+//		    double proba = 1.0/NMAX;
+//			int ntot = (int) focalContext.groupPopulationData.getPropertyValue(COUNT.shortName());
+//			if (ntot>=NMAX)
+//				return (Math.random()<proba);
+//			else
+//				return false;
+//
+// Copy and paste this text in the nNew(...) method of the generated Fecundity.java class
+// in order to see things displayed in the SimpleTimeSeriesWidget
+//
+//		return 0.1;
+//
+//=================================================================================================
+
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	
 // TREE
 3worlds testdatatracker8
 	userInterface ui
@@ -17,11 +51,11 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 				widget timeSeries3
 					order = java.lang.Integer(1)
 					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 				widget timeSeries2
 					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 		top top1
 			widget time
 				order = java.lang.Integer(1)
@@ -55,14 +89,14 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Growth)
 						dataTracker plantTracker
-							sampleSize = java.lang.String()
+							sampleSize = java.lang.String("ALL")
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 					process animalGrowth
 						function Fecundity
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys.Fecundity)
 						dataTracker animalTracker
 							sampleSize = java.lang.String()
@@ -71,10 +105,10 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 						function Mortality
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.sys.Mortality)
 						dataTracker animalTracker2
-							sampleSize = java.lang.String(4)
+							sampleSize = java.lang.String("4")
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN,SE})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
@@ -82,8 +116,19 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 			initialState state
 				group animalG
 					component animalI2
+						variableValues vva1
+							sex = java.lang.Boolean(true)
+							bodyweight = java.lang.Double(1.0)
+							length = java.lang.Double(4.1)
 					component animalI1
+						variableValues vva1
+							sex = java.lang.Boolean(false)
+							bodyweight = java.lang.Double(1.4)
+							length = java.lang.Double(6.2)
 				component plantI
+					variableValues vvplant
+						biomass = java.lang.Double(0.1)
+						height = java.lang.Double(2.0)
 		structure struc
 			componentType animalC
 				driverClass = java.lang.String(code.sys.Animalrec)
