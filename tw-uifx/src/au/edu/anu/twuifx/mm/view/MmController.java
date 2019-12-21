@@ -57,6 +57,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.*;
@@ -64,6 +65,9 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -71,6 +75,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
@@ -373,8 +378,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void handleDisconnectJavaProject(ActionEvent event) {
 		userProjectPath.set("");
-		String header = "'"+Project.getDisplayName() + "' is now disconnected from Java project '" + UserProjectLink.projectRoot().getName()
-		+ "'.";
+		String header = "'" + Project.getDisplayName() + "' is now disconnected from Java project '"
+				+ UserProjectLink.projectRoot().getName() + "'.";
 		UserProjectLink.unlinkUserProject();
 		ConfigGraph.validateGraph();
 		Dialogs.infoAlert("Project disconnected", header, "");
@@ -391,10 +396,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				if (UserProjectLinkFactory.makeEnv(jprjFile, ideType)) {
 					userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
 					ConfigGraph.validateGraph();
-					String header = "'"+Project.getDisplayName() + "' is now connected to Java project '" + jprjFile.getName()
-							+ "'.";
-					String content = "Make sure '" + TwPaths.TW_DEP_JAR + "' is in the build path of '" + jprjFile.getName()
-							+ "' and refresh/clean '"+jprjFile.getName()+"' from the IDE.";
+					String header = "'" + Project.getDisplayName() + "' is now connected to Java project '"
+							+ jprjFile.getName() + "'.";
+					String content = "Make sure '" + TwPaths.TW_DEP_JAR + "' is in the build path of '"
+							+ jprjFile.getName() + "' and refresh/clean '" + jprjFile.getName() + "' from the IDE.";
 					Dialogs.infoAlert("Project connected", header, content);
 				}
 			}
@@ -644,8 +649,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private String getMessageText(ErrorMessagable msg) {
 
-		//Text t;
-		String t="";
+		// Text t;
+		String t = "";
 		switch (verbosity) {
 		case brief: {
 //			t = new Text(msg.verbose1() + "\n\n");
@@ -654,7 +659,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 		case medium: {
 //			t = new Text(msg.verbose2() + "\n\n");
-			t =msg.verbose2() + "\n\n";
+			t = msg.verbose2() + "\n\n";
 			break;
 		}
 		default: {
@@ -688,13 +693,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //		children.clear();
 		for (ErrorMessagable m : lstErrorMsgs)
 			textAreaErrorMsgs.appendText(getMessageText(m));
-			//children.add(getMessageText(m));
+		// children.add(getMessageText(m));
 	}
 
 	@Override
 	public void onClear() {
 		textAreaErrorMsgs.clear();
-		//textFlowErrorMsgs.getChildren().clear();
+		// textFlowErrorMsgs.getChildren().clear();
 		lstErrorMsgs.clear();
 	}
 	// ===============================================
@@ -989,6 +994,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		dlg.setTitle("About ModelMaker");
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		HBox content = new HBox();
+		VBox leftContent = new VBox();
 		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
 		imageView.preserveRatioProperty().set(true);
 		TextFlow textFlow = new TextFlow();
@@ -1012,32 +1018,27 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Text text_3 = new Text(" A. G. Tanlsey (1935).\n");
 		text_3.setFont(Font.font("Helvetica", 12));
 
-		Text text_4 = new Text(
-				"ModelMaker is one part of the 3Worlds software suite, and is used for constructing models of ecosystems: models that we believe, accord with Tansley's original meaning of the term 'ecosystem'. "
-						+ //
-						"Using the formalism of a graph, models of any ecosystem can be constructed together with the necessary infrustructure for model execution such as data structures, file management and the user interface."
-						+ //
-						"\n");
-		Text text_4a = new Text(
-				"We have designed an archetype we believe follows from Tansley’s concept of the ecosystem - a recursive and multi-scale system of interacting entities. \n"
-						+ //
-						"Despite great freedom in model construction, the specification constraints imposed by the archetype greatly assists in model comparison exercises. "
-						+ //
-						"This allows common but difficult questions such as: " + //
-						"why should two models, ostensibly constructed for the same purpose, differ in their outputs? "
-						+ //
-						"How does a change in temporal or spatial scale affect projections? " + //
-						"How does adding or removing sub-systems change model projections? \n" + //
-						"Models developed in 3Worlds are always comparable, which is rarely the case in large model intercomparison exercises.\n");
+		textFlow.getChildren().addAll(text_1, text_2, text_3);
 
-		text_4.setFont(Font.font("Helvetica", 12));
+		content.getChildren().addAll(imageView, leftContent);
+		TextArea textArea = new TextArea();
+		Scanner sc = new Scanner(Images.class.getResourceAsStream("aboutMM.txt"));
+		
+		int count =0;
+		while (sc.hasNext()) {
+			textArea.appendText(sc.nextLine());
+			textArea.appendText("\n");
+			
+		}
+		sc.close();
+		textArea.setWrapText(true);
+		textArea.setPrefHeight(400);
+		textArea.setEditable(false);
+		TextFlow authors = new TextFlow();
+		authors.setTextAlignment(TextAlignment.CENTER);
+		authors.getChildren().add(new Text("Authors: J. Gignoux, I. Davies and S. Flint"));
+		leftContent.getChildren().addAll(textFlow, textArea, new Label(), authors);
 
-		Text text_5 = new Text("Authors: J. Gignoux, I. Davies and S. Flint");
-
-		textFlow.getChildren().addAll(text_1, text_2, text_3, text_4, text_4a, text_5);
-
-		// textArea.setWrapText(true);
-		content.getChildren().addAll(imageView, textFlow);
 		dlg.getDialogPane().setContent(content);
 		dlg.getDialogPane().getButtonTypes().addAll(done);
 		// dlg.setResizable(true);
