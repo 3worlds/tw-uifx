@@ -45,6 +45,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -149,15 +150,17 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		if (high.equals(Double.POSITIVE_INFINITY))
 			cbPosInf.setSelected(true);
 		tfLow.setText(txtLow);
+		tfLow.setPrefWidth(100);
+		tfHigh.setPrefWidth(100);
 		tfHigh.setText(txtHigh);
-		grid.add(cbPosInf, 0, 0);
-		grid.add(cbLowOpen, 1, 0);
-		grid.add(tfLow, 2, 0);
-		// grid.add(new Label("Low:"), 0, 0);
-		// grid.add(new Label("High:"), 0, 1);
+		grid.add(cbLowOpen, 0, 0);
+		grid.add(tfLow, 1, 0);
+		grid.add(new Label(".. "), 2, 0);
 		grid.add(tfHigh, 3, 0);
 		grid.add(cbHighOpen, 4, 0);
-		grid.add(cbNegInf, 5, 0);
+
+		grid.add(cbNegInf, 1, 1);
+		grid.add(cbPosInf, 3, 1);
 		GridPane.setMargin(tfLow, new Insets(0, 5, 0, 0));
 		GridPane.setMargin(cbLowOpen, new Insets(0, 5, 0, 0));
 		GridPane.setMargin(tfHigh, new Insets(0, 5, 0, 0));
@@ -186,9 +189,9 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 			if (negInf)
 				low = Double.NEGATIVE_INFINITY;
 
-			// Can't be both
-			if (posInf && negInf) {
-				Dialogs.errorAlert("Interval error", "", "Both bounds cannot be infinite");
+			// not range
+			if (low.equals(high)) {
+				Dialogs.errorAlert("Interval error", "", "Bounds set with empty or negative range");
 				return currentValue;
 			}
 

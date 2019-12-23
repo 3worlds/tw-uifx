@@ -1,0 +1,18 @@
+ModelMaker is one of two programs that comprise the 3Worlds project. It’s purpose is to construct ecosystem models that accord with Tansley's original meaning of the term 'Ecosystem'.
+
+At the heart of 3Worlds is an archetype: a meta-model of what constitutes an ecosystem. In effect, the archetype makes concrete our interpretation of Tansley’s 1935 paper, briefly, that an ‘ecosystem’ is a recursive and multi-scale system of interacting biological and physical entities.
+
+Constrained by this archetype and using the formalism of a graph, the investigator can develop a structure for an ecosystem model by identifying all components (nodes), relationships (edges) and attributes (properties) they consider relevant. During this process, ModelMaker generates code templates, where program code can be added to define the behaviour of these elements. 
+
+While 3Worlds makes the cycle of model development, analysis and refinement more efficient, a more important outcome is this: by defining an ecosystem structure that complies with the 3Worlds archetype, arbitrary models no longer have arbitrary designs. This makes answering the kinds of questions that arise when developing a model far more tractable. For example:
+    •   Why should two models, ostensibly constructed for the same purpose, differ in their outputs?
+    •   How does a change in temporal or spatial scale affect model behaviour?
+    •   How does adding or removing sub-systems change model behaviour?
+In general, these questions are asking “how much detail do I need to capture the observed behaviour of an ecosystem?”.
+
+This question is more easily addressed if the model variations are all grounded upon the same understanding as to what constitutes an ‘Ecosystem’. It is the 3Worlds archetype that provides this grounding.
+
+References
+Gignoux, J., Davies, I.D., Flint, S.R. and Zucker, J.D., 2011. The ecosystem in practice: Interest and problems of an old definition for constructing ecological models. Ecosystems, 14(7), pp.1039-1054.
+
+Gignoux, J., Chérel, G., Davies, I.D., Flint, S.R. and Lateltin, E., 2017. Emergence and complex systems: The contribution of dynamic graph theory. Ecological complexity, 31, pp.34-49.

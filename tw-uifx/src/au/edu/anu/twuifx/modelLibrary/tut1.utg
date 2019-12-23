@@ -33,7 +33,7 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 09 11:01:49 AEDT 2019
 							groupBy = fr.cnrs.iees.twcore.constants.Grouping(NO_GROUPING)
 							select = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.TimeSeriesTracker)
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							viewOthers = java.lang.Boolean(false)
 			stoppingCondition stop

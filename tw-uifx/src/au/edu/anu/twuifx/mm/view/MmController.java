@@ -995,8 +995,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		HBox content = new HBox();
 		VBox leftContent = new VBox();
+		VBox rightContent = new VBox();
 		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
 		imageView.preserveRatioProperty().set(true);
+		rightContent.getChildren().addAll(imageView,new Label("Three Worlds - M. C. Escher (1955)"));
 		TextFlow textFlow = new TextFlow();
 		textFlow.setPrefWidth(400);
 		textFlow.setTextAlignment(TextAlignment.CENTER);
@@ -1020,17 +1022,16 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		textFlow.getChildren().addAll(text_1, text_2, text_3);
 
-		content.getChildren().addAll(imageView, leftContent);
+		content.getChildren().addAll(rightContent, leftContent);
 		TextArea textArea = new TextArea();
-		Scanner sc = new Scanner(Images.class.getResourceAsStream("aboutMM.txt"));
+		Scanner sc = new Scanner(MmController.class.getResourceAsStream("aboutMM.txt"));
 		
-		int count =0;
 		while (sc.hasNext()) {
 			textArea.appendText(sc.nextLine());
 			textArea.appendText("\n");
-			
 		}
 		sc.close();
+		
 		textArea.setWrapText(true);
 		textArea.setPrefHeight(400);
 		textArea.setEditable(false);
@@ -1042,6 +1043,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		dlg.getDialogPane().setContent(content);
 		dlg.getDialogPane().getButtonTypes().addAll(done);
 		// dlg.setResizable(true);
+		textArea.selectPositionCaret(0);
+		textArea.deselect();
 		dlg.showAndWait();
 	}
 
