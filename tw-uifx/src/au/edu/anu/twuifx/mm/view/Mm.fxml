@@ -194,7 +194,7 @@
 												</ToolBar>
 											</top>
                      <center>
-                        <TextArea fx:id="textAreaErrorMsgs" editable="false" prefHeight="178.0" prefWidth="849.0" BorderPane.alignment="CENTER" />
+                        <TextArea fx:id="textAreaErrorMsgs" editable="false" prefHeight="178.0" prefWidth="849.0" wrapText="true" BorderPane.alignment="CENTER" />
                      </center>
 										</BorderPane>
                </center>

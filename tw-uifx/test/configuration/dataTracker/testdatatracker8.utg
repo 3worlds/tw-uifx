@@ -32,30 +32,11 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 //		return 0.1;
 //
 //=================================================================================================
-
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
-	
 // TREE
 3worlds testdatatracker8
 	userInterface ui
-		tab tab1
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget timeSeries
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-			container cntnr1
-				order = java.lang.Integer(1)
-				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-				widget timeSeries3
-					order = java.lang.Integer(1)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-				widget timeSeries2
-					order = java.lang.Integer(0)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 		top top1
 			widget time
 				order = java.lang.Integer(1)
@@ -64,6 +45,44 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+		tab tb1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			container cntnr2
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+				widget timeSeries1
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				widget table
+					order = java.lang.Integer(1)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+			container cntnr3
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				container cntnr4
+					order = java.lang.Integer(0)
+					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+					widget timeSeries4
+						order = java.lang.Integer(0)
+						sender = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+					widget table1
+						order = java.lang.Integer(1)
+						sender = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+				container cntnr5
+					order = java.lang.Integer(0)
+					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+					widget timeSeries5
+						order = java.lang.Integer(0)
+						sender = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+					widget table2
+						order = java.lang.Integer(1)
+						sender = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 	experiment exp
 		design design1
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
@@ -89,7 +108,7 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Growth)
 						dataTracker plantTracker
-							sampleSize = java.lang.String("ALL")
+							sampleSize = java.lang.String(ALL)
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
@@ -99,7 +118,7 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys.Fecundity)
 						dataTracker animalTracker
-							sampleSize = java.lang.String()
+							sampleSize = java.lang.String(4)
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
@@ -108,7 +127,7 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.sys.Mortality)
 						dataTracker animalTracker2
-							sampleSize = java.lang.String("4")
+							sampleSize = java.lang.String(4)
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN,SE})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
@@ -117,14 +136,14 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 				group animalG
 					component animalI2
 						variableValues vva1
-							sex = java.lang.Boolean(true)
 							bodyweight = java.lang.Double(1.0)
 							length = java.lang.Double(4.1)
+							sex = java.lang.Boolean(true)
 					component animalI1
-						variableValues vva1
-							sex = java.lang.Boolean(false)
+						variableValues vva2
 							bodyweight = java.lang.Double(1.4)
 							length = java.lang.Double(6.2)
+							sex = java.lang.Boolean(false)
 				component plantI
 					variableValues vvplant
 						biomass = java.lang.Double(0.1)
@@ -173,24 +192,27 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 // CROSS-LINKS
 [component:plantI] instanceOf instanceOf1 [componentType:plantC]
 [componentType:plantC] belongsTo belongsTo1 [category:plant]
-[dataTracker:animalTracker2] trackField trckFld1 [field:length]
-	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[dataTracker:animalTracker2] trackComponent trckCmpnnt2 [group:animalG]
 [process:animalGrowth] appliesTo applsT1 [category:animal]
 [dataTracker:animalTracker] trackPopulation animalPopTracker [group:animalG]
 	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
-[widget:timeSeries] trackSeries trckSrs1 [dataTracker:plantTracker]
 [experiment:exp] baseLine baseLine1 [system:sys]
-[dataTracker:plantTracker] trackComponent trckCmpnnt1 [component:plantI]
-[dataTracker:plantTracker] trackField trckFld2 [field:biomass]
-	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [component:animalI1] instanceOf instncOf1 [componentType:animalC]
 [component:animalI2] instanceOf instncOf2 [componentType:animalC]
+[widget:timeSeries4] trackSeries trckSrs6 [dataTracker:animalTracker2]
+[widget:timeSeries5] trackSeries trckSrs8 [dataTracker:plantTracker]
 [group:animalG] groupOf grpOf1 [componentType:animalC]
 [componentType:animalC] belongsTo blngsT1 [category:animal]
 [category:plant] drivers drvrs1 [record:plantrec]
 [category:animal] drivers drvrs2 [record:animalrec]
-[widget:time] trackTime trackTime1 [dynamics:dyn]
 [process:plantGrowth] appliesTo appliesTo1 [category:plant]
-[widget:timeSeries2] trackSeries trckSrs2 [dataTracker:animalTracker]
-[widget:timeSeries3] trackSeries trckSrs3 [dataTracker:animalTracker2]
+[widget:timeSeries1] trackSeries trckSrs4 [dataTracker:animalTracker]
+[dataTracker:animalTracker2] trackField trckFld1 [field:length]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:animalTracker2] trackComponent trckCmpnnt2 [group:animalG]
+[widget:table2] trackSeries trckSrs9 [dataTracker:plantTracker]
+[widget:table1] trackSeries trckSrs7 [dataTracker:animalTracker2]
+[dataTracker:plantTracker] trackComponent trckCmpnnt1 [component:plantI]
+[dataTracker:plantTracker] trackField trckFld2 [field:biomass]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[widget:table] trackSeries trckSrs5 [dataTracker:animalTracker]
+[widget:time] trackTime trackTime1 [dynamics:dyn]

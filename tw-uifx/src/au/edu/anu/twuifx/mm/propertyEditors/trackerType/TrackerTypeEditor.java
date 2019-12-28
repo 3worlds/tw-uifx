@@ -101,7 +101,6 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private int[][] collectDims(TreeNode parent) {
-//		List<DimNode> dimList = new ArrayList<>();
 		List<int[]> dimList = new ArrayList<>();
 		while (parent != null) {
 			if (parent instanceof TableNode) {
@@ -125,19 +124,6 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 
-//	private String makeDefault(int[][] sizes) {
-//		Dimensioner[] dims = { new Dimensioner(sizes.length) };
-//		String result="";
-//		for (int i = 0; i < sizes.length; i++) {
-//			String newEntry = "[";
-//			for (int j = 0; j < sizes[i].length; j++)
-//				newEntry += "|";
-//			newEntry = newEntry.substring(0, newEntry.length() - 1);
-//			newEntry += "]";
-//			result+=newEntry+",";
-//		}
-//		return result.substring(0,result.length()-1);
-//	}
 
 	private List<Record> getRootRecords() {
 		List<Record> result = new ArrayList<>();
