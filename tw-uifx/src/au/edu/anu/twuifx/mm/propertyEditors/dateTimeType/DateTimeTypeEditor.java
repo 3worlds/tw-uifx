@@ -41,9 +41,7 @@ import java.util.SortedSet;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
-import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.twcore.constants.TimeScaleType;
