@@ -3,6 +3,8 @@
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -14,16 +16,24 @@
          <children>
             <MenuBar>
               <menus>
-                <Menu fx:id="menuWidgets" mnemonicParsing="false" text="Widgets" />
-                  <Menu mnemonicParsing="false" text="Initial state" />
                   <Menu mnemonicParsing="false" text="Parameters">
                      <items>
-                        <CheckMenuItem fx:id="miDashboard" mnemonicParsing="false" onAction="#handleDashboard" text="Dashboard" />
+                        <CheckMenuItem fx:id="miParDashboard" mnemonicParsing="false" onAction="#onParDashboard" text="Dashboard" />
                      </items>
                   </Menu>
+                  <Menu mnemonicParsing="false" text="Initial state">
+                     <items>
+                        <MenuItem fx:id="miISGenerate" mnemonicParsing="false" onAction="#onISGenerate" text="Generate..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="miISSaveAs" mnemonicParsing="false" onAction="#onISSaveAs" text="Save as..." />
+                        <MenuItem fx:id="miISSelect" mnemonicParsing="false" onAction="#onISSelect" text="Select..." />
+                        <MenuItem fx:id="miISReload" mnemonicParsing="false" onAction="#onISReload" text="Reload" />
+                        <MenuItem fx:id="miISClear" mnemonicParsing="false" onAction="#onISClear" text="Clear" />
+                     </items></Menu>
+                <Menu fx:id="menuWidgets" mnemonicParsing="false" text="Widgets" />
                   <Menu mnemonicParsing="false" text="About">
                      <items>
-                        <CheckMenuItem mnemonicParsing="false" text="Current setup" />
+                        <CheckMenuItem fx:id="miCurrentSetup" mnemonicParsing="false" onAction="#onCurrentSetup" text="Current setup" />
                      </items>
                   </Menu>
               </menus>

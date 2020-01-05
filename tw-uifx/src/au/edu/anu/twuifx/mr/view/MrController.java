@@ -30,31 +30,74 @@
 
 package au.edu.anu.twuifx.mr.view;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.mr.IMRController;
+import au.edu.anu.twapps.mr.IMRModel;
+import au.edu.anu.twapps.mr.MRModel;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twcore.project.ProjectPaths;
+import fr.cnrs.iees.graph.impl.ALEdge;
+import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * @author Ian Davies
  * @date 18 Jan. 2018
  */
-public class MrController {
+public class MrController implements IMRController {
 	@FXML
-	private CheckMenuItem miDashboard;
+	private CheckMenuItem miParDashboard;
+	@FXML
+	private CheckMenuItem miCurrentSetup;
 
 	@FXML
 	private Menu menuWidgets;
+	@FXML
+	private MenuItem miISGenerate;
+
+	@FXML
+	private MenuItem miISSaveAs;
+
+	@FXML
+	private MenuItem miISSelect;
+
+	@FXML
+	private MenuItem miISReload;
+
+	@FXML
+	private MenuItem miISClear;
 
 	@FXML
 	private TabPane tabPane;
-	
+
+	private IMRModel model;
+
 	public TabPane getTabPane() {
 		return tabPane;
 	}
@@ -65,7 +108,6 @@ public class MrController {
 	@FXML
 	private HBox statusBar;
 
-
 	public HBox getToolBar() {
 		return toolBar;
 	}
@@ -74,18 +116,57 @@ public class MrController {
 		return statusBar;
 	}
 
-
 	public Menu getWidgetMenu() {
 		return menuWidgets;
 	}
 
 	@FXML
-	void handleDashboard(ActionEvent event) {
+	void onCurrentSetup(ActionEvent event) {
 
 	}
 
 	@FXML
+	void onISClear(ActionEvent event) {
+		model.doISClear();
+	}
+
+	@FXML
+	void onISGenerate(ActionEvent event) {
+		model.doISGenerate();
+	}
+
+	@FXML
+	void onISReload(ActionEvent event) {
+		model.doISReload();
+	}
+
+	@FXML
+	void onISSaveAs(ActionEvent event) {
+		List<ExtensionFilter> extensions = new ArrayList<>();
+		extensions.add(new ExtensionFilter("Initial state (*.isf)", ".isf"));
+		File file = Dialogs.saveISFile(Project.makeFile(ProjectPaths.RUNTIME), "Save state as");
+		if (file!=null) {
+			model.doISSaveAs(file);
+			System.out.println(file);
+		}
+	}
+
+	@FXML
+	void onISSelect(ActionEvent event) {	 
+		int idx =Dialogs.editISFiles(model.getISFiles(), model.getISSelection());
+		model.setISSelection(idx);
+	}
+
+	@FXML
+	void onParDashboard(ActionEvent event) {
+		if (dashboard==null)
+			dashboard = new Dashboard(model.getGraph(),stage,miParDashboard.selectedProperty());
+		dashboard.show(miParDashboard.isSelected());
+	}
+
+	@FXML
 	public void initialize() {
+		model = new MRModel(this);
 		statusBar.setSpacing(5);
 		statusBar.setPadding(new Insets(1, 1, 1, 1));
 		statusBar.setStyle("-fx-background-color: lightgray");
@@ -98,9 +179,11 @@ public class MrController {
 	private static final String mainMaximized = mainFrameName + "_" + "maximized";
 	private static final String tabIndex = "tabIndex";
 
-
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+	public IMRModel getModel() {
+		return model;
 	}
 
 	public void putPreferences() {
@@ -109,12 +192,14 @@ public class MrController {
 			Preferences.putBoolean(mainMaximized, stage.isMaximized());
 			int idx = tabPane.getSelectionModel().getSelectedIndex();
 			Preferences.putInt(tabIndex, idx);
+			model.putPreferences();
 			Preferences.flush();
 		}
 	}
 
 	public void getPreferences() {
-		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
+				stage.getHeight());
 		stage.setX(r[0]);
 		stage.setY(r[1]);
 		stage.setWidth(r[2]);
@@ -122,6 +207,9 @@ public class MrController {
 		stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
 		int idx = Preferences.getInt(tabIndex, 0);
 		tabPane.getSelectionModel().select(idx);
+		model.getPreferences();
 	}
+
+	private Dashboard dashboard;
 
 }

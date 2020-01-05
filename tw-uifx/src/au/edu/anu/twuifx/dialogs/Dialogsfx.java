@@ -35,20 +35,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.dialogs.IDialogs;
 import au.edu.anu.twapps.dialogs.YesNoCancel;
 import au.edu.anu.twcore.project.TwPaths;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import fr.cnrs.iees.io.GraphFileFormats;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextInputDialog;
@@ -272,6 +278,28 @@ public class Dialogsfx implements IDialogs {
 		fc.setInitialFileName(promptFileName);
 		fc.setSelectedExtensionFilter(filter);
 		return fc.showSaveDialog(owner);
+	}
+
+	@Override
+	public File saveISFile(File directory, String title) {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle(title);
+		fileChooser.setInitialDirectory(directory);
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("Initial state file (*.isf)", ".isf"));
+		fileChooser.setInitialFileName("*.isf");
+		File file = fileChooser.showSaveDialog(owner);
+		if (file==null)
+			return null;
+		if (file.getName().endsWith(".isf"))
+			return file;
+		 Dialogs.errorAlert("File name error", "", file.getName() + " has no valid file-extension.");
+		 return null;
+	}
+
+	@Override
+	public int editISFiles(List<File> files, int idx) {
+		ISSelectionDlg dlg = new ISSelectionDlg(files,idx);
+		return dlg.getResult();
 	}
 
 }

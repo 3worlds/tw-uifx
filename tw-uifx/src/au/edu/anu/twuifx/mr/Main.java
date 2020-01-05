@@ -44,6 +44,7 @@ import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.io.FileImporter;
 import fr.ens.biologie.generic.Initialisable;
@@ -153,22 +154,25 @@ public class Main {
 			log.info("ModelRunner is running from JAR");
 		// Nothing to do. We are running from a jar so all classes are here.
 
-		TreeGraph<TreeGraphNode, ALEdge> configGraph = (TreeGraph<TreeGraphNode, ALEdge>) FileImporter
+		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
 
 		// TODO complete the cascading init system ad remove this
-		List<Initialisable> initList = new LinkedList<>();
-
-		log.info("Preparing initialisation");
-		for (TreeGraphNode n : configGraph.nodes())
-			initList.add((Initialisable) n);
-		Initialiser initer = new Initialiser(initList);
-		initer.initialise();
-		if (initer.errorList() != null) {
-			for (InitialiseMessage msg : initer.errorList())
-				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
-			System.exit(1);
-		}
+		// Keep here rather than the splash screen in case we really do want to do a
+		// headless launch
+		// TimeModel line 96 timeLine.initialise()
+//		List<Initialisable> initList = new LinkedList<>();
+//
+//		log.info("Preparing initialisation");
+//		for (TreeGraphNode n : configGraph.nodes())
+//			initList.add((Initialisable) n);
+//		Initialiser initer = new Initialiser(initList);
+//		initer.initialise();
+//		if (initer.errorList() != null) {
+//			for (InitialiseMessage msg : initer.errorList())
+//				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
+//			System.exit(1);
+//		}
 
 		if (get(configGraph.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label()))) != null) {
 			log.info("Ready to run with user-interface ");

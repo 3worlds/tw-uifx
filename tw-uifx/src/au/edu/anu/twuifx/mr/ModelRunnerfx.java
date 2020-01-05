@@ -48,6 +48,7 @@ import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import javafx.application.Application;
@@ -64,12 +65,12 @@ import javafx.stage.Stage;
  */
 public class ModelRunnerfx extends Application {
 	private static TreeGraphNode uiNode;
-	private static TreeGraph<TreeGraphNode, ALEdge> config;
+	private static TreeGraph<TreeGraphDataNode, ALEdge> config;
 	private UIDeployer uiDeployer;
 	private MrController controller;
 	private Stage stage;
 
-	public static void launchUI(TreeGraph<TreeGraphNode, ALEdge> config1) {
+	public static void launchUI(TreeGraph<TreeGraphDataNode, ALEdge> config1) {
 		config = config1;
 		uiNode = (TreeGraphNode) get(config.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label())));
 		String[] args = new String[0];
@@ -114,7 +115,7 @@ public class ModelRunnerfx extends Application {
 		stage.setHeight(600);
 		String title = Project.getDisplayName();
 		stage.titleProperty().set(title);
-		setUserAgentStylesheet(STYLESHEET_CASPIAN);
+		//setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ModelRunnerfx.class.getResource("view/Mr.fxml"));
 		Parent root = (Parent) loader.load();
@@ -126,6 +127,8 @@ public class ModelRunnerfx extends Application {
 
 		controller = loader.getController();
 		controller.setStage(stage);
+		controller.getModel().setGraph(config);
+		
 		scene.getWindow().setOnCloseRequest((e) -> {
 			stop();
 		});
