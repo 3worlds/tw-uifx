@@ -18,7 +18,7 @@
               <menus>
                   <Menu mnemonicParsing="false" text="Parameters">
                      <items>
-                        <CheckMenuItem fx:id="miParDashboard" mnemonicParsing="false" onAction="#onParDashboard" text="Dashboard" />
+                        <CheckMenuItem fx:id="miParDashboard" mnemonicParsing="false" onAction="#onParDashboard" text="Show" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="Initial state">
@@ -33,7 +33,8 @@
                 <Menu fx:id="menuWidgets" mnemonicParsing="false" text="Widgets" />
                   <Menu mnemonicParsing="false" text="About">
                      <items>
-                        <CheckMenuItem fx:id="miCurrentSetup" mnemonicParsing="false" onAction="#onCurrentSetup" text="Current setup" />
+                        <MenuItem id="miCurrentConfiguration" mnemonicParsing="false" onAction="#onCurrentConfiguration" text="Current configuration" />
+                        <MenuItem id="miAboutModelRunner" mnemonicParsing="false" onAction="#onAboutModelRunner" text="About ModelRunner" />
                      </items>
                   </Menu>
               </menus>

@@ -33,8 +33,6 @@ package au.edu.anu.twuifx.mr.view;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mr.IMRController;
@@ -42,28 +40,15 @@ import au.edu.anu.twapps.mr.IMRModel;
 import au.edu.anu.twapps.mr.MRModel;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
-import fr.cnrs.iees.graph.impl.ALEdge;
-import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
@@ -73,8 +58,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class MrController implements IMRController {
 	@FXML
 	private CheckMenuItem miParDashboard;
-	@FXML
-	private CheckMenuItem miCurrentSetup;
 
 	@FXML
 	private Menu menuWidgets;
@@ -98,15 +81,17 @@ public class MrController implements IMRController {
 
 	private IMRModel model;
 
-	public TabPane getTabPane() {
-		return tabPane;
-	}
-
 	@FXML
 	private HBox toolBar;
 
 	@FXML
 	private HBox statusBar;
+
+	private IRunTimeParameterizer dashboard;
+
+	public TabPane getTabPane() {
+		return tabPane;
+	}
 
 	public HBox getToolBar() {
 		return toolBar;
@@ -121,7 +106,12 @@ public class MrController implements IMRController {
 	}
 
 	@FXML
-	void onCurrentSetup(ActionEvent event) {
+	void onAboutModelRunner(ActionEvent event) {
+
+	}
+
+	@FXML
+	void onCurrentConfiguration(ActionEvent event) {
 
 	}
 
@@ -145,22 +135,22 @@ public class MrController implements IMRController {
 		List<ExtensionFilter> extensions = new ArrayList<>();
 		extensions.add(new ExtensionFilter("Initial state (*.isf)", ".isf"));
 		File file = Dialogs.saveISFile(Project.makeFile(ProjectPaths.RUNTIME), "Save state as");
-		if (file!=null) {
+		if (file != null) {
 			model.doISSaveAs(file);
 			System.out.println(file);
 		}
 	}
 
 	@FXML
-	void onISSelect(ActionEvent event) {	 
-		int idx =Dialogs.editISFiles(model.getISFiles(), model.getISSelection());
+	void onISSelect(ActionEvent event) {
+		int idx = Dialogs.editISFiles(model.getISFiles(), model.getISSelection());
 		model.setISSelection(idx);
 	}
 
 	@FXML
 	void onParDashboard(ActionEvent event) {
-		if (dashboard==null)
-			dashboard = new Dashboard(model.getGraph(),stage,miParDashboard.selectedProperty());
+		if (dashboard == null)
+			dashboard = new ParameterWindow(model.getGraph(), stage, miParDashboard.selectedProperty());
 		dashboard.show(miParDashboard.isSelected());
 	}
 
@@ -182,6 +172,7 @@ public class MrController implements IMRController {
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
+
 	public IMRModel getModel() {
 		return model;
 	}
@@ -209,7 +200,5 @@ public class MrController implements IMRController {
 		tabPane.getSelectionModel().select(idx);
 		model.getPreferences();
 	}
-
-	private Dashboard dashboard;
 
 }
