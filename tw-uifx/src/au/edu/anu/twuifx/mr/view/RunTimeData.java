@@ -19,69 +19,99 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
  *
  * @date 6 Jan 2020
  */
-// NB these trial bit of code assumes the graph has been initialised i.e. these methods are only called from ModelRunner
+// NB these trial bit of code assumes the graph has been initialised i.e. these proposed methods are only called from ModelRunner
 /**
- * The problem here maybe if there is a dependence between pars and drivers. If
- * a new state is generated, will there be new parameters. If so, modification
- * of initial state files would invalidate parameter files. Is this possible???
+ * The problem here maybe if there is a dependence between pars and
+ * drivers/state. If a new state is generated, will there be new parameters. If
+ * so, modification of initial state files would invalidate parameter files. Is
+ * this possible???
  * 
  * If so, drivers will have to be saved to the same file which will confound
  * debugging models.
  * 
  * For me: Parameter files contain properties where nothing can change apart
- * from values can be edited.
+ * from editing the property values (constrained by meta-data).
  * 
  * Driver files contain ONLY things that change - populations, property values
  * and the state of random number streams. BTW This is violated if rns are hard
- * coded. They must appear in the graph for their state to be saved and
- * reloaded. The test is: if two initial state files are generated for t0 and
- * t500, the state of the model at t1000 should be identical if run from t0 to
- * t1000 for 1000 steps OR from t500 to t1000 for 500 steps.
+ * coded. Therefore, rns must appear in the graph for their state to be saved
+ * and reloaded. The test is: if two initial state files are generated for t0
+ * and t500, the state of the model at t1000 should be identical if run from t0
+ * to t1000 for 1000 steps OR from t500 to t1000 for 500 steps... if you get
+ * what i mean!
  */
+
 public class RunTimeData {
-	public Object getParameters(TreeGraph<TreeGraphDataNode, ALEdge> graph) {
+	private RunTimeData() {
+	};
+
+	/**
+	 * Extracts a "parameters" graph from "initialisedConfig". This data is a
+	 * **copy** from the initialisedGraph
+	 */
+	public static TreeGraph<TreeGraphDataNode, ALEdge> getParameters(
+			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		/**
-		 * Some return type that provides a listing all par properties organised in some
-		 * meaningful way. The purpose is to populate a PropertySheetEditor so the user
-		 * can modify pars at runTime. These should be a copy so changes don't take
-		 * place unless an "Apply" button is pressed?
+		 * The purpose is to populate a PropertySheetEditor so the user can modify pars
+		 * at runTime and use various tools to create large tables. These should be a
+		 * copy so changes don't take place unless an "Apply" button is pressed? Apply
+		 * would call putParameters()
 		 * 
-		 * Previously the return type was a graph of some kind. The Object should be
-		 * saveable.
+		 * The return graph can be saved.
 		 */
 		return null;
 	}
 
-	public void putParameters(TreeGraph<TreeGraphDataNode, ALEdge> graph, Object newPars) {
-		/**
-		 * Update the runtime parameters with data from newPars
-		 */
-
+	/** Overwrite the runTime parameters with data in "newPars" */
+	public static void putParameters(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
+			TreeGraph<TreeGraphDataNode, ALEdge> newPars) {
 	}
 
-	public Object getState(TreeGraph<TreeGraphDataNode, ALEdge> graph) {
-		/**
-		 * TODO method of extracting the system state and returning in some saveable
-		 * object (a graph??).
-		 */
+	/** Checks that "pars" is a valid parameter set for "initialisedConfig" */
+	public static boolean validParameters(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
+			TreeGraph<TreeGraphDataNode, ALEdge> pars) {
+		return false;
+	}
+
+	/** Extract "systemState" graph from "initialisedConfig" */
+	public static TreeGraph<TreeGraphDataNode, ALEdge> getState(
+			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+		// The old code had Community.asGraph() function???
 		return null;
 	}
 
-	public void putState(Object newDrivers, TreeGraph<TreeGraphDataNode, ALEdge> graph) {
-		/**
-		 * TODO method of resetting the system state to the data in the given object.
-		 */
+	/** Overwrite the runTime state with data in "newState" */
+	public static void putState(TreeGraph<TreeGraphDataNode, ALEdge> newState,
+			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+		clearState(initialisedConfig);
 
 	}
 
-	public Object getSystemsForGeneration(TreeGraph<TreeGraphDataNode, ALEdge> graph) {
+	/** Checks that "state" is a valid data set for "initialisedConfig" */
+	public static boolean validState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
+			TreeGraph<TreeGraphDataNode, ALEdge> state) {
+		return false;
+	}
+
+	/**
+	 * Sets all state data to appropriate zero values - essentially clears all
+	 * populations
+	 */
+	public static void clearState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+		// must be called before calling "putState";
+	}
+
+	/**
+	 * This will be tricky! Return whatever is required (System factories?) to
+	 * generate a new state for "initialisedConfig"
+	 */
+	public static Object getSystemsForGeneration(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		/**
-		 * Purpose: generate drivers and populations from some algorithm for
-		 * bootstrapping a model. The result of the operation will be a saveable State
-		 * object. cf above.
+		 * Purpose: Return all necessary things so driver data and populations can be
+		 * created with some tool for bootstrapping a model. The output of this tool
+		 * will be a state graph to be saved.
 		 * 
-		 * Issues: If this process creates parameters, then they will have to be edited
-		 * (cf getParameters())
+		 * Issues: If this process creates parameters, then everyting is confounded?
 		 */
 		return null;
 	}
@@ -110,6 +140,7 @@ public class RunTimeData {
 								System.out.println(key + ":" + props.propertyToString(key));
 							// there is no way of distinguishing between pars and vars at this level
 							// we need some other way - how does the data tracker do it?
+							// HELP I must leave all this to JG
 						}
 					}
 				}
