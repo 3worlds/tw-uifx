@@ -1,4 +1,4 @@
-ModelRunner is the second of two programs that comprise the 3Worlds project. It’s purpose is to perform simulation experiments using the model designed with ModelMaker. This model, together with its experiment design and user interface, is defined by a configuration graph.
+ModelRunner is the second of two programs that comprise the 3Worlds project. Its purpose is to perform simulation experiments using the model designed with ModelMaker. This model, together with its experiment design and user interface, is defined by a configuration graph.
 
 At the heart of 3Worlds is an archetype: a meta-model of what constitutes an ecosystem. In effect, the archetype makes concrete our interpretation of the term “Ecosystem” first articulated in Tansley’s 1935 paper. ModelRunner assumes the model specifications comply with this archetype.
 

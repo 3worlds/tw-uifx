@@ -1,4 +1,4 @@
-ModelMaker is one of two programs that comprise the 3Worlds project. It’s purpose is to construct ecosystem models that accord with Tansley's original meaning of the term 'Ecosystem'.
+ModelMaker is one of two programs that comprise the 3Worlds project. Its purpose is to construct ecosystem models that accord with Tansley's original meaning of the term 'Ecosystem'.
 
 At the heart of 3Worlds is an archetype: a meta-model of what constitutes an ecosystem. In effect, the archetype makes concrete our interpretation of Tansley’s 1935 paper, briefly, that an ‘ecosystem’ is a recursive and multi-scale system of interacting biological and physical entities.
 
