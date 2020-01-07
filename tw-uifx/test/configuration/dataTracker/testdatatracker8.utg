@@ -1,6 +1,6 @@
 treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 
-// Test file for random number generators
+// Test file for 3 datatrackers (DataTracker0D) with a population of individuals
 //
 //=================================================================================================
 // Copy and paste this text in the changeState(...) method of the generated Growth.java class
@@ -35,7 +35,7 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
-3worlds testrng
+3worlds testdatatracker8
 	userInterface ui
 		top top1
 			widget time
@@ -188,16 +188,6 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(m)
-		rng mortalityRng
-			algorithm = RngAlgType(XSRandom)
-			seedSource = RngSeedSourceType(table)
-			resetTime = RngResetType(onRunStart)
-			tableIndex = Integer(12)
-		rng growthRng
-			algorithm = RngAlgType(Pcg32)
-			seedSource = RngSeedSourceType(table)
-			resetTime = RngResetType(never)
-			tableIndex = Integer(175)
 
 // CROSS-LINKS
 [component:plantI] instanceOf instanceOf1 [componentType:plantC]
@@ -226,5 +216,3 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [widget:table] trackSeries trckSrs5 [dataTracker:animalTracker]
 [widget:time] trackTime trackTime1 [dynamics:dyn]
-[function:Growth] useRNG [rng:growthRng]
-[function:Mortality] useRNG [rng:mortalityRng]

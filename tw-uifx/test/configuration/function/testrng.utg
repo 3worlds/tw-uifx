@@ -1,6 +1,6 @@
-treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
+treegraph // saved by OmugiGraphExporter on Tue Jan 07 15:39:54 CET 2020
 
-// Test file for 3 datatrackers (DataTracker0D) with a population of individuals
+// Test file for random number generators
 //
 //=================================================================================================
 // Copy and paste this text in the changeState(...) method of the generated Growth.java class
@@ -12,8 +12,7 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 //			if (bm>ctvar.height())
 //				bm=0.1;
 //			nxtvar.biomass(bm);
-//			nxtvar.height(Math.random());
-//		}
+//			nxtvar.height(rng().nextDouble());
 //
 // Copy and paste this text in the delete(...) method of the generated Mortality.java class
 // in order to see things displayed in the SimpleTimeSeriesWidget
@@ -22,9 +21,12 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 //		    double proba = 1.0/NMAX;
 //			int ntot = (int) focalContext.groupPopulationData.getPropertyValue(COUNT.shortName());
 //			if (ntot>=NMAX)
-//				return (Math.random()<proba);
+//				return (rng().nextDouble()<proba);
 //			else
 //				return false;
+//
+// (NB: also requires this import line: 
+//  import static fr.cnrs.iees.twcore.constants.PopulationVariables.*;
 //
 // Copy and paste this text in the nNew(...) method of the generated Fecundity.java class
 // in order to see things displayed in the SimpleTimeSeriesWidget
@@ -32,10 +34,11 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 //		return 0.1;
 //
 //=================================================================================================
+
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
-3worlds testdatatracker8
+3worlds testrng
 	userInterface ui
 		top top1
 			widget time
@@ -88,10 +91,13 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 		timePeriod tmPrd1
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(200)
 	system sys
 		parameterClass = java.lang.String()
 		dynamics dyn
+			stoppingCondition stppngCndtn1
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			timeLine tl
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
@@ -175,6 +181,16 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 			field sex
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		rng growthRng
+			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(Pcg32)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(never)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(table)
+			tableIndex = java.lang.Integer(175)
+		rng mortalityRng
+			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(XSRandom)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(onRunStart)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(table)
+			tableIndex = java.lang.Integer(12)
 		record plantrec
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(plantrec)
@@ -200,12 +216,14 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 [component:animalI2] instanceOf instncOf2 [componentType:animalC]
 [widget:timeSeries4] trackSeries trckSrs6 [dataTracker:animalTracker2]
 [widget:timeSeries5] trackSeries trckSrs8 [dataTracker:plantTracker]
+[function:Mortality] useRNG 1 [rng:mortalityRng]
 [group:animalG] groupOf grpOf1 [componentType:animalC]
 [componentType:animalC] belongsTo blngsT1 [category:animal]
 [category:plant] drivers drvrs1 [record:plantrec]
 [category:animal] drivers drvrs2 [record:animalrec]
 [process:plantGrowth] appliesTo appliesTo1 [category:plant]
 [widget:timeSeries1] trackSeries trckSrs4 [dataTracker:animalTracker]
+[function:Growth] useRNG  [rng:growthRng]
 [dataTracker:animalTracker2] trackField trckFld1 [field:length]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:animalTracker2] trackComponent trckCmpnnt2 [group:animalG]
