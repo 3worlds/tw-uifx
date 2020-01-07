@@ -8,9 +8,12 @@ While 3Worlds makes the cycle of model development, analysis and refinement more
     •   Why should two models, ostensibly constructed for the same purpose, differ in their outputs?
     •   How does a change in temporal or spatial scale affect model behaviour?
     •   How does adding or removing sub-systems change model behaviour?
+
 In general, these questions are asking “how much detail do I need to capture the observed behaviour of an ecosystem?”.
 
 This question is more easily addressed if the model variations are all grounded upon the same understanding as to what constitutes an ‘Ecosystem’. It is the 3Worlds archetype that provides this grounding.
+
+The name of this project is a homage to the lithograph “Three Worlds” by E. C. Escher. To our minds, this well represents Tansley’s view of the ecosystem as one physical system comprising organisms living out their lives in their particular environment.
 
 References
 Gignoux, J., Davies, I.D., Flint, S.R. and Zucker, J.D., 2011. The ecosystem in practice: Interest and problems of an old definition for constructing ecological models. Ecosystems, 14, pp.1039-1054.

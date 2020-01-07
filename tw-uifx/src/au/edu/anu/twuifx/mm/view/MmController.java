@@ -47,7 +47,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
@@ -65,9 +64,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -987,8 +983,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void onAbout(ActionEvent event) {
-//		WebView browser = new WebView();
-//	    WebEngine webEngine = browser.getEngine();
 		Dialog<ButtonType> dlg = new Dialog<>();
 		dlg.initOwner((Window) Dialogs.owner());
 		dlg.setTitle("About ModelMaker");
