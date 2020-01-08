@@ -1,0 +1,277 @@
+treegraph // saved by OmugiGraphExporter on Tue Jan 07 15:39:54 CET 2020
+
+// Test file for simple biological functions with no relations (ie changeState, 
+// deleteDecision, CreateOtherDecision) but with consequence for CreateOtherDecision
+//
+//=================================================================================================
+// Copy and paste this text in the changeState(...) method of the generated Growth.java class
+//
+//			Plantrec ctvar = (Plantrec) focal.currentState();
+//			Plantrec nxtvar = (Plantrec) focal.nextState();
+//			double bm = ctvar.biomass()*1.1;
+//			if (bm>ctvar.height())
+//				bm=0.1;
+//			nxtvar.biomass(bm);
+//			nxtvar.height(rng().nextDouble());
+//
+// Copy and paste this text in the delete(...) method of the generated Mortality.java class
+//
+//	    int NMAX = 10;
+//	    double proba = 1.0/NMAX;
+//		int ntot = (int) focalContext.groupPopulationData.getPropertyValue(COUNT.shortName());
+//		if (ntot>=NMAX)
+//			return decide(proba);
+//		else
+//			return decide(1.0/(NMAX*NMAX));
+//
+// (NB: also requires this import line: 
+//  import static fr.cnrs.iees.twcore.constants.PopulationVariables.*;
+//
+// Copy and paste this text in the nNew(...) method of the generated Fecundity.java class
+//
+//		Animalrec ctvar = (Animalrec) focal.currentState();
+//		if (ctvar.sex())
+//			return 0.2;
+//		else
+//			return 0.0;
+//
+// Copy and paste this text in the changeState(...) method of the generated AGrowth.java class
+//
+//		Animalrec ctvar = (Animalrec) focal.currentState();
+//		Animalrec nxtvar = (Animalrec) focal.nextState();
+//		long age = focal.autoVar().age();
+//		double bw = ctvar.bodyweight();
+//		if (ctvar.sex()) {
+//			if (age<=3)
+//				bw *= 1.4;
+//		}
+//		else {
+//			if (age<=5)
+//				bw *= 1.5;
+//		}
+//		nxtvar.bodyweight(bw);
+//		nxtvar.sex(ctvar.sex());
+//		nxtvar.length(Math.pow(bw,1.0/3.0)*0.5);
+//
+// Add this local static function in the AGrowth class
+//
+//	// an allometry function to compute length from bodyweight
+//	static double length(double bw) {
+//		return Math.pow(bw,1.0/3.0)*0.5;
+//	}
+//
+// Copy and paste this text in the changeState(...) method of the generated InitNewBorn.java class
+//
+//		Animalrec nbvar = (Animalrec) focal.nextState();
+//		nbvar.sex(rng().nextBoolean());
+//		double bw = 1.0;
+//		nbvar.bodyweight(bw);
+//		nbvar.length(AGrowth.length(bw));
+
+
+//=================================================================================================
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds testfunction2
+	userInterface ui
+		top top1
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+		tab tb1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			container cntnr2
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+				widget timeSeries1
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				widget table
+					order = java.lang.Integer(1)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+			container cntnr3
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				container cntnr4
+					order = java.lang.Integer(0)
+					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+					widget timeSeries4
+						order = java.lang.Integer(0)
+						sender = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+					widget table1
+						order = java.lang.Integer(1)
+						sender = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+				container cntnr5
+					order = java.lang.Integer(0)
+					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+					widget timeSeries5
+						order = java.lang.Integer(0)
+						sender = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+					widget table2
+						order = java.lang.Integer(1)
+						sender = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+	experiment exp
+		design design1
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+		timePeriod tmPrd1
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(200)
+	system sys
+		parameterClass = java.lang.String()
+		dynamics dyn
+			stoppingCondition stppngCndtn1
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(1000)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+			timeLine tl
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel clock
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
+					process plantGrowth
+						function Growth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys.Growth)
+						dataTracker plantTracker
+							sampleSize = java.lang.String(ALL)
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+					process animalGrowth
+						function Fecundity
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.sys.Fecundity)
+							function InitNewBorn
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+						dataTracker animalTracker
+							sampleSize = java.lang.String(4)
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+						function Mortality
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.sys.Mortality)
+						dataTracker animalTracker2
+							sampleSize = java.lang.String(4)
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN,SE})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+						function AGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys.AGrowth)
+			initialState state
+				group animalG
+					component animalI2
+						variableValues vva1
+							bodyweight = java.lang.Double(1.0)
+							length = java.lang.Double(4.1)
+							sex = java.lang.Boolean(true)
+					component animalI1
+						variableValues vva2
+							bodyweight = java.lang.Double(1.4)
+							length = java.lang.Double(6.2)
+							sex = java.lang.Boolean(false)
+				component plantI
+					variableValues vvplant
+						biomass = java.lang.Double(0.1)
+						height = java.lang.Double(2.0)
+		structure struc
+			componentType animalC
+				driverClass = java.lang.String(code.sys.Animalrec)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+			componentType plantC
+				driverClass = java.lang.String(code.sys.Plantrec)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			categorySet set
+				category animal
+				category plant
+	dataDefinition dd
+		record animalrec
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(animalrec)
+			field length
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field bodyweight
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.01)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(g)
+			field sex
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		rng growthRng
+			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(Pcg32)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(never)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(table)
+			tableIndex = java.lang.Integer(175)
+		rng mortalityRng
+			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(XSRandom)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(onRunStart)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(table)
+			tableIndex = java.lang.Integer(12)
+		record plantrec
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(plantrec)
+			field biomass
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(kg)
+			field height
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+
+// CROSS-LINKS
+[component:plantI] instanceOf instanceOf1 [componentType:plantC]
+[componentType:plantC] belongsTo belongsTo1 [category:plant]
+[process:animalGrowth] appliesTo applsT1 [category:animal]
+[dataTracker:animalTracker] trackPopulation animalPopTracker [group:animalG]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
+[experiment:exp] baseLine baseLine1 [system:sys]
+[component:animalI1] instanceOf instncOf1 [componentType:animalC]
+[component:animalI2] instanceOf instncOf2 [componentType:animalC]
+[widget:timeSeries4] trackSeries trckSrs6 [dataTracker:animalTracker2]
+[widget:timeSeries5] trackSeries trckSrs8 [dataTracker:plantTracker]
+[function:Mortality] useRNG 1 [rng:mortalityRng]
+[group:animalG] groupOf grpOf1 [componentType:animalC]
+[componentType:animalC] belongsTo blngsT1 [category:animal]
+[category:plant] drivers drvrs1 [record:plantrec]
+[category:animal] drivers drvrs2 [record:animalrec]
+[process:plantGrowth] appliesTo appliesTo1 [category:plant]
+[widget:timeSeries1] trackSeries trckSrs4 [dataTracker:animalTracker]
+[function:Growth] useRNG  [rng:growthRng]
+[dataTracker:animalTracker2] trackField trckFld1 [field:length]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:animalTracker2] trackComponent trckCmpnnt2 [group:animalG]
+[widget:table2] trackSeries trckSrs9 [dataTracker:plantTracker]
+[widget:table1] trackSeries trckSrs7 [dataTracker:animalTracker2]
+[dataTracker:plantTracker] trackComponent trckCmpnnt1 [component:plantI]
+[dataTracker:plantTracker] trackField trckFld2 [field:biomass]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[widget:table] trackSeries trckSrs5 [dataTracker:animalTracker]
+[widget:time] trackTime trackTime1 [dynamics:dyn]
