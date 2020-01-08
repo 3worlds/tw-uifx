@@ -1,5 +1,6 @@
 package au.edu.anu.twuifx.mr.view;
 
+import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemContainer;
 import au.edu.anu.twcore.ecosystem.structure.ComponentType;
@@ -11,6 +12,9 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 import java.util.List;
 import java.util.Map;
+
+import com.sun.source.tree.Tree;
+
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 
@@ -59,6 +63,18 @@ public class RunTimeData {
 		 * 
 		 * The return graph can be saved.
 		 */
+
+//		JG:
+//		All parameters are stored in SystemContainers, organised as a tree 
+//		(cf class CategorizedContainer), through the CategorizedContainer.parameters() method. 
+//		There is a separate tree instance for every Simulator instance, accessible through
+//		the Simulator.community() method. The Simulator instances are accessible through 
+//		SimulatorNode.getInstance(id), which is in the initialedConfig tree passed
+//		as argument here. But you also need to know the id of your current simulator
+//		instance (eg the one being currently running in simple cases, or if many
+//		simulators are running you probably need to give the user a way to select one)
+		
+		
 		return null;
 	}
 
