@@ -1,5 +1,7 @@
 package au.edu.anu.twuifx.mr.view;
 
+import au.edu.anu.twcore.data.runtime.TwData;
+import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemContainer;
@@ -12,8 +14,6 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 import java.util.List;
 import java.util.Map;
-
-import com.sun.source.tree.Tree;
 
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
@@ -64,17 +64,6 @@ public class RunTimeData {
 		 * The return graph can be saved.
 		 */
 
-//		JG:
-//		All parameters are stored in SystemContainers, organised as a tree 
-//		(cf class CategorizedContainer), through the CategorizedContainer.parameters() method. 
-//		There is a separate tree instance for every Simulator instance, accessible through
-//		the Simulator.community() method. The Simulator instances are accessible through 
-//		SimulatorNode.getInstance(id), which is in the initialedConfig tree passed
-//		as argument here. But you also need to know the id of your current simulator
-//		instance (eg the one being currently running in simple cases, or if many
-//		simulators are running you probably need to give the user a way to select one)
-		
-		
 		return null;
 	}
 
@@ -133,36 +122,89 @@ public class RunTimeData {
 	}
 
 	// ------------------------------------------------
+
+//	JG:
+//	All parameters are stored in SystemContainers, organised as a tree 
+//	(cf class CategorizedContainer), through the CategorizedContainer.parameters() method. 
+//	There is a separate tree instance for every Simulator instance, accessible through
+//	the Simulator.community() method. The Simulator instances are accessible through 
+//	SimulatorNode.getInstance(id), which is in the initialedConfig tree passed
+//	as argument here. But you also need to know the id of your current simulator
+//	instance (eg the one being currently running in simple cases, or if many
+//	simulators are running you probably need to give the user a way to select one)
+
 	// temp code
+	/*-
+	 * --> I agree with this. Parameters should be kept separate from initial
+	drivers. That's done in the graph (hence the parameterValues and
+	variableValues nodes), but I didnt enforce that those files should be
+	separate. It would probably make sense to separate them in different
+	files at step 3 of our data loading system. The only point of having
+	separate files is when you have one or more huge consistent sets of
+	variables/parameters that you want to reuse in different projects. For
+	small projects, p & v can be kept together.
+	 * */
+	/**
+	 * Not for me. The main purpose here is for a model of a given structure i.e
+	 * this project only, to allow for the same parameter value with different
+	 * variable values or the same variables values with different parameters
+	 * values. Does this mean parameters and variables are confounded by the current
+	 * state of the simulation?
+	 */
+
 	@SuppressWarnings("unchecked")
-	public static void listStuff(TreeGraph<TreeGraphDataNode, ALEdge> graph) {
-		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(graph.root().getChildren(),
+	public static void testingRuntimeGraphStuff(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
+		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(configGraph.root().getChildren(),
 				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
 
 		for (TreeGraphDataNode system : systems) {
-			TreeGraphDataNode structure = (TreeGraphDataNode) get(system.getChildren(),
-					selectOne(hasTheLabel(N_STRUCTURE.label())));
-			List<ComponentType> componentTypes = (List<ComponentType>) get(structure.getChildren(),
-					selectOneOrMany(hasTheLabel(N_COMPONENTTYPE.label())));
-			for (ComponentType componentType : componentTypes) {
-				System.out.println(componentType.classId() + ":" + componentType.id());
-				for (Map<String, SystemContainer> scmap : componentType.containers()) {
-					for (SystemContainer sc : scmap.values()) {
-						System.out.println(sc.id());
-						for (SystemComponent comp : sc.allItems()) {
-							System.out.println(comp.classId() + ":" + comp.id());
-							ReadOnlyPropertyList props = comp.readOnlyProperties();
-							for (String key : props.getKeysAsSet())
-								System.out.println(key + ":" + props.propertyToString(key));
-							// there is no way of distinguishing between pars and vars at this level
-							// we need some other way - how does the data tracker do it?
-							// HELP I must leave all this to JG
-						}
+			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
+					selectOne(hasTheLabel(N_DYNAMICS.label())));
+			/**
+			 * There no simulators because they're cleared at line 208 of SimulatorNode
+			 */
+			for (Simulator sim : simNode.getSimulators()) {
+				/**
+				 * NB ive commented out line 208 of SimulatorNode to get this far
+				 */
+				SystemContainer com = sim.community();
+				System.out.println(sim.community().categoryInfo());
+				TwData props = com.parameters();
+
+				if (props != null) {
+					for (String key : props.getKeysAsArray()) {
+						System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + key + ":"
+								+ props.getPropertyValue(key));
 					}
+				} else {
+					System.out
+							.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + "Why is simulator.community().parameters() null?");
 				}
-				;
 
 			}
+//			TreeGraphDataNode structure = (TreeGraphDataNode) get(system.getChildren(),
+//					selectOne(hasTheLabel(N_STRUCTURE.label())));
+//			List<ComponentType> componentTypes = (List<ComponentType>) get(structure.getChildren(),
+//					selectOneOrMany(hasTheLabel(N_COMPONENTTYPE.label())));
+//			for (ComponentType componentType : componentTypes) {
+//				System.out.println(componentType.classId() + ":" + componentType.id());
+//				for (Map<String, SystemContainer> scmap : componentType.containers()) {
+//					for (SystemContainer sc : scmap.values()) {
+//						System.out.println(sc.id());
+//						for (SystemComponent comp : sc.allItems()) {
+//							System.out.println(comp.classId() + ":" + comp.id());
+//							ReadOnlyPropertyList props = comp.readOnlyProperties();
+//							for (String key : props.getKeysAsSet())
+//								System.out.println(key + ":" + props.propertyToString(key));
+//							// there is no way of distinguishing between pars and vars at this level
+//							// we need some other way - how does the data tracker do it?
+//							
+//						}
+//					}
+//				}
+//				;
+//
+//			}
 		}
 	}
 

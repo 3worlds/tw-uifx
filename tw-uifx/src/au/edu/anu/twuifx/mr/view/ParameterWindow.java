@@ -95,14 +95,15 @@ public class ParameterWindow implements IRunTimeParameterizer{
 		btnSave = new Button("Save");
 		btnOpen = new Button("Open");
 		bottomContent.getChildren().addAll(btnApply, btnSave, btnOpen);
-		RunTimeData.listStuff(graph);
+		//RunTimeData.testingRuntimeGraphStuff(graph);
 	}
 
 	// move to interface
 	public void show(boolean show) {
-		if (show)
+		if (show) {
 			stage.show();
-		else
+			RunTimeData.testingRuntimeGraphStuff(graph);
+		}else
 			stage.hide();
 	}
 
