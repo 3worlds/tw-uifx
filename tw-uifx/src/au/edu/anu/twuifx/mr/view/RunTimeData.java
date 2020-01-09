@@ -168,19 +168,31 @@ public class RunTimeData {
 				 * NB ive commented out line 208 of SimulatorNode to get this far
 				 */
 				SystemContainer com = sim.community();
-				System.out.println(sim.community().categoryInfo());
-				TwData props = com.parameters();
-
-				if (props != null) {
-					for (String key : props.getKeysAsArray()) {
+				TwData pars = com.parameters();
+				TwData vars = com.variables();
+				// null if no category has "parameters" edge. ie. parameterClass property value
+				// will be empty
+				if (pars != null) {
+					for (String key : pars.getKeysAsArray()) 
 						System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + key + ":"
-								+ props.getPropertyValue(key));
-					}
+								+ pars.getPropertyValue(key));				
 				} else {
-					System.out
-							.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + "Why is simulator.community().parameters() null?");
+					System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + " has no parameters");
+				}
+				if (vars !=null) {
+					for (String key : vars.getKeysAsArray()) 
+						System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + key + ":"
+								+ vars.getPropertyValue(key));				
+			
+				} else {
+					System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + " has no variables");
+				}
+				for (SystemComponent sc:com.allItems()){
+					System.out.println(sc);
+					//sc.properties();
 				}
 
+				// need to look at initialItems
 			}
 //			TreeGraphDataNode structure = (TreeGraphDataNode) get(system.getChildren(),
 //					selectOne(hasTheLabel(N_STRUCTURE.label())));
