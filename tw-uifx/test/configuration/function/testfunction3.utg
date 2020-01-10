@@ -86,42 +86,14 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
 		tab tb1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			container cntnr2
+			widget timeSeries5
 				order = java.lang.Integer(0)
-				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
-				widget timeSeries1
-					order = java.lang.Integer(0)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-				widget table
-					order = java.lang.Integer(1)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
-			container cntnr3
-				order = java.lang.Integer(0)
-				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-				container cntnr4
-					order = java.lang.Integer(0)
-					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
-					widget timeSeries4
-						order = java.lang.Integer(0)
-						sender = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-					widget table1
-						order = java.lang.Integer(1)
-						sender = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
-				container cntnr5
-					order = java.lang.Integer(0)
-					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
-					widget timeSeries5
-						order = java.lang.Integer(0)
-						sender = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-					widget table2
-						order = java.lang.Integer(1)
-						sender = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			widget table2
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 	experiment exp
 		design design1
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
@@ -135,7 +107,6 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(1000)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			lifeCycle plantcycle
-				parameterClass = java.lang.String()
 				recruit SdlToAd
 			timeLine tl
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
@@ -149,78 +120,47 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
 					process plantGrowth
-						function Growth
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys.Growth)
 						dataTracker plantTracker
 							sampleSize = java.lang.String(ALL)
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-					process animalGrowth
-						function Fecundity
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
-							userClassName = java.lang.String(code.sys.Fecundity)
-							function InitNewBorn
-								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-								userClassName = java.lang.String(code.sys.InitNewBorn)
-						dataTracker animalTracker
-							sampleSize = java.lang.String(4)
-							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-						function Mortality
+					process APlantLife
+						function PMortality
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
-							userClassName = java.lang.String(code.sys.Mortality)
-						dataTracker animalTracker2
-							sampleSize = java.lang.String(4)
-							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN,SE})
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-						function AGrowth
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys.AGrowth)
+							userClassName = java.lang.String(code.sys.PMortality)
+						function PFecundity
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.sys.PFecundity)
 					process plantRecruitment
 						function PRecruit
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
-							userClassName = java.lang.String()
+							userClassName = java.lang.String(code.sys.PRecruit)
+						function Growth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys.Growth)
 			initialState state
-				group animalG
-					component animalI2
-						variableValues vva1
-							bodyweight = java.lang.Double(1.0)
-							length = java.lang.Double(4.1)
-							sex = java.lang.Boolean(true)
-					component animalI1
-						variableValues vva2
-							bodyweight = java.lang.Double(1.4)
-							length = java.lang.Double(6.2)
-							sex = java.lang.Boolean(false)
-				component plantI
-					variableValues vvplant
-						biomass = java.lang.Double(0.1)
-						height = java.lang.Double(2.0)
+				group plantLC
+					group plantS
+						component cmpnnt1
+							variableValues vvplant
+								biomass = java.lang.Double(0.1)
+								height = java.lang.Double(2.0)
+								nleaves = java.lang.Integer(2)
+					group plantA
 		structure struc
-			componentType animalC
-				driverClass = java.lang.String(code.sys.Animalrec)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
-			componentType plantSeedling
-				driverClass = java.lang.String(code.sys.Plantrec)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			categorySet set
-				category animal
 				category plant
 					categorySet stage
 						category adult
 						category seedling
 			componentType adultPlant
-				decoratorClass = java.lang.String()
-				driverClass = java.lang.String()
+				driverClass = java.lang.String(code.sys.Adultrec_plantrec_plantrec_drivers)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
-				parameterClass = java.lang.String()
+			componentType plantSeedling
+				driverClass = java.lang.String(code.sys.Plantrec_seedlingrec_plantrec_drivers)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 	dataDefinition dd
 		record animalrec
 			dynamic = java.lang.Boolean(true)
@@ -250,11 +190,10 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 			tableIndex = java.lang.Integer(12)
 		record seedlingrec
 			field nleaves
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 		record adultrec
+			generatedClassName = java.lang.String(adultrec)
 			field canopyHt
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -280,42 +219,33 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 				units = java.lang.String(m)
 
 // CROSS-LINKS
-[component:plantI] instanceOf instanceOf1 [componentType:plantSeedling]
+[lifeCycle:plantcycle] appliesTo applsT4 [categorySet:stage]
+[group:plantA] groupOf grpOf2 [componentType:adultPlant]
 [componentType:plantSeedling] belongsTo belongsTo1 [category:plant]
 [componentType:plantSeedling] belongsTo blngsT2 [category:seedling]
-[lifeCycle:plantcycle] appliesTo applsT4 [categorySet:stage]
-[process:animalGrowth] appliesTo applsT1 [category:animal]
-[dataTracker:animalTracker] trackPopulation animalPopTracker [group:animalG]
-	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
+[function:PFecundity] useRNG usRNG2 [rng:growthRng]
 [process:plantRecruitment] appliesTo applsT2 [category:plant]
 [process:plantRecruitment] appliesTo applsT3 [category:seedling]
 [experiment:exp] baseLine baseLine1 [system:sys]
-[component:animalI1] instanceOf instncOf1 [componentType:animalC]
-[component:animalI2] instanceOf instncOf2 [componentType:animalC]
-[widget:timeSeries4] trackSeries trckSrs6 [dataTracker:animalTracker2]
 [widget:timeSeries5] trackSeries trckSrs8 [dataTracker:plantTracker]
-[function:Mortality] useRNG 1 [rng:mortalityRng]
-[group:animalG] groupOf grpOf1 [componentType:animalC]
-[componentType:animalC] belongsTo blngsT1 [category:animal]
+[component:cmpnnt1] instanceOf instncOf1 [componentType:plantSeedling]
+[group:plantLC] cycle cycl1 [lifeCycle:plantcycle]
 [category:plant] drivers drvrs1 [record:plantrec]
-[category:animal] drivers drvrs2 [record:animalrec]
+[process:APlantLife] appliesTo applsT5 [category:adult]
+[process:APlantLife] appliesTo applsT6 [category:plant]
 [process:plantGrowth] appliesTo appliesTo1 [category:plant]
 [category:adult] drivers drvrs4 [record:adultrec]
-[widget:timeSeries1] trackSeries trckSrs4 [dataTracker:animalTracker]
-[function:Growth] useRNG  [rng:growthRng]
-[dataTracker:animalTracker2] trackField trckFld1 [field:length]
-	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[dataTracker:animalTracker2] trackComponent trckCmpnnt2 [group:animalG]
+[function:Growth] useRNG usRNG3 [rng:growthRng]
 [widget:table2] trackSeries trckSrs9 [dataTracker:plantTracker]
-[widget:table1] trackSeries trckSrs7 [dataTracker:animalTracker2]
 [recruit:SdlToAd] toCategory tCtgry1 [category:adult]
 [recruit:SdlToAd] effectedBy effctdBy1 [process:plantRecruitment]
 [recruit:SdlToAd] fromCategory frmCtgry1 [category:seedling]
-[dataTracker:plantTracker] trackComponent trckCmpnnt1 [component:plantI]
+[dataTracker:plantTracker] trackComponent trckCmpnnt1 [component:cmpnnt1]
 [dataTracker:plantTracker] trackField trckFld2 [field:biomass]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[widget:table] trackSeries trckSrs5 [dataTracker:animalTracker]
+[function:PMortality] useRNG usRNG1 [rng:mortalityRng]
 [category:seedling] drivers drvrs3 [record:seedlingrec]
 [componentType:adultPlant] belongsTo blngsT3 [category:adult]
 [componentType:adultPlant] belongsTo blngsT4 [category:plant]
+[group:plantS] groupOf grpOf1 [componentType:plantSeedling]
 [widget:time] trackTime trackTime1 [dynamics:dyn]
