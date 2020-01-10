@@ -187,10 +187,17 @@ public class RunTimeData {
 				} else {
 					System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + " has no variables");
 				}
-//				for (SystemComponent sc:com.allItems()){
-//					System.out.println(sc);
+				
+				//com.subContainers()
+				System.out.println("STATE");
+				for (SystemComponent sc:com.allItems()){
+					System.out.println(sc);
 //					//sc.properties();
-//				}
+				}
+				System.out.println("INITIAL STATE");
+				for (SystemComponent sc:com.getInitialItems()) {
+					System.out.println(sc);
+				}
 
 				// rather: look at initialItems
 			}
