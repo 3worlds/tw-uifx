@@ -71,7 +71,7 @@ public class ParameterWindow implements IRunTimeParameterizer{
 		BorderPane content = new BorderPane();
 		Scene scene = new Scene(content, 400, 500);
 		stage = new Stage();
-		stage.setTitle("Dashboard");
+		stage.setTitle("Parameters");
 		stage.setScene(scene);
 		stage.initOwner((Window) Dialogs.owner());
 		stage.setX(ownerStage.getX() + 200);

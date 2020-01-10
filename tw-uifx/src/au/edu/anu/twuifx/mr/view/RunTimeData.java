@@ -187,12 +187,12 @@ public class RunTimeData {
 				} else {
 					System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + " has no variables");
 				}
-				for (SystemComponent sc:com.allItems()){
-					System.out.println(sc);
-					//sc.properties();
-				}
+//				for (SystemComponent sc:com.allItems()){
+//					System.out.println(sc);
+//					//sc.properties();
+//				}
 
-				// need to look at initialItems
+				// rather: look at initialItems
 			}
 //			TreeGraphDataNode structure = (TreeGraphDataNode) get(system.getChildren(),
 //					selectOne(hasTheLabel(N_STRUCTURE.label())));
