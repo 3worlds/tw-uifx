@@ -3,9 +3,12 @@ package au.edu.anu.twuifx.mr.view;
 import au.edu.anu.twcore.data.runtime.TwData;
 import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
+import au.edu.anu.twcore.ecosystem.runtime.system.CategorizedContainer;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemContainer;
+import au.edu.anu.twcore.ecosystem.runtime.system.SystemFactory;
 import au.edu.anu.twcore.ecosystem.structure.ComponentType;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -160,6 +163,15 @@ public class RunTimeData {
 		for (TreeGraphDataNode system : systems) {
 			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
 					selectOne(hasTheLabel(N_DYNAMICS.label())));
+			TreeNode st = (TreeNode) get(system.getChildren(), selectOne(hasTheLabel(N_STRUCTURE.label())));
+			List<ComponentType> cts = (List<ComponentType>) get(st.getChildren(),
+					selectOneOrMany(hasTheLabel(N_COMPONENTTYPE.label())));
+			for (ComponentType ct : cts) {
+				ct.categoryId();
+				for (SystemFactory sf : ct.getFactories().values()) {
+					System.out.println(ct.categoryId() + ":" + ct.id() + "->" + sf);
+				}
+			}
 			/**
 			 * There no simulators because they're cleared at line 208 of SimulatorNode
 			 */
@@ -167,37 +179,46 @@ public class RunTimeData {
 				/**
 				 * NB ive commented out line 208 of SimulatorNode to get this far
 				 */
-				SystemContainer com = sim.community();
-				TwData pars = com.parameters();
-				TwData vars = com.variables();
+				SystemContainer community = sim.community();
+				TwData pars = community.parameters();
+				TwData vars = community.variables();
 				// null if no category has "parameters" edge. ie. parameterClass property value
 				// will be empty
 				if (pars != null) {
-					for (String key : pars.getKeysAsArray()) 
-						System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + key + ":"
-								+ pars.getPropertyValue(key));				
+					System.out.println("PARS");
+					for (String key : pars.getKeysAsArray())
+						System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + key + ":"
+								+ pars.getPropertyValue(key));
 				} else {
-					System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + " has no parameters");
+					System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + " has no parameters");
 				}
-				if (vars !=null) {
-					for (String key : vars.getKeysAsArray()) 
-						System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + key + ":"
-								+ vars.getPropertyValue(key));				
-			
+				if (vars != null) {
+					System.out.println("VARS");
+					for (String key : vars.getKeysAsArray())
+						System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + key + ":"
+								+ vars.getPropertyValue(key));
+
 				} else {
-					System.out.println(simNode.id() + ":" + sim.id() + ":" + com.id() + ":" + " has no variables");
+					System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + " has no variables");
 				}
-				
-				//com.subContainers()
+
 				System.out.println("STATE");
-				for (SystemComponent sc:com.allItems()){
+				for (SystemComponent sc : community.allItems()) {
 					System.out.println(sc);
 //					//sc.properties();
 				}
 				System.out.println("INITIAL STATE");
-				for (SystemComponent sc:com.getInitialItems()) {
+				for (SystemComponent sc : community.getInitialItems()) {
 					System.out.println(sc);
 				}
+				System.out.println("SUBCOMMUNITIES");
+				for (CategorizedContainer<SystemComponent> cc:community.subContainers()) {
+					cc.subContainers();
+					cc.allItems();
+					cc.getInitialItems();
+					
+				};
+
 
 				// rather: look at initialItems
 			}
