@@ -92,7 +92,7 @@ public class RunTimeData {
 	/** Overwrite the runTime state with data in "newState" */
 	public static void putModelState(TreeGraph<TreeGraphDataNode, ALEdge> newState,
 			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		clearState(initialisedConfig);
+		clearModelState(initialisedConfig);
 
 	}
 
@@ -107,21 +107,35 @@ public class RunTimeData {
 	 * populations
 	 */
 	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (SystemContainer community: communities(initialisedConfig)) {
-			
-			for (SystemComponent sc : community.items()) {
-				// do recursive call to subContainers
-				sc.
-				community.removeItem(sc.id());
-			}
-			community.effectAllChanges();
+		for (SystemContainer community : communities(initialisedConfig)) {
+			clearState(community);
+			//community.clearState();
 		}
 	}
 
+	//Should this be a method of CategorizedContainer??
+	private static void clearState(SystemContainer container) {
+		for (CategorizedContainer<SystemComponent> child : container.subContainers())
+			clearState((SystemContainer) child);
+		for (SystemComponent component : container.items())
+			container.removeItem(component.id());
+		container.effectAllChanges();
+		container.variables().clear();
+		container.populationData().clear();
+	}
+
+	@SuppressWarnings("unchecked")
 	private static List<SystemContainer> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		List<SystemContainer> result = new ArrayList<>();
-		
-		return null;
+		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(initialisedConfig.root().getChildren(),
+				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
+		for (TreeGraphDataNode system : systems) {
+			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
+					selectOne(hasTheLabel(N_DYNAMICS.label())));
+			for (Simulator sim : simNode.getSimulators())
+				result.add(sim.community());
+		}
+		return result;
 	}
 
 	/**
@@ -198,7 +212,8 @@ public class RunTimeData {
 						System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + key + ":"
 								+ pars.getPropertyValue(key));
 				} else {
-					System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + " has no parameters");
+					System.out
+							.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + " has no parameters");
 				}
 				if (vars != null) {
 					System.out.println("VARS");
@@ -207,7 +222,8 @@ public class RunTimeData {
 								+ vars.getPropertyValue(key));
 
 				} else {
-					System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + " has no variables");
+					System.out
+							.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + " has no variables");
 				}
 
 				System.out.println("STATE");
@@ -220,13 +236,14 @@ public class RunTimeData {
 					System.out.println(sc);
 				}
 				System.out.println("SUBCOMMUNITIES");
-				for (CategorizedContainer<SystemComponent> cc:community.subContainers()) {
-					for (CategorizedContainer<SystemComponent> cc1:cc.subContainers());
+				for (CategorizedContainer<SystemComponent> cc : community.subContainers()) {
+					for (CategorizedContainer<SystemComponent> cc1 : cc.subContainers())
+						;
 					cc.allItems();
 					cc.getInitialItems();
-					
-				};
 
+				}
+				;
 
 				// rather: look at initialItems
 			}
