@@ -229,6 +229,7 @@ public class RunTimeData {
 				System.out.println("STATE");
 				for (SystemComponent sc : community.allItems()) {
 					System.out.println(sc);
+					
 //					//sc.properties();
 				}
 				System.out.println("INITIAL STATE");
@@ -236,11 +237,18 @@ public class RunTimeData {
 					System.out.println(sc);
 				}
 				System.out.println("SUBCOMMUNITIES");
+				// etc recursively
 				for (CategorizedContainer<SystemComponent> cc : community.subContainers()) {
-					for (CategorizedContainer<SystemComponent> cc1 : cc.subContainers())
-						;
-					cc.allItems();
-					cc.getInitialItems();
+					vars = cc.variables();
+					if (vars!=null) {
+						for (String key : vars.getKeysAsArray())
+							System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + cc.id()+":"+key + ":"
+									+ vars.getPropertyValue(key));
+
+					}
+						
+//					cc.allItems();
+//					cc.getInitialItems();
 
 				}
 				;
