@@ -15,6 +15,7 @@ import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.properties.ReadOnlyPropertyList;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,32 +72,32 @@ public class RunTimeData {
 	}
 
 	/** Overwrite the runTime parameters with data in "newPars" */
-	public static void putParameters(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
+	public static void putModelParameters(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
 			TreeGraph<TreeGraphDataNode, ALEdge> newPars) {
 	}
 
 	/** Checks that "pars" is a valid parameter set for "initialisedConfig" */
-	public static boolean validParameters(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
+	public static boolean validModelParameters(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
 			TreeGraph<TreeGraphDataNode, ALEdge> pars) {
 		return false;
 	}
 
 	/** Extract "systemState" graph from "initialisedConfig" */
-	public static TreeGraph<TreeGraphDataNode, ALEdge> getState(
+	public static TreeGraph<TreeGraphDataNode, ALEdge> getModelState(
 			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		// The old code had Community.asGraph() function???
 		return null;
 	}
 
 	/** Overwrite the runTime state with data in "newState" */
-	public static void putState(TreeGraph<TreeGraphDataNode, ALEdge> newState,
+	public static void putModelState(TreeGraph<TreeGraphDataNode, ALEdge> newState,
 			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		clearState(initialisedConfig);
 
 	}
 
 	/** Checks that "state" is a valid data set for "initialisedConfig" */
-	public static boolean validState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
+	public static boolean validModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
 			TreeGraph<TreeGraphDataNode, ALEdge> state) {
 		return false;
 	}
@@ -105,8 +106,22 @@ public class RunTimeData {
 	 * Sets all state data to appropriate zero values - essentially clears all
 	 * populations
 	 */
-	public static void clearState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		// must be called before calling "putState";
+	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+		for (SystemContainer community: communities(initialisedConfig)) {
+			
+			for (SystemComponent sc : community.items()) {
+				// do recursive call to subContainers
+				sc.
+				community.removeItem(sc.id());
+			}
+			community.effectAllChanges();
+		}
+	}
+
+	private static List<SystemContainer> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+		List<SystemContainer> result = new ArrayList<>();
+		
+		return null;
 	}
 
 	/**
@@ -159,7 +174,6 @@ public class RunTimeData {
 	public static void testingRuntimeGraphStuff(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
 		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(configGraph.root().getChildren(),
 				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
-
 		for (TreeGraphDataNode system : systems) {
 			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
 					selectOne(hasTheLabel(N_DYNAMICS.label())));
@@ -172,13 +186,7 @@ public class RunTimeData {
 					System.out.println(ct.categoryId() + ":" + ct.id() + "->" + sf);
 				}
 			}
-			/**
-			 * There no simulators because they're cleared at line 208 of SimulatorNode
-			 */
 			for (Simulator sim : simNode.getSimulators()) {
-				/**
-				 * NB ive commented out line 208 of SimulatorNode to get this far
-				 */
 				SystemContainer community = sim.community();
 				TwData pars = community.parameters();
 				TwData vars = community.variables();
@@ -213,7 +221,7 @@ public class RunTimeData {
 				}
 				System.out.println("SUBCOMMUNITIES");
 				for (CategorizedContainer<SystemComponent> cc:community.subContainers()) {
-					cc.subContainers();
+					for (CategorizedContainer<SystemComponent> cc1:cc.subContainers());
 					cc.allItems();
 					cc.getInitialItems();
 					
