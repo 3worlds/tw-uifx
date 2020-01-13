@@ -93,6 +93,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(1000)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			lifeCycle plantcycle
+				produce AdToSdl
 				recruit SdlToAd
 			timeLine tl
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
@@ -105,13 +106,6 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 					runAtTimeZero = java.lang.Boolean(false)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
-					process plantGrowth
-						dataTracker seedlingTracker
-							sampleSize = java.lang.String()
-							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 					process APlantLife
 						function PMortality
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
@@ -119,6 +113,12 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 						function PFecundity
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys.PFecundity)
+						dataTracker adultTracker
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 					process plantRecruitment
 						function PRecruit
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
@@ -126,7 +126,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 						function Growth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Growth)
-						dataTracker adultTracker
+						dataTracker seedlingTracker
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
@@ -211,8 +211,6 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 				units = java.lang.String(m)
 
 // CROSS-LINKS
-[dataTracker:adultTracker] trackPopulation trckPpltn2 [group:plantA]
-	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [lifeCycle:plantcycle] appliesTo applsT4 [categorySet:stage]
 [group:plantA] groupOf grpOf2 [componentType:adultPlant]
 [dataTracker:seedlingTracker] trackPopulation trckPpltn1 [group:plantS]
@@ -225,15 +223,19 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 [experiment:exp] baseLine baseLine1 [system:sys]
 [widget:timeSeries5] trackSeries trckSrs1 [dataTracker:seedlingTracker]
 [component:cmpnnt1] instanceOf instncOf1 [componentType:plantSeedling]
+[dataTracker:adultTracker] trackPopulation trckPpltn2 [group:plantA]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [group:plantLC] cycle cycl1 [lifeCycle:plantcycle]
 [category:plant] drivers drvrs1 [record:plantrec]
 [process:APlantLife] appliesTo applsT5 [category:adult]
 [process:APlantLife] appliesTo applsT6 [category:plant]
-[process:plantGrowth] appliesTo appliesTo1 [category:plant]
 [category:adult] drivers drvrs4 [record:adultrec]
 [widget:wdgt2] trackSeries trckSrs4 [dataTracker:adultTracker]
 [function:Growth] useRNG usRNG3 [rng:growthRng]
 [widget:wdgt1] trackSeries trckSrs3 [dataTracker:adultTracker]
+[produce:AdToSdl] fromCategory frmCtgry2 [category:adult]
+[produce:AdToSdl] toCategory tCtgry2 [category:seedling]
+[produce:AdToSdl] effectedBy effctdBy2 [process:APlantLife]
 [widget:table2] trackSeries trckSrs2 [dataTracker:seedlingTracker]
 [recruit:SdlToAd] toCategory tCtgry1 [category:adult]
 [recruit:SdlToAd] effectedBy effctdBy1 [process:plantRecruitment]
