@@ -1,6 +1,5 @@
 package au.edu.anu.twuifx.mr.view;
 
-import au.edu.anu.twcore.data.runtime.TwData;
 import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.ecosystem.runtime.system.CategorizedContainer;
@@ -12,13 +11,10 @@ import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.properties.ReadOnlyPropertyList;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 
@@ -107,18 +103,8 @@ public class RunTimeData {
 	 * populations
 	 */
 	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (SystemContainer community : communities(initialisedConfig)) {
-//			System.out.println("BEFORE");
-//			for (SystemComponent sc : community.allItems())
-//				System.out.println(sc);
-//
+		for (SystemContainer community : communities(initialisedConfig))
 			community.clearState();
-//
-//			System.out.println("AFTER");
-//			for (SystemComponent sc : community.allItems())
-//				System.out.println(sc);
-//
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -162,7 +148,7 @@ public class RunTimeData {
 //	instance (eg the one being currently running in simple cases, or if many
 //	simulators are running you probably need to give the user a way to select one)
 
-	// temp code
+	
 	/*-
 	 * --> I agree with this. Parameters should be kept separate from initial
 	drivers. That's done in the graph (hence the parameterValues and
@@ -173,13 +159,6 @@ public class RunTimeData {
 	variables/parameters that you want to reuse in different projects. For
 	small projects, p & v can be kept together.
 	 * */
-	/**
-	 * Not for me. The main purpose here is for a model of a given structure i.e
-	 * this project only, to allow for the same parameter value with different
-	 * variable values or the same variables values with different parameters
-	 * values. Does this mean parameters and variables are confounded by the current
-	 * state of the simulation?
-	 */
 
 	@SuppressWarnings("unchecked")
 	public static void testingRuntimeGraphStuff(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
