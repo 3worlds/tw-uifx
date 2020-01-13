@@ -134,7 +134,7 @@ public class MrController implements IMRController {
 		VBox rightContent = new VBox();
 		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
 		imageView.preserveRatioProperty().set(true);
-		rightContent.getChildren().addAll(imageView,new Label("Three Worlds - M. C. Escher (1955)"));
+		rightContent.getChildren().addAll(imageView, new Label("Three Worlds - M. C. Escher (1955)"));
 		TextFlow textFlow = new TextFlow();
 		textFlow.setPrefWidth(400);
 		textFlow.setTextAlignment(TextAlignment.CENTER);
@@ -161,13 +161,13 @@ public class MrController implements IMRController {
 		content.getChildren().addAll(rightContent, leftContent);
 		TextArea textArea = new TextArea();
 		Scanner sc = new Scanner(MrController.class.getResourceAsStream("aboutMR.txt"));
-		
+
 		while (sc.hasNext()) {
 			textArea.appendText(sc.nextLine());
 			textArea.appendText("\n");
 		}
 		sc.close();
-		
+
 		textArea.setWrapText(true);
 		textArea.setPrefHeight(400);
 		textArea.setEditable(false);
@@ -192,7 +192,7 @@ public class MrController implements IMRController {
 
 	@FXML
 	void onISClear(ActionEvent event) {
-		model.doISClear();
+		RunTimeData.clearModelState(model.getGraph());
 	}
 
 	@FXML

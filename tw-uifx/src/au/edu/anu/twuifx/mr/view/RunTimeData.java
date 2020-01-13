@@ -108,20 +108,17 @@ public class RunTimeData {
 	 */
 	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		for (SystemContainer community : communities(initialisedConfig)) {
-			clearState(community);
-			//community.clearState();
+//			System.out.println("BEFORE");
+//			for (SystemComponent sc : community.allItems())
+//				System.out.println(sc);
+//
+			community.clearState();
+//
+//			System.out.println("AFTER");
+//			for (SystemComponent sc : community.allItems())
+//				System.out.println(sc);
+//
 		}
-	}
-
-	//Should this be a method of CategorizedContainer??
-	private static void clearState(SystemContainer container) {
-		for (CategorizedContainer<SystemComponent> child : container.subContainers())
-			clearState((SystemContainer) child);
-		for (SystemComponent component : container.items())
-			container.removeItem(component.id());
-		container.effectAllChanges();
-		container.variables().clear();
-		container.populationData().clear();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -202,83 +199,30 @@ public class RunTimeData {
 			}
 			for (Simulator sim : simNode.getSimulators()) {
 				SystemContainer community = sim.community();
-				TwData pars = community.parameters();
-				TwData vars = community.variables();
-				// null if no category has "parameters" edge. ie. parameterClass property value
-				// will be empty
-				if (pars != null) {
-					System.out.println("PARS");
-					for (String key : pars.getKeysAsArray())
-						System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + key + ":"
-								+ pars.getPropertyValue(key));
-				} else {
-					System.out
-							.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + " has no parameters");
-				}
-				if (vars != null) {
-					System.out.println("VARS");
-					for (String key : vars.getKeysAsArray())
-						System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + key + ":"
-								+ vars.getPropertyValue(key));
-
-				} else {
-					System.out
-							.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + " has no variables");
-				}
 
 				System.out.println("STATE");
-				for (SystemComponent sc : community.allItems()) {
+				for (SystemComponent sc : community.allItems())
 					System.out.println(sc);
-					
-//					//sc.properties();
-				}
-				System.out.println("INITIAL STATE");
-				for (SystemComponent sc : community.getInitialItems()) {
-					System.out.println(sc);
-				}
-				System.out.println("SUBCOMMUNITIES");
-				// etc recursively
-				for (CategorizedContainer<SystemComponent> cc : community.subContainers()) {
-					vars = cc.variables();
-					if (vars!=null) {
-						for (String key : vars.getKeysAsArray())
-							System.out.println(simNode.id() + ":" + sim.id() + ":" + community.id() + ":" + cc.id()+":"+key + ":"
-									+ vars.getPropertyValue(key));
 
-					}
-						
-//					cc.allItems();
-//					cc.getInitialItems();
+				System.out.println("CONTAINERS");
+				printContainer(community);
 
-				}
-				;
-
-				// rather: look at initialItems
 			}
-//			TreeGraphDataNode structure = (TreeGraphDataNode) get(system.getChildren(),
-//					selectOne(hasTheLabel(N_STRUCTURE.label())));
-//			List<ComponentType> componentTypes = (List<ComponentType>) get(structure.getChildren(),
-//					selectOneOrMany(hasTheLabel(N_COMPONENTTYPE.label())));
-//			for (ComponentType componentType : componentTypes) {
-//				System.out.println(componentType.classId() + ":" + componentType.id());
-//				for (Map<String, SystemContainer> scmap : componentType.containers()) {
-//					for (SystemContainer sc : scmap.values()) {
-//						System.out.println(sc.id());
-//						for (SystemComponent comp : sc.allItems()) {
-//							System.out.println(comp.classId() + ":" + comp.id());
-//							ReadOnlyPropertyList props = comp.readOnlyProperties();
-//							for (String key : props.getKeysAsSet())
-//								System.out.println(key + ":" + props.propertyToString(key));
-//							// there is no way of distinguishing between pars and vars at this level
-//							// we need some other way - how does the data tracker do it?
-//							
-//						}
-//					}
-//				}
-//				;
-//
-//			}
 		}
+		System.out.println("-------------------------------------------");
+	}
+
+	private static void printContainer(SystemContainer container) {
+		System.out.println("ID: " + container.id());
+		System.out.println("VARS:" + container.variables());
+		System.out.println("PARS:" + container.parameters());
+		for (SystemComponent component : container.getInitialItems()) {
+			System.out.println("INIT: " + component);
+		}
+		for (CategorizedContainer<SystemComponent> childContainer : container.subContainers()) {
+			printContainer((SystemContainer) childContainer);
+		}
+
 	}
 
 }
