@@ -5,67 +5,39 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 //=================================================================================================
 // Copy and paste this text in the changeState(...) method of the generated Growth.java class
 //
-//			Plantrec ctvar = (Plantrec) focal.currentState();
-//			Plantrec nxtvar = (Plantrec) focal.nextState();
-//			double bm = ctvar.biomass()*1.1;
-//			if (bm>ctvar.height())
-//				bm=0.1;
-//			nxtvar.biomass(bm);
-//			nxtvar.height(rng().nextDouble());
+//		Plantrec_seedlingrec_plantrec_drivers ctvar = (Plantrec_seedlingrec_plantrec_drivers) focal.currentState();
+//		Plantrec_seedlingrec_plantrec_drivers nxtvar = (Plantrec_seedlingrec_plantrec_drivers) focal.nextState();
+//		double bm;
+//		if (focal.autoVar().age()==0)
+//			bm=0.1;
+//		else
+//			bm = ctvar.biomass()*1.1;
+//		if (bm>ctvar.height())
+//			bm=0.1;
+//		nxtvar.biomass(bm);
+//		nxtvar.height(rng().nextDouble());
+//		nxtvar.nleaves(ctvar.nleaves()+1);
 //
 // Copy and paste this text in the delete(...) method of the generated Mortality.java class
 //
-//	    int NMAX = 10;
-//	    double proba = 1.0/NMAX;
-//		int ntot = (int) focalContext.groupPopulationData.getPropertyValue(COUNT.shortName());
-//		if (ntot>=NMAX)
-//			return decide(proba);
-//		else
-//			return decide(1.0/(NMAX*NMAX));
+//		return decide(0.1);
 //
 // (NB: also requires this import line: 
 //  import static fr.cnrs.iees.twcore.constants.PopulationVariables.*;
 //
 // Copy and paste this text in the nNew(...) method of the generated Fecundity.java class
 //
-//		Animalrec ctvar = (Animalrec) focal.currentState();
-//		if (ctvar.sex())
-//			return 0.2;
+//		return 0.1;
+//
+// Copy and paste this text in the changeCategory(...) method of the generated PRecruit.java class
+//
+//		Plantrec_seedlingrec_plantrec_drivers sdlvar = 
+//			(Plantrec_seedlingrec_plantrec_drivers) focal.currentState();
+//		if (sdlvar.nleaves()>4)
+//			return "adult";
 //		else
-//			return 0.0;
+//			return null;
 //
-// Copy and paste this text in the changeState(...) method of the generated AGrowth.java class
-//
-//		Animalrec ctvar = (Animalrec) focal.currentState();
-//		Animalrec nxtvar = (Animalrec) focal.nextState();
-//		long age = focal.autoVar().age();
-//		double bw = ctvar.bodyweight();
-//		if (ctvar.sex()) {
-//			if (age<=3)
-//				bw *= 1.4;
-//		}
-//		else {
-//			if (age<=5)
-//				bw *= 1.5;
-//		}
-//		nxtvar.bodyweight(bw);
-//		nxtvar.sex(ctvar.sex());
-//		nxtvar.length(Math.pow(bw,1.0/3.0)*0.5);
-//
-// Add this local static function in the AGrowth class
-//
-//	// an allometry function to compute length from bodyweight
-//	static double length(double bw) {
-//		return Math.pow(bw,1.0/3.0)*0.5;
-//	}
-//
-// Copy and paste this text in the changeState(...) method of the generated InitNewBorn.java class
-//
-//		Animalrec nbvar = (Animalrec) focal.nextState();
-//		nbvar.sex(rng().nextBoolean());
-//		double bw = 1.0;
-//		nbvar.bodyweight(bw);
-//		nbvar.length(AGrowth.length(bw));
 
 
 //=================================================================================================
@@ -86,14 +58,28 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
 		tab tb1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget timeSeries5
+			container cntnr2
 				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-			widget table2
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				widget timeSeries5
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				widget table2
+					order = java.lang.Integer(1)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+			container cntnr1
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				widget wdgt2
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+				widget wdgt1
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 	experiment exp
 		design design1
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
@@ -120,8 +106,8 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(HOUR)
 					process plantGrowth
-						dataTracker plantTracker
-							sampleSize = java.lang.String(ALL)
+						dataTracker seedlingTracker
+							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
@@ -140,6 +126,12 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 						function Growth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Growth)
+						dataTracker adultTracker
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 			initialState state
 				group plantLC
 					group plantS
@@ -219,15 +211,19 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 				units = java.lang.String(m)
 
 // CROSS-LINKS
+[dataTracker:adultTracker] trackPopulation trckPpltn2 [group:plantA]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [lifeCycle:plantcycle] appliesTo applsT4 [categorySet:stage]
 [group:plantA] groupOf grpOf2 [componentType:adultPlant]
+[dataTracker:seedlingTracker] trackPopulation trckPpltn1 [group:plantS]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [componentType:plantSeedling] belongsTo belongsTo1 [category:plant]
 [componentType:plantSeedling] belongsTo blngsT2 [category:seedling]
 [function:PFecundity] useRNG usRNG2 [rng:growthRng]
 [process:plantRecruitment] appliesTo applsT2 [category:plant]
 [process:plantRecruitment] appliesTo applsT3 [category:seedling]
 [experiment:exp] baseLine baseLine1 [system:sys]
-[widget:timeSeries5] trackSeries trckSrs8 [dataTracker:plantTracker]
+[widget:timeSeries5] trackSeries trckSrs1 [dataTracker:seedlingTracker]
 [component:cmpnnt1] instanceOf instncOf1 [componentType:plantSeedling]
 [group:plantLC] cycle cycl1 [lifeCycle:plantcycle]
 [category:plant] drivers drvrs1 [record:plantrec]
@@ -235,14 +231,13 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 [process:APlantLife] appliesTo applsT6 [category:plant]
 [process:plantGrowth] appliesTo appliesTo1 [category:plant]
 [category:adult] drivers drvrs4 [record:adultrec]
+[widget:wdgt2] trackSeries trckSrs4 [dataTracker:adultTracker]
 [function:Growth] useRNG usRNG3 [rng:growthRng]
-[widget:table2] trackSeries trckSrs9 [dataTracker:plantTracker]
+[widget:wdgt1] trackSeries trckSrs3 [dataTracker:adultTracker]
+[widget:table2] trackSeries trckSrs2 [dataTracker:seedlingTracker]
 [recruit:SdlToAd] toCategory tCtgry1 [category:adult]
 [recruit:SdlToAd] effectedBy effctdBy1 [process:plantRecruitment]
 [recruit:SdlToAd] fromCategory frmCtgry1 [category:seedling]
-[dataTracker:plantTracker] trackComponent trckCmpnnt1 [component:cmpnnt1]
-[dataTracker:plantTracker] trackField trckFld2 [field:biomass]
-	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [function:PMortality] useRNG usRNG1 [rng:mortalityRng]
 [category:seedling] drivers drvrs3 [record:seedlingrec]
 [componentType:adultPlant] belongsTo blngsT3 [category:adult]
