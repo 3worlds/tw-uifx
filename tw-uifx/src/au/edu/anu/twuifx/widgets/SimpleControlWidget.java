@@ -139,16 +139,16 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	public void onStatusMessage(State newState) {
 		log.info("Thread: " + Thread.currentThread().getId()+ " State: "+newState);
 		state = newState.getName();
-		if (state.equals(running.name()))
-			System.out.println("Start time: "+System.currentTimeMillis());
-		if (state.equals(finished.name()))
-			System.out.println("End time: "+System.currentTimeMillis());
-		if (state.equals(pausing.name()))
-			System.out.println("Pause time: "+System.currentTimeMillis());
-		if (state.equals(waiting.name()))
-			System.out.println("Waiting time: "+System.currentTimeMillis());
-		if (state.equals(stepping.name()))
-			System.out.println("Stepping time: "+System.currentTimeMillis());
+//		if (state.equals(running.name()))
+//			System.out.println("Start time: "+System.currentTimeMillis());
+//		if (state.equals(finished.name()))
+//			System.out.println("End time: "+System.currentTimeMillis());
+//		if (state.equals(pausing.name()))
+//			System.out.println("Pause time: "+System.currentTimeMillis());
+//		if (state.equals(waiting.name()))
+//			System.out.println("Waiting time: "+System.currentTimeMillis());
+//		if (state.equals(stepping.name()))
+//			System.out.println("Stepping time: "+System.currentTimeMillis());
 
 		setButtonLogic();
 	}
