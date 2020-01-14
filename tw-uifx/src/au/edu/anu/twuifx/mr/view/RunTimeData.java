@@ -148,7 +148,6 @@ public class RunTimeData {
 //	instance (eg the one being currently running in simple cases, or if many
 //	simulators are running you probably need to give the user a way to select one)
 
-	
 	/*-
 	 * --> I agree with this. Parameters should be kept separate from initial
 	drivers. That's done in the graph (hence the parameterValues and
@@ -161,7 +160,7 @@ public class RunTimeData {
 	 * */
 
 	@SuppressWarnings("unchecked")
-	public static void testingRuntimeGraphStuff(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
+	public static void dumpGraphState(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
 		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(configGraph.root().getChildren(),
 				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
 		for (TreeGraphDataNode system : systems) {
@@ -173,22 +172,31 @@ public class RunTimeData {
 			for (ComponentType ct : cts) {
 				ct.categoryId();
 				for (SystemFactory sf : ct.getFactories().values()) {
-					System.out.println(ct.categoryId() + ":" + ct.id() + "->" + sf);
+					System.out.println("FACTORY: "+system.id()+":"+ct.categoryId() + ":" + ct.id() + "->" + sf);
+					// NB side-effects: increments instance count MAX 2^31-1  LONG : 2^63-1
+					// Does NOT add to the factory graph - there is none
+					System.out.println("Instance(): "+sf.newInstance());
 				}
 			}
 			for (Simulator sim : simNode.getSimulators()) {
 				SystemContainer community = sim.community();
 
+				int count = 0;
 				System.out.println("STATE");
-				for (SystemComponent sc : community.allItems())
-					System.out.println(sc);
+				for (SystemComponent sc : community.allItems()) {
+					if (count <= 10)
+						System.out.println(sc);
+					count++;
+				}
+				if (count > 10)
+					System.out.println("... and " + (count - 10) + " other(s).");
 
 				System.out.println("CONTAINERS");
 				printContainer(community);
 
 			}
 		}
-		System.out.println("-------------------------------------------");
+		System.out.println("----------------- END --------------------------");
 	}
 
 	private static void printContainer(SystemContainer container) {

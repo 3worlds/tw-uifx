@@ -187,7 +187,7 @@ public class MrController implements IMRController {
 
 	@FXML
 	void onCurrentConfiguration(ActionEvent event) {
-
+		RunTimeData.dumpGraphState(model.getGraph());
 	}
 
 	@FXML
@@ -211,8 +211,8 @@ public class MrController implements IMRController {
 		extensions.add(new ExtensionFilter("Initial state (*.isf)", ".isf"));
 		File file = Dialogs.saveISFile(Project.makeFile(ProjectPaths.RUNTIME), "Save state as");
 		if (file != null) {
-			model.doISSaveAs(file);
 			System.out.println(file);
+			model.doISSaveAs(file);
 		}
 	}
 

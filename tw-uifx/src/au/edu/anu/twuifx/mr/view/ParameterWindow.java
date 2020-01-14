@@ -102,7 +102,6 @@ public class ParameterWindow implements IRunTimeParameterizer{
 	public void show(boolean show) {
 		if (show) {
 			stage.show();
-			RunTimeData.testingRuntimeGraphStuff(graph);
 		}else
 			stage.hide();
 	}
