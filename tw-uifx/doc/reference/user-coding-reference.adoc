@@ -1,0 +1,86 @@
+This section gives general rules to follow to successfully edit the generated `TwFunction`-descendant classes in order for your model to behave as you wish. Section <<truesetting_up_a_java_development_environment_for_the_user_code,Setting up a user coding environment>> describes how to link your ModelMaker session with an eclipse development enviromnent where you can edit the generated code. Section <<truefunction,Function>> describes all the options you can setup in `ModelMaker` to specify your function.
+
+All the generated function classes look like this:
+
+[source,java]
+----
+package system1;
+
+import au.edu.anu.rscs.aot.collections.tables.*;
+import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
+import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
+
+/*
+[... some big comment...]
+* Class Function1
+* Model "system1" -  - Mon Sep 23 09:05:33 CEST 2019
+* CAUTION: Edit this template but do not change class declaration.
+*/
+
+public class Function1 extends ChangeStateFunction {
+
+	@Override
+	public void changeState(double t, double dt, SystemComponent focal) {
+		// INSERT YOUR CODE HERE
+	}
+
+}
+----
+
+In this example, "**system1**" was the name given to the `system` node, while "**Function1**" was the name given to the `function` node. The `type` property set for the `function` was "**ChangeState**", as shown by the generated code. Other function types would have caused the generation of different methods in the class.
+
+==== generic method arguments
+
+All generated methods share the following arguments:
+
+* the first and second argument are _the current time_ _**t**_ and __current time step **dt**__, passed by the simulator as double values in units of the `timeModel` of the parent `process` of the `function`.
+
+* For all function types which process applies to categories (`appliesTo ->  category`), i.e. `ChangeCategoryDecision`, `ChangeState`, `DeleteDecision`, `CreateOtherDecision`, there is an additional argument, the system component which will be affected by the computations, called __focal__.
+
+* For all function types which process applies to relations (`appliesTo ->  relationType`), i.e. `ChangeOtherCategoryDecision`, `ChangeOtherState`, `DeleteOtherDecision`, `ChangeRelationState`, `MaintainRelationDecision`, and for `RelateToDecision`, there  is another additional argument, a second system component, the one at the other end of the relation starting from __focal__, called __other__.
+
+==== generic method fields
+
+In addition to these arguments, every function class has a protected field called `localContext` that contain contextual data that may be used in computations. The local context data consist in:
+
+** __ecosystem__-level data, i.e. ecosystem population data (= number [source,]
++
+----
+focalContext.ecosystemPopulationData
+focalContext.ecosystemName
+----
+
+** __life cycle__-level data, i.e. life cycle parameters, population data, and name:
++
+----
+focalContext.lifeCycleParameters
+focalContext.lifeCyclePopulationData
+focalContext.lifeCycleName
+----
+
+** __group__-level data, i.e. group parameters, population data, and name. A group represents here components sharing the same categories and same parameter set (eg _species_ characteristics for living organisms).
++
+----
+focalContext.groupParameters
+focalContext.groupPopulationData
+focalContext.groupCycleName
+----
+
+`PopulationData` has 3 accessible fields: `count`, `nremoved` and `nAdded`.
+
+
+**TODO** update this
+
+* The `changeState(...)` method of the `ChangeState` and `ChangeRelationState` function types, and the `changeOtherState(...)` method of the `ChangeOtherState` function type,  are expected to compute changes in state variables of the _focal_ component or relation *[NB: this is not yet implemented for relations]*, or the _other_ component in the case of the `ChangeOtherState` function. The state variables are found in `focal.currentState()`, a read-only set of values, and new values may be computed into `focal.nextState()`.
+
+* The `delete(...)` method of the `DeleteDecision` and `DeleteOtherDecision` must return a `boolean` value. If `true` is returned, this will trigger the removal of the _focal_ (for `DeleteDecision`) or _other_ component (for `DeleteOtherDecision`). 
+
+TIP: In all `...Decision` functions except `CreateOtherDecision`, a helper method called `decide(double proba)` is available. This method will return true with probability `proba` and can be used to return a boolean result based on a probability computation. This method uses the in-built <<a,random stream facility>> of 3Worlds.
+
+* The `nNew(...)` method of the `CreateOtherDecision` function takes an extra argument called `newType`, which is the category name of the newly created component, as per the life cycle. `nNew(...)` returns a number of new components to create as a decimal number (`double`): the _integral part_ directly translates into a number of new components, while the _decimal part_ is used as a probability of an extra new component. This way, very low fecundity probabilities can be simulated.
+
+TIP: If there are >1 possible descendant categories, the `nNew(...)` method will be called as many times, with the `newType` parameter changing accordingly. The `nNew(...)` method must be prepared to handle multiple choices in such case (for example with a `switch` statement).
+
+* The `changeCategory(...)` method of the `ChangeCategoryDecision` and `ChangeOtherCategoryDecision` function types returns a category name (`String`), that of the new recruit. This name must be consistent with the life cycle information. After the function is executed, the  _focal_ (for `ChangeCategoryDecision`) or the _other_ (for `ChangeOtherCategoryDecision`) component is recruited to its new category.
+
+* The `maintainRelation(...)` method of the `MaintainRelationDecision` and the `relate(...)` method of the `RelateToDecision` both return a `boolean` value. If `true` is returned, the relation is maintained/set between the two components, otherwise it is removed/not set.**[TODO: a lot to add when indexers come in]**

@@ -1,4 +1,4 @@
-[setting up java]
+//[setting up java]
 === Setting up a java development environment for the user code
 
 ==== Setting up an eclipse __i__ntegrated __d__evelopment __e__nvironment (IDE) for 3Worlds

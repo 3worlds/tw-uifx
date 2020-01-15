@@ -45,7 +45,7 @@ include::configuration-reference.adoc[]
  
 === Developing and testing model code
 
-*TODO*
+include::user-coding-reference.adoc[]
 
 === Feeding the model with data
 

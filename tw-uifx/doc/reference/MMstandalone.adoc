@@ -1,4 +1,4 @@
-=== Running ModelMaker standalone
+=== Running ModelMaker
 
 This assumes you have downloaded `3w.zip`.
 // NOTE: 3w.zip must contain (1) .3w/tw-dep.jar, (2) ModelMaker.jar, (3) UserCodeRunner.java
