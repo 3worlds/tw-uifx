@@ -1,15 +1,17 @@
-treegraph // saved by OmugiGraphExporter on Mon Jan 13 09:37:36 AEDT 2020
+treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 // Copy and paste this text in the changeState(...) method of the generated Func.java class
 // in order to see things displayed in the SimpleTimeSeriesWidget
-// Vars next = (Vars) focal.nextState();
-// next.y(rng().nextDouble());
+//
+//		Pars pars = (Pars) focalContext.groupParameters;
+//		Vars current = (Vars)focal.currentState();
+//		Vars next = (Vars)focal.nextState();
+//		next.y(pars.x()*current.y()*(1-current.y()));
 //
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
-	
 // TREE
-3worlds tut1
+3worlds model1
 	experiment exp
 		timePeriod duration
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(9)
@@ -22,6 +24,10 @@ treegraph // saved by OmugiGraphExporter on Mon Jan 13 09:37:36 AEDT 2020
 		dynamics dyn
 			initialState intlStt
 				component cmpnnt
+					parameterValues pv
+						x = java.lang.Double(4.0)
+					variableValues vv
+						y = java.lang.Double(0.1)
 			timeLine scale
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
@@ -81,7 +87,7 @@ treegraph // saved by OmugiGraphExporter on Mon Jan 13 09:37:36 AEDT 2020
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String(?)
+				units = java.lang.String(n.a)
 		record pars
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(pars)
@@ -89,10 +95,10 @@ treegraph // saved by OmugiGraphExporter on Mon Jan 13 09:37:36 AEDT 2020
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String(?)
+				units = java.lang.String(n.a)
 
 // CROSS-LINKS
-[component:cmpnnt] instanceOf instncOf [componentType:type]
+[component:cmpnnt] instanceOf instncOf1 [componentType:type]
 [componentType:type] belongsTo belongsTo [category:ctgry]
 [dataTracker:tracker] trackComponent trckCmpnnt1 [component:cmpnnt]
 [dataTracker:tracker] trackField tracks [field:y]

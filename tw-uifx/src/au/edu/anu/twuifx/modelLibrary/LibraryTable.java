@@ -39,7 +39,7 @@ public enum LibraryTable {
 	Empty(/*             */"Empty",/*                    */"vide.utg"), //
 	Basic1(/*            */"Base 1",/*                   */"deBase1.utg"), //
 	Basic2(/*            */"Base 2",/*                   */"deBase2.utg"), //
-	Model1(/*            */"Model 1",/*                  */"tut1.utg"), //
+	Model1(/*            */"Model 1",/*                  */"model1.utg"), //
 	;
 
 	private final String displayName;
