@@ -12,74 +12,7 @@ treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds model1
-	experiment exp
-		timePeriod duration
-			end = fr.cnrs.iees.twcore.constants.DateTimeType(9)
-			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
-	system system
-		driverClass = java.lang.String(code.system.Vars)
-		parameterClass = java.lang.String(code.system.Pars)
-		dynamics dyn
-			initialState intlStt
-				component cmpnnt
-					parameterValues pv
-						x = java.lang.Double(4.0)
-					variableValues vv
-						y = java.lang.Double(0.1)
-			timeLine scale
-				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
-				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
-				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
-				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-				timeModel clock
-					dt = java.lang.Long(1)
-					nTimeUnits = java.lang.Integer(1)
-					runAtTimeZero = java.lang.Boolean(false)
-					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
-					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
-					process proc
-						function Func
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.system.Func)
-						dataTracker tracker
-							groupBy = fr.cnrs.iees.twcore.constants.Grouping(NO_GROUPING)
-							select = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-							viewOthers = java.lang.Boolean(false)
-			stoppingCondition stop
-				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(99)
-				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
-		structure struct
-			componentType type
-				driverClass = java.lang.String(code.system.Vars)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-				parameterClass = java.lang.String(code.system.Pars)
-			categorySet ctgrySt
-				category ctgry
-	userInterface gui
-		top toolBar
-			widget time
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
-			widget ctrl
-				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
-		tab output
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
-			widget series
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-			widget table
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
-	dataDefinition dataTypes
+	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(vars)
@@ -96,18 +29,85 @@ treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(n.a)
+	system sys
+		driverClass = java.lang.String(code.sys.Vars)
+		parameterClass = java.lang.String(code.sys.Pars)
+		dynamics dyns
+			initialState state
+				component comp
+					parameterValues parVals
+						x = java.lang.Double(4.0)
+					variableValues varVals
+						y = java.lang.Double(0.1)
+			stoppingCondition stCnd
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(99)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+			timeLine tmLn
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel tmMo
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
+					process proc
+						function Func
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys.Func)
+						dataTracker trkr
+							groupBy = fr.cnrs.iees.twcore.constants.Grouping(NO_GROUPING)
+							select = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							viewOthers = java.lang.Boolean(false)
+		structure struct
+			componentType compTyp
+				driverClass = java.lang.String(code.sys.Vars)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				parameterClass = java.lang.String(code.sys.Pars)
+			categorySet catSet
+				category cat
+	experiment expt
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(9)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	userInterface gui
+		top top
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+		tab tab
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+			widget series
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			widget table
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 
 // CROSS-LINKS
-[component:cmpnnt] instanceOf instncOf1 [componentType:type]
-[componentType:type] belongsTo belongsTo [category:ctgry]
-[dataTracker:tracker] trackComponent trckCmpnnt1 [component:cmpnnt]
-[dataTracker:tracker] trackField tracks [field:y]
+[component:comp] instanceOf instOf [componentType:compTyp]
+[system:sys] belongsTo blngsTo [category:cat]
+[componentType:compTyp] belongsTo blngsTo1 [category:cat]
+[dataTracker:trkr] trackComponent trksCmpOf [component:comp]
+[dataTracker:trkr] trackField trksFldOf [field:y]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]""))
-[experiment:exp] baseLine baseline [system:system]
-[widget:table] trackSeries tracks3 [dataTracker:tracker]
-[process:proc] appliesTo appliesTo [category:ctgry]
-[system:system] belongsTo blngsT2 [category:ctgry]
-[category:ctgry] drivers hasVars [record:vars]
-[category:ctgry] parameters hasPars [record:pars]
-[widget:series] trackSeries tracks2 [dataTracker:tracker]
-[widget:time] trackTime tracks1 [dynamics:dyn]
+[experiment:expt] baseLine bsln [system:sys]
+[widget:table] trackSeries trksSrsOf [dataTracker:trkr]
+[process:proc] appliesTo aplyTo [category:cat]
+[category:cat] drivers hasVars [record:vars]
+[category:cat] parameters hasPars [record:pars]
+[widget:series] trackSeries trksSrsOf1 [dataTracker:trkr]
+[widget:time] trackTime trksTmOf [dynamics:dyns]
