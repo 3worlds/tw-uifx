@@ -7,6 +7,9 @@ treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 //		Vars next = (Vars)focal.nextState();
 //		next.y(pars.x()*current.y()*(1-current.y()));
 //
+// example settings: 
+// pars: x = 4.0 
+// vars: y = 0.1
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
