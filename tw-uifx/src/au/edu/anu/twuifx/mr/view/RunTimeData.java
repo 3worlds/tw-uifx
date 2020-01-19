@@ -23,7 +23,7 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
  *
  * @date 6 Jan 2020
  */
-// NB these trial bit of code assumes the graph has been initialised i.e. these proposed methods are only called from ModelRunner
+// NB these trial bits of code assume the graph has been initialised i.e. these proposed methods are only called from ModelRunner
 /**
  * The problem here maybe if there is a dependence between pars and
  * drivers/state. If a new state is generated, will there be new parameters. If
@@ -172,10 +172,10 @@ public class RunTimeData {
 			for (ComponentType ct : cts) {
 				ct.categoryId();
 				for (SystemFactory sf : ct.getFactories().values()) {
-					System.out.println("FACTORY: "+system.id()+":"+ct.categoryId() + ":" + ct.id() + "->" + sf);
-					// NB side-effects: increments instance count MAX 2^31-1  LONG : 2^63-1
+					System.out.println("FACTORY: " + system.id() + ":" + ct.categoryId() + ":" + ct.id() + "->" + sf);
+					// NB side-effects: increments instance count MAX 2^31-1 LONG : 2^63-1
 					// Does NOT add to the factory graph - there is none
-					System.out.println("Instance(): "+sf.newInstance());
+					System.out.println("Instance(): " + sf.newInstance());
 				}
 			}
 			for (Simulator sim : simNode.getSimulators()) {
@@ -203,6 +203,7 @@ public class RunTimeData {
 		System.out.println("ID: " + container.id());
 		System.out.println("VARS:" + container.variables());
 		System.out.println("PARS:" + container.parameters());
+
 		for (SystemComponent component : container.getInitialItems()) {
 			System.out.println("INIT: " + component);
 		}
