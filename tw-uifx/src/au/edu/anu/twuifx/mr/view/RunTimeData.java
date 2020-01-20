@@ -175,7 +175,7 @@ public class RunTimeData {
 					System.out.println("FACTORY: " + system.id() + ":" + ct.categoryId() + ":" + ct.id() + "->" + sf);
 					// NB side-effects: increments instance count MAX 2^31-1 LONG : 2^63-1
 					// Does NOT add to the factory graph - there is none
-					System.out.println("Instance(): " + sf.newInstance());
+					System.out.println("example instance: " + sf.newInstance());
 				}
 			}
 			for (Simulator sim : simNode.getSimulators()) {
