@@ -27,7 +27,7 @@
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="miISSaveAs" mnemonicParsing="false" onAction="#onISSaveAs" text="Save as..." />
                         <MenuItem fx:id="miISSelect" mnemonicParsing="false" onAction="#onISSelect" text="Select..." />
-                        <MenuItem fx:id="miISReload" mnemonicParsing="false" onAction="#onISReload" text="Reload" />
+                        <MenuItem fx:id="miISReload" mnemonicParsing="false" onAction="#onISReload" text="Reset" />
                         <MenuItem fx:id="miISClear" mnemonicParsing="false" onAction="#onISClear" text="Clear" />
                      </items></Menu>
                 <Menu fx:id="menuWidgets" mnemonicParsing="false" text="Widgets" />

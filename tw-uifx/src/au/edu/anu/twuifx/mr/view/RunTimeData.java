@@ -103,8 +103,13 @@ public class RunTimeData {
 	 * populations
 	 */
 	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (SystemContainer community : communities(initialisedConfig))
+		for (SystemContainer community : communities(initialisedConfig)) 
 			community.clearState();
+	}
+	
+	public static void resetModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+		for (SystemContainer community : communities(initialisedConfig)) 
+			community.reset();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -172,7 +177,7 @@ public class RunTimeData {
 			for (ComponentType ct : cts) {
 				ct.categoryId();
 				for (SystemFactory sf : ct.getFactories().values()) {
-					System.out.println("FACTORY: " + system.id() + ":" + ct.categoryId() + ":" + ct.id() + "->" + sf);
+					System.out.println("FACTORY: " + system.id() + ":" + ct.categoryId() + ":" + ct.id());
 					// NB side-effects: increments instance count MAX 2^31-1 LONG : 2^63-1
 					// Does NOT add to the factory graph - there is none
 					System.out.println("example instance: " + sf.newInstance());

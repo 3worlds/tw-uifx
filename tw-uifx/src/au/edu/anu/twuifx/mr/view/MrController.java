@@ -202,7 +202,7 @@ public class MrController implements IMRController {
 
 	@FXML
 	void onISReload(ActionEvent event) {
-		model.doISReload();
+		RunTimeData.resetModelState(model.getGraph());
 	}
 
 	@FXML
