@@ -1,0 +1,96 @@
+treegraph // saved by OmugiGraphExporter on Thu Jan 16 13:10:51 CET 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds testfunction4
+	dataDefinition dtDef
+		record rcrd2
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(rcrd2)
+			field virulence
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record rcrd1
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(rcrd1)
+			field biomass
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field infected
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+	experiment exp
+		design dsgn1
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+		timePeriod tmPrd1
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+	system system
+		dynamics dyn
+			timeLine tmLn1
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel tmMdl1
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+					process infest
+						function Infection
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.system.Infection)
+					process microbeLife
+						function MicRep
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.system.MicRep)
+						function MicMor
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.MicMor)
+					process plantLife
+						function PlantRep
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.PlantRep)
+						function PlantMor
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.PlantMor)
+		structure struct
+			relationType disease
+			componentType microbeC
+				driverClass = java.lang.String(code.system.Rcrd2)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			componentType plantC
+				driverClass = java.lang.String(code.system.Rcrd1)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			categorySet ctgrySt1
+				category microbe
+				category plant
+	userInterface gui
+		top toolBar
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+
+// CROSS-LINKS
+[componentType:plantC] belongsTo blngsT1 [category:plant]
+[category:microbe] drivers drvrs2 [record:rcrd2]
+[experiment:exp] baseLine baseline [system:system]
+[process:microbeLife] appliesTo applsT2 [category:microbe]
+[process:plantLife] appliesTo applsT3 [category:plant]
+[relationType:disease] fromCategory pathogen [category:microbe]
+[relationType:disease] toCategory host [category:plant]
+[componentType:microbeC] belongsTo blngsT2 [category:microbe]
+[process:infest] appliesTo applsT1 [relationType:disease]
+[category:plant] drivers drvrs1 [record:rcrd1]
+[widget:time] trackTime tracks1 [dynamics:dyn]
