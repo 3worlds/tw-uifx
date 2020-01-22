@@ -1,7 +1,53 @@
-treegraph // saved by OmugiGraphExporter on Thu Jan 16 13:10:51 CET 2020
+treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+// Test file for relation processes
+//
+//=================================================================================================
+// Copy and paste this text in the delete(...) method of the generated PlantMor.java class
+//
+//		return decide(0.1);
+//
+// Copy and paste this text in the nNew(...) method of the generated PlantRep.java class
+//
+//		return 0.11;
+//
+// Copy and paste this text in the changeOtherState(...) method of the generated InitNewPlant.java class
+//
+//		double parentBm = ((Rcrd1)focal.currentState()).biomass();
+//		((Rcrd1)other.nextState()).biomass(Math.min(parentBm/10.0, 2.0));
+//
+// Copy and paste this text in the changeState(...) method of the generated PlantGrowth.java class
+//
+//		((Rcrd1)focal.nextState()).biomass(((Rcrd1)focal.currentState()).biomass()*1.05);
+//
+// Copy and paste this text in the delete(...) method of the generated MicMor.java class
+//
+//		return decide(0.2);
+//
+// Copy and paste this text in the nNew(...) method of the generated MicRep.java class
+//
+//		return 0.21;
+//
+// Copy and paste this text in the changeState(...) method of the generated InitNewMic.java class
+//
+//		((Rcrd2)focal.nextState()).virulence(rng().nextDouble());
+//
+// Copy and paste this text in the relate(...) method of the generated Infection.java class
+//
+//	if (((Rcrd1)other.currentState()).biomass()<4)
+//		return decide(((Rcrd2)focal.currentState()).virulence());
+//	else
+//		return false;
+//
+
+
+//=================================================================================================
+
+
+
 // TREE
 3worlds testfunction4
 	dataDefinition dtDef
@@ -51,16 +97,47 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 16 13:10:51 CET 2020
 						function MicRep
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.system.MicRep)
+							function InitNewMic
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+								userClassName = java.lang.String(code.system.InitNewMic)
 						function MicMor
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.system.MicMor)
+						dataTracker micTracker
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 					process plantLife
 						function PlantRep
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.system.PlantRep)
-						function PlantMor
+							function InitNewPlant
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+								userClassName = java.lang.String(code.system.InitNewPlant)
+						function PlantGrowth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.PlantGrowth)
+						function PlantMor
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.system.PlantMor)
+						dataTracker plantTracker
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+			initialState state
+				group bacteria
+					component mic1
+						variableValues varVals
+							virulence = java.lang.Double(0.3)
+				group grass
+					component gr1
+						variableValues varVals1
+							biomass = java.lang.Double(12.0)
+							infected = java.lang.Boolean(false)
 		structure struct
 			relationType disease
 			componentType microbeC
@@ -73,6 +150,16 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 16 13:10:51 CET 2020
 				category microbe
 				category plant
 	userInterface gui
+		tab tab
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget wgt
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			widget wgt1
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 		top toolBar
 			widget time
 				order = java.lang.Integer(1)
@@ -83,14 +170,24 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 16 13:10:51 CET 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
 
 // CROSS-LINKS
+[group:bacteria] groupOf grpOf1 [componentType:microbeC]
 [componentType:plantC] belongsTo blngsT1 [category:plant]
+[group:grass] groupOf grpOf [componentType:plantC]
 [category:microbe] drivers drvrs2 [record:rcrd2]
 [experiment:exp] baseLine baseline [system:system]
+[dataTracker:plantTracker] trackPopulation trksPopOf [group:grass]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [process:microbeLife] appliesTo applsT2 [category:microbe]
 [process:plantLife] appliesTo applsT3 [category:plant]
 [relationType:disease] fromCategory pathogen [category:microbe]
 [relationType:disease] toCategory host [category:plant]
 [componentType:microbeC] belongsTo blngsT2 [category:microbe]
+[widget:wgt] trackSeries trksSrsOf1 [dataTracker:plantTracker]
+[component:gr1] instanceOf instOf1 [componentType:plantC]
 [process:infest] appliesTo applsT1 [relationType:disease]
+[dataTracker:micTracker] trackPopulation trksPopOf1 [group:bacteria]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [category:plant] drivers drvrs1 [record:rcrd1]
+[component:mic1] instanceOf instOf [componentType:microbeC]
+[widget:wgt1] trackSeries trksSrsOf [dataTracker:micTracker]
 [widget:time] trackTime tracks1 [dynamics:dyn]
