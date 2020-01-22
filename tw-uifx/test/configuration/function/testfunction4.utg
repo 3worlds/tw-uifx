@@ -96,6 +96,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 					process microbeLife
 						function MicRep
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							relateToProduct = java.lang.Boolean(false)
 							userClassName = java.lang.String(code.system.MicRep)
 							function InitNewMic
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
@@ -112,6 +113,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 					process plantLife
 						function PlantRep
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							relateToProduct = java.lang.Boolean(false)
 							userClassName = java.lang.String(code.system.PlantRep)
 							function InitNewPlant
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)

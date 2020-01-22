@@ -158,6 +158,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 07 15:39:54 CET 2020
 					process animalGrowth
 						function Fecundity
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							relateToProduct = java.lang.Boolean(false)
 							userClassName = java.lang.String(code.sys.Fecundity)
 							function InitNewBorn
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)

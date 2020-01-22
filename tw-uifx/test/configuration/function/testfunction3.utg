@@ -112,6 +112,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 							userClassName = java.lang.String(code.sys.PMortality)
 						function PFecundity
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							relateToProduct = java.lang.Boolean(false)
 							userClassName = java.lang.String(code.sys.PFecundity)
 						dataTracker adultTracker
 							sampleSize = java.lang.String()
