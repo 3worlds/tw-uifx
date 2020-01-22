@@ -48,7 +48,7 @@ import javafx.beans.value.ObservableValue;
  *
  * Date 14 Feb. 2019
  */
-public class SimplePropertyItem implements Item {
+public class SimpleMMPropertyItem implements Item {
 	protected ElementAdapter element;
 	protected String key;
 	protected boolean isEditable;
@@ -57,7 +57,7 @@ public class SimplePropertyItem implements Item {
 	private IMMController controller;
 
 
-	public SimplePropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
+	public SimpleMMPropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
 		this.element = element;
 		this.key = key;
 		this.isEditable = canEdit;

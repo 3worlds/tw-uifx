@@ -36,7 +36,7 @@ import java.util.Optional;
 import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.FileType;
 import javafx.stage.FileChooser;
@@ -49,7 +49,7 @@ import javafx.stage.FileChooser;
 // TODO Problem how to avoid polluting tw-apps or tw-core with FileChooser which
 // is fx stage specific
 
-public class FileTypeItem extends SimplePropertyItem {
+public class FileTypeItem extends SimpleMMPropertyItem {
 
 	private List<FileChooser.ExtensionFilter> exts;
 

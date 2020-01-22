@@ -42,7 +42,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 
 /**
@@ -50,7 +50,7 @@ import fr.cnrs.iees.graph.ElementAdapter;
  *
  * @date 15 Dec 2019
  */
-public class StringTableItem extends SimplePropertyItem {
+public class StringTableItem extends SimpleMMPropertyItem {
 	protected char[][] bdel = new char[2][2];
 	protected char[] isep = new char[2];
 

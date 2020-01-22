@@ -35,7 +35,7 @@ import java.util.Optional;
 import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 
@@ -44,7 +44,7 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
  *
  * Date 14 Feb. 2019
  */
-public class StatsTypeItem extends SimplePropertyItem {
+public class StatsTypeItem extends SimpleMMPropertyItem {
 
 	public StatsTypeItem(IMMController controller,String key, ElementAdapter element, boolean canEdit, String category, String description) {
 		super(controller,key, element, canEdit, category, description);

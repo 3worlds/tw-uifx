@@ -100,7 +100,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
-import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.StringTable.StringTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
@@ -835,7 +835,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			if (st.getDimensioners().length == 1)
 				return new StringTableItem(this, key, (ElementAdapter) element, true, category, description);
 		}
-		return new SimplePropertyItem(this, key, (ElementAdapter) element, editable, category, description);
+		return new SimpleMMPropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}
 
 	private void initialisePropertySheets() {

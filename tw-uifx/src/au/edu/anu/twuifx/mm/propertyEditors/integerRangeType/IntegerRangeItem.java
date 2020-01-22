@@ -35,7 +35,7 @@ import java.util.Optional;
 import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 
@@ -44,7 +44,7 @@ import au.edu.anu.rscs.aot.util.IntegerRange;
  *
  * @date 24 Oct 2019
  */
-public class IntegerRangeItem extends SimplePropertyItem {
+public class IntegerRangeItem extends SimpleMMPropertyItem {
 
 	public IntegerRangeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
 		super(controller,key, element, canEdit, category, description);

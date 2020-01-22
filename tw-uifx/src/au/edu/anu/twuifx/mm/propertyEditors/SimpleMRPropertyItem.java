@@ -28,51 +28,74 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
+package au.edu.anu.twuifx.mm.propertyEditors;
 
 import java.util.Optional;
 
-import org.controlsfx.property.editor.PropertyEditor;
+import org.controlsfx.control.PropertySheet.Item;
 
-import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
-import fr.cnrs.iees.graph.ElementAdapter;
-//import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.twcore.constants.TrackerType;
+import au.edu.anu.twcore.data.runtime.TwData;
+import javafx.beans.value.ObservableValue;
 
 /**
- * @author Ian Davies
+ * Author Ian Davies
  *
- * @date 12 Oct 2019
+ * Date 14 Feb. 2019
  */
-public class TrackerTypeItem extends SimpleMMPropertyItem {
+public class SimpleMRPropertyItem implements Item {
+	private String containerId;
+	private String description;
+	private String key;
+	private TwData data;
 
-	public TrackerTypeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
-			String description) {
-		super(controller, key, element, canEdit, category, description);
+	public SimpleMRPropertyItem(TwData data, String key, String containerId, String description) {
+		this.data = data;
+		this.key = key;
+		this.containerId = containerId;
+		this.description = description;
+	}
+
+	@Override
+	public boolean isEditable() {
+		return true;
+	}
+
+	@Override
+	public Class<?> getType() {
+		return data.getPropertyClass(key);
+	}
+
+	@Override
+	public String getCategory() {
+		return containerId;
+	}
+
+	@Override
+	public String getName() {
+		return key;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public Object getValue() {
+		return data.getPropertyValue(key);
 	}
 
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
-		if (!oldValue.toString().equals(newValue.toString())) {
-			TrackerType tt = TrackerType.valueOf((String) newValue);
-			onUpdateProperty(tt);
-		}
-	}
-	public ElementAdapter getElement() {
-		return element;
+		data.writeEnable();
+		data.setProperty(key, newValue);
+		data.writeDisable();
 	}
 
 	@Override
-	public Object getValue() {
-		TrackerType tt = (TrackerType) getElementProperties().getPropertyValue(key);
-		return tt.toString();
-	}
-
-	@Override
-	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
-		return Optional.of(TrackerTypeEditor.class);
+	public Optional<ObservableValue<? extends Object>> getObservableValue() {
+		return Optional.empty();
 	}
 
 }

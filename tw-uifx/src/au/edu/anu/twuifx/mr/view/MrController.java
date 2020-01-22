@@ -42,6 +42,7 @@ import au.edu.anu.twapps.mr.IMRModel;
 import au.edu.anu.twapps.mr.MRModel;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
+import au.edu.anu.twuifx.dialogs.ISParametersDlg;
 import au.edu.anu.twuifx.images.Images;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -207,9 +208,10 @@ public class MrController implements IMRController {
 
 	@FXML
 	void onISSaveAs(ActionEvent event) {
-		List<ExtensionFilter> extensions = new ArrayList<>();
-		extensions.add(new ExtensionFilter("Initial state (*.isf)", ".isf"));
-		File file = Dialogs.saveISFile(Project.makeFile(ProjectPaths.RUNTIME), "Save state as");
+		String[] exts = new String[2];
+		exts[0]="Initial state (*.isf)";
+		exts[1]=".isf";
+		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save state as",exts);
 		if (file != null) {
 			System.out.println(file);
 			model.doISSaveAs(file);
@@ -222,21 +224,37 @@ public class MrController implements IMRController {
 		model.setISSelection(idx);
 	}
 
-	@FXML
-	void onParDashboard(ActionEvent event) {
-		if (dashboard == null)
-			dashboard = new ParameterWindow(model.getGraph(), stage, miParDashboard.selectedProperty());
-		dashboard.show(miParDashboard.isSelected());
-	}
+	 @FXML
+	    void onParEdit(ActionEvent event) {
+		 new ISParametersDlg(model.getGraph());
+	    }
+
+	    @FXML
+	    void onParOpen(ActionEvent event) {
+	    	String[] exts = new String[2];
+			exts[0]="Model parameters (*.mpf)";
+			exts[1]=".mpf";
+	    	File file = Dialogs.promptForOpenFile(Project.makeFile(ProjectPaths.RUNTIME), "Open parameters", exts);
+	    	System.out.println(file);
+	    }
+
+	    @FXML
+	    void onParSave(ActionEvent event) {
+	    	String[] exts = new String[2];
+			exts[0]="Model parameters (*.mpf)";
+			exts[1]=".mpf";
+	    	File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save parameters", exts);
+	    	System.out.println(file);
+	    }
 
 	@FXML
 	public void initialize() {
 		model = new MRModel(this);
 		statusBar.setSpacing(5);
 		statusBar.setPadding(new Insets(1, 1, 1, 1));
-		statusBar.setStyle("-fx-background-color: lightgray");
+		//statusBar.setStyle("-fx-background-color: lightgray");
 		toolBar.setSpacing(5);
-		toolBar.setStyle("-fx-background-color: lightgray");
+		//toolBar.setStyle("-fx-background-color: lightgray");
 	}
 
 	private Stage stage;

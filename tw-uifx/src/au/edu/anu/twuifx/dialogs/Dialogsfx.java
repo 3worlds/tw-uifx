@@ -275,25 +275,40 @@ public class Dialogsfx implements IDialogs {
 		return fc.showSaveDialog(owner);
 	}
 
-	@Override
-	public File saveISFile(File directory, String title) {
+	private File getFile(File directory, String title, boolean doOpen, String[]... exts) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(title);
 		fileChooser.setInitialDirectory(directory);
-		fileChooser.getExtensionFilters().add(new ExtensionFilter("Initial state file (*.isf)", ".isf"));
-		fileChooser.setInitialFileName("*.isf");
-		File file = fileChooser.showSaveDialog(owner);
-		if (file==null)
+		for (String[] ext : exts)
+			fileChooser.getExtensionFilters().add(new ExtensionFilter(ext[0], ext[1]));
+		fileChooser.setInitialFileName("*" + exts[0][1]);// TODO this should be passed in.
+		File result;
+		if (doOpen)
+			result = fileChooser.showOpenDialog(owner);
+		else
+			result = fileChooser.showSaveDialog(owner);
+		if (result == null)
 			return null;
-		if (file.getName().endsWith(".isf"))
-			return file;
-		 Dialogs.errorAlert("File name error", "", file.getName() + " has no valid file-extension.");
-		 return null;
+		for (String[] ext : exts)
+			if (result.getName().endsWith(ext[1]))
+				return result;
+		Dialogs.errorAlert("File name error", "", result.getName() + " does not have a valid file-extension.");
+		return null;
+	}
+
+	@Override
+	public File promptForOpenFile(File directory, String title, String[]... exts) {
+		return getFile(directory,title,true,exts);
+	}
+
+	@Override
+	public File promptForSaveFile(File directory, String title, String[]... exts) {
+		return getFile(directory,title,false,exts);
 	}
 
 	@Override
 	public int editISFiles(List<File> files, int idx) {
-		ISSelectionDlg dlg = new ISSelectionDlg(files,idx);
+		ISSelectionDlg dlg = new ISSelectionDlg(files, idx);
 		return dlg.getResult();
 	}
 

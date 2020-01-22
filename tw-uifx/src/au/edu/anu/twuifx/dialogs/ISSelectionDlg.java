@@ -144,9 +144,11 @@ public class ISSelectionDlg {
 	}
 
 	private void onAdd() {
-		List<ExtensionFilter> exts = new ArrayList<>();
-		exts.add(new ExtensionFilter("Initial state file (*.isf)", "*.isf"));
-		File file = Dialogs.getOpenFile(Project.makeFile(ProjectPaths.RUNTIME), "", exts);
+		String[] exts = new String[2];
+		exts[0] = "Initial state (*.isf)";
+		exts[1] = ".isf";
+		File file = Dialogs.promptForOpenFile(Project.makeFile(ProjectPaths.RUNTIME), "Add initial state file", exts);
+		// TODO open and validate the file before listing
 		if (file != null)
 			if (!listView.getItems().contains(file)) {
 				listView.getItems().add(file);

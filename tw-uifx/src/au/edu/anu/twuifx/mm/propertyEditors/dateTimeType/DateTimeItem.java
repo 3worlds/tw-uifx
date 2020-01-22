@@ -38,7 +38,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.ecosystem.dynamics.TimeLine;
-import au.edu.anu.twuifx.mm.propertyEditors.SimplePropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -53,7 +53,7 @@ import fr.cnrs.iees.twcore.constants.TimeUnits;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
-public class DateTimeItem extends SimplePropertyItem {
+public class DateTimeItem extends SimpleMMPropertyItem {
 	private TimeScaleType timeScale = TimeScaleType.defaultValue();
 	private TimeUnits tuMin = TimeUnits.defaultValue();
 	private TimeUnits tuMax = TimeUnits.defaultValue();

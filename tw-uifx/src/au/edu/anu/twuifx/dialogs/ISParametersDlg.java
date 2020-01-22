@@ -28,51 +28,55 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
+package au.edu.anu.twuifx.dialogs;
 
 import java.util.Optional;
 
-import org.controlsfx.property.editor.PropertyEditor;
+import org.controlsfx.control.PropertySheet;
 
-import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
-import fr.cnrs.iees.graph.ElementAdapter;
-//import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.twcore.constants.TrackerType;
+import au.edu.anu.twapps.dialogs.Dialogs;
+import fr.cnrs.iees.graph.impl.ALEdge;
+import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Window;
 
 /**
  * @author Ian Davies
  *
- * @date 12 Oct 2019
+ * @date 22 Jan 2020
  */
-public class TrackerTypeItem extends SimpleMMPropertyItem {
+public class ISParametersDlg {
+	private Button btnSave;
+	private Button btnOpen;
+	private PropertySheet propertySheet;
+	private Dialog<ButtonType> dlg;
+	private ButtonType ok;
+	
+	public ISParametersDlg(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
+		dlg = new Dialog<ButtonType>();
+		dlg.setTitle("Edit parameters");
+		dlg.initOwner((Window) Dialogs.owner());
+		ok = new ButtonType("Ok", ButtonData.OK_DONE);
 
-	public TrackerTypeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
-			String description) {
-		super(controller, key, element, canEdit, category, description);
-	}
-
-	@Override
-	public void setValue(Object newValue) {
-		Object oldValue = getValue();
-		if (!oldValue.toString().equals(newValue.toString())) {
-			TrackerType tt = TrackerType.valueOf((String) newValue);
-			onUpdateProperty(tt);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane content = new BorderPane();
+		dlg.getDialogPane().setContent(content);
+		propertySheet = new PropertySheet();
+		content.setCenter(propertySheet);
+		// populate the propertysheet;
+		
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
 		}
-	}
-	public ElementAdapter getElement() {
-		return element;
-	}
-
-	@Override
-	public Object getValue() {
-		TrackerType tt = (TrackerType) getElementProperties().getPropertyValue(key);
-		return tt.toString();
-	}
-
-	@Override
-	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
-		return Optional.of(TrackerTypeEditor.class);
-	}
+		
+	};
 
 }
