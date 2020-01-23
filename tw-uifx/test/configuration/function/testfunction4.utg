@@ -8,16 +8,24 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 //=================================================================================================
 // Copy and paste this text in the delete(...) method of the generated PlantMor.java class
 //
-//		return decide(0.1);
+//	double bm = ((Rcrd1)focal.currentState()).biomass();
+//	double a = 1/5.0;
+//	double b = a-1;
+//	double prob = Math.min(a*bm*bm + b*bm,1.0); 
+//	return decide(prob);
 //
 // Copy and paste this text in the nNew(...) method of the generated PlantRep.java class
 //
-//		return 0.11;
+//	double bm = ((Rcrd1)focal.currentState()).biomass();
+//	if (bm>3.0)
+//		return 0.1*(bm-2);
+//	else 
+//		return 0;
 //
 // Copy and paste this text in the changeOtherState(...) method of the generated InitNewPlant.java class
 //
 //		double parentBm = ((Rcrd1)focal.currentState()).biomass();
-//		((Rcrd1)other.nextState()).biomass(Math.min(parentBm/10.0, 2.0));
+//		((Rcrd1)other.nextState()).biomass(Math.min(parentBm/4.0, 2.0));
 //
 // Copy and paste this text in the changeState(...) method of the generated PlantGrowth.java class
 //
@@ -29,7 +37,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 //
 // Copy and paste this text in the nNew(...) method of the generated MicRep.java class
 //
-//		return 0.21;
+//		return 0.41;
 //
 // Copy and paste this text in the changeState(...) method of the generated InitNewMic.java class
 //
