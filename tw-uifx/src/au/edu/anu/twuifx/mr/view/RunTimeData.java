@@ -5,7 +5,7 @@ import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.ecosystem.runtime.system.CategorizedContainer;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemContainer;
+import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemFactory;
 import au.edu.anu.twcore.ecosystem.structure.ComponentType;
 import fr.cnrs.iees.graph.TreeNode;
@@ -13,8 +13,6 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.properties.SimplePropertyList;
-import fr.cnrs.iees.properties.impl.SimplePropertyListImpl;
-
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 import java.util.ArrayList;
@@ -107,18 +105,18 @@ public class RunTimeData {
 	 * populations
 	 */
 	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (SystemContainer community : communities(initialisedConfig)) 
+		for (ComponentContainer community : communities(initialisedConfig)) 
 			community.clearState();
 	}
 	
 	public static void resetModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (SystemContainer community : communities(initialisedConfig)) 
+		for (ComponentContainer community : communities(initialisedConfig)) 
 			community.reset();
 	}
 
 	@SuppressWarnings("unchecked")
-	private static List<SystemContainer> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		List<SystemContainer> result = new ArrayList<>();
+	private static List<ComponentContainer> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+		List<ComponentContainer> result = new ArrayList<>();
 		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(initialisedConfig.root().getChildren(),
 				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
 		for (TreeGraphDataNode system : systems) {
@@ -188,7 +186,7 @@ public class RunTimeData {
 				}
 			}
 			for (Simulator sim : simNode.getSimulators()) {
-				SystemContainer community = sim.community();
+				ComponentContainer community = sim.community();
 
 				int count = 0;
 				System.out.println("STATE");
@@ -208,7 +206,7 @@ public class RunTimeData {
 		System.out.println("----------------- END --------------------------");
 	}
 
-	private static void printContainer(SystemContainer container) {
+	private static void printContainer(ComponentContainer container) {
 		System.out.println("ID: " + container.id());
 		System.out.println("VARS:" + container.variables());
 		System.out.println("PARS:" + container.parameters());
@@ -226,7 +224,7 @@ public class RunTimeData {
 			
 		}
 		for (CategorizedContainer<SystemComponent> childContainer : container.subContainers()) {
-			printContainer((SystemContainer) childContainer);
+			printContainer((ComponentContainer) childContainer);
 		}
 
 	}
