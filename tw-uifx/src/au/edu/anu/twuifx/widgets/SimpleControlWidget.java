@@ -42,7 +42,9 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -64,6 +66,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
+	private Label lblRealTime;
 
 	private static Logger log = Logging.getLogger(SimpleControlWidget.class);
 
@@ -77,7 +80,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		//log.info("Thread: " + Thread.currentThread().getId());
+		// log.info("Thread: " + Thread.currentThread().getId());
 		runGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Play16.gif")));
 		pauseGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Pause16.gif")));
 		btnRunPause = new Button("", runGraphic);
@@ -98,14 +101,21 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 		btnReset.setOnAction(e -> handleResetPressed());
 
 		HBox pane = new HBox();
+		pane.setAlignment(Pos.BASELINE_LEFT);
 		pane.getChildren().addAll(buttons);
+		lblRealTime = new Label("0");
+		Label units = new Label("[ms]");
+		
+		pane.setSpacing(5.0);
+		pane.getChildren().addAll(lblRealTime,units);
+
 		setButtonLogic();
 		return pane;
 	}
 
 	private Object handleResetPressed() {
 		// Always begin by disabling in case the next operation takes a long time
-		//log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
+		// log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
 		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name()))
 			sendEvent(reset.event());
@@ -113,7 +123,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	private Object handleStepPressed() {
-		//log.info("handleStepPressed Thread: " + Thread.currentThread().getId());
+		// log.info("handleStepPressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
 		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name()))
 			sendEvent(step.event());
@@ -121,7 +131,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	private Object handleRunPausePressed() {
-		//log.info("handleRunPausePressed Thread: " + Thread.currentThread().getId());
+		// log.info("handleRunPausePressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
 		Event event = null;
 		if (state.equals(waiting.name()))
@@ -135,14 +145,25 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 		return null;
 	}
 
+	private long startTime;
 	@Override
 	public void onStatusMessage(State newState) {
-		log.info("Thread: " + Thread.currentThread().getId()+ " State: "+newState);
+		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
 		state = newState.getName();
-//		if (state.equals(running.name()))
-//			System.out.println("Start time: "+System.currentTimeMillis());
-//		if (state.equals(finished.name()))
-//			System.out.println("End time: "+System.currentTimeMillis());
+		if (state.equals(running.name())) {
+			startTime = System.currentTimeMillis();
+			Platform.runLater(() -> {
+				lblRealTime.setText("0");
+			});
+		}
+		if (state.equals(finished.name())) {
+			final long runDuration = System.currentTimeMillis()-startTime;
+			startTime=0;
+			Platform.runLater(() -> {
+				String s = Long.toString(runDuration);
+				lblRealTime.setText(s);
+			});
+		}
 //		if (state.equals(pausing.name()))
 //			System.out.println("Pause time: "+System.currentTimeMillis());
 //		if (state.equals(waiting.name()))
@@ -156,7 +177,8 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	private void setButtonLogic() {
 		// ensure waiting for app thread i.e. only needed when 'running'
 		Platform.runLater(() -> {
-			//log.info("setButtonLogic: State: "+ state+", Thread: " + Thread.currentThread().getId());
+			// log.info("setButtonLogic: State: "+ state+", Thread: " +
+			// Thread.currentThread().getId());
 			if (state.equals(waiting.name())) {
 				setButtons(false, false, true, runGraphic);
 				return;

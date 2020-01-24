@@ -40,7 +40,7 @@
                   </Menu>
               </menus>
             </MenuBar>
-            <HBox fx:id="toolBar" />
+            <HBox fx:id="toolBar" alignment="BASELINE_LEFT" />
          </children>
       </VBox>
    </top>

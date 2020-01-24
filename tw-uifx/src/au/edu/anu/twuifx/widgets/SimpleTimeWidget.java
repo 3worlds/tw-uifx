@@ -43,6 +43,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
@@ -90,7 +91,8 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	public Object getUserInterfaceContainer() {
 		log.info("Thread id: " + Thread.currentThread().getId());
 		HBox content = new HBox();
-		content.setPadding(new Insets(4, 1, 1, 2));
+		content.setAlignment(Pos.BASELINE_LEFT);
+		//content.setPadding(new Insets(4, 1, 1, 2));
 		lblTime = new Label(formatOutput(timeFormatter.getInitialTime()));
 		content.getChildren().addAll(new Label("Simulator time: "),lblTime);
 		return content;
