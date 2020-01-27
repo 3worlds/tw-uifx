@@ -70,7 +70,6 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
 	private Label lblRealTime;
-	private  AbstractDisplayWidget<TimeData, Metadata> msgWidget;
 
 	private static Logger log = Logging.getLogger(SimpleControlWidget.class);
 
