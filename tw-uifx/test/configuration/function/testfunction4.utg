@@ -159,6 +159,11 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			categorySet ctgrySt1
 				category microbe
 				category plant
+			arena arena
+				space plot12
+					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+					x-limits = fr.ens.biologie.generic.utils.Interval([0.0,10.0])
+					y-limits = fr.ens.biologie.generic.utils.Interval(]5.0,12.0])
 	userInterface gui
 		tab tab
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
@@ -201,3 +206,4 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 [component:mic1] instanceOf instOf [componentType:microbeC]
 [widget:wgt1] trackSeries trksSrsOf [dataTracker:micTracker]
 [widget:time] trackTime tracks1 [dynamics:dyn]
+[process:infest] inSpace  [space:plot12]
