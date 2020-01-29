@@ -16,6 +16,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
 import fr.cnrs.iees.rvgrid.rendezvous.RendezvousProcess;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
+import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineObserver;
@@ -33,13 +34,16 @@ import javafx.scene.layout.HBox;
  *
  * @date 29 Jan 2020
  */
-public class SimpleControlWidget1  extends StateMachineController implements StateMachineObserver,DataReceiver<TimeData, Metadata>,Widget{
+public class SimpleControlWidget1 extends StateMachineController
+		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, Widget {
+
 	private Button btnRunPause;
 	private Button btnStep;
 	private Button btnReset;
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
+	
 	private Label lblRealTime;
 	private long startTime;
 	private WidgetTrackingPolicy<TimeData> policy;
@@ -56,44 +60,25 @@ public class SimpleControlWidget1  extends StateMachineController implements Sta
 			@SuppressWarnings("unchecked")
 			@Override
 			public void execute(RVMessage message) {
-				if (message.getMessageHeader().type()==DataMessageTypes.TIME) {
+				if (message.getMessageHeader().type() == DataMessageTypes.TIME) {
 					TimeData data = (TimeData) message.payload();
 					onDataMessage(data);
 				}
 			}
-		},DataMessageTypes.TIME);
+		}, DataMessageTypes.TIME);
 		// RV for metadata messages
 		addRendezvous(new RendezvousProcess() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void execute(RVMessage message) {
-				if (message.getMessageHeader().type()==DataMessageTypes.METADATA) {
+				if (message.getMessageHeader().type() == DataMessageTypes.METADATA) {
 					Metadata meta = (Metadata) message.payload();
 					onMetaDataMessage(meta);
 				}
 			}
-		},DataMessageTypes.METADATA);
+		}, DataMessageTypes.METADATA);
 
 	}
-
-	
-
-	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void putPreferences() {
-		policy.putPreferences();
-	}
-
-	@Override
-	public void getPreferences() {
-		policy.getPreferences();
-	}
-
 	@Override
 	public Object getUserInterfaceContainer() {
 		// log.info("Thread: " + Thread.currentThread().getId());
@@ -120,9 +105,9 @@ public class SimpleControlWidget1  extends StateMachineController implements Sta
 		pane.setAlignment(Pos.BASELINE_LEFT);
 		pane.getChildren().addAll(buttons);
 		lblRealTime = new Label("0");
-	
+
 		pane.setSpacing(5.0);
-		pane.getChildren().addAll(new Label("Duration:"),lblRealTime,new Label("[ms]"));
+		pane.getChildren().addAll(new Label("Duration:"), lblRealTime, new Label("[ms]"));
 
 		setButtonLogic();
 		return pane;
@@ -158,6 +143,46 @@ public class SimpleControlWidget1  extends StateMachineController implements Sta
 			sendEvent(event);
 		return null;
 	}
+	@Override
+	public void onStatusMessage(State newState) {
+//		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
+		state = newState.getName();
+		if (state.equals(running.name())) {
+			startTime = System.currentTimeMillis();
+			Platform.runLater(() -> {
+				lblRealTime.setText("0");
+			});
+		}
+		if (state.equals(finished.name())) {
+			final long runDuration = System.currentTimeMillis()-startTime;
+			startTime=0;
+			Platform.runLater(() -> {
+				String s = Long.toString(runDuration);
+				lblRealTime.setText(s);
+			});
+		}
+
+		setButtonLogic();
+	}
+
+	@Override
+	public void setProperties(String id, SimplePropertyList properties) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void putPreferences() {
+		policy.putPreferences();
+	}
+
+	@Override
+	public void getPreferences() {
+		policy.getPreferences();
+	}
+
+
+
 	private void setButtonLogic() {
 		// ensure waiting for app thread i.e. only needed when 'running'
 		Platform.runLater(() -> {
@@ -186,6 +211,7 @@ public class SimpleControlWidget1  extends StateMachineController implements Sta
 			}
 		});
 	}
+
 	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
 		btnRunPause.setDisable(runPauseDisable);
 		btnStep.setDisable(stepDisable);
@@ -199,8 +225,6 @@ public class SimpleControlWidget1  extends StateMachineController implements Sta
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 	@Override
 	public void onDataMessage(TimeData data) {
@@ -216,7 +240,7 @@ public class SimpleControlWidget1  extends StateMachineController implements Sta
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

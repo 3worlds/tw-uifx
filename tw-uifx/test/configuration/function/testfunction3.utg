@@ -5,8 +5,8 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 //=================================================================================================
 // Copy and paste this text in the changeState(...) method of the generated Growth.java class
 //
-//		Plantrec_seedlingrec_plantrec_drivers ctvar = (Plantrec_seedlingrec_plantrec_drivers) focal.currentState();
-//		Plantrec_seedlingrec_plantrec_drivers nxtvar = (Plantrec_seedlingrec_plantrec_drivers) focal.nextState();
+//		Plantrec_seedlingrec_drivers ctvar = (Plantrec_seedlingrec_drivers) focal.currentState();
+//		PPlantrec_seedlingrec_drivers nxtvar = (Plantrec_seedlingrec_drivers) focal.nextState();
 //		double bm;
 //		if (focal.autoVar().age()==0)
 //			bm=0.1;
@@ -31,8 +31,8 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 //
 // Copy and paste this text in the changeCategory(...) method of the generated PRecruit.java class
 //
-//		Plantrec_seedlingrec_plantrec_drivers sdlvar = 
-//			(Plantrec_seedlingrec_plantrec_drivers) focal.currentState();
+//		Plantrec_seedlingrec_drivers sdlvar = 
+//			(Plantrec_seedlingrec_drivers) focal.currentState();
 //		if (sdlvar.nleaves()>4)
 //			return "adult";
 //		else

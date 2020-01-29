@@ -164,12 +164,6 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 				lblRealTime.setText(s);
 			});
 		}
-//		if (state.equals(pausing.name()))
-//			System.out.println("Pause time: "+System.currentTimeMillis());
-//		if (state.equals(waiting.name()))
-//			System.out.println("Waiting time: "+System.currentTimeMillis());
-//		if (state.equals(stepping.name()))
-//			System.out.println("Stepping time: "+System.currentTimeMillis());
 
 		setButtonLogic();
 	}
