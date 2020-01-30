@@ -5,6 +5,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -20,6 +21,7 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineObserver;
+import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -43,16 +45,21 @@ public class SimpleControlWidget1 extends StateMachineController
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
-	
-	private Label lblRealTime;
-	private long startTime;
-	private WidgetTrackingPolicy<TimeData> policy;
 
+	private WidgetTrackingPolicy<TimeData> policy;
 	// NB initial state is always 'waiting' ('null' causes a crash)
 	private String state = waiting.name();
 
+	private Label lblRealTime;
+	private long startTime;
+	private long idleTime;
+	private long idleStartTime;
+
+	private static Logger log = Logging.getLogger(SimpleControlWidget1.class);
+
 	public SimpleControlWidget1(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
+		log.info("Thread: " + Thread.currentThread().getId());
 		policy = new SimpleWidgetTrackingPolicy();
 
 		// RV for data messages
@@ -79,6 +86,7 @@ public class SimpleControlWidget1 extends StateMachineController
 		}, DataMessageTypes.METADATA);
 
 	}
+
 	@Override
 	public Object getUserInterfaceContainer() {
 		// log.info("Thread: " + Thread.currentThread().getId());
@@ -107,61 +115,95 @@ public class SimpleControlWidget1 extends StateMachineController
 		lblRealTime = new Label("0");
 
 		pane.setSpacing(5.0);
-		pane.getChildren().addAll(new Label("Duration:"), lblRealTime, new Label("[ms]"));
+		pane.getChildren().addAll(new Label("Duration:"), lblRealTime, new Label("ms."));
 
 		setButtonLogic();
 		return pane;
 	}
+
 	private Object handleResetPressed() {
+		log.info("Thread: " + Thread.currentThread().getId());
+
 		// Always begin by disabling in case the next operation takes a long time
 		// log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name()))
+		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name())) {
+			Platform.runLater(() -> {
+				this.lblRealTime.setText("0");
+			});
 			sendEvent(reset.event());
+		}
 		return null;
 	}
 
 	private Object handleStepPressed() {
-		// log.info("handleStepPressed Thread: " + Thread.currentThread().getId());
+		long now = System.currentTimeMillis();
+		if (state.equals(waiting.name())) {
+			startTime = now;
+			idleTime = 0;
+		}
+		log.info("Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name()))
+		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name())) {
+			if (idleStartTime > 0)
+				idleTime += (now - idleStartTime);
 			sendEvent(step.event());
+		}
 		return null;
 	}
 
 	private Object handleRunPausePressed() {
-		// log.info("handleRunPausePressed Thread: " + Thread.currentThread().getId());
+		long now = System.currentTimeMillis();
+		log.info("Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
 		Event event = null;
-		if (state.equals(waiting.name()))
+		if (state.equals(waiting.name())) {
+			startTime = now;
+			idleTime = 0;
 			event = run.event();
-		else if (state.equals(running.name()))
+		} else if (state.equals(running.name())) {
 			event = pause.event();
-		else if (state.equals(pausing.name()) | state.equals(stepping.name()))
+		} else if (state.equals(pausing.name()) | state.equals(stepping.name())) {
+			// total idleTime here
+			if (idleStartTime > 0)
+				idleTime += (now - idleStartTime);
 			event = goOn.event();
+		}
 		if (event != null)
 			sendEvent(event);
 		return null;
 	}
+
+	private String getDuration(long now) {
+		long duration = now - (startTime + idleTime);
+		String result = Long.toString(duration);
+		return result;
+	}
+
 	@Override
 	public void onStatusMessage(State newState) {
-//		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
+		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
+		final long now = System.currentTimeMillis();
 		state = newState.getName();
-		if (state.equals(running.name())) {
-			startTime = System.currentTimeMillis();
+		if (state.equals(finished.name())) {
+			final String strDuration = getDuration(now);
+			Platform.runLater(() -> {
+				lblRealTime.setText(strDuration);
+			});
+		}
+		if (state.equals(stepping.name())) {
+			idleStartTime = now;
+		}
+		if (state.equals(pausing.name())) {
+			idleStartTime = now;
+		}
+		if (state.equals(waiting.name())) {
+			idleTime = 0;
+			idleStartTime = 0;
 			Platform.runLater(() -> {
 				lblRealTime.setText("0");
 			});
 		}
-		if (state.equals(finished.name())) {
-			final long runDuration = System.currentTimeMillis()-startTime;
-			startTime=0;
-			Platform.runLater(() -> {
-				String s = Long.toString(runDuration);
-				lblRealTime.setText(s);
-			});
-		}
-
 		setButtonLogic();
 	}
 
@@ -180,8 +222,6 @@ public class SimpleControlWidget1 extends StateMachineController
 	public void getPreferences() {
 		policy.getPreferences();
 	}
-
-
 
 	private void setButtonLogic() {
 		// ensure waiting for app thread i.e. only needed when 'running'
@@ -228,13 +268,12 @@ public class SimpleControlWidget1 extends StateMachineController
 
 	@Override
 	public void onDataMessage(TimeData data) {
-		System.out.println("RECORDING");
-		long now = System.currentTimeMillis();
-		final Long duration = now - startTime;
-		Platform.runLater(() -> {
-			lblRealTime.setText(duration.toString());
-		});
-
+		if (policy.canProcessDataMessage(data)) {
+			final String strDur = getDuration(System.currentTimeMillis());
+			Platform.runLater(() -> {
+				lblRealTime.setText(strDur);
+			});
+		}
 	}
 
 	@Override

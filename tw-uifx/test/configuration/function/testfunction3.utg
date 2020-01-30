@@ -6,7 +6,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 // Copy and paste this text in the changeState(...) method of the generated Growth.java class
 //
 //		Plantrec_seedlingrec_drivers ctvar = (Plantrec_seedlingrec_drivers) focal.currentState();
-//		PPlantrec_seedlingrec_drivers nxtvar = (Plantrec_seedlingrec_drivers) focal.nextState();
+//		Plantrec_seedlingrec_drivers nxtvar = (Plantrec_seedlingrec_drivers) focal.nextState();
 //		double bm;
 //		if (focal.autoVar().age()==0)
 //			bm=0.1;
@@ -60,7 +60,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			container cntnr2
 				order = java.lang.Integer(0)
-				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 				widget timeSeries5
 					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
@@ -71,9 +71,9 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 			container cntnr1
 				order = java.lang.Integer(0)
-				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 				widget wdgt2
-					order = java.lang.Integer(0)
+					order = java.lang.Integer(1)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 				widget wdgt1
@@ -111,8 +111,8 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.sys.PMortality)
 						function PFecundity
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys.PFecundity)
 						dataTracker adultTracker
 							sampleSize = java.lang.String()
@@ -149,10 +149,10 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 						category adult
 						category seedling
 			componentType adultPlant
-				driverClass = java.lang.String(code.sys.Adultrec_plantrec_plantrec_drivers)
+				driverClass = java.lang.String(code.sys.Plantrec_adultrec_drivers)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			componentType plantSeedling
-				driverClass = java.lang.String(code.sys.Plantrec_seedlingrec_plantrec_drivers)
+				driverClass = java.lang.String(code.sys.Plantrec_seedlingrec_drivers)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 	dataDefinition dd
 		record animalrec
