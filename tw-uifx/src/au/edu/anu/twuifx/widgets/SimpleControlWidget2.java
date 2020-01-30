@@ -43,6 +43,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.images.Images;
+import de.gsi.chart.XYChart;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
 import fr.cnrs.iees.rvgrid.rendezvous.RendezvousProcess;
@@ -65,8 +66,10 @@ import javafx.scene.layout.HBox;
  * @author Ian Davies
  *
  * @date 29 Jan 2020
+ * 
+ * Plots run time output.
  */
-public class SimpleControlWidget1 extends StateMachineController
+public class SimpleControlWidget2 extends StateMachineController
 		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, Widget {
 
 	private Button btnRunPause;
@@ -85,9 +88,14 @@ public class SimpleControlWidget1 extends StateMachineController
 	private long idleTime;
 	private long idleStartTime;
 
-	private static Logger log = Logging.getLogger(SimpleControlWidget1.class);
+	private static Logger log = Logging.getLogger(SimpleControlWidget2.class);
 
-	public SimpleControlWidget1(StateMachineEngine<StateMachineController> observed) {
+	private int BUFFER_CAPACITY = 100;// pref mm/mr or both
+	// drop overlayed points
+	private int MIN_PIXEL_DISTANCE = 0;
+	private XYChart chart;
+
+	public SimpleControlWidget2(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 		log.info("Thread: " + Thread.currentThread().getId());
 		policy = new SimpleWidgetTrackingPolicy();
