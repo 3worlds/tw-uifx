@@ -148,7 +148,7 @@ public class SimpleControlWidget1 extends StateMachineController
 		lblDelta = new Label("0");
 
 		pane.setSpacing(5.0);
-		pane.getChildren().addAll(new Label("Duration:"), lblRealTime, new Label("Step time:"),lblDelta,new Label("ms."));
+		pane.getChildren().addAll(new Label("\u03A3:"), lblRealTime, new Label("\u0394:"),lblDelta,new Label("[ms]"));
 
 		setButtonLogic();
 		return pane;
