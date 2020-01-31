@@ -81,7 +81,9 @@ public class SimpleControlWidget1 extends StateMachineController
 	private String state = waiting.name();
 
 	private Label lblRealTime;
+	private Label lblDelta;
 	private long startTime;
+	private long prevDuration;
 	private long idleTime;
 	private long idleStartTime;
 
@@ -143,9 +145,10 @@ public class SimpleControlWidget1 extends StateMachineController
 		pane.setAlignment(Pos.BASELINE_LEFT);
 		pane.getChildren().addAll(buttons);
 		lblRealTime = new Label("0");
+		lblDelta = new Label("0");
 
 		pane.setSpacing(5.0);
-		pane.getChildren().addAll(new Label("Duration:"), lblRealTime, new Label("ms."));
+		pane.getChildren().addAll(new Label("Duration:"), lblRealTime, new Label("Step time:"),lblDelta,new Label("ms."));
 
 		setButtonLogic();
 		return pane;
@@ -204,10 +207,9 @@ public class SimpleControlWidget1 extends StateMachineController
 		return null;
 	}
 
-	private String getDuration(long now) {
-		long duration = now - (startTime + idleTime);
-		String result = Long.toString(duration);
-		return result;
+	private long getDuration(long now) {
+		return now - (startTime + idleTime);
+	
 	}
 
 	@Override
@@ -216,9 +218,15 @@ public class SimpleControlWidget1 extends StateMachineController
 		final long now = System.currentTimeMillis();
 		state = newState.getName();
 		if (state.equals(finished.name())) {
-			final String strDuration = getDuration(now);
+			long duration = getDuration(now);
+			final String strDuration = Long.toString(duration);
+			long delta = duration-prevDuration;
+			final String strDelta = Long.toString(delta);
+			prevDuration = duration;
+
 			Platform.runLater(() -> {
 				lblRealTime.setText(strDuration);
+				lblDelta.setText(strDelta);
 			});
 		}
 		if (state.equals(stepping.name())) {
@@ -230,6 +238,7 @@ public class SimpleControlWidget1 extends StateMachineController
 		if (state.equals(waiting.name())) {
 			idleTime = 0;
 			idleStartTime = 0;
+			prevDuration = 0;
 			Platform.runLater(() -> {
 				lblRealTime.setText("0");
 			});
@@ -299,9 +308,14 @@ public class SimpleControlWidget1 extends StateMachineController
 	@Override
 	public void onDataMessage(TimeData data) {
 		if (policy.canProcessDataMessage(data)) {
-			final String strDur = getDuration(System.currentTimeMillis());
+			long duration = getDuration(System.currentTimeMillis());
+			final String strDur = Long.toString(duration);
+			long delta = duration-prevDuration;
+			final String strDelta = Long.toString(delta);
+			prevDuration = duration;
 			Platform.runLater(() -> {
 				lblRealTime.setText(strDur);
+				lblDelta.setText(strDelta);
 			});
 		}
 	}

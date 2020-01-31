@@ -44,7 +44,6 @@ import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -66,7 +65,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
-	private Label lblRealTime;
+
 
 	private static Logger log = Logging.getLogger(SimpleControlWidget.class);
 
@@ -103,11 +102,8 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 		HBox pane = new HBox();
 		pane.setAlignment(Pos.BASELINE_LEFT);
 		pane.getChildren().addAll(buttons);
-		lblRealTime = new Label("0");
-		Label units = new Label("[ms]");
-		
+			
 		pane.setSpacing(5.0);
-		pane.getChildren().addAll(lblRealTime,units);
 
 		setButtonLogic();
 		return pane;
@@ -150,21 +146,6 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	public void onStatusMessage(State newState) {
 		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
 		state = newState.getName();
-		if (state.equals(running.name())) {
-			startTime = System.currentTimeMillis();
-			Platform.runLater(() -> {
-				lblRealTime.setText("0");
-			});
-		}
-		if (state.equals(finished.name())) {
-			final long runDuration = System.currentTimeMillis()-startTime;
-			startTime=0;
-			Platform.runLater(() -> {
-				String s = Long.toString(runDuration);
-				lblRealTime.setText(s);
-			});
-		}
-
 		setButtonLogic();
 	}
 
