@@ -207,3 +207,5 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 [widget:wgt1] trackSeries trksSrsOf [dataTracker:micTracker]
 [widget:time] trackTime tracks1 [dynamics:dyn]
 [process:infest] inSpace  [space:plot12]
+	searchRadius = java.lang.Double(0.2)
+
