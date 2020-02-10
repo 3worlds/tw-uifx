@@ -67,7 +67,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		// if (haveSpecification()) {
-		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(baseSpec, subClassSpec, TWA.getRoot());
+		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(editableNode,baseSpec, subClassSpec, TWA.getRoot());
 		List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
 		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
