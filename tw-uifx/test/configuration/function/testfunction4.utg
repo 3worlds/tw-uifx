@@ -207,5 +207,9 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 [widget:wgt1] trackSeries trksSrsOf [dataTracker:micTracker]
 [widget:time] trackTime tracks1 [dynamics:dyn]
 [process:infest] inSpace  [space:plot12]
-	searchRadius = java.lang.Double(0.2)
+	searchRadius = java.lang.Double(0.2)	
+[component:mic1] location [space:plot12]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,11.0))
+[component:gr1] location [space:plot12]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.1,11.2))
 
