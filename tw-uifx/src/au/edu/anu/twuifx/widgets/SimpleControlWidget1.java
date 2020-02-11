@@ -148,7 +148,8 @@ public class SimpleControlWidget1 extends StateMachineController
 		lblDelta = new Label("0");
 
 		pane.setSpacing(5.0);
-		pane.getChildren().addAll(new Label("\u03A3:"), lblRealTime, new Label("\u0394:"),lblDelta,new Label("[ms]"));
+		pane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
+				lblRealTime, new Label("[ms]"));
 
 		setButtonLogic();
 		return pane;
@@ -209,7 +210,7 @@ public class SimpleControlWidget1 extends StateMachineController
 
 	private long getDuration(long now) {
 		return now - (startTime + idleTime);
-	
+
 	}
 
 	@Override
@@ -220,7 +221,7 @@ public class SimpleControlWidget1 extends StateMachineController
 		if (state.equals(finished.name())) {
 			long duration = getDuration(now);
 			final String strDuration = Long.toString(duration);
-			long delta = duration-prevDuration;
+			long delta = duration - prevDuration;
 			final String strDelta = Long.toString(delta);
 			prevDuration = duration;
 
@@ -310,7 +311,7 @@ public class SimpleControlWidget1 extends StateMachineController
 		if (policy.canProcessDataMessage(data)) {
 			long duration = getDuration(System.currentTimeMillis());
 			final String strDur = Long.toString(duration);
-			long delta = duration-prevDuration;
+			long delta = duration - prevDuration;
 			final String strDelta = Long.toString(delta);
 			prevDuration = duration;
 			Platform.runLater(() -> {

@@ -163,7 +163,8 @@ public class SimpleControlWidget2 extends StateMachineController
 		lblDelta = new Label("0");
 
 		topPane.setSpacing(5.0);
-		topPane.getChildren().addAll(new Label("\u03A3:"), lblRealTime, new Label("\u0394:"),lblDelta,new Label("[ms]"));
+		topPane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
+				lblRealTime, new Label("[ms]"));
 
 		BorderPane content = new BorderPane();
 		content.setTop(topPane);
@@ -261,7 +262,7 @@ public class SimpleControlWidget2 extends StateMachineController
 	}
 
 	private long getDuration(long now) {
-		return  now - (startTime + idleTime);
+		return now - (startTime + idleTime);
 	}
 
 	@Override
@@ -272,13 +273,13 @@ public class SimpleControlWidget2 extends StateMachineController
 		if (state.equals(finished.name())) {
 			long duration = getDuration(now);
 			final String strDuration = Long.toString(duration);
-			long delta = duration-prevDuration;
+			long delta = duration - prevDuration;
 			final String strDelta = Long.toString(delta);
 			prevDuration = duration;
 			Platform.runLater(() -> {
 				lblRealTime.setText(strDuration);
 				lblDelta.setText(strDelta);
-		});
+			});
 		}
 		if (state.equals(stepping.name())) {
 			idleStartTime = now;
@@ -361,14 +362,14 @@ public class SimpleControlWidget2 extends StateMachineController
 		if (policy.canProcessDataMessage(data)) {
 			final long duration = getDuration(System.currentTimeMillis());
 			final String strDur = Long.toString(duration);
-			long delta = duration-prevDuration;
+			long delta = duration - prevDuration;
 			final String strDelta = Long.toString(delta);
 			prevDuration = duration;
 			long x = data.time();
 			Platform.runLater(() -> {
 				lblRealTime.setText(strDur);
 				lblDelta.setText(strDelta);
-				dataSet.add(x, duration, 1,1);
+				dataSet.add(x, duration, 1, 1);
 			});
 		}
 	}
