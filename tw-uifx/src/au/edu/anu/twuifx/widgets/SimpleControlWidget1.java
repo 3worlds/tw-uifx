@@ -240,8 +240,10 @@ public class SimpleControlWidget1 extends StateMachineController
 			idleTime = 0;
 			idleStartTime = 0;
 			prevDuration = 0;
+			startTime=0;
 			Platform.runLater(() -> {
 				lblRealTime.setText("0");
+				lblDelta.setText("0");
 			});
 		}
 		setButtonLogic();
