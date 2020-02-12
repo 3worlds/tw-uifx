@@ -35,6 +35,7 @@ import java.text.DecimalFormat;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
+import au.edu.anu.twcore.ecosystem.runtime.system.SystemRelation;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -59,7 +60,7 @@ import javafx.scene.paint.Color;
  *
  * @date 12 Feb 2020
  * 
- * Widget to show spatial map of objects and their relations.
+ *       Widget to show spatial map of objects and their relations.
  * 
  */
 public class SimpleCommunityWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
@@ -67,7 +68,6 @@ public class SimpleCommunityWidget1 extends AbstractDisplayWidget<TimeData, Meta
 	private Canvas canvas;
 	private ScrollPane scrollPane;
 	private int resolution;
-
 
 	public SimpleCommunityWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
@@ -77,39 +77,47 @@ public class SimpleCommunityWidget1 extends AbstractDisplayWidget<TimeData, Meta
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void putPreferences() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void getPreferences() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onDataMessage(TimeData data) {
-		for (SystemComponent sc: data.getCommunity().allItems()){
-			System.out.println("Time: "+data.time()+" SC: "+sc.id());
+		// ok - so do we need "spaces" AND "community??
+		//space.locationOf(SystemComponent);
+		System.out.println("Time: " + data.time());
+		for (SystemComponent sc : data.getCommunity().allItems()) {
+			System.out.println("\tSC: " + sc.id() );
+			System.out.println("\tProps: " +sc.properties());
+			for (SystemRelation sr : sc.getRelations()) {
+				System.out.println("\t\tSR: " + sr.id());
+				System.out.println("\t\tProps: "+sr.properties());
+			}
 		}
-		
+
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -131,15 +139,17 @@ public class SimpleCommunityWidget1 extends AbstractDisplayWidget<TimeData, Meta
 	private void onMouseMove(MouseEvent e) {
 		int x = (int) (e.getX() / resolution);
 		int y = (int) (e.getY() / resolution);
-		//lblXY.setText("[" + x + "," + y + "]");
+		// lblXY.setText("[" + x + "," + y + "]");
 //		if (x < mx & y < my & x >= 0 & y >= 0) 
 //			 lblValue.setText(formatter.format(numbers[x][y]));
-		
+
 	}
+
 	private void clearCanvas() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 	};
+
 	private void dataToCanvasPixels() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		PixelWriter pw = gc.getPixelWriter();
@@ -153,6 +163,7 @@ public class SimpleCommunityWidget1 extends AbstractDisplayWidget<TimeData, Meta
 //				}
 			}
 	}
+
 	private void dataToCanvasRect(int mapWidth, int mapHeight) {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		int w = resolution;
