@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.data.runtime.Output2DData;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -107,7 +108,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 	private static Logger log = Logging.getLogger(SimpleDM2Widget.class);
 
 	public SimpleDM2Widget(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, -1);
+		super(statusSender, DataMessageTypes.DIM2);
 		timeFormatter = new WidgetTimeFormatter();
 		log.info("Creation thread id: " + Thread.currentThread().getId());
 	}
