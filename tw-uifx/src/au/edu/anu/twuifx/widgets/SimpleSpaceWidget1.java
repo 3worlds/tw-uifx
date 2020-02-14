@@ -30,13 +30,20 @@
 
 package au.edu.anu.twuifx.widgets;
 
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
+import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemRelation;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ecosystem.structure.SpaceNode;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
@@ -45,6 +52,10 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.ens.biologie.generic.utils.Duple;
+import javafx.application.Platform;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -63,15 +74,38 @@ import javafx.scene.paint.Color;
  *       Widget to show spatial map of objects and their relations.
  * 
  */
-public class SimpleCommunityWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
+public class SimpleSpaceWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
-	private int resolution;
+	private int resolution=100;
+	private List<Point2D> dummyPoints;
+	private List<Duple<Point2D, Point2D>> dummyRelations;
+	private Random rnd = new Random();
+	private Bounds bounds;
+	private String widgetId;
+	private WidgetTrackingPolicy<TimeData> policy;
+	private WidgetTimeFormatter timeFormatter;
+	private SpaceNode spaceNode;
 
-	public SimpleCommunityWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
-		// TODO Auto-generated constructor stub
+		// get an outedge to a space node
+		// then, when msg arrives space = spaceNode.getInstance(sc.Id)
+		// but we don't know which space and we don't want to construct one!!
+		// We shouldn't need the space set sent in the time msg
+		
+		timeFormatter = new WidgetTimeFormatter();
+		policy = new SimpleWidgetTrackingPolicy();
+
+		bounds = new BoundingBox(0, 0, 1, 1);
+		dummyPoints = new ArrayList<>();
+		dummyRelations = new ArrayList<>();
+		for (int i = 0; i < 10; i++)
+			dummyPoints.add(new Point2D.Double(rnd.nextDouble(), rnd.nextDouble()));
+		dummyRelations.add(new Duple<Point2D, Point2D>(dummyPoints.get(0), dummyPoints.get(1)));
+		dummyRelations.add(new Duple<Point2D, Point2D>(dummyPoints.get(2), dummyPoints.get(3)));
+		dummyRelations.add(new Duple<Point2D, Point2D>(dummyPoints.get(4), dummyPoints.get(5)));
 	}
 
 	@Override
@@ -80,37 +114,81 @@ public class SimpleCommunityWidget1 extends AbstractDisplayWidget<TimeData, Meta
 
 	}
 
+	private static final String keyScaleX = "scaleX";
+	private static final String keyScaleY = "scaleY";
+	private static final String keyScrollH = "scrollH";
+	private static final String keyScrollV = "scrollV";
+	private static final String keyResolution = "resolution";
+
 	@Override
 	public void putPreferences() {
-		// TODO Auto-generated method stub
-
+		Preferences.putDouble(widgetId + keyScaleX, zoomTarget.getScaleX());
+		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
+		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
+		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
+		Preferences.putDouble(widgetId + keyResolution, resolution);
 	}
 
 	@Override
 	public void getPreferences() {
-		// TODO Auto-generated method stub
-
+		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
+		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
+		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
+		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
+		resolution = Preferences.getInt(widgetId + keyResolution, 1);
 	}
 
 	@Override
 	public void onDataMessage(TimeData data) {
-		// ok - so do we need "spaces" AND "community??
-		//space.locationOf(SystemComponent);
-		System.out.println("Time: " + data.time());
-		for (SystemComponent sc : data.getCommunity().allItems()) {
-			System.out.println("\tSC: " + sc.id() );
-			System.out.println("\tProps: " +sc.properties());
-			for (SystemRelation sr : sc.getRelations()) {
-				System.out.println("\t\tSR: " + sr.id());
-				System.out.println("\t\tProps: "+sr.properties());
-			}
+		if (policy.canProcessDataMessage(data)) {
+			
+			jiggle(dummyPoints, rnd);// pseudo model update
+			Platform.runLater(() -> {
+				drawSpace(bounds, dummyPoints, dummyRelations);
+			});
+		}
+	}
+
+	private void drawSpace(Bounds bounds, List<Point2D> lst2, List<Duple<Point2D, Point2D>> dummyRelations2) {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		resizeCanvas((int)bounds.getWidth(),(int)bounds.getHeight());
+
+	}
+
+	private void resizeCanvas(int mapWidth, int mapHeight) {
+		if (canvas.getWidth() != (resolution * mapWidth) || canvas.getHeight() != (resolution * mapHeight)) {
+			canvas.setWidth(mapWidth * resolution);
+			canvas.setHeight(mapHeight * resolution);
+			clearCanvas();
+		}
+	}
+
+	private static void jiggle(List<Point2D> lst, Random rnd) {
+		for (Point2D p : lst) {
+			boolean nx = rnd.nextBoolean();
+			boolean ny = rnd.nextBoolean();
+			double dx = rnd.nextDouble() * 0.001;
+			double dy = rnd.nextDouble() * 0.001;
+			double x = p.getX();
+			double y = p.getY();
+			if (nx)
+				x -= dx;
+			else
+				x += dx;
+			if (ny)
+				y -= dy;
+			else
+				y += dy;
+			x = Math.max(0, Math.min(1.0, x));
+			y = Math.max(0, Math.min(1.0, y));
+			p.setLocation(x, y);
 		}
 
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		// TODO Auto-generated method stub
+		timeFormatter.onMetaDataMessage(meta);
 
 	}
 
