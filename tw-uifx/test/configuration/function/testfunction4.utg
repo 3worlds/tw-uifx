@@ -50,6 +50,17 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 //	else
 //		return false;
 //
+//	Copy and paste this text in the relocate(...) function of both the generated
+//	Plot12_MicrobeCRelocateFunction.java class and the Plot12_PlantCRelocateFunction.java class
+//
+//	double[] res = new double[2];
+//	double xmin = limits.lowerBound(0);
+//	double xmax = limits.upperBound(0);
+//	double ymin = limits.lowerBound(1);
+//	double ymax = limits.upperBound(1);
+//	res[0] = xmin + rng().nextDouble()*(xmax-xmin);
+//	res[1] = ymin + rng().nextDouble()*(ymax-ymin);
+//	return res;
 
 
 //=================================================================================================
@@ -153,7 +164,15 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			componentType microbeC
 				driverClass = java.lang.String(code.system.Rcrd2)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-			componentType plantC
+			componentType plantC		double[] res = new double[2];
+		double xmin = limits.lowerBound(0);
+		double xmax = limits.upperBound(0);
+		double ymin = limits.lowerBound(1);
+		double ymax = limits.upperBound(1);
+		res[0] = xmin + rng().nextDouble()*(xmax-xmin);
+		res[1] = ymin + rng().nextDouble()*(ymax-ymin);
+		return res;
+			
 				driverClass = java.lang.String(code.system.Rcrd1)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			categorySet ctgrySt1
@@ -171,7 +190,15 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			widget wgt
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx		double[] res = new double[2];
+		double xmin = limits.lowerBound(0);
+		double xmax = limits.upperBound(0);
+		double ymin = limits.lowerBound(1);
+		double ymax = limits.upperBound(1);
+		res[0] = xmin + rng().nextDouble()*(xmax-xmin);
+		res[1] = ymin + rng().nextDouble()*(ymax-ymin);
+		return res;
+				.widgets.SimpleTimeSeriesWidget)
 			widget wgt1
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
