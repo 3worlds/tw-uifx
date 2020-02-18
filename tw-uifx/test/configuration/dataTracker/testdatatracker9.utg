@@ -1,0 +1,236 @@
+treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+// Test file for space data tracker
+//
+//=================================================================================================
+// Copy and paste this text in the delete(...) method of the generated PlantMor.java class
+//
+//	double bm = ((Rcrd1)focal.currentState()).biomass();
+//	double a = 1/5.0;
+//	double b = a-1;
+//	double prob = Math.min(a*bm*bm + b*bm,1.0); 
+//	return decide(prob);
+//
+// Copy and paste this text in the nNew(...) method of the generated PlantRep.java class
+//
+//	double bm = ((Rcrd1)focal.currentState()).biomass();
+//	if (bm>3.0)
+//		return 0.1*(bm-2);
+//	else 
+//		return 0;
+//
+// Copy and paste this text in the changeOtherState(...) method of the generated InitNewPlant.java class
+//
+//		double parentBm = ((Rcrd1)focal.currentState()).biomass();
+//		((Rcrd1)other.nextState()).biomass(Math.min(parentBm/4.0, 2.0));
+//
+// Copy and paste this text in the changeState(...) method of the generated PlantGrowth.java class
+//
+//		((Rcrd1)focal.nextState()).biomass(((Rcrd1)focal.currentState()).biomass()*1.05);
+//
+// Copy and paste this text in the delete(...) method of the generated MicMor.java class
+//
+//		return decide(0.2);
+//
+// Copy and paste this text in the nNew(...) method of the generated MicRep.java class
+//
+//		return 0.41;
+//
+// Copy and paste this text in the changeState(...) method of the generated InitNewMic.java class
+//
+//		((Rcrd2)focal.nextState()).virulence(rng().nextDouble());
+//
+// Copy and paste this text in the relate(...) method of the generated Infection.java class
+//
+//	if (((Rcrd1)other.currentState()).biomass()<4)
+//		return decide(((Rcrd2)focal.currentState()).virulence());
+//	else
+//		return false;
+//
+//	Copy and paste this text in the relocate(...) function of both the generated
+//	Plot12_MicrobeCRelocateFunction.java class and the Plot12_PlantCRelocateFunction.java class
+//
+//	double[] res = new double[2];
+//	double xmin = limits.lowerBound(0);
+//	double xmax = limits.upperBound(0);
+//	double ymin = limits.lowerBound(1);
+//	double ymax = limits.upperBound(1);
+//	res[0] = xmin + rng().nextDouble()*(xmax-xmin);
+//	res[1] = ymin + rng().nextDouble()*(ymax-ymin);
+//	return res;
+
+
+//=================================================================================================
+
+
+
+// TREE
+3worlds testdatatracker9
+	dataDefinition dtDef
+		record rcrd2
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(rcrd2)
+			field virulence
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record rcrd1
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(rcrd1)
+			field biomass
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field infected
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+	experiment exp
+		design dsgn1
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+		timePeriod tmPrd1
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+	system system
+		dynamics dyn
+			timeLine tmLn1
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel tmMdl1
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+					process infest
+						function Infection
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.system.Infection)
+					process microbeLife
+						function MicRep
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							relateToProduct = java.lang.Boolean(false)
+							userClassName = java.lang.String(code.system.MicRep)
+							function InitNewMic
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+								userClassName = java.lang.String(code.system.InitNewMic)
+						function MicMor
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.system.MicMor)
+						dataTracker micTracker
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+					process plantLife
+						function PlantRep
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							relateToProduct = java.lang.Boolean(false)
+							userClassName = java.lang.String(code.system.PlantRep)
+							function InitNewPlant
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+								userClassName = java.lang.String(code.system.InitNewPlant)
+						function PlantGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.PlantGrowth)
+						function PlantMor
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.system.PlantMor)
+						dataTracker plantTracker
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+			initialState state
+				group bacteria
+					component mic1
+						variableValues varVals
+							virulence = java.lang.Double(0.3)
+				group grass
+					component gr1
+						variableValues varVals1
+							biomass = java.lang.Double(12.0)
+							infected = java.lang.Boolean(false)
+		structure struct
+			relationType disease
+			componentType microbeC
+				driverClass = java.lang.String(code.system.Rcrd2)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			componentType plantC		
+				driverClass = java.lang.String(code.system.Rcrd1)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			categorySet ctgrySt1
+				category microbe
+				category plant
+			arena arena
+				space plot12
+					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
+					x-limits = fr.ens.biologie.generic.utils.Interval([0.0,10.0])
+					y-limits = fr.ens.biologie.generic.utils.Interval(]5.0,12.0])
+	userInterface gui
+		tab tab
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget wgt
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			container cont
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				widget wgt1
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				widget wgt2
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
+		top toolBar
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+
+// CROSS-LINKS
+[group:bacteria] groupOf grpOf1 [componentType:microbeC]
+[componentType:plantC] belongsTo blngsT1 [category:plant]
+[group:grass] groupOf grpOf [componentType:plantC]
+[category:microbe] drivers drvrs2 [record:rcrd2]
+[experiment:exp] baseLine baseline [system:system]
+[dataTracker:plantTracker] trackPopulation trksPopOf [group:grass]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
+[process:microbeLife] appliesTo applsT2 [category:microbe]
+[process:plantLife] appliesTo applsT3 [category:plant]
+[relationType:disease] fromCategory pathogen [category:microbe]
+[relationType:disease] toCategory host [category:plant]
+[componentType:microbeC] belongsTo blngsT2 [category:microbe]
+[widget:wgt] trackSeries trksSrsOf1 [dataTracker:plantTracker]
+[component:gr1] instanceOf instOf1 [componentType:plantC]
+[process:infest] appliesTo applsT1 [relationType:disease]
+[dataTracker:micTracker] trackPopulation trksPopOf1 [group:bacteria]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
+[category:plant] drivers drvrs1 [record:rcrd1]
+[component:mic1] instanceOf instOf [componentType:microbeC]
+[widget:wgt1] trackSeries trksSrsOf [dataTracker:micTracker]
+[widget:time] trackTime tracks1 [dynamics:dyn]
+[process:infest] inSpace  [space:plot12]
+	searchRadius = java.lang.Double(0.2)	
+[component:mic1] location [space:plot12]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,11.0))
+[component:gr1] location [space:plot12]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.1,11.2))
+[widget:ctrl] trackTime trksTmOf [dynamics:dyn]
+[widget:wgt2] trackSpace trksSpc [space:plot12]

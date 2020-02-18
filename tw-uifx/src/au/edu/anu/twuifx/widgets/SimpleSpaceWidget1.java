@@ -85,7 +85,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private SpaceNode spaceNode;
 
 	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.TIME);
+		super(statusSender, DataMessageTypes.SPACE);
 		// get an outedge to a space node
 		// then, when msg arrives space = spaceNode.getInstance(sc.Id)
 		// but we don't know which space and we don't want to construct one!!
@@ -136,10 +136,11 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onDataMessage(SpaceData data) {
+
+		// for debugging only
+		System.out.println(data);
+		
 		if (policy.canProcessDataMessage(data)) {
-			
-			// for debugging only
-			System.out.println(data);
 			
 			// add processing code here, here is the pseudocode I sent you before
 			// caution: this Point is the fr.cnrs.iees.uit.space.Point. Can have any dimension (here it's 2)
