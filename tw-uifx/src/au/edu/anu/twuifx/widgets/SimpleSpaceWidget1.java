@@ -30,24 +30,20 @@
 
 package au.edu.anu.twuifx.widgets;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.SpaceData;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemRelation;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ecosystem.structure.SpaceNode;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
-import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -74,7 +70,7 @@ import javafx.scene.paint.Color;
  *       Widget to show spatial map of objects and their relations.
  * 
  */
-public class SimpleSpaceWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
+public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements Widget {
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
@@ -139,8 +135,28 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<TimeData, Metadata
 	}
 
 	@Override
-	public void onDataMessage(TimeData data) {
+	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
+			
+			// for debugging only
+			System.out.println(data);
+			
+			// add processing code here, here is the pseudocode I sent you before
+			// caution: this Point is the fr.cnrs.iees.uit.space.Point. Can have any dimension (here it's 2)
+//			if (data.create()) { // means an item must be added to the display
+//			    if (data.isPoint()) { // means the item is a point, ie a SystemComponent
+//			    	data.coordinates() ... // returns the point coordinates as a double[]
+//			        // write your display code here
+//			    }
+//			    else { // means the item is a line (actually just a pair of points), ie a SystemRelation
+//			    	data.line() ... // returns the line pair of coordinates as a Duple<double[],double[]>
+//			        // write your display code here
+//			    }
+//			}
+//			else if (data.delete()) { // means the item is to be removed from the display
+//				data.itemLabel()... // returns the label of the item to remove, be it a relation or a component
+//			    // write your display cod here - I am more or less assuming that your points are in a Map<DataLabel,"location">
+//			}
 			
 			jiggle(dummyPoints, rnd);// pseudo model update
 			Platform.runLater(() -> {

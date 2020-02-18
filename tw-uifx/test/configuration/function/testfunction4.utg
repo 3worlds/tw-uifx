@@ -164,15 +164,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			componentType microbeC
 				driverClass = java.lang.String(code.system.Rcrd2)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-			componentType plantC		double[] res = new double[2];
-		double xmin = limits.lowerBound(0);
-		double xmax = limits.upperBound(0);
-		double ymin = limits.lowerBound(1);
-		double ymax = limits.upperBound(1);
-		res[0] = xmin + rng().nextDouble()*(xmax-xmin);
-		res[1] = ymin + rng().nextDouble()*(ymax-ymin);
-		return res;
-			
+			componentType plantC		
 				driverClass = java.lang.String(code.system.Rcrd1)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			categorySet ctgrySt1
@@ -190,15 +182,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			widget wgt
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx		double[] res = new double[2];
-		double xmin = limits.lowerBound(0);
-		double xmax = limits.upperBound(0);
-		double ymin = limits.lowerBound(1);
-		double ymax = limits.upperBound(1);
-		res[0] = xmin + rng().nextDouble()*(xmax-xmin);
-		res[1] = ymin + rng().nextDouble()*(ymax-ymin);
-		return res;
-				.widgets.SimpleTimeSeriesWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 			widget wgt1
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
@@ -210,7 +194,8 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 
 // CROSS-LINKS
 [group:bacteria] groupOf grpOf1 [componentType:microbeC]
@@ -240,4 +225,4 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,11.0))
 [component:gr1] location [space:plot12]
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.1,11.2))
-
+[widget:ctrl] trackTime trksTmOf [dynamics:dyn]
