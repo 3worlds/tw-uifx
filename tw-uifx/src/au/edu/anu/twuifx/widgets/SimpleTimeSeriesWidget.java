@@ -95,8 +95,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-
+		policy.setProperties(id, properties);
 	}
 
 	@Override

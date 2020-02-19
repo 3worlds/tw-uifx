@@ -49,6 +49,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Duple;
+import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -61,6 +62,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import java.util.logging.Logger;
 
 /**
  * @author Ian Davies
@@ -83,14 +85,11 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private WidgetTrackingPolicy<TimeData> policy;
 	private WidgetTimeFormatter timeFormatter;
 	private SpaceNode spaceNode;
+	
+	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
 
 	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
-		// get an outedge to a space node
-		// then, when msg arrives space = spaceNode.getInstance(sc.Id)
-		// but we don't know which space and we don't want to construct one!!
-		// We shouldn't need the space set sent in the time msg
-		
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 
@@ -106,8 +105,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-
+		this.widgetId = id;
+		policy.setProperties(id, properties);
 	}
 
 	private static final String keyScaleX = "scaleX";
@@ -136,11 +135,18 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onDataMessage(SpaceData data) {
-
-		// for debugging only
-		System.out.println(data);
+		log.info(data.toString());
 		
-		if (policy.canProcessDataMessage(data)) {
+		//if (policy.canProcessDataMessage(data)) {
+		// senderId has not been set. Its value is still -1
+			// for debugging only
+			
+
+//			if (data.create())// means an item must be added to the display
+//				if (data.isPoint()) {
+//					data.coordinates();
+//					
+//				}
 			
 			// add processing code here, here is the pseudocode I sent you before
 			// caution: this Point is the fr.cnrs.iees.uit.space.Point. Can have any dimension (here it's 2)
@@ -164,7 +170,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				drawSpace(bounds, dummyPoints, dummyRelations);
 			});
 		}
-	}
+	
 
 	private void drawSpace(Bounds bounds, List<Point2D> lst2, List<Duple<Point2D, Point2D>> dummyRelations2) {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -205,7 +211,17 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
+		// senderId IS set here (== 0)
+		log.info(meta.toString());
 		timeFormatter.onMetaDataMessage(meta);
+//		edgeEffects : fr.cnrs.iees.twcore.constants.EdgeEffects
+//		type: fr.cnrs.iees.twcore.constants.SpaceType
+//		x-limits: fr.ens.biologie.generic.utils.Interval
+//		y-limits: fr.ens.biologie.generic.utils.Interval
+
+//		for (String key : meta.properties().getKeysAsSet()) {
+//			System.out.println(key+"; Class: "+meta.properties().getPropertyClassName(key));
+//		}
 
 	}
 

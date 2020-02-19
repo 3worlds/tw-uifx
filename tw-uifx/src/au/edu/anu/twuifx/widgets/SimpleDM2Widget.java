@@ -126,6 +126,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 
 	@Override
 	public void onDataMessage(Output2DData data) {
+		// TODO use a policy not this
 		if (sender == data.sender())
 			Platform.runLater(() -> {
 				processOnDataMessage(data);
