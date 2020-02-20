@@ -62,6 +62,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -87,6 +89,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private SpaceNode spaceNode;
 	
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
+//	static {log.setLevel(Level.INFO);}
 
 	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
