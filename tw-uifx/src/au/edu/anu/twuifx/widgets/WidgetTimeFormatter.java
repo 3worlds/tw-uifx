@@ -36,7 +36,7 @@ import java.util.Set;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
-import au.edu.anu.twcore.ui.runtime.HeadlessWidget;
+import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.TimeScaleType;
@@ -56,7 +56,7 @@ import fr.cnrs.iees.twcore.constants.TimeUnits;
  * model that is driving the dataTracker and hence the time the associated data
  * was sent.
  */
-public class WidgetTimeFormatter implements HeadlessWidget {
+public class WidgetTimeFormatter implements Widget {
 	private TimeUnits smallest;
 	private TimeUnits largest;
 	private TimeScaleType timeScale;

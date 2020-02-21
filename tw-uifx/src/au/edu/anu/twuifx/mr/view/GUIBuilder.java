@@ -27,14 +27,14 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mr;
+package au.edu.anu.twuifx.mr.view;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.ui.UIContainer;
 import au.edu.anu.twcore.ui.UITab;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Widget;
-import au.edu.anu.twuifx.mr.view.MrController;
+import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -64,13 +64,13 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *
  * @date 2 Sep 2019
  */
-public class UIDeployer {
-	private List<Widget> widgets;
+public class GUIBuilder {
+	private List<WidgetGUI> widgets;
 	private List<SplitPane> splitPanes;
 	private MrController controller;
 
 	@SuppressWarnings("unchecked")
-	public UIDeployer(TreeGraphNode uiNode, MrController controller) {
+	public GUIBuilder(TreeGraphNode uiNode, MrController controller) {
 		widgets = new ArrayList<>();
 		splitPanes = new ArrayList<>();
 		this.controller = controller;
@@ -136,7 +136,7 @@ public class UIDeployer {
 
 			int wnp = (Integer) wn.properties().getPropertyValue(P_UIORDER.key());
 			int cnp = (Integer) cn.properties().getPropertyValue(P_UIORDER.key());
-			Widget w = wn.getInstance();
+			WidgetGUI w = (WidgetGUI) wn.getInstance();
 			widgets.add(w);
 			if (wnp <= cnp) {
 				contents.getFirst().setCenter((Node) w.getUserInterfaceContainer());
@@ -151,7 +151,7 @@ public class UIDeployer {
 			}
 
 		} else if (widgetNodes.size() == 1) {
-			Widget w = widgetNodes.get(0).getInstance();
+			WidgetGUI w = (WidgetGUI) widgetNodes.get(0).getInstance();
 			widgets.add(w);
 			parentBorderPane.setCenter((Node) w.getUserInterfaceContainer());
 		} else if (widgetNodes.size() == 2) {
@@ -162,8 +162,8 @@ public class UIDeployer {
 
 			int w1Pos = (Integer) wn1.properties().getPropertyValue(P_UIORDER.key());
 			int w2Pos = (Integer) wn2.properties().getPropertyValue(P_UIORDER.key());
-			Widget w1 = wn1.getInstance();
-			Widget w2 = wn2.getInstance();
+			WidgetGUI w1 = (WidgetGUI) wn1.getInstance();
+			WidgetGUI w2 = (WidgetGUI) wn2.getInstance();
 			widgets.add(w1);
 			widgets.add(w2);
 			if (w1Pos <= w2Pos) {
@@ -221,7 +221,7 @@ public class UIDeployer {
 			barList.add((WidgetNode) n);
 		sortWidgetOrder(barList);
 		for (WidgetNode wn : barList) {
-			Widget w = wn.getInstance();
+			WidgetGUI w = (WidgetGUI) wn.getInstance();
 			widgets.add(w);
 			container.getChildren().add((Node) w.getUserInterfaceContainer());
 		}
@@ -229,7 +229,7 @@ public class UIDeployer {
 
 	private void setMenus() {
 		Menu wmenu = controller.getWidgetMenu();
-		for (Widget w : widgets) {
+		for (WidgetGUI w : widgets) {
 			Object o = w.getMenuContainer();
 			if (o != null)
 				wmenu.getItems().add((MenuItem) o);

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
@@ -57,7 +57,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
-public class SimpleControlWidget extends StateMachineController implements Widget {
+public class SimpleControlWidget extends StateMachineController implements WidgetGUI {
 
 	private Button btnRunPause;
 	private Button btnStep;

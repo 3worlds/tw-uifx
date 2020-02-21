@@ -41,7 +41,7 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
-import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
@@ -76,7 +76,7 @@ import javafx.scene.layout.HBox;
  *       Plots run time output.
  */
 public class SimpleControlWidget2 extends StateMachineController
-		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, Widget {
+		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 
 	private Button btnRunPause;
 	private Button btnStep;

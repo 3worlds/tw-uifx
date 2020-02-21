@@ -45,6 +45,7 @@ import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
+import au.edu.anu.twuifx.mr.view.GUIBuilder;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -66,7 +67,7 @@ import javafx.stage.Stage;
 public class ModelRunnerfx extends Application {
 	private static TreeGraphNode uiNode;
 	private static TreeGraph<TreeGraphDataNode, ALEdge> config;
-	private UIDeployer uiDeployer;
+	private GUIBuilder uiDeployer;
 	private MrController controller;
 	private Stage stage;
 
@@ -133,7 +134,7 @@ public class ModelRunnerfx extends Application {
 			stop();
 		});
 		Preferences.initialise(Project.makeRuntimePreferencesFile());
-		uiDeployer = new UIDeployer(uiNode, controller);
+		uiDeployer = new GUIBuilder(uiNode, controller);
 		stage.show();
 		stage.toBack();
 		Platform.runLater(() -> {

@@ -40,10 +40,9 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.SpaceData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
-import au.edu.anu.twcore.ecosystem.structure.SpaceNode;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
-import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -73,7 +72,7 @@ import java.util.logging.Logger;
  *       Widget to show spatial map of objects and their relations.
  * 
  */
-public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements Widget {
+public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
@@ -221,9 +220,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 //		x-limits: fr.ens.biologie.generic.utils.Interval
 //		y-limits: fr.ens.biologie.generic.utils.Interval
 
-		for (String key : meta.properties().getKeysAsSet()) {
-			System.out.println(key+"; Class: "+meta.properties().getPropertyClassName(key));
-		}
+//		for (String key : meta.properties().getKeysAsSet()) {
+//			System.out.println(key+"; Class: "+meta.properties().getPropertyClassName(key));
+//		}
 
 	}
 

@@ -31,9 +31,9 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.Collection;
 
-import au.edu.anu.twcore.ui.runtime.HeadlessWidget;
+import au.edu.anu.twcore.ui.runtime.Widget;
 
-public interface WidgetTrackingPolicy<T> extends HeadlessWidget{
+public interface WidgetTrackingPolicy<T> extends Widget{
 	
 	public boolean canProcessDataMessage(T data);
 	

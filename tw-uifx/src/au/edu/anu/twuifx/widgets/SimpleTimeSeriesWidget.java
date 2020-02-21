@@ -45,7 +45,7 @@ import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
-import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.renderer.ErrorStyle;
@@ -68,7 +68,7 @@ import javafx.scene.layout.BorderPane;
  * 
  *       Trial of chart-fx based on the "RollingBufferSample"
  */
-public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {
+public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 
 	private int BUFFER_CAPACITY = 100;// pref mm/mr or both
 	// drop overlayed points
