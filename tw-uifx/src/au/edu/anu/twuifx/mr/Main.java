@@ -38,6 +38,9 @@ import java.util.logging.Level;
 import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
+import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
+import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
+import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
@@ -179,6 +182,24 @@ public class Main {
 			ModelRunnerfx.launchUI(configGraph);
 		} else {
 			log.info("Ready to run headless");
+			// WHICH SYSTEM - there can be many?
+			SimulatorNode simNode = (SimulatorNode) get(configGraph.root().getChildren(),
+					selectOne(hasTheLabel(N_SYSTEM.label())), children(), selectOne(hasTheLabel(N_DYNAMICS.label())));
+
+			// get runTimeId from cmd line - make it the first mandatory arg
+			int rtid = 0;
+			RunTimeId.setRunTimeId(rtid);
+			// HOW MANY instances - depends on exp design?
+			// for (int id = 0;id<nInstances;id++){
+			// build a list of sims and add the thread
+			// }
+			// start all threads and wait to all have finished
+//			
+//			Simulator simulator = simNode.getInstance(id);
+//			simulator.resetSimulation();
+//			while (!simulator.stop())
+//				simulator.step();
+
 		}
 	}
 

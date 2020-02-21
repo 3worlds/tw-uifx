@@ -63,7 +63,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -86,10 +85,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private String widgetId;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private WidgetTimeFormatter timeFormatter;
-	private SpaceNode spaceNode;
 	
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
-//	static {log.setLevel(Level.INFO);}
 
 	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
@@ -217,14 +214,16 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		// senderId IS set here (== 0)
 		log.info(meta.toString());
 		timeFormatter.onMetaDataMessage(meta);
+		
+		
 //		edgeEffects : fr.cnrs.iees.twcore.constants.EdgeEffects
 //		type: fr.cnrs.iees.twcore.constants.SpaceType
 //		x-limits: fr.ens.biologie.generic.utils.Interval
 //		y-limits: fr.ens.biologie.generic.utils.Interval
 
-//		for (String key : meta.properties().getKeysAsSet()) {
-//			System.out.println(key+"; Class: "+meta.properties().getPropertyClassName(key));
-//		}
+		for (String key : meta.properties().getKeysAsSet()) {
+			System.out.println(key+"; Class: "+meta.properties().getPropertyClassName(key));
+		}
 
 	}
 
