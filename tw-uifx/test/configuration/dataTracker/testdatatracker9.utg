@@ -114,8 +114,8 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 							userClassName = java.lang.String(code.system.Infection)
 					process microbeLife
 						function MicRep
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.system.MicRep)
 							function InitNewMic
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
@@ -131,8 +131,8 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 					process plantLife
 						function PlantRep
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.system.PlantRep)
 							function InitNewPlant
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
@@ -152,11 +152,11 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			initialState state
 				group bacteria
 					component mic1
-						variableValues varVals
+						variableValues vvMic
 							virulence = java.lang.Double(0.3)
 				group grass
 					component gr1
-						variableValues varVals1
+						variableValues vvGr
 							biomass = java.lang.Double(12.0)
 							infected = java.lang.Boolean(false)
 		structure struct
@@ -164,33 +164,35 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			componentType microbeC
 				driverClass = java.lang.String(code.system.Rcrd2)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-			componentType plantC		
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"code.system.Plot12_MicrobeCRelocateFunction"))
+			arena arena
+				space plot12
+					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
+					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+					x-limits = fr.ens.biologie.generic.utils.Interval([0.0,10.0])
+					y-limits = fr.ens.biologie.generic.utils.Interval(]5.0,12.0])
+			componentType plantC
 				driverClass = java.lang.String(code.system.Rcrd1)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"code.system.Plot12_PlantCRelocateFunction"))
 			categorySet ctgrySt1
 				category microbe
 				category plant
-			arena arena
-				space plot12
-					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
-					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
-					x-limits = fr.ens.biologie.generic.utils.Interval([0.0,10.0])
-					y-limits = fr.ens.biologie.generic.utils.Interval(]5.0,12.0])
 	userInterface gui
 		tab tab
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget wgt
+			widget seriesPlant
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 			container cont
 				order = java.lang.Integer(0)
 				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-				widget wgt1
+				widget seriesMic
 					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-				widget wgt2
+				widget space
 					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
@@ -207,30 +209,30 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 // CROSS-LINKS
 [group:bacteria] groupOf grpOf1 [componentType:microbeC]
 [componentType:plantC] belongsTo blngsT1 [category:plant]
+[experiment:exp] baseLine baseline [system:system]
+[componentType:microbeC] belongsTo blngsT2 [category:microbe]
+[widget:seriesPlant] trackSeries trksSrsOf1 [dataTracker:plantTracker]
+[component:gr1] location 1_1 [space:plot12]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.1,11.2))
+[component:gr1] instanceOf instOf1 [componentType:plantC]
+[category:plant] drivers drvrs1 [record:rcrd1]
+[widget:space] trackSpace trksSpc [space:plot12]
+[widget:seriesMic] trackSeries trksSrsOf [dataTracker:micTracker]
+[widget:ctrl] trackTime trksTmOf [dynamics:dyn]
 [group:grass] groupOf grpOf [componentType:plantC]
 [category:microbe] drivers drvrs2 [record:rcrd2]
-[experiment:exp] baseLine baseline [system:system]
 [dataTracker:plantTracker] trackPopulation trksPopOf [group:grass]
 	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [process:microbeLife] appliesTo applsT2 [category:microbe]
 [process:plantLife] appliesTo applsT3 [category:plant]
 [relationType:disease] fromCategory pathogen [category:microbe]
 [relationType:disease] toCategory host [category:plant]
-[componentType:microbeC] belongsTo blngsT2 [category:microbe]
-[widget:wgt] trackSeries trksSrsOf1 [dataTracker:plantTracker]
-[component:gr1] instanceOf instOf1 [componentType:plantC]
+[process:infest] inSpace  [space:plot12]
+	searchRadius = java.lang.Double(0.2)
 [process:infest] appliesTo applsT1 [relationType:disease]
 [dataTracker:micTracker] trackPopulation trksPopOf1 [group:bacteria]
 	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
-[category:plant] drivers drvrs1 [record:rcrd1]
-[component:mic1] instanceOf instOf [componentType:microbeC]
-[widget:wgt1] trackSeries trksSrsOf [dataTracker:micTracker]
-[widget:time] trackTime tracks1 [dynamics:dyn]
-[process:infest] inSpace  [space:plot12]
-	searchRadius = java.lang.Double(0.2)	
-[component:mic1] location [space:plot12]
+[component:mic1] location 1 [space:plot12]
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,11.0))
-[component:gr1] location [space:plot12]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.1,11.2))
-[widget:ctrl] trackTime trksTmOf [dynamics:dyn]
-[widget:wgt2] trackSpace trksSpc [space:plot12]
+[component:mic1] instanceOf instOf [componentType:microbeC]
+[widget:time] trackTime tracks1 [dynamics:dyn]

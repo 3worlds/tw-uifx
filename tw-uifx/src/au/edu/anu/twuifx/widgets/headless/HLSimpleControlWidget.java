@@ -27,28 +27,18 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.headless;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.images.Images;
+import au.edu.anu.twcore.ui.runtime.Kicker;
+import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
-import javafx.application.Platform;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
@@ -57,78 +47,82 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
-public class SimpleControlWidget extends StateMachineController implements WidgetGUI {
+public class HLSimpleControlWidget extends StateMachineController implements Widget,Kicker{
 
-	private Button btnRunPause;
-	private Button btnStep;
-	private Button btnReset;
-	private List<Button> buttons;
-	private ImageView runGraphic;
-	private ImageView pauseGraphic;
+//	private Button btnRunPause;
+//	private Button btnStep;
+//	private Button btnReset;
+//	private List<Button> buttons;
+//	private ImageView runGraphic;
+//	private ImageView pauseGraphic;
 
 
-	private static Logger log = Logging.getLogger(SimpleControlWidget.class);
+	private static Logger log = Logging.getLogger(HLSimpleControlWidget.class);
 
 	// NB initial state is always 'waiting' ('null' causes a crash)
 	private String state = waiting.name();
 
-	public SimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
+	public HLSimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 		log.info("Thread: " + Thread.currentThread().getId());
 	}
 
-	@Override
-	public Object getUserInterfaceContainer() {
-		// log.info("Thread: " + Thread.currentThread().getId());
-		runGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Play16.gif")));
-		pauseGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Pause16.gif")));
-		btnRunPause = new Button("", runGraphic);
-		btnRunPause.setTooltip(new Tooltip("Run/Pause simulation"));
-		btnStep = new Button("", new ImageView(new Image(Images.class.getResourceAsStream("StepForward16.gif"))));
-		btnStep.setTooltip(new Tooltip("Step forward one timer event"));
-		btnReset = new Button("", new ImageView(new Image(Images.class.getResourceAsStream("Stop16.gif"))));
-		btnReset.setTooltip(new Tooltip("Reset to start"));
-		btnReset.setDisable(true);
+//	@Override
+//	public Object getUserInterfaceContainer() {
+//		// log.info("Thread: " + Thread.currentThread().getId());
+//		runGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Play16.gif")));
+//		pauseGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Pause16.gif")));
+//		btnRunPause = new Button("", runGraphic);
+//		btnRunPause.setTooltip(new Tooltip("Run/Pause simulation"));
+//		btnStep = new Button("", new ImageView(new Image(Images.class.getResourceAsStream("StepForward16.gif"))));
+//		btnStep.setTooltip(new Tooltip("Step forward one timer event"));
+//		btnReset = new Button("", new ImageView(new Image(Images.class.getResourceAsStream("Stop16.gif"))));
+//		btnReset.setTooltip(new Tooltip("Reset to start"));
+//		btnReset.setDisable(true);
+//
+//		buttons = new ArrayList<>();
+//		buttons.add(btnRunPause);
+//		buttons.add(btnStep);
+//		buttons.add(btnReset);
+//
+//		btnRunPause.setOnAction(e -> handleRunPausePressed());
+//		btnStep.setOnAction(e -> handleStepPressed());
+//		btnReset.setOnAction(e -> handleResetPressed());
+//
+//		HBox pane = new HBox();
+//		pane.setAlignment(Pos.BASELINE_LEFT);
+//		pane.getChildren().addAll(buttons);
+//			
+//		pane.setSpacing(5.0);
+//
+//		setButtonLogic();
+//		return pane;
+//	}
 
-		buttons = new ArrayList<>();
-		buttons.add(btnRunPause);
-		buttons.add(btnStep);
-		buttons.add(btnReset);
-
-		btnRunPause.setOnAction(e -> handleRunPausePressed());
-		btnStep.setOnAction(e -> handleStepPressed());
-		btnReset.setOnAction(e -> handleResetPressed());
-
-		HBox pane = new HBox();
-		pane.setAlignment(Pos.BASELINE_LEFT);
-		pane.getChildren().addAll(buttons);
-			
-		pane.setSpacing(5.0);
-
-		setButtonLogic();
-		return pane;
-	}
-
-	private Object handleResetPressed() {
+	private boolean handleResetPressed() {
 		// Always begin by disabling in case the next operation takes a long time
 		// log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
-		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name()))
+//		setButtons(true, true, true, null);
+		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name())) {
 			sendEvent(reset.event());
-		return null;
+			return true;
+		}
+		return false;
 	}
 
-	private Object handleStepPressed() {
+	private  boolean handleStepPressed() {
 		// log.info("handleStepPressed Thread: " + Thread.currentThread().getId());
-		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name()))
+//		setButtons(true, true, true, null);
+		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name())) {
 			sendEvent(step.event());
-		return null;
+			return true;
+		}
+		return false;
 	}
 
-	private Object handleRunPausePressed() {
+	private  boolean handleRunPausePressed() {
 		// log.info("handleRunPausePressed Thread: " + Thread.currentThread().getId());
-		setButtons(true, true, true, null);
+//		setButtons(true, true, true, null);
 		Event event = null;
 		if (state.equals(waiting.name()))
 			event = run.event();
@@ -136,9 +130,11 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 			event = pause.event();
 		else if (state.equals(pausing.name()) | state.equals(stepping.name()))
 			event = goOn.event();
-		if (event != null)
+		if (event != null) {
 			sendEvent(event);
-		return null;
+			return true;
+		}
+		return false;
 	}
 
 	private long startTime;
@@ -146,42 +142,42 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	public void onStatusMessage(State newState) {
 		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
 		state = newState.getName();
-		setButtonLogic();
+//		setButtonLogic();
 	}
 
-	private void setButtonLogic() {
-		// ensure waiting for app thread i.e. only needed when 'running'
-		Platform.runLater(() -> {
-			// log.info("setButtonLogic: State: "+ state+", Thread: " +
-			// Thread.currentThread().getId());
-			if (state.equals(waiting.name())) {
-				setButtons(false, false, true, runGraphic);
-				return;
-			}
-			if (state.equals(running.name())) {
-				setButtons(false, true, true, pauseGraphic);
-				return;
+//	private void setButtonLogic() {
+//		// ensure waiting for app thread i.e. only needed when 'running'
+//		Platform.runLater(() -> {
+//			// log.info("setButtonLogic: State: "+ state+", Thread: " +
+//			// Thread.currentThread().getId());
+//			if (state.equals(waiting.name())) {
+//				setButtons(false, false, true, runGraphic);
+//				return;
+//			}
+//			if (state.equals(running.name())) {
+//				setButtons(false, true, true, pauseGraphic);
+//				return;
+//
+//			}
+//			if (state.equals(stepping.name())) {
+//				setButtons(false, false, false, runGraphic);
+//				return;
+//			}
+//			if (state.equals(finished.name())) {
+//				setButtons(true, true, false, runGraphic);
+//				return;
+//			}
+//			if (state.equals(pausing.name())) {
+//				setButtons(false, false, false, runGraphic);
+//				return;
+//			}
+//		});
+//	}
 
-			}
-			if (state.equals(stepping.name())) {
-				setButtons(false, false, false, runGraphic);
-				return;
-			}
-			if (state.equals(finished.name())) {
-				setButtons(true, true, false, runGraphic);
-				return;
-			}
-			if (state.equals(pausing.name())) {
-				setButtons(false, false, false, runGraphic);
-				return;
-			}
-		});
-	}
-
-	@Override
-	public Object getMenuContainer() {
-		return null;
-	}
+//	@Override
+//	public Object getMenuContainer() {
+//		return null;
+//	}
 
 	@Override
 	public void putPreferences() {
@@ -193,14 +189,20 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
+		// how would this know and respond to the sender id
 	}
 
-	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
-		btnRunPause.setDisable(runPauseDisable);
-		btnStep.setDisable(stepDisable);
-		btnReset.setDisable(resetDisable);
-		if (iv != null)
-			btnRunPause.setGraphic(iv);
+	@Override
+	public boolean start() {
+		return handleRunPausePressed();
 	}
+
+//	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
+//		btnRunPause.setDisable(runPauseDisable);
+//		btnStep.setDisable(stepDisable);
+//		btnReset.setDisable(resetDisable);
+//		if (iv != null)
+//			btnRunPause.setGraphic(iv);
+//	}
 
 }

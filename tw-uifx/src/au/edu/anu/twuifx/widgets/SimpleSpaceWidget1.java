@@ -43,7 +43,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ecosystem.structure.SpaceNode;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
-import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -63,7 +63,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -74,7 +73,7 @@ import java.util.logging.Logger;
  *       Widget to show spatial map of objects and their relations.
  * 
  */
-public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements Widget {
+public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
@@ -86,7 +85,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private String widgetId;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private WidgetTimeFormatter timeFormatter;
-	private SpaceNode spaceNode;
 	
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
 	static {log.setLevel(Level.INFO);}

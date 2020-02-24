@@ -41,7 +41,7 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
-import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
@@ -67,7 +67,7 @@ import javafx.scene.layout.HBox;
  * @date 29 Jan 2020
  */
 public class SimpleControlWidget1 extends StateMachineController
-		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, Widget {
+		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 
 	private Button btnRunPause;
 	private Button btnStep;

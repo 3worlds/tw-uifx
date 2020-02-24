@@ -27,14 +27,14 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mr;
+package au.edu.anu.twuifx.mr.view;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.ui.UIContainer;
 import au.edu.anu.twcore.ui.UITab;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Widget;
-import au.edu.anu.twuifx.mr.view.MrController;
+import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -64,14 +64,16 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *
  * @date 2 Sep 2019
  */
-public class UIDeployer {
-	private List<Widget> widgets;
+public class GUIBuilder {
+	private List<WidgetGUI> guiWidgets;
+	private List<Widget> hlWidgets;
 	private List<SplitPane> splitPanes;
 	private MrController controller;
 
 	@SuppressWarnings("unchecked")
-	public UIDeployer(TreeGraphNode uiNode, MrController controller) {
-		widgets = new ArrayList<>();
+	public GUIBuilder(TreeGraphNode uiNode, MrController controller) {
+		guiWidgets = new ArrayList<>();
+		hlWidgets = new ArrayList<>();
 		splitPanes = new ArrayList<>();
 		this.controller = controller;
 		// top bar
@@ -97,6 +99,14 @@ public class UIDeployer {
 		}
 
 		setMenus();
+		
+		TreeGraphNode headless = (TreeGraphNode) get(uiNode.getChildren(),
+				selectZeroOrOne(hasTheLabel(N_UIHEADLESS.label())));
+		
+		for (TreeNode n:headless.getChildren()) {
+			WidgetNode widgetNode = (WidgetNode) n;
+			hlWidgets.add(widgetNode.getInstance());
+		}
 
 	}
 
@@ -136,8 +146,8 @@ public class UIDeployer {
 
 			int wnp = (Integer) wn.properties().getPropertyValue(P_UIORDER.key());
 			int cnp = (Integer) cn.properties().getPropertyValue(P_UIORDER.key());
-			Widget w = wn.getInstance();
-			widgets.add(w);
+			WidgetGUI w = (WidgetGUI) wn.getInstance();
+			guiWidgets.add(w);
 			if (wnp <= cnp) {
 				contents.getFirst().setCenter((Node) w.getUserInterfaceContainer());
 				buildContent(cn.getChildren(),
@@ -151,8 +161,8 @@ public class UIDeployer {
 			}
 
 		} else if (widgetNodes.size() == 1) {
-			Widget w = widgetNodes.get(0).getInstance();
-			widgets.add(w);
+			WidgetGUI w = (WidgetGUI) widgetNodes.get(0).getInstance();
+			guiWidgets.add(w);
 			parentBorderPane.setCenter((Node) w.getUserInterfaceContainer());
 		} else if (widgetNodes.size() == 2) {
 			WidgetNode wn1 = widgetNodes.get(0);
@@ -162,10 +172,10 @@ public class UIDeployer {
 
 			int w1Pos = (Integer) wn1.properties().getPropertyValue(P_UIORDER.key());
 			int w2Pos = (Integer) wn2.properties().getPropertyValue(P_UIORDER.key());
-			Widget w1 = wn1.getInstance();
-			Widget w2 = wn2.getInstance();
-			widgets.add(w1);
-			widgets.add(w2);
+			WidgetGUI w1 = (WidgetGUI) wn1.getInstance();
+			WidgetGUI w2 = (WidgetGUI) wn2.getInstance();
+			guiWidgets.add(w1);
+			guiWidgets.add(w2);
 			if (w1Pos <= w2Pos) {
 				contents.getFirst().setCenter((Node) w1.getUserInterfaceContainer());
 				contents.getSecond().setCenter((Node) w2.getUserInterfaceContainer());
@@ -221,15 +231,15 @@ public class UIDeployer {
 			barList.add((WidgetNode) n);
 		sortWidgetOrder(barList);
 		for (WidgetNode wn : barList) {
-			Widget w = wn.getInstance();
-			widgets.add(w);
+			WidgetGUI w = (WidgetGUI) wn.getInstance();
+			guiWidgets.add(w);
 			container.getChildren().add((Node) w.getUserInterfaceContainer());
 		}
 	}
 
 	private void setMenus() {
 		Menu wmenu = controller.getWidgetMenu();
-		for (Widget w : widgets) {
+		for (WidgetGUI w : guiWidgets) {
 			Object o = w.getMenuContainer();
 			if (o != null)
 				wmenu.getItems().add((MenuItem) o);
@@ -239,7 +249,7 @@ public class UIDeployer {
 	private static final String splitter = "splitter_";
 	
 	public void getPreferences() {
-		for (Widget w : widgets)
+		for (Widget w : guiWidgets)
 			w.getPreferences();
 		// maybe needs to be delayed!
 		for (SplitPane s : splitPanes) {
@@ -247,10 +257,13 @@ public class UIDeployer {
 			double[] pos = UiHelpers.getSplitPanePositions(0.5, key);
 			s.setDividerPositions(pos);
 		}
+//		for (Widget w : hlWidgets) {
+//			w.getPreferences();
+//		}
 	}
 
 	public void putPreferences() {
-		for (Widget w : widgets)
+		for (Widget w : guiWidgets)
 			w.putPreferences();
 		for (SplitPane s:splitPanes) {
 			String key =  splitter+s.getId();
