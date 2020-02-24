@@ -85,8 +85,8 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 				writer.close();
 			}
 			// we have to assume a project dir exists even in openmole.
-			outFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetId+
-					Integer.toString(RunTimeId.runTimeId()));
+			String fileName = widgetId+"["+RunTimeId.runTimeId()+"]["+meta.sender()+"].txt";
+			outFile = Project.makeFile(ProjectPaths.RUNTIME, "output", fileName);
 			outFile.getParentFile().mkdirs();
 			try {
 				log.info("Opening file!");
@@ -115,6 +115,7 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, finished)|| isSimulatorState(state, waiting)){
+			log.info("closing file!");
 			writer.close();		
 		} 
 	}

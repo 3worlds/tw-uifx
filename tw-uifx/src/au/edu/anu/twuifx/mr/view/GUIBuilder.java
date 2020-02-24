@@ -99,14 +99,14 @@ public class GUIBuilder {
 		}
 
 		setMenus();
-		
+
 		TreeGraphNode headless = (TreeGraphNode) get(uiNode.getChildren(),
 				selectZeroOrOne(hasTheLabel(N_UIHEADLESS.label())));
-		
-		for (TreeNode n:headless.getChildren()) {
-			WidgetNode widgetNode = (WidgetNode) n;
-			hlWidgets.add(widgetNode.getInstance());
-		}
+		if (headless != null)
+			for (TreeNode n : headless.getChildren()) {
+				WidgetNode widgetNode = (WidgetNode) n;
+				hlWidgets.add(widgetNode.getInstance());
+			}
 
 	}
 
@@ -247,13 +247,13 @@ public class GUIBuilder {
 	}
 
 	private static final String splitter = "splitter_";
-	
+
 	public void getPreferences() {
 		for (Widget w : guiWidgets)
 			w.getPreferences();
 		// maybe needs to be delayed!
 		for (SplitPane s : splitPanes) {
-			String key = splitter+s.getId();
+			String key = splitter + s.getId();
 			double[] pos = UiHelpers.getSplitPanePositions(0.5, key);
 			s.setDividerPositions(pos);
 		}
@@ -265,8 +265,8 @@ public class GUIBuilder {
 	public void putPreferences() {
 		for (Widget w : guiWidgets)
 			w.putPreferences();
-		for (SplitPane s:splitPanes) {
-			String key =  splitter+s.getId();
+		for (SplitPane s : splitPanes) {
+			String key = splitter + s.getId();
 			Preferences.putDouble(key, s.getDividerPositions()[0]);
 		}
 	}

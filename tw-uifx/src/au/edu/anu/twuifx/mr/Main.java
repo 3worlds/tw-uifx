@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.mr;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -82,6 +83,7 @@ public class Main {
 	public static void main(String[] args) {
 		// must have an id and a project
 		if (args.length < 2) {
+			System.out.println(Arrays.deepToString(args));
 			System.out.println(usage);
 			System.exit(-1);
 		}
@@ -90,6 +92,7 @@ public class Main {
 			RunTimeId.setRunTimeId(id);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
+			System.out.println(Arrays.deepToString(args));
 			System.out.println(usage);
 			System.exit(-1);
 			;
@@ -109,6 +112,7 @@ public class Main {
 		for (int i = 3; i < args.length; i++) {
 			String[] pair = args[i].split(":");
 			if (pair.length != 2) {
+				System.out.println(Arrays.deepToString(args));
 				System.out.println(usage);
 				System.exit(-1);
 			}
@@ -136,11 +140,13 @@ public class Main {
 		File prjDir = new File(TwPaths.TW_ROOT + File.separator + args[1]);
 		if (!prjDir.exists()) {
 			System.out.println("Project not found: [" + prjDir + "]");
+			System.out.println(Arrays.deepToString(args));
 			System.exit(1);
 		}
 
 		if (Project.isOpen()) {
 			System.out.println("Project is already open: [" + prjDir + "]");
+			System.out.println(Arrays.deepToString(args));
 			System.exit(1);
 		}
 
@@ -154,6 +160,7 @@ public class Main {
 			File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
 			if (!userJar.exists()) {
 				System.out.println("User generated classes not found: [" + userJar + "]");
+				System.out.println(Arrays.deepToString(args));
 				System.exit(1);
 			}
 			// enable the url class loader
@@ -179,22 +186,6 @@ public class Main {
 		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
 
-		// TODO complete the cascading init system ad remove this
-		// Keep here rather than the splash screen in case we really do want to do a
-		// headless launch
-		// TimeModel line 96 timeLine.initialise()
-//		List<Initialisable> initList = new LinkedList<>();
-//
-//		log.info("Preparing initialisation");
-//		for (TreeGraphNode n : configGraph.nodes())
-//			initList.add((Initialisable) n);
-//		Initialiser initer = new Initialiser(initList);
-//		initer.initialise();
-//		if (initer.errorList() != null) {
-//			for (InitialiseMessage msg : initer.errorList())
-//				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
-//			System.exit(1);
-//		}
 
 		// Trying to assume its possible to have a headless ctrl and yet have GUI
 		// widgets
@@ -208,7 +199,7 @@ public class Main {
 			ModelRunnerfx.launchUI(configGraph);
 			if (ctrlHl != null) {
 				Widget ctrl = ctrlHl.getInstance();
-				((Kicker)ctrl).start();
+				((Kicker) ctrl).start();
 			}
 		} else { // TODO!!!
 			log.info("Ready to run headless");
@@ -224,10 +215,9 @@ public class Main {
 					System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
 				System.exit(1);
 			}
-			
-			Widget ctrl = ctrlHl.getInstance();
-			((Kicker)ctrl).start();
 
+			Widget ctrl = ctrlHl.getInstance();
+			((Kicker) ctrl).start();
 		}
 	}
 
