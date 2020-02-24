@@ -46,6 +46,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.ui.WidgetNode;
+import au.edu.anu.twcore.ui.runtime.Kicker;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.TreeNode;
@@ -207,8 +208,7 @@ public class Main {
 			ModelRunnerfx.launchUI(configGraph);
 			if (ctrlHl != null) {
 				Widget ctrl = ctrlHl.getInstance();
-				// we need a ctrl interface here!
-				//ctrl.start();
+				((Kicker)ctrl).start();
 			}
 		} else { // TODO!!!
 			log.info("Ready to run headless");
@@ -226,7 +226,7 @@ public class Main {
 			}
 			
 			Widget ctrl = ctrlHl.getInstance();
-			//ctrl.start();
+			((Kicker)ctrl).start();
 
 		}
 	}

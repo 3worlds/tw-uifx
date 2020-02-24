@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.widgets.headless;
 
 import java.util.logging.Logger;
 
+import au.edu.anu.twcore.ui.runtime.Kicker;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
@@ -46,7 +47,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
-public class HLSimpleControlWidget extends StateMachineController implements Widget {
+public class HLSimpleControlWidget extends StateMachineController implements Widget,Kicker{
 
 //	private Button btnRunPause;
 //	private Button btnStep;
@@ -98,7 +99,7 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 //		return pane;
 //	}
 
-	public boolean handleResetPressed() {
+	private boolean handleResetPressed() {
 		// Always begin by disabling in case the next operation takes a long time
 		// log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
 //		setButtons(true, true, true, null);
@@ -109,7 +110,7 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 		return false;
 	}
 
-	public  boolean handleStepPressed() {
+	private  boolean handleStepPressed() {
 		// log.info("handleStepPressed Thread: " + Thread.currentThread().getId());
 //		setButtons(true, true, true, null);
 		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name())) {
@@ -119,7 +120,7 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 		return false;
 	}
 
-	public  boolean handleRunPausePressed() {
+	private  boolean handleRunPausePressed() {
 		// log.info("handleRunPausePressed Thread: " + Thread.currentThread().getId());
 //		setButtons(true, true, true, null);
 		Event event = null;
@@ -189,6 +190,11 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		// how would this know and respond to the sender id
+	}
+
+	@Override
+	public boolean start() {
+		return handleRunPausePressed();
 	}
 
 //	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
