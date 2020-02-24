@@ -38,13 +38,17 @@ import java.util.logging.Level;
 import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
+import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
+import au.edu.anu.twcore.ui.WidgetNode;
+import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.OmugiClassLoader;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -70,14 +74,28 @@ public class Main {
 	}
 
 	private static String usage = "Usage:\n" + Main.class.getName()
-			+ " <Project relative directory> default logging level, class:level.";
+			+ ": id, <Project relative directory> default logging level, class:level.";
 	private static Logger log = Logging.getLogger(Main.class);
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
+		// must have an id and a project
+		if (args.length < 2) {
+			System.out.println(usage);
+			System.exit(-1);
+		}
+		try {
+			int id = Integer.parseInt(args[0]);
+			RunTimeId.setRunTimeId(id);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			System.out.println(usage);
+			System.exit(-1);
+			;
+		}
 
-		if (args.length > 1)
-			Logging.setDefaultLogLevel(Level.parse(args[1]));
+		if (args.length > 2)
+			Logging.setDefaultLogLevel(Level.parse(args[2]));
 		else
 			Logging.setDefaultLogLevel(Level.OFF);
 
@@ -87,7 +105,7 @@ public class Main {
 		 * deal with loggers that don't require using the OmugiClassLoader to avoid
 		 * effecting that class
 		 */
-		for (int i = 2; i < args.length; i++) {
+		for (int i = 3; i < args.length; i++) {
 			String[] pair = args[i].split(":");
 			if (pair.length != 2) {
 				System.out.println(usage);
@@ -109,12 +127,12 @@ public class Main {
 
 		}
 
-		if (args.length < 1) {
-			System.out.println(usage);
-			System.exit(1);
-		}
+//		if (args.length < 1) {
+//			System.out.println(usage);
+//			System.exit(1);
+//		}
 
-		File prjDir = new File(TwPaths.TW_ROOT + File.separator + args[0]);
+		File prjDir = new File(TwPaths.TW_ROOT + File.separator + args[1]);
 		if (!prjDir.exists()) {
 			System.out.println("Project not found: [" + prjDir + "]");
 			System.exit(1);
@@ -177,30 +195,75 @@ public class Main {
 //			System.exit(1);
 //		}
 
-		if (get(configGraph.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label()))) != null) {
+		// Trying to assume its possible to have a headless ctrl and yet have GUI
+		// widgets
+		TreeNode uiNode = (TreeNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_UI.label())));
+		WidgetNode ctrlHl = getHeadlessController(uiNode);
+		boolean hasGUI = hasGUI(uiNode);
+		if (hasGUI) {
+			// if (get(configGraph.root().getChildren(),
+			// selectZeroOrOne(hasTheLabel(N_UI.label()))) != null) {
 			log.info("Ready to run with user-interface ");
 			ModelRunnerfx.launchUI(configGraph);
-		} else {
+			if (ctrlHl != null) {
+				Widget ctrl = ctrlHl.getInstance();
+				// we need a ctrl interface here!
+				//ctrl.start();
+			}
+		} else { // TODO!!!
 			log.info("Ready to run headless");
-			// WHICH SYSTEM - there can be many?
-			SimulatorNode simNode = (SimulatorNode) get(configGraph.root().getChildren(),
-					selectOne(hasTheLabel(N_SYSTEM.label())), children(), selectOne(hasTheLabel(N_DYNAMICS.label())));
+			List<Initialisable> initList = new LinkedList<>();
 
-			// get runTimeId from cmd line - make it the first mandatory arg
-			int rtid = 0;
-			RunTimeId.setRunTimeId(rtid);
-			// HOW MANY instances - depends on exp design?
-			// for (int id = 0;id<nInstances;id++){
-			// build a list of sims and add the thread
-			// }
-			// start all threads and wait to all have finished
-//			
-//			Simulator simulator = simNode.getInstance(id);
-//			simulator.resetSimulation();
-//			while (!simulator.stop())
-//				simulator.step();
+			log.info("Preparing initialisation");
+			for (TreeGraphNode n : configGraph.nodes())
+				initList.add((Initialisable) n);
+			Initialiser initer = new Initialiser(initList);
+			initer.initialise();
+			if (initer.errorList() != null) {
+				for (InitialiseMessage msg : initer.errorList())
+					System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
+				System.exit(1);
+			}
+			
+			Widget ctrl = ctrlHl.getInstance();
+			//ctrl.start();
 
 		}
+	}
+
+	private static WidgetNode getHeadlessController(TreeNode uiNode) {
+		Class<?> smcClass = fr.cnrs.iees.rvgrid.statemachine.StateMachineController.class;
+		TreeNode headlessNode = (TreeNode) get(uiNode.getChildren(),
+				selectZeroOrOne(hasTheLabel(N_UIHEADLESS.label())));
+		if (headlessNode == null)
+			return null;
+		for (TreeNode n : headlessNode.getChildren()) {
+			TreeGraphDataNode widgetNode = (TreeGraphDataNode) n;
+			String kstr = (String) widgetNode.properties().getPropertyValue(TwArchetypeConstants.twaSubclass);
+			try {
+				Class<?> widgetClass = Class.forName(kstr);
+				if (smcClass.isAssignableFrom(widgetClass))
+					return (WidgetNode) widgetNode;
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	/*- 
+	 * 1) do we have GUIs. if so, cannot run as headless
+	 * 2) If headless run, don't forget to initialise the widgets
+	*/
+	private static boolean hasGUI(TreeNode uiNode) {
+		for (TreeNode n : uiNode.getChildren()) {
+			if (n.classId().equals(N_UITAB.label()) || n.classId().equals(N_UITOP.label())
+					|| n.classId().equals(N_UIBOTTOM.label())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

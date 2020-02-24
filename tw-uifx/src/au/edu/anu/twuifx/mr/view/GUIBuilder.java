@@ -65,13 +65,15 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  * @date 2 Sep 2019
  */
 public class GUIBuilder {
-	private List<WidgetGUI> widgets;
+	private List<WidgetGUI> guiWidgets;
+	private List<Widget> hlWidgets;
 	private List<SplitPane> splitPanes;
 	private MrController controller;
 
 	@SuppressWarnings("unchecked")
 	public GUIBuilder(TreeGraphNode uiNode, MrController controller) {
-		widgets = new ArrayList<>();
+		guiWidgets = new ArrayList<>();
+		hlWidgets = new ArrayList<>();
 		splitPanes = new ArrayList<>();
 		this.controller = controller;
 		// top bar
@@ -97,6 +99,14 @@ public class GUIBuilder {
 		}
 
 		setMenus();
+		
+		TreeGraphNode headless = (TreeGraphNode) get(uiNode.getChildren(),
+				selectZeroOrOne(hasTheLabel(N_UIHEADLESS.label())));
+		
+		for (TreeNode n:headless.getChildren()) {
+			WidgetNode widgetNode = (WidgetNode) n;
+			hlWidgets.add(widgetNode.getInstance());
+		}
 
 	}
 
@@ -137,7 +147,7 @@ public class GUIBuilder {
 			int wnp = (Integer) wn.properties().getPropertyValue(P_UIORDER.key());
 			int cnp = (Integer) cn.properties().getPropertyValue(P_UIORDER.key());
 			WidgetGUI w = (WidgetGUI) wn.getInstance();
-			widgets.add(w);
+			guiWidgets.add(w);
 			if (wnp <= cnp) {
 				contents.getFirst().setCenter((Node) w.getUserInterfaceContainer());
 				buildContent(cn.getChildren(),
@@ -152,7 +162,7 @@ public class GUIBuilder {
 
 		} else if (widgetNodes.size() == 1) {
 			WidgetGUI w = (WidgetGUI) widgetNodes.get(0).getInstance();
-			widgets.add(w);
+			guiWidgets.add(w);
 			parentBorderPane.setCenter((Node) w.getUserInterfaceContainer());
 		} else if (widgetNodes.size() == 2) {
 			WidgetNode wn1 = widgetNodes.get(0);
@@ -164,8 +174,8 @@ public class GUIBuilder {
 			int w2Pos = (Integer) wn2.properties().getPropertyValue(P_UIORDER.key());
 			WidgetGUI w1 = (WidgetGUI) wn1.getInstance();
 			WidgetGUI w2 = (WidgetGUI) wn2.getInstance();
-			widgets.add(w1);
-			widgets.add(w2);
+			guiWidgets.add(w1);
+			guiWidgets.add(w2);
 			if (w1Pos <= w2Pos) {
 				contents.getFirst().setCenter((Node) w1.getUserInterfaceContainer());
 				contents.getSecond().setCenter((Node) w2.getUserInterfaceContainer());
@@ -222,14 +232,14 @@ public class GUIBuilder {
 		sortWidgetOrder(barList);
 		for (WidgetNode wn : barList) {
 			WidgetGUI w = (WidgetGUI) wn.getInstance();
-			widgets.add(w);
+			guiWidgets.add(w);
 			container.getChildren().add((Node) w.getUserInterfaceContainer());
 		}
 	}
 
 	private void setMenus() {
 		Menu wmenu = controller.getWidgetMenu();
-		for (WidgetGUI w : widgets) {
+		for (WidgetGUI w : guiWidgets) {
 			Object o = w.getMenuContainer();
 			if (o != null)
 				wmenu.getItems().add((MenuItem) o);
@@ -239,7 +249,7 @@ public class GUIBuilder {
 	private static final String splitter = "splitter_";
 	
 	public void getPreferences() {
-		for (Widget w : widgets)
+		for (Widget w : guiWidgets)
 			w.getPreferences();
 		// maybe needs to be delayed!
 		for (SplitPane s : splitPanes) {
@@ -247,10 +257,13 @@ public class GUIBuilder {
 			double[] pos = UiHelpers.getSplitPanePositions(0.5, key);
 			s.setDividerPositions(pos);
 		}
+//		for (Widget w : hlWidgets) {
+//			w.getPreferences();
+//		}
 	}
 
 	public void putPreferences() {
-		for (Widget w : widgets)
+		for (Widget w : guiWidgets)
 			w.putPreferences();
 		for (SplitPane s:splitPanes) {
 			String key =  splitter+s.getId();
