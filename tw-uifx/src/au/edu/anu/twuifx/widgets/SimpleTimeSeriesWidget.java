@@ -99,13 +99,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	}
 
 	@Override
-	public void putPreferences() {
+	public void putUserPreferences() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void getPreferences() {
+	public void getUserPreferences() {
 		// TODO Auto-generated method stub
 		// on application thread AFTER getUserInterfaceContainer
 

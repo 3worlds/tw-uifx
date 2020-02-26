@@ -143,12 +143,12 @@ public class SimpleTimeBracketWidget extends AbstractDisplayWidget<TimeData, Met
 	}
 
 	@Override
-	public void putPreferences() {
+	public void putUserPreferences() {
 		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 
 	@Override
-	public void getPreferences() {
+	public void getUserPreferences() {
 		log.info("Thread id: " + Thread.currentThread().getId());
 	}
 

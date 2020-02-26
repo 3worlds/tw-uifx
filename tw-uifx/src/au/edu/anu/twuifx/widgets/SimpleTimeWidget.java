@@ -110,15 +110,15 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	}
 
 	@Override
-	public void putPreferences() {
-		timeFormatter.putPreferences();
-		policy.putPreferences();
+	public void putUserPreferences() {
+		//timeFormatter.putPreferences();
+		//policy.putPreferences();
 	}
 
 	@Override
-	public void getPreferences() {
-		timeFormatter.getPreferences();
-		policy.getPreferences();
+	public void getUserPreferences() {
+//		timeFormatter.getPreferences();
+//		policy.getPreferences();
 	}
 
 	@Override

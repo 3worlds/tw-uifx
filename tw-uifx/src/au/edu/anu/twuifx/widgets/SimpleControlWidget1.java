@@ -256,13 +256,11 @@ public class SimpleControlWidget1 extends StateMachineController
 	}
 
 	@Override
-	public void putPreferences() {
-		policy.putPreferences();
+	public void putUserPreferences() {
 	}
 
 	@Override
-	public void getPreferences() {
-		policy.getPreferences();
+	public void getUserPreferences() {
 	}
 
 	private void setButtonLogic() {

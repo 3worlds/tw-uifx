@@ -1,7 +1,8 @@
 package au.edu.anu.twuifx.widgets.headless;
 
-
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_NTU;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_TU;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,6 +18,7 @@ import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates;
+import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
@@ -29,6 +31,7 @@ import au.edu.anu.twuifx.widgets.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.ens.biologie.generic.utils.Logging;
 
 /**
@@ -58,18 +61,18 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 
 	@Override
 	public void onDataMessage(Output0DData data) {
-		if (policy.sender()==data.sender()) {
+		if (policy.sender() == data.sender()) {
 			log.info(data.toString());
 			String line = Long.toString(data.time());
 			for (DataLabel dl : tsmeta.doubleNames()) {
 				double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
-				line+=(sep+Double.toString(y));
+				line += (sep + Double.toString(y));
 			}
 			for (DataLabel dl : tsmeta.intNames()) {
 				Long y = data.getIntValues()[tsmeta.indexOf(dl)];
-				line+=(sep+Long.toString(y));
+				line += (sep + Long.toString(y));
 			}
-			writer.write(line+"\n");
+			writer.write(line + "\n");
 		}
 	}
 
@@ -85,7 +88,7 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 				writer.close();
 			}
 			// we have to assume a project dir exists even in openmole.
-			String fileName = widgetId+"["+RunTimeId.runTimeId()+"]["+meta.sender()+"].txt";
+			String fileName = widgetId + "[" + RunTimeId.runTimeId() + "][" + meta.sender() + "].txt";
 			outFile = Project.makeFile(ProjectPaths.RUNTIME, "output", fileName);
 			outFile.getParentFile().mkdirs();
 			try {
@@ -94,15 +97,18 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 				writer = new PrintWriter(outFile);
 				dataSetMap = new HashMap<>();
 				tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
-				String header = "time";
+				TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+				int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 
-				for (DataLabel dl : tsmeta.doubleNames())
-					header += (sep+dl.toString());
+				String header = TimeUtil.timeUnitName(tu, nTu);
+
+				for (DataLabel dl : tsmeta.doubleNames()) 
+					header += (sep + dl.toString()+"[?]");
 
 				for (DataLabel dl : tsmeta.intNames())
-					header += (sep+dl.toString());
+					header += (sep + dl.toString()+"[?]");
 
-				writer.write(header+"\n");
+				writer.write(header + "\n");
 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -114,10 +120,10 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 
 	@Override
 	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, finished)|| isSimulatorState(state, waiting)){
+		if (isSimulatorState(state, finished) || isSimulatorState(state, waiting)) {
 			log.info("closing file!");
-			writer.close();		
-		} 
+			writer.close();
+		}
 	}
 
 	@Override
@@ -125,23 +131,4 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 		policy.setProperties(id, properties);
 		widgetId = id;
 	}
-
-	// I think these two method will be moved to WidgetGUI as they only make sense
-	// there
-	@Override
-	public void putPreferences() {
-		// TODO what for?
-
-	}
-
-	@Override
-	public void getPreferences() {
-		// TODO what for???
-		// I guess you could edit the runtime prefs and they would be read here - but
-		// really they come from the passed in properties above?
-		// cmdLine interface??? NO! user interaction must be prohibited with headless
-		// widgets.
-
-	}
-
 }

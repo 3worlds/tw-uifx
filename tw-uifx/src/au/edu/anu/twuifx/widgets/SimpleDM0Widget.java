@@ -200,11 +200,11 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	}
 
 	@Override
-	public void putPreferences() {
+	public void putUserPreferences() {
 	}
 
 	@Override
-	public void getPreferences() {
+	public void getUserPreferences() {
 	}
 
 	protected static class TableData {

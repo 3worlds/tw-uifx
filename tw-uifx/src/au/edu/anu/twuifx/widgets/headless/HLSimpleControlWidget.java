@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.widgets.headless;
 
 import java.util.logging.Logger;
 
+import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.runtime.Kicker;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -47,144 +48,35 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  *
  * @date 2 Sep 2019
  */
-public class HLSimpleControlWidget extends StateMachineController implements Widget,Kicker{
-
-//	private Button btnRunPause;
-//	private Button btnStep;
-//	private Button btnReset;
-//	private List<Button> buttons;
-//	private ImageView runGraphic;
-//	private ImageView pauseGraphic;
-
+public class HLSimpleControlWidget extends StateMachineController implements Widget, Kicker {
 
 	private static Logger log = Logging.getLogger(HLSimpleControlWidget.class);
-
-	// NB initial state is always 'waiting' ('null' causes a crash)
-	private String state = waiting.name();
+	private long startTime;
 
 	public HLSimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
-		log.info("Thread: " + Thread.currentThread().getId());
+		log.info("Current state: " + stateMachine().getCurrentState());
 	}
-
-//	@Override
-//	public Object getUserInterfaceContainer() {
-//		// log.info("Thread: " + Thread.currentThread().getId());
-//		runGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Play16.gif")));
-//		pauseGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Pause16.gif")));
-//		btnRunPause = new Button("", runGraphic);
-//		btnRunPause.setTooltip(new Tooltip("Run/Pause simulation"));
-//		btnStep = new Button("", new ImageView(new Image(Images.class.getResourceAsStream("StepForward16.gif"))));
-//		btnStep.setTooltip(new Tooltip("Step forward one timer event"));
-//		btnReset = new Button("", new ImageView(new Image(Images.class.getResourceAsStream("Stop16.gif"))));
-//		btnReset.setTooltip(new Tooltip("Reset to start"));
-//		btnReset.setDisable(true);
-//
-//		buttons = new ArrayList<>();
-//		buttons.add(btnRunPause);
-//		buttons.add(btnStep);
-//		buttons.add(btnReset);
-//
-//		btnRunPause.setOnAction(e -> handleRunPausePressed());
-//		btnStep.setOnAction(e -> handleStepPressed());
-//		btnReset.setOnAction(e -> handleResetPressed());
-//
-//		HBox pane = new HBox();
-//		pane.setAlignment(Pos.BASELINE_LEFT);
-//		pane.getChildren().addAll(buttons);
-//			
-//		pane.setSpacing(5.0);
-//
-//		setButtonLogic();
-//		return pane;
-//	}
-
-	private boolean handleResetPressed() {
-		// Always begin by disabling in case the next operation takes a long time
-		// log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
-//		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name())) {
-			sendEvent(reset.event());
-			return true;
-		}
-		return false;
-	}
-
-	private  boolean handleStepPressed() {
-		// log.info("handleStepPressed Thread: " + Thread.currentThread().getId());
-//		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name())) {
-			sendEvent(step.event());
-			return true;
-		}
-		return false;
-	}
-
-	private  boolean handleRunPausePressed() {
-		// log.info("handleRunPausePressed Thread: " + Thread.currentThread().getId());
-//		setButtons(true, true, true, null);
-		Event event = null;
-		if (state.equals(waiting.name()))
-			event = run.event();
-		else if (state.equals(running.name()))
-			event = pause.event();
-		else if (state.equals(pausing.name()) | state.equals(stepping.name()))
-			event = goOn.event();
-		if (event != null) {
-			sendEvent(event);
-			return true;
-		}
-		return false;
-	}
-
-	private long startTime;
 	@Override
-	public void onStatusMessage(State newState) {
-		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
-		state = newState.getName();
-//		setButtonLogic();
-	}
+	public boolean start() {
+		startTime = System.currentTimeMillis();
+		log.info("Current state: " + stateMachine().getCurrentState());
+		sendEvent(run.event());
+		return true;
 
-//	private void setButtonLogic() {
-//		// ensure waiting for app thread i.e. only needed when 'running'
-//		Platform.runLater(() -> {
-//			// log.info("setButtonLogic: State: "+ state+", Thread: " +
-//			// Thread.currentThread().getId());
-//			if (state.equals(waiting.name())) {
-//				setButtons(false, false, true, runGraphic);
-//				return;
-//			}
-//			if (state.equals(running.name())) {
-//				setButtons(false, true, true, pauseGraphic);
-//				return;
-//
-//			}
-//			if (state.equals(stepping.name())) {
-//				setButtons(false, false, false, runGraphic);
-//				return;
-//			}
-//			if (state.equals(finished.name())) {
-//				setButtons(true, true, false, runGraphic);
-//				return;
-//			}
-//			if (state.equals(pausing.name())) {
-//				setButtons(false, false, false, runGraphic);
-//				return;
-//			}
-//		});
-//	}
-
-//	@Override
-//	public Object getMenuContainer() {
-//		return null;
-//	}
-
-	@Override
-	public void putPreferences() {
 	}
 
 	@Override
-	public void getPreferences() {
+	public void onStatusMessage(State state) {
+		log.info("Thread: " + Thread.currentThread().getId() + " State: " + state);
+		String stateName = state.getName();
+		// close down all threads so app can close cleanly.
+		if (stateName.equals(finished.name())) {
+			sendEvent(quit.event());
+			long endTime = System.currentTimeMillis();
+
+			System.out.println("Simulator finished. ["+(endTime-startTime)+" ms]");
+		}
 	}
 
 	@Override
@@ -192,17 +84,5 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 		// how would this know and respond to the sender id
 	}
 
-	@Override
-	public boolean start() {
-		return handleRunPausePressed();
-	}
-
-//	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
-//		btnRunPause.setDisable(runPauseDisable);
-//		btnStep.setDisable(stepDisable);
-//		btnReset.setDisable(resetDisable);
-//		if (iv != null)
-//			btnRunPause.setGraphic(iv);
-//	}
 
 }

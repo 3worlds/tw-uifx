@@ -59,16 +59,6 @@ public  class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeDat
 		sender = (Integer) properties.getPropertyValue("sender");		
 	}
 
-	@Override
-	public void putPreferences() {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	public void getPreferences() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public boolean canProcessDataMessage(TimeData data) {

@@ -226,7 +226,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 	private static final String keyMaxValue = "maxValue";
 
 	@Override
-	public void putPreferences() {
+	public void putUserPreferences() {
 		Preferences.putDouble(widgetId + keyScaleX, zoomTarget.getScaleX());
 		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
@@ -239,7 +239,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 	}
 
 	@Override
-	public void getPreferences() {
+	public void getUserPreferences() {
 		paletteType = PaletteTypes
 				.valueOf(Preferences.getString(widgetId + keyPalette, PaletteTypes.getDefault().name()));
 		palette = paletteType.getPalette();

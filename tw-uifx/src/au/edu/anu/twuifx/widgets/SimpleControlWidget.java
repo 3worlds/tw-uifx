@@ -184,11 +184,11 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	@Override
-	public void putPreferences() {
+	public void putUserPreferences() {
 	}
 
 	@Override
-	public void getPreferences() {
+	public void getUserPreferences() {
 	}
 
 	@Override

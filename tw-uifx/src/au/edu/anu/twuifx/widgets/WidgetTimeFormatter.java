@@ -114,17 +114,6 @@ public class WidgetTimeFormatter implements Widget {
 		return startTime;
 	}
 
-	@Override
-	public void putPreferences() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void getPreferences() {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
