@@ -55,6 +55,7 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 
 	public HLSimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
+		// should we be setting the initial state here or something???
 		log.info("Current state: " + stateMachine().getCurrentState());
 	}
 	@Override
