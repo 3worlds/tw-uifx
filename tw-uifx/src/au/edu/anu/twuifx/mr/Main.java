@@ -40,15 +40,12 @@ import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
-import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
-import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Kicker;
-import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
@@ -177,7 +174,6 @@ public class Main {
 				} catch (ClassNotFoundException e) {
 					log.severe("Unable to set logger for " + klass);
 				}
-
 			}
 		} else
 			log.info("ModelRunner is running from JAR");
@@ -186,23 +182,33 @@ public class Main {
 		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
 
-
-		// Trying to assume its possible to have a headless ctrl and yet have GUI
-		// widgets
 		TreeNode uiNode = (TreeNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_UI.label())));
-		WidgetNode ctrlHl = getHeadlessController(uiNode);
 		boolean hasGUI = hasGUI(uiNode);
 		if (hasGUI) {
-			// if (get(configGraph.root().getChildren(),
-			// selectZeroOrOne(hasTheLabel(N_UI.label()))) != null) {
-			log.info("Ready to run with user-interface ");
+			log.info("Ready to run with GUI ");
 			ModelRunnerfx.launchUI(configGraph);
-			if (ctrlHl != null) {
-				Widget ctrl = ctrlHl.getInstance();
-				((Kicker) ctrl).start();
+			WidgetNode ctrlHl = getHeadlessController(uiNode);
+			if (ctrlHl != null) {// TODO test this option.
+				// Here we have some GUI widgets but a headless controller. Is this useful??
+				// NB There is a query to ensure there exists one and only one controller for
+				// the graph.
+				/**
+				 * If ctrlHl were cast to a StateMachineController we could instead just do
+				 * ctrl.sendEvent(run.event()); However, by doing this we miss recording the
+				 * start time. The ctrl records the endTime when onStatusMessage (state) is
+				 * "finished". This is really the only purpose of a kicker here! Perhaps, at
+				 * some other time, we could wrap this in a cmd line interactive shell that
+				 * allows typing cmds. run/stop / pause etc
+				 */
+
+				Kicker ctrl = (Kicker) ctrlHl.getInstance();
+				ctrl.start();
 			}
-		} else { // TODO!!!
+		} else {
 			log.info("Ready to run headless");
+			// Initialise the graph just to be certain. THe GUIBuilder initialises widgets
+			// if there is a gui so this could be cut back to do the same rather than
+			// checking all nodes. Not worth the trouble really.
 			List<Initialisable> initList = new LinkedList<>();
 
 			log.info("Preparing initialisation");
@@ -216,11 +222,20 @@ public class Main {
 				System.exit(1);
 			}
 
-			Widget ctrl = ctrlHl.getInstance();
-			((Kicker) ctrl).start();
+			/**
+			 * If ctrlHl were cast to a StateMachineController we could instead just do
+			 * ctrl.sendEvent(run.event()); However, by doing this we miss recording the
+			 * start time. The ctrl records the endTime when onStatusMessage (state) is
+			 * "finished". This is really the only purpose of a kicker here! Perhaps, at
+			 * some other time, we could wrap this in a cmd line interactive shell that
+			 * allows typing cmds. run/stop / pause etc
+			 */
+			Kicker ctrl = (Kicker) ctrlHl.getInstance();
+			ctrl.start();
 		}
 	}
 
+	/* Find a headless controller if it exists. */
 	private static WidgetNode getHeadlessController(TreeNode uiNode) {
 		Class<?> smcClass = fr.cnrs.iees.rvgrid.statemachine.StateMachineController.class;
 		TreeNode headlessNode = (TreeNode) get(uiNode.getChildren(),
@@ -242,11 +257,9 @@ public class Main {
 		return null;
 	}
 
-	/*- 
-	 * 1) do we have GUIs. if so, cannot run as headless
-	 * 2) If headless run, don't forget to initialise the widgets
-	*/
+	/* Check if there is any kind of GUI. */
 	private static boolean hasGUI(TreeNode uiNode) {
+		// Queries ensure these nodes, if present, have children
 		for (TreeNode n : uiNode.getChildren()) {
 			if (n.classId().equals(N_UITAB.label()) || n.classId().equals(N_UITOP.label())
 					|| n.classId().equals(N_UIBOTTOM.label())) {

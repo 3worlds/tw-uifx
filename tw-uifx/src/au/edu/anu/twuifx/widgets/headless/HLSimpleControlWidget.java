@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.widgets.headless;
 
 import java.util.logging.Logger;
 
+import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.runtime.Kicker;
 import au.edu.anu.twcore.ui.runtime.Widget;
@@ -56,12 +57,12 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 	public HLSimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 		// should we be setting the initial state here or something???
-		log.info("Current state: " + stateMachine().getCurrentState());
+		log.fine("Current state: " + stateMachine().getCurrentState());
 	}
 	@Override
 	public boolean start() {
 		startTime = System.currentTimeMillis();
-		log.info("Current state: " + stateMachine().getCurrentState());
+		log.fine("Current state: " + stateMachine().getCurrentState());
 		sendEvent(run.event());
 		return true;
 
@@ -69,14 +70,13 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 
 	@Override
 	public void onStatusMessage(State state) {
-		log.info("Thread: " + Thread.currentThread().getId() + " State: " + state);
+		log.fine("Thread: " + Thread.currentThread().getId() + " State: " + state);
 		String stateName = state.getName();
 		// close down all threads so app can close cleanly.
 		if (stateName.equals(finished.name())) {
 			sendEvent(quit.event());
 			long endTime = System.currentTimeMillis();
-
-			System.out.println("Simulator finished. ["+(endTime-startTime)+" ms]");
+			System.out.println("Simulation finished. [Instance: "+RunTimeId.runTimeId()+"; Duration: "+(endTime-startTime)+" ms]");
 		}
 	}
 
