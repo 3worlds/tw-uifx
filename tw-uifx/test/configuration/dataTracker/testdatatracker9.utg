@@ -5,54 +5,54 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 
 // Test file for space data tracker
 //
-//=================================================================================================
-// Copy and paste this text in the delete(...) method of the generated PlantMor.java class
-//
+//===================== Method code snippets ==================
+
+// --------------------- PlantMor.delete(...) ------------------
 //	double bm = ((Rcrd1)focal.currentState()).biomass();
 //	double a = 1/5.0;
 //	double b = a-1;
 //	double prob = Math.min(a*bm*bm + b*bm,1.0); 
 //	return decide(prob);
-//
-// Copy and paste this text in the nNew(...) method of the generated PlantRep.java class
-//
+//-----------------------------------------------------
+
+// -------------------- PlantRep.nNew(...) ------------
 //	double bm = ((Rcrd1)focal.currentState()).biomass();
 //	if (bm>3.0)
 //		return 0.1*(bm-2);
 //	else 
 //		return 0;
-//
-// Copy and paste this text in the changeOtherState(...) method of the generated InitNewPlant.java class
-//
+//-----------------------------------------------------
+
+// -------------------- InitNewPlant.changeOtherState(...) 
 //		double parentBm = ((Rcrd1)focal.currentState()).biomass();
 //		((Rcrd1)other.nextState()).biomass(Math.min(parentBm/4.0, 2.0));
-//
-// Copy and paste this text in the changeState(...) method of the generated PlantGrowth.java class
-//
+//-----------------------------------------------------
+
+//---------------------- PlantGrowth.changeState(...)
 //		((Rcrd1)focal.nextState()).biomass(((Rcrd1)focal.currentState()).biomass()*1.05);
-//
-// Copy and paste this text in the delete(...) method of the generated MicMor.java class
-//
+//-----------------------------------------------------
+
+//---------------------- MicMor.delete(...)
 //		return decide(0.2);
-//
-// Copy and paste this text in the nNew(...) method of the generated MicRep.java class
-//
+//-----------------------------------------------------
+
+//---------------------- MicRep.nNew(...)
 //		return 0.41;
-//
-// Copy and paste this text in the changeState(...) method of the generated InitNewMic.java class
-//
+//-----------------------------------------------------
+
+//---------------------- InitNewMic.changeState(...)
 //		((Rcrd2)focal.nextState()).virulence(rng().nextDouble());
-//
-// Copy and paste this text in the relate(...) method of the generated Infection.java class
-//
+//-----------------------------------------------------
+
+//---------------------- Infection.relate(...)
 //	if (((Rcrd1)other.currentState()).biomass()<4)
 //		return decide(((Rcrd2)focal.currentState()).virulence());
 //	else
 //		return false;
-//
-//	Copy and paste this text in the relocate(...) function of both the generated
-//	Plot12_MicrobeCRelocateFunction.java class and the Plot12_PlantCRelocateFunction.java class
-//
+//-----------------------------------------------------
+
+//---------------------- Plot12_MicrobeCRelocateFunction.relocate(...) AND 
+//-----------------------Plot12_PlantCRelocateFunction.relocate(...) ------------
 //	double[] res = new double[2];
 //	double xmin = limits.lowerBound(0);
 //	double xmax = limits.upperBound(0);
@@ -61,11 +61,9 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 //	res[0] = xmin + rng().nextDouble()*(xmax-xmin);
 //	res[1] = ymin + rng().nextDouble()*(ymax-ymin);
 //	return res;
+//-----------------------------------------------------
 
-
-//=================================================================================================
-
-
+//=========================================================
 
 // TREE
 3worlds testdatatracker9

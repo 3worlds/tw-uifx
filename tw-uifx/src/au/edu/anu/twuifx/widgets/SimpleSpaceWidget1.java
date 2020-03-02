@@ -87,7 +87,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private WidgetTimeFormatter timeFormatter;
 	
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
-	static {log.setLevel(Level.INFO);}
+	//static {log.setLevel(Level.INFO);} use args for MM or MR e.g. au.edu.anu.twuifx.widgets.SimpleSpaceWidget1:INFO
 
 	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);

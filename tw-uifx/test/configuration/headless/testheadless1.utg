@@ -3,12 +3,13 @@ treegraph // saved by OmugiGraphExporter on Wed Feb 26 15:47:58 AEDT 2020
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 
-// --------------------------Copy to Func.java
+// -------------------------- Func.java -----------------------
 //		Pars pars = (Pars) focalContext.groupParameters;
 //		Vars current = (Vars)focal.currentState();
 //		Vars next = (Vars)focal.nextState();
 //		next.y(pars.x()*current.y()*(1-current.y()));
 // ------------------------------------------------------------
+
 // TREE
 3worlds testheadless1
 	dataDefinition dDef

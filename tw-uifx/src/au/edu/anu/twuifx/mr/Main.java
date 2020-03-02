@@ -73,7 +73,7 @@ public class Main {
 	}
 
 	private static String usage = "Usage:\n" + Main.class.getName()
-			+ ": id, <Project relative directory> default logging level, class:level.";
+			+ " [instance id] [<Project relative directory>] [default log level]  [class to log:level...]";
 	private static Logger log = Logging.getLogger(Main.class);
 
 	@SuppressWarnings("unchecked")
@@ -183,11 +183,11 @@ public class Main {
 				.loadGraphFromFile(Project.makeConfigurationFile());
 
 		TreeNode uiNode = (TreeNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_UI.label())));
+		WidgetNode ctrlHl = getHeadlessController(uiNode);
 		boolean hasGUI = hasGUI(uiNode);
 		if (hasGUI) {
 			log.info("Ready to run with GUI ");
 			ModelRunnerfx.launchUI(configGraph);
-			WidgetNode ctrlHl = getHeadlessController(uiNode);
 			if (ctrlHl != null) {// TODO test this option.
 				// Here we have some GUI widgets but a headless controller. Is this useful??
 				// NB There is a query to ensure there exists one and only one controller for
@@ -206,13 +206,14 @@ public class Main {
 			}
 		} else {
 			log.info("Ready to run headless");
-			// Initialise the graph just to be certain. THe GUIBuilder initialises widgets
-			// if there is a gui so this could be cut back to do the same rather than
-			// checking all nodes. Not worth the trouble really.
+			/**
+			 * Initialise the non-gui widgets. Note: With a GUI, all widgets are initialised
+			 * by the GUIBuilder. Perhaps that should be removed and added above so its
+			 * clearer?
+			 */
 			List<Initialisable> initList = new LinkedList<>();
-
-			log.info("Preparing initialisation");
-			for (TreeGraphNode n : configGraph.nodes())
+			TreeNode headless = (TreeNode) get(uiNode.getChildren(), selectOne(hasTheLabel(N_UIHEADLESS.label())));
+			for (TreeNode n : headless.getChildren())
 				initList.add((Initialisable) n);
 			Initialiser initer = new Initialiser(initList);
 			initer.initialise();
