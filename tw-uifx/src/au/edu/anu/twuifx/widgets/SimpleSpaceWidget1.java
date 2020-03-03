@@ -133,9 +133,26 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
 		resolution = Preferences.getInt(widgetId + keyResolution, 1);
 	}
+	@Override
+	public void onMetaDataMessage(Metadata meta) {
+		// senderId IS set here (== 0)
+		System.out.println("meta msg: "+meta.properties().toString());
+		log.info(meta.toString());
+		timeFormatter.onMetaDataMessage(meta);
+//		edgeEffects : fr.cnrs.iees.twcore.constants.EdgeEffects
+//		type: fr.cnrs.iees.twcore.constants.SpaceType
+//		x-limits: fr.ens.biologie.generic.utils.Interval
+//		y-limits: fr.ens.biologie.generic.utils.Interval
+
+//		for (String key : meta.properties().getKeysAsSet()) {
+//			System.out.println(key+"; Class: "+meta.properties().getPropertyClassName(key));
+//		}
+
+	}
 
 	@Override
 	public void onDataMessage(SpaceData data) {
+		System.out.println("Data msg: "+data);
 		log.info(data.toString());
 		
 		//if (policy.canProcessDataMessage(data)) {
@@ -210,26 +227,10 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	}
 
-	@Override
-	public void onMetaDataMessage(Metadata meta) {
-		// senderId IS set here (== 0)
-		log.info(meta.toString());
-		timeFormatter.onMetaDataMessage(meta);
-//		edgeEffects : fr.cnrs.iees.twcore.constants.EdgeEffects
-//		type: fr.cnrs.iees.twcore.constants.SpaceType
-//		x-limits: fr.ens.biologie.generic.utils.Interval
-//		y-limits: fr.ens.biologie.generic.utils.Interval
-
-//		for (String key : meta.properties().getKeysAsSet()) {
-//			System.out.println(key+"; Class: "+meta.properties().getPropertyClassName(key));
-//		}
-
-	}
 
 	@Override
 	public void onStatusMessage(State state) {
-		// TODO Auto-generated method stub
-
+		log.info("");
 	}
 
 	@Override
