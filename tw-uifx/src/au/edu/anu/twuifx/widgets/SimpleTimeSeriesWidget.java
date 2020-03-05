@@ -29,6 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_NTU;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_TU;
 
@@ -150,66 +151,66 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		}
 	}
 
-	private boolean initialMessage = false;
+	// private boolean initialMessage = false;
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		// clear data from last run - here we could use the lovely 'history' method
 		// supplied with chartfx - TODO
 		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
-		dataSetMap.entrySet().forEach(entry -> {
-			entry.getValue().reset();
-		});
+//		dataSetMap.entrySet().forEach(entry -> {
+//			entry.getValue().reset();
+//		});
 
 		// this occurs EVERY reset so take care not to recreate datasets and renderers
 		// etc
-		if (!initialMessage) {
-			Platform.runLater(() -> {
-				tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
-				for (DataLabel dl : tsmeta.doubleNames()) {
-					String key = dl.toString();
+		// if (!initialMessage) {
+		Platform.runLater(() -> {
+			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+			for (DataLabel dl : tsmeta.doubleNames()) {
+				String key = dl.toString();
 //				log.info("Tracking: " + key);
-					CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
-					dataSetMap.put(key, ds);
-				}
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
+				dataSetMap.put(key, ds);
+			}
 
-				for (DataLabel dl : tsmeta.intNames()) {
-					String key = dl.toString();
+			for (DataLabel dl : tsmeta.intNames()) {
+				String key = dl.toString();
 //				log.info("Tracking: " + key);
-					CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
-					dataSetMap.put(key, ds);
-				}
-				/*
-				 * Renderers should be in the chart BEFORE dataSets are added to the renderer
-				 * otherwise when data is added to a dataset, invalidation events will not
-				 * propagate to the chart to force a repaint.
-				 */
-				// (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
-				// renderer before adding the renderer to the chart
-				// renderer_dipoleCurrent.getAxes().add(yAxis2);
-				if (dataSetMap.size() > 1) {
-					// TODO then lets at least add a second yaxis.
-					// Maybe we could allow up to 4 axes - two on each side
-				} else {
-					String ylabel = dataSetMap.keySet().iterator().next();
-					chart.getYAxis().setLabel(ylabel);
-				}
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
+				dataSetMap.put(key, ds);
+			}
+			/*
+			 * Renderers should be in the chart BEFORE dataSets are added to the renderer
+			 * otherwise when data is added to a dataset, invalidation events will not
+			 * propagate to the chart to force a repaint.
+			 */
+			// (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
+			// renderer before adding the renderer to the chart
+			// renderer_dipoleCurrent.getAxes().add(yAxis2);
+			if (dataSetMap.size() > 1) {
+				// TODO then lets at least add a second yaxis.
+				// Maybe we could allow up to 4 axes - two on each side
+			} else {
+				String ylabel = dataSetMap.keySet().iterator().next();
+				chart.getYAxis().setLabel(ylabel);
+			}
 
-				dataSetMap.entrySet().forEach(entry -> {
-					ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
-					initErrorDataSetRenderer(renderer);
-					chart.getRenderers().add(renderer);
-					renderer.getDatasets().add(entry.getValue());
-				});
-				timeFormatter.onMetaDataMessage(meta);
-				TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-				int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-				chart.getXAxis().setUnit(TimeUtil.timeUnitName(tu, nTu));
-				// depending on the TU we could decide on xAxis.setMinorTickCount(some even
-				// division of the period)
-				initialMessage = true;
+			dataSetMap.entrySet().forEach(entry -> {
+				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+				initErrorDataSetRenderer(renderer);
+				chart.getRenderers().add(renderer);
+				renderer.getDatasets().add(entry.getValue());
 			});
-		}
+			timeFormatter.onMetaDataMessage(meta);
+			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+			chart.getXAxis().setUnit(TimeUtil.timeUnitName(tu, nTu));
+			// depending on the TU we could decide on xAxis.setMinorTickCount(some even
+			// division of the period)
+			// initialMessage = true;
+		});
+		// }
 	}
 
 	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
@@ -223,9 +224,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void onStatusMessage(State state) {
-		// TODO Auto-generated method stub
-		// SimulatorStatus.Final;
-		// if final push the last data from buffer to chart
+		if (isSimulatorState(state, waiting)) {
+			dataSetMap.entrySet().forEach(entry -> {
+				entry.getValue().reset();
+			});
+		}
 	}
 
 	@Override
