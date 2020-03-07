@@ -30,12 +30,15 @@
 
 package au.edu.anu.twuifx.widgets;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
+import java.util.Optional;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.SpaceData;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -43,27 +46,48 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Duple;
+import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.HPos;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.PixelWriter;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Window;
+import javafx.util.Duration;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
  * @author Ian Davies
@@ -77,31 +101,35 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
-	private int resolution=100;
-	private List<Point2D> dummyPoints;
-	private List<Duple<Point2D, Point2D>> dummyRelations;
-	private Random rnd = new Random();
-	private Bounds bounds;
+	private Bounds spaceBounds;
 	private String widgetId;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private WidgetTimeFormatter timeFormatter;
-	
+	private Map<String, Map<String, double[]>> items;
+	private List<Color> colours;
+	private Map<String, Color> itemColours;
+	private Map<Bounds, String> mouseMap;
+	private Tooltip tooltip;
+	private GridPane legend;
+
+	private int resolution;
+	private int symbolRadius;
+	private boolean symbolFill;
+	private Color bkg;
+
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
-	//static {log.setLevel(Level.INFO);} use args for MM or MR e.g. au.edu.anu.twuifx.widgets.SimpleSpaceWidget1:INFO
+	// static {log.setLevel(Level.INFO);} use args for MM or MR e.g.
+	// au.edu.anu.twuifx.widgets.SimpleSpaceWidget1:INFO
 
 	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
-
-		bounds = new BoundingBox(0, 0, 1, 1);
-		dummyPoints = new ArrayList<>();
-		dummyRelations = new ArrayList<>();
-		for (int i = 0; i < 10; i++)
-			dummyPoints.add(new Point2D.Double(rnd.nextDouble(), rnd.nextDouble()));
-		dummyRelations.add(new Duple<Point2D, Point2D>(dummyPoints.get(0), dummyPoints.get(1)));
-		dummyRelations.add(new Duple<Point2D, Point2D>(dummyPoints.get(2), dummyPoints.get(3)));
-		dummyRelations.add(new Duple<Point2D, Point2D>(dummyPoints.get(4), dummyPoints.get(5)));
+		items = new HashMap<>();
+		colours = new ArrayList<>();
+		itemColours = new HashMap<>();
+		mouseMap = new HashMap<>();
+		bkg = Color.WHITE;
 	}
 
 	@Override
@@ -110,11 +138,161 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		policy.setProperties(id, properties);
 	}
 
+	@Override
+	public void onMetaDataMessage(Metadata meta) {
+		// senderId IS set here (== 0)
+		System.out.println("meta msg: " + meta.properties().toString());
+		log.info(meta.toString());
+		timeFormatter.onMetaDataMessage(meta);
+		Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
+		Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
+		spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
+				yLimits.sup() - yLimits.inf());
+	}
+
+	@Override
+	public void onDataMessage(SpaceData data) {
+		System.out.println("Data msg: " + data);
+		log.info(data.toString()); // something weird with the logging??
+		if (policy.canProcessDataMessage(data)) {
+			boolean updateLegend = false;
+			if (data.create()) {
+				if (data.isPoint()) {
+					DataLabel dl = data.itemLabel();
+					String name = dl.getEnd();
+					String key = dl.toString().replace(">" + name, "").replace(">", ".");
+					Map<String, double[]> value = items.get(key);
+					if (value == null) {
+						value = new HashMap<>();
+						updateLegend = true;
+					}
+					items.put(key, value);
+					value.put(name, data.coordinates());
+					// should we assign a colour to this key here?
+					if (!itemColours.containsKey(key)) {
+						itemColours.put(key, getColour(items.size() - 1));
+					}
+				} else {// lines/relations
+					Duple<double[], double[]> line = data.line();
+					// wait and see
+				}
+
+			} else if (data.delete()) {
+				DataLabel dl = data.itemLabel();
+				String name = dl.getEnd();
+				String key = dl.toString().replace(">" + name, "").replace(">", ".");
+				Map<String, double[]> value = items.get(key);
+				value.remove(name);
+				// Don't remove empty system entries as new entries will acquire the same
+				// colour e.g if bears become extinct and rabbits appear for the first time,
+				// they
+				// will have the bear's colour!.
+//				if (value.isEmpty()) {
+//					items.remove(key);
+//					if (itemColours.containsKey(key))
+//						itemColours.remove(key);
+//				}
+			} else {
+				// relocate - wait and see
+			}
+			final boolean flag = updateLegend;
+
+			Platform.runLater(() -> {
+				// watch out for crazy problems here with changes to the items
+				drawSpace(flag);
+			});
+		}
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
+		// log.info(state.toString());
+		// !! Sim sends dataMessage before this method receivers WAIT state so we can't
+		// clear the hash maps here!!!
+		if (isSimulatorState(state, waiting)) {
+			System.out.println("RESET");
+			// drawSpace();
+		}
+	}
+
+//---- Drawing ---
+	private void drawSpace(boolean updateLegend) {
+		mouseMap.clear();
+		if (updateLegend)
+			legend.getChildren().clear();
+		int size = 2 * symbolRadius;
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
+		clearCanvas();
+		for (Map.Entry<String, Map<String, double[]>> entry : items.entrySet()) {
+			String key = entry.getKey();
+			Map<String, double[]> members = entry.getValue();
+			Color colour = itemColours.get(key);
+			if (updateLegend)
+				addLegendItem(key, colour);
+			gc.setStroke(colour);
+			gc.setFill(colour);
+			members.forEach((name, coords) -> {
+				Point2D point = getPoint(coords);
+				point = point.add(symbolRadius, symbolRadius);
+				gc.strokeOval(point.getX(), point.getY(), size, size);
+				if (symbolFill)
+					gc.fillOval(point.getX(), point.getY(), size, size);
+				mouseMap.put(new BoundingBox(point.getX(), point.getY(), size, size), key + "." + name);
+			});
+		}
+	}
+
+	private void resizeCanvas(double sWidth, double sHeight) {
+		int newWidth = (int) Math.round(resolution * sWidth);
+		int newHeight = (int) Math.round(resolution * sHeight);
+		if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
+			canvas.setWidth(newWidth);
+			canvas.setHeight(newHeight);
+		}
+	}
+
+	private void clearCanvas() {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.setFill(bkg);
+		gc.setStroke(Color.BLACK);
+		gc.fillRect(0, 0, canvas.getWidth(),canvas.getHeight());
+		gc.strokeRect(1,1, canvas.getWidth()-3, canvas.getHeight()-2);
+	};
+
+	private Color getColour(int idx) {
+		if (colours.size() < items.size())
+			colours = ColourContrast.getSortedColours(bkg, items.size() + 10);
+		return colours.get(idx);
+
+	}
+
+	private double rescale(double value, double fMin, double fMax, double tMin, double tMax) {
+		double fr = fMax - fMin;
+		double tr = tMax - tMin;
+		double p = (value - fMin) / fr;
+		return p * tr + tMin;
+	}
+
+	private Point2D getPoint(double[] coords) {
+		double sx = coords[0];
+		double sy = coords[1];
+		double dx = rescale(sx, spaceBounds.getMinX(), spaceBounds.getMaxX(), 0, canvas.getWidth());
+		double dy = rescale(sy, spaceBounds.getMinY(), spaceBounds.getMaxY(), 0, canvas.getHeight());
+		dy = canvas.getHeight() - dy;
+		Point2D result = new Point2D(dx, dy);
+		return new Point2D(dx, dy);
+	}
+
+// --------------- Preferences
+
 	private static final String keyScaleX = "scaleX";
 	private static final String keyScaleY = "scaleY";
 	private static final String keyScrollH = "scrollH";
 	private static final String keyScrollV = "scrollV";
 	private static final String keyResolution = "resolution";
+	private static final String keySymbolRad = "radius";
+	private static final String keySymbolFill = "fill";
 
 	@Override
 	public void putUserPreferences() {
@@ -122,7 +300,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
 		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
-		Preferences.putDouble(widgetId + keyResolution, resolution);
+		Preferences.putInt(widgetId + keyResolution, resolution);
+		Preferences.putInt(widgetId + keySymbolRad, symbolRadius);
+		Preferences.putBoolean(widgetId + keySymbolFill, symbolFill);
 	}
 
 	@Override
@@ -131,112 +311,32 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
-		resolution = Preferences.getInt(widgetId + keyResolution, 1);
-	}
-	@Override
-	public void onMetaDataMessage(Metadata meta) {
-		// senderId IS set here (== 0)
-		System.out.println("meta msg: "+meta.properties().toString());
-		log.info(meta.toString());
-		timeFormatter.onMetaDataMessage(meta);
-//		edgeEffects : fr.cnrs.iees.twcore.constants.EdgeEffects
-//		type: fr.cnrs.iees.twcore.constants.SpaceType
-//		x-limits: fr.ens.biologie.generic.utils.Interval
-//		y-limits: fr.ens.biologie.generic.utils.Interval
-
-//		for (String key : meta.properties().getKeysAsSet()) {
-//			System.out.println(key+"; Class: "+meta.properties().getPropertyClassName(key));
-//		}
-
+		resolution = Preferences.getInt(widgetId + keyResolution, 10);
+		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, 5);
+		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
 	}
 
-	@Override
-	public void onDataMessage(SpaceData data) {
-		System.out.println("Data msg: "+data);
-		log.info(data.toString());
-		
-		//if (policy.canProcessDataMessage(data)) {
-		// senderId has not been set. Its value is still -1
-			// for debugging only
-			
-
-//			if (data.create())// means an item must be added to the display
-//				if (data.isPoint()) {
-//					data.coordinates();
-//					
-//				}
-			
-			// add processing code here, here is the pseudocode I sent you before
-			// caution: this Point is the fr.cnrs.iees.uit.space.Point. Can have any dimension (here it's 2)
-//			if (data.create()) { // means an item must be added to the display
-//			    if (data.isPoint()) { // means the item is a point, ie a SystemComponent
-//			    	data.coordinates() ... // returns the point coordinates as a double[]
-//			        // write your display code here
-//			    }
-//			    else { // means the item is a line (actually just a pair of points), ie a SystemRelation
-//			    	data.line() ... // returns the line pair of coordinates as a Duple<double[],double[]>
-//			        // write your display code here
-//			    }
-//			}
-//			else if (data.delete()) { // means the item is to be removed from the display
-//				data.itemLabel()... // returns the label of the item to remove, be it a relation or a component
-//			    // write your display cod here - I am more or less assuming that your points are in a Map<DataLabel,"location">
-//			}
-			
-			jiggle(dummyPoints, rnd);// pseudo model update
-			Platform.runLater(() -> {
-				drawSpace(bounds, dummyPoints, dummyRelations);
-			});
-		}
-	
-
-	private void drawSpace(Bounds bounds, List<Point2D> lst2, List<Duple<Point2D, Point2D>> dummyRelations2) {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		resizeCanvas((int)bounds.getWidth(),(int)bounds.getHeight());
-
-	}
-
-	private void resizeCanvas(int mapWidth, int mapHeight) {
-		if (canvas.getWidth() != (resolution * mapWidth) || canvas.getHeight() != (resolution * mapHeight)) {
-			canvas.setWidth(mapWidth * resolution);
-			canvas.setHeight(mapHeight * resolution);
-			clearCanvas();
-		}
-	}
-
-	private static void jiggle(List<Point2D> lst, Random rnd) {
-		for (Point2D p : lst) {
-			boolean nx = rnd.nextBoolean();
-			boolean ny = rnd.nextBoolean();
-			double dx = rnd.nextDouble() * 0.001;
-			double dy = rnd.nextDouble() * 0.001;
-			double x = p.getX();
-			double y = p.getY();
-			if (nx)
-				x -= dx;
-			else
-				x += dx;
-			if (ny)
-				y -= dy;
-			else
-				y += dy;
-			x = Math.max(0, Math.min(1.0, x));
-			y = Math.max(0, Math.min(1.0, y));
-			p.setLocation(x, y);
-		}
-
-	}
-
-
-	@Override
-	public void onStatusMessage(State state) {
-		log.info("");
-	}
+	// --------------- GUI
 
 	@Override
 	public Object getUserInterfaceContainer() {
+		BorderPane container = new BorderPane();
+		DropShadow dropShadow = new DropShadow();
+		dropShadow.setOffsetX(4);
+		dropShadow.setOffsetY(6);
+		dropShadow.setHeight(5);
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
+		canvas.setEffect(dropShadow);
+		tooltip = new Tooltip();
+		Tooltip.install(canvas, tooltip);
+		tooltip.setShowDelay(new Duration(500));
+		tooltip.setHideDelay(new Duration(500));
+		canvas.setOnMouseMoved(e -> onMouseMove(e));
+		canvas.setOnMouseExited(e -> {
+			tooltip.setText("");
+			tooltip.hide();
+		});
 		zoomTarget.getChildren().add(canvas);
 		Group group = new Group(zoomTarget);
 		StackPane content = new StackPane(group);
@@ -245,57 +345,99 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		scrollPane.setContent(content);
 		scrollPane.setMinSize(170, 170);
 		CenteredZooming.center(scrollPane, content, group, zoomTarget);
-		zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
-		return scrollPane;
+		container.setCenter(scrollPane);
+		legend = new GridPane();
+		legend.setHgap(3);
+
+		container.setRight(legend);
+		return container;
 	}
 
-	private void onMouseMove(MouseEvent e) {
-		int x = (int) (e.getX() / resolution);
-		int y = (int) (e.getY() / resolution);
-		// lblXY.setText("[" + x + "," + y + "]");
-//		if (x < mx & y < my & x >= 0 & y >= 0) 
-//			 lblValue.setText(formatter.format(numbers[x][y]));
-
-	}
-
-	private void clearCanvas() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-	};
-
-	private void dataToCanvasPixels() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		PixelWriter pw = gc.getPixelWriter();
-		for (int x = 0; x < canvas.getWidth(); x++)
-			for (int y = 0; y < canvas.getHeight(); y++) {
-				Color c = Color.TRANSPARENT;
-//				if (numbers[x][y] != null) { // missing value
-//					double v = (Double) numbers[x][y];
-//					c = palette.getColour(v, minValue, maxValue);
-//					pw.setColor(x, y, c);
-//				}
-			}
-	}
-
-	private void dataToCanvasRect(int mapWidth, int mapHeight) {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		int w = resolution;
-		for (int x = 0; x < mapWidth; x++)
-			for (int y = 0; y < mapHeight; y++) {
-				Color c = Color.TRANSPARENT;
-//				if (numbers[x][y] != null) {
-//					double v = (Double) numbers[x][y];
-//					c = palette.getColour(v, minValue, maxValue);
-//					gc.setStroke(c);
-//					gc.setFill(c);
-//					gc.fillRect(x * w, y * w, w, w);
-//				}
-			}
+	private void addLegendItem(String name, Color colour) {
+		int idx = legend.getChildren().size();
+		Circle circle = null;
+		if (!symbolFill)
+			circle = new Circle(0, 1, 4, Color.TRANSPARENT);
+		else
+			circle = new Circle(0, 1, 4, colour);
+		circle.setStroke(colour);
+		legend.add(circle, 0, idx);
+		legend.add(new Label(name), 1, idx);
 	}
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
+		Menu mu = new Menu(widgetId);
+		MenuItem miEdit = new MenuItem("Edit...");
+		mu.getItems().add(miEdit);
+		miEdit.setOnAction(e -> edit());
+		return mu;
+	}
+
+	private void edit() {
+		// TODO Dialog box for this widget
+		// resolution
+		// symbolRadius;
+		// solid
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle(widgetId);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		dialog.initOwner((Window) Dialogs.owner());
+		GridPane content = new GridPane();
+		content.setVgap(5);
+		content.setHgap(3);
+		// -----
+		Label lbl = new Label("Fill symbols");
+		CheckBox chbxFill = new CheckBox("");
+		chbxFill.setSelected(symbolFill);
+		// col, row
+		GridPane.setHalignment(lbl, HPos.RIGHT);
+		content.add(lbl, 0, 0);
+		content.add(chbxFill, 1, 0);
+
+		// -----
+		Spinner<Integer> spResolution = new Spinner<>();
+		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, resolution));
+		spResolution.setMaxWidth(100);
+		spResolution.setEditable(true);
+		lbl = new Label("Resolution");
+		GridPane.setHalignment(lbl, HPos.RIGHT);
+		content.add(lbl, 0, 1);
+		content.add(spResolution, 1, 1);
+
+		// -----
+		Spinner<Integer> spRadius = new Spinner<>();
+		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
+		spRadius.setMaxWidth(100);
+		spRadius.setEditable(true);
+		lbl = new Label("Symbol radius");
+		GridPane.setHalignment(lbl, HPos.RIGHT);
+		content.add(lbl, 0, 2);
+		content.add(spRadius, 1, 2);
+
+		dialog.getDialogPane().setContent(content);
+		Optional<ButtonType> result = dialog.showAndWait();
+		if (result.get().equals(ok)) {
+			symbolFill = chbxFill.isSelected();
+			resolution = spResolution.getValue();
+			symbolRadius = spRadius.getValue();
+			drawSpace(true);
+		}
+	}
+
+	private void onMouseMove(MouseEvent e) {
+		String name = findName(e);
+		if (name != null) {
+			tooltip.setText(name);
+			e.consume();
+		}
+	}
+
+	private String findName(MouseEvent e) {
+		for (Map.Entry<Bounds, String> entry : mouseMap.entrySet())
+			if (entry.getKey().contains(e.getX(), e.getY()))
+				return entry.getValue();
 		return null;
 	}
 
