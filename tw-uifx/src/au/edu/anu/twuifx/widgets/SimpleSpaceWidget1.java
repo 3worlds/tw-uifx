@@ -262,7 +262,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	private Color getColour(int idx) {
 		if (colours.size() < items.size())
-			colours = ColourContrast.getSortedColours(bkg, items.size() + 10);
+			colours = ColourContrast.getContrastingColours(bkg, items.size() + 10);
 		return colours.get(idx);
 
 	}
