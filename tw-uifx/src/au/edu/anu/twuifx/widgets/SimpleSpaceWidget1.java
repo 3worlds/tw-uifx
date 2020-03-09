@@ -141,7 +141,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		// senderId IS set here (== 0)
-		System.out.println("meta msg: " + meta.properties().toString());
+//		System.out.println("meta msg: " + meta.properties().toString());
 		log.info(meta.toString());
 		timeFormatter.onMetaDataMessage(meta);
 		Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
@@ -152,7 +152,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onDataMessage(SpaceData data) {
-		System.out.println("Data msg: " + data);
+//		System.out.println("Data msg: " + data);
 		log.info(data.toString()); // something weird with the logging??
 		if (policy.canProcessDataMessage(data)) {
 			boolean updateLegend = false;
