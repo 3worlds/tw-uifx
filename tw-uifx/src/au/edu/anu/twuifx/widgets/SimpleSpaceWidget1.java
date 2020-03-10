@@ -311,8 +311,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
-		resolution = Preferences.getInt(widgetId + keyResolution, 10);
-		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, 5);
+		resolution = Preferences.getInt(widgetId + keyResolution, 50);
+		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, 2);
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
 	}
 
@@ -323,8 +323,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		BorderPane container = new BorderPane();
 		DropShadow dropShadow = new DropShadow();
 		dropShadow.setOffsetX(4);
-		dropShadow.setOffsetY(6);
-		dropShadow.setHeight(5);
+		dropShadow.setOffsetY(4);
+		dropShadow.setHeight(4);
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
 		canvas.setEffect(dropShadow);
