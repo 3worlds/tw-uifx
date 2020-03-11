@@ -51,7 +51,6 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -107,7 +106,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private WidgetTimeFormatter timeFormatter;
 	private Map<String, Map<String, double[]>> items;
 	private List<Color> colours;
-	private Map<String, Color> itemColours;
+	private final Map<String, Color> itemColours;
 	private Map<Bounds, String> mouseMap;
 	private Tooltip tooltip;
 	private GridPane legend;
@@ -151,7 +150,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 	@Override
-	public void onDataMessage(SpaceData data) {
+	public void onDataMessage(final SpaceData data) {
 //		System.out.println("Data msg: " + data);
 		log.info(data.toString()); // something weird with the logging??
 		if (policy.canProcessDataMessage(data)) {
@@ -173,7 +172,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 						itemColours.put(key, getColour(items.size() - 1));
 					}
 				} else {// lines/relations
-					Duple<double[], double[]> line = data.line();
+					//Duple<double[], double[]> line = data.line();
 					// wait and see
 				}
 
@@ -185,8 +184,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				value.remove(name);
 				// Don't remove empty system entries as new entries will acquire the same
 				// colour e.g if bears become extinct and rabbits appear for the first time,
-				// they
-				// will have the bear's colour!.
+				// they will have the bear's colour!.
 //				if (value.isEmpty()) {
 //					items.remove(key);
 //					if (itemColours.containsKey(key))
@@ -256,8 +254,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(bkg);
 		gc.setStroke(Color.BLACK);
-		gc.fillRect(0, 0, canvas.getWidth(),canvas.getHeight());
-		gc.strokeRect(1,1, canvas.getWidth()-3, canvas.getHeight()-2);
+		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		// gc.strokeRect(1,1, canvas.getWidth()-3, canvas.getHeight()-2);
 	};
 
 	private Color getColour(int idx) {
@@ -280,7 +278,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		double dx = rescale(sx, spaceBounds.getMinX(), spaceBounds.getMaxX(), 0, canvas.getWidth());
 		double dy = rescale(sy, spaceBounds.getMinY(), spaceBounds.getMaxY(), 0, canvas.getHeight());
 		dy = canvas.getHeight() - dy;
-		Point2D result = new Point2D(dx, dy);
 		return new Point2D(dx, dy);
 	}
 
@@ -322,9 +319,10 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	public Object getUserInterfaceContainer() {
 		BorderPane container = new BorderPane();
 		DropShadow dropShadow = new DropShadow();
-		dropShadow.setOffsetX(4);
-		dropShadow.setOffsetY(4);
-		dropShadow.setHeight(4);
+		dropShadow.setOffsetX(2);
+		dropShadow.setOffsetY(2);
+		dropShadow.setHeight(1);
+		dropShadow.setRadius(12.0);
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
 		canvas.setEffect(dropShadow);
