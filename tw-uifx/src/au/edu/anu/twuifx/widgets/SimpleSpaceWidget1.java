@@ -181,7 +181,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				String name = dl.getEnd();
 				String key = dl.toString().replace(">" + name, "").replace(">", ".");
 				Map<String, double[]> value = items.get(key);
-				value.remove(name);
+				if (value!=null) // JG sometimes this happens, although it shouldnt...
+					value.remove(name);
 				// Don't remove empty system entries as new entries will acquire the same
 				// colour e.g if bears become extinct and rabbits appear for the first time,
 				// they will have the bear's colour!.
@@ -209,7 +210,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		// clear the hash maps here!!!
 		if (isSimulatorState(state, waiting)) {
 			System.out.println("RESET");
-			// drawSpace();
+			// should clear all displayed points here!
+			 drawSpace(true);
 		}
 	}
 
