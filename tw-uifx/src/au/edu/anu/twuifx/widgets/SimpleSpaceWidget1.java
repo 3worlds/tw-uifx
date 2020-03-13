@@ -65,6 +65,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -72,6 +73,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -116,6 +118,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private boolean symbolFill;
 	private Color bkg;
 	private double contrast;
+	private boolean colour64;
 
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
 	// static {log.setLevel(Level.INFO);} use args for MM or MR e.g.
@@ -129,9 +132,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		colours = new ArrayList<>();
 		itemColours = new HashMap<>();
 		mouseMap = new HashMap<>();
-		// prefs?
-		bkg = Color.WHITE;
-		contrast = 0.2;	
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		//System.out.println("meta msg: " + meta.properties().toString());
+		// System.out.println("meta msg: " + meta.properties().toString());
 		log.info(meta.toString());
 		timeFormatter.onMetaDataMessage(meta);
 		Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
@@ -153,7 +153,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onDataMessage(SpaceData data) {
-		//System.out.println("Data msg: " + data);
+		// System.out.println("Data msg: " + data);
 		log.info(data.toString()); // something weird with the logging when run from MM??
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
@@ -176,9 +176,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				}
 				items.put(key, value);
 				if (value.containsKey(name))
-					log.warning("Overwriting existing entry: "+data);
+					log.warning("Overwriting existing entry: " + data);
 				value.put(name, data.coordinates());
-				// should we assign a colour to this key here?
+				// Assign a colour to new items?
 				if (!itemColours.containsKey(key)) {
 					itemColours.put(key, getColour(items.size() - 1));
 				}
@@ -193,10 +193,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			String name = dl.getEnd();
 			String key = dl.toString().replace(">" + name, "").replace(">", ".");
 			Map<String, double[]> value = items.get(key);
-			if (value != null) // JG sometimes this happens, although it shouldnt...
-				value.remove(name);
-			else
-				log.warning("Request to delete non-existent item: "+data);
+			if (value != null) { // JG sometimes this happens, although it shouldnt...
+				if (value.containsKey(name))
+					value.remove(name);
+				else
+					log.warning("Request to delete non-existent name [" + name + "] in system [" + key + "] " + data);
+			} else
+				log.warning("Request to delete name [" + name + "] in non-existent system [" + key + "] " + data);
 			// Don't remove empty system entries as new entries will acquire the same
 			// colour e.g if bears become extinct and rabbits appear for the first time,
 			// they will have the bear's colour!.
@@ -215,8 +218,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onStatusMessage(State state) {
-		//System.out.println(state);
-		 log.info(state.toString());
+		// System.out.println(state);
+		log.info(state.toString());
 		// !! Sim sends dataMessage before this method receivers WAIT state so we can't
 		// clear the hash maps here!!!
 		if (isSimulatorState(state, waiting)) {
@@ -226,7 +229,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 //-------------------------------------------- Drawing ---
-	
+
 	private void drawSpace(boolean updateLegend) {
 		mouseMap.clear();
 		if (updateLegend)
@@ -300,6 +303,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private static final String keyResolution = "resolution";
 	private static final String keySymbolRad = "radius";
 	private static final String keySymbolFill = "fill";
+	private static final String keyBKG = "bkg";
+	private static final String keyContrast = "contrast";
+	private static final String keyColour64 = "colour64";
 
 	@Override
 	public void putUserPreferences() {
@@ -310,6 +316,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		Preferences.putInt(widgetId + keyResolution, resolution);
 		Preferences.putInt(widgetId + keySymbolRad, symbolRadius);
 		Preferences.putBoolean(widgetId + keySymbolFill, symbolFill);
+		Preferences.putDoubles(widgetId + keyBKG, bkg.getRed(), bkg.getGreen(), bkg.getBlue());
+		Preferences.putDouble(widgetId + keyContrast, contrast);
+		Preferences.putBoolean(widgetId + keyColour64, colour64);
 	}
 
 	@Override
@@ -321,6 +330,16 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		resolution = Preferences.getInt(widgetId + keyResolution, 50);
 		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, 2);
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
+		double[] rgb = Preferences.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
+				Color.WHITE.getBlue());
+		bkg = new Color(rgb[0], rgb[1], rgb[2], 1.0);
+		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
+		colour64 = Preferences.getBoolean(widgetId + keyColour64, true);
+		if (colour64)
+			colours = ColourContrast.getContrastingColours64(bkg, contrast);
+		else
+			colours = ColourContrast.getContrastingColours(bkg, contrast);
+
 	}
 
 	// --------------- GUI
@@ -358,7 +377,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		legend.setHgap(3);
 
 		container.setRight(legend);
-		colours = ColourContrast.getContrastingColours64(bkg, contrast);
 		return container;
 	}
 
@@ -424,13 +442,39 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GridPane.setHalignment(lbl, HPos.RIGHT);
 		content.add(lbl, 0, 2);
 		content.add(spRadius, 1, 2);
-
+		
+		// -----
+		Label lbl2 = new Label("64 Colour system");
+		CheckBox chbxCS = new CheckBox("");
+		chbxCS.setSelected(colour64);
+		GridPane.setHalignment(lbl2, HPos.RIGHT);
+		content.add(lbl2, 0, 3);
+		content.add(chbxCS, 1, 3);
+		// ----
+		Label lbl3 = new Label("Background colour");
+		ColorPicker colorPicker = new ColorPicker(bkg);
+		GridPane.setHalignment(lbl3, HPos.RIGHT);
+		content.add(lbl3, 0, 4);
+		content.add(colorPicker, 1, 4);
+		//----
+		Label lbl4 = new Label("Contrast (0.0-1.0");
+		TextField tfContrast = new TextField(Double.toString(contrast));
+		content.add(lbl4, 0, 5);
+		content.add(tfContrast, 1, 5);
+	
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
 			symbolFill = chbxFill.isSelected();
 			resolution = spResolution.getValue();
 			symbolRadius = spRadius.getValue();
+			contrast = Double.parseDouble(tfContrast.getText());
+			colour64 = chbxCS.isSelected();
+			bkg = colorPicker.getValue();
+			if (colour64)
+				colours = ColourContrast.getContrastingColours64(bkg, contrast);
+			else
+				colours = ColourContrast.getContrastingColours(bkg, contrast);			
 			drawSpace(true);
 		}
 	}
