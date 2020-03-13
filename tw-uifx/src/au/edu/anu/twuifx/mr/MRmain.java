@@ -51,7 +51,6 @@ import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.io.FileImporter;
 import fr.ens.biologie.generic.Initialisable;
 import fr.ens.biologie.generic.utils.Logging;
@@ -67,14 +66,14 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
  * @date 30 Aug 2019
  */
 // This replaces MrLauncher
-public class Main {
+public class MRmain {
 
-	private Main() {
+	private MRmain() {
 	}
 
-	private static String usage = "Usage:\n" + Main.class.getName()
+	private static String usage = "Usage:\n" + MRmain.class.getName()
 			+ " [instance id] [<Project relative directory>] [default log level]  [class to log:level...]";
-	private static Logger log = Logging.getLogger(Main.class);
+	private static Logger log = Logging.getLogger(MRmain.class);
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
@@ -82,7 +81,7 @@ public class Main {
 		if (args.length < 2) {
 			System.out.println(Arrays.deepToString(args));
 			System.out.println(usage);
-			System.exit(-1);
+			System.exit(1);
 		}
 		try {
 			int id = Integer.parseInt(args[0]);
@@ -91,7 +90,7 @@ public class Main {
 			e.printStackTrace();
 			System.out.println(Arrays.deepToString(args));
 			System.out.println(usage);
-			System.exit(-1);
+			System.exit(1);
 			;
 		}
 
@@ -111,7 +110,7 @@ public class Main {
 			if (pair.length != 2) {
 				System.out.println(Arrays.deepToString(args));
 				System.out.println(usage);
-				System.exit(-1);
+				System.exit(1);
 			}
 			String klass = pair[0];
 			String level = pair[1];
@@ -152,7 +151,7 @@ public class Main {
 		Project.makeFile(ProjectPaths.RUNTIME).mkdirs();
 
 		// If we are not running from a jar then load the generated classes
-		if (Jars.getRunningJarFilePath(Main.class) == null) {
+		if (Jars.getRunningJarFilePath(MRmain.class) == null) {
 			log.info("ModelRunner is NOT running from JAR");
 			File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
 			if (!userJar.exists()) {
@@ -172,7 +171,10 @@ public class Main {
 					Logger log = Logging.getLogger(c);
 					log.setLevel(lvl);
 				} catch (ClassNotFoundException e) {
-					log.severe("Unable to set logger for " + klass);
+					System.out.println("Unable to set logger: Class not found [" + klass+"]");
+					System.out.println(Arrays.deepToString(args));
+					System.out.println(usage);
+					System.exit(1);
 				}
 			}
 		} else

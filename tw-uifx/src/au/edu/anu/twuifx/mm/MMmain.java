@@ -38,13 +38,13 @@ import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Application;
 
-public class Main {
-	private static String usage = "Usage:\n" + Main.class.getName()
+public class MMmain {
+	private static String usage = "Usage:\n" + MMmain.class.getName()
 			+ "default logging level, class:level.";
 
 	public static void main(String[] args) {
 		// Flaky I know but...
-		ProjectJarGenerator.mainClass = au.edu.anu.twuifx.mr.Main.class.getName();
+		ProjectJarGenerator.mainClass = au.edu.anu.twuifx.mr.MRmain.class.getName();
 		// pass logging args on to deployed MR
 		MMModel.mmArgs = args;
 

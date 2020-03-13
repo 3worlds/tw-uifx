@@ -115,6 +115,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private int symbolRadius;
 	private boolean symbolFill;
 	private Color bkg;
+	private double contrast;
 
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
 	// static {log.setLevel(Level.INFO);} use args for MM or MR e.g.
@@ -128,7 +129,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		colours = new ArrayList<>();
 		itemColours = new HashMap<>();
 		mouseMap = new HashMap<>();
+		// prefs?
 		bkg = Color.WHITE;
+		contrast = 0.2;	
 	}
 
 	@Override
@@ -139,8 +142,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		// senderId IS set here (== 0)
-//		System.out.println("meta msg: " + meta.properties().toString());
+		//System.out.println("meta msg: " + meta.properties().toString());
 		log.info(meta.toString());
 		timeFormatter.onMetaDataMessage(meta);
 		Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
@@ -150,72 +152,81 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 	@Override
-	public void onDataMessage(final SpaceData data) {
-//		System.out.println("Data msg: " + data);
-		log.info(data.toString()); // something weird with the logging??
+	public void onDataMessage(SpaceData data) {
+		//System.out.println("Data msg: " + data);
+		log.info(data.toString()); // something weird with the logging when run from MM??
 		if (policy.canProcessDataMessage(data)) {
-			boolean updateLegend = false;
-			if (data.create()) {
-				if (data.isPoint()) {
-					DataLabel dl = data.itemLabel();
-					String name = dl.getEnd();
-					String key = dl.toString().replace(">" + name, "").replace(">", ".");
-					Map<String, double[]> value = items.get(key);
-					if (value == null) {
-						value = new HashMap<>();
-						updateLegend = true;
-					}
-					items.put(key, value);
-					value.put(name, data.coordinates());
-					// should we assign a colour to this key here?
-					if (!itemColours.containsKey(key)) {
-						itemColours.put(key, getColour(items.size() - 1));
-					}
-				} else {// lines/relations
-					//Duple<double[], double[]> line = data.line();
-					// wait and see
-				}
-
-			} else if (data.delete()) {
-				DataLabel dl = data.itemLabel();
-				String name = dl.getEnd();
-				String key = dl.toString().replace(">" + name, "").replace(">", ".");
-				Map<String, double[]> value = items.get(key);
-				if (value!=null) // JG sometimes this happens, although it shouldnt...
-					value.remove(name);
-				// Don't remove empty system entries as new entries will acquire the same
-				// colour e.g if bears become extinct and rabbits appear for the first time,
-				// they will have the bear's colour!.
-//				if (value.isEmpty()) {
-//					items.remove(key);
-//					if (itemColours.containsKey(key))
-//						itemColours.remove(key);
-//				}
-			} else {
-				// relocate - wait and see
-			}
-			final boolean flag = updateLegend;
-
 			Platform.runLater(() -> {
-				// watch out for crazy problems here with changes to the items
-				drawSpace(flag);
+				drawSpace(updateData(data));
 			});
 		}
 	}
 
+	private boolean updateData(final SpaceData data) {
+		boolean updateLegend = false;
+		if (data.create()) {
+			if (data.isPoint()) {
+				DataLabel dl = data.itemLabel();
+				String name = dl.getEnd();
+				String key = dl.toString().replace(">" + name, "").replace(">", ".");
+				Map<String, double[]> value = items.get(key);
+				if (value == null) {
+					value = new HashMap<>();
+					updateLegend = true;
+				}
+				items.put(key, value);
+				if (value.containsKey(name))
+					log.warning("Overwriting existing entry: "+data);
+				value.put(name, data.coordinates());
+				// should we assign a colour to this key here?
+				if (!itemColours.containsKey(key)) {
+					itemColours.put(key, getColour(items.size() - 1));
+				}
+			} else {// lines/relations
+				log.warning("Adding relations not yet implemented.");
+				// Duple<double[], double[]> line = data.line();
+				// wait and see
+			}
+
+		} else if (data.delete()) {
+			DataLabel dl = data.itemLabel();
+			String name = dl.getEnd();
+			String key = dl.toString().replace(">" + name, "").replace(">", ".");
+			Map<String, double[]> value = items.get(key);
+			if (value != null) // JG sometimes this happens, although it shouldnt...
+				value.remove(name);
+			else
+				log.warning("Request to delete non-existent item: "+data);
+			// Don't remove empty system entries as new entries will acquire the same
+			// colour e.g if bears become extinct and rabbits appear for the first time,
+			// they will have the bear's colour!.
+//			if (value.isEmpty()) {
+//				items.remove(key);
+//				if (itemColours.containsKey(key))
+//					itemColours.remove(key);
+//			}
+		} else {
+			log.warning("Request for unknown op");
+			// relocate - wait and see
+		}
+		return updateLegend;
+
+	}
+
 	@Override
 	public void onStatusMessage(State state) {
-		// log.info(state.toString());
+		//System.out.println(state);
+		 log.info(state.toString());
 		// !! Sim sends dataMessage before this method receivers WAIT state so we can't
 		// clear the hash maps here!!!
 		if (isSimulatorState(state, waiting)) {
-			System.out.println("RESET");
-			// should clear all displayed points here!
-			 drawSpace(true);
+			items.clear();
+			drawSpace(true);
 		}
 	}
 
-//---- Drawing ---
+//-------------------------------------------- Drawing ---
+	
 	private void drawSpace(boolean updateLegend) {
 		mouseMap.clear();
 		if (updateLegend)
@@ -261,10 +272,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	};
 
 	private Color getColour(int idx) {
-		if (colours.size() < items.size())
-			colours = ColourContrast.createColours64(bkg, 0.2);
 		return colours.get(idx % colours.size());
-
 	}
 
 	private double rescale(double value, double fMin, double fMax, double tMin, double tMax) {
@@ -283,7 +291,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		return new Point2D(dx, dy);
 	}
 
-// --------------- Preferences
+// ---------------------------------------- Preferences
 
 	private static final String keyScaleX = "scaleX";
 	private static final String keyScaleY = "scaleY";
@@ -350,6 +358,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		legend.setHgap(3);
 
 		container.setRight(legend);
+		colours = ColourContrast.getContrastingColours64(bkg, contrast);
 		return container;
 	}
 
