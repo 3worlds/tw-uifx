@@ -51,6 +51,7 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -82,6 +83,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
@@ -381,6 +383,15 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 	private void addLegendItem(String name, Color colour) {
+		Rectangle rect = new Rectangle();
+		rect.setStroke(bkg);
+		rect.setFill(bkg);
+		rect.setX(0);
+		rect.setY(0);
+		rect.setWidth(10);
+		rect.setHeight(10);
+		
+			
 		int idx = legend.getChildren().size();
 		Circle circle = null;
 		if (!symbolFill)
@@ -388,6 +399,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		else
 			circle = new Circle(0, 1, 4, colour);
 		circle.setStroke(colour);
+		legend.add(rect, 0, idx);
 		legend.add(circle, 0, idx);
 		legend.add(new Label(name), 1, idx);
 	}
@@ -442,7 +454,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GridPane.setHalignment(lbl, HPos.RIGHT);
 		content.add(lbl, 0, 2);
 		content.add(spRadius, 1, 2);
-		
+
 		// -----
 		Label lbl2 = new Label("64 Colour system");
 		CheckBox chbxCS = new CheckBox("");
@@ -456,12 +468,12 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GridPane.setHalignment(lbl3, HPos.RIGHT);
 		content.add(lbl3, 0, 4);
 		content.add(colorPicker, 1, 4);
-		//----
+		// ----
 		Label lbl4 = new Label("Contrast (0.0-1.0");
 		TextField tfContrast = new TextField(Double.toString(contrast));
 		content.add(lbl4, 0, 5);
 		content.add(tfContrast, 1, 5);
-	
+
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
@@ -474,7 +486,16 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			if (colour64)
 				colours = ColourContrast.getContrastingColours64(bkg, contrast);
 			else
-				colours = ColourContrast.getContrastingColours(bkg, contrast);			
+				colours = ColourContrast.getContrastingColours(bkg, contrast);
+
+			itemColours.clear();
+
+			items.forEach((k, v) -> {
+				int idx = itemColours.size();
+				itemColours.put(k, getColour(idx));
+			});
+//			String hex1 = Integer.toHexString(bkg.hashCode());
+//			legend.setStyle("-fx-background-color: #" +hex1);
 			drawSpace(true);
 		}
 	}
