@@ -51,7 +51,6 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -226,6 +225,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		// clear the hash maps here!!!
 		if (isSimulatorState(state, waiting)) {
 			items.clear();
+			itemColours.clear();
 			drawSpace(true);
 		}
 	}
@@ -388,16 +388,16 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		rect.setFill(bkg);
 		rect.setX(0);
 		rect.setY(0);
-		rect.setWidth(10);
-		rect.setHeight(10);
+		rect.setWidth(12);
+		rect.setHeight(12);
 		
 			
 		int idx = legend.getChildren().size();
 		Circle circle = null;
 		if (!symbolFill)
-			circle = new Circle(0, 1, 4, Color.TRANSPARENT);
+			circle = new Circle(0, 0, 4, Color.TRANSPARENT);
 		else
-			circle = new Circle(0, 1, 4, colour);
+			circle = new Circle(0, 0, 4, colour);
 		circle.setStroke(colour);
 		legend.add(rect, 0, idx);
 		legend.add(circle, 0, idx);
@@ -414,10 +414,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 	private void edit() {
-		// TODO Dialog box for this widget
-		// resolution
-		// symbolRadius;
-		// solid
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle(widgetId);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
