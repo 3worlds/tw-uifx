@@ -27,7 +27,7 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.helpers;
 
 import java.util.Collection;
 

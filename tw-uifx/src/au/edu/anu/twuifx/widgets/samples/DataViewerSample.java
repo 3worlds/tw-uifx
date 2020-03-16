@@ -1,4 +1,4 @@
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.samples;
 
 import java.util.ArrayList;
 import java.util.Arrays;

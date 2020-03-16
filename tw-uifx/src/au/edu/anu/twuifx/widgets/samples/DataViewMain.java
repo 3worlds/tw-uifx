@@ -27,12 +27,12 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.samples;
 
-public class Test {
+public class DataViewMain {
 
 	public static void main(String[] args) {
-		de.gsi.chart.samples.RunChartSamples.main(args);
+		DataViewerSample.main(args);
 
 	}
 

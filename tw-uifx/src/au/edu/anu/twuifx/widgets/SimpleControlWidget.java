@@ -66,11 +66,10 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
 
-
 	private static Logger log = Logging.getLogger(SimpleControlWidget.class);
 
 	// NB initial state is always 'waiting' ('null' causes a crash)
-	private String state = waiting.name();
+	//private String state = waiting.name();
 
 	public SimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
@@ -102,7 +101,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 		HBox pane = new HBox();
 		pane.setAlignment(Pos.BASELINE_LEFT);
 		pane.getChildren().addAll(buttons);
-			
+
 		pane.setSpacing(5.0);
 
 		setButtonLogic();
@@ -113,22 +112,25 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 		// Always begin by disabling in case the next operation takes a long time
 		// log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name()))
-			sendEvent(reset.event());
+		// if (state.equals(pausing.name()) | state.equals(stepping.name()) |
+		// state.equals(finished.name()))
+		sendEvent(reset.event());
 		return null;
 	}
 
 	private Object handleStepPressed() {
 		// log.info("handleStepPressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name()))
-			sendEvent(step.event());
+		// if (state.equals(pausing.name()) | state.equals(stepping.name()) |
+		// state.equals(waiting.name()))
+		sendEvent(step.event());
 		return null;
 	}
 
 	private Object handleRunPausePressed() {
 		// log.info("handleRunPausePressed Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
+		State state = stateMachine().getCurrentState();
 		Event event = null;
 		if (state.equals(waiting.name()))
 			event = run.event();
@@ -142,15 +144,18 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	private long startTime;
+
 	@Override
 	public void onStatusMessage(State newState) {
 		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
-		state = newState.getName();
+		//state = newState.getName();
 		setButtonLogic();
 	}
 
 	private void setButtonLogic() {
 		// ensure waiting for app thread i.e. only needed when 'running'
+		final State state = stateMachine().getCurrentState();
+
 		Platform.runLater(() -> {
 			// log.info("setButtonLogic: State: "+ state+", Thread: " +
 			// Thread.currentThread().getId());

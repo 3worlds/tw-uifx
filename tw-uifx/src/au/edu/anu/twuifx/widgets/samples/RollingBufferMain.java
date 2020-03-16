@@ -1,44 +1,39 @@
 /**************************************************************************
- *  TW-CORE - 3Worlds Core classes and methods                            *
+ *  TW-UIFX - ThreeWorlds User-Interface fx                               *
  *                                                                        *
- *  Copyright 2018: Shayne Flint, Jacques Gignoux & Ian D. Davies         *
- *       shayne.flint@anu.edu.au                                          * 
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
  *       ian.davies@anu.edu.au                                            * 
  *                                                                        *
- *  TW-CORE is a library of the principle components required by 3W       *
+ *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
+ *  This is to separate concerns of UI implementation and the code for    *
+ *  these java programs.                                                  *
  *                                                                        *
  **************************************************************************                                       
- *  This file is part of TW-CORE (3Worlds Core).                          *
+ *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
  *                                                                        *
- *  TW-CORE is free software: you can redistribute it and/or modify       *
+ *  TW-UIFX is free software: you can redistribute it and/or modify       *
  *  it under the terms of the GNU General Public License as published by  *
  *  the Free Software Foundation, either version 3 of the License, or     *
  *  (at your option) any later version.                                   *
  *                                                                        *
- *  TW-CORE is distributed in the hope that it will be useful,            *
+ *  TW-UIFX is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *  GNU General Public License for more details.                          *                         
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
- *  along with TW-CORE.                                                   *
- *  If not, see <https://www.gnu.org/licenses/gpl.html>                   *
+ *  along with TW-UIFX.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
+package au.edu.anu.twuifx.widgets.samples;
 
-package au.edu.anu.twuifx.widgets;
+public class RollingBufferMain {
 
-import java.util.Collection;
+	public static void main(String[] args) {
+		RollingBufferSample.main(args);
 
-import au.edu.anu.twcore.ui.runtime.Widget;
+	}
 
-public interface WidgetTrackingPolicy<T> extends Widget{
-	
-	public boolean canProcessDataMessage(T data);
-	
-	public int sender();
-	
-	public Collection<Integer> senders();
-	
 }

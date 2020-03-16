@@ -27,56 +27,18 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.helpers;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-import au.edu.anu.twcore.data.runtime.TimeData;
-import fr.cnrs.iees.properties.SimplePropertyList;
-// not sure about this wip
-/**
- * @author Ian Davies
- *
- * @date 23 Sep 2019
- */
-/*
- * The policy of simple widgets is:
- * 
- * 1) to follow just one sender. That's it! The chosen sender is
- * a sub-archetype property. These widgets will therefore ignore data from
- * other senders.
- * 
- * Each widget should indicate the sender int on the ui.
- * 
- * 
- */
+import au.edu.anu.twcore.ui.runtime.Widget;
 
-public  class BracketWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>{
-	private Map<Integer, Long> simTimes = new HashMap<>();
-	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
-				
-	}
-
-
-	@Override
-	public boolean canProcessDataMessage(TimeData data) {
-		simTimes.put(data.sender(), data.time());
-		return true;
-	}
-
-	@Override
-	public int sender() {
-		return 1;
-		// stupid flaw
-	}
-
-	@Override
-	public Collection<Integer> senders() {
-		return simTimes.keySet();
-	}
-
-
+public interface WidgetTrackingPolicy<T> extends Widget{
+	
+	public boolean canProcessDataMessage(T data);
+	
+	public int sender();
+	
+	public Collection<Integer> senders();
+	
 }

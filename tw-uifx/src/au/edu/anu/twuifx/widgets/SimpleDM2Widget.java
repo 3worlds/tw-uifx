@@ -40,6 +40,7 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import au.edu.anu.ymuit.util.CenteredZooming;
