@@ -54,6 +54,7 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -113,6 +114,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private Map<String, Map<String, double[]>> items;
 	private List<Color> colours;
 	private final Map<String, Color> itemColours;
+	private final Map<String,Integer> colourRegister;
 	private Map<Bounds, String> mouseMap;
 	private Tooltip tooltip;
 	private GridPane legend;
@@ -135,6 +137,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		items = new HashMap<>();
 		colours = new ArrayList<>();
 		itemColours = new HashMap<>();
+		colourRegister = new HashMap<>();
 		mouseMap = new HashMap<>();
 	}
 
@@ -391,8 +394,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		rect.setFill(bkg);
 		rect.setX(0);
 		rect.setY(0);
-		rect.setWidth(12);
-		rect.setHeight(12);
+		rect.setWidth(14);
+		rect.setHeight(14);
 		
 			
 		int idx = legend.getChildren().size();
@@ -404,6 +407,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		circle.setStroke(colour);
 		legend.add(rect, 0, idx);
 		legend.add(circle, 0, idx);
+		GridPane.setHalignment(circle, HPos.CENTER);
 		legend.add(new Label(name), 1, idx);
 	}
 
