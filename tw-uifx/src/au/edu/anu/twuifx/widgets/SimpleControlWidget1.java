@@ -62,6 +62,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
  * @author Ian Davies
@@ -80,7 +81,7 @@ public class SimpleControlWidget1 extends StateMachineController
 
 	private WidgetTrackingPolicy<TimeData> policy;
 	// NB initial state is always 'waiting' ('null' causes a crash)
-	private String state = waiting.name();
+	// private String state = waiting.name();
 
 	private Label lblRealTime;
 	private Label lblDelta;
@@ -153,53 +154,50 @@ public class SimpleControlWidget1 extends StateMachineController
 		pane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
 				lblRealTime, new Label("[ms]"));
 
-		setButtonLogic();
+		setButtonLogic(stateMachine().getCurrentState());
 		return pane;
 	}
 
-	private Object handleResetPressed() {
-		log.info("Thread: " + Thread.currentThread().getId());
-
-		// Always begin by disabling in case the next operation takes a long time
-		// log.info("handleResetPressed Thread: " + Thread.currentThread().getId());
+	private void handleResetPressed() {
+		log.info(stateMachine().getCurrentState().toString());
 		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(finished.name())) {
-			Platform.runLater(() -> {
-				this.lblRealTime.setText("0");
-			});
-			sendEvent(reset.event());
-		}
-		return null;
+		Platform.runLater(() -> {
+			this.lblRealTime.setText("0");
+		});
+		sendEvent(reset.event());
 	}
 
-	private Object handleStepPressed() {
+	private void handleStepPressed() {
+		//log.info(stateMachine().getCurrentState().toString());
+	//	System.out.println("handleStepPressed() "+stateMachine().getCurrentState());
 		long now = System.currentTimeMillis();
-		if (state.equals(waiting.name())) {
+		State state = stateMachine().getCurrentState();
+		setButtons(true, true, true, null);
+		if (isSimulatorState(state, waiting)) {
 			startTime = now;
 			idleTime = 0;
-		}
-		log.info("Thread: " + Thread.currentThread().getId());
-		setButtons(true, true, true, null);
-		if (state.equals(pausing.name()) | state.equals(stepping.name()) | state.equals(waiting.name())) {
+			sendEvent(step.event());
+		} else if (isSimulatorState(state, pausing) | isSimulatorState(state, stepping)) {
 			if (idleStartTime > 0)
 				idleTime += (now - idleStartTime);
 			sendEvent(step.event());
 		}
-		return null;
 	}
 
 	private Object handleRunPausePressed() {
+		log.info(stateMachine().getCurrentState().toString());
 		long now = System.currentTimeMillis();
-		log.info("Thread: " + Thread.currentThread().getId());
 		setButtons(true, true, true, null);
 		Event event = null;
-		if (state.equals(waiting.name())) {
+		State state = stateMachine().getCurrentState();
+
+		if (isSimulatorState(state, waiting)) {
 			startTime = now;
 			idleTime = 0;
 			event = run.event();
-		} else if (state.equals(running.name())) {
+		} else if (isSimulatorState(state, running)) {
 			event = pause.event();
-		} else if (state.equals(pausing.name()) | state.equals(stepping.name())) {
+		} else if (isSimulatorState(state, pausing) | isSimulatorState(state, stepping)) {
 			// total idleTime here
 			if (idleStartTime > 0)
 				idleTime += (now - idleStartTime);
@@ -216,11 +214,10 @@ public class SimpleControlWidget1 extends StateMachineController
 	}
 
 	@Override
-	public void onStatusMessage(State newState) {
-		log.info("Thread: " + Thread.currentThread().getId() + " State: " + newState);
+	public void onStatusMessage(State state) {
+		log.info(state.toString());
 		final long now = System.currentTimeMillis();
-		state = newState.getName();
-		if (state.equals(finished.name())) {
+		if (isSimulatorState(state, finished)) {
 			long duration = getDuration(now);
 			final String strDuration = Long.toString(duration);
 			long delta = duration - prevDuration;
@@ -232,23 +229,23 @@ public class SimpleControlWidget1 extends StateMachineController
 				lblDelta.setText(strDelta);
 			});
 		}
-		if (state.equals(stepping.name())) {
+		if (isSimulatorState(state, stepping)) {
 			idleStartTime = now;
 		}
-		if (state.equals(pausing.name())) {
+		if (isSimulatorState(state, pausing)) {
 			idleStartTime = now;
 		}
-		if (state.equals(waiting.name())) {
+		if (isSimulatorState(state, waiting)) {
 			idleTime = 0;
 			idleStartTime = 0;
 			prevDuration = 0;
-			startTime=0;
+			startTime = 0;
 			Platform.runLater(() -> {
 				lblRealTime.setText("0");
 				lblDelta.setText("0");
 			});
 		}
-		setButtonLogic();
+		setButtonLogic(state);
 	}
 
 	@Override
@@ -265,29 +262,27 @@ public class SimpleControlWidget1 extends StateMachineController
 	public void getUserPreferences() {
 	}
 
-	private void setButtonLogic() {
-		// ensure waiting for app thread i.e. only needed when 'running'
+	private void setButtonLogic(final State state) {
 		Platform.runLater(() -> {
-			// log.info("setButtonLogic: State: "+ state+", Thread: " +
-			// Thread.currentThread().getId());
-			if (state.equals(waiting.name())) {
+			log.info("setButtonLogic: " + state);
+			if (isSimulatorState(state, waiting)) {
 				setButtons(false, false, true, runGraphic);
 				return;
 			}
-			if (state.equals(running.name())) {
+			if (isSimulatorState(state, running)) {
 				setButtons(false, true, true, pauseGraphic);
 				return;
 
 			}
-			if (state.equals(stepping.name())) {
+			if (isSimulatorState(state, stepping)) {
 				setButtons(false, false, false, runGraphic);
 				return;
 			}
-			if (state.equals(finished.name())) {
+			if (isSimulatorState(state, finished)) {
 				setButtons(true, true, false, runGraphic);
 				return;
 			}
-			if (state.equals(pausing.name())) {
+			if (isSimulatorState(state, pausing)) {
 				setButtons(false, false, false, runGraphic);
 				return;
 			}
