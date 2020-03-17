@@ -1,0 +1,115 @@
+treegraph // saved by OmugiGraphExporter on Tue Mar 17 16:15:23 CET 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds usm1
+	dataDefinition dtDef
+		record rcrd1
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(vars)
+	experiment exp
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system system
+		driverClass = java.lang.String(code.system.Vars)
+		parameterClass = java.lang.String(code.system.Pars)
+		dynamics dyn
+			timeLine tmLn
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel tmMo
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+					process topkillingProc
+						function TopKill
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String()
+					process burningProc
+						function BurnGrass
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String()
+					process resproutProc
+						function RGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String()
+						function RRecruit
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
+							userClassName = java.lang.String()
+						function RSurvival
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String()
+					process treeProc
+						function TReproduction
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String()
+							relateToProduct = java.lang.Boolean(false)
+						function TGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String()
+						function TSurvival
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String()
+			lifeCycle tree-life-cycle
+				parameterClass = java.lang.String()
+				recruit rct
+				produce repro
+		structure struct
+			arena savanna
+				space plot
+					edgeEffects = java.lang.Object(null)
+					precision = java.lang.Double(0.0)
+					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+					units = java.lang.String(m)
+					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(wrapAroundAllD)
+					x-limits = 
+					y-limits = 
+			relationType burning
+			categorySet plant
+				category tree
+				category grass
+				category palm
+			categorySet tree-stages
+				category adult
+				category resprout
+			categorySet physics
+				category climate
+				category fire
+			relationType topkilling
+	userInterface gui
+		top toolBar
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+
+// CROSS-LINKS
+[process:burningProc] appliesTo aplyTo3 [relationType:burning]
+[process:treeProc] appliesTo aplyTo1 [category:tree]
+[process:treeProc] appliesTo aplyTo [category:adult]
+[relationType:topkilling] toCategory to3 [category:resprout]
+[relationType:topkilling] fromCategory from3 [category:fire]
+[process:topkillingProc] appliesTo aplyTo4 [relationType:topkilling]
+[experiment:exp] baseLine baseline [system:system]
+[lifeCycle:tree-life-cycle] appliesTo aplyTo2 [categorySet:tree-stages]
+[recruit:rct] effectedBy effdBy1 [process:resproutProc]
+[recruit:rct] fromCategory from1 [category:resprout]
+[recruit:rct] toCategory to1 [category:adult]
+[produce:repro] fromCategory from [category:adult]
+[produce:repro] toCategory to [category:resprout]
+[produce:repro] effectedBy effdBy [process:treeProc]
+[process:resproutProc] appliesTo aplyTo5 [category:resprout]
+[relationType:burning] fromCategory from2 [category:fire]
+[relationType:burning] toCategory to2 [category:grass]
+[widget:time] trackTime tracks1 [dynamics:dyn]
