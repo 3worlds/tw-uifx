@@ -1,0 +1,199 @@
+treegraph // saved by OmugiGraphExporter on Wed Mar 18 11:39:01 CET 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds french
+	dataDefinition dtDef
+		record treeDrv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(treeDrv)
+			field d
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field stemAge
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(yr)
+		record fireDrv
+			field h95a
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field tslf
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+		record treePar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(treePar)
+			field a
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field bcr
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field acr
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field b
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field b3
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field b2
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field b1
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field pmax
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record treeDec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(treeDec)
+			field nn2
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field h
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field nng
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field cr
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+	experiment exp
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system system
+		driverClass = java.lang.String(code.system.Vars)
+		parameterClass = java.lang.String(code.system.Pars)
+		dynamics dyn
+			timeLine timeLine
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel step
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+					process proc1
+						function PotentialGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.PotentialGrowth)
+					process proc3
+						function ActualGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.ActualGrowth)
+					process proc2
+						function Neighbouring
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.system.Neighbouring)
+					process proc5
+						function FuelIncrease
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String()
+					process proc4
+						function Reproduction
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.system.Reproduction)
+							relateToProduct = java.lang.Boolean(false)
+						function Survival
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.system.Survival)
+							function UpdateNN
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+								userClassName = java.lang.String()
+					process proc6
+						function Func
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String()
+		structure struct
+			relationType neighbouring
+			categorySet environment
+				category disturbance
+			componentType tree
+				decoratorClass = java.lang.String(code.system.TreeDec)
+				driverClass = java.lang.String(code.system.TreeDrv)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+				mobile = java.lang.Boolean(false)
+				parameterClass = java.lang.String(code.system.TreePar)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+			categorySet plants
+				category trees
+			relationType burning
+			componentType fire
+				decoratorClass = java.lang.String()
+				driverClass = java.lang.String()
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				parameterClass = java.lang.String()
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	userInterface gui
+		top toolBar
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+
+// CROSS-LINKS
+[category:trees] drivers drvs [record:treeDrv]
+[category:trees] decorators decs [record:treeDec]
+[category:trees] parameters pars [record:treePar]
+[componentType:fire] belongsTo blngsTo1 [category:disturbance]
+[experiment:exp] baseLine baseline [system:system]
+[componentType:tree] belongsTo blngsTo [category:trees]
+[process:proc5] appliesTo aplyTo4 [category:disturbance]
+[relationType:neighbouring] fromCategory from [category:trees]
+[relationType:neighbouring] toCategory to [category:trees]
+[process:proc4] dependsOn depsOn3 [process:proc3]
+[process:proc4] appliesTo aplyTo3 [category:trees]
+[category:disturbance] drivers drvs1 [record:fireDrv]
+[process:proc3] appliesTo aplyTo2 [category:trees]
+[process:proc3] dependsOn depsOn [process:proc2]
+[process:proc2] dependsOn depsOn1 [process:proc1]
+[process:proc2] appliesTo aplyTo1 [relationType:neighbouring]
+[process:proc1] appliesTo aplyTo [category:trees]
+[relationType:burning] fromCategory from1 [category:disturbance]
+[relationType:burning] toCategory to1 [category:trees]
+[widget:time] trackTime tracks1 [dynamics:dyn]
+[process:proc6] appliesTo aplyTo5 [relationType:burning]
+[process:proc6] dependsOn depsOn2 [process:proc3]
