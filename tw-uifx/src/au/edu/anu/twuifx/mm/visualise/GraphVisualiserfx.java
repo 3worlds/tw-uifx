@@ -295,9 +295,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	private void createGraphLine(VisualEdge edge, BooleanProperty show) {
+
 		VisualNode startNode = (VisualNode) edge.startNode();
 		VisualNode endNode = (VisualNode) edge.endNode();
-		// TODO deal with overlapping edge labels
 		String newLabel = edge.getDisplayText(edgeClassOnly);
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
@@ -480,12 +480,16 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	private List<VisualEdge> getReplicateEdges(VisualNode startNode, VisualNode endNode) {
 		List<VisualEdge> result = new ArrayList<>();
-		for (ALEdge e : startNode.edges(Direction.OUT))
-			if (e.endNode().id().equals(endNode.id()))
+		for (ALEdge e : startNode.edges(Direction.OUT)) {
+			VisualEdge ve = (VisualEdge) e;
+			if (ve.endNode().id().equals(endNode.id()) && ve.hasText())
 				result.add((VisualEdge) e);
-		for (ALEdge e : endNode.edges(Direction.OUT))
-			if (e.endNode().id().equals(startNode.id()))
+		}
+		for (ALEdge e : endNode.edges(Direction.OUT)) {
+			VisualEdge ve = (VisualEdge) e;
+			if (ve.endNode().id().equals(startNode.id()) && ve.hasText())
 				result.add((VisualEdge) e);
+		}
 		return result;
 	}
 
@@ -605,10 +609,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Text text = (Text) vNode.getText();
 		text.setText(vNode.getDisplayText(false));
 	}
-	
+
 	@Override
 	public void onEdgeRenamed(VisualEdge vEdge) {
-		Text text = (Text)vEdge.getText();
+		Text text = (Text) vEdge.getText();
 		text.setText(vEdge.getDisplayText(false));
 	}
 }
