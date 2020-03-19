@@ -1,7 +1,70 @@
-treegraph // saved by OmugiGraphExporter on Thu Mar 19 09:56:39 CET 2020
+treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+//  CODE SNIPPETS for user-defined functions:
+
+//public class PotentialGrowth extends ChangeStateFunction {
+//
+//	@Override
+//	public void changeState(double t, double dt, SystemComponent focal) {
+//		TreeDrv ct = (TreeDrv) focal.currentState();
+//		TreeDec dec = (TreeDec) focal.decorators();
+//		TreePar par = (TreePar) focal.parameters();
+//		// Allometry
+//		// height H
+//		double D = ct.d();
+//		double D2 = D*D;
+//		double H = par.b1() + par.b2()*D + par.b3()*D2;
+//		dec.h(H);
+//		// crown radius CR
+//		double logcs =  par.acr() + par.bcr()*log(H);
+//		double CR = sqrt(exp(logcs)/PI);
+//		dec.cr(CR);
+//		// potential growth
+//		double dD2Hdt = par.g()*D2*(1-(D*H)/(par.Dmax()*par.Hmax()));
+//		// resprout growth enhancement factor
+//		double rootAge = focal.autoVar().age();
+//		double ageDif = rootAge - ct.stemAge() ;
+//		double Rs = 1 + par.a()*par.pmax()*ageDif*exp(-par.b()*ageDif);
+//		if (H>200) // actually, h95 !!!)
+//			Rs = 1;
+//		dec.potG(dD2Hdt*Rs);
+//		// set count of neighbours to 0 is that right ??
+//		dec.nn2(0);
+//		dec.nng(0);
+//	}
+//}
+//
+//public class Neighbouring extends RelateToDecisionFunction {
+//
+//	@Override
+//	public boolean relate(double t, double dt, SystemComponent focal, SystemComponent other,
+//			Location focalLocation, Location otherLocation) {
+//		TreeDec fdec = (TreeDec)focal.decorators();
+//		TreeDec odec = (TreeDec)other.decorators();
+//		return	sqr(fdec.cr()+odec.cr()) > squaredEuclidianDistance(focalLocation.asPoint(),otherLocation.asPoint());
+//	}
+//
+//}
+//
+//public class Competition extends ChangeOtherStateFunction {
+//
+//	@Override
+//	public void changeOtherState(double t, double dt, SystemComponent focal, SystemComponent other) {
+//		TreeDec fdec = (TreeDec) focal.decorators();
+//		TreeDec odec = (TreeDec)other.decorators();
+//		// number of neighbours > 2m
+//		if (odec.h()>200) fdec.nn2(fdec.nn2()+1);
+//		// number of taller neighbours
+//		if (odec.h()>fdec.h()) fdec.nng(fdec.nng()+1);
+//	}
+//
+//}
+
+// WIP...
+
 // TREE
 3worlds french
 	dataDefinition dtDef
@@ -47,8 +110,23 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 09:56:39 CET 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+			field Hmax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(10.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
 			field b
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field Dmax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field g
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
@@ -88,6 +166,11 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 09:56:39 CET 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
+			field potG
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 			field cr
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
@@ -124,6 +207,10 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 09:56:39 CET 2020
 						function Neighbouring
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
 							userClassName = java.lang.String(code.system.Neighbouring)
+					process proc2b
+						function Competition
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String(code.system.Competition)
 					process proc5
 						function FuelIncrease
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
@@ -152,7 +239,15 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 09:56:39 CET 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 				mobile = java.lang.Boolean(false)
 				parameterClass = java.lang.String(code.system.TreePar)
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"","code.system.Plot_TreeRelocateFunction"))
+			arena arena
+				space plot
+					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
+					precision = java.lang.Double(0.1)
+					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+					units = java.lang.String(m)
+					x-limits = fr.ens.biologie.generic.utils.Interval([0.0,50.0])
+					y-limits = fr.ens.biologie.generic.utils.Interval([0.0,50.0])
 			categorySet plants
 				category trees
 			relationType burning
@@ -186,12 +281,16 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 09:56:39 CET 2020
 [process:proc4] appliesTo aplyTo3 [category:trees]
 [category:disturbance] drivers drvs1 [record:fireDrv]
 [process:proc3] appliesTo aplyTo2 [category:trees]
-[process:proc3] dependsOn depsOn [process:proc2]
+[process:proc3] dependsOn depsOn [process:proc2b]
+[process:proc2] inSpace in [space:plot]
+	searchRadius = java.lang.Double(6.0)
 [process:proc2] appliesTo aplyTo6 [relationType:neighbour]
 [process:proc2] dependsOn depsOn1 [process:proc1]
 [process:proc1] appliesTo aplyTo [category:trees]
 [relationType:neighbour] fromCategory from [category:trees]
 [relationType:neighbour] toCategory to [category:trees]
+[process:proc2b] appliesTo aplyTo5 [relationType:neighbour]
+[process:proc2b] dependsOn depsOn4 [process:proc2]
 [relationType:burning] fromCategory from2 [category:disturbance]
 [relationType:burning] toCategory to2 [category:trees]
 [widget:time] trackTime tracks1 [dynamics:dyn]
