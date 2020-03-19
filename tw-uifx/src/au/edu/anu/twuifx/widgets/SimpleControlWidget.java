@@ -3,13 +3,13 @@
  *                                                                        *
  *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
- *       ian.davies@anu.edu.au                                            * 
+ *       ian.davies@anu.edu.au                                            *
  *                                                                        *
  *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
  *  This is to separate concerns of UI implementation and the code for    *
  *  these java programs.                                                  *
  *                                                                        *
- **************************************************************************                                       
+ **************************************************************************
  *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
  *                                                                        *
  *  TW-UIFX is free software: you can redistribute it and/or modify       *
@@ -20,7 +20,7 @@
  *  TW-UIFX is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *  GNU General Public License for more details.                          *                         
+ *  GNU General Public License for more details.                          *
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
  *  along with TW-UIFX.                                                   *
@@ -132,18 +132,18 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 		setButtons(true, true, true, null);
 		State state = stateMachine().getCurrentState();
 		Event event = null;
-		if (state.equals(waiting.name()))
+		if (state.getName().equals(waiting.name()))
 			event = run.event();
-		else if (state.equals(running.name()))
+		else if (state.getName().equals(running.name()))
 			event = pause.event();
-		else if (state.equals(pausing.name()) | state.equals(stepping.name()))
+		else if (state.getName().equals(pausing.name()) | state.getName().equals(stepping.name()))
 			event = goOn.event();
 		if (event != null)
 			sendEvent(event);
 		return null;
 	}
 
-	private long startTime;
+//	private long startTime;
 
 	@Override
 	public void onStatusMessage(State newState) {
@@ -159,24 +159,24 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 		Platform.runLater(() -> {
 			// log.info("setButtonLogic: State: "+ state+", Thread: " +
 			// Thread.currentThread().getId());
-			if (state.equals(waiting.name())) {
+			if (state.getName().equals(waiting.name())) {
 				setButtons(false, false, true, runGraphic);
 				return;
 			}
-			if (state.equals(running.name())) {
+			if (state.getName().equals(running.name())) {
 				setButtons(false, true, true, pauseGraphic);
 				return;
 
 			}
-			if (state.equals(stepping.name())) {
+			if (state.getName().equals(stepping.name())) {
 				setButtons(false, false, false, runGraphic);
 				return;
 			}
-			if (state.equals(finished.name())) {
+			if (state.getName().equals(finished.name())) {
 				setButtons(true, true, false, runGraphic);
 				return;
 			}
-			if (state.equals(pausing.name())) {
+			if (state.getName().equals(pausing.name())) {
 				setButtons(false, false, false, runGraphic);
 				return;
 			}

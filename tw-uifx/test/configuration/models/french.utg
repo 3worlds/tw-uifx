@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Wed Mar 18 11:39:01 CET 2020
+treegraph // saved by OmugiGraphExporter on Thu Mar 19 09:56:39 CET 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -18,6 +18,8 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 18 11:39:01 CET 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(yr)
 		record fireDrv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(fireDrv)
 			field h95a
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -98,8 +100,6 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 18 11:39:01 CET 2020
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system system
-		driverClass = java.lang.String(code.system.Vars)
-		parameterClass = java.lang.String(code.system.Pars)
 		dynamics dyn
 			timeLine timeLine
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
@@ -127,24 +127,23 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 18 11:39:01 CET 2020
 					process proc5
 						function FuelIncrease
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String()
+							userClassName = java.lang.String(code.system.FuelIncrease)
 					process proc4
 						function Reproduction
+							relateToProduct = java.lang.Boolean(false)
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.system.Reproduction)
-							relateToProduct = java.lang.Boolean(false)
 						function Survival
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.system.Survival)
 							function UpdateNN
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
-								userClassName = java.lang.String()
+								userClassName = java.lang.String(code.system.UpdateNN)
 					process proc6
-						function Func
+						function TopKill
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
-							userClassName = java.lang.String()
+							userClassName = java.lang.String(code.system.TopKill)
 		structure struct
-			relationType neighbouring
 			categorySet environment
 				category disturbance
 			componentType tree
@@ -157,12 +156,13 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 18 11:39:01 CET 2020
 			categorySet plants
 				category trees
 			relationType burning
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+			relationType neighbour
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			componentType fire
-				decoratorClass = java.lang.String()
-				driverClass = java.lang.String()
+				driverClass = java.lang.String(code.system.FireDrv)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
-				parameterClass = java.lang.String()
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	userInterface gui
 		top toolBar
@@ -182,18 +182,18 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 18 11:39:01 CET 2020
 [experiment:exp] baseLine baseline [system:system]
 [componentType:tree] belongsTo blngsTo [category:trees]
 [process:proc5] appliesTo aplyTo4 [category:disturbance]
-[relationType:neighbouring] fromCategory from [category:trees]
-[relationType:neighbouring] toCategory to [category:trees]
 [process:proc4] dependsOn depsOn3 [process:proc3]
 [process:proc4] appliesTo aplyTo3 [category:trees]
 [category:disturbance] drivers drvs1 [record:fireDrv]
 [process:proc3] appliesTo aplyTo2 [category:trees]
 [process:proc3] dependsOn depsOn [process:proc2]
+[process:proc2] appliesTo aplyTo6 [relationType:neighbour]
 [process:proc2] dependsOn depsOn1 [process:proc1]
-[process:proc2] appliesTo aplyTo1 [relationType:neighbouring]
 [process:proc1] appliesTo aplyTo [category:trees]
-[relationType:burning] fromCategory from1 [category:disturbance]
-[relationType:burning] toCategory to1 [category:trees]
+[relationType:neighbour] fromCategory from [category:trees]
+[relationType:neighbour] toCategory to [category:trees]
+[relationType:burning] fromCategory from2 [category:disturbance]
+[relationType:burning] toCategory to2 [category:trees]
 [widget:time] trackTime tracks1 [dynamics:dyn]
-[process:proc6] appliesTo aplyTo5 [relationType:burning]
 [process:proc6] dependsOn depsOn2 [process:proc3]
+[process:proc6] appliesTo aplyTo1 [relationType:burning]
