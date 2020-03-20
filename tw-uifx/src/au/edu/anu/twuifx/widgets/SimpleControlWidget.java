@@ -155,7 +155,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	public void onStatusMessage(State state) {
 		log.info(state.toString());
 		if (isSimulatorState(state,finished))
-			System.out.println(state);
+			System.out.println("PUT BREAKPOINT HERE when stepping");
 		setButtonLogic();
 	}
 
