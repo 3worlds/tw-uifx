@@ -12,30 +12,46 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //		TreeDrv ct = (TreeDrv) focal.currentState();
 //		TreeDec dec = (TreeDec) focal.decorators();
 //		TreePar par = (TreePar) focal.parameters();
-//		// Allometry
-//		// height H
 //		double D = ct.d();
-//		double D2 = D*D;
-//		double H = par.b1() + par.b2()*D + par.b3()*D2;
+//		double H = Allometry.height(par.b1(),par.b2(),par.b3(),D);
 //		dec.h(H);
-//		// crown radius CR
-//		double logcs =  par.acr() + par.bcr()*log(H);
-//		double CR = sqrt(exp(logcs)/PI);
+//		double CR = Allometry.crownRadius(par.acr(),par.bcr(),H);
 //		dec.cr(CR);
 //		// potential growth
-//		double dD2Hdt = par.g()*D2*(1-(D*H)/(par.Dmax()*par.Hmax()));
 //		// resprout growth enhancement factor
 //		double rootAge = focal.autoVar().age();
 //		double ageDif = rootAge - ct.stemAge() ;
 //		double Rs = 1 + par.a()*par.pmax()*ageDif*exp(-par.b()*ageDif);
 //		if (H>200) // actually, h95 !!!)
 //			Rs = 1;
-//		dec.potG(dD2Hdt*Rs);
+//		dec.potG(par.g()*Rs); // growth coefficient, not real growth
 //		// set count of neighbours to 0 is that right ??
 //		dec.nn2(0);
 //		dec.nng(0);
 //	}
-//}
+//
+//	protected static class Allometry {
+//		protected static double height(double b1, double b2, double b3, double d) {
+//			return b1 + b2*d + b3*d*d;
+//		}
+//		protected static double crownRadius(double acr, double bcr, double h) {
+//			double logcs = acr + bcr*log(h);
+//			double CR = sqrt(exp(logcs)/PI);
+//			return CR;
+//		}
+//		// multiply this by growth coefficients & modifiers to get volume growth
+//		protected static double volumeGrowthCoef(double d, double h, double dmax, double hmax) {
+//			return d*d*(1-(d*h)/(dmax*hmax));
+//		}
+//		// multiply this by growth coefficients & modifiers to get height growth
+//		protected static double heightGrowthCoef(double d, double h, double dmax, double hmax) {
+//			return (dmax-d)*hmax*d*(1-(d*h)/(dmax*hmax)) / (h*dmax*dmax+2*d*hmax*(dmax-d));
+//		}
+//		// multiply this by growth coefficients & modifiers to get diameter growth
+//		protected static double diameterGrowthCoef(double d, double h, double dmax, double hmax) {
+//			return dmax*dmax*d*(1-(d*h)/(dmax*hmax)) / (2*h*dmax*dmax+2*d*hmax*(dmax-d));
+//		}
+//	}
 //
 //public class Neighbouring extends RelateToDecisionFunction {
 //
@@ -49,7 +65,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //
 //}
 //
-//public class Competition extends ChangeOtherStateFunction {
+///public class Competition extends ChangeOtherStateFunction {
 //
 //	@Override
 //	public void changeOtherState(double t, double dt, SystemComponent focal, SystemComponent other) {
@@ -59,6 +75,101 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //		if (odec.h()>200) fdec.nn2(fdec.nn2()+1);
 //		// number of taller neighbours
 //		if (odec.h()>fdec.h()) fdec.nng(fdec.nng()+1);
+//	}
+//
+//}
+//
+//public class ActualGrowth extends ChangeStateFunction {
+//
+//	@Override
+//	public void changeState(double t, double dt, SystemComponent focal) {
+//		TreeDec dec = (TreeDec) focal.decorators();
+//		TreePar par = (TreePar) focal.parameters();
+//		TreeDrv ct = (TreeDrv) focal.currentState();
+//		TreeDrv nxt = (TreeDrv) focal.nextState();
+//		// competition with grass
+//		double ctg = par.cg() +(1-par.cg())/(1+par.bg()*exp(-par.ccg()*dec.h()/100));
+//		ctg = ctg*max(dec.nn2()/6,1);
+//		// competition with neighbours
+//		double ctt = exp(-par.alpha()*dec.nng());
+//		// actual growth
+//		dec.G(dec.potG()*ctg*ctt);
+//		// computation of next diameter
+//		nxt.d(ct.d()+dec.G()*Allometry.diameterGrowthCoef(ct.d(),dec.h(),par.Dmax(),par.Hmax())/dt);
+//	}
+//
+//}
+//
+//public class Reproduction extends CreateOtherDecisionFunction {
+//
+//	@Override
+//	public double nNew(double t, double dt, SystemComponent focal, String newType) {
+//		if (newType.equals(focal.membership().categoryId())) {
+//			TreePar par = (TreePar) focal.parameters();
+//			TreeDec dec = (TreeDec) focal.decorators();
+//			TreeDrv ct = (TreeDrv) focal.currentState();
+//			long age = focal.autoVar().age();
+//			double nsdl =0.0;
+//			if ((age>=par.ageMin())&(age<=par.ageMax())) {
+//				double h = dec.h();
+//				double d = ct.d();
+//				double hcoef = Allometry.heightGrowthCoef(d,h,par.Dmax(),par.Hmax());
+//				double nextHmax = h + hcoef*dec.potG();
+//				double nextHact = h + hcoef*dec.G();
+//				// max crown radius if no competition
+//				double nextCRmax = Allometry.crownRadius(par.acr(), par.bcr(), nextHmax);
+//				// crown radius if competition
+//				double nextCRact = Allometry.crownRadius(par.acr(), par.bcr(), nextHact);
+//				nsdl = par.pcfec() * nextCRact/nextCRmax * (1-ct.stemAge()/par.ageMax());
+//			}
+//			return nsdl;
+//		}
+//		else
+//			return 0.0;
+//	}
+//
+//}
+//
+//public class Survival extends DeleteDecisionFunction {
+//
+//	@Override
+//	public boolean delete(double t, double dt, SystemComponent focal) {
+//		TreePar par = (TreePar) focal.parameters();
+//		long age = focal.autoVar().age();
+//		TreeDec dec = (TreeDec) focal.decorators();
+//		int agemin = par.ageMin();
+//		int agemax = par.ageMax();
+//		double Smin = par.Smin();
+//		double Smax = par.Smax();
+//		// base survival
+//		double S = 1.0; // survival probability
+//		if (age<=agemin) {
+//			double c1 = E*(Smax-Smin)/agemin; // secondary parameter
+//			S = Smin + c1*age*exp(-age/agemin);
+//		}
+//		else if (age<=agemax) {
+//			S = Smax;
+//		}
+//		else {
+//			double c2 = exp(1/3)*Smax/agemax; // secondary parameter
+//			S = c2*age*exp(-(1/3)*(age/agemax));
+//		}
+//		// effect of competition on survival
+//		double Sg = 1.0;
+//		if (dec.G() < dec.potG()*0.95)
+//			Sg = dec.G()/(dec.potG()*0.95);
+//		return decide(1-S*Sg);
+//	}
+//
+//}
+//
+//public class FuelIncrease extends ChangeStateFunction {
+//
+//	@Override
+//	public void changeState(double t, double dt, SystemComponent focal) {
+//		FireDrv ct = (FireDrv) focal.currentState();
+//		FireDrv nxt = (FireDrv) focal.nextState();
+//		nxt.tslf(ct.tslf()+1);
 //	}
 //
 //}
@@ -95,30 +206,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 		record treePar
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(treePar)
-			field a
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field bcr
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field acr
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
 			field Hmax
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(10.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(cm)
-			field b
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+			field ageMin
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 			field Dmax
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
@@ -140,6 +235,11 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+			field Smin
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 			field b1
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -147,6 +247,60 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				units = java.lang.String()
 			field pmax
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field a
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field bcr
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field bg
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field acr
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field cg
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field pcfec
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field ageMax
+				range = au.edu.anu.rscs.aot.util.IntegerRange(1..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field b
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field alpha
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field ccg
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field Smax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
@@ -165,6 +319,11 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 			field nng
 				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field G
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field potG
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
