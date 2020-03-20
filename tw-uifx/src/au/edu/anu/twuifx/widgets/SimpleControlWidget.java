@@ -144,7 +144,7 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 			event = run.event();
 		else if (isSimulatorState(state, running))
 			event = pause.event();
-		else if (isSimulatorState(state, pausing) | isSimulatorState(state, stepping))
+		else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping))
 			event = goOn.event();
 		if (event != null)
 			sendEvent(event);
@@ -152,10 +152,10 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	}
 
 	@Override
-	public void onStatusMessage(State newState) {
-		State cState = stateMachine().getCurrentState();
-		if (!newState.getName().equals(cState.getName()))
-			throw new TwuifxException("STATE miss-match: new: " + newState + " cstate: " + cState);
+	public void onStatusMessage(State state) {
+		log.info(state.toString());
+		if (isSimulatorState(state,finished))
+			System.out.println(state);
 		setButtonLogic();
 	}
 

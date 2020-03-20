@@ -229,7 +229,7 @@ public class SimpleControlWidget2 extends StateMachineController
 			startTime = now;
 			idleTime = 0;
 			sendEvent(step.event());
-		} else if (isSimulatorState(state, pausing) | isSimulatorState(state, stepping)) {
+		} else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping)) {
 			if (idleStartTime > 0)
 				idleTime += (now - idleStartTime);
 			sendEvent(step.event());
