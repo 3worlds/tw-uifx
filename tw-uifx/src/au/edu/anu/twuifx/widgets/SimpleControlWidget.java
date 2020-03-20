@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
@@ -58,27 +57,27 @@ import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
  * @author Ian Davies
  *
  * @date 2 Sep 2019
- * 
+ *
  *       Simplest possible state machine controller (experiment Deployer)
  *       widget.
- * 
+ *
  *       The Run/Pause button does triple service:
- * 
+ *
  *       - if the state is running then it's a pause button.
- * 
+ *
  *       - If the state is Pausing then its a continue button
- * 
+ *
  *       - If the state is Waiting then its a Run button.
- * 
+ *
  *       setButtonLogic() prevents invalid events being sent by
  *       enabling/disabling control buttons.
- * 
+ *
  *       TODO Ideally, a quit event should be sent before the program is closed
  *       to prevent hanging threads. This would need to be called by something
  *       external to this class. Should the ancestor (StateMachineController)
  *       have a public quit method? - little bit flaky because quit is not valid
  *       from and state.
- * 
+ *
  */
 public class SimpleControlWidget extends StateMachineController implements WidgetGUI {
 	private Button btnRunPause;
