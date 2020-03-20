@@ -32,22 +32,25 @@ package au.edu.anu.twuifx.widgets.headless;
 import java.util.logging.Logger;
 
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
-import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.runtime.Kicker;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.ens.biologie.generic.utils.Logging;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
+import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
  * @author Ian Davies
  *
  * @date 2 Sep 2019
+ * 
+ *       This controller has no GUI. It sends a run event on start(), a quit
+ *       event on Finished and writes the instance id and simulation time to
+ *       stdout.
  */
 public class HLSimpleControlWidget extends StateMachineController implements Widget, Kicker {
 
@@ -56,34 +59,27 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 
 	public HLSimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
-		// should we be setting the initial state here or something???
-		log.fine("Current state: " + stateMachine().getCurrentState());
 	}
+
 	@Override
 	public boolean start() {
 		startTime = System.currentTimeMillis();
-		log.fine("Current state: " + stateMachine().getCurrentState());
 		sendEvent(run.event());
 		return true;
-
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
-		log.fine("Thread: " + Thread.currentThread().getId() + " State: " + state);
-		String stateName = state.getName();
-		// close down all threads so app can close cleanly.
-		if (stateName.equals(finished.name())) {
+		if (isSimulatorState(state, finished)) {
 			sendEvent(quit.event());
 			long endTime = System.currentTimeMillis();
-			System.out.println("Simulation finished. [Instance: "+RunTimeId.runTimeId()+"; Duration: "+(endTime-startTime)+" ms]");
+			System.out.println("Simulation finished. [Instance: " + RunTimeId.runTimeId() + "; Duration: "
+					+ (endTime - startTime) + " ms]");
 		}
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		// how would this know and respond to the sender id
 	}
-
 
 }

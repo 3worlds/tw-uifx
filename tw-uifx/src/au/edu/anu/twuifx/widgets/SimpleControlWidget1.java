@@ -42,13 +42,13 @@ import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
 import fr.cnrs.iees.rvgrid.rendezvous.RendezvousProcess;
-import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -80,8 +80,6 @@ public class SimpleControlWidget1 extends StateMachineController
 	private ImageView pauseGraphic;
 
 	private WidgetTrackingPolicy<TimeData> policy;
-	// NB initial state is always 'waiting' ('null' causes a crash)
-	// private String state = waiting.name();
 
 	private Label lblRealTime;
 	private Label lblDelta;
@@ -94,10 +92,8 @@ public class SimpleControlWidget1 extends StateMachineController
 
 	public SimpleControlWidget1(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
-		log.info("Thread: " + Thread.currentThread().getId());
 		policy = new SimpleWidgetTrackingPolicy();
-
-		// RV for data messages
+		// RV for simulator time messages
 		addRendezvous(new RendezvousProcess() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -124,7 +120,6 @@ public class SimpleControlWidget1 extends StateMachineController
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		// log.info("Thread: " + Thread.currentThread().getId());
 		runGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Play16.gif")));
 		pauseGraphic = new ImageView(new Image(Images.class.getResourceAsStream("Pause16.gif")));
 		btnRunPause = new Button("", runGraphic);
@@ -154,25 +149,22 @@ public class SimpleControlWidget1 extends StateMachineController
 		pane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
 				lblRealTime, new Label("[ms]"));
 
-		setButtonLogic(stateMachine().getCurrentState());
+		setButtonLogic();
 		return pane;
 	}
 
 	private void handleResetPressed() {
-		log.info(stateMachine().getCurrentState().toString());
-		setButtons(true, true, true, null);
-		Platform.runLater(() -> {
-			this.lblRealTime.setText("0");
-		});
+		nullButtons();
 		sendEvent(reset.event());
+		Platform.runLater(() -> {
+			lblRealTime.setText("0");
+		});
 	}
 
 	private void handleStepPressed() {
-		//log.info(stateMachine().getCurrentState().toString());
-	//	System.out.println("handleStepPressed() "+stateMachine().getCurrentState());
 		long now = System.currentTimeMillis();
 		State state = stateMachine().getCurrentState();
-		setButtons(true, true, true, null);
+		nullButtons();
 		if (isSimulatorState(state, waiting)) {
 			startTime = now;
 			idleTime = 0;
@@ -184,28 +176,23 @@ public class SimpleControlWidget1 extends StateMachineController
 		}
 	}
 
-	private Object handleRunPausePressed() {
-		log.info(stateMachine().getCurrentState().toString());
+	private void handleRunPausePressed() {
 		long now = System.currentTimeMillis();
-		setButtons(true, true, true, null);
-		Event event = null;
+		nullButtons();
 		State state = stateMachine().getCurrentState();
 
 		if (isSimulatorState(state, waiting)) {
 			startTime = now;
 			idleTime = 0;
-			event = run.event();
+			sendEvent(run.event());
 		} else if (isSimulatorState(state, running)) {
-			event = pause.event();
-		} else if (isSimulatorState(state, pausing) | isSimulatorState(state, stepping)) {
+			sendEvent(pause.event());
+		} else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping)) {
 			// total idleTime here
 			if (idleStartTime > 0)
 				idleTime += (now - idleStartTime);
-			event = goOn.event();
+			sendEvent(goOn.event());
 		}
-		if (event != null)
-			sendEvent(event);
-		return null;
 	}
 
 	private long getDuration(long now) {
@@ -215,7 +202,6 @@ public class SimpleControlWidget1 extends StateMachineController
 
 	@Override
 	public void onStatusMessage(State state) {
-		log.info(state.toString());
 		final long now = System.currentTimeMillis();
 		if (isSimulatorState(state, finished)) {
 			long duration = getDuration(now);
@@ -245,13 +231,11 @@ public class SimpleControlWidget1 extends StateMachineController
 				lblDelta.setText("0");
 			});
 		}
-		setButtonLogic(state);
+		setButtonLogic();
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -262,31 +246,31 @@ public class SimpleControlWidget1 extends StateMachineController
 	public void getUserPreferences() {
 	}
 
-	private void setButtonLogic(final State state) {
+	private void setButtonLogic() {
+		State state = stateMachine().getCurrentState();
 		Platform.runLater(() -> {
 			log.info("setButtonLogic: " + state);
 			if (isSimulatorState(state, waiting)) {
 				setButtons(false, false, true, runGraphic);
 				return;
-			}
-			if (isSimulatorState(state, running)) {
+			} else if (isSimulatorState(state, running)) {
 				setButtons(false, true, true, pauseGraphic);
 				return;
-
-			}
-			if (isSimulatorState(state, stepping)) {
+			} else if (isSimulatorState(state, stepping)) {
 				setButtons(false, false, false, runGraphic);
 				return;
-			}
-			if (isSimulatorState(state, finished)) {
+			} else if (isSimulatorState(state, finished)) {
 				setButtons(true, true, false, runGraphic);
 				return;
-			}
-			if (isSimulatorState(state, pausing)) {
+			} else if (isSimulatorState(state, pausing)) {
 				setButtons(false, false, false, runGraphic);
 				return;
 			}
 		});
+	}
+
+	private void nullButtons() {
+		setButtons(true, true, true, null);
 	}
 
 	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
@@ -299,8 +283,7 @@ public class SimpleControlWidget1 extends StateMachineController
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
-		return null;
+	return null;
 	}
 
 	@Override
@@ -320,8 +303,6 @@ public class SimpleControlWidget1 extends StateMachineController
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
