@@ -159,6 +159,8 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 							infected = java.lang.Boolean(false)
 		structure struct
 			relationType disease
+			// ??? what do we need to do here to align with microbeC below??
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			componentType microbeC
 				driverClass = java.lang.String(code.system.Rcrd2)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)

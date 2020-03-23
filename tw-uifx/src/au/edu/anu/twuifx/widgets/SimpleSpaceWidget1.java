@@ -83,6 +83,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -107,6 +108,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
+	private Label lblItem;
 	private Bounds spaceBounds;
 	private String widgetId;
 	private WidgetTrackingPolicy<TimeData> policy;
@@ -114,9 +116,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private Map<String, Map<String, double[]>> items;
 	private List<Color> colours;
 	private final Map<String, Color> itemColours;
-	private final Map<String,Integer> colourRegister;
-	private Map<Bounds, String> mouseMap;
-	private Tooltip tooltip;
+	private final Map<String, Integer> colourRegister;
+	// private Map<Bounds, String> mouseMap;
+	// private Tooltip tooltip;
 	private GridPane legend;
 
 	private int resolution;
@@ -138,7 +140,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		colours = new ArrayList<>();
 		itemColours = new HashMap<>();
 		colourRegister = new HashMap<>();
-		mouseMap = new HashMap<>();
+		// mouseMap = new HashMap<>();
 	}
 
 	@Override
@@ -181,6 +183,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 					value = new HashMap<>();
 					updateLegend = true;
 				}
+				//System.out.println("["+data.coordinates()[0]+","+data.coordinates()[1]+"]");
 				items.put(key, value);
 				if (value.containsKey(name))
 					log.warning("Overwriting existing entry: " + data);
@@ -239,7 +242,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 //-------------------------------------------- Drawing ---
 
 	private void drawSpace(boolean updateLegend) {
-		mouseMap.clear();
+		// mouseMap.clear();
 		if (updateLegend)
 			legend.getChildren().clear();
 		int size = 2 * symbolRadius;
@@ -256,11 +259,12 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			gc.setFill(colour);
 			members.forEach((name, coords) -> {
 				Point2D point = getPoint(coords);
-				point = point.add(symbolRadius, symbolRadius);
+				point = point.add(-symbolRadius, -symbolRadius);
 				gc.strokeOval(point.getX(), point.getY(), size, size);
 				if (symbolFill)
 					gc.fillOval(point.getX(), point.getY(), size, size);
-				mouseMap.put(new BoundingBox(point.getX(), point.getY(), size, size), key + "." + name);
+				// mouseMap.put(new BoundingBox(point.getX(), point.getY(), size, size), key +
+				// "." + name);
 			});
 		}
 	}
@@ -363,15 +367,16 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
 		canvas.setEffect(dropShadow);
-		tooltip = new Tooltip();
-		Tooltip.install(canvas, tooltip);
-		tooltip.setShowDelay(new Duration(500));
-		tooltip.setHideDelay(new Duration(500));
-		canvas.setOnMouseMoved(e -> onMouseMove(e));
-		canvas.setOnMouseExited(e -> {
-			tooltip.setText("");
-			tooltip.hide();
-		});
+		// tooltip = new Tooltip();
+		// Tooltip.install(canvas, tooltip);
+		// tooltip.setShowDelay(new Duration(500));
+		// tooltip.setHideDelay(new Duration(500));
+		// canvas.setOnMouseMoved(e -> onMouseMove(e));
+//		canvas.setOnMouseExited(e -> {
+//			tooltip.setText("");
+//			tooltip.hide();
+//		});
+		canvas.setOnMouseClicked(e -> onMouseClicked(e));
 		zoomTarget.getChildren().add(canvas);
 		Group group = new Group(zoomTarget);
 		StackPane content = new StackPane(group);
@@ -381,6 +386,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		scrollPane.setMinSize(170, 170);
 		CenteredZooming.center(scrollPane, content, group, zoomTarget);
 		container.setCenter(scrollPane);
+		HBox bottom = new HBox();
+		bottom.setSpacing(5);
+		lblItem = new Label("<DataLabel>");
+		bottom.getChildren().addAll(new Label("Time:"), new Label("<sim time>"), new Label("Units"),
+				new Label("Item: "), lblItem);
+		container.setBottom(bottom);
+
 		legend = new GridPane();
 		legend.setHgap(3);
 
@@ -396,8 +408,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		rect.setY(0);
 		rect.setWidth(14);
 		rect.setHeight(14);
-		
-			
+
 		int idx = legend.getChildren().size();
 		Circle circle = null;
 		if (!symbolFill)
@@ -503,19 +514,44 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 	}
 
-	private void onMouseMove(MouseEvent e) {
-		String name = findName(e);
-		if (name != null) {
-			tooltip.setText(name);
-			e.consume();
-		}
+	private void onMouseClicked(MouseEvent e) {
+//		if (e.isPrimaryButtonDown()) {
+			String name = findName(e);
+			lblItem.setText(name);
+            //e.consume();?
+//		}
 	}
 
+
 	private String findName(MouseEvent e) {
-		for (Map.Entry<Bounds, String> entry : mouseMap.entrySet())
-			if (entry.getKey().contains(e.getX(), e.getY()))
-				return entry.getValue();
-		return null;
+		//System.out.println(spaceBounds);
+		double scale = 1.0/(double)resolution;
+		double size = (symbolRadius * 2)*scale;
+		double xx = e.getX()*scale;
+		double yy = (canvas.getHeight()-e.getY())*scale;
+		
+		xx = xx+spaceBounds.getMinX();
+		yy = yy+spaceBounds.getMinY();
+		String msg = "["+xx+","+yy+"]";
+		BoundingBox box = new BoundingBox(xx-symbolRadius*scale, yy-symbolRadius*scale, size, size);
+		//System.out.println("Region: ["+box.getMinX()+","+box.getMinY()+" - "+box.getMaxX()+","+box.getMaxY()+"]");
+		for (Map.Entry<String, Map<String, double[]>> entry : items.entrySet()) {
+			String key = entry.getKey();
+			Map<String, double[]> members = entry.getValue();
+			for (Map.Entry<String, double[]> member : members.entrySet()) {
+				double x = member.getValue()[0];
+				double y = member.getValue()[1];
+//				System.out.println("X,Y: "+x+","+y);
+				if (box.contains(x, y)) {
+//					System.out.println("-----------");
+//					return key + "." + member.getKey();
+					return msg;
+	
+				}
+			}
+		}
+		System.out.println("-----------");
+		return "";
 	}
 
 }
