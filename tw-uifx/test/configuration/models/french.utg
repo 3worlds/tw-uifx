@@ -195,14 +195,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(fireDrv)
 			field h95a
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m)
 			field tslf
-				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String()
+				units = java.lang.String(year)
 		record treePar
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(treePar)
@@ -389,6 +389,33 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 						function TopKill
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
 							userClassName = java.lang.String(code.system.TopKill)
+			initialState Lamto
+				group std-tree
+					component tree1
+						variableValues varVals
+							d = java.lang.Double(20.0)
+							stemAge = java.lang.Integer(50)
+					parameterValues parVals
+						Hmax = java.lang.Double(679)
+						Dmax = java.lang.Double(23)
+						b1 = java.lang.Double(0)
+						b2 = java.lang.Double(58.5)
+						b3 = java.lang.Double(-1.26)
+						g = java.lang.Double(50)		//
+						ageMin = java.lang.Integer(10)
+						ageMax = java.lang.Integer(40)
+						Smin = java.lang.Double(0.2)
+						Smax = java.lang.Double(0.999)
+						pmax = java.lang.Double(0.5)
+						a = java.lang.Double(null)		//
+						b = java.lang.Double(null)		//
+						acr = java.lang.Double(-1.3)
+						bcr = java.lang.Double(2)
+						bg = java.lang.Double(null)		//
+						cg = java.lang.Double(0.2)
+						ccg = java.lang.Double(null)		//
+						pcfec = java.lang.Double(12)		//
+						alpha = java.lang.Double(null)		//
 		structure struct
 			categorySet environment
 				category disturbance
@@ -446,8 +473,12 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 [process:proc2] appliesTo aplyTo6 [relationType:neighbour]
 [process:proc2] dependsOn depsOn1 [process:proc1]
 [process:proc1] appliesTo aplyTo [category:trees]
+[group:std-tree] groupOf grpOf [componentType:tree]
 [relationType:neighbour] fromCategory from [category:trees]
 [relationType:neighbour] toCategory to [category:trees]
+[component:tree1] location loc [space:plot]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
+[component:tree1] instanceOf instOf [componentType:tree]
 [process:proc2b] appliesTo aplyTo5 [relationType:neighbour]
 [process:proc2b] dependsOn depsOn4 [process:proc2]
 [relationType:burning] fromCategory from2 [category:disturbance]
