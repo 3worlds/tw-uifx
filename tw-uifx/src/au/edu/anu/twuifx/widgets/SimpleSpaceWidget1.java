@@ -54,7 +54,6 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -78,7 +77,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -89,8 +87,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Window;
-import javafx.util.Duration;
-
 import java.util.logging.Logger;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
@@ -109,6 +105,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private Canvas canvas;
 	private ScrollPane scrollPane;
 	private Label lblItem;
+	private Label lblTime;
+	private Label lblTimeUnits;
 	private Bounds spaceBounds;
 	private String widgetId;
 	private WidgetTrackingPolicy<TimeData> policy;
@@ -117,8 +115,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private List<Color> colours;
 	private final Map<String, Color> itemColours;
 	private final Map<String, Integer> colourRegister;
-	// private Map<Bounds, String> mouseMap;
-	// private Tooltip tooltip;
 	private GridPane legend;
 
 	private int resolution;
@@ -129,8 +125,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private boolean colour64;
 
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
-	// static {log.setLevel(Level.INFO);} use args for MM or MR e.g.
-	// au.edu.anu.twuifx.widgets.SimpleSpaceWidget1:INFO
 
 	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
@@ -140,7 +134,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		colours = new ArrayList<>();
 		itemColours = new HashMap<>();
 		colourRegister = new HashMap<>();
-		// mouseMap = new HashMap<>();
 	}
 
 	@Override
@@ -151,7 +144,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		// System.out.println("meta msg: " + meta.properties().toString());
 		log.info(meta.toString());
 		timeFormatter.onMetaDataMessage(meta);
 		Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
@@ -162,7 +154,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onDataMessage(SpaceData data) {
-		// System.out.println("Data msg: " + data);
 		log.info(data.toString()); // something weird with the logging when run from MM??
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
@@ -173,6 +164,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	private boolean updateData(final SpaceData data) {
 		boolean updateLegend = false;
+		lblTime.setText(timeFormatter.getTimeText(data.time()));
+		lblItem.setText("");
 		if (data.create()) {
 			if (data.isPoint()) {
 				DataLabel dl = data.itemLabel();
@@ -183,7 +176,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 					value = new HashMap<>();
 					updateLegend = true;
 				}
-				//System.out.println("["+data.coordinates()[0]+","+data.coordinates()[1]+"]");
 				items.put(key, value);
 				if (value.containsKey(name))
 					log.warning("Overwriting existing entry: " + data);
@@ -194,7 +186,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				}
 			} else {// lines/relations
 				log.warning("Adding relations not yet implemented.");
-				// Duple<double[], double[]> line = data.line();
 				// wait and see
 			}
 
@@ -211,14 +202,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			} else
 				log.warning("Request to delete name [" + name + "] in non-existent system [" + key + "] " + data);
 			// Don't remove empty system entries as new entries will acquire the same
-			// colour e.g if bears become extinct and rabbits appear for the first time,
-			// they will have the bear's colour!.
-//			if (value.isEmpty()) {
-//				items.remove(key);
-//				if (itemColours.containsKey(key))
-//					itemColours.remove(key);
-//			}
-		} else {
+			// colour		} else {
 			log.warning("Request for unknown op");
 			// relocate - wait and see
 		}
@@ -228,10 +212,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onStatusMessage(State state) {
-		// System.out.println(state);
 		log.info(state.toString());
-		// !! Sim sends dataMessage before this method receivers WAIT state so we can't
-		// clear the hash maps here!!!
 		if (isSimulatorState(state, waiting)) {
 			items.clear();
 			itemColours.clear();
@@ -242,7 +223,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 //-------------------------------------------- Drawing ---
 
 	private void drawSpace(boolean updateLegend) {
-		// mouseMap.clear();
 		if (updateLegend)
 			legend.getChildren().clear();
 		int size = 2 * symbolRadius;
@@ -263,8 +243,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				gc.strokeOval(point.getX(), point.getY(), size, size);
 				if (symbolFill)
 					gc.fillOval(point.getX(), point.getY(), size, size);
-				// mouseMap.put(new BoundingBox(point.getX(), point.getY(), size, size), key +
-				// "." + name);
 			});
 		}
 	}
@@ -283,7 +261,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		gc.setFill(bkg);
 		gc.setStroke(Color.BLACK);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		// gc.strokeRect(1,1, canvas.getWidth()-3, canvas.getHeight()-2);
 	};
 
 	private Color getColour(int idx) {
@@ -367,15 +344,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
 		canvas.setEffect(dropShadow);
-		// tooltip = new Tooltip();
-		// Tooltip.install(canvas, tooltip);
-		// tooltip.setShowDelay(new Duration(500));
-		// tooltip.setHideDelay(new Duration(500));
-		// canvas.setOnMouseMoved(e -> onMouseMove(e));
-//		canvas.setOnMouseExited(e -> {
-//			tooltip.setText("");
-//			tooltip.hide();
-//		});
 		canvas.setOnMouseClicked(e -> onMouseClicked(e));
 		zoomTarget.getChildren().add(canvas);
 		Group group = new Group(zoomTarget);
@@ -388,9 +356,10 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		container.setCenter(scrollPane);
 		HBox bottom = new HBox();
 		bottom.setSpacing(5);
-		lblItem = new Label("<DataLabel>");
-		bottom.getChildren().addAll(new Label("Time:"), new Label("<sim time>"), new Label("Units"),
-				new Label("Item: "), lblItem);
+		lblItem = new Label("");
+		lblTime = new Label("");
+		
+		bottom.getChildren().addAll(lblTime,new Label("System: "), lblItem);
 		container.setBottom(bottom);
 
 		legend = new GridPane();
@@ -508,49 +477,33 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				int idx = itemColours.size();
 				itemColours.put(k, getColour(idx));
 			});
-//			String hex1 = Integer.toHexString(bkg.hashCode());
-//			legend.setStyle("-fx-background-color: #" +hex1);
 			drawSpace(true);
 		}
 	}
 
 	private void onMouseClicked(MouseEvent e) {
-//		if (e.isPrimaryButtonDown()) {
-			String name = findName(e);
-			lblItem.setText(name);
-            //e.consume();?
-//		}
+		String name = findName(e);
+		lblItem.setText(name);
 	}
 
-
 	private String findName(MouseEvent e) {
-		//System.out.println(spaceBounds);
-		double scale = 1.0/(double)resolution;
-		double size = (symbolRadius * 2)*scale;
-		double xx = e.getX()*scale;
-		double yy = (canvas.getHeight()-e.getY())*scale;
-		
-		xx = xx+spaceBounds.getMinX();
-		yy = yy+spaceBounds.getMinY();
-		String msg = "["+xx+","+yy+"]";
-		BoundingBox box = new BoundingBox(xx-symbolRadius*scale, yy-symbolRadius*scale, size, size);
-		//System.out.println("Region: ["+box.getMinX()+","+box.getMinY()+" - "+box.getMaxX()+","+box.getMaxY()+"]");
+		double scale = 1.0 / (double) resolution;
+		double size = (symbolRadius * 2) * scale;
+		double rad = symbolRadius * scale;
+		double clickX = (e.getX() * scale)+ spaceBounds.getMinX();
+		double clickY = ((canvas.getHeight() - e.getY()) * scale) + spaceBounds.getMinY();
+		BoundingBox box = new BoundingBox(clickX - rad, clickY - rad, size, size);
 		for (Map.Entry<String, Map<String, double[]>> entry : items.entrySet()) {
 			String key = entry.getKey();
 			Map<String, double[]> members = entry.getValue();
 			for (Map.Entry<String, double[]> member : members.entrySet()) {
 				double x = member.getValue()[0];
 				double y = member.getValue()[1];
-//				System.out.println("X,Y: "+x+","+y);
 				if (box.contains(x, y)) {
-//					System.out.println("-----------");
-//					return key + "." + member.getKey();
-					return msg;
-	
+					return key + "." + member.getKey();
 				}
 			}
 		}
-		System.out.println("-----------");
 		return "";
 	}
 
