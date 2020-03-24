@@ -396,26 +396,26 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 							d = java.lang.Double(20.0)
 							stemAge = java.lang.Integer(50)
 					parameterValues parVals
-						Hmax = java.lang.Double(679)
-						Dmax = java.lang.Double(23)
+						Hmax = java.lang.Double(800)
+						Dmax = java.lang.Double(45)
 						b1 = java.lang.Double(0)
 						b2 = java.lang.Double(58.5)
 						b3 = java.lang.Double(-1.26)
-						g = java.lang.Double(50)		//
-						ageMin = java.lang.Integer(10)
-						ageMax = java.lang.Integer(40)
+						g = java.lang.Double(57)
+						ageMin = java.lang.Integer(8)
+						ageMax = java.lang.Integer(70)
 						Smin = java.lang.Double(0.2)
 						Smax = java.lang.Double(0.999)
 						pmax = java.lang.Double(0.5)
-						a = java.lang.Double(null)		//
-						b = java.lang.Double(null)		//
-						acr = java.lang.Double(-1.3)
-						bcr = java.lang.Double(2)
-						bg = java.lang.Double(null)		//
+						a = java.lang.Double(-1)
+						b = java.lang.Double(-1)
+						acr = java.lang.Double(-1.305)
+						bcr = java.lang.Double(1.998)
+						bg = java.lang.Double(-1)
 						cg = java.lang.Double(0.2)
-						ccg = java.lang.Double(null)		//
-						pcfec = java.lang.Double(12)		//
-						alpha = java.lang.Double(null)		//
+						ccg = java.lang.Double(-1)
+						pcfec = java.lang.Double(10)
+						alpha = java.lang.Double(0.32)
 		structure struct
 			categorySet environment
 				category disturbance
@@ -477,7 +477,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 [relationType:neighbour] fromCategory from [category:trees]
 [relationType:neighbour] toCategory to [category:trees]
 [component:tree1] location loc [space:plot]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]25.0,25.0))
 [component:tree1] instanceOf instOf [componentType:tree]
 [process:proc2b] appliesTo aplyTo5 [relationType:neighbour]
 [process:proc2b] dependsOn depsOn4 [process:proc2]
