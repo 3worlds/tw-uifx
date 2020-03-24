@@ -1,0 +1,93 @@
+treegraph // saved by OmugiGraphExporter on Tue Mar 24 17:05:32 AEDT 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds genetics1
+	dataDefinition dDef
+		dimensioner ploidy
+			size = java.lang.Integer(2)
+		record rec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(rec)
+			table alleles
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				units = java.lang.String(us)
+		dimensioner nAlleles
+			size = java.lang.Integer(10)
+	system sys
+		parameterClass = java.lang.String()
+		dynamics dyns
+			stoppingCondition stCnd
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+			timeLine tmLn
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel tmMo
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+					process mate
+						function CreateOther
+							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.sys.CreateOther)
+		structure struc
+			arena arena
+				space space
+					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(wrapAroundAllD)
+					precision = java.lang.Double(0.0)
+					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+					units = java.lang.String(m)
+					x-limits = fr.ens.biologie.generic.utils.Interval(]0.0,100.0[)
+					y-limits = fr.ens.biologie.generic.utils.Interval(]0.0,100.0[)
+			componentType compTyp
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				parameterClass = java.lang.String(code.sys.Rec)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"","code.sys.Space_CompTypRelocateFunction"))
+			categorySet catSet
+				category cat
+	experiment expt
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	userInterface gui
+		top top
+			widget time
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		tab tab
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget space1
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
+
+// CROSS-LINKS
+[widget:ctrl] trackTime trksTmOf [dynamics:dyns]
+[category:cat] parameters pars [record:rec]
+[experiment:expt] baseLine bsln [system:sys]
+[componentType:compTyp] belongsTo blngsTo [category:cat]
+[table:alleles] sizedBy szBy [dimensioner:ploidy]
+	rank = java.lang.Integer(0)
+[table:alleles] sizedBy szBy1 [dimensioner:nAlleles]
+	rank = java.lang.Integer(1)
+[process:mate] inSpace in [space:space]
+	searchRadius = java.lang.Double(0.0)
+[process:mate] appliesTo aplyTo [category:cat]
+[widget:time] trackTime trksTmOf1 [dynamics:dyns]
+[widget:space1] trackSpace trksSpc [space:space]
