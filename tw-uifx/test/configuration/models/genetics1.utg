@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Tue Mar 24 17:05:32 AEDT 2020
+treegraph // saved by OmugiGraphExporter on Wed Mar 25 10:35:51 AEDT 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -7,15 +7,15 @@ treegraph // saved by OmugiGraphExporter on Tue Mar 24 17:05:32 AEDT 2020
 	dataDefinition dDef
 		dimensioner ploidy
 			size = java.lang.Integer(2)
-		record rec
+		dimensioner nAlleles
+			size = java.lang.Integer(10)
+		record genome
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(rec)
+			generatedClassName = java.lang.String(genome)
 			table alleles
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				units = java.lang.String(us)
-		dimensioner nAlleles
-			size = java.lang.Integer(10)
 	system sys
 		parameterClass = java.lang.String()
 		dynamics dyns
@@ -34,11 +34,19 @@ treegraph // saved by OmugiGraphExporter on Tue Mar 24 17:05:32 AEDT 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 					process mate
-						function CreateOther
-							relateToProduct = java.lang.Boolean(false)
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
-							userClassName = java.lang.String(code.sys.CreateOther)
+						function RelateTo
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys.RelateTo)
+			initialState state
+				group grp
+					component female1
+					component male1
 		structure struc
+			categorySet animal
+				category catMale
+				category catFemale
+			relationType mating
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			arena arena
 				space space
 					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(wrapAroundAllD)
@@ -47,13 +55,16 @@ treegraph // saved by OmugiGraphExporter on Tue Mar 24 17:05:32 AEDT 2020
 					units = java.lang.String(m)
 					x-limits = fr.ens.biologie.generic.utils.Interval(]0.0,100.0[)
 					y-limits = fr.ens.biologie.generic.utils.Interval(]0.0,100.0[)
-			componentType compTyp
+			componentType male
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
-				parameterClass = java.lang.String(code.sys.Rec)
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"","code.sys.Space_CompTypRelocateFunction"))
-			categorySet catSet
-				category cat
+				parameterClass = java.lang.String(code.sys.Genome)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+			componentType female
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				parameterClass = java.lang.String(code.sys.Genome)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"","code.sys.Space_FemaleRelocateFunction"))
 	experiment expt
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -79,15 +90,21 @@ treegraph // saved by OmugiGraphExporter on Tue Mar 24 17:05:32 AEDT 2020
 
 // CROSS-LINKS
 [widget:ctrl] trackTime trksTmOf [dynamics:dyns]
-[category:cat] parameters pars [record:rec]
+[relationType:mating] fromCategory from [category:catFemale]
+[relationType:mating] toCategory to [category:catMale]
+[category:catFemale] parameters pars [record:genome]
+[category:catMale] parameters pars1 [record:genome]
 [experiment:expt] baseLine bsln [system:sys]
-[componentType:compTyp] belongsTo blngsTo [category:cat]
+[componentType:female] belongsTo blngsTo [category:catFemale]
 [table:alleles] sizedBy szBy [dimensioner:ploidy]
 	rank = java.lang.Integer(0)
 [table:alleles] sizedBy szBy1 [dimensioner:nAlleles]
 	rank = java.lang.Integer(1)
+[component:female1] instanceOf instOf [componentType:female]
+[component:male1] instanceOf instOf1 [componentType:male]
 [process:mate] inSpace in [space:space]
-	searchRadius = java.lang.Double(0.0)
-[process:mate] appliesTo aplyTo [category:cat]
+	searchRadius = java.lang.Double(1.0)
+[process:mate] appliesTo aplyTo [relationType:mating]
 [widget:time] trackTime trksTmOf1 [dynamics:dyns]
+[componentType:male] belongsTo blngsTo1 [category:catMale]
 [widget:space1] trackSpace trksSpc [space:space]
