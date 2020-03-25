@@ -179,6 +179,29 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 // TREE
 3worlds french
 	dataDefinition dtDef
+		record firePar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(firePar)
+			field h95sd
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field h95m
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field fireHet
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field freq
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 		record treeDrv
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(treeDrv)
@@ -187,6 +210,10 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(cm)
+			field lowGrowthCounter
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(y)
 			field stemAge
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
@@ -211,42 +238,90 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				precision = java.lang.Double(10.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(cm)
-			field ageMin
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+			field cgc
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field bgc
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field Dmax
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(cm)
-			field g
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field b3
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field b2
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
 			field Smin
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field b1
+			field fireH95
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,10.0])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field pmax
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field pmax
+			field CRMax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,10.0[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field pcfec
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field ageMax
+				range = au.edu.anu.rscs.aot.util.IntegerRange(1..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field ageRepro
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(y)
+			field minGrw
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field Smax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field grassHt
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field ageMin
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field grassComp
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field rgr
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field C2
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field C1
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
@@ -260,30 +335,26 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field bg
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+			field hini
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m)
 			field acr
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field cg
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field pcfec
+			field optAge
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field ageMax
-				range = au.edu.anu.rscs.aot.util.IntegerRange(1..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String()
+				units = java.lang.String(y)
+			field dini
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
 			field b
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -294,12 +365,12 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field ccg
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+			field dispersal
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field Smax
+			field pmax2
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
@@ -343,6 +414,8 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system system
 		dynamics dyn
+			initialiser Init
+				userClassName = java.lang.String(code.system.Init)
 			timeLine timeLine
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
@@ -382,9 +455,6 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 						function Survival
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.system.Survival)
-							function UpdateNN
-								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
-								userClassName = java.lang.String(code.system.UpdateNN)
 					process proc6
 						function TopKill
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
@@ -394,28 +464,29 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 					component tree1
 						variableValues varVals
 							d = java.lang.Double(20.0)
+							lowGrowthCounter = java.lang.Integer(0)
 							stemAge = java.lang.Integer(50)
 					parameterValues parVals
-						Hmax = java.lang.Double(800)
-						Dmax = java.lang.Double(45)
-						b1 = java.lang.Double(0)
+						Dmax = java.lang.Double(45.0)
+						Hmax = java.lang.Double(800.0)
+						Smax = java.lang.Double(0.999)
+						Smin = java.lang.Double(0.2)
+						a = java.lang.Double(-1.0)
+						acr = java.lang.Double(-1.305)
+						ageMax = java.lang.Integer(70)
+						ageMin = java.lang.Integer(8)
+						alpha = java.lang.Double(0.32)
+						b = java.lang.Double(-1.0)
+						b1 = java.lang.Double(0.0)
 						b2 = java.lang.Double(58.5)
 						b3 = java.lang.Double(-1.26)
-						g = java.lang.Double(57)
-						ageMin = java.lang.Integer(8)
-						ageMax = java.lang.Integer(70)
-						Smin = java.lang.Double(0.2)
-						Smax = java.lang.Double(0.999)
-						pmax = java.lang.Double(0.5)
-						a = java.lang.Double(-1)
-						b = java.lang.Double(-1)
-						acr = java.lang.Double(-1.305)
 						bcr = java.lang.Double(1.998)
-						bg = java.lang.Double(-1)
+						bg = java.lang.Double(-1.0)
+						ccg = java.lang.Double(-1.0)
 						cg = java.lang.Double(0.2)
-						ccg = java.lang.Double(-1)
-						pcfec = java.lang.Double(10)
-						alpha = java.lang.Double(0.32)
+						g = java.lang.Double(57.0)
+						pcfec = java.lang.Double(10.0)
+						pmax = java.lang.Double(0.5)
 		structure struct
 			categorySet environment
 				category disturbance
@@ -444,6 +515,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				driverClass = java.lang.String(code.system.FireDrv)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
+				parameterClass = java.lang.String(code.system.FirePar)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	userInterface gui
 		top toolBar
@@ -459,12 +531,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 [category:trees] drivers drvs [record:treeDrv]
 [category:trees] decorators decs [record:treeDec]
 [category:trees] parameters pars [record:treePar]
+[initialiser:Init] appliesTo aplyTo7 [category:trees]
 [componentType:fire] belongsTo blngsTo1 [category:disturbance]
 [experiment:exp] baseLine baseline [system:system]
 [componentType:tree] belongsTo blngsTo [category:trees]
 [process:proc5] appliesTo aplyTo4 [category:disturbance]
 [process:proc4] dependsOn depsOn3 [process:proc3]
 [process:proc4] appliesTo aplyTo3 [category:trees]
+[category:disturbance] parameters pars1 [record:firePar]
 [category:disturbance] drivers drvs1 [record:fireDrv]
 [process:proc3] appliesTo aplyTo2 [category:trees]
 [process:proc3] dependsOn depsOn [process:proc2b]
