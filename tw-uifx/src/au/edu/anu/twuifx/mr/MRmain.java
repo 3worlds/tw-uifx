@@ -47,6 +47,7 @@ import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Kicker;
 import fr.cnrs.iees.OmugiClassLoader;
+import fr.cnrs.iees.graph.Graph;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -184,6 +185,8 @@ public class MRmain {
 		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
 
+		//initGraph(configGraph);
+
 		TreeNode uiNode = (TreeNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_UI.label())));
 		WidgetNode ctrlHl = getHeadlessController(uiNode);
 		boolean hasGUI = hasGUI(uiNode);
@@ -213,17 +216,17 @@ public class MRmain {
 			 * by the GUIBuilder. Perhaps that should be removed and added above so its
 			 * clearer?
 			 */
-			List<Initialisable> initList = new LinkedList<>();
-			TreeNode headless = (TreeNode) get(uiNode.getChildren(), selectOne(hasTheLabel(N_UIHEADLESS.label())));
-			for (TreeNode n : headless.getChildren())
-				initList.add((Initialisable) n);
-			Initialiser initer = new Initialiser(initList);
-			initer.initialise();
-			if (initer.errorList() != null) {
-				for (InitialiseMessage msg : initer.errorList())
-					System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
-				System.exit(1);
-			}
+//			List<Initialisable> initList = new LinkedList<>();
+//			TreeNode headless = (TreeNode) get(uiNode.getChildren(), selectOne(hasTheLabel(N_UIHEADLESS.label())));
+//			for (TreeNode n : headless.getChildren())
+//				initList.add((Initialisable) n);
+//			Initialiser initer = new Initialiser(initList);
+//			initer.initialise();
+//			if (initer.errorList() != null) {
+//				for (InitialiseMessage msg : initer.errorList())
+//					System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
+//				System.exit(1);
+//			}
 
 			/**
 			 * If ctrlHl were cast to a StateMachineController we could instead just do
@@ -270,6 +273,19 @@ public class MRmain {
 			}
 		}
 		return false;
+	}
+	protected static void initGraph(TreeGraph<TreeGraphDataNode, ALEdge>g) {
+		List<Initialisable> initList = new LinkedList<>();
+		for (TreeNode n : g.nodes())
+			initList.add((Initialisable) n);
+		Initialiser initer = new Initialiser(initList);
+		initer.initialise();
+		if (initer.errorList() != null) {
+			for (InitialiseMessage msg : initer.errorList())
+				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
+			System.exit(1);
+		}
+
 	}
 
 }

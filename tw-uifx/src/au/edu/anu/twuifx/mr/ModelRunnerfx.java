@@ -135,6 +135,7 @@ public class ModelRunnerfx extends Application {
 			stop();
 		});
 		Preferences.initialise(Project.makeRuntimePreferencesFile());
+		//MRmain.initGraph(config);
 		uiDeployer = new GUIBuilder(uiNode, controller);
 		stage.show();
 		stage.toBack();

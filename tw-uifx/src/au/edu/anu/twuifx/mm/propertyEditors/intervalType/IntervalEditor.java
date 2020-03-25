@@ -58,14 +58,12 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 
 	public IntervalEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
-		// TODO Auto-generated constructor stub
 	}
 
 	public IntervalEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		dtItem = (IntervalItem) this.getProperty();
-		// we need to find the timeline to create the meta-data for time editing
 		view.setOnAction(e -> onAction());
 	}
 
@@ -75,14 +73,10 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		newString = editInterval(oldString);
 		if (!newString.equals(oldString)) {
 			setValue(newString);
-			// GraphState.setChanged();
-			// ConfigGraph.validateGraph();
 		}
 	}
 
 	private String editInterval(String currentValue) {
-		// TODO put change listeners on infinite check boxes to hide relevant open cb
-		// and other infinite check box
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
 		dlg.initOwner((Window) Dialogs.owner());
@@ -110,33 +104,29 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		CheckBox cbNegInf = new CheckBox("-∞");
 		cbNegInf.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue) {
-				//cbPosInf.setVisible(false);
 				cbLowOpen.setVisible(false);
 				tfLow.setVisible(false);
 			} else {
-				//cbPosInf.setVisible(true);
 				cbLowOpen.setVisible(true);
 				tfLow.setVisible(true);
 				try {
 					Double.parseDouble(tfLow.getText());
 				} catch (NumberFormatException e) {
 					tfLow.setText("0.0");
-				}
+			}
 			}
 		});
 		cbPosInf.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue) {
-				//cbNegInf.setVisible(false);
 				cbHighOpen.setVisible(false);
 				tfHigh.setVisible(false);
 			} else {
-				//cbNegInf.setVisible(true);
 				cbHighOpen.setVisible(true);
 				tfHigh.setVisible(true);
 				try {
 					Double.parseDouble(tfHigh.getText());
 				} catch (NumberFormatException e) {
-					tfHigh.setText("0.0");
+					tfHigh.setText("1.0");
 				}
 			}
 		});

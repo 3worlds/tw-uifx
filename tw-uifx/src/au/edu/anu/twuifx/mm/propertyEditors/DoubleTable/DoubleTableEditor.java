@@ -28,135 +28,86 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors.integerRangeType;
+package au.edu.anu.twuifx.mm.propertyEditors.DoubleTable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
+import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
-import au.edu.anu.rscs.aot.util.IntegerRange;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
-public class IntegerRangeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
+public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
-	private IntegerRangeItem dtItem;
-
-	public IntegerRangeEditor(Item property, Pane control) {
+	private DoubleTableItem dtItem;
+	public DoubleTableEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
-	public IntegerRangeEditor(Item property) {
+	public DoubleTableEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
-		dtItem = (IntegerRangeItem) this.getProperty();
+		dtItem = (DoubleTableItem) this.getProperty();
+
+		// we need to find the timeline to create the meta-data for time editing
 		view.setOnAction(e -> onAction());
 	}
 
 	private void onAction() {
-		String oldString = (String) dtItem.getValue();
-		String newString = oldString;
-		newString = editInterval(oldString);
-		if (!newString.equals(oldString)) {
-			setValue(newString);
-		}
+		DoubleTable newTable = editTable((DoubleTable)dtItem.getValue());
+		setValue(newTable.toSaveableString(dtItem.bdel, dtItem.isep));
 	}
 
-	private String editInterval(String currentValue) {
+	private DoubleTable editTable(DoubleTable currentValue) {
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
 		dlg.initOwner((Window) Dialogs.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		BorderPane content = new BorderPane();
-		dlg.getDialogPane().setContent(content);
-		GridPane grid = new GridPane();
-		content.setCenter(grid);
-
-		IntegerRange range = IntegerRange.valueOf(currentValue);
-		int low = range.getFirst();
-		int high = range.getLast();
-
-		TextField tfLow = new TextField();
-		TextField tfHigh = new TextField();
-		tfLow.textProperty().addListener((observable, oldValue, newValue) -> {
-		    if (newValue.matches("-?\\d*")) return;
-		    tfLow.setText(newValue.replaceAll("[^\\d]", ""));
-		});
-		tfHigh.textProperty().addListener((observable, oldValue, newValue) -> {
-		    if (newValue.matches("-?\\d*")) return;
-		    tfHigh.setText(newValue.replaceAll("[^\\d]", ""));
-		});
-		CheckBox cbLowMin = new CheckBox("MIN INTEGER");
-		CheckBox cbHighMax = new CheckBox("*");
-		cbLowMin.selectedProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue) {
-				tfLow.setVisible(false);
-			} else {
-				tfLow.setVisible(true);
-				try {
-					Double.parseDouble(tfLow.getText());
-				} catch (NumberFormatException e) {
-					tfLow.setText("0");
-				}
-			}
-		});
-		cbHighMax.selectedProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue) {
-				tfHigh.setVisible(false);
-			} else {
-				tfHigh.setVisible(true);
-				try {
-					Double.parseDouble(tfHigh.getText());
-				} catch (NumberFormatException e) {
-					tfHigh.setText("1");
-				}
-			}
-		});
-
-		if (range.getFirst() == Integer.MIN_VALUE)
-			cbLowMin.setSelected(true);
-		else {
-			cbLowMin.setSelected(false);
-			tfLow.setText(String.valueOf(range.getFirst()));
-		}
-		if (range.getLast() == Integer.MAX_VALUE)
-			cbHighMax.setSelected(true);
-		else {
-			cbHighMax.setSelected(false);
-			tfHigh.setText(String.valueOf(range.getLast()));
-		}
-		grid.add(cbLowMin, 0, 0);
-		grid.add(tfLow, 1, 0);
-		grid.add(new Label(".."), 2, 0);
-		grid.add(tfHigh, 3, 0);
-		grid.add(cbHighMax, 4, 0);
+		BorderPane pane = new BorderPane();
+		TextArea textArea = new TextArea();
+		pane.setCenter(textArea);
+		dlg.getDialogPane().setContent(pane);
 		dlg.setResizable(true);
+		String s = "";
+		for (int i = 0; i < currentValue.size(); i++) {
+			s += currentValue.getWithFlatIndex(i);
+			if (i < currentValue.size() - 1)
+				s += "\n";
+		}
+		textArea.setText(s);
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
-			low = Integer.MIN_VALUE;
-			high = Integer.MAX_VALUE; 
-			if (!cbLowMin.isSelected())
-				low = Integer.parseInt(tfLow.getText());
-			if (!cbHighMax.isSelected())
-				high = Integer.parseInt(tfHigh.getText());
-			range = new IntegerRange(low,high);
-			return range.toString();	
+			s = textArea.getText();
+			List<String> entries = new ArrayList<>();
+			String[] parts = s.split("\\n");
+			for (String p : parts) {
+				p = p.trim();
+				if (p.length() > 0)
+					entries.add(p);
+			}
+			if (entries.isEmpty())
+				entries.add("");
+			DoubleTable newValue = new DoubleTable(new Dimensioner(entries.size()));
+			for (int i = 0; i < entries.size(); i++)
+				newValue.setByInt(entries.get(i), i);
+			return newValue;
 		}
 		return currentValue;
+
 	}
 
 	@Override

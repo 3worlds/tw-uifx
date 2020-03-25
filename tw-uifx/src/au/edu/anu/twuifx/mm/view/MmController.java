@@ -79,6 +79,7 @@ import org.controlsfx.control.PropertySheet.Item;
 import javafx.scene.effect.DropShadow;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorList;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
@@ -101,6 +102,7 @@ import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.DoubleTable.DoubleTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.StringTable.StringTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
@@ -834,7 +836,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			StringTable st = (StringTable) value;
 			if (st.getDimensioners().length == 1)
 				return new StringTableItem(this, key, (ElementAdapter) element, true, category, description);
-		}
+		} //else if (value instanceof DoubleTable) {
+		//	DoubleTable dt = (DoubleTable) value;
+		//	if (dt.getDimensioners().length ==1)
+	//			return new DoubleTableItem(this,key,(ElementAdapter)element,true,category,description);
+//		}
 		return new SimpleMMPropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}
 
