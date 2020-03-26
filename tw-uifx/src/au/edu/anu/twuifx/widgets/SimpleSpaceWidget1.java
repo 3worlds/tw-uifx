@@ -500,7 +500,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				double x = member.getValue()[0];
 				double y = member.getValue()[1];
 				if (box.contains(x, y)) {
-					return key + "." + member.getKey();
+					return key + "." + member.getKey()+"["+x+","+y+"]";
 				}
 			}
 		}
