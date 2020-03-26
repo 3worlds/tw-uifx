@@ -835,7 +835,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		} else if (value instanceof StringTable) {
 			StringTable st = (StringTable) value;
 			if (st.getDimensioners().length == 1)
-				return new StringTableItem(this, key, (ElementAdapter) element, true, category, description);
+				return new StringTableItem(this, key, (ElementAdapter) element, editable, category, description);
 		} //else if (value instanceof DoubleTable) {
 		//	DoubleTable dt = (DoubleTable) value;
 		//	if (dt.getDimensioners().length ==1)
