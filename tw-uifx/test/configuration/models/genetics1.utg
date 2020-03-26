@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Wed Mar 25 17:23:41 AEDT 2020
+treegraph // saved by OmugiGraphExporter on Thu Mar 26 13:31:21 AEDT 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -16,6 +16,14 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 25 17:23:41 AEDT 2020
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				units = java.lang.String(us)
+			field lifeSpan
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..100)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field matAge
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..10)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
 	system sys
 		parameterClass = java.lang.String()
 		dynamics dyns
@@ -40,14 +48,21 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 25 17:23:41 AEDT 2020
 			initialState state
 				group male
 					component cmpMale
+					component cmpMale2
 				group female
 					component cmpFemale
+					component cmpFemale2
 		structure struc
+			componentType ctMale
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+				mobile = java.lang.Boolean(true)
+				parameterClass = java.lang.String(code.sys.Genome)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"code.sys.Space_CtMaleRelocateFunction"))
 			categorySet animal
 				category catMale
 				category catFemale
 			relationType mating
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			arena arena
 				space space
 					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(wrapAroundAllD)
@@ -56,16 +71,11 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 25 17:23:41 AEDT 2020
 					units = java.lang.String(m)
 					x-limits = fr.ens.biologie.generic.utils.Interval(]0.0,100.0[)
 					y-limits = fr.ens.biologie.generic.utils.Interval(]0.0,100.0[)
-			componentType ctMale
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-				mobile = java.lang.Boolean(false)
-				parameterClass = java.lang.String(code.sys.Genome)
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"","code.sys.Space_CtMaleRelocateFunction","code.sys.Space_MaleRelocateFunction"))
 			componentType ctFemale
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-				mobile = java.lang.Boolean(false)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+				mobile = java.lang.Boolean(true)
 				parameterClass = java.lang.String(code.sys.Genome)
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"","code.sys.Space_FemaleRelocateFunction","code.sys.Space_CtFemaleRelocateFunction"))
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"code.sys.Space_CtFemaleRelocateFunction"))
 	experiment expt
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -75,7 +85,7 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 25 17:23:41 AEDT 2020
 	userInterface gui
 		top top
 			widget time
-				order = java.lang.Integer(0)
+				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
 			widget ctrl
@@ -90,13 +100,17 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 25 17:23:41 AEDT 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
 
 // CROSS-LINKS
+[componentType:ctFemale] belongsTo blngsTo [category:catFemale]
 [widget:ctrl] trackTime trksTmOf [dynamics:dyns]
+[component:cmpFemale2] instanceOf instOf2 [componentType:ctFemale]
+[component:cmpFemale2] location loc2 [space:space]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]40.0,40.0))
 [relationType:mating] fromCategory from [category:catFemale]
 [relationType:mating] toCategory to [category:catMale]
 [category:catFemale] parameters pars [record:genome]
 [category:catMale] parameters pars1 [record:genome]
 [experiment:expt] baseLine bsln [system:sys]
-[componentType:ctFemale] belongsTo blngsTo [category:catFemale]
+[group:female] groupOf grpOf [componentType:ctFemale]
 [table:alleles] sizedBy szBy [dimensioner:ploidy]
 	rank = java.lang.Integer(0)
 [table:alleles] sizedBy szBy1 [dimensioner:nAlleles]
@@ -104,14 +118,16 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 25 17:23:41 AEDT 2020
 [component:cmpMale] location loc1 [space:space]
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]50.0,50.0))
 [component:cmpMale] instanceOf instOf1 [componentType:ctMale]
-[group:male] groupOf grpOf1 [componentType:ctMale]
-[group:female] groupOf grpOf [componentType:ctFemale]
+[componentType:ctMale] belongsTo blngsTo1 [category:catMale]
 [component:cmpFemale] location loc [space:space]
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]51.0,51.0))
 [component:cmpFemale] instanceOf instOf [componentType:ctFemale]
 [process:mate] inSpace in [space:space]
 	searchRadius = java.lang.Double(2.0)
 [process:mate] appliesTo aplyTo [relationType:mating]
+[component:cmpMale2] instanceOf instOf3 [componentType:ctMale]
+[component:cmpMale2] location loc3 [space:space]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]41.0,41.0))
 [widget:time] trackTime trksTmOf1 [dynamics:dyns]
+[group:male] groupOf grpOf1 [componentType:ctMale]
 [widget:space1] trackSpace trksSpc [space:space]
-[componentType:ctMale] belongsTo blngsTo1 [category:catMale]
