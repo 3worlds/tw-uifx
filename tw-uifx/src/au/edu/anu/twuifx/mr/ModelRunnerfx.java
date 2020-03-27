@@ -41,19 +41,20 @@ import java.util.TimerTask;
 import com.sun.javafx.application.LauncherImpl;
 
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.rscs.aot.init.Initialiser;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mr.view.GUIBuilder;
 import au.edu.anu.twuifx.mr.view.MrController;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
-import fr.ens.biologie.generic.Initialisable;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -135,7 +136,18 @@ public class ModelRunnerfx extends Application {
 			stop();
 		});
 		Preferences.initialise(Project.makeRuntimePreferencesFile());
-		//MRmain.initGraph(config);
+		// JG - initialise all widgets except controllers
+		for (TreeNode tn:uiNode.subTree()) {
+			if (tn instanceof WidgetNode)
+				if (!(tn instanceof StateMachineController))
+					((WidgetNode)tn).getInstance(); // this instantiates the widget and stores it in WidgetNode
+		}
+		// JG - initialise all controller widgets
+		for (TreeNode tn:uiNode.subTree()) {
+			if (tn instanceof WidgetNode)
+				if (tn instanceof StateMachineController)
+					((WidgetNode)tn).getInstance(); // this instantiates the widget and stores it in WidgetNode
+		}
 		uiDeployer = new GUIBuilder(uiNode, controller);
 		stage.show();
 		stage.toBack();
