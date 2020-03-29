@@ -202,9 +202,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			} else
 				log.warning("Request to delete name [" + name + "] in non-existent system [" + key + "] " + data);
 			// Don't remove empty system entries as new entries will acquire the same
-			// colour		} else {
 			log.warning("Request for unknown op");
-			// relocate - wait and see
+			// relocate i.e move something - wait and see
 		}
 		return updateLegend;
 
