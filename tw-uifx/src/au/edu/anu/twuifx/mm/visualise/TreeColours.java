@@ -45,13 +45,13 @@ public class TreeColours {
 		nodeColours.put(ConfigurationNodeLabels.N_EXPERIMENT.label(), Color.GOLDENROD);
 		nodeColours.put(ConfigurationNodeLabels.N_UI.label(), Color.WHITE);
 	}
-	public static Color getCategoryColor(String key, String label){
-		if (!nodeColours.containsKey(key))
+	public static Color getCategoryColor(String category, String label){
+		if (!nodeColours.containsKey(category))
 			if (label.equals(ConfigurationNodeLabels.N_SYSTEM.label()))
 				return Color.TEAL;
 			else
 				return Color.BLACK;
-		return nodeColours.get(key);
+		return nodeColours.get(category);
 	}
 
 }
