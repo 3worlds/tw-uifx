@@ -201,7 +201,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 					log.warning("Request to delete non-existent name [" + name + "] in system [" + key + "] " + data);
 			} else
 				log.warning("Request to delete name [" + name + "] in non-existent system [" + key + "] " + data);
-			// Don't remove empty system entries as new entries will acquire the same
+			// Don't remove empty system entries as new entries will acquire the same name
 			log.warning("Request for unknown op");
 			// relocate i.e move something - wait and see
 		}

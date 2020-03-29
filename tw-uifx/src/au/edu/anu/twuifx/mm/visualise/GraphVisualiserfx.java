@@ -189,7 +189,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		c.radiusProperty().bind(nodeRadius);
 		Text text = new Text(n.getDisplayText(nodeClassOnly));
 		n.setVisualElements(c, text);
-		Color nColor = TreeColours.getCategoryColor(n.getCategory());
+		Color nColor = TreeColours.getCategoryColor(n.getCategory(),n.cClassId());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
 		c.setEffect(ds);
 		c.setOnMousePressed(e -> {
