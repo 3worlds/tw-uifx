@@ -119,7 +119,10 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 
 		pane.setSpacing(5.0);
 
-		setButtonLogic();
+		nullButtons();
+		
+		getUserPreferences();
+		
 		return pane;
 	}
 
@@ -153,14 +156,10 @@ public class SimpleControlWidget extends StateMachineController implements Widge
 	@Override
 	public void onStatusMessage(State state) {
 		log.info(state.toString());
-		if (isSimulatorState(state,finished))
-			System.out.println("PUT BREAKPOINT HERE when stepping");
-		setButtonLogic();
+		setButtonLogic(state);
 	}
 
-	private void setButtonLogic() {
-		final State state = stateMachine().getCurrentState();
-
+	private void setButtonLogic(State state) {
 		Platform.runLater(() -> {
 			if (isSimulatorState(state, waiting)) {
 				setButtons(false, false, true, runGraphic);

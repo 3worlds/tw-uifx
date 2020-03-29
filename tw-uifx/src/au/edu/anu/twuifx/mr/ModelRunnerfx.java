@@ -34,7 +34,8 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.hasTheLabel;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrOne;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UI;
-
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_WIDGET_SUBCLASS;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,10 +43,12 @@ import com.sun.javafx.application.LauncherImpl;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mr.view.GUIBuilder;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.TreeNode;
@@ -118,7 +121,7 @@ public class ModelRunnerfx extends Application {
 		stage.setHeight(600);
 		String title = Project.getDisplayName();
 		stage.titleProperty().set(title);
-		//setUserAgentStylesheet(STYLESHEET_CASPIAN);
+		// setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(ModelRunnerfx.class.getResource("view/Mr.fxml"));
 		Parent root = (Parent) loader.load();
@@ -136,19 +139,15 @@ public class ModelRunnerfx extends Application {
 			stop();
 		});
 		Preferences.initialise(Project.makeRuntimePreferencesFile());
-		// JG - initialise all widgets except controllers
-		for (TreeNode tn:uiNode.subTree()) {
-			if (tn instanceof WidgetNode)
-				if (!(tn instanceof StateMachineController))
-					((WidgetNode)tn).getInstance(); // this instantiates the widget and stores it in WidgetNode
-		}
-		// JG - initialise all controller widgets
-		for (TreeNode tn:uiNode.subTree()) {
-			if (tn instanceof WidgetNode)
-				if (tn instanceof StateMachineController)
-					((WidgetNode)tn).getInstance(); // this instantiates the widget and stores it in WidgetNode
-		}
+		// 
+		// Everything is initialized here through cascading.
 		uiDeployer = new GUIBuilder(uiNode, controller);
+		// Get instance of controller (it is already initialized) and send the
+		WidgetNode ctrlNode = getControllerNode(uiNode);
+		StateMachineController smc = (StateMachineController) ctrlNode.getInstance();
+		// This event is sent from here now rather than from the deployer initialization.
+		smc.sendEvent(initialise.event());
+
 		stage.show();
 		stage.toBack();
 		Platform.runLater(() -> {
@@ -175,6 +174,23 @@ public class ModelRunnerfx extends Application {
 				stage.toFront();
 			}
 		});
+	}
+
+	private static WidgetNode getControllerNode(TreeGraphNode uiNode) {
+		for (TreeNode tn : uiNode.subTree()) {
+			if (tn instanceof WidgetNode) { // WidgetNodes are not related to SMC - only the instance is.
+				WidgetNode wn = (WidgetNode) tn;
+				String klass = (String) wn.properties().getPropertyValue(P_WIDGET_SUBCLASS.key());
+				try {
+					Class<?> widgetClass = Class.forName(klass);
+					if (StateMachineController.class.isAssignableFrom(widgetClass))
+						return wn;
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		throw new TwuifxException("No controller found in configuration.");
 	}
 
 	@Override

@@ -257,6 +257,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
 
+		getUserPreferences();
+
 		return content;
 	}
 

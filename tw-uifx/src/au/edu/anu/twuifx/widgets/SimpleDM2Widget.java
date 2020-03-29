@@ -213,6 +213,9 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 		content.setTop(buildNamePane());
 		content.setLeft(buildPalettePane());
 		content.setCenter(buildScrollPane());
+		
+		getUserPreferences();
+
 		return content;
 	}
 

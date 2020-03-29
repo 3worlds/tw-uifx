@@ -208,7 +208,9 @@ public class SimpleControlWidget2 extends StateMachineController
 		chart.getRenderers().add(renderer);
 		renderer.getDatasets().add(dataSet);
 
-		setButtonLogic();
+		nullButtons();
+
+		getUserPreferences();
 
 		return content;
 	}
@@ -291,7 +293,7 @@ public class SimpleControlWidget2 extends StateMachineController
 				lblDelta.setText("0");
 			});
 		}
-		setButtonLogic();
+		setButtonLogic(state);
 	}
 
 	@Override
@@ -306,8 +308,8 @@ public class SimpleControlWidget2 extends StateMachineController
 	public void getUserPreferences() {
 	}
 
-	private void setButtonLogic() {
-		State state = stateMachine().getCurrentState();
+	private void setButtonLogic(State state) {
+
 		Platform.runLater(() -> {
 			log.info("setButtonLogic: " + state);
 			if (isSimulatorState(state, waiting)) {

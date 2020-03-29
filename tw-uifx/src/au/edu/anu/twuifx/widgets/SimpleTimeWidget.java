@@ -97,6 +97,9 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 		//content.setPadding(new Insets(4, 1, 1, 2));
 		lblTime = new Label(formatOutput(timeFormatter.getInitialTime()));
 		content.getChildren().addAll(new Label("Simulator time: "),lblTime);
+		
+		getUserPreferences();
+
 		return content;
 	}
 

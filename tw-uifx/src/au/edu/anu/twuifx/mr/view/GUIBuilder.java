@@ -249,17 +249,14 @@ public class GUIBuilder {
 	private static final String splitter = "splitter_";
 
 	public void getPreferences() {
-		for (WidgetGUI w : guiWidgets)
-			w.getUserPreferences();
+//		for (WidgetGUI w : guiWidgets)
+//			w.getUserPreferences();
 		// maybe needs to be delayed!
 		for (SplitPane s : splitPanes) {
 			String key = splitter + s.getId();
 			double[] pos = UiHelpers.getSplitPanePositions(0.5, key);
 			s.setDividerPositions(pos);
 		}
-//		for (Widget w : hlWidgets) {
-//			w.getPreferences();
-//		}
 	}
 
 	public void putPreferences() {

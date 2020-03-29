@@ -366,6 +366,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		legend.setHgap(3);
 
 		container.setRight(legend);
+
+		getUserPreferences();
+
 		return container;
 	}
 

@@ -190,6 +190,9 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);
 		sp.setContent(content);
+		
+		getUserPreferences();
+
 		return sp;
 	}
 

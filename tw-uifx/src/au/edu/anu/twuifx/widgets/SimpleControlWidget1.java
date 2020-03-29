@@ -149,7 +149,10 @@ public class SimpleControlWidget1 extends StateMachineController
 		pane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
 				lblRealTime, new Label("[ms]"));
 
-		setButtonLogic();
+		nullButtons();
+
+		getUserPreferences();
+		
 		return pane;
 	}
 
@@ -231,7 +234,7 @@ public class SimpleControlWidget1 extends StateMachineController
 				lblDelta.setText("0");
 			});
 		}
-		setButtonLogic();
+		setButtonLogic(state);
 	}
 
 	@Override
@@ -246,8 +249,7 @@ public class SimpleControlWidget1 extends StateMachineController
 	public void getUserPreferences() {
 	}
 
-	private void setButtonLogic() {
-		State state = stateMachine().getCurrentState();
+	private void setButtonLogic(State state) {
 		Platform.runLater(() -> {
 			log.info("setButtonLogic: " + state);
 			if (isSimulatorState(state, waiting)) {
