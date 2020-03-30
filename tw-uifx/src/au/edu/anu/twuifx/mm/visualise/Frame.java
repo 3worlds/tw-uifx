@@ -11,16 +11,19 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
  * @date 30 Mar 2020
  */
 public class Frame {
+	private static final double w = 0.5;
 	private double radius;// distance to all children
-	
+
 	private Frame parentFrame;
 	private VisualNode rootNode;
 	private int index;// ith child
 	private List<Frame> children;
+	private boolean rootFrame;
 
 	public Frame(Frame parent, VisualNode rootNode, int index) {
 		this.radius = 1.0;
-		if (parent != null)
+		rootFrame = (parent == null);
+		if (!rootFrame)
 			this.radius = parent.getRadius() / 2.0;
 		this.parentFrame = parent;
 		this.rootNode = rootNode;
@@ -30,6 +33,17 @@ public class Frame {
 
 	protected double getRadius() {
 		return radius;
+	}
+
+	protected double getAngle() {
+		if (rootFrame)
+			return 0.0;
+		double m = parentFrame.getChildren().size();
+		double i = index;
+		if (parentFrame.rootFrame)
+			return (2.0 * Math.PI * i) / m;
+		else
+			return (Math.PI - (w * i / m) + w / (2.0 * m));
 	}
 
 	protected Frame getParentFrame() {
@@ -59,9 +73,6 @@ public class Frame {
 
 	protected boolean hasParent() {
 		return parentFrame != null;
-	}
-			
-		
 	}
 
 }

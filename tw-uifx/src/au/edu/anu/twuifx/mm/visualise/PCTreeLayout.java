@@ -60,7 +60,7 @@ public class PCTreeLayout implements ILayout {
 	}
 
 	private void dump(Frame f, String indent) {
-		System.out.println("Radius: " + f.getRadius() + indent + f.getRootNode().getDisplayText(false));
+		System.out.println("vector: [" + f.getAngle()+","+f.getRadius() +"]"+ indent + f.getRootNode().getDisplayText(false));
 		for (Frame cf : f.getChildren())
 			dump(cf, indent + "\t");
 
