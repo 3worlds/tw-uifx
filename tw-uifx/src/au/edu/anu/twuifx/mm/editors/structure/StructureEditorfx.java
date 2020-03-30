@@ -229,6 +229,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				});
 			}
 		}
+		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_LAYOUT);
+		mi.setOnAction((e) -> {
+			gvisualiser.doFocusedLayout(editableNode.getSelectedVisualNode());
+		});
 	}
 
 	private enum MenuLabels {
@@ -249,6 +253,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_DELETE_NODE/*       */("Delete node"), // config
 		// --------------------------------------------
 		ML_ALL/*               */("All"),//
+		ML_LAYOUT/*            */("Focus layout"),
 		;
 
 		private final String label;

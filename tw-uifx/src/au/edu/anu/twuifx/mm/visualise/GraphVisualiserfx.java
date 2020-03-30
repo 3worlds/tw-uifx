@@ -93,7 +93,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Color hoverColor;
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
-	private static final Double animateDuration = 500.0;
+	private static final Double animateDuration = 1000.0;
 	private final IMMController controller;
 
 	private boolean edgeClassOnly = false;
@@ -116,8 +116,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.controller = controller;
 		ds = new DropShadow();
 		hoverColor = Color.RED;
-		treeEdgeColor = Color.GREEN;
-		graphEdgeColor = Color.GRAY;
+		treeEdgeColor = Color.MEDIUMSEAGREEN;
+		graphEdgeColor = Color.INDIANRED;
 
 	}
 
@@ -389,8 +389,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		y = h * y;
 		circle.centerXProperty().unbind();
 		circle.centerYProperty().unbind();
-		KeyValue endX = new KeyValue(circle.centerXProperty(), x, Interpolator.LINEAR);
-		KeyValue endY = new KeyValue(circle.centerYProperty(), y, Interpolator.LINEAR);
+		KeyValue endX = new KeyValue(circle.centerXProperty(), x, Interpolator.EASE_BOTH);
+		KeyValue endY = new KeyValue(circle.centerYProperty(), y, Interpolator.EASE_BOTH);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
@@ -414,8 +414,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			circle.centerXProperty().unbind();
 			circle.centerYProperty().unbind();
 		}
-		KeyValue endX = new KeyValue(circle.centerXProperty(), xp.getValue(), Interpolator.LINEAR);
-		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.LINEAR);
+		
+		KeyValue endX = new KeyValue(circle.centerXProperty(), xp.getValue(), Interpolator.EASE_BOTH);
+		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.EASE_BOTH);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
@@ -544,6 +545,35 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		resetZorder();
 	}
 
+
+	private static double jitter(double value, double jitterFraction, Random rnd) {
+		double delta = rnd.nextDouble() * jitterFraction;
+		if (rnd.nextBoolean())
+			return value + delta;
+		else
+			return value - delta;
+	}
+
+	@Override
+	public void onRemoveParentLink(VisualNode vnChild) {
+		List<Node> sceneNodes = new ArrayList<>();
+		sceneNodes.add((Node) vnChild.getParentLine());
+		vnChild.removeParentLine();
+		pane.getChildren().removeAll(sceneNodes);
+	}
+
+	@Override
+	public void onNodeRenamed(VisualNode vNode) {
+		Text text = (Text) vNode.getText();
+		text.setText(vNode.getDisplayText(false));
+	}
+
+	@Override
+	public void onEdgeRenamed(VisualEdge vEdge) {
+		Text text = (Text) vEdge.getText();
+		text.setText(vEdge.getDisplayText(false));
+	}
+	
 	@Override
 	public void doLayout(double jitterFraction) {
 		ILayout layout = new TreeLayout(visualGraph).compute();
@@ -588,31 +618,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		GraphState.setChanged();
 	}
 
-	private static double jitter(double value, double jitterFraction, Random rnd) {
-		double delta = rnd.nextDouble() * jitterFraction;
-		if (rnd.nextBoolean())
-			return value + delta;
-		else
-			return value - delta;
-	}
-
 	@Override
-	public void onRemoveParentLink(VisualNode vnChild) {
-		List<Node> sceneNodes = new ArrayList<>();
-		sceneNodes.add((Node) vnChild.getParentLine());
-		vnChild.removeParentLine();
-		pane.getChildren().removeAll(sceneNodes);
-	}
-
-	@Override
-	public void onNodeRenamed(VisualNode vNode) {
-		Text text = (Text) vNode.getText();
-		text.setText(vNode.getDisplayText(false));
-	}
-
-	@Override
-	public void onEdgeRenamed(VisualEdge vEdge) {
-		Text text = (Text) vEdge.getText();
-		text.setText(vEdge.getDisplayText(false));
+	public void doFocusedLayout(VisualNode root) {
+		ILayout layout = new PCTreeLayout(root);		
 	}
 }
