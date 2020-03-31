@@ -202,9 +202,10 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			} else
 				log.warning("Request to delete name [" + name + "] in non-existent system [" + key + "] " + data);
 			// Don't remove empty system entries as new entries will acquire the same name
-			log.warning("Request for unknown op");
+		} else
+			log.warning("Request for unknown op: "+data);
 			// relocate i.e move something - wait and see
-		}
+		
 		return updateLegend;
 
 	}
@@ -309,6 +310,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		Preferences.putBoolean(widgetId + keyColour64, colour64);
 	}
 
+	private static final int firstUse = -1;
 	@Override
 	public void getUserPreferences() {
 		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
@@ -316,7 +318,14 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
 		resolution = Preferences.getInt(widgetId + keyResolution, 50);
-		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, 2);
+		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, firstUse);
+		if (symbolRadius==firstUse) {
+			// onMeatData has run therefore spaceBounds is valid
+			double s= Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
+			// assume a nominal canvas size of 200
+			resolution = Math.max(1,(int) (200.0/s));
+			symbolRadius = 2;
+		}
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
 		double[] rgb = Preferences.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
 				Color.WHITE.getBlue());

@@ -84,7 +84,8 @@ public class SimpleMMPropertyItem implements Item {
 
 	@Override
 	public String getName() {
-		return element.classId()+":"+element.id() + "#" + key;
+//		return element.classId()+":"+element.id() + "#" + key;
+		return  element.id() + "#" + key;
 	}
 
 	@Override

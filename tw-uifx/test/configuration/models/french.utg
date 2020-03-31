@@ -261,7 +261,10 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //
 //}
 //
-//
+// include
+// import fr.cnrs.iees.uit.space.Box;
+// import fr.cnrs.iees.uit.space.Point;
+
 //public class Plot_TreeRelocateFunction extends RelocateFunction {
 //
 //	@Override
@@ -294,6 +297,8 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //
 //}
 
+
+// import static code.system.PotentialGrowth.*;
 //public class Init extends SecondaryParametersInitialiser {
 //
 //	private double sqr(double a) {
@@ -713,14 +718,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
 			container cont
-				order = java.lang.Integer(0)
+				order = java.lang.Integer(1)
 				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 				widget popwgt
 					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 				widget indwgt
-					order = java.lang.Integer(0)
+					order = java.lang.Integer(1)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 		top toolBar
