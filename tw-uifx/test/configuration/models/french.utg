@@ -31,9 +31,6 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //		if (par.pmax2()>0)
 //			fact3 = 1+exp(log(par.pmax2()*(ct.stemAge()+1)));
 //		dec.potG(par.rgr()*Rs*fact3); // maximal growth coefficient, not real growth
-//		// set count of neighbours to 0 is that right ??
-//		dec.nn2(0);
-//		dec.nng(0);
 //	}
 //
 //	protected static double height(double href, double hmax, double dmax, double d) {
@@ -163,11 +160,11 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //		int agemax = par.ageMax();
 //		double Smin = par.Smin();
 //		double Smax = par.Smax();
-//		// eliminatino of too old resprouts
+//		// elimination of too old resprouts
 //		if ((age>ct.stemAge()) &
 //			(age>par.optAge()) &
 //			(dec.h()<par.grassHt()*100)) // grassHt
-//			return true;
+//			return decide(1-Smin);
 //		// base survival
 //		double S = 1.0;
 //		// effect of competition on survival
@@ -264,7 +261,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 // include
 // import fr.cnrs.iees.uit.space.Box;
 // import fr.cnrs.iees.uit.space.Point;
-
+//
 //public class Plot_TreeRelocateFunction extends RelocateFunction {
 //
 //	@Override
@@ -272,8 +269,8 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //			SystemComponent  other, Location otherLoc, Box limits) {
 //		double[] newLoc = new double[2];
 //		TreeDrv pct = (TreeDrv) other.currentState();
-//		TreeDec pdec = (TreeDec) other.currentState();
-//		TreePar par = (TreePar) focal.parameters();
+//		TreeDec pdec = (TreeDec) other.decorators();
+//		TreePar par = (TreePar) other.parameters();
 //		double x;
 //		double y;
 //		if (rng().nextDouble()<par.dispersal()) {
@@ -326,8 +323,8 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //			ht =2*(par.Hmax()/par.Dmax())*diss-(par.Hmax()/sqr(par.Dmax()))*sqr(diss);
 //			grw = par.rgr()*sqr(diss)*(1-(diss*ht*100)/(par.Hmax()*par.Dmax()));
 //		} while ((diss<par.Dmax())&(grw*(1+par.pmax())-(200-ht*100)*sqr(diss) <= 0));
-//		par.hini(ht);
-//		par.dini(diss);
+//		par.hini(ht*100);
+//		par.dini(diss*100);
 //		par.a(a);
 //		par.b(b);
 //		par.CRMax(maxCR);
@@ -647,14 +644,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 						variableValues varVals
 							age = java.lang.Long(25)
 							birthDate = java.lang.Long(-25)
-							d = java.lang.Double(10.0)
+							d = java.lang.Double(15.0)
 							lowGrowthCounter = java.lang.Integer(0)
-							stemAge = java.lang.Integer(10)
+							stemAge = java.lang.Integer(20)
 					parameterValues parVals
 						Dmax = java.lang.Double(45.0)
 						Hmax = java.lang.Double(800.0)
 						Smax = java.lang.Double(0.99)
-						Smin = java.lang.Double(0.1)
+						Smin = java.lang.Double(0.2)
 						acr = java.lang.Double(-1.305)
 						ageMax = java.lang.Integer(70)
 						ageMin = java.lang.Integer(8)
@@ -664,19 +661,19 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 						dispersal = java.lang.Double(0.8)
 						fireH95 = java.lang.Double(2.0)
 						grassComp = java.lang.Double(0.5)
-						grassHt = java.lang.Double(2.0)
+						grassHt = java.lang.Double(1.5)
 						minGrw = java.lang.Double(0.4)
-						optAge = java.lang.Double(30.0)
-						pcfec = java.lang.Double(10.0)
+						optAge = java.lang.Double(15.0)
+						pcfec = java.lang.Double(50.0)
 						pmax = java.lang.Double(0.5)
 						pmax2 = java.lang.Double(0.05)
 						rgr = java.lang.Double(57.0)
 				component F1
 					parameterValues parVals1
-						fireHet = java.lang.Double(0.3)
-						freq = java.lang.Double(1.0)
+						fireHet = java.lang.Double(0.2)
+						freq = java.lang.Double(1000.0)
 						h95m = java.lang.Double(1.9)
-						h95sd = java.lang.Double(0.3)
+						h95sd = java.lang.Double(0.7)
 					variableValues varVals1
 						h95a = java.lang.Double(2.0)
 						tslf = java.lang.Integer(0)
@@ -718,14 +715,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
 			container cont
-				order = java.lang.Integer(1)
+				order = java.lang.Integer(0)
 				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 				widget popwgt
 					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 				widget indwgt
-					order = java.lang.Integer(1)
+					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 		top toolBar
