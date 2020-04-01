@@ -35,8 +35,11 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMOD
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
+import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -47,6 +50,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -62,8 +66,17 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Window;
 
 /**
  * @author Ian Davies
@@ -73,8 +86,9 @@ import javafx.scene.layout.BorderPane;
  *       Trial of chart-fx based on the "RollingBufferSample"
  */
 public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
+	private String widgetId;
 
-	private int BUFFER_CAPACITY = 100;// pref mm/mr or both
+	private int BUFFER_CAPACITY;// pref mm/mr or both
 	// drop overlayed points
 	private int MIN_PIXEL_DISTANCE = 0;
 	// private int N_SAMPLES = 3000;// what is this?
@@ -100,19 +114,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		policy.setProperties(id, properties);
-	}
-
-	@Override
-	public void putUserPreferences() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void getUserPreferences() {
-		// TODO Auto-generated method stub
-		// on application thread AFTER getUserInterfaceContainer
-
+		this.widgetId = id;
 	}
 
 	@Override
@@ -173,14 +175,14 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			for (DataLabel dl : tsmeta.doubleNames()) {
 				String key = dl.toString();
 //				log.info("Tracking: " + key);
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, BUFFER_CAPACITY);
 				dataSetMap.put(key, ds);
 			}
 
 			for (DataLabel dl : tsmeta.intNames()) {
 				String key = dl.toString();
 //				log.info("Tracking: " + key);
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, BUFFER_CAPACITY);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, BUFFER_CAPACITY);
 				dataSetMap.put(key, ds);
 			}
 			/*
@@ -264,8 +266,54 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		Menu mu = new Menu(widgetId);
+		MenuItem miEdit = new MenuItem("Edit...");
+		mu.getItems().add(miEdit);
+		miEdit.setOnAction(e -> edit());
+		return mu;
+	}
+
+	private void edit() {
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle(widgetId);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		dialog.initOwner((Window) Dialogs.owner());
+		GridPane content = new GridPane();
+		content.setVgap(5);
+		content.setHgap(3);
+		Label lbl = new Label("Buffer capacity");
+		Spinner<Integer> spCapacity = new Spinner<>();
+		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 10000, BUFFER_CAPACITY));
+		spCapacity.setMaxWidth(100);
+		spCapacity.setEditable(true);
+		content.add(lbl, 0, 0);
+		content.add(spCapacity, 1, 0);
+		dialog.getDialogPane().setContent(content);
+		Optional<ButtonType> result = dialog.showAndWait();
+		// Map<String, CircularDoubleErrorDataSet>
+		if (result.get().equals(ok)) {
+			int v = spCapacity.getValue();
+			if (v != BUFFER_CAPACITY) {
+				BUFFER_CAPACITY=v;
+				for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
+					CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
+					ds.resizeBuffer(BUFFER_CAPACITY);
+				}
+			}
+		}
+	}
+
+	private static final String keyBuffer = "bufferCapacity";
+
+	@Override
+	public void putUserPreferences() {
+		Preferences.putInt(widgetId + keyBuffer, BUFFER_CAPACITY);
+	}
+
+	@Override
+	public void getUserPreferences() {
+		BUFFER_CAPACITY = Preferences.getInt(widgetId + keyBuffer, 1000);
 	}
 
 }

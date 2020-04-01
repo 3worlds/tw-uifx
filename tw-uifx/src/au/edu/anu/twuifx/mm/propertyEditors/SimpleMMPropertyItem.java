@@ -101,7 +101,10 @@ public class SimpleMMPropertyItem implements Item {
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
+		//System.out.println(getName()+"| OLD:NEW\t["+oldValue+","+newValue+"]");
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
+			System.out.println(getName()+"| OLD:NEW\t["+oldValue+","+newValue+"]");
+			System.out.println("-------");
 			onUpdateProperty(newValue);
 		}
 	}
