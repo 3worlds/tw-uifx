@@ -8,10 +8,16 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //public class PotentialGrowth extends ChangeStateFunction {
 //
 //	@Override
-//	public void changeState(double t, double dt, SystemComponent focal) {
-//		TreeDrv ct = (TreeDrv) focal.currentState();
-//		TreeDec dec = (TreeDec) focal.decorators();
-//		TreePar par = (TreePar) focal.parameters();
+//	public void changeState(double t, double dt,
+//			TwData ecosystemPar, ComponentContainer ecosystemPopulationData,
+//			TwData lifeCyclePar, ComponentContainer lifeCyclePopulationData,
+//			TwData groupPar, ComponentContainer groupPopulationData,
+//			Box limits,
+//			SystemData auto, TwData drv, TwData ltc, Point loc,
+//			TwData decc, TwData nextDrv, double[] nextLoc) {
+//		TreeDrv ct = (TreeDrv) drv;
+//		TreeDec dec = (TreeDec) decc;
+//		TreePar par = (TreePar) groupPar;
 //		double D = ct.d();
 //		double H = height(0,par.Hmax(),par.Dmax(),D);
 //		dec.h(H);
@@ -19,7 +25,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //		dec.cr(CR);
 //		// potential growth
 //		// resprout growth enhancement factor due to reserves
-//		double rootAge = focal.autoVar().age();
+//		double rootAge = ((SystemData) auto).age();
 //		double ageDif = rootAge - ct.stemAge() ;
 //		double fact2 = par.a()*par.pmax()*ageDif*exp(-par.b()*ageDif);
 //		double Rs = 1;
@@ -86,11 +92,18 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //
 //	// Code follows that of LamtoT1 in MUSE (with errors fixed, hopefully)
 //	@Override
-//	public void changeState(double t, double dt, SystemComponent focal) {
-//		TreeDec dec = (TreeDec) focal.decorators();
-//		TreePar par = (TreePar) focal.parameters();
-//		TreeDrv ct = (TreeDrv) focal.currentState();
-//		TreeDrv nxt = (TreeDrv) focal.nextState();
+//	public void changeState(double t, double dt,
+//		TwData ecosystemPar, ComponentContainer ecosystemPopulationData,
+//		TwData lifeCyclePar, ComponentContainer lifeCyclePopulationData,
+//		TwData groupPar, ComponentContainer groupPopulationData,
+//		Box limits,
+//		SystemData auto, TwData drv, TwData ltc, Point loc,
+//		TwData decc, TwData nextDrv, double[] nextLoc) {
+//
+//		TreeDec dec = (TreeDec) decc;
+//		TreePar par = (TreePar) groupPar;
+//		TreeDrv ct = (TreeDrv) drv;
+//		TreeDrv nxt = (TreeDrv) nextDrv;
 //		// competition with grass
 //		// effect of neighbours
 //		double ctg = 1-par.grassComp();
@@ -118,8 +131,6 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //		// stem age
 //		nxt.stemAge(ct.stemAge()+1);
 //	}
-//
-//}
 //
 //public class Reproduction extends CreateOtherDecisionFunction {
 //
@@ -187,10 +198,16 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 //public class FuelIncrease extends ChangeStateFunction {
 //
 //	@Override
-//	public void changeState(double t, double dt, SystemComponent focal) {
-//		FireDrv ct = (FireDrv) focal.currentState();
-//		FireDrv nxt = (FireDrv) focal.nextState();
-//		FirePar par = (FirePar) focal.parameters();
+//	public void changeState(double t, double dt,
+//			TwData ecosystemPar, ComponentContainer ecosystemPopulationData,
+//			TwData lifeCyclePar, ComponentContainer lifeCyclePopulationData,
+//			TwData groupPar, ComponentContainer groupPopulationData,
+//			Box limits,
+//			SystemData auto, TwData drv, TwData ltc, Point loc,
+//			TwData dec, TwData nextDrv, double[] nextLoc) {
+//		FireDrv ct = (FireDrv) drv;
+//		FireDrv nxt = (FireDrv) nextDrv;
+//		FirePar par = (FirePar) groupPar;
 //		double h95 = 0.0;
 //		// fire occurence next time step?
 //		double proba = 0.0;
