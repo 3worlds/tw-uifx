@@ -86,34 +86,24 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		log.info("Thread: " + Thread.currentThread().getId());
 	}
 
-	private boolean initialMessage = false;
 	private ObservableList<TableData> tableDataList;
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
 		Platform.runLater(() -> {
-			if (!initialMessage) {
-				tableDataList = FXCollections.observableArrayList();
-				tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
-				timeFormatter.onMetaDataMessage(meta);
-				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+			tableDataList = FXCollections.observableArrayList();
+			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+			timeFormatter.onMetaDataMessage(meta);
+			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 
-				for (DataLabel dl : tsmeta.doubleNames())
-					tableDataList.add(new TableData(dl.toString()));
-				for (DataLabel dl : tsmeta.intNames())
-					tableDataList.add(new TableData(dl.toString()));
+			for (DataLabel dl : tsmeta.doubleNames())
+				tableDataList.add(new TableData(dl.toString()));
+			for (DataLabel dl : tsmeta.intNames())
+				tableDataList.add(new TableData(dl.toString()));
 
-				table.setItems(tableDataList);
-				initialMessage = true;
-			} else {
-				// reset the statistics and the initialvalue (if we had one)
-				for (TableData td : tableDataList) {
-					td.stats.reset();
-					td.setValue(0);
-				}
-				table.refresh();
-			}
+			table.setItems(tableDataList);
+			table.refresh();
 		});
 
 	}
@@ -149,6 +139,13 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		if (isSimulatorState(state, waiting))
 			Platform.runLater(() -> {
 				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+				// reset the statistics and the initialvalue (if we had one)
+				for (TableData td : tableDataList) {
+					td.stats.reset();
+					td.setValue(0);
+				}
+				table.refresh();
+
 			});
 	}
 
@@ -190,7 +187,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);
 		sp.setContent(content);
-		
+
 		getUserPreferences();
 
 		return sp;
