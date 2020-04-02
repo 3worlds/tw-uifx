@@ -408,6 +408,10 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(year)
+		record bidon
+			field sex
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		record treePar
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(treePar)
@@ -755,6 +759,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 [category:trees] drivers drvs [record:treeDrv]
 [category:trees] decorators decs [record:treeDec]
 [category:trees] parameters pars [record:treePar]
+[category:trees] lifetimeConstants [record:bidon]
 [widget:indwgt] trackSeries trksSrsOf1 [dataTracker:trkr]
 [initialiser:Init] appliesTo aplyTo7 [category:trees]
 [componentType:fire] belongsTo blngsTo1 [category:disturbance]
