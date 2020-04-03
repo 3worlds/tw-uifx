@@ -95,7 +95,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 			tableDataList = FXCollections.observableArrayList();
 			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 			timeFormatter.onMetaDataMessage(meta);
-			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));	
 
 			for (DataLabel dl : tsmeta.doubleNames())
 				tableDataList.add(new TableData(dl.toString()));
@@ -113,6 +113,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
+				System.out.println(data.itemLabel());
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
 				for (DataLabel dl : tsmeta.doubleNames()) {
 					int idx = tsmeta.indexOf(dl);
@@ -262,7 +263,6 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		public Statistics getStatistics() {
 			return stats;
 		}
-
 	}
 
 }

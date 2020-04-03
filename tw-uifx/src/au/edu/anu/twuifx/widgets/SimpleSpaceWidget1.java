@@ -46,6 +46,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -54,6 +55,7 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -144,12 +146,29 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		log.info(meta.toString());
+		log.info(meta.properties().toString());
 		timeFormatter.onMetaDataMessage(meta);
-		Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
-		Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
-		spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
-				yLimits.sup() - yLimits.inf());
+		SpaceType type = (SpaceType) meta.properties().getPropertyValue(P_SPACETYPE.key());
+		switch (type) {
+		case continuousFlatSurface: {
+			Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
+			Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
+			spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
+					yLimits.sup() - yLimits.inf());
+			return;
+		}
+		case squareGrid: {
+			Double cellSize = (Double) meta.properties().getPropertyValue(P_SPACE_CELLSIZE.key());
+			int xnCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NX.key());
+			int ynCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NY.key());
+			spaceBounds = new BoundingBox(0, 0, cellSize * xnCells, cellSize * ynCells);
+			return;
+		}
+		default: {
+			// Eventually, the archetype should prevent this situation
+			throw new TwuifxException(type + " not supported.");
+		}
+		}
 	}
 
 	@Override
@@ -203,9 +222,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				log.warning("Request to delete name [" + name + "] in non-existent system [" + key + "] " + data);
 			// Don't remove empty system entries as new entries will acquire the same name
 		} else
-			log.warning("Request for unknown op: "+data);
-			// relocate i.e move something - wait and see
-		
+			log.warning("Request for unknown op: " + data);
+		// relocate i.e move something - wait and see
+
 		return updateLegend;
 
 	}
@@ -311,6 +330,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 	private static final int firstUse = -1;
+
 	@Override
 	public void getUserPreferences() {
 		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
@@ -319,11 +339,11 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
 		resolution = Preferences.getInt(widgetId + keyResolution, 50);
 		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, firstUse);
-		if (symbolRadius==firstUse) {
+		if (symbolRadius == firstUse) {
 			// onMeatData has run therefore spaceBounds is valid
-			double s= Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
+			double s = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
 			// assume a nominal canvas size of 200
-			resolution = Math.max(1,(int) (200.0/s));
+			resolution = Math.max(1, (int) (200.0 / s));
 			symbolRadius = 2;
 		}
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
@@ -366,8 +386,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		bottom.setSpacing(5);
 		lblItem = new Label("");
 		lblTime = new Label("");
-		
-		bottom.getChildren().addAll(lblTime,new Label("System: "), lblItem);
+
+		bottom.getChildren().addAll(lblTime, new Label("System: "), lblItem);
 		container.setBottom(bottom);
 
 		legend = new GridPane();
@@ -501,7 +521,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		double scale = 1.0 / (double) resolution;
 		double size = (symbolRadius * 2) * scale;
 		double rad = symbolRadius * scale;
-		double clickX = (e.getX() * scale)+ spaceBounds.getMinX();
+		double clickX = (e.getX() * scale) + spaceBounds.getMinX();
 		double clickY = ((canvas.getHeight() - e.getY()) * scale) + spaceBounds.getMinY();
 		BoundingBox box = new BoundingBox(clickX - rad, clickY - rad, size, size);
 		for (Map.Entry<String, Map<String, double[]>> entry : items.entrySet()) {
@@ -511,7 +531,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				double x = member.getValue()[0];
 				double y = member.getValue()[1];
 				if (box.contains(x, y)) {
-					return key + "." + member.getKey()+"["+x+","+y+"]";
+					return key + "." + member.getKey() + "[" + x + "," + y + "]";
 				}
 			}
 		}
