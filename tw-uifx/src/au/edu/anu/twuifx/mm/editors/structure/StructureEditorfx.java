@@ -268,19 +268,22 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 		public static Menu addMenu(ContextMenu cm, MenuLabels ml) {
 			Menu result = new Menu(ml.label());
+			result.setMnemonicParsing(false);
 			cm.getItems().add(result);
 			return result;
 		}
 
 		public static MenuItem addMenuItem(Menu mu, String label) {
 			MenuItem result = new MenuItem(label);
-			mu.getItems().add(result);
+			result.setMnemonicParsing(false);
+		mu.getItems().add(result);
 			return result;
 		}
 
 		public static MenuItem addMenuItem(ContextMenu cm, MenuLabels ml) {
 			MenuItem result = new MenuItem(ml.label());
-			cm.getItems().add(result);
+			result.setMnemonicParsing(false);
+		cm.getItems().add(result);
 			return result;
 		}
 	}
