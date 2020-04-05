@@ -669,7 +669,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 //================== ERROR MSG LISTENER =============
 	@Override
-	public void onClear() {
+	public void onStartCheck() {
 //		System.out.println("Start check: "+Thread.currentThread().getName());
 		btnDeploy.setDisable(true);
 		btnCheck.setDisable(true);
@@ -683,7 +683,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	public void state(boolean valid) {
+	public void onEndCheck(boolean valid) {
 		isValid = valid;
 //		System.out.println("End check: "+Thread.currentThread().getName());
 		Platform.runLater(() -> {
