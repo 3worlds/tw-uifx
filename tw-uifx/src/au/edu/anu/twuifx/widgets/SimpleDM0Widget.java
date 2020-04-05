@@ -78,6 +78,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	private static Logger log = Logging.getLogger(SimpleDM0Widget.class);
 	private TableView<TableData> table;
 	private Label lblTime;
+	private Label lblItemLabel;
 
 	public SimpleDM0Widget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME_SERIES);
@@ -113,7 +114,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
-				System.out.println(data.itemLabel());
+				lblItemLabel.setText(data.itemLabel().toString());
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
 				for (DataLabel dl : tsmeta.doubleNames()) {
 					int idx = tsmeta.indexOf(dl);
@@ -182,7 +183,8 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		content.setPadding(new Insets(10, 0, 0, 10));
 		HBox hbox = new HBox();
 		lblTime = new Label("uninitialised");
-		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime);
+		lblItemLabel = new Label();
+		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime,lblItemLabel);
 		content.getChildren().addAll(table, hbox);
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
