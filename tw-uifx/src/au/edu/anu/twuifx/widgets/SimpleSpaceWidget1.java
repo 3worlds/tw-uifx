@@ -108,7 +108,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private ScrollPane scrollPane;
 	private Label lblItem;
 	private Label lblTime;
-	private Label lblTimeUnits;
 	private Bounds spaceBounds;
 	private String widgetId;
 	private WidgetTrackingPolicy<TimeData> policy;
@@ -116,7 +115,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private Map<String, Map<String, double[]>> items;
 	private List<Color> colours;
 	private final Map<String, Color> itemColours;
-	private final Map<String, Integer> colourRegister;
 	private GridPane legend;
 
 	private int resolution;
@@ -135,7 +133,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		items = new HashMap<>();
 		colours = new ArrayList<>();
 		itemColours = new HashMap<>();
-		colourRegister = new HashMap<>();
+		new HashMap<>();
 	}
 
 	@Override

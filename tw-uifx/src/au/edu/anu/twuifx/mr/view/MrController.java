@@ -31,8 +31,6 @@
 package au.edu.anu.twuifx.mr.view;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -68,7 +66,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * @author Ian Davies
@@ -106,7 +103,7 @@ public class MrController implements IMRController {
 	@FXML
 	private HBox statusBar;
 
-	private IRunTimeParameterizer dashboard;
+	//private IRunTimeParameterizer dashboard;
 
 	public TabPane getTabPane() {
 		return tabPane;
@@ -249,7 +246,7 @@ public class MrController implements IMRController {
 
 	@FXML
 	public void initialize() {
-		model = new MRModel(this);
+		model = new MRModel();
 		statusBar.setSpacing(5);
 		statusBar.setPadding(new Insets(1, 1, 1, 1));
 		//statusBar.setStyle("-fx-background-color: lightgray");

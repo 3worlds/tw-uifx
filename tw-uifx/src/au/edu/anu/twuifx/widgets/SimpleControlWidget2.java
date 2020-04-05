@@ -55,7 +55,6 @@ import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
 import fr.cnrs.iees.rvgrid.rendezvous.RendezvousProcess;
-import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -115,7 +114,6 @@ public class SimpleControlWidget2 extends StateMachineController
 
 		// RV for data messages
 		addRendezvous(new RendezvousProcess() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void execute(RVMessage message) {
 				if (message.getMessageHeader().type() == DataMessageTypes.TIME) {
@@ -126,7 +124,6 @@ public class SimpleControlWidget2 extends StateMachineController
 		}, DataMessageTypes.TIME);
 		// RV for metadata messages
 		addRendezvous(new RendezvousProcess() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void execute(RVMessage message) {
 				if (message.getMessageHeader().type() == DataMessageTypes.METADATA) {

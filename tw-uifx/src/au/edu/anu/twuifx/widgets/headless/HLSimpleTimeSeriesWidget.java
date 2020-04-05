@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -17,7 +16,6 @@ import au.edu.anu.twcore.data.runtime.Output0DData;
 import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
-import au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.project.Project;
@@ -44,7 +42,6 @@ import fr.ens.biologie.generic.utils.Logging;
 public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
-	private Map<String, Number> dataSetMap;
 	private File outFile;
 	private String widgetId;
 	private PrintWriter writer;
@@ -95,7 +92,7 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 				log.info("Opening file!");
 				timeFormatter.onMetaDataMessage(meta);
 				writer = new PrintWriter(outFile);
-				dataSetMap = new HashMap<>();
+				new HashMap<>();
 				tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 				TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
 				int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());

@@ -57,8 +57,6 @@ import javafx.stage.Window;
  * 
  */
 public class ParameterWindow implements IRunTimeParameterizer{
-	private TreeGraph<TreeGraphDataNode, ALEdge> graph;
-	private BooleanProperty showToggle;
 	private Stage stage;
 	private Button btnApply;
 	private Button btnSave;
@@ -66,8 +64,6 @@ public class ParameterWindow implements IRunTimeParameterizer{
 	private PropertySheet propertySheet;
 
 	public ParameterWindow(TreeGraph<TreeGraphDataNode, ALEdge> graph, Stage ownerStage, BooleanProperty showToggle) {
-		this.graph = graph;
-		this.showToggle = showToggle;
 		BorderPane content = new BorderPane();
 		Scene scene = new Scene(content, 400, 500);
 		stage = new Stage();

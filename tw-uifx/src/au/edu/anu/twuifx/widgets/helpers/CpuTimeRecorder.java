@@ -33,24 +33,16 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 	private long startTime;
 	private long idleTime;
 	private long idleStartTime;
-	private long prevDuration;
 	private Button btnRunPause;
 	private Button btnStep;
 	private Button btnReset;
 	private Label lblRealTime;
-	private Label lblDelta;
-
-	private WidgetTrackingPolicy<TimeData> policy;
-
-
-
 	public CpuTimeRecorder(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
-		policy = new SimpleWidgetTrackingPolicy();
+		new SimpleWidgetTrackingPolicy();
 
 		// Data messages
 		addRendezvous(new RendezvousProcess() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void execute(RVMessage message) {
 				if (message.getMessageHeader().type() == DataMessageTypes.TIME) {
@@ -61,7 +53,6 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 		}, DataMessageTypes.TIME);
 		// Metadata messages
 		addRendezvous(new RendezvousProcess() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void execute(RVMessage message) {
 				if (message.getMessageHeader().type() == DataMessageTypes.METADATA) {

@@ -43,7 +43,6 @@ import com.sun.javafx.application.LauncherImpl;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;

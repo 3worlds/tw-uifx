@@ -87,7 +87,7 @@ public class SimpleMRPropertyItem implements Item {
 
 	@Override
 	public void setValue(Object newValue) {
-		Object oldValue = getValue();
+		//Object oldValue = getValue();
 		data.writeEnable();
 		data.setProperty(key, newValue);
 		data.writeDisable();

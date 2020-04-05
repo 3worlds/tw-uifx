@@ -42,7 +42,6 @@ import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -95,7 +94,6 @@ public class SimpleControlWidget1 extends StateMachineController
 		policy = new SimpleWidgetTrackingPolicy();
 		// RV for simulator time messages
 		addRendezvous(new RendezvousProcess() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void execute(RVMessage message) {
 				if (message.getMessageHeader().type() == DataMessageTypes.TIME) {
@@ -106,7 +104,6 @@ public class SimpleControlWidget1 extends StateMachineController
 		}, DataMessageTypes.TIME);
 		// RV for metadata messages
 		addRendezvous(new RendezvousProcess() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public void execute(RVMessage message) {
 				if (message.getMessageHeader().type() == DataMessageTypes.METADATA) {

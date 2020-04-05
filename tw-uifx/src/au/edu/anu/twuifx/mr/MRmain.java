@@ -47,7 +47,6 @@ import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Kicker;
 import fr.cnrs.iees.OmugiClassLoader;
-import fr.cnrs.iees.graph.Graph;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;

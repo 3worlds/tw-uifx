@@ -64,6 +64,7 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 	@Override
 	public boolean start() {
 		startTime = System.currentTimeMillis();
+		log.info("Start at "+startTime);
 		sendEvent(run.event());
 		return true;
 	}
