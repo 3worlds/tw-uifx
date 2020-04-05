@@ -43,6 +43,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -220,9 +221,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private RadioButton rb3;
 
 	@FXML
-	private Label lblStatus;
-
-	@FXML
 	private Spinner<Integer> spinFontSize;
 
 	@FXML
@@ -230,6 +228,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private Spinner<Integer> spinJitter;
+
+	@FXML
+	private Label lblChecking;
 
 	public enum Verbosity {
 		brief, medium, full;
@@ -416,7 +417,24 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void handleCheck(ActionEvent event) {
+//		btnDeploy.setDisable(true);
+//		btnCheck.setDisable(true);
+//		trafficLight.fillProperty().set(Color.RED);
+//		Task<Void> checkTask = new Task<Void>() {
+//
+//			@Override
+//			protected Void call() throws Exception {
 		ConfigGraph.validateGraph();
+//				return null;
+//			}
+//		};
+//		checkTask.setOnScheduled(e -> {
+//		});
+//		checkTask.setOnSucceeded(e -> {
+//			btnCheck.setDisable(false);
+//			setButtonState();
+//		});
+//		new Thread(checkTask).start();
 	}
 
 	@FXML
@@ -485,12 +503,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
-//	@FXML
-//	void handleNewProject(ActionEvent event) {
-//		model.doNewProject();
-//		setButtonState();
-//	}
-
 	@FXML
 	void handleSave(ActionEvent event) {
 		model.doSave();
@@ -552,20 +564,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.flush();
 		}
 	}
-
-	/*
-	 * must not carry over control settings from previously opened project.
-	 * Therefore, we cannot use settings from the extant controls here such as
-	 * stage.getY() etc.
-	 */
-
-//	private void printClasses(Node n) {
-//		System.out.println(n.getClass());
-//		if (n instanceof Region)
-//			for (Node c : ((Region) n).getChildren()) {
-//				printClasses(c);
-//			}
-//	}
 
 	public void getPreferences() {
 		Preferences.initialise(Project.makeProjectPreferencesFile());
@@ -670,6 +668,34 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 //================== ERROR MSG LISTENER =============
+	@Override
+	public void onClear() {
+//		System.out.println("Start check: "+Thread.currentThread().getName());
+		btnDeploy.setDisable(true);
+		btnCheck.setDisable(true);
+		lblChecking.setVisible(true);
+		trafficLight.fillProperty().set(Color.RED);
+
+		textAreaErrorMsgs.clear();
+		lstErrorMsgs.clear();
+		// Don't know why the trafficLight and disable buttons don't work unless this
+		// method is initiated by the Check button itself.
+	}
+
+	@Override
+	public void state(boolean valid) {
+		isValid = valid;
+//		System.out.println("End check: "+Thread.currentThread().getName());
+		Platform.runLater(() -> {
+//			System.out.println("Finish check: "+Thread.currentThread().getName());
+//			System.out.println("----------------------------------------");
+			btnDeploy.setDisable(false);
+			btnCheck.setDisable(false);
+			lblChecking.setVisible(false);
+			setButtonState();
+		});
+	}
+
 	private void sortErrors() {
 		lstErrorMsgs.sort(new Comparator<ErrorMessagable>() {
 
@@ -694,12 +720,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		// children.add(getMessageText(m));
 	}
 
-	@Override
-	public void onClear() {
-		textAreaErrorMsgs.clear();
-		// textFlowErrorMsgs.getChildren().clear();
-		lstErrorMsgs.clear();
-	}
 	// ===============================================
 
 	@Override
@@ -836,10 +856,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			StringTable st = (StringTable) value;
 			if (st.getDimensioners().length == 1)
 				return new StringTableItem(this, key, (ElementAdapter) element, editable, category, description);
-		} //else if (value instanceof DoubleTable) {
-		//	DoubleTable dt = (DoubleTable) value;
-		//	if (dt.getDimensioners().length ==1)
-	//			return new DoubleTableItem(this,key,(ElementAdapter)element,true,category,description);
+		} // else if (value instanceof DoubleTable) {
+			// DoubleTable dt = (DoubleTable) value;
+			// if (dt.getDimensioners().length ==1)
+			// return new
+			// DoubleTableItem(this,key,(ElementAdapter)element,true,category,description);
 //		}
 		return new SimpleMMPropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}
@@ -952,12 +973,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private boolean isValid = false;
 
 	@Override
-	public void state(boolean valid) {
-		isValid = valid;
-		setButtonState();
-	}
-
-	@Override
 	public void onElementRenamed() {
 		initialisePropertySheets();
 		setButtonState();
@@ -998,7 +1013,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		VBox rightContent = new VBox();
 		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
 		imageView.preserveRatioProperty().set(true);
-		rightContent.getChildren().addAll(imageView,new Label("Three Worlds - M. C. Escher (1955)"));
+		rightContent.getChildren().addAll(imageView, new Label("Three Worlds - M. C. Escher (1955)"));
 		TextFlow textFlow = new TextFlow();
 		textFlow.setPrefWidth(400);
 		textFlow.setTextAlignment(TextAlignment.CENTER);
@@ -1025,13 +1040,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		content.getChildren().addAll(rightContent, leftContent);
 		TextArea textArea = new TextArea();
 		Scanner sc = new Scanner(MmController.class.getResourceAsStream("aboutMM.txt"));
-		
+
 		while (sc.hasNext()) {
 			textArea.appendText(sc.nextLine());
 			textArea.appendText("\n");
 		}
 		sc.close();
-		
+
 		textArea.setWrapText(true);
 		textArea.setPrefHeight(400);
 		textArea.setEditable(false);

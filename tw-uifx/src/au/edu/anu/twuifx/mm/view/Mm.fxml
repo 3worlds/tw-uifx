@@ -24,6 +24,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.PropertySheet?>
 
 <BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mm.view.MmController">
@@ -106,7 +107,11 @@
                   </ImageView>
                </graphic></Button>
 				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.5" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-            <Label fx:id="lblStatus" />
+            <Label fx:id="lblChecking" text="checking..." visible="false">
+               <font>
+                  <Font name="System Bold Italic" size="10.0" />
+               </font>
+            </Label>
 			</items>
 		</ToolBar>
 	</bottom>
