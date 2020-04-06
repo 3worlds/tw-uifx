@@ -447,10 +447,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		model.doOpenProject(file);
 		textAreaErrorMsgs.clear();
 		lstErrorMsgs.clear();
-		isValid=false;
+		isValid = false;
 
-		//setButtonState();
-		//ConfigGraph.validateGraph();
+		// setButtonState();
+		// ConfigGraph.validateGraph();
 	}
 
 	@FXML
@@ -672,7 +672,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //================== ERROR MSG LISTENER =============
 	@Override
 	public void onStartCheck() {
-		//System.out.println("Start check: "+Thread.currentThread().getName());
+		// System.out.println("Start check: "+Thread.currentThread().getName());
 		btnDeploy.setDisable(true);
 		btnCheck.setDisable(true);
 		lblChecking.setVisible(true);
@@ -687,10 +687,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void onEndCheck(boolean valid) {
 		isValid = valid;
-		//System.out.println("End check: "+Thread.currentThread().getName());
+		// System.out.println("End check: "+Thread.currentThread().getName());
 		Platform.runLater(() -> {
-			//System.out.println("Finish check: "+Thread.currentThread().getName());
-			//System.out.println("----------------------------------------");
+			// System.out.println("Finish check: "+Thread.currentThread().getName());
+			// System.out.println("----------------------------------------");
 			btnDeploy.setDisable(false);
 			btnCheck.setDisable(false);
 			lblChecking.setVisible(false);
@@ -712,14 +712,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@Override
 	public void onReceiveMsg(ErrorMessagable msg) {
-		lstErrorMsgs.add(msg);
-		sortErrors();
-		textAreaErrorMsgs.clear();
-//		ObservableList<Node> children = textFlowErrorMsgs.getChildren();
-//		children.clear();
-		for (ErrorMessagable m : lstErrorMsgs)
-			textAreaErrorMsgs.appendText(getMessageText(m));
-		// children.add(getMessageText(m));
+		Platform.runLater(() -> {
+			lstErrorMsgs.add(msg);
+			sortErrors();
+			textAreaErrorMsgs.clear();
+			for (ErrorMessagable m : lstErrorMsgs)
+				textAreaErrorMsgs.appendText(getMessageText(m));
+	});
 	}
 
 	// ===============================================
@@ -754,9 +753,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser.initialiseView();
 		initialisePropertySheets();
 		setCursor(oldCursor);
-		setButtonState();
-		GraphState.setChanged();
+		//GraphState.setChanged();
 		GraphState.clear();
+		setButtonState();
 	}
 
 	private IGraphVisualiser visualiser;
@@ -952,7 +951,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		boolean isConnected = UserProjectLink.haveUserProject();
 		miSetCodePath.setDisable(isConnected);
 		miDisconnect.setDisable(!isConnected);
-		menuItemSave.setDisable(!isClean);
+		menuItemSave.setDisable(isClean);
 		menuItemSaveAs.setDisable(!isOpen);
 		btnChildLinks.setDisable(!isOpen);
 		btnXLinks.setDisable(!isOpen);

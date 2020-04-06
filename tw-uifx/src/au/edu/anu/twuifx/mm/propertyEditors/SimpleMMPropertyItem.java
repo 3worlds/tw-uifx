@@ -31,16 +31,19 @@
 package au.edu.anu.twuifx.mm.propertyEditors;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twuifx.widgets.SimpleControlWidget;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.ens.biologie.generic.utils.Logging;
 import javafx.beans.value.ObservableValue;
 
 /**
@@ -55,7 +58,7 @@ public class SimpleMMPropertyItem implements Item {
 	protected String category;
 	private String description;
 	private IMMController controller;
-
+	private Logger log = Logging.getLogger(SimpleControlWidget.class);
 
 	public SimpleMMPropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
 		this.element = element;
@@ -101,10 +104,9 @@ public class SimpleMMPropertyItem implements Item {
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
-		//System.out.println(getName()+"| OLD:NEW\t["+oldValue+","+newValue+"]");
+		log.info("Before compare: "+getName()+"| OLD:NEW\t["+oldValue+","+newValue+"]");
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
-			System.out.println(getName()+"| OLD:NEW\t["+oldValue+","+newValue+"]");
-			System.out.println("-------");
+			log.info("After compare: "+getName()+"| OLD:NEW\t["+oldValue+","+newValue+"]");
 			onUpdateProperty(newValue);
 		}
 	}
