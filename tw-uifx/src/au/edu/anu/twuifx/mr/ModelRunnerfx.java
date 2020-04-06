@@ -80,7 +80,9 @@ public class ModelRunnerfx extends Application {
 		config = config1;
 		uiNode = (TreeGraphNode) get(config.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label())));
 		String[] args = new String[0];
-		LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
+		System.setProperty("javafx.preloader",MrSplash.class.getCanonicalName());
+		launch(args);
+		//LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
 	}
 
 	public static String getInitNodeName() {
