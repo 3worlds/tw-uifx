@@ -755,6 +755,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		setCursor(oldCursor);
 		//GraphState.setChanged();
 		GraphState.clear();
+		ConfigGraph.validateGraph();
 		setButtonState();
 	}
 
