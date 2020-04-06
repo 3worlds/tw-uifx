@@ -445,7 +445,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private void openProject(File file) {
 		model.doOpenProject(file);
-		setButtonState();
+		textAreaErrorMsgs.clear();
+		lstErrorMsgs.clear();
+		isValid=false;
+
+		//setButtonState();
+		//ConfigGraph.validateGraph();
 	}
 
 	@FXML
@@ -667,7 +672,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //================== ERROR MSG LISTENER =============
 	@Override
 	public void onStartCheck() {
-//		System.out.println("Start check: "+Thread.currentThread().getName());
+		//System.out.println("Start check: "+Thread.currentThread().getName());
 		btnDeploy.setDisable(true);
 		btnCheck.setDisable(true);
 		lblChecking.setVisible(true);
@@ -682,10 +687,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void onEndCheck(boolean valid) {
 		isValid = valid;
-//		System.out.println("End check: "+Thread.currentThread().getName());
+		//System.out.println("End check: "+Thread.currentThread().getName());
 		Platform.runLater(() -> {
-//			System.out.println("Finish check: "+Thread.currentThread().getName());
-//			System.out.println("----------------------------------------");
+			//System.out.println("Finish check: "+Thread.currentThread().getName());
+			//System.out.println("----------------------------------------");
 			btnDeploy.setDisable(false);
 			btnCheck.setDisable(false);
 			lblChecking.setVisible(false);
@@ -943,17 +948,18 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	public void setButtonState() {
 		boolean isOpen = Project.isOpen();
-		boolean saveable = !GraphState.changed() & isOpen;
+		boolean isClean = !GraphState.changed() & isOpen;
 		boolean isConnected = UserProjectLink.haveUserProject();
 		miSetCodePath.setDisable(isConnected);
 		miDisconnect.setDisable(!isConnected);
-		menuItemSave.setDisable(saveable);
+		menuItemSave.setDisable(!isClean);
 		menuItemSaveAs.setDisable(!isOpen);
 		btnChildLinks.setDisable(!isOpen);
 		btnXLinks.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
 		btnCheck.setDisable(!isOpen);
-		btnDeploy.setDisable(saveable & !isValid);
+		boolean cleanAndValid = isClean && isValid;
+		btnDeploy.setDisable(!cleanAndValid);
 
 		if (isOpen) {
 			trafficLight.setOpacity(1.0);
