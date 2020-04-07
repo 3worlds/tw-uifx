@@ -6,6 +6,7 @@ import java.util.List;
 
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import fr.ens.biologie.generic.utils.Duple;
 
 /**
  * @author Ian Davies
@@ -19,16 +20,23 @@ public class PCTreeLayout implements ILayout {
 	public PCTreeLayout(VisualNode root) {
 		/**
 		 * Build a tree based upon the give root. NB this ignores the underlying
-		 * treegraph of the config graph. That is, a config parent can be a child of a Frame root.
-		 * To avoid confusion, I've call the root node a Frame. Frames have children.
+		 * treegraph of the config graph. That is, a config parent can be a child of a
+		 * Frame root. To avoid confusion, I've call the root node a Frame. Frames have
+		 * children.
 		 */
 
 		rootFrame = new Frame(null, root, 0);
 		buildTree(rootFrame);
 
 		String indent = " ";
-		dump(rootFrame, indent);
+		// dump(rootFrame, indent);
 
+	}
+
+	private static Duple<Double, Double> polarToCartesian(double radiant, double magnitude) {
+		double x = magnitude * Math.cos(radiant);
+		double y = magnitude * Math.sin(radiant);
+		return new Duple<Double, Double>(x, y);
 	}
 
 	private void buildTree(Frame root) {
@@ -59,17 +67,29 @@ public class PCTreeLayout implements ILayout {
 
 	}
 
-	private void dump(Frame f, String indent) {
-		System.out.println("vector: [" + f.getAngle()+","+f.getRadius() +"]"+ indent + f.getRootNode().getDisplayText(false));
-		for (Frame cf : f.getChildren())
-			dump(cf, indent + "\t");
-
-	}
+//	private void dump(Frame f, String indent) {
+//		System.out.println("vector: [" + f.getAngle()+","+f.getRadius() +"]"+ indent + f.getRootNode().getDisplayText(false));
+//		for (Frame cf : f.getChildren())
+//			dump(cf, indent + "\t");
+//
+//	}
 
 	@Override
 	public ILayout compute() {
-		// TODO Auto-generated method stub
-		return null;
+		int depth = 0;
+		System.out.println("depth\tname\tAbsDeg\tAbsDist\tx\ty\tRelDeg");
+		dumpAbsPosition(rootFrame, depth, 0, 0);
+		return this;
+	}
+
+	private void dumpAbsPosition(Frame f, int depth, double angle, double distance) {
+		Duple<Double, Double> p = polarToCartesian(angle, distance);
+		System.out.println(depth + "\t" + f.getRootNode().getDisplayText(false) + "\t" + Math.toDegrees(angle) + "\t"
+				+ distance + "\t" + p.getFirst() + "\t" + p.getSecond() + "\t" + Math.toDegrees(f.getAngle()));
+		for (Frame c : f.getChildren()) {
+			dumpAbsPosition(c, depth + 1, c.getAngle() + angle, f.getRadius() + distance);
+		}
+
 	}
 
 }
