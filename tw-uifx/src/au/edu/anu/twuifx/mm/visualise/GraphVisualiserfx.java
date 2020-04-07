@@ -620,6 +620,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public void doFocusedLayout(VisualNode root) {
-		ILayout layout = new PCTreeLayout(root);		
+		ILayout layout = new PCTreeLayout(root);	
+		layout.compute();
 	}
 }

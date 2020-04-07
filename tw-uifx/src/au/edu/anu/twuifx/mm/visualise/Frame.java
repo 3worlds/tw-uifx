@@ -42,8 +42,10 @@ public class Frame {
 		double i = index;
 		if (parentFrame.rootFrame)
 			return (2.0 * Math.PI * i) / m;
-		else
-			return (Math.PI - (w * i / m) + w / (2.0 * m));
+		else {
+			      //π − φ /2  + φ i/m + φ /(2m) NB: error in paper.
+			return (2.0*Math.PI)-(w/2.0)+(w*i/m)+w/(2.0*m);
+		}
 	}
 
 	protected Frame getParentFrame() {
