@@ -356,7 +356,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		if ((distance < (8 * nodeRadius.get())) | collapsed) {
 			text.visibleProperty().unbind();
 			text.setVisible(false);
-		} else {
+			} else {
 			text.visibleProperty().bind(line.visibleProperty());
 		}
 	}
@@ -576,7 +576,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	
 	@Override
 	public void doLayout(double jitterFraction) {
-		ILayout layout = new TreeLayout(visualGraph).compute();
+		ILayout layout = new TreeLayout(visualGraph);
+		layout.compute();
 
 		Random rnd = new Random();
 		double w = pane.getWidth();
@@ -605,9 +606,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (!node.isCollapsed()) {
 				double x = node.getX();
 				// I don't know why the labels don't line up on the rh side?
-				double x1 = layout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
+				double x1 = ILayout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
 				double y = node.getY();
-				double y1 = layout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
+				double y1 = ILayout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
 				node.setX(x1);
 				node.setY(y1);
 				Circle c = (Circle) node.getSymbol();
@@ -622,5 +623,41 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void doFocusedLayout(VisualNode root) {
 		ILayout layout = new PCTreeLayout(root);	
 		layout.compute();
+		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+
+		double w = pane.getWidth();
+		double h = pane.getHeight();
+		double nrx = nodeRadius.get() / h;
+		double nry = nodeRadius.get() / h;
+		for (VisualNode node:visualGraph.nodes()) 
+			if (!node.isCollapsed()) {
+				Text text = (Text) node.getText();
+				double th = Math.max(nrx, text.getLayoutBounds().getHeight() / h);
+				double tw = text.getLayoutBounds().getWidth() / w + nrx;
+				double top = node.getY() - th;
+				double bottom = node.getY() + nry;
+				double left = node.getX() - nrx;
+				double right = node.getX() + nrx + tw;
+				min.setLocation(Math.min(left, min.getX()), Math.min(top, min.getY()));
+				max.setLocation(Math.max(right, max.getX()), Math.max(bottom, max.getY()));		
+			}
+		for (VisualNode node : visualGraph.nodes())
+			if (!node.isCollapsed()) {
+				double x = node.getX();
+				// I don't know why the labels don't line up on the rh side?
+				double x1 = ILayout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
+				double y = node.getY();
+				double y1 = ILayout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
+				node.setX(x1);
+				node.setY(y1);
+				Circle c = (Circle) node.getSymbol();
+				c.centerXProperty().set(node.getX() * pane.getWidth());
+				c.centerYProperty().set(node.getY() * pane.getHeight());
+			}
+
+		GraphState.setChanged();
+
+
 	}
 }

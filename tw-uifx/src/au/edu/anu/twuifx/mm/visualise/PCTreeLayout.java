@@ -1,5 +1,6 @@
 package au.edu.anu.twuifx.mm.visualise;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -15,41 +16,31 @@ import fr.ens.biologie.generic.utils.Duple;
  */
 public class PCTreeLayout implements ILayout {
 	// TODO this won't work for animation! We need an current frame.
-	private Frame rootFrame;
+	private PCTNodeWrapper rootWrapper;
 
+	/**
+	 * Build a spanning tree based upon the given root. The visual node is wrapped
+	 * in PCTNodeWrapper which the has necessary fields for the layout algorithm and
+	 * can redefine the direction of parent/child relations.
+	 */
 	public PCTreeLayout(VisualNode root) {
-		/**
-		 * Build a tree based upon the give root. NB this ignores the underlying
-		 * treegraph of the config graph. That is, a config parent can be a child of a
-		 * Frame root. To avoid confusion, I've call the root node a Frame. Frames have
-		 * children.
-		 */
-
-		rootFrame = new Frame(null, root, 0);
-		buildTree(rootFrame);
-
-		String indent = " ";
-		// dump(rootFrame, indent);
+		rootWrapper = new PCTNodeWrapper(null, root, 0);
+		buildSpanningTree(rootWrapper);
+		rootWrapper.setRadius(1.0);
 
 	}
 
-	private static Duple<Double, Double> polarToCartesian(double radiant, double magnitude) {
-		double x = magnitude * Math.cos(radiant);
-		double y = magnitude * Math.sin(radiant);
-		return new Duple<Double, Double>(x, y);
-	}
-
-	private void buildTree(Frame root) {
+	private void buildSpanningTree(PCTNodeWrapper root) {
 		List<VisualNode> sortList = new ArrayList<>();
 		String parentFrameId = "";
 		if (root.hasParent())
-			parentFrameId = root.getParentFrame().getRootNode().id();
-		for (VisualNode child : root.getRootNode().getChildren()) {
+			parentFrameId = root.getParentFrame().getNode().id();
+		for (VisualNode child : root.getNode().getChildren()) {
 			String childNodeId = child.id();
 			if (!child.isCollapsed() && !childNodeId.equals(parentFrameId))
 				sortList.add(child);
 		}
-		VisualNode parentNode = root.getRootNode().getParent();
+		VisualNode parentNode = root.getNode().getParent();
 		if (parentNode != null)
 			if (!parentNode.isCollapsed() && !parentNode.id().equals(parentFrameId))
 				sortList.add(parentNode);
@@ -60,35 +51,46 @@ public class PCTreeLayout implements ILayout {
 			}
 		});
 		for (int idx = 0; idx < sortList.size(); idx++) {
-			Frame childFrame = new Frame(root, sortList.get(idx), idx);
+			PCTNodeWrapper childFrame = new PCTNodeWrapper(root, sortList.get(idx), idx);
 			root.addChild(childFrame);
-			buildTree(childFrame);
+			buildSpanningTree(childFrame);
 		}
 
 	}
-
-//	private void dump(Frame f, String indent) {
-//		System.out.println("vector: [" + f.getAngle()+","+f.getRadius() +"]"+ indent + f.getRootNode().getDisplayText(false));
-//		for (Frame cf : f.getChildren())
-//			dump(cf, indent + "\t");
-//
-//	}
 
 	@Override
 	public ILayout compute() {
 		int depth = 0;
-		System.out.println("depth\tname\tAbsDeg\tAbsDist\tx\ty\tRelDeg");
-		dumpAbsPosition(rootFrame, depth, 0, 0);
+        // recursive call to create the Cartesian coordinates from local system polar coords.
+		toCartesian(rootWrapper, depth, 0);
+ 
+		// scale into the unit space
+		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		rootWrapper.getLayoutBounds(min, max);
+		rootWrapper.normalise(min, max, new Point2D.Double(0.0, 0.0), new Point2D.Double(1.0, 1.0));
 		return this;
 	}
 
-	private void dumpAbsPosition(Frame f, int depth, double angle, double distance) {
-		Duple<Double, Double> p = polarToCartesian(angle, distance);
-		System.out.println(depth + "\t" + f.getRootNode().getDisplayText(false) + "\t" + Math.toDegrees(angle) + "\t"
-				+ distance + "\t" + p.getFirst() + "\t" + p.getSecond() + "\t" + Math.toDegrees(f.getAngle()));
-		for (Frame c : f.getChildren()) {
-			dumpAbsPosition(c, depth + 1, c.getAngle() + angle, f.getRadius() + distance);
+	private void toCartesian(PCTNodeWrapper pw, int depth, double angleSum) {
+		if (!pw.hasParent()) {// root
+			pw.setXY(0, 0);
+			for (PCTNodeWrapper cw : pw.getChildren())
+				toCartesian(cw, depth + 1, cw.getAngle());
+		} else {
+			double deg = Math.toDegrees(angleSum);
+			double distance = pw.getParentFrame().getRadius();
+			Duple<Double, Double> p = PCTNodeWrapper.polarToCartesian(angleSum, distance);
+			double px = pw.getParentFrame().getX();
+			double py = pw.getParentFrame().getY();
+			double cx = p.getFirst();
+			double cy = p.getSecond();
+			pw.setXY(px + cx, py + cy);
+			for (PCTNodeWrapper cf : pw.getChildren()) // children
+				toCartesian(cf, depth + 1, angleSum + cf.getAngle());
+
 		}
+
 
 	}
 
