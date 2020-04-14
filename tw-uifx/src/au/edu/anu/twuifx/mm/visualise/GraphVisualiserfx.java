@@ -189,7 +189,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		c.radiusProperty().bind(nodeRadius);
 		Text text = new Text(n.getDisplayText(nodeClassOnly));
 		n.setVisualElements(c, text);
-		Color nColor = TreeColours.getCategoryColor(n.getCategory(),n.cClassId());
+		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
 		c.setEffect(ds);
 		c.setOnMousePressed(e -> {
@@ -356,29 +356,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		if ((distance < (8 * nodeRadius.get())) | collapsed) {
 			text.visibleProperty().unbind();
 			text.setVisible(false);
-			} else {
+		} else {
 			text.visibleProperty().bind(line.visibleProperty());
 		}
-	}
-
-	private static void collapseTree(VisualNode childRoot) {
-		VisualNode parent = childRoot.getParent();
-		Circle circle = (Circle) parent.getSymbol();
-		DoubleProperty xp = circle.centerXProperty();
-		DoubleProperty yp = circle.centerYProperty();
-		collapse(childRoot, xp, yp);
-	}
-
-	private void expandTree(VisualNode childRoot) {
-		double w = pane.getWidth();
-		double h = pane.getHeight();
-		expand(childRoot, w, h);
-	}
-
-	private static void expand(TreeNode parent, double w, double h) {
-		setExpandBindings((VisualNode) parent, w, h);
-		for (TreeNode child : parent.getChildren())
-			expand(child, w, h);
 	}
 
 	private static void setExpandBindings(VisualNode node, double w, double h) {
@@ -414,7 +394,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			circle.centerXProperty().unbind();
 			circle.centerYProperty().unbind();
 		}
-		
+
 		KeyValue endX = new KeyValue(circle.centerXProperty(), xp.getValue(), Interpolator.EASE_BOTH);
 		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.EASE_BOTH);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
@@ -433,9 +413,69 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		collapseTree(childRoot);
 	}
 
+	private static void collapseTree(VisualNode childRoot) {
+		VisualNode parent = childRoot.getParent();
+		Circle circle = (Circle) parent.getSymbol();
+		DoubleProperty xp = circle.centerXProperty();
+		DoubleProperty yp = circle.centerYProperty();
+		// Recursively, collapse the tree to the position of the parent of the tree.
+		collapse(childRoot, xp, yp);
+		// Hide every edge between this tree and other non-collapsed nodes
+		hideEdges(childRoot);
+	}
+
+	private static void hideEdges(VisualNode vNode) {
+		for (Edge e : vNode.edges()) {
+			VisualNode sn = (VisualNode) e.startNode();
+			VisualNode en = (VisualNode) e.endNode();
+			if (sn.isCollapsed() ^ en.isCollapsed()) {
+				VisualEdge ve = (VisualEdge) e;
+				Line line = (Line) ve.getSymbol();
+				if (line.visibleProperty().isBound()) {
+					line.visibleProperty().unbind();
+					line.setVisible(false);
+				}
+			}
+		}
+		for (VisualNode vChild : vNode.getChildren())
+			hideEdges(vChild);
+	}
+
 	@Override
 	public void expandTreeFrom(VisualNode childRoot) {
 		expandTree(childRoot);
+	}
+
+	private void expandTree(VisualNode childRoot) {
+		double w = pane.getWidth();
+		double h = pane.getHeight();
+		// Recursively unbind nodes from the position of the sub-tree's parent.
+		expand(childRoot, w, h);
+		// rebind edges to the showGraphLine property.
+		showEdges(childRoot, showGraphLine);
+	}
+
+	private static void showEdges(VisualNode vNode, BooleanProperty show) {
+		for (Edge e : vNode.edges()) {
+			VisualNode sn = (VisualNode) e.startNode();
+			VisualNode en = (VisualNode) e.endNode();
+			if (!sn.isCollapsed() || !en.isCollapsed()) {
+				VisualEdge ve = (VisualEdge) e;
+				Line line = (Line) ve.getSymbol();
+				if (!line.visibleProperty().isBound()) {
+					line.visibleProperty().bind(show);
+				}
+			}
+		}
+		for (VisualNode vChild : vNode.getChildren())
+			showEdges(vChild, show);
+
+	}
+
+	private static void expand(TreeNode parent, double w, double h) {
+		setExpandBindings((VisualNode) parent, w, h);
+		for (TreeNode child : parent.getChildren())
+			expand(child, w, h);
 	}
 
 	@Override
@@ -545,7 +585,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		resetZorder();
 	}
 
-
 	private static double jitter(double value, double jitterFraction, Random rnd) {
 		double delta = rnd.nextDouble() * jitterFraction;
 		if (rnd.nextBoolean())
@@ -573,7 +612,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Text text = (Text) vEdge.getText();
 		text.setText(vEdge.getDisplayText(false));
 	}
-	
+
 	@Override
 	public void doLayout(double jitterFraction) {
 		ILayout layout = new TreeLayout(visualGraph);
@@ -612,16 +651,24 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				node.setX(x1);
 				node.setY(y1);
 				Circle c = (Circle) node.getSymbol();
-				c.centerXProperty().set(node.getX() * pane.getWidth());
-				c.centerYProperty().set(node.getY() * pane.getHeight());
+				animateTo(c,node.getX() * pane.getWidth(),node.getY() * pane.getHeight());
 			}
 
 		GraphState.setChanged();
 	}
 
+	private static void animateTo(Circle c, double x, double y) {
+		KeyValue endX = new KeyValue(c.centerXProperty(), x, Interpolator.EASE_BOTH);
+		KeyValue endY = new KeyValue(c.centerYProperty(), y, Interpolator.EASE_BOTH);
+		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
+		Timeline timeline = new Timeline();
+		timeline.getKeyFrames().add(keyFrame);
+		timeline.play();
+	}
+
 	@Override
 	public void doFocusedLayout(VisualNode root) {
-		ILayout layout = new PCTreeLayout(root);	
+		ILayout layout = new PCTreeLayout(root);
 		layout.compute();
 		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
@@ -630,7 +677,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		double h = pane.getHeight();
 		double nrx = nodeRadius.get() / h;
 		double nry = nodeRadius.get() / h;
-		for (VisualNode node:visualGraph.nodes()) 
+		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
 				Text text = (Text) node.getText();
 				double th = Math.max(nrx, text.getLayoutBounds().getHeight() / h);
@@ -640,7 +687,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				double left = node.getX() - nrx;
 				double right = node.getX() + nrx + tw;
 				min.setLocation(Math.min(left, min.getX()), Math.min(top, min.getY()));
-				max.setLocation(Math.max(right, max.getX()), Math.max(bottom, max.getY()));		
+				max.setLocation(Math.max(right, max.getX()), Math.max(bottom, max.getY()));
 			}
 		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
@@ -652,12 +699,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				node.setX(x1);
 				node.setY(y1);
 				Circle c = (Circle) node.getSymbol();
-				c.centerXProperty().set(node.getX() * pane.getWidth());
-				c.centerYProperty().set(node.getY() * pane.getHeight());
+				animateTo(c,node.getX() * pane.getWidth(),node.getY() * pane.getHeight());
+//				c.centerXProperty().set(node.getX() * pane.getWidth());
+//				c.centerYProperty().set(node.getY() * pane.getHeight());
 			}
 
 		GraphState.setChanged();
-
 
 	}
 }
