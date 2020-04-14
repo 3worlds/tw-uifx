@@ -14,19 +14,19 @@ import au.edu.anu.twapps.mm.layout.ILayout;
  *
  * @date 30 Mar 2020
  */
-public class PCTNodeWrapper {
+public class PCTNode {
 	// private static final double w = 0.5;
 	private double radius;// distance to all children
 
-	private PCTNodeWrapper parentFrame;
+	private PCTNode pctParent;
 	private VisualNode node;
 	private int index;// ith child
-	private List<PCTNodeWrapper> children;
-	private boolean rootFrame;
+	private List<PCTNode> children;
+	private boolean isPctRoot;
 
-	public PCTNodeWrapper(PCTNodeWrapper parent, VisualNode node, int index) {
-		rootFrame = (parent == null);
-		this.parentFrame = parent;
+	public PCTNode(PCTNode pctParent, VisualNode node, int index) {
+		isPctRoot = (pctParent == null);
+		this.pctParent = pctParent;
 		this.node = node;
 		this.index = index;
 		children = new ArrayList<>();
@@ -78,18 +78,18 @@ public class PCTNodeWrapper {
 		}
 
 		// update recursively;
-		for (PCTNodeWrapper cf : children)
+		for (PCTNode cf : children)
 			cf.setRadius(nextRadius);
 	}
 
 	private static final double w = Math.PI; // = 45 deg for two children
 
 	protected double getAngle() {
-		if (rootFrame)
+		if (isPctRoot)
 			return 0.0;
-		double m = parentFrame.getChildren().size();
+		double m = pctParent.getChildren().size();
 		double i = index;
-		if (parentFrame.rootFrame)
+		if (pctParent.isPctRoot)
 			return (2.0 * Math.PI * i) / m;
 		else {
 			// π − φ /2 + φ i/m + φ /(2m) NB: error in paper - π should be 2π ?
@@ -98,8 +98,8 @@ public class PCTNodeWrapper {
 		}
 	}
 
-	protected PCTNodeWrapper getParentFrame() {
-		return parentFrame;
+	protected PCTNode getPctParent() {
+		return pctParent;
 	}
 
 	protected VisualNode getNode() {
@@ -110,11 +110,11 @@ public class PCTNodeWrapper {
 		return index;
 	}
 
-	protected List<PCTNodeWrapper> getChildren() {
+	protected List<PCTNode> getChildren() {
 		return children;
 	}
 
-	protected void addChild(PCTNodeWrapper child) {
+	protected void addChild(PCTNode child) {
 		children.add(child);
 	}
 
@@ -124,7 +124,7 @@ public class PCTNodeWrapper {
 	}
 
 	protected boolean hasParent() {
-		return parentFrame != null;
+		return pctParent != null;
 	}
 
 	public static Duple<Double, Double> polarToCartesian(double radiant, double magnitude) {
@@ -136,7 +136,7 @@ public class PCTNodeWrapper {
 	public void getLayoutBounds(Point2D min, Point2D max) {
 		min.setLocation(Math.min(min.getX(), getX()), Math.min(min.getY(), getY()));
 		max.setLocation(Math.max(max.getX(), getX()), Math.max(max.getY(), getY()));
-		for (PCTNodeWrapper child : getChildren())
+		for (PCTNode child : getChildren())
 			child.getLayoutBounds(min, max);
 
 	}
@@ -145,7 +145,7 @@ public class PCTNodeWrapper {
 		double x = ILayout.rescale(getX(), fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
 		double y = ILayout.rescale(getY(), fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
 		setXY(x, y);
-		for (PCTNodeWrapper child : getChildren())
+		for (PCTNode child : getChildren())
 			child.normalise(fromMin, fromMax, toMin, toMax);
 
 	}

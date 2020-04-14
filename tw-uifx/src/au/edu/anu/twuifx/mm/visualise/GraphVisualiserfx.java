@@ -369,14 +369,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		y = h * y;
 		circle.centerXProperty().unbind();
 		circle.centerYProperty().unbind();
-		KeyValue endX = new KeyValue(circle.centerXProperty(), x, Interpolator.EASE_BOTH);
-		KeyValue endY = new KeyValue(circle.centerYProperty(), y, Interpolator.EASE_BOTH);
-		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
-		Timeline timeline = new Timeline();
-		timeline.getKeyFrames().add(keyFrame);
 		node.setCollapse(false);
 		circle.setVisible(true);
-		timeline.play();
+		animateTo(circle,x,y);
 	}
 
 	private static void collapse(TreeNode parent, DoubleProperty xp, DoubleProperty yp) {
@@ -700,8 +695,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				node.setY(y1);
 				Circle c = (Circle) node.getSymbol();
 				animateTo(c,node.getX() * pane.getWidth(),node.getY() * pane.getHeight());
-//				c.centerXProperty().set(node.getX() * pane.getWidth());
-//				c.centerYProperty().set(node.getY() * pane.getHeight());
 			}
 
 		GraphState.setChanged();
