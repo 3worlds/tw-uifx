@@ -1,0 +1,195 @@
+/*
+ *                    *** 3Worlds - A software for the simulation of ecosystems ***
+ *                    *                                                           *
+ *                    *        by:  Jacques Gignoux - jacques.gignoux@upmc.fr     *
+ *                    *             Ian D. Davies   - ian.davies@anu.edu.au       *
+ *                    *             Shayne R. Flint - shayne.flint@anu.edu.au     *
+ *                    *                                                           *
+ *                    *         http:// ???                                       *
+ *                    *                                                           *
+ *                    *************************************************************
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * ****************************************************************************************
+*/
+
+package code.system;
+
+import au.edu.anu.twcore.ecosystem.runtime.biology.DecisionFunction;
+import java.util.Random;
+// Hey, model developer! You may add your own imports here as needed
+
+/**
+ * <h2>Model-specific code for model <em>Newapi</em></h2>
+ * <p>version <em>NA</em> - Wed Apr 15 16:46:19 CEST 2020</p>
+ *
+ * <p><strong>Authors: </strong>
+ * &lt;Use the <em>authors</em> property of the <em>3worlds</em> node to display author names here&gt;</p>
+ *
+ * <p><strong>Contacts: </strong>
+ * &lt;Use the <em>contacts</em> property of the <em>3worlds</em> node to display author contacts here&gt;</p>
+ *
+ * <p><strong>Reference publications: </strong></p>
+ * &lt;Use the <em>publication</em> property of the <em>3worlds</em> node to display model reference publication(s) here&gt;
+ *
+ * <h3>Instructions to model developers:</h3>
+ * <ol><li>Non 3worlds-generated extra methods should be placed in other files linked
+ *  to the present file through imports.</li>
+ * <li><strong>Do not</strong> remove any generated comment - they are used to retrieve
+ *  your code when regenerating this file.</li>
+ * <li><strong>Do not</strong> modify code outside of the insertion zones (except for
+ *  point (1) above)- this will cause malfunction of the ModelRunner software.</li>
+ * <li>For your programming confort, all the static methods of the {@link Math} and
+ *  {@link Distance} classes are directly accessible here</li>
+ * <li>The particular random number stream attached to each {@link TwFunction} is
+ * passed as the <em>random</em> argument.</li>
+ * <li>For all <em>Decision-</em> functions, a <em>decider</em> argument is provided
+ * to help make decisions out of pobabilities</li></ol>
+*/
+public interface Newapi {
+
+	/**
+	 * <p><strong>Func</strong> method of type <em>ChangeState</em>: change the state, ie the values of internal variables, of a system component</p>
+	 * <p>- applies to categories {<em> world </em>}</p>
+	 *
+	 * <p>- follows timer <em>tmMo</em> of type {@link ClockTimer}, with time unit = 3 w</p>
+	 *
+	 * @param t current time
+	 * @param dt current time step
+	 * @param ecosystemTotalPopulationSize total population size (including sub-populations) of ecosystem
+	 * @param ecosystemTotalPopulationBirths total number of births in population (including sub-populations) of ecosystem
+	 * @param ecosystemTotalPopulationDeaths total number of deaths in population (including sub-populations) of ecosystem
+	 * @param groupPopulationSize population size of focal group
+	 * @param groupPopulationBirths number of births in population of focal group
+	 * @param groupPopulationDeaths number of deaths in population of focal group
+	 * @param age focal component age
+	 * @param birthDate focal component birth date
+	 * @param x focal component current x (W) ± 12.0 [0.0,+∞[
+	 * @param y focal component current y ± 0.0 ]-∞,+∞[
+	 * @param z focal component current z [MIN_INTEGER..*]
+	 * @param nextFocalDrv focal component next drivers
+	 * @param random random number generator
+	*/
+	public static void func(
+		double t,                             // current time
+		double dt,                            // current time step
+		int ecosystemTotalPopulationSize,     // total population size (including sub-populations)
+		int ecosystemTotalPopulationBirths,   // total number of births in population (including sub-populations)
+		int ecosystemTotalPopulationDeaths,   // total number of deaths in population (including sub-populations)
+		int groupPopulationSize,              // population size
+		int groupPopulationBirths,            // number of births in population
+		int groupPopulationDeaths,            // number of deaths in population
+		double age,                           // focal component age
+		double birthDate,                     // focal component birth date
+		double x,                             // focal component current x (W) ± 12.0 [0.0,+∞[
+		double y,                             // focal component current y ± 0.0 ]-∞,+∞[
+		int z,                                // focal component current z [MIN_INTEGER..*]
+		Func.NextFocalDrv nextFocalDrv,       // focal component next drivers
+		Random random) {                      // random number generator
+	// func *************************** INSERT YOUR CODE BELOW THIS LINE ***************************
+		nextFocalDrv.x = x+1;
+		nextFocalDrv.y = y+2;
+		nextFocalDrv.z = 12;
+		//nextFocalLoc[0] = focalLoc.x();
+		System.out.println("changeState");
+	// func ******************************** END CODE INSERTION ZONE *******************************
+	}
+
+	/**
+	 * <p><strong>Mortality</strong> method of type <em>DeleteDecision</em>: delete self</p>
+	 * <p>- applies to categories {<em> world </em>}</p>
+	 *
+	 * <p>- follows timer <em>tmMo</em> of type {@link ClockTimer}, with time unit = 3 w</p>
+	 *
+	 * @param t current time
+	 * @param dt current time step
+	 * @param ecosystemTotalPopulationSize total population size (including sub-populations) of ecosystem
+	 * @param ecosystemTotalPopulationBirths total number of births in population (including sub-populations) of ecosystem
+	 * @param ecosystemTotalPopulationDeaths total number of deaths in population (including sub-populations) of ecosystem
+	 * @param groupPopulationSize population size of focal group
+	 * @param groupPopulationBirths number of births in population of focal group
+	 * @param groupPopulationDeaths number of deaths in population of focal group
+	 * @param age focal component age
+	 * @param birthDate focal component birth date
+	 * @param x focal component current x (W) ± 12.0 [0.0,+∞[
+	 * @param y focal component current y ± 0.0 ]-∞,+∞[
+	 * @param z focal component current z [MIN_INTEGER..*]
+	 * @param random random number generator
+	 * @param decider decision function
+	 * @return true if the current <em>focal</em> system component is to be deleted.
+	*/
+	public static boolean mortality(
+		double t,                             // current time
+		double dt,                            // current time step
+		int ecosystemTotalPopulationSize,     // total population size (including sub-populations)
+		int ecosystemTotalPopulationBirths,   // total number of births in population (including sub-populations)
+		int ecosystemTotalPopulationDeaths,   // total number of deaths in population (including sub-populations)
+		int groupPopulationSize,              // population size
+		int groupPopulationBirths,            // number of births in population
+		int groupPopulationDeaths,            // number of deaths in population
+		double age,                           // focal component age
+		double birthDate,                     // focal component birth date
+		double x,                             // focal component current x (W) ± 12.0 [0.0,+∞[
+		double y,                             // focal component current y ± 0.0 ]-∞,+∞[
+		int z,                                // focal component current z [MIN_INTEGER..*]
+		Random random,                        // random number generator
+		DecisionFunction decider) {           // decision function
+	// mortality *************************** INSERT YOUR CODE BELOW THIS LINE ***************************
+		return false;
+	// mortality ******************************** END CODE INSERTION ZONE *******************************
+	}
+
+	/**
+	 * <p><strong>Reprodction</strong> method of type <em>CreateOtherDecision</em>: create another system component, of the same categories if no life cycle is present, otherwise as specified by the life cycle</p>
+	 * <p>- applies to categories {<em> third </em>}</p>
+	 *
+	 * <p>- follows timer <em>tmMo</em> of type {@link ClockTimer}, with time unit = 3 w</p>
+	 *
+	 * @param t current time
+	 * @param dt current time step
+	 * @param ecosystemTotalPopulationSize total population size (including sub-populations) of ecosystem
+	 * @param ecosystemTotalPopulationBirths total number of births in population (including sub-populations) of ecosystem
+	 * @param ecosystemTotalPopulationDeaths total number of deaths in population (including sub-populations) of ecosystem
+	 * @param groupPopulationSize population size of focal group
+	 * @param groupPopulationBirths number of births in population of focal group
+	 * @param groupPopulationDeaths number of deaths in population of focal group
+	 * @param age focal component age
+	 * @param birthDate focal component birth date
+	 * @param britch focal component britch (kW m-1 s-2) ± 1.0E-4 [0.0,1.0]
+	 * @param brotch focal component brotch
+	 * @param random random number generator
+	 * @param decider decision function
+	 * @return the number of new system components to create. The integral part is used as a number of new components, the decimal part as a probability to create an extra component.
+	*/
+	public static double reprodction(
+		double t,                             // current time
+		double dt,                            // current time step
+		int ecosystemTotalPopulationSize,     // total population size (including sub-populations)
+		int ecosystemTotalPopulationBirths,   // total number of births in population (including sub-populations)
+		int ecosystemTotalPopulationDeaths,   // total number of deaths in population (including sub-populations)
+		int groupPopulationSize,              // population size
+		int groupPopulationBirths,            // number of births in population
+		int groupPopulationDeaths,            // number of deaths in population
+		double age,                           // focal component age
+		double birthDate,                     // focal component birth date
+		double britch,                        // focal component britch (kW m-1 s-2) ± 1.0E-4 [0.0,1.0]
+		boolean brotch,                       // focal component brotch
+		Random random,                        // random number generator
+		DecisionFunction decider) {           // decision function
+	// reprodction *************************** INSERT YOUR CODE BELOW THIS LINE ***************************
+		return 0.0;
+	// reprodction ******************************** END CODE INSERTION ZONE *******************************
+	}
+
+}
+

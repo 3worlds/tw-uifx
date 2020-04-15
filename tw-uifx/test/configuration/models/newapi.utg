@@ -1,0 +1,112 @@
+treegraph // saved by OmugiGraphExporter on Wed Apr 15 15:06:46 CEST 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds newapi
+	dataDefinition dtDef
+		record rec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(rec)
+			field brotch
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+			field britch
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(1.0E-4)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(kW m-1 s-2)
+		record rcrd1
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(rcrd1)
+			field y
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field x
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(12.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(W)
+			field z
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+		dimensioner dim
+			size = java.lang.Integer(2)
+		dimensioner dim1
+			size = java.lang.Integer(5)
+	experiment exp
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system system
+		dynamics dyn
+			timeLine tmLn
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(WEEK)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(WEEK)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel tmMo
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(3)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(WEEK)
+					process proc1
+						function Reprodction
+							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.system.Reprodction)
+					process proc
+						function Func
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.Func)
+						function Mortality
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.system.Mortality)
+			initialState state
+				group grp
+					component comp
+						variableValues varVals
+							x = java.lang.Double(0.1)
+							y = java.lang.Double(2.3)
+							z = java.lang.Integer(14)
+		structure struct
+			componentType compTyp
+				driverClass = java.lang.String(code.system.Rcrd1)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+			componentType compTyp1
+				decoratorClass = java.lang.String(code.system.Rec)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+			categorySet catSet
+				category second
+				category third
+				category world
+	userInterface gui
+		top toolBar
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+
+// CROSS-LINKS
+[process:proc1] appliesTo aplyTo1 [category:third]
+[componentType:compTyp1] belongsTo blngsTo1 [category:third]
+[category:world] drivers drvs [record:rcrd1]
+[componentType:compTyp] belongsTo blngsTo [category:world]
+[experiment:exp] baseLine baseline [system:system]
+[component:comp] instanceOf instOf [componentType:compTyp]
+[process:proc] appliesTo aplyTo [category:world]
+[group:grp] groupOf grpOf [componentType:compTyp]
+[category:third] decorators decs [record:rec]
+[widget:time] trackTime tracks1 [dynamics:dyn]
