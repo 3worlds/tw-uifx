@@ -2,6 +2,7 @@
 
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -155,7 +156,7 @@
                                        <children>
 														<Group fx:id="group">
 															<children>
-																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="500.0" minWidth="880.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
+																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="800.0" minWidth="900.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
 															</children>
 														</Group>
                                        </children>
@@ -166,6 +167,7 @@
                            <bottom>
                               <ToolBar BorderPane.alignment="CENTER">
                                 <items>
+                                    <ComboBox fx:id="cbxLayoutChoice" prefWidth="150.0" />
 												<Button fx:id="btnLayout" disable="true" onAction="#handleLayout" text="_L" />
                                     <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
                                     <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />

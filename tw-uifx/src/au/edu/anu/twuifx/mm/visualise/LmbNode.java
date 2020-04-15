@@ -2,7 +2,9 @@ package au.edu.anu.twuifx.mm.visualise;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import au.edu.anu.omhtk.rng.Pcg32;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.uit.space.Distance;
 import fr.ens.biologie.generic.utils.Duple;
@@ -25,6 +27,18 @@ public class LmbNode {
 		this.id = node.id();
 	}
 
+	protected String id() {
+		return id;
+	}
+
+	protected double getXDisp() {
+		return easting;
+	}
+
+	protected double getYDisp() {
+		return northing;
+	}
+
 	protected VisualNode getNode() {
 		return node;
 	}
@@ -39,10 +53,10 @@ public class LmbNode {
 		toNodes.add(cln);
 	}
 
-	public void clearDisp() {
-		easting = 0;
-		northing = 0;
-	}
+//	public void clearDisp() {
+//		easting = 0;
+//		northing = 0;
+//	}
 
 	public double getX() {
 		return node.getX();
@@ -68,45 +82,83 @@ public class LmbNode {
 		return other.getY() - getY();
 	}
 
+	private static String sep = "\t";
+
+	@Override
+	public String toString() {
+		return "[" + getX() + "," + getY() + "]" + id();
+	}
+
 	public void repulsionDisplacement(LmbNode other, double k) {
-		double mag = fRepulsion(other, k);
+		double mag = fRepulsion(other, k) / 2.0; // half displacement for each pair
 		double dx = dx(other);
 		double dy = dy(other);
 		double a = Math.atan2(dy, dx);
 		double x = mag * Math.cos(a);
 		double y = mag * Math.sin(a);
+		double d1 = getUpdatedDistance(other);
 		easting -= x;
 		northing -= y;
+		double d2 = getUpdatedDistance(other);
+//		System.out.println("R\t" + id + "<->" + other.id() + sep + d1 + sep + d2 + sep + (d2 - d1));
+
 	}
 
 	public void attractionDisplacement(LmbNode other, double k) {
-		double mag = fAttraction(other, k);
+		double mag = fAttraction(other, k) / 2.0; // half displacement for each pair
 		double dx = dx(other);
 		double dy = dy(other);
 		double a = Math.atan2(dy, dx);
 		double x = mag * Math.cos(a);
 		double y = mag * Math.sin(a);
+		double d1 = getUpdatedDistance(other);
 		easting += x;
 		northing += y;
+		double d2 = getUpdatedDistance(other);
+//		System.out.println("A\t" + id + "<->" + other.id() + sep + d1 + sep + d2 + sep + (d2 - d1));
+	}
+
+	public void displace(double t, Random rnd) {
+		easting = easting * t;
+		northing = northing * t;
+		double nx = easting + getX();
+		double ny = northing + getY();
+//		nx = Math.min(1.0, Math.max(nx, 0.0));
+//		ny = Math.min(1.0, Math.max(ny, 0.0));
+		setPosition(nx, ny);
+		easting = 0;
+		northing = 0;
 	}
 
 	public double fRepulsion(LmbNode other, double k) {
 		double d = Distance.euclidianDistance(getX(), getY(), other.getX(), other.getY());
+		d = Math.max(0.00000001, d);
 		return fRepulsion(k, d);
 	}
 
 	public double fAttraction(LmbNode other, double k) {
 		double d = Distance.euclidianDistance(getX(), getY(), other.getX(), other.getY());
+		d = Math.max(0.00000001, d);
 		return fAttract(k, d);
 	}
 
+	protected double getUpdatedDistance(LmbNode other) {
+		return Distance.euclidianDistance(getX() + getXDisp(), getY() + getYDisp(), other.getX() + other.getXDisp(),
+				other.getY() + other.getYDisp());
+	}
+
+	private static double c1 = 2.0;
+	private static double c2 = 1.0;
+	private static double c3 = 1.0;
+	//private static double c4 = 0.1;
 	/**
 	 * @param k constant
 	 * @param d distance between any two nodes
 	 * @return repulsion force
 	 */
 	public static double fRepulsion(double k, double d) {
-		return (k * k) / (d * d * d);
+		 return (k * k) / (d * d * d);
+		//return c3 / (d * d);
 	}
 
 	/**
@@ -116,6 +168,7 @@ public class LmbNode {
 	 */
 	public static double fAttract(double k, double d) {
 		return (d - k) / d;
+		//return c1 * Math.log(d / c2);
 	}
 
 	/**
@@ -136,23 +189,16 @@ public class LmbNode {
 		return b * theta;
 	}
 
-	public void limitDisplacement(double t) {
-		double x = getX();
-		double y = getY();
-		easting = easting *t;
-		northing = northing *t;
-		double ny = easting+getY();
-		double nx = northing+getX();
-		
-		// wip...
-		
-		easting = Math.min(1.0,Math.max(x+easting, 0.0));
-		northing = Math.min(1.0,Math.max(y+northing, 0.0));
-	}
-
-	public void updatePosition() {
-		// TODO Auto-generated method stub
-		
-	}
+//	private double jitter(double value,Random rnd) {
+//		value = Math.min(0.9, Math.max(value, 0.1));
+//		if (rnd.nextBoolean()) {
+//			value+= rnd.nextDouble()*0.1;
+//		} else
+//			value-= rnd.nextDouble()*0.1;
+//		return value;
+//		
+//				
+//		
+//	}
 
 }

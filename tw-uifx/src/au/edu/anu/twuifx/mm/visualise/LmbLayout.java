@@ -2,6 +2,9 @@ package au.edu.anu.twuifx.mm.visualise;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import au.edu.anu.omhtk.rng.Pcg32;
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -22,10 +25,12 @@ public class LmbLayout implements ILayout {
 
 	private List<LmbNode> lNodes;
 	private List<Duple<LmbNode,LmbNode>> lEdges;
+	private Random rnd ;
 
 	public LmbLayout(TreeGraph<VisualNode, VisualEdge> graph) {
 		lNodes = new ArrayList<>();
 		lEdges = new ArrayList<>();
+		rnd =  new Pcg32();
 		// collect all visible nodes
 		VisualNode twRoot = null;
 		for (VisualNode v : graph.nodes()) {
@@ -41,7 +46,7 @@ public class LmbLayout implements ILayout {
 			for (VisualNode cn : vn.getChildren())
 				if (!cn.isCollapsed()) {
 					LmbNode cln = vn2ln(cn);
-					ln.addToNode(cln);
+					//ln.addToNode(cln);
 					lEdges.add(new Duple<LmbNode,LmbNode>(ln,cln));
 					
 				}
@@ -51,16 +56,17 @@ public class LmbLayout implements ILayout {
 			for (VisualNode toNode : toNodes)
 				if (!toNode.isCollapsed()) {
 					LmbNode toln = vn2ln(toNode);
-					ln.addToNode(toln);
+					//ln.addToNode(toln);
 					lEdges.add(new Duple<LmbNode,LmbNode>(ln,toln));
 				}
 		}
 		/**
 		 * Initialise to some standard starting state to make this process effectively
-		 * deterministic. Here we use a radial layout based on the tw root node.
+		 * deterministic.
 		 */
-		ILayout radialLayout = new PCTreeLayout(twRoot);
-		radialLayout.compute();
+//		System.out.println("N\t"+lNodes.size()+"\tE\t"+lEdges.size());
+//		ILayout radialLayout = new PCTreeLayout(twRoot);
+//		radialLayout.compute();
 	}
 
 	private LmbNode vn2ln(VisualNode cn) {
@@ -70,19 +76,19 @@ public class LmbLayout implements ILayout {
 		return null;
 	}
 
-	private int interations = 50;
+	private int interations = 400;
+	private double initTemp = 0.1;
 	
 
 	@Override
 	public ILayout compute() {
+		// ideal spring length
 		final double k = Math.sqrt(1.0/lNodes.size());
-		double t=1.0; // temperature;
+		double t=initTemp; // temperature;
 		for (int i = 0; i < interations; i++) {
 			// repulsion between all nodes : could be optimized?
 			for (LmbNode v : lNodes) {
-				v.clearDisp();
-				double easting =0;
-				double northing=0;
+				
 				for (LmbNode u : lNodes)
 					if (!v.equals(u)) {
 						v.repulsionDisplacement(u, k);
@@ -90,20 +96,20 @@ public class LmbLayout implements ILayout {
 			}
 			for (Duple<LmbNode,LmbNode> e: lEdges) {
 				e.getFirst().attractionDisplacement(e.getSecond(),k);
+				e.getSecond().attractionDisplacement(e.getFirst(), k);
 			}
 			//limit max disp to temperature and frame bounds;
-			for (LmbNode v: lNodes) {
-				v.limitDisplacement(t);
-				v.updatePosition();
-			}
-			
-		
-			// cooling??
-			t = (double)(interations-i)/(double)interations;
+			for (LmbNode v: lNodes) 
+				v.displace(t,rnd);
+			// lower the temperature
+			t = cool(t,i,initTemp,interations);
 			
 		}
 
 		return null;
+	}
+	private double cool(double ct, double i, double t0,double max) {
+		return Math.max(0.0, ct-t0*1.0/max);
 	}
 
 }

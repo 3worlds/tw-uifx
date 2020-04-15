@@ -228,6 +228,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private Label lblChecking;
+	
+    @FXML
+    private ComboBox<LayoutType>  cbxLayoutChoice;
+
 
 	public enum Verbosity {
 		brief, medium, full;
@@ -241,9 +245,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private List<ErrorMessagable> lstErrorMsgs = new ArrayList<>();
 
 	private StringProperty userProjectPath = new SimpleStringProperty("");
-	// not used yet but just set with ComplianceManager.haveErrors();
-//	private BooleanProperty validProject = new SimpleBooleanProperty();
-
 	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
 	private IntegerProperty jitterProperty = new SimpleIntegerProperty(1);
 	private ObjectProperty<Font> fontProperty;
@@ -258,6 +259,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	public void initialize() {
+		cbxLayoutChoice.getItems().setAll(LayoutType.values());
+		cbxLayoutChoice.setValue(LayoutType.Tree);
+		
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
 		spinJitter.setMaxWidth(75.0);

@@ -610,6 +610,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public void doLayout(double jitterFraction) {
+		//ILayout layout = new LmbLayout(visualGraph);
+	
 		ILayout layout = new TreeLayout(visualGraph);
 		layout.compute();
 
