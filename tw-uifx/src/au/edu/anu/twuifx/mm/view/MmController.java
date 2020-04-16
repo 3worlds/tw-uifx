@@ -89,6 +89,7 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
+import au.edu.anu.twapps.mm.layout.LayoutType;
 import au.edu.anu.twapps.mm.userProjectFactory.IDETypes;
 import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
@@ -261,7 +262,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	public void initialize() {
 		cbxLayoutChoice.getItems().setAll(LayoutType.values());
-		cbxLayoutChoice.setValue(LayoutType.Tree);
+		cbxLayoutChoice.setValue(LayoutType.OrderedTree);
 		
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
@@ -482,7 +483,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 100.0;
-		visualiser.doLayout(dSize);
+		visualiser.doLayout(dSize,cbxLayoutChoice.getValue());
 	}
 
 	@FXML

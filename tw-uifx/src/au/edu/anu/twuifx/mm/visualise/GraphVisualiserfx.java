@@ -43,10 +43,12 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.ILayout;
+import au.edu.anu.twapps.mm.layout.LayoutType;
 import au.edu.anu.twapps.mm.layout.TreeLayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
@@ -609,10 +611,26 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void doLayout(double jitterFraction) {
-		//ILayout layout = new LmbLayout(visualGraph);
-	
-		ILayout layout = new TreeLayout(visualGraph);
+	public void doLayout(double jitterFraction,LayoutType layoutType) {
+		ILayout layout;
+		switch (layoutType) {
+		case OrderedTree:{
+			layout = new TreeLayout(visualGraph);
+			break;
+		}
+		case RadialTree:{
+			layout = new PCTreeLayout(visualGraph.root());
+			break;
+		}
+		case LombardiGraph: {
+			layout = new LmbLayout(visualGraph);
+			break;
+		}
+		default:{
+			throw new TwuifxException("Unknown layout type '"+layoutType+"',");
+		}
+		}
+		
 		layout.compute();
 
 		Random rnd = new Random();
