@@ -36,18 +36,20 @@ package au.edu.anu.twuifx.modelLibrary;
  */
 // Lookup struc for entries in ModelMaker "New" menu. Display order is the declaration order in this enum.
 public enum LibraryTable {
-	Empty(/*             */"Empty",/*                    */"vide.utg"), //
-	Basic1(/*            */"Base 1",/*                   */"deBase1.utg"), //
-	Basic2(/*            */"Base 2",/*                   */"deBase2.utg"), //
-	Model1(/*            */"Model 1",/*                  */"model1.utg"), //we could add txt files with snippet code 
+	Empty(/*             */"Empty", /*                    */"vide.utg", true), //
+//	Basic1(/*            */"Base 1",/*                   */"deBase1.utg"), //
+//	Basic2(/*            */"Base 2",/*                   */"deBase2.utg"), //
+//	Model1(/*            */"Model 1",/*                  */"model1.utg"), //could we add txt files with snippet code? 
 	;
 
 	private final String displayName;
 	private final String fileName;
+	private final boolean useUserName;
 
-	private LibraryTable(String displayName, String fileName) {
+	private LibraryTable(String displayName, String fileName, boolean useUserName) {
 		this.displayName = displayName;
 		this.fileName = fileName;
+		this.useUserName = useUserName;
 	}
 
 	public String displayName() {
@@ -56,6 +58,10 @@ public enum LibraryTable {
 
 	public String fileName() {
 		return fileName;
+	}
+
+	public boolean useUserName() {
+		return useUserName;
 	}
 
 }

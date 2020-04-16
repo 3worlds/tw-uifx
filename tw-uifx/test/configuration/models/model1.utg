@@ -15,6 +15,10 @@ treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds model1
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)

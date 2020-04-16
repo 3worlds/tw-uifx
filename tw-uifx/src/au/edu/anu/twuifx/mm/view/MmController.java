@@ -129,6 +129,7 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Interval;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 	@FXML
@@ -334,8 +335,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			menuNew.getItems().add(mi);
 			mi.setOnAction((e) -> {
 				if (model.canClose()) {
+					LibraryTable lt = map.get(e.getSource());
 					TreeGraph<TreeGraphDataNode, ALEdge> templateGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
-							.importGraph(map.get(e.getSource()).fileName(), LibraryTable.class);
+							.importGraph(lt.fileName(), LibraryTable.class);
+					if (lt.useUserName()) {
+						String uName = System.getProperty("user.name");
+						TreeGraphDataNode rn = templateGraph.root();
+						StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
+						authors.setByInt(uName,0);
+					}
 					model.doNewProject(templateGraph);
 					setButtonState();
 				}
@@ -830,6 +838,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			// Hide clutter by not showing collapsed trees;
 			if (!vn.isCollapsed()) {
 				String cat = vn.getCategory();
+				if (cat==null)
+					cat = vn.id();
 				TreeGraphNode cn = vn.getConfigNode();
 				ObservableList<Item> obsSubList = null;
 				if (cn instanceof DataHolder) {

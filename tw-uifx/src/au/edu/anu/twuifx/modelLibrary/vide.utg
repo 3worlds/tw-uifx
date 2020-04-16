@@ -4,5 +4,9 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 06:46:23 AEDT 2019
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds vide
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 
 // CROSS-LINKS

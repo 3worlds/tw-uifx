@@ -64,14 +64,16 @@ public class StringTableItem extends SimpleMMPropertyItem {
 
 	@Override
 	public Object getValue() {
-		return super.getValue().toString();
+		StringTable table  = (StringTable) super.getValue();
+		Object s = table.toSaveableString(bdel, isep);
+		return s;
 	}
 
 	@Override
 	public void setValue(Object value) {
 		String newValue = (String)value;
 		StringTable oldTable = (StringTable) getElementProperties().getPropertyValue(key);
-		String oldValue = oldTable.toString();
+		String oldValue = oldTable.toSaveableString(bdel, isep);
 		// NB Tables do not have an equals() function!
 		if (!oldValue.equals(newValue)){
 			StringTable newTable = StringTable.valueOf(newValue,bdel,isep);
