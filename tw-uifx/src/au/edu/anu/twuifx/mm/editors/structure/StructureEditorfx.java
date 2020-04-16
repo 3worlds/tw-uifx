@@ -253,7 +253,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_DELETE_NODE/*       */("Delete node"), // config
 		// --------------------------------------------
 		ML_ALL/*               */("All"),//
-		ML_LAYOUT/*            */("Focus radial layout"),
+		ML_LAYOUT/*            */("Focused Tree layout"),
 		;
 
 		private final String label;
