@@ -230,10 +230,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private Label lblChecking;
-	
-    @FXML
-    private ComboBox<LayoutType>  cbxLayoutChoice;
 
+	@FXML
+	private ComboBox<LayoutType> cbxLayoutChoice;
 
 	public enum Verbosity {
 		brief, medium, full;
@@ -263,7 +262,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void initialize() {
 		cbxLayoutChoice.getItems().setAll(LayoutType.values());
 		cbxLayoutChoice.setValue(LayoutType.OrderedTree);
-		
+
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
 		spinJitter.setMaxWidth(75.0);
@@ -339,12 +338,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					LibraryTable lt = map.get(e.getSource());
 					TreeGraph<TreeGraphDataNode, ALEdge> templateGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
 							.importGraph(lt.fileName(), LibraryTable.class);
-					if (lt.useUserName()) {
-						String uName = System.getProperty("user.name");
-						TreeGraphDataNode rn = templateGraph.root();
-						StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
-						authors.setByInt(uName,0);
-					}
+
+					String uName = System.getProperty("user.name");
+					TreeGraphDataNode rn = templateGraph.root();
+					StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
+					authors.setByInt(uName, 0);
+
 					model.doNewProject(templateGraph);
 					setButtonState();
 				}
@@ -483,7 +482,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 100.0;
-		visualiser.doLayout(dSize,cbxLayoutChoice.getValue());
+		visualiser.doLayout(dSize, cbxLayoutChoice.getValue());
 	}
 
 	@FXML
@@ -731,7 +730,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			textAreaErrorMsgs.clear();
 			for (ErrorMessagable m : lstErrorMsgs)
 				textAreaErrorMsgs.appendText(getMessageText(m));
-	});
+		});
 	}
 
 	// ===============================================
@@ -766,7 +765,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser.initialiseView();
 		initialisePropertySheets();
 		setCursor(oldCursor);
-		//GraphState.setChanged();
+		// GraphState.setChanged();
 		GraphState.clear();
 		ConfigGraph.validateGraph();
 		setButtonState();
@@ -839,7 +838,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			// Hide clutter by not showing collapsed trees;
 			if (!vn.isCollapsed()) {
 				String cat = vn.getCategory();
-				if (cat==null)
+				if (cat == null)
 					cat = vn.id();
 				TreeGraphNode cn = vn.getConfigNode();
 				ObservableList<Item> obsSubList = null;

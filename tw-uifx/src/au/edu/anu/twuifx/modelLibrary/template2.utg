@@ -1,4 +1,8 @@
-treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
+treegraph // saved by OmugiGraphExporter on Fri Apr 17 11:20:00 AEST 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	
 // Copy and paste this text in the changeState(...) method of the generated Func.java class
 // in order to see things displayed in the SimpleTimeSeriesWidget
 //
@@ -10,15 +14,13 @@ treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 // example settings: 
 // pars: x = 4.0 
 // vars: y = 0.1
-
-	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
-	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	
 // TREE
-3worlds model1
+3worlds template2
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)
@@ -40,14 +42,8 @@ treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 		driverClass = java.lang.String(code.sys.Vars)
 		parameterClass = java.lang.String(code.sys.Pars)
 		dynamics dyns
-			initialState state
-				component comp
-					parameterValues parVals
-						x = java.lang.Double(4.0)
-					variableValues varVals
-						y = java.lang.Double(0.1)
 			stoppingCondition stCnd
-				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(99)
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			timeLine tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(DAY)
@@ -71,6 +67,12 @@ treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							viewOthers = java.lang.Boolean(false)
+			initialState state
+				component comp
+					parameterValues parVals
+						x = java.lang.Double(4.0)
+					variableValues varVals
+						y = java.lang.Double(0.1)
 		structure struct
 			componentType compTyp
 				driverClass = java.lang.String(code.sys.Vars)
@@ -105,16 +107,16 @@ treegraph // saved by OmugiGraphExporter on Fri Jan 17 17:18:32 AEDT 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 
 // CROSS-LINKS
-[component:comp] instanceOf instOf [componentType:compTyp]
 [system:sys] belongsTo blngsTo [category:cat]
-[componentType:compTyp] belongsTo blngsTo1 [category:cat]
 [dataTracker:trkr] trackComponent trksCmpOf [component:comp]
 [dataTracker:trkr] trackField trksFldOf [field:y]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]""))
-[experiment:expt] baseLine bsln [system:sys]
-[widget:table] trackSeries trksSrsOf [dataTracker:trkr]
-[process:proc] appliesTo aplyTo [category:cat]
 [category:cat] drivers hasVars [record:vars]
 [category:cat] parameters hasPars [record:pars]
+[experiment:expt] baseLine bsln [system:sys]
+[componentType:compTyp] belongsTo blngsTo1 [category:cat]
+[widget:table] trackSeries trksSrsOf [dataTracker:trkr]
+[component:comp] instanceOf instOf [componentType:compTyp]
+[process:proc] appliesTo aplyTo [category:cat]
 [widget:series] trackSeries trksSrsOf1 [dataTracker:trkr]
 [widget:time] trackTime trksTmOf [dynamics:dyns]
