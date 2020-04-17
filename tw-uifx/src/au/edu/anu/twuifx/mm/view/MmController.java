@@ -552,6 +552,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String jitterKey = "jitter";
 	private static final String Mode = "_mode";
 	private static final String AccordionSelection = "_AccSel";
+	private static final String LayoutChoice = "layoutChoice";
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
@@ -575,6 +576,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putInt(tabPaneProperties.idProperty().get(),
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
 			Preferences.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
+			Preferences.putEnum(LayoutChoice, cbxLayoutChoice.getValue());
+			
 			Preferences.flush();
 		}
 	}
@@ -606,6 +609,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		setFontSize(Preferences.getInt(fontSizeKey, 10));
 		setNodeRadius(Preferences.getInt(nodeSizeKey, 8));
 		setJitter(Preferences.getInt(jitterKey, 1));
+		LayoutType lt = (LayoutType) Preferences.getEnum(LayoutChoice, LayoutType.OrderedTree);
+		cbxLayoutChoice.setValue(lt);
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
