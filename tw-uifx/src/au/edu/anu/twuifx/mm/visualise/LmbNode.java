@@ -1,5 +1,7 @@
 package au.edu.anu.twuifx.mm.visualise;
 
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -53,10 +55,10 @@ public class LmbNode {
 		toNodes.add(cln);
 	}
 
-//	public void clearDisp() {
-//		easting = 0;
-//		northing = 0;
-//	}
+	public void reset() {
+		easting = 0;
+		northing = 0;
+	}
 
 	public double getX() {
 		return node.getX();
@@ -90,55 +92,63 @@ public class LmbNode {
 	}
 
 	public void repulsionDisplacement(LmbNode other, double k) {
-		double mag = fRepulsion(other, k) / 2.0; // half displacement for each pair
+		double mag = fRepulsion(other, k);
 		double dx = dx(other);
 		double dy = dy(other);
 		double a = Math.atan2(dy, dx);
 		double x = mag * Math.cos(a);
 		double y = mag * Math.sin(a);
-		double d1 = getUpdatedDistance(other);
 		easting -= x;
 		northing -= y;
-		double d2 = getUpdatedDistance(other);
-//		System.out.println("R\t" + id + "<->" + other.id() + sep + d1 + sep + d2 + sep + (d2 - d1));
 
 	}
 
 	public void attractionDisplacement(LmbNode other, double k) {
-		double mag = fAttraction(other, k) / 2.0; // half displacement for each pair
+		double mag = fAttraction(other.getX(), other.getY(), k) ;
 		double dx = dx(other);
 		double dy = dy(other);
 		double a = Math.atan2(dy, dx);
 		double x = mag * Math.cos(a);
 		double y = mag * Math.sin(a);
-		double d1 = getUpdatedDistance(other);
 		easting += x;
 		northing += y;
-		double d2 = getUpdatedDistance(other);
-//		System.out.println("A\t" + id + "<->" + other.id() + sep + d1 + sep + d2 + sep + (d2 - d1));
 	}
 
-	public void displace(double t, Random rnd) {
-		easting = easting * t;
-		northing = northing * t;
-		double nx = easting + getX();
-		double ny = northing + getY();
-//		nx = Math.min(1.0, Math.max(nx, 0.0));
-//		ny = Math.min(1.0, Math.max(ny, 0.0));
+	private static Rectangle2D f = new Rectangle.Double(0, 0, 1.0, 1.0);
+
+	public double displace(double t) {
+		double direction = Math.atan2(northing, easting);
+		double distance = Math.sqrt((easting * easting) + (northing * northing));
+		distance = Math.min(t, distance);
+		double dx = distance * Math.cos(direction);
+		double dy = distance * Math.sin(direction);
+		double nx = dx + getX();
+		double ny = dy + getY();
 		setPosition(nx, ny);
-		easting = 0;
-		northing = 0;
+		return Distance.euclidianDistance(0, 0, dx, dy);
 	}
+
+//	public double force() {
+//		return Distance.euclidianDistance(0, 0, easting, northing);
+//	}
+
+	private static double close = 0.0000001;
 
 	public double fRepulsion(LmbNode other, double k) {
 		double d = Distance.euclidianDistance(getX(), getY(), other.getX(), other.getY());
-		d = Math.max(0.00000001, d);
+		if (d < close) {
+			System.out.println("R Distance zero");
+			d = Math.max(close, d);
+		}
 		return fRepulsion(k, d);
 	}
 
-	public double fAttraction(LmbNode other, double k) {
-		double d = Distance.euclidianDistance(getX(), getY(), other.getX(), other.getY());
-		d = Math.max(0.00000001, d);
+	public double fAttraction(double ox, double oy, double k) {
+		double d = Distance.euclidianDistance(getX(), getY(), ox, oy);
+		if (d < close) {
+			System.out.println("A Distance zero");
+			d = Math.max(close, d);
+		}
 		return fAttract(k, d);
 	}
 
@@ -147,19 +157,18 @@ public class LmbNode {
 				other.getY() + other.getYDisp());
 	}
 
-	private static double c1 = 2.0;
-	private static double c2 = 1.0;
-	private static double c3 = 1.0;
-	//private static double c4 = 0.1;
+	
+	// private static double c4 = 0.1;
 	/**
 	 * @param k constant
 	 * @param d distance between any two nodes
 	 * @return repulsion force
 	 */
 	public static double fRepulsion(double k, double d) {
-		 return (k * k) / (d * d * d);
-		//return c3 / (d * d);
+		return (k * k) / (d * d * d);
+		// return c3 / (d * d);
 	}
+
 
 	/**
 	 * @param k constant
@@ -168,7 +177,7 @@ public class LmbNode {
 	 */
 	public static double fAttract(double k, double d) {
 		return (d - k) / d;
-		//return c1 * Math.log(d / c2);
+		
 	}
 
 	/**
@@ -188,17 +197,5 @@ public class LmbNode {
 	public static double fRotational(double b, double theta) {
 		return b * theta;
 	}
-
-//	private double jitter(double value,Random rnd) {
-//		value = Math.min(0.9, Math.max(value, 0.1));
-//		if (rnd.nextBoolean()) {
-//			value+= rnd.nextDouble()*0.1;
-//		} else
-//			value-= rnd.nextDouble()*0.1;
-//		return value;
-//		
-//				
-//		
-//	}
 
 }

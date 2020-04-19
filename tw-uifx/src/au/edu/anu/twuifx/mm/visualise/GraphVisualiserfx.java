@@ -44,7 +44,6 @@ import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.layout.LayoutType;
-import au.edu.anu.twapps.mm.layout.TreeLayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -611,19 +610,19 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void doLayout(double jitterFraction,LayoutType layoutType) {
+	public void doLayout(double jitterFraction,LayoutType layoutType,boolean usePCEdges,boolean useXEdges) {
 		ILayout layout;
 		switch (layoutType) {
 		case OrderedTree:{
-			layout = new TreeLayout(visualGraph);
+			layout = new OTLayoutOld(visualGraph);
 			break;
 		}
 		case RadialTree:{
-			layout = new PCTreeLayout(visualGraph.root());
+			layout = new RT1Layout(visualGraph.root());
 			break;
 		}
 		case LombardiGraph: {
-			layout = new LmbLayout(visualGraph);
+			layout = new LmbLayout(visualGraph,usePCEdges,useXEdges);
 			break;
 		}
 		default:{
@@ -639,8 +638,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		double nrx = nodeRadius.get() / h;
 		double nry = nodeRadius.get() / h;
 
-		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		Point2D min = new Point2D.Double(0.0, 0.0);
+		Point2D max = new Point2D.Double(1.0, 1.0);
 		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
 				node.setX(jitter(node.getX(), jitterFraction, rnd));
@@ -683,10 +682,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public void doFocusedLayout(VisualNode root) {
-		ILayout layout = new PCTreeLayout(root);
+		ILayout layout = new RT1Layout(root);
 		layout.compute();
-		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		Point2D min = new Point2D.Double(0.0, 0.0);
+		Point2D max = new Point2D.Double(1.0, 1.0);
 
 		double w = pane.getWidth();
 		double h = pane.getHeight();

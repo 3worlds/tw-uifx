@@ -482,7 +482,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 100.0;
-		visualiser.doLayout(dSize, cbxLayoutChoice.getValue());
+		visualiser.doLayout(dSize, cbxLayoutChoice.getValue(), btnChildLinks.isSelected(), btnXLinks.isSelected());
 	}
 
 	@FXML
@@ -577,7 +577,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
 			Preferences.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
 			Preferences.putEnum(LayoutChoice, cbxLayoutChoice.getValue());
-			
+
 			Preferences.flush();
 		}
 	}

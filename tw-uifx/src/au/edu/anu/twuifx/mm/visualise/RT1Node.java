@@ -14,17 +14,17 @@ import au.edu.anu.twapps.mm.layout.ILayout;
  *
  * @date 30 Mar 2020
  */
-public class PCTNode {
+public class RT1Node {
 	// private static final double w = 0.5;
 	private double radius;// distance to all children
 
-	private PCTNode pctParent;
+	private RT1Node pctParent;
 	private VisualNode node;
 	private int index;// ith child
-	private List<PCTNode> children;
+	private List<RT1Node> children;
 	private boolean isPctRoot;
 
-	public PCTNode(PCTNode pctParent, VisualNode node, int index) {
+	public RT1Node(RT1Node pctParent, VisualNode node, int index) {
 		isPctRoot = (pctParent == null);
 		this.pctParent = pctParent;
 		this.node = node;
@@ -78,7 +78,7 @@ public class PCTNode {
 		}
 
 		// update recursively;
-		for (PCTNode cf : children)
+		for (RT1Node cf : children)
 			cf.setRadius(nextRadius);
 	}
 
@@ -98,7 +98,7 @@ public class PCTNode {
 		}
 	}
 
-	protected PCTNode getPctParent() {
+	protected RT1Node getPctParent() {
 		return pctParent;
 	}
 
@@ -110,11 +110,11 @@ public class PCTNode {
 		return index;
 	}
 
-	protected List<PCTNode> getChildren() {
+	protected List<RT1Node> getChildren() {
 		return children;
 	}
 
-	protected void addChild(PCTNode child) {
+	protected void addChild(RT1Node child) {
 		children.add(child);
 	}
 
@@ -136,7 +136,7 @@ public class PCTNode {
 	public void getLayoutBounds(Point2D min, Point2D max) {
 		min.setLocation(Math.min(min.getX(), getX()), Math.min(min.getY(), getY()));
 		max.setLocation(Math.max(max.getX(), getX()), Math.max(max.getY(), getY()));
-		for (PCTNode child : getChildren())
+		for (RT1Node child : getChildren())
 			child.getLayoutBounds(min, max);
 
 	}
@@ -145,7 +145,7 @@ public class PCTNode {
 		double x = ILayout.rescale(getX(), fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
 		double y = ILayout.rescale(getY(), fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
 		setXY(x, y);
-		for (PCTNode child : getChildren())
+		for (RT1Node child : getChildren())
 			child.normalise(fromMin, fromMax, toMin, toMax);
 
 	}

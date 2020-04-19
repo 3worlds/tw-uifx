@@ -24,13 +24,13 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_ROOT;
 public class LmbLayout implements ILayout {
 
 	private List<LmbNode> lNodes;
-	private List<Duple<LmbNode,LmbNode>> lEdges;
-	private Random rnd ;
+	private List<Duple<LmbNode, LmbNode>> lEdges;
+	
 
-	public LmbLayout(TreeGraph<VisualNode, VisualEdge> graph) {
+	public LmbLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
 		lNodes = new ArrayList<>();
 		lEdges = new ArrayList<>();
-		rnd =  new Pcg32();
+
 		// collect all visible nodes
 		VisualNode twRoot = null;
 		for (VisualNode v : graph.nodes()) {
@@ -40,26 +40,29 @@ public class LmbLayout implements ILayout {
 				lNodes.add(new LmbNode(v));
 		}
 		// set links
-		for (LmbNode ln : lNodes) {
-			// add children as "toNodes"
-			VisualNode vn = ln.getNode();
-			for (VisualNode cn : vn.getChildren())
-				if (!cn.isCollapsed()) {
-					LmbNode cln = vn2ln(cn);
-					//ln.addToNode(cln);
-					lEdges.add(new Duple<LmbNode,LmbNode>(ln,cln));
-					
-				}
+		if (usePCEdges)
+			for (LmbNode ln : lNodes) {
+				// add children as "toNodes"
+				VisualNode vn = ln.getNode();
+				for (VisualNode cn : vn.getChildren())
+					if (!cn.isCollapsed()) {
+						LmbNode cln = vn2ln(cn);
+						// ln.addToNode(cln);
+						lEdges.add(new Duple<LmbNode, LmbNode>(ln, cln));
 
-			// add out edge end nodes as "toNodes"
-			List<VisualNode> toNodes = (List<VisualNode>) get(vn.edges(Direction.OUT), edgeListEndNodes());
-			for (VisualNode toNode : toNodes)
-				if (!toNode.isCollapsed()) {
-					LmbNode toln = vn2ln(toNode);
-					//ln.addToNode(toln);
-					lEdges.add(new Duple<LmbNode,LmbNode>(ln,toln));
+					}
+
+				// add out edge end nodes as "toNodes"
+				if (useXEdges) {
+					List<VisualNode> toNodes = (List<VisualNode>) get(vn.edges(Direction.OUT), edgeListEndNodes());
+					for (VisualNode toNode : toNodes)
+						if (!toNode.isCollapsed()) {
+							LmbNode toln = vn2ln(toNode);
+							// ln.addToNode(toln);
+							lEdges.add(new Duple<LmbNode, LmbNode>(ln, toln));
+						}
 				}
-		}
+			}
 		/**
 		 * Initialise to some standard starting state to make this process effectively
 		 * deterministic.
@@ -76,40 +79,48 @@ public class LmbLayout implements ILayout {
 		return null;
 	}
 
-	private int interations = 400;
+	private int interations = 100;
 	private double initTemp = 0.1;
-	
+
+	private static String sep = "\t";
 
 	@Override
 	public ILayout compute() {
 		// ideal spring length
-		final double k = Math.sqrt(1.0/lNodes.size());
-		double t=initTemp; // temperature;
+		//System.out.println("i\tt\tf");
+		final double k = Math.sqrt(1.0 / lNodes.size());
+		double t = initTemp; // temperature;
 		for (int i = 0; i < interations; i++) {
+			double sum = 0;
 			// repulsion between all nodes : could be optimized?
 			for (LmbNode v : lNodes) {
-				
+				v.reset();
+//				v.attractToCenter(k);
 				for (LmbNode u : lNodes)
 					if (!v.equals(u)) {
 						v.repulsionDisplacement(u, k);
 					}
 			}
-			for (Duple<LmbNode,LmbNode> e: lEdges) {
-				e.getFirst().attractionDisplacement(e.getSecond(),k);
+			for (Duple<LmbNode, LmbNode> e : lEdges) {
+				e.getFirst().attractionDisplacement(e.getSecond(), k);
 				e.getSecond().attractionDisplacement(e.getFirst(), k);
 			}
-			//limit max disp to temperature and frame bounds;
-			for (LmbNode v: lNodes) 
-				v.displace(t,rnd);
-			// lower the temperature
-			t = cool(t,i,initTemp,interations);
 			
+			// limit max disp to temperature and frame bounds;
+			for (LmbNode v : lNodes) 
+				sum+= v.displace(t);
+			
+			// lower the temperature
+			t = cool(t, i, initTemp, interations);
+			System.out.println(i + sep + t + sep + sum);
+
 		}
 
 		return null;
 	}
-	private double cool(double ct, double i, double t0,double max) {
-		return Math.max(0.0, ct-t0*1.0/max);
+
+	private double cool(double ct, double i, double t0, double max) {
+		return Math.max(0.0, ct - t0 * 1.0 / max);
 	}
 
 }
