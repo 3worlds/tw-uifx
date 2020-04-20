@@ -354,7 +354,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		double[] p2 = { line.getEndX(), line.getEndY() };
 		double distance = MathUtils.distance(p1, p2);
 		// or dy small (horizontal) and dx shorter than label??
-		if ((distance < (8 * nodeRadius.get())) | collapsed) {
+		if ((distance < (2 * nodeRadius.get())) | collapsed) {
 			text.visibleProperty().unbind();
 			text.setVisible(false);
 		} else {
