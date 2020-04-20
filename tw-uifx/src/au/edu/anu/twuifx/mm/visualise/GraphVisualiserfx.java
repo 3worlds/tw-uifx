@@ -424,7 +424,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		for (Edge e : vNode.edges()) {
 			VisualNode sn = (VisualNode) e.startNode();
 			VisualNode en = (VisualNode) e.endNode();
-			if (sn.isCollapsed() ^ en.isCollapsed()) {
+			if (sn.isCollapsed() || en.isCollapsed()) {
 				VisualEdge ve = (VisualEdge) e;
 				Line line = (Line) ve.getSymbol();
 				if (line.visibleProperty().isBound()) {
@@ -455,7 +455,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		for (Edge e : vNode.edges()) {
 			VisualNode sn = (VisualNode) e.startNode();
 			VisualNode en = (VisualNode) e.endNode();
-			if (!sn.isCollapsed() || !en.isCollapsed()) {
+			if (!sn.isCollapsed() && !en.isCollapsed()) {
 				VisualEdge ve = (VisualEdge) e;
 				Line line = (Line) ve.getSymbol();
 				if (!line.visibleProperty().isBound()) {
@@ -609,20 +609,28 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		text.setText(vEdge.getDisplayText(false));
 	}
 
+	private  VisualNode getTWRoot() {
+		for (VisualNode n: visualGraph.nodes()) {
+			if (n.cClassId().equals(fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_ROOT.label()))
+				return n;
+		}
+		return null;
+	}
+
 	@Override
 	public void doLayout(double jitterFraction,LayoutType layoutType,boolean usePCEdges,boolean useXEdges) {
 		ILayout layout;
 		switch (layoutType) {
 		case OrderedTree:{
-			layout = new OTLayoutOld(visualGraph);
+			layout = new OTLayout(getTWRoot());
 			break;
 		}
 		case RadialTree:{
-			layout = new RT1Layout(visualGraph.root());
+			layout = new RT1Layout(getTWRoot());
 			break;
 		}
-		case LombardiGraph: {
-			layout = new LmbLayout(visualGraph,usePCEdges,useXEdges);
+		case SpringGraph: {
+			layout = new FRLayout(visualGraph,usePCEdges,useXEdges);
 			break;
 		}
 		default:{
@@ -670,6 +678,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		GraphState.setChanged();
 	}
+
 
 	private static void animateTo(Circle c, double x, double y) {
 		KeyValue endX = new KeyValue(c.centerXProperty(), x, Interpolator.EASE_BOTH);

@@ -556,7 +556,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-//			Preferences.initialise(Project.makeProjectPreferencesFile());
+//			System.out.println("Write preferences");
+
 			Preferences.putString(UserProjectPath, userProjectPath.get());
 			Preferences.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
 					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
@@ -582,7 +583,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
+	// private File pfile;
+
 	public void getPreferences() {
+//		pfile = Project.makeProjectPreferencesFile();
+//		System.out.println("Read from preferences");
 		Preferences.initialise(Project.makeProjectPreferencesFile());
 		String prjtmp = Preferences.getString(UserProjectPath, "");
 
@@ -609,12 +614,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		setFontSize(Preferences.getInt(fontSizeKey, 10));
 		setNodeRadius(Preferences.getInt(nodeSizeKey, 8));
 		setJitter(Preferences.getInt(jitterKey, 1));
-		LayoutType lt = (LayoutType) Preferences.getEnum(LayoutChoice, LayoutType.OrderedTree);
-		cbxLayoutChoice.setValue(lt);
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
 		Platform.runLater(() -> {
+			LayoutType lt = (LayoutType) Preferences.getEnum(LayoutChoice, LayoutType.OrderedTree);
+			cbxLayoutChoice.setValue(lt);
 			boolean m = Preferences.getBoolean(nodePropertySheet.idProperty().get() + Mode, true);
 			PropertySheet.Mode md = PropertySheet.Mode.CATEGORY;
 			if (m)
@@ -754,6 +759,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		lastSelectedNode = null;
 		UserProjectLink.unlinkUserProject();
 		setButtonState();
+		putPreferences();
 	}
 
 	@Override

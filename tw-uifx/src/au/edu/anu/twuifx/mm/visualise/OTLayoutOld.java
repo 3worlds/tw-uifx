@@ -384,6 +384,7 @@ public class OTLayoutOld implements ILayout {
 	}
 
 	private void moveSubtree(VisualNode wm, VisualNode wp, double shift) {
+		//wp is this
 		int wpNumber = (Integer) properties(wp).getPropertyValue(Number);
 		int wmNumber = (Integer) properties(wm).getPropertyValue(Number);
 		double subtrees = wpNumber - wmNumber;
