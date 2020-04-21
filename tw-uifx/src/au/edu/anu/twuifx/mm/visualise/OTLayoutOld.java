@@ -269,6 +269,7 @@ public class OTLayoutOld implements ILayout {
 		prop.setProperty(Thread, null);
 		prop.setProperty(Ancestor, null);
 		prop.setProperty(Mod, 0.0);
+//		System.out.println(n.getDisplayText(false)+"\tSETMODE\t0.0");
 		prop.setProperty(Shift, 0.0);
 		prop.setProperty(Change, 0.0);
 
@@ -306,6 +307,8 @@ public class OTLayoutOld implements ILayout {
 				double nprelim = (Double) properties(left).getPropertyValue(Prelim) + spacing();
 				prop.setProperty(Prelim, nprelim);
 				prop.setProperty(Mod, nprelim - midpoint);
+//				System.out.println(left.getDisplayText(false)+"\tSETMODE\t"+(nprelim - midpoint));
+
 			} else {
 				prop.setProperty(Prelim, midpoint);
 			}
@@ -313,8 +316,12 @@ public class OTLayoutOld implements ILayout {
 	}
 
 	private VisualNode apportion(VisualNode v, VisualNode a) {
+//		System.out.println("THIS\t"+v.getDisplayText(false));
 		VisualNode w = prevSibling(v);
 		if (w != null) {
+//			System.out.println("PREVSIB\t"+w.getDisplayText(false));
+//			if (w.getDisplayText(false).equals("dynamics:dyns"))
+//				System.out.println("HERE");
 			VisualNode vip, vim, vop, vom;
 			double sip, sim, sop, som;
 			vip = vop = v;
@@ -354,13 +361,15 @@ public class OTLayoutOld implements ILayout {
 				double m = (double) properties(vop).getPropertyValue(Mod);
 				m += sim - sop;
 				properties(vop).setProperty(Mod, m);
+//				System.out.println(v.getDisplayText(false)+"\tSETMODE\t"+m);
 			}
 			if (nl != null && nextLeft(vom) == null) {
 				properties(vom).setProperty(Thread, nl);
 				double m = (double) properties(vom).getPropertyValue(Mod);
 				m += sip - som;
 				properties(vom).setProperty(Mod, m);
-				a = v;
+//				System.out.println(v.getDisplayText(false)+"\tSETMODE\t"+m);
+			a = v;
 			}
 		}
 		return a;
@@ -385,6 +394,7 @@ public class OTLayoutOld implements ILayout {
 
 	private void moveSubtree(VisualNode wm, VisualNode wp, double shift) {
 		//wp is this
+		//wm is the new ancestor
 		int wpNumber = (Integer) properties(wp).getPropertyValue(Number);
 		int wmNumber = (Integer) properties(wm).getPropertyValue(Number);
 		double subtrees = wpNumber - wmNumber;
@@ -408,6 +418,7 @@ public class OTLayoutOld implements ILayout {
 		double wpMod = (Double) properties(wp).getPropertyValue(Mod);
 		wpMod += shift;
 		properties(wp).setProperty(Mod, wpMod);
+//		System.out.println(wp.getDisplayText(false)+"\tSETMODE\t"+ wpMod);
 
 	}
 
@@ -435,7 +446,7 @@ public class OTLayoutOld implements ILayout {
 			double dmod = (double) props.getPropertyValue(Mod);
 			dmod += shift;
 			properties(c).setProperty(Mod, dmod);
-
+//			System.out.println(c.getDisplayText(false)+"\tSETMODE\t"+ dmod);
 			change += (Double) props.getPropertyValue(Change);
 			shift += (Double) props.getPropertyValue(Shift) + change;
 

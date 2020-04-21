@@ -479,10 +479,20 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@Override
 	public void doLayout() {
+		callLayout(null);
+	}
+
+	@Override
+	public void doFocusedLayout(VisualNode root) {
+		callLayout(root);
+	}
+
+	private void callLayout(VisualNode root) {
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 100.0;
-		visualiser.doLayout(dSize, cbxLayoutChoice.getValue(), btnChildLinks.isSelected(), btnXLinks.isSelected());
+		visualiser.doLayout(root, dSize, cbxLayoutChoice.getValue(), btnChildLinks.isSelected(),
+				btnXLinks.isSelected());
 	}
 
 	@FXML

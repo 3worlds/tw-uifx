@@ -231,7 +231,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_LAYOUT);
 		mi.setOnAction((e) -> {
-			gvisualiser.doFocusedLayout(editableNode.getSelectedVisualNode());
+			controller.doFocusedLayout(editableNode.getSelectedVisualNode());
 		});
 	}
 

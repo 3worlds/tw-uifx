@@ -1,9 +1,10 @@
 package au.edu.anu.twuifx.mm.visualise;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 
 public class OTNode {
@@ -35,35 +36,35 @@ public class OTNode {
 		setMod(0.0);
 		setShift(0.0);
 		setChange(0.0);
+
 		updateDepths(depth);
-		if (!getChildren().isEmpty()) {// leaf
+		if (getChildren().isEmpty()) {// leaf
 			OTNode l = prevSibling();
 			if (l == null)
 				setPrelim(0.0);
 			else
-				setPrelim(getPrelim() + itemHeight);
-
+				l.setPrelim(l.getPrelim() + itemHeight);
 		} else {
 			OTNode leftMost = children.get(0);
 			OTNode rightMost = children.get(children.size() - 1);
 			OTNode defaultAncestor = leftMost;
-			for (int i = 0; i < children.size(); i++) {
-				OTNode child = children.get(i);
-				child.firstWalk(i, depth + 1);
-				defaultAncestor = child.apportion(defaultAncestor);
+			OTNode c = leftMost;
+			for (int i = 0; c != null; ++i, c = c.nextSibling()) {
+				c.firstWalk(i, depth + 1);
+				defaultAncestor = c.apportion(defaultAncestor);
 			}
-			
+
 			executeShifts();
 			double pl = leftMost.getPrelim();
 			double pr = rightMost.getPrelim();
-			double midpoint = 0.5*(pl+pr);
+
+			double midpoint = 0.5 * (pl + pr);
+
 			OTNode left = prevSibling();
-			if (left!=null) {
-//				double nprelim = (Double) properties(left).getPropertyValue(Prelim) + spacing();
+			if (left != null) {
 				double nprelim = left.getPrelim() + itemHeight;
-//				prop.setProperty(Prelim, nprelim);
 				setPrelim(nprelim);
-				setMod(nprelim - midpoint);		
+				setMod(nprelim - midpoint);
 			} else {
 				setPrelim(midpoint);
 			}
@@ -72,53 +73,36 @@ public class OTNode {
 
 	}
 
-	private void executeShifts() {
-		double shift = 0, change = 0;
-		for (OTNode c = getLastChild(); c!=null; c= c.prevSibling()) {
-//			double cprelim = (Double) props.getPropertyValue(Prelim);
-			double cprelim = c.getPrelim();
-			cprelim += shift;
-//		   props.setProperty(Prelim, cprelim);
-			c.setPrelim(cprelim);
-
-//			double dmod = (double) props.getPropertyValue(Mod);
-			double dmod = c.getMod();
-			dmod += shift;
-//			properties(c).setProperty(Mod, dmod);
-			c.setMod(dmod);
-
-//			change += (Double) props.getPropertyValue(Change);
-			change += c.getChange();
-			shift += c.getShift() + change;
-
-		}
-		
-	}
-
-	private OTNode getLastChild() {
-		return children.get(children.size()-1);
-	}
-
 	private OTNode apportion(OTNode a) {
+//		System.out.println("THIS\t" + getvNode().getDisplayText(false));
+
 		OTNode w = prevSibling();
 		if (w != null) {
+//			System.out.println("PREVSIB\t" + w.getvNode().getDisplayText(false));
+//			if (w.getvNode().getDisplayText(false).equals("dynamics:dyns"))
+//				System.out.println("HERE");
 			OTNode vip, vim, vop, vom;
 			double sip, sim, sop, som;
 			vip = vop = this;
 			vim = w;
 			vom = vip.getParent().getChildren().get(0);
+
 			sip = vip.getMod();
 			sop = vop.getMod();
 			sim = vim.getMod();
 			som = vom.getMod();
+			
 			OTNode nr = vim.nextRight();
 			OTNode nl = vip.nextLeft();
 			while (nr != null && nl != null) {
+				vim = nr;
+				vip = nl;
+				vom = vom.nextLeft();
+				vop = vop.nextRight();
 				vop.setAncestor(this);
 				double shift = (vim.getPrelim() + sim) - (vip.getPrelim() + sip) + itemHeight;
 				if (shift > 0) {
-					OTNode newa = ancestor(vim, a);
-					moveSubTree(newa, shift);
+					moveSubTree(ancestor(vim, a), shift);
 					sip += shift;
 					sop += shift;
 				}
@@ -130,16 +114,16 @@ public class OTNode {
 				nr = vim.nextRight();
 				nl = vip.nextLeft();
 			}
-			if (nr != null && vop.nextRight()== null) {
-				vop.setThread(nl);
+			if (nr != null && vop.nextRight() == null) {
+				vop.setThread(nr);
 				double m = vop.getMod();
-				m+= sim-sop;
+				m += sim - sop;
 				vop.setMod(m);
 			}
-			if (nl != null && vom.nextLeft()==null) {
+			if (nl != null && vom.nextLeft() == null) {
 				vom.setThread(nl);
 				double m = vom.getMod();
-				m+= sip - som;
+				m += sip - som;
 				vom.setMod(m);
 				a = this;
 			}
@@ -148,38 +132,52 @@ public class OTNode {
 		return a;
 	}
 
+	private void executeShifts() {
+		double shift = 0, change = 0;
+		for (OTNode c = getLastChild(); c != null; c = c.prevSibling()) {
+			double cprelim = c.getPrelim();
+			cprelim += shift;
+			c.setPrelim(cprelim);
+
+			double dmod = c.getMod();
+			dmod += shift;
+			c.setMod(dmod);
+
+			change += c.getChange();
+			shift += c.getShift() + change;
+		}
+
+	}
+
+	private OTNode getLastChild() {
+		return children.get(children.size() - 1);
+	}
+
 	private void moveSubTree(OTNode wm, double shft) {
+		// wm is the new ancestor
+		// wp is THIS
 		int wpNumber = getNumber();
 		int wmNumber = wm.getNumber();
 		double subTrees = wpNumber - wmNumber;
 
 		double wpChange = getChange();
 		wpChange -= shft / subTrees;
-		// properties(wp).setProperty(Change, wpChange);
 		setChange(wpChange);
 
-//		double wpShift = (Double) properties(wp).getPropertyValue(Shift);
 		double wpShift = getShift();
 		wpShift += shft;
-		// properties(wp).setProperty(Shift, wpShift);
 		setShift(wpShift);
 
-		// double wmChange = (Double) properties(wm).getPropertyValue(Change);
 		double wmChange = wm.getChange();
 		wmChange += shft / subTrees;
-		// properties(wm).setProperty(Change, wmChange);
 		wm.setChange(wmChange);
 
-//		double wpPrelim = (Double) properties(wp).getPropertyValue(Prelim);
 		double wpPrelim = getPrelim();
 		wpPrelim += shft;
-//		properties(wp).setProperty(Prelim, wpPrelim);
 		setPrelim(wpPrelim);
 
-//		double wpMod = (Double) properties(wp).getPropertyValue(Mod);
 		double wpMod = getMod();
 		wpMod += shft;
-		// properties(wp).setProperty(Mod, wpMod);
 		setMod(wpMod);
 	}
 
@@ -289,6 +287,9 @@ public class OTNode {
 
 	public void setMod(double mod) {
 		this.mod = mod;
+//		if (getvNode().getDisplayText(false).equals("timeLine:tmLn"))
+//			System.out.println(mod);
+//		System.out.println(getvNode().getDisplayText(false) + "\tSETMODE\t" + mod);
 	}
 
 	public double getShift() {
@@ -316,24 +317,24 @@ public class OTNode {
 	}
 
 	public void secondWalk(OTNode p, double m, int depth) {
-		double y = getPrelim()+m;
+		double y = getPrelim() + m;
 		double x = OTNode.m_depths[depth];
 		getvNode().setX(x);
 		getvNode().setY(y);
-		depth+=1;
+		depth += 1;
 		if (!children.isEmpty()) {
-			for (OTNode c= getFirstChild();c!=null; c= c.nextSibling()) {
-				c.secondWalk(this,m+getMod(),depth);
+			for (OTNode c = getFirstChild(); c != null; c = c.nextSibling()) {
+				c.secondWalk(this, m + getMod(), depth);
 			}
-		}	
+		}
 	}
 
 	private OTNode nextSibling() {
 		OTNode parent = getParent();
-		if (parent!=null) {
+		if (parent != null) {
 			int idx = parent.getChildren().indexOf(this);
 			idx++;
-			if (idx<parent.getChildren().size())
+			if (idx < parent.getChildren().size())
 				return parent.getChildren().get(idx);
 		}
 		return null;
@@ -343,4 +344,31 @@ public class OTNode {
 		return children.get(0);
 	}
 
+	@Override
+	public String toString() {
+		return getvNode().getDisplayText(false);
+	}
+
+	public void getLayoutBounds(Point2D min, Point2D max) {
+		double x = getvNode().getX();
+		double y = getvNode().getY();
+//		System.out.println(x+"\t"+y);
+
+		min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
+		max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
+		for (OTNode child : getChildren())
+			child.getLayoutBounds(min, max);
+	}
+
+	public void normalise(Point2D fromMin, Point2D fromMax, Point2D toMin, Point2D toMax) {
+		double x = getvNode().getX();
+		double y = getvNode().getY();
+		x = ILayout.rescale(x, fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
+		y = ILayout.rescale(y, fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
+		getvNode().setX(x);
+		getvNode().setY(y);
+		for (OTNode child : children) {
+			child.normalise(fromMin, fromMax, toMin, toMax);
+		}
+	}
 }

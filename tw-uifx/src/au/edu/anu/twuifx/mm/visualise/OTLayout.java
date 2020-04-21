@@ -1,5 +1,6 @@
 package au.edu.anu.twuifx.mm.visualise;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -55,6 +56,15 @@ public class OTLayout implements ILayout{
 		determineDepths();
 		
 		root.secondWalk(null,-root.getPrelim(),0);
+		
+		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+
+		root.getLayoutBounds(min,max);
+		
+
+		root.normalise(min, max, new Point2D.Double(0.0, 0.0), new Point2D.Double(1.0, 1.0));
+
 		
 		return this;
 	}

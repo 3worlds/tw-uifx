@@ -354,7 +354,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		double[] p2 = { line.getEndX(), line.getEndY() };
 		double distance = MathUtils.distance(p1, p2);
 		// or dy small (horizontal) and dx shorter than label??
-		if ((distance < (2 * nodeRadius.get())) | collapsed) {
+		if ((distance < (4 * nodeRadius.get())) | collapsed) {
 			text.visibleProperty().unbind();
 			text.setVisible(false);
 		} else {
@@ -372,7 +372,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		circle.centerYProperty().unbind();
 		node.setCollapse(false);
 		circle.setVisible(true);
-		animateTo(circle,x,y);
+		animateTo(circle, x, y);
 	}
 
 	private static void collapse(TreeNode parent, DoubleProperty xp, DoubleProperty yp) {
@@ -609,8 +609,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		text.setText(vEdge.getDisplayText(false));
 	}
 
-	private  VisualNode getTWRoot() {
-		for (VisualNode n: visualGraph.nodes()) {
+	private VisualNode getTWRoot() {
+		for (VisualNode n : visualGraph.nodes()) {
 			if (n.cClassId().equals(fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_ROOT.label()))
 				return n;
 		}
@@ -618,26 +618,31 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void doLayout(double jitterFraction,LayoutType layoutType,boolean usePCEdges,boolean useXEdges) {
+	public void doLayout(VisualNode root, double jitterFraction, LayoutType layoutType, boolean usePCEdges,
+			boolean useXEdges) {
+		if (root == null)
+			root = getTWRoot();
+
 		ILayout layout;
 		switch (layoutType) {
-		case OrderedTree:{
-			layout = new OTLayout(getTWRoot());
+		case OrderedTree: {
+//			layout = new OTLayout(root);
+			layout = new OTLayoutOld(visualGraph);
 			break;
 		}
-		case RadialTree:{
-			layout = new RT1Layout(getTWRoot());
+		case RadialTree: {
+			layout = new RT1Layout(root);
 			break;
 		}
 		case SpringGraph: {
-			layout = new FRLayout(visualGraph,usePCEdges,useXEdges);
+			layout = new FRLayout(visualGraph, usePCEdges, useXEdges);
 			break;
 		}
-		default:{
-			throw new TwuifxException("Unknown layout type '"+layoutType+"',");
+		default: {
+			throw new TwuifxException("Unknown layout type '" + layoutType + "',");
 		}
 		}
-		
+
 		layout.compute();
 
 		Random rnd = new Random();
@@ -673,12 +678,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				node.setX(x1);
 				node.setY(y1);
 				Circle c = (Circle) node.getSymbol();
-				animateTo(c,node.getX() * pane.getWidth(),node.getY() * pane.getHeight());
+				animateTo(c, node.getX() * pane.getWidth(), node.getY() * pane.getHeight());
 			}
 
 		GraphState.setChanged();
 	}
-
 
 	private static void animateTo(Circle c, double x, double y) {
 		KeyValue endX = new KeyValue(c.centerXProperty(), x, Interpolator.EASE_BOTH);
@@ -689,43 +693,43 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		timeline.play();
 	}
 
-	@Override
-	public void doFocusedLayout(VisualNode root) {
-		ILayout layout = new RT1Layout(root);
-		layout.compute();
-		Point2D min = new Point2D.Double(0.0, 0.0);
-		Point2D max = new Point2D.Double(1.0, 1.0);
-
-		double w = pane.getWidth();
-		double h = pane.getHeight();
-		double nrx = nodeRadius.get() / h;
-		double nry = nodeRadius.get() / h;
-		for (VisualNode node : visualGraph.nodes())
-			if (!node.isCollapsed()) {
-				Text text = (Text) node.getText();
-				double th = Math.max(nrx, text.getLayoutBounds().getHeight() / h);
-				double tw = text.getLayoutBounds().getWidth() / w + nrx;
-				double top = node.getY() - th;
-				double bottom = node.getY() + nry;
-				double left = node.getX() - nrx;
-				double right = node.getX() + nrx + tw;
-				min.setLocation(Math.min(left, min.getX()), Math.min(top, min.getY()));
-				max.setLocation(Math.max(right, max.getX()), Math.max(bottom, max.getY()));
-			}
-		for (VisualNode node : visualGraph.nodes())
-			if (!node.isCollapsed()) {
-				double x = node.getX();
-				// I don't know why the labels don't line up on the rh side?
-				double x1 = ILayout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
-				double y = node.getY();
-				double y1 = ILayout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
-				node.setX(x1);
-				node.setY(y1);
-				Circle c = (Circle) node.getSymbol();
-				animateTo(c,node.getX() * pane.getWidth(),node.getY() * pane.getHeight());
-			}
-
-		GraphState.setChanged();
-
-	}
+//	@Override
+//	public void doFocusedLayout(VisualNode root) {
+//		ILayout layout = new RT1Layout(root);
+//		layout.compute();
+//		Point2D min = new Point2D.Double(0.0, 0.0);
+//		Point2D max = new Point2D.Double(1.0, 1.0);
+//
+//		double w = pane.getWidth();
+//		double h = pane.getHeight();
+//		double nrx = nodeRadius.get() / h;
+//		double nry = nodeRadius.get() / h;
+//		for (VisualNode node : visualGraph.nodes())
+//			if (!node.isCollapsed()) {
+//				Text text = (Text) node.getText();
+//				double th = Math.max(nrx, text.getLayoutBounds().getHeight() / h);
+//				double tw = text.getLayoutBounds().getWidth() / w + nrx;
+//				double top = node.getY() - th;
+//				double bottom = node.getY() + nry;
+//				double left = node.getX() - nrx;
+//				double right = node.getX() + nrx + tw;
+//				min.setLocation(Math.min(left, min.getX()), Math.min(top, min.getY()));
+//				max.setLocation(Math.max(right, max.getX()), Math.max(bottom, max.getY()));
+//			}
+//		for (VisualNode node : visualGraph.nodes())
+//			if (!node.isCollapsed()) {
+//				double x = node.getX();
+//				// I don't know why the labels don't line up on the rh side?
+//				double x1 = ILayout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
+//				double y = node.getY();
+//				double y1 = ILayout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
+//				node.setX(x1);
+//				node.setY(y1);
+//				Circle c = (Circle) node.getSymbol();
+//				animateTo(c,node.getX() * pane.getWidth(),node.getY() * pane.getHeight());
+//			}
+//
+//		GraphState.setChanged();
+//
+//	}
 }

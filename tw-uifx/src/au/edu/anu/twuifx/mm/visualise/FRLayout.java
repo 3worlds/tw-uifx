@@ -37,13 +37,16 @@ public class FRLayout implements ILayout {
 	private int interations = 100;
 	private double initTemp = 0.1;
 
-	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
+	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges,
+			boolean useXEdges) {
+	
 		lNodes = new ArrayList<>();
 		lEdges = new ArrayList<>();
 		// collect all visible nodes
 		for (VisualNode v : graph.nodes()) {
-			if (!v.isCollapsed())
+			if (!v.isCollapsed()) {
 				lNodes.add(new FRNode(v));
+			}
 		}
 		lNodes.sort(new Comparator<FRNode>() {
 
@@ -53,7 +56,7 @@ public class FRLayout implements ILayout {
 			}
 
 		});
-		
+
 		// set edges
 		for (FRNode ln : lNodes) {
 			// add parent/children edges

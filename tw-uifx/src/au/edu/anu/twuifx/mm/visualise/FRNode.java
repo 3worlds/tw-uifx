@@ -59,16 +59,16 @@ public class FRNode {
 	 * @param t temperature
 	 * @return energy
 	 */
-	public double displace(double t) {
-		double direction = Math.atan2(dispY, dispX);
-		double distance = Math.sqrt((dispX * dispX) + (dispY * dispY));
-		distance = Math.min(t, distance);
-		double dx = distance * Math.cos(direction);
-		double dy = distance * Math.sin(direction);
-		double nx = dx + getX();
-		double ny = dy + getY();
-		setPosition(nx, ny);
-		return Distance.euclidianDistance(0, 0, dx, dy);
+	public double displace(double t) {	
+			double direction = Math.atan2(dispY, dispX);
+			double distance = Math.sqrt((dispX * dispX) + (dispY * dispY));
+			distance = Math.min(t, distance);
+			double dx = distance * Math.cos(direction);
+			double dy = distance * Math.sin(direction);
+			double nx = dx + getX();
+			double ny = dy + getY();
+			setPosition(nx, ny);
+			return Distance.euclidianDistance(0, 0, dx, dy);
 	}
 
 	protected String id() {
@@ -145,7 +145,7 @@ public class FRNode {
 
 	/**
 	 * @param k ideal spring length
-	 * @param d  distance between any two nodes
+	 * @param d distance between any two nodes
 	 * @return repulsion force
 	 */
 	public static double fRepulsion(double k, double d) {
