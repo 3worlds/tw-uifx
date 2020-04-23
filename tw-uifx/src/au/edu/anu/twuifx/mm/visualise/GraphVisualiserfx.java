@@ -626,8 +626,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		ILayout layout;
 		switch (layoutType) {
 		case OrderedTree: {
-			layout = new OTLayout(root);
-//			layout = new OTLayoutOld(visualGraph);
+//			layout = new OTLayout(root);
+			layout = new OTLayoutOld(visualGraph);
 			break;
 		}
 		case RadialTree: {
@@ -693,43 +693,4 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		timeline.play();
 	}
 
-//	@Override
-//	public void doFocusedLayout(VisualNode root) {
-//		ILayout layout = new RT1Layout(root);
-//		layout.compute();
-//		Point2D min = new Point2D.Double(0.0, 0.0);
-//		Point2D max = new Point2D.Double(1.0, 1.0);
-//
-//		double w = pane.getWidth();
-//		double h = pane.getHeight();
-//		double nrx = nodeRadius.get() / h;
-//		double nry = nodeRadius.get() / h;
-//		for (VisualNode node : visualGraph.nodes())
-//			if (!node.isCollapsed()) {
-//				Text text = (Text) node.getText();
-//				double th = Math.max(nrx, text.getLayoutBounds().getHeight() / h);
-//				double tw = text.getLayoutBounds().getWidth() / w + nrx;
-//				double top = node.getY() - th;
-//				double bottom = node.getY() + nry;
-//				double left = node.getX() - nrx;
-//				double right = node.getX() + nrx + tw;
-//				min.setLocation(Math.min(left, min.getX()), Math.min(top, min.getY()));
-//				max.setLocation(Math.max(right, max.getX()), Math.max(bottom, max.getY()));
-//			}
-//		for (VisualNode node : visualGraph.nodes())
-//			if (!node.isCollapsed()) {
-//				double x = node.getX();
-//				// I don't know why the labels don't line up on the rh side?
-//				double x1 = ILayout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
-//				double y = node.getY();
-//				double y1 = ILayout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
-//				node.setX(x1);
-//				node.setY(y1);
-//				Circle c = (Circle) node.getSymbol();
-//				animateTo(c,node.getX() * pane.getWidth(),node.getY() * pane.getHeight());
-//			}
-//
-//		GraphState.setChanged();
-//
-//	}
 }

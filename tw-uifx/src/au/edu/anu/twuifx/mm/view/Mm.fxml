@@ -95,7 +95,7 @@
 		</MenuBar>
 	</top>
    <center>
-      <SplitPane fx:id="splitPane1" dividerPositions="0.25" BorderPane.alignment="CENTER">
+      <SplitPane fx:id="splitPane1" dividerPositions="0.4" BorderPane.alignment="CENTER">
          <items>
             <BorderPane>
                <center>
@@ -192,7 +192,7 @@
                            <children>
                               <Group fx:id="group">
                                  <children>
-                                    <AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="800.0" minWidth="900.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
+                                    <AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="700.0" minWidth="700.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
                                  </children>
                               </Group>
                            </children>

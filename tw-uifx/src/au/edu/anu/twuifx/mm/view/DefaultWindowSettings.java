@@ -9,8 +9,8 @@ public class DefaultWindowSettings {
 	private static double h =840;
 	private static double x = (screenBounds.getWidth() - w) / 2;
 	private static double y = (screenBounds.getHeight() - h) / 3;
-	private static double splitter1 = 0.25;
-	private static double splitter2 = 0.75;
+	private static double splitter1 = 0.4;
+	private static double splitter2 = 0.5;
 	public static double getWidth() {
 		return w;
 	}
