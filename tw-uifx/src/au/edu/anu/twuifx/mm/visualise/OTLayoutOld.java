@@ -192,7 +192,12 @@ public class OTLayoutOld implements ILayout {
 		return this;
 	}
 
+	private static void dump(VisualNode n, String msg) {
+		System.out.println(n.getDisplayText(false) + "\t" + msg);
+	}
+
 	private void firstWalk(VisualNode n, int num, int depth) {
+		// dump(n,"firstWalk");
 		SharedPropertyListImpl thisProps = properties(n);
 		thisProps.setProperty(Number, num);
 		thisProps.setProperty(Prelim, 0.0);
@@ -208,6 +213,7 @@ public class OTLayoutOld implements ILayout {
 			if (l == null) {
 				thisProps.setProperty(Prelim, 0.0);
 			} else {
+//				dump(l,"case1");
 				SharedPropertyListImpl lprop = propertyMap.get(l.id());
 				double lp = (double) lprop.getPropertyValue(Prelim);
 				thisProps.setProperty(Prelim, lp + itemHeight);
@@ -299,6 +305,9 @@ public class OTLayoutOld implements ILayout {
 		// v is THIS
 		VisualNode w = prevSibling(v);
 		if (w != null) {
+//			dump(v,"apportion");
+//			dump(w,"apportion");
+
 			VisualNode vip, vim, vop, vom;
 			double sip, sim, sop, som;
 			vip = vop = v;
@@ -317,10 +326,15 @@ public class OTLayoutOld implements ILayout {
 				vip = nl;
 				vom = nextLeft(vom);
 				vop = nextRight(vop);
+//				dump(vim, "vim");
+//				dump(vip, "vip");
+//				dump(vom, "vom");
+//				dump(vop, "vop");
 				properties(vop).setProperty(Ancestor, v);
 				double shift = ((Double) properties(vim).getPropertyValue(Prelim) + sim)
 						- ((Double) properties(vip).getPropertyValue(Prelim) + sip) + itemHeight;
 				if (shift > 0) {
+//					dump(v, "Shift " + shift);
 					moveSubtree(ancestor(vim, v, a), v, shift);
 					sip += shift;
 					sop += shift;
@@ -424,8 +438,8 @@ public class OTLayoutOld implements ILayout {
 		}
 	}
 
-
 	private void secondWalk(VisualNode n, VisualNode p, double m, int depth) {
+//		dump(n,"secondWalk");
 		SharedPropertyListImpl thisProps = properties(n);
 		double y = (Double) thisProps.getPropertyValue(Prelim) + m;
 		double x = m_depths[depth];
@@ -473,7 +487,7 @@ public class OTLayoutOld implements ILayout {
 			if (!child.isCollapsed())
 				normalise(child, fromMin, fromMax, toMin, toMax);
 	}
-	
+
 	private void determineDepths() {
 		for (int i = 1; i < m_maxDepth; ++i)
 			m_depths[i] += m_depths[i - 1];

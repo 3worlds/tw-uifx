@@ -28,7 +28,12 @@ public class OTNode {
 		this.children = new ArrayList<>();
 	}
 
+	private static void dump(OTNode n, String msg) {
+		System.out.println(n.getvNode().getDisplayText(false) + "\t" + msg);
+	}
+
 	public void firstWalk(int num, int depth) {
+//		dump(this,"firstWalk");
 		setNumber(num);
 		setPrelim(0.0);
 		setThread(null);
@@ -42,8 +47,10 @@ public class OTNode {
 			OTNode l = prevSibling();
 			if (l == null)
 				setPrelim(0.0);
-			else
+			else {
+//				dump(l,"case1");
 				l.setPrelim(l.getPrelim() + itemHeight);
+			}
 		} else {
 			OTNode leftMost = getFirstChild();
 			OTNode rightMost = getLastChild();
@@ -120,6 +127,8 @@ public class OTNode {
 	private OTNode apportion(OTNode a) {
 		OTNode w = prevSibling();
 		if (w != null) {
+//			dump(this, "apportion");
+//			dump(w, "apportion");
 			OTNode vip, vim, vop, vom;
 			double sip, sim, sop, som;
 			vip = vop = this;
@@ -138,9 +147,15 @@ public class OTNode {
 				vip = nl;
 				vom = vom.nextLeft();
 				vop = vop.nextRight();
+//				dump(vim, "vim");
+//				dump(vip, "vip");
+//				dump(vom, "vom");
+//				dump(vop, "vop");
+
 				vop.setAncestor(this);
 				double shift = (vim.getPrelim() + sim) - (vip.getPrelim() + sip) + itemHeight;
 				if (shift > 0) {
+					dump(this, "Shift " + shift);
 					moveSubTree(ancestor(vim, a), shift);
 					sip += shift;
 					sop += shift;
@@ -224,23 +239,24 @@ public class OTNode {
 	}
 
 	private void executeShifts() {
-		double shift = 0, change = 0;
+		double shft = 0, chng = 0;
 		for (OTNode c = getLastChild(); c != null; c = c.prevSibling()) {
 			double cprelim = c.getPrelim();
-			cprelim += shift;
+			cprelim += shft;
 			c.setPrelim(cprelim);
 
 			double dmod = c.getMod();
-			dmod += shift;
+			dmod += shft;
 			c.setMod(dmod);
 
-			change += c.getChange();
-			shift += c.getShift() + change;
+			chng += c.getChange();
+			shft += c.getShift() + chng;
 		}
 
 	}
 
 	public void secondWalk(OTNode p, double m, int depth) {
+//		dump(this,"secondWalk");
 		double y = getPrelim() + m;
 		double x = OTNode.m_depths[depth];
 		getvNode().setX(x);
