@@ -9,7 +9,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
@@ -95,118 +94,114 @@
 			</menus>
 		</MenuBar>
 	</top>
-	<bottom>
-		<ToolBar BorderPane.alignment="CENTER">
-			<items>
-				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Check" />
-				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Deploy">
-               <graphic>
-                  <ImageView pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../images/ApplicationDeploy16.gif" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.5" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-            <Label fx:id="lblChecking" text="checking..." visible="false">
-               <font>
-                  <Font size="12.0" />
-               </font>
-            </Label>
-			</items>
-		</ToolBar>
-	</bottom>
-	<center>
-		<SplitPane fx:id="splitPane2" dividerPositions="0.75" orientation="VERTICAL" BorderPane.alignment="CENTER">
-			<items>
-				<BorderPane>
-					<center>
-						<SplitPane fx:id="splitPane1" dividerPositions="0.25" BorderPane.alignment="CENTER">
-							<items>
-								<BorderPane style="-fx-background-color: lightgrey;">
-									<center>
-										<TabPane fx:id="tabPaneProperties" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-											<tabs>
-												<Tab text="All editable properties">
-													<content>
-														<BorderPane>
+   <center>
+      <SplitPane fx:id="splitPane1" dividerPositions="0.25" BorderPane.alignment="CENTER">
+         <items>
+            <BorderPane>
+               <center>
+                  <SplitPane fx:id="splitPane2" dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
+                     <items>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <center>
+                              <TabPane fx:id="tabPaneProperties" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                <tabs>
+                                  <Tab text="Properties">
+                                       <content>
+                                          <BorderPane prefHeight="200.0" prefWidth="200.0">
                                              <center>
                                                 <PropertySheet fx:id="allElementsPropertySheet" BorderPane.alignment="CENTER" />
-                                             </center></BorderPane>
-													</content>
-												</Tab>
-												<Tab text="Selected properties">
-													<content>
-														<BorderPane prefHeight="200.0" prefWidth="200.0">
-															<center>
-																<PropertySheet fx:id="nodePropertySheet" BorderPane.alignment="CENTER" />
-															</center>
-														</BorderPane>
-													</content>
-												</Tab>
-											</tabs>
-										</TabPane>
-									</center>
-								</BorderPane>
-								<BorderPane style="-fx-background-color: lightgrey;">
-									<center>
-										<ScrollPane fx:id="scrollPane" pannable="true" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgrey;" BorderPane.alignment="CENTER">
-											<content>
-                                    <StackPane fx:id="scrollContent" style="-fx-background-color: lightgrey;">
-                                       <children>
-														<Group fx:id="group">
-															<children>
-																<AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="800.0" minWidth="900.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
-															</children>
-														</Group>
-                                       </children>
-                                    </StackPane>
-											</content>
-										</ScrollPane>
-									</center>
-                           <bottom>
+                                             </center>
+                                          </BorderPane>
+                                       </content>
+                                  </Tab>
+                                  <Tab text="Selected Properties">
+                                       <content>
+                                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                             <center>
+                                                <PropertySheet fx:id="nodePropertySheet" BorderPane.alignment="CENTER" />
+                                             </center>
+                                          </BorderPane>
+                                       </content>
+                                  </Tab>
+                                </tabs>
+                              </TabPane>
+                           </center>
+                        </BorderPane>
+                        <BorderPane>
+                           <center>
+                              <TextArea fx:id="textAreaErrorMsgs" wrapText="true" BorderPane.alignment="CENTER" />
+                           </center>
+                           <top>
                               <ToolBar BorderPane.alignment="CENTER">
                                 <items>
-                                    <ComboBox fx:id="cbxLayoutChoice" prefWidth="150.0" />
-												<Button fx:id="btnLayout" disable="true" onAction="#handleLayout" text="_L" />
-                                    <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
-                                    <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
-                                    <Label text="Font size:" />
-                                    <Spinner fx:id="spinFontSize" editable="true" prefWidth="75.0" />
-                                    <Label text="Node size:" />
-                                    <Spinner fx:id="spinNodeSize" editable="true" prefWidth="75.0" />
-                                    <Label text="Jitter: " />
-                                    <Spinner fx:id="spinJitter" />
+                                    <Label text="Verbosity: " />
+                                    <RadioButton fx:id="rb1" mnemonicParsing="false" selected="true" text="1" />
+                                    <RadioButton fx:id="rb2" mnemonicParsing="false" text="2" />
+                                    <RadioButton fx:id="rb3" mnemonicParsing="false" text="3" />
                                 </items>
                               </ToolBar>
-                           </bottom>
-								</BorderPane>
-							</items>
-						</SplitPane>
-					</center>
-				</BorderPane>
-				<BorderPane>
-               <center>
-										<BorderPane BorderPane.alignment="CENTER">
-											<top>
-												<ToolBar BorderPane.alignment="CENTER">
-													<items>
-                              <Label text="Compliance tasks " />
-                              <Separator orientation="VERTICAL" />
-														<Label text="Verbosity: " />
-														<RadioButton fx:id="rb1" mnemonicParsing="false" selected="true" text="1" />
-														<RadioButton fx:id="rb2" mnemonicParsing="false" text="2" />
-														<RadioButton fx:id="rb3" mnemonicParsing="false" text="3" />
-													</items>
-												</ToolBar>
-											</top>
-                     <center>
-                        <TextArea fx:id="textAreaErrorMsgs" editable="false" prefHeight="178.0" prefWidth="849.0" wrapText="true" BorderPane.alignment="CENTER" />
-                     </center>
-										</BorderPane>
+                           </top>
+                        </BorderPane>
+                     </items>
+                  </SplitPane>
                </center>
-				</BorderPane>
-			</items>
-		</SplitPane>
-	</center>
+               <bottom>
+            		<ToolBar BorderPane.alignment="CENTER">
+            			<items>
+            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Check" />
+            				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Deploy">
+                           <graphic>
+                              <ImageView pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../git/tw-uifx/tw-uifx/src/au/edu/anu/twuifx/images/ApplicationDeploy16.gif" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+            				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.5" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Label fx:id="lblChecking" text="checking..." visible="false">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+            			</items>
+            		</ToolBar>
+               </bottom>
+            </BorderPane>
+            <BorderPane>
+               <bottom>
+                  <ToolBar BorderPane.alignment="CENTER">
+                    <items>
+                        <ComboBox fx:id="cbxLayoutChoice" prefWidth="150.0" />
+                        <Button fx:id="btnLayout" disable="true" onAction="#handleLayout" text="_L" />
+                        <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
+                        <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
+                        <Label text="Font size:" />
+                        <Spinner fx:id="spinFontSize" editable="true" prefWidth="75.0" />
+                        <Label text="Node size:" />
+                        <Spinner fx:id="spinNodeSize" editable="true" prefWidth="75.0" />
+                        <Label text="Jitter: " />
+                        <Spinner fx:id="spinJitter" />
+                    </items>
+                  </ToolBar>
+               </bottom>
+               <center>
+                  <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
+                     <content>
+                        <StackPane fx:id="scrollContent" style="-fx-background-color: lightgrey;">
+                           <children>
+                              <Group fx:id="group">
+                                 <children>
+                                    <AnchorPane fx:id="zoomTarget" layoutX="14.0" minHeight="800.0" minWidth="900.0" onMouseClicked="#handlePaneOnMouseClicked" onMouseMoved="#handlePaneOnMouseMoved" style="-fx-background-color: white;" />
+                                 </children>
+                              </Group>
+                           </children>
+                        </StackPane>
+                     </content>
+                  </ScrollPane>
+               </center>
+            </BorderPane>
+         </items>
+      </SplitPane>
+   </center>
 </BorderPane>

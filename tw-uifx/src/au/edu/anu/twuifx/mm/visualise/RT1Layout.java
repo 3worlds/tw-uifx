@@ -61,8 +61,9 @@ public class RT1Layout implements ILayout {
 	@Override
 	public ILayout compute() {
 		int depth = 0;
+		double angle =0;
         // recursive call to create the Cartesian coordinates from local system polar coords.
-		toCartesian(root, depth, 0);
+		toCartesian(root, depth, angle);
  
 		// scale into the unit space
 		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);

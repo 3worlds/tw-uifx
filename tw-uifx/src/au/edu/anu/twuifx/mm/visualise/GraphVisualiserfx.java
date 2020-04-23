@@ -626,8 +626,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		ILayout layout;
 		switch (layoutType) {
 		case OrderedTree: {
-//			layout = new OTLayout(root);
-			layout = new OTLayoutOld(visualGraph);
+			layout = new OTLayout(root);
+//			layout = new OTLayoutOld(visualGraph);
 			break;
 		}
 		case RadialTree: {

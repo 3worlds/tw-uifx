@@ -57,10 +57,8 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
-
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -89,19 +87,22 @@ import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
  * @date 13 Aug 2019
  */
 /**
- * <p>TreeLayout that computes a tidy layout of a node-link tree
- * diagram. This algorithm lays out a rooted tree such that each
- * depth level of the tree is on a shared line. The orientation of the
- * tree can be set such that the tree goes left-to-right (default),
- * right-to-left, top-to-bottom, or bottom-to-top.</p>
+ * <p>
+ * TreeLayout that computes a tidy layout of a node-link tree diagram. This
+ * algorithm lays out a rooted tree such that each depth level of the tree is on
+ * a shared line. The orientation of the tree can be set such that the tree goes
+ * left-to-right (default), right-to-left, top-to-bottom, or bottom-to-top.
+ * </p>
  * 
- * <p>The algorithm used is that of Christoph Buchheim, Michael J�nger,
- * and Sebastian Leipert from their research paper
- * <a href="http://citeseer.ist.psu.edu/buchheim02improving.html">
- * Improving Walker's Algorithm to Run in Linear Time</a>, Graph Drawing 2002.
- * This algorithm corrects performance issues in Walker's algorithm, which
+ * <p>
+ * The algorithm used is that of Christoph Buchheim, Michael J�nger, and
+ * Sebastian Leipert from their research paper
+ * <a href="http://citeseer.ist.psu.edu/buchheim02improving.html"> Improving
+ * Walker's Algorithm to Run in Linear Time</a>, Graph Drawing 2002. This
+ * algorithm corrects performance issues in Walker's algorithm, which
  * generalizes Reingold and Tilford's method for tidy drawings of trees to
- * support trees with an arbitrary number of children at any given node.</p>
+ * support trees with an arbitrary number of children at any given node.
+ * </p>
  * 
  * @author <a href="http://jheer.org">jeffrey heer</a>
  */
@@ -160,8 +161,8 @@ public class OTLayoutOld implements ILayout {
 		Collections.sort(childList, new Comparator<VisualNode>() {
 			@Override
 			public int compare(VisualNode n1, VisualNode n2) {
-				String s1 = n1.cClassId()+":"+n1.id();
-				String s2 = n2.cClassId()+":"+n2.id();
+				String s1 = n1.cClassId() + ":" + n1.id();
+				String s2 = n2.cClassId() + ":" + n2.id();
 				return s1.compareTo(s2);
 			}
 		});
@@ -187,37 +188,87 @@ public class OTLayoutOld implements ILayout {
 		getLayoutBounds(min, max);
 
 		normalise(root, min, max, new Point2D.Double(0.0, 0.0), new Point2D.Double(1.0, 1.0));
-		
+
 		return this;
 	}
 
-	private void getLayoutBounds(Point2D min, Point2D max) {
-		for (SharedPropertyListImpl pl : propertyMap.values()) {
-			double x = (Double) pl.getPropertyValue(X);
-			double y = (Double) pl.getPropertyValue(Y);
-			min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
-			max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
+	private void firstWalk(VisualNode n, int num, int depth) {
+		SharedPropertyListImpl thisProps = properties(n);
+		thisProps.setProperty(Number, num);
+		thisProps.setProperty(Prelim, 0.0);
+		thisProps.setProperty(Thread, null);
+		thisProps.setProperty(Ancestor, null);
+		thisProps.setProperty(Mod, 0.0);
+		thisProps.setProperty(Shift, 0.0);
+		thisProps.setProperty(Change, 0.0);
+
+		updateDepths(depth, n);
+		if (!hasAccessibleChildren(n)) {
+			VisualNode l = prevSibling(n);
+			if (l == null) {
+				thisProps.setProperty(Prelim, 0.0);
+			} else {
+				SharedPropertyListImpl lprop = propertyMap.get(l.id());
+				double lp = (double) lprop.getPropertyValue(Prelim);
+				thisProps.setProperty(Prelim, lp + itemHeight);
+			}
+
+		} else {
+			VisualNode leftMost = getFirstChild(n);
+			VisualNode rightMost = getLastChild(n);
+			VisualNode defaultAncestor = leftMost;
+			VisualNode c = leftMost;
+			for (int i = 0; c != null; ++i, c = nextSibling(c)) {
+				firstWalk(c, i, depth + 1);
+				defaultAncestor = apportion(c, defaultAncestor);
+			}
+
+			executeShifts(n);
+			SharedPropertyListImpl lmProp = properties(leftMost);
+			SharedPropertyListImpl rmProp = properties(rightMost);
+			double pl = (Double) lmProp.getPropertyValue(Prelim);
+			double pr = (Double) rmProp.getPropertyValue(Prelim);
+
+			double midpoint = 0.5 * (pl + pr);
+
+			VisualNode left = prevSibling(n);
+			if (left != null) {
+				double nprelim = (Double) properties(left).getPropertyValue(Prelim) + itemHeight;
+				thisProps.setProperty(Prelim, nprelim);
+				thisProps.setProperty(Mod, nprelim - midpoint);
+			} else {
+				thisProps.setProperty(Prelim, midpoint);
+			}
 		}
 	}
 
-	private void normalise(VisualNode parent, Point2D fromMin, Point2D fromMax, Point2D toMin, Point2D toMax) {
-		SharedPropertyListImpl prop = properties(parent);
-		double x = (Double) prop.getPropertyValue(X);
-		double y = (Double) prop.getPropertyValue(Y);
-		x = ILayout.rescale(x, fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
-		y = ILayout.rescale(y, fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
-		prop.setProperty(X, x);
-		prop.setProperty(Y, y);
-		parent.setX(x);
-		parent.setY(y);
-		for (VisualNode child : parent.getChildren())
-			if (!child.isCollapsed())
-				normalise(child, fromMin, fromMax, toMin, toMax);
+	private VisualNode getFirstChild(VisualNode n) {
+		if (n == null)
+			throw new TwcoreException("Asking for children of null node");
+		List<VisualNode> children = accessibleChildren(n);
+		if (children.isEmpty())
+			throw new TwcoreException("Expecting children but none found: " + n);
+		return children.get(0);
 	}
 
-	private void determineDepths() {
-		for (int i = 1; i < m_maxDepth; ++i)
-			m_depths[i] += m_depths[i - 1];
+	private VisualNode getLastChild(VisualNode n) {
+		List<VisualNode> children = accessibleChildren(n);
+		return children.get(children.size() - 1);
+	}
+
+	private void updateDepths(int depth, VisualNode n) {
+		if (m_depths.length <= depth)
+			m_depths = resize(m_depths, 3 * depth / 2);
+		m_depths[depth] = Math.max(m_depths[depth], itemHeight);
+		m_maxDepth = Math.max(m_maxDepth, depth);
+	}
+
+	private static final double[] resize(double[] a, int size) {
+		if (a.length >= size)
+			return a;
+		double[] b = new double[size];
+		System.arraycopy(a, 0, b, 0, a.length);
+		return b;
 	}
 
 	private VisualNode prevSibling(VisualNode sibling) {
@@ -244,84 +295,10 @@ public class OTLayoutOld implements ILayout {
 		return null;
 	}
 
-	private double spacing() {
-		return itemHeight;
-	}
-
-	private VisualNode getFirstChild(VisualNode n) {
-		if (n == null)
-			throw new TwcoreException("Asking for children of null node");
-		List<VisualNode> children = accessibleChildren(n);
-		if (children.isEmpty())
-			throw new TwcoreException("Expecting children but none found: " + n);
-		return children.get(0);
-	}
-
-	private VisualNode getLastChild(VisualNode n) {
-		List<VisualNode> children = accessibleChildren(n);
-		return children.get(children.size() - 1);
-	}
-
-	private void firstWalk(VisualNode n, int num, int depth) {
-		SharedPropertyListImpl prop = properties(n);
-		prop.setProperty(Number, num);
-		prop.setProperty(Prelim, 0.0);
-		prop.setProperty(Thread, null);
-		prop.setProperty(Ancestor, null);
-		prop.setProperty(Mod, 0.0);
-//		System.out.println(n.getDisplayText(false)+"\tSETMODE\t0.0");
-		prop.setProperty(Shift, 0.0);
-		prop.setProperty(Change, 0.0);
-
-		updateDepths(depth, n);
-		if (!hasAccessibleChildren(n)) {
-			VisualNode l = prevSibling(n);
-			if (l == null) {
-				prop.setProperty(Prelim, 0.0);
-			} else {
-				SharedPropertyListImpl lprop = propertyMap.get(l.id());
-				double lp = (double) lprop.getPropertyValue(Prelim);
-				prop.setProperty(Prelim, lp + spacing());
-			}
-
-		} else {
-			VisualNode leftMost = getFirstChild(n);
-			VisualNode rightMost = getLastChild(n);
-			VisualNode defaultAncestor = leftMost;
-			VisualNode c = leftMost;
-			for (int i = 0; c != null; ++i, c = nextSibling(c)) {
-				firstWalk(c, i, depth + 1);
-				defaultAncestor = apportion(c, defaultAncestor);
-			}
-
-			executeShifts(n);
-			SharedPropertyListImpl lmProp = properties(leftMost);
-			SharedPropertyListImpl rmProp = properties(rightMost);
-			double pl = (Double) lmProp.getPropertyValue(Prelim);
-			double pr = (Double) rmProp.getPropertyValue(Prelim);
-
-			double midpoint = 0.5 * (pl + pr);
-
-			VisualNode left = prevSibling(n);
-			if (left != null) {
-				double nprelim = (Double) properties(left).getPropertyValue(Prelim) + spacing();
-				prop.setProperty(Prelim, nprelim);
-				prop.setProperty(Mod, nprelim - midpoint);
-//				System.out.println(left.getDisplayText(false)+"\tSETMODE\t"+(nprelim - midpoint));
-
-			} else {
-				prop.setProperty(Prelim, midpoint);
-			}
-		}
-	}
-
 	private VisualNode apportion(VisualNode v, VisualNode a) {
-//		System.out.println("THIS\t"+v.getDisplayText(false));
+		// v is THIS
 		VisualNode w = prevSibling(v);
 		if (w != null) {
-//			System.out.println("PREVSIB\t"+w.getDisplayText(false));
-//			if (w.getDisplayText(false).equals("dynamics:dyns"))
-//				System.out.println("HERE");
 			VisualNode vip, vim, vop, vom;
 			double sip, sim, sop, som;
 			vip = vop = v;
@@ -342,7 +319,7 @@ public class OTLayoutOld implements ILayout {
 				vop = nextRight(vop);
 				properties(vop).setProperty(Ancestor, v);
 				double shift = ((Double) properties(vim).getPropertyValue(Prelim) + sim)
-						- ((Double) properties(vip).getPropertyValue(Prelim) + sip) + spacing();
+						- ((Double) properties(vip).getPropertyValue(Prelim) + sip) + itemHeight;
 				if (shift > 0) {
 					moveSubtree(ancestor(vim, v, a), v, shift);
 					sip += shift;
@@ -361,15 +338,13 @@ public class OTLayoutOld implements ILayout {
 				double m = (double) properties(vop).getPropertyValue(Mod);
 				m += sim - sop;
 				properties(vop).setProperty(Mod, m);
-//				System.out.println(v.getDisplayText(false)+"\tSETMODE\t"+m);
 			}
 			if (nl != null && nextLeft(vom) == null) {
 				properties(vom).setProperty(Thread, nl);
 				double m = (double) properties(vom).getPropertyValue(Mod);
 				m += sip - som;
 				properties(vom).setProperty(Mod, m);
-//				System.out.println(v.getDisplayText(false)+"\tSETMODE\t"+m);
-			a = v;
+				a = v;
 			}
 		}
 		return a;
@@ -392,9 +367,21 @@ public class OTLayoutOld implements ILayout {
 
 	}
 
+	private VisualNode ancestor(VisualNode vim, VisualNode v, VisualNode a) {
+		VisualNode p = v.getParent();
+		VisualNode vimAncestor = (VisualNode) properties(vim).getPropertyValue(Ancestor);
+		if (vimAncestor != null)
+			if (vimAncestor.getParent() != null) {
+				VisualNode vimParent = vimAncestor.getParent();
+				if (vimParent.equals(p))
+					return vimAncestor;
+			}
+		return a;
+	}
+
 	private void moveSubtree(VisualNode wm, VisualNode wp, double shift) {
-		//wp is this
-		//wm is the new ancestor
+		// wp is this
+		// wm is the new ancestor
 		int wpNumber = (Integer) properties(wp).getPropertyValue(Number);
 		int wmNumber = (Integer) properties(wm).getPropertyValue(Number);
 		double subtrees = wpNumber - wmNumber;
@@ -418,67 +405,36 @@ public class OTLayoutOld implements ILayout {
 		double wpMod = (Double) properties(wp).getPropertyValue(Mod);
 		wpMod += shift;
 		properties(wp).setProperty(Mod, wpMod);
-//		System.out.println(wp.getDisplayText(false)+"\tSETMODE\t"+ wpMod);
-
-	}
-
-	private VisualNode ancestor(VisualNode vim, VisualNode v, VisualNode a) {
-		VisualNode p = v.getParent();
-		VisualNode vimAncestor = (VisualNode) properties(vim).getPropertyValue(Ancestor);
-		if (vimAncestor != null)
-			if (vimAncestor.getParent() != null) {
-				VisualNode vimParent = vimAncestor.getParent();
-				if (vimParent.equals(p))
-					return vimAncestor;
-			}
-		return a;
 	}
 
 	private void executeShifts(VisualNode n) {
 		double shift = 0, change = 0;
 		for (VisualNode c = getLastChild(n); c != null; c = prevSibling(c)) {
-			SharedPropertyListImpl props = properties(c);
+			SharedPropertyListImpl cProps = properties(c);
 
-			double cprelim = (Double) props.getPropertyValue(Prelim);
+			double cprelim = (Double) cProps.getPropertyValue(Prelim);
 			cprelim += shift;
-			props.setProperty(Prelim, cprelim);
+			cProps.setProperty(Prelim, cprelim);
 
-			double dmod = (double) props.getPropertyValue(Mod);
+			double dmod = (double) cProps.getPropertyValue(Mod);
 			dmod += shift;
 			properties(c).setProperty(Mod, dmod);
-//			System.out.println(c.getDisplayText(false)+"\tSETMODE\t"+ dmod);
-			change += (Double) props.getPropertyValue(Change);
-			shift += (Double) props.getPropertyValue(Shift) + change;
-
+			change += (Double) cProps.getPropertyValue(Change);
+			shift += (Double) cProps.getPropertyValue(Shift) + change;
 		}
-
 	}
 
-	private static final double[] resize(double[] a, int size) {
-		if (a.length >= size)
-			return a;
-		double[] b = new double[size];
-		System.arraycopy(a, 0, b, 0, a.length);
-		return b;
-	}
-
-	private void updateDepths(int depth, VisualNode n) {
-		if (m_depths.length <= depth)
-			m_depths = resize(m_depths, 3 * depth / 2);
-		m_depths[depth] = Math.max(m_depths[depth], itemHeight);
-		m_maxDepth = Math.max(m_maxDepth, depth);
-	}
 
 	private void secondWalk(VisualNode n, VisualNode p, double m, int depth) {
-		SharedPropertyListImpl nprops = properties(n);
-		double y = (Double) nprops.getPropertyValue(Prelim) + m;
+		SharedPropertyListImpl thisProps = properties(n);
+		double y = (Double) thisProps.getPropertyValue(Prelim) + m;
 		double x = m_depths[depth];
-		nprops.setProperty(Y, y);
-		nprops.setProperty(X, x);
+		thisProps.setProperty(Y, y);
+		thisProps.setProperty(X, x);
 		depth += 1;
 		if (!accessibleChildren(n).isEmpty())
 			for (VisualNode c = getFirstChild(n); c != null; c = nextSibling(c)) {
-				secondWalk(c, n, m + (Double) nprops.getPropertyValue(Mod), depth);
+				secondWalk(c, n, m + (Double) thisProps.getPropertyValue(Mod), depth);
 			}
 	}
 
@@ -492,6 +448,35 @@ public class OTLayoutOld implements ILayout {
 
 	private boolean hasAccessibleChildren(VisualNode parent) {
 		return !accessibleChildren(parent).isEmpty();
+	}
+
+	private void getLayoutBounds(Point2D min, Point2D max) {
+		for (SharedPropertyListImpl pl : propertyMap.values()) {
+			double x = (Double) pl.getPropertyValue(X);
+			double y = (Double) pl.getPropertyValue(Y);
+			min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
+			max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
+		}
+	}
+
+	private void normalise(VisualNode parent, Point2D fromMin, Point2D fromMax, Point2D toMin, Point2D toMax) {
+		SharedPropertyListImpl prop = properties(parent);
+		double x = (Double) prop.getPropertyValue(X);
+		double y = (Double) prop.getPropertyValue(Y);
+		x = ILayout.rescale(x, fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
+		y = ILayout.rescale(y, fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
+		prop.setProperty(X, x);
+		prop.setProperty(Y, y);
+		parent.setX(x);
+		parent.setY(y);
+		for (VisualNode child : parent.getChildren())
+			if (!child.isCollapsed())
+				normalise(child, fromMin, fromMax, toMin, toMax);
+	}
+	
+	private void determineDepths() {
+		for (int i = 1; i < m_maxDepth; ++i)
+			m_depths[i] += m_depths[i - 1];
 	}
 
 }

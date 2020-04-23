@@ -45,8 +45,8 @@ public class OTNode {
 			else
 				l.setPrelim(l.getPrelim() + itemHeight);
 		} else {
-			OTNode leftMost = children.get(0);
-			OTNode rightMost = children.get(children.size() - 1);
+			OTNode leftMost = getFirstChild();
+			OTNode rightMost = getLastChild();
 			OTNode defaultAncestor = leftMost;
 			OTNode c = leftMost;
 			for (int i = 0; c != null; ++i, c = c.nextSibling()) {
@@ -70,17 +70,56 @@ public class OTNode {
 			}
 
 		}
+	}
 
+	private static void updateDepths(int depth) {
+		if (m_depths.length <= depth)
+			m_depths = resize(m_depths, 3 * depth / 2);
+		m_depths[depth] = Math.max(m_depths[depth], OTNode.itemHeight);
+		m_maxDepth = Math.max(m_maxDepth, depth);
+	}
+
+	private static final double[] resize(double[] a, int size) {
+		if (a.length >= size)
+			return a;
+		double[] b = new double[size];
+		System.arraycopy(a, 0, b, 0, a.length);
+		return b;
+	}
+
+	private OTNode getFirstChild() {
+		return children.get(0);
+	}
+
+	private OTNode getLastChild() {
+		return children.get(children.size() - 1);
+	}
+
+	private OTNode prevSibling() {
+		OTNode parent = getParent();
+		if (parent != null) {
+			int idx = parent.getChildren().indexOf(this);
+			idx--;
+			if (idx >= 0)
+				return parent.getChildren().get(idx);
+		}
+		return null;
+	}
+
+	private OTNode nextSibling() {
+		OTNode parent = getParent();
+		if (parent != null) {
+			int idx = parent.getChildren().indexOf(this);
+			idx++;
+			if (idx < parent.getChildren().size())
+				return parent.getChildren().get(idx);
+		}
+		return null;
 	}
 
 	private OTNode apportion(OTNode a) {
-//		System.out.println("THIS\t" + getvNode().getDisplayText(false));
-
 		OTNode w = prevSibling();
 		if (w != null) {
-//			System.out.println("PREVSIB\t" + w.getvNode().getDisplayText(false));
-//			if (w.getvNode().getDisplayText(false).equals("dynamics:dyns"))
-//				System.out.println("HERE");
 			OTNode vip, vim, vop, vom;
 			double sip, sim, sop, som;
 			vip = vop = this;
@@ -91,7 +130,7 @@ public class OTNode {
 			sop = vop.getMod();
 			sim = vim.getMod();
 			som = vom.getMod();
-			
+
 			OTNode nr = vim.nextRight();
 			OTNode nl = vip.nextLeft();
 			while (nr != null && nl != null) {
@@ -127,35 +166,38 @@ public class OTNode {
 				vom.setMod(m);
 				a = this;
 			}
-
 		}
 		return a;
 	}
 
-	private void executeShifts() {
-		double shift = 0, change = 0;
-		for (OTNode c = getLastChild(); c != null; c = c.prevSibling()) {
-			double cprelim = c.getPrelim();
-			cprelim += shift;
-			c.setPrelim(cprelim);
-
-			double dmod = c.getMod();
-			dmod += shift;
-			c.setMod(dmod);
-
-			change += c.getChange();
-			shift += c.getShift() + change;
-		}
-
+	private OTNode nextLeft() {
+		if (!children.isEmpty())
+			return children.get(0);
+		return getThread();
 	}
 
-	private OTNode getLastChild() {
-		return children.get(children.size() - 1);
+	private OTNode nextRight() {
+		if (!children.isEmpty())
+			return children.get(children.size() - 1);
+		else
+			return getThread();
+	}
+
+	private OTNode ancestor(OTNode vim, OTNode a) {
+		OTNode p = getParent();
+		OTNode vimAncestor = vim.getAncestor();
+		if (vimAncestor != null)
+			if (vimAncestor.getParent() != null) {
+				OTNode vimParent = vimAncestor.getParent();
+				if (vimParent.equals(p))
+					return vimAncestor;
+			}
+		return a;
 	}
 
 	private void moveSubTree(OTNode wm, double shft) {
-		// wm is the new ancestor
 		// wp is THIS
+		// wm is the new ancestor
 		int wpNumber = getNumber();
 		int wmNumber = wm.getNumber();
 		double subTrees = wpNumber - wmNumber;
@@ -181,56 +223,34 @@ public class OTNode {
 		setMod(wpMod);
 	}
 
-	private OTNode ancestor(OTNode vim, OTNode a) {
-		OTNode p = getParent();
-		OTNode vimAncestor = vim.getAncestor();
-		if (vimAncestor != null)
-			if (vimAncestor.getParent() != null) {
-				OTNode vimParent = vimAncestor.getParent();
-				if (vimParent.equals(p))
-					return vimAncestor;
-			}
+	private void executeShifts() {
+		double shift = 0, change = 0;
+		for (OTNode c = getLastChild(); c != null; c = c.prevSibling()) {
+			double cprelim = c.getPrelim();
+			cprelim += shift;
+			c.setPrelim(cprelim);
 
-		return a;
-	}
+			double dmod = c.getMod();
+			dmod += shift;
+			c.setMod(dmod);
 
-	private OTNode nextLeft() {
-		if (!children.isEmpty())
-			return children.get(0);
-		return getThread();
-	}
-
-	private OTNode nextRight() {
-		if (!children.isEmpty()) {
-			return children.get(children.size() - 1);
-		} else
-			return getThread();
-	}
-
-	private OTNode prevSibling() {
-		OTNode parent = getParent();
-		if (parent != null) {
-			int idx = parent.getChildren().indexOf(this);
-			idx--;
-			if (idx >= 0)
-				return parent.getChildren().get(idx);
+			change += c.getChange();
+			shift += c.getShift() + change;
 		}
-		return null;
+
 	}
 
-	private static void updateDepths(int depth) {
-		if (m_depths.length <= depth)
-			m_depths = resize(m_depths, 3 * depth / 2);
-		m_depths[depth] = Math.max(m_depths[depth], OTNode.itemHeight);
-		m_maxDepth = Math.max(m_maxDepth, depth);
-	}
-
-	private static final double[] resize(double[] a, int size) {
-		if (a.length >= size)
-			return a;
-		double[] b = new double[size];
-		System.arraycopy(a, 0, b, 0, a.length);
-		return b;
+	public void secondWalk(OTNode p, double m, int depth) {
+		double y = getPrelim() + m;
+		double x = OTNode.m_depths[depth];
+		getvNode().setX(x);
+		getvNode().setY(y);
+		depth += 1;
+		if (!children.isEmpty()) {
+			for (OTNode c = getFirstChild(); c != null; c = c.nextSibling()) {
+				c.secondWalk(this, m + getMod(), depth);
+			}
+		}
 	}
 
 	public VisualNode getvNode() {
@@ -287,9 +307,6 @@ public class OTNode {
 
 	public void setMod(double mod) {
 		this.mod = mod;
-//		if (getvNode().getDisplayText(false).equals("timeLine:tmLn"))
-//			System.out.println(mod);
-//		System.out.println(getvNode().getDisplayText(false) + "\tSETMODE\t" + mod);
 	}
 
 	public double getShift() {
@@ -314,34 +331,6 @@ public class OTNode {
 
 	public boolean hasParent() {
 		return parent != null;
-	}
-
-	public void secondWalk(OTNode p, double m, int depth) {
-		double y = getPrelim() + m;
-		double x = OTNode.m_depths[depth];
-		getvNode().setX(x);
-		getvNode().setY(y);
-		depth += 1;
-		if (!children.isEmpty()) {
-			for (OTNode c = getFirstChild(); c != null; c = c.nextSibling()) {
-				c.secondWalk(this, m + getMod(), depth);
-			}
-		}
-	}
-
-	private OTNode nextSibling() {
-		OTNode parent = getParent();
-		if (parent != null) {
-			int idx = parent.getChildren().indexOf(this);
-			idx++;
-			if (idx < parent.getChildren().size())
-				return parent.getChildren().get(idx);
-		}
-		return null;
-	}
-
-	private OTNode getFirstChild() {
-		return children.get(0);
 	}
 
 	@Override
