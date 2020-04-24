@@ -39,6 +39,11 @@ public class FRLayout implements ILayout {
 
 	/** It would be nice to move nodes without edges out of the way? */
 	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
+//		//exclude isolated nodes??
+//		boolean pinable = false;
+//		if (!usePCEdges && useXEdges)
+//			pinable = true;
+			
 
 		lNodes = new ArrayList<>();
 		lEdges = new ArrayList<>();

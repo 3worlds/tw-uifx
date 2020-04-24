@@ -53,14 +53,14 @@ public class RT1Node {
 		// determine next radius
 		double nextRadius = 0;
 		int n = children.size();
-		if (children.isEmpty())// leaf
+		if (n==0)// leaf
 			return;
-		else if (children.size() == 1)// children have no siblings.
+		else if (n == 1)// children have no siblings.
 			nextRadius = radius / 2.0;
 		else {// find mid point between nearest children
 			double diff = Double.POSITIVE_INFINITY;
 			int idx = 0;
-			for (int i = 1; i < children.size(); i++) {
+			for (int i = 1; i < n; i++) {
 				double aDiff = Math.abs(children.get(i - 1).getAngle() - children.get(i).getAngle());
 				if (aDiff < diff) {
 					diff = aDiff;

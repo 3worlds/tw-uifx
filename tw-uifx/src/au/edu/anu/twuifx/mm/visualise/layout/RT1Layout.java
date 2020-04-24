@@ -79,7 +79,6 @@ public class RT1Layout implements ILayout {
 			for (RT1Node cw : lNode.getChildren())
 				toCartesian(cw, depth + 1, cw.getAngle());
 		} else {
-			double deg = Math.toDegrees(angleSum);
 			double distance = lNode.getPctParent().getRadius();
 			Duple<Double, Double> p = RT1Node.polarToCartesian(angleSum, distance);
 			double px = lNode.getPctParent().getX();

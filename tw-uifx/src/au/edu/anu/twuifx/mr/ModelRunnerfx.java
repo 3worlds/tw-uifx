@@ -39,8 +39,6 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.sun.javafx.application.LauncherImpl;
-
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.graphState.GraphState;
