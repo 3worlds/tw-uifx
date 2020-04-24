@@ -49,6 +49,9 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
+import au.edu.anu.twuifx.mm.visualise.layout.FRLayout;
+import au.edu.anu.twuifx.mm.visualise.layout.OTLayout;
+import au.edu.anu.twuifx.mm.visualise.layout.RT1Layout;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.TreeNode;
@@ -626,8 +629,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		ILayout layout;
 		switch (layoutType) {
 		case OrderedTree: {
-//			layout = new OTLayout(root);
-			layout = new OTLayoutOld(visualGraph);
+			layout = new OTLayout(root);
+//			layout = new OTLayoutOld(visualGraph);
 			break;
 		}
 		case RadialTree: {

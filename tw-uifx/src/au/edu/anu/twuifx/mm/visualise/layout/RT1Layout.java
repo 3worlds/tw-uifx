@@ -1,4 +1,4 @@
-package au.edu.anu.twuifx.mm.visualise;
+package au.edu.anu.twuifx.mm.visualise.layout;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package au.edu.anu.twuifx.mm.visualise;
+package au.edu.anu.twuifx.mm.visualise.layout;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -8,7 +8,24 @@ import java.util.List;
 
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-// opportunity for parameterised class here OTLayout<OTNode>
+/**
+ * <p>
+ * OTLayout computes a tidy layout of a node-link tree diagram. This
+ * algorithm lays out a rooted tree such that each depth level of the tree is on
+ * a shared vertical line. 
+ * </p>
+ * 
+ * <p>
+ * "Improving Walker's Algorithm to Run in Linear Time"
+ * 
+ * http://dirk.jivas.de/papers/buchheim02improving.pdf
+ */
+
+/**
+ * @author Ian Davies
+ *
+ * @date 24 Apr 2020
+ */
 public class OTLayout implements ILayout{
 	private OTNode root;
 
@@ -62,9 +79,7 @@ public class OTLayout implements ILayout{
 
 		root.getLayoutBounds(min,max);
 		
-
 		root.normalise(min, max, new Point2D.Double(0.0, 0.0), new Point2D.Double(1.0, 1.0));
-
 		
 		return this;
 	}

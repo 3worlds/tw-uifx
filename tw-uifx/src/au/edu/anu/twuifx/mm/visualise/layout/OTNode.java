@@ -1,4 +1,4 @@
-package au.edu.anu.twuifx.mm.visualise;
+package au.edu.anu.twuifx.mm.visualise.layout;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -7,6 +7,11 @@ import java.util.List;
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 
+/**
+ * @author Ian Davies
+ *
+ * @date 24 Apr 2020
+ */
 public class OTNode {
 	private VisualNode vNode;
 	private OTNode parent;
@@ -20,7 +25,7 @@ public class OTNode {
 	private List<OTNode> children;
 	protected static int m_maxDepth = 0;
 	protected static double[] m_depths = new double[10];
-	private static final double itemHeight = 8.0;
+	private static final double itemHeight = 1.0;
 
 	public OTNode(OTNode parent, VisualNode vNode) {
 		this.parent = parent;
@@ -28,50 +33,35 @@ public class OTNode {
 		this.children = new ArrayList<>();
 	}
 
-	private static void dump(OTNode n, String msg) {
-		System.out.println(n.getvNode().getDisplayText(false) + "\t" + msg);
-	}
 
 	public void firstWalk(int num, int depth) {
-//		dump(this,"firstWalk");
 		setNumber(num);
-		setPrelim(0.0);
-		setThread(null);
-		setAncestor(null);
-		setMod(0.0);
-		setShift(0.0);
-		setChange(0.0);
-
 		updateDepths(depth);
-		if (getChildren().isEmpty()) {// leaf
-			OTNode l = prevSibling();
-			if (l == null)
+		if (isLeaf()) {
+			OTNode leftSibling = prevSibling();
+			if (leftSibling == null)
 				setPrelim(0.0);
-			else {
-//				dump(l,"case1");
-				l.setPrelim(l.getPrelim() + itemHeight);
-			}
+			else
+				setPrelim(leftSibling.getPrelim() + itemHeight);
 		} else {
 			OTNode leftMost = getFirstChild();
 			OTNode rightMost = getLastChild();
 			OTNode defaultAncestor = leftMost;
-			OTNode c = leftMost;
-			for (int i = 0; c != null; ++i, c = c.nextSibling()) {
-				c.firstWalk(i, depth + 1);
-				defaultAncestor = c.apportion(defaultAncestor);
+			OTNode child = leftMost;
+			for (int i = 0; child != null; ++i, child = child.nextSibling()) {
+				child.firstWalk(i, depth + 1);
+				defaultAncestor = child.apportion(defaultAncestor);
 			}
 
 			executeShifts();
-			double pl = leftMost.getPrelim();
-			double pr = rightMost.getPrelim();
 
-			double midpoint = 0.5 * (pl + pr);
+			double midpoint = 0.5 * (leftMost.getPrelim() + rightMost.getPrelim());
 
-			OTNode left = prevSibling();
-			if (left != null) {
-				double nprelim = left.getPrelim() + itemHeight;
-				setPrelim(nprelim);
-				setMod(nprelim - midpoint);
+			OTNode leftSibling = prevSibling();
+			if (leftSibling != null) {
+				double p = leftSibling.getPrelim() + itemHeight;
+				setPrelim(p);
+				setMod(p - midpoint);
 			} else {
 				setPrelim(midpoint);
 			}
@@ -125,14 +115,12 @@ public class OTNode {
 	}
 
 	private OTNode apportion(OTNode a) {
-		OTNode w = prevSibling();
-		if (w != null) {
-//			dump(this, "apportion");
-//			dump(w, "apportion");
+		OTNode leftSibling = prevSibling();
+		if (leftSibling != null) {
 			OTNode vip, vim, vop, vom;
 			double sip, sim, sop, som;
 			vip = vop = this;
-			vim = w;
+			vim = leftSibling;
 			vom = vip.getParent().getChildren().get(0);
 
 			sip = vip.getMod();
@@ -147,15 +135,14 @@ public class OTNode {
 				vip = nl;
 				vom = vom.nextLeft();
 				vop = vop.nextRight();
-//				dump(vim, "vim");
-//				dump(vip, "vip");
-//				dump(vom, "vom");
-//				dump(vop, "vop");
 
 				vop.setAncestor(this);
-				double shift = (vim.getPrelim() + sim) - (vip.getPrelim() + sip) + itemHeight;
+				double vimpl = vim.getPrelim();
+				double vippl = vip.getPrelim();
+				double shift = (vimpl + sim) - (vippl + sip) + itemHeight;
+
+				shift = (vim.getPrelim() + sim) - (vip.getPrelim() + sip) + itemHeight;
 				if (shift > 0) {
-					dump(this, "Shift " + shift);
 					moveSubTree(ancestor(vim, a), shift);
 					sip += shift;
 					sop += shift;
@@ -210,12 +197,8 @@ public class OTNode {
 		return a;
 	}
 
-	private void moveSubTree(OTNode wm, double shft) {
-		// wp is THIS
-		// wm is the new ancestor
-		int wpNumber = getNumber();
-		int wmNumber = wm.getNumber();
-		double subTrees = wpNumber - wmNumber;
+	private void moveSubTree(OTNode ancstr, double shft) {
+		double subTrees = getNumber() - ancstr.getNumber();
 
 		double wpChange = getChange();
 		wpChange -= shft / subTrees;
@@ -225,9 +208,9 @@ public class OTNode {
 		wpShift += shft;
 		setShift(wpShift);
 
-		double wmChange = wm.getChange();
+		double wmChange = ancstr.getChange();
 		wmChange += shft / subTrees;
-		wm.setChange(wmChange);
+		ancstr.setChange(wmChange);
 
 		double wpPrelim = getPrelim();
 		wpPrelim += shft;
@@ -252,11 +235,9 @@ public class OTNode {
 			chng += c.getChange();
 			shft += c.getShift() + chng;
 		}
-
 	}
 
 	public void secondWalk(OTNode p, double m, int depth) {
-//		dump(this,"secondWalk");
 		double y = getPrelim() + m;
 		double x = OTNode.m_depths[depth];
 		getvNode().setX(x);
@@ -349,6 +330,10 @@ public class OTNode {
 		return parent != null;
 	}
 
+	private boolean isLeaf() {
+		return children.isEmpty();
+	}
+
 	@Override
 	public String toString() {
 		return getvNode().getDisplayText(false);
@@ -357,7 +342,6 @@ public class OTNode {
 	public void getLayoutBounds(Point2D min, Point2D max) {
 		double x = getvNode().getX();
 		double y = getvNode().getY();
-//		System.out.println(x+"\t"+y);
 
 		min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
 		max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));

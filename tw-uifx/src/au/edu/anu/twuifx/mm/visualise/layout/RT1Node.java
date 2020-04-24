@@ -1,4 +1,4 @@
-package au.edu.anu.twuifx.mm.visualise;
+package au.edu.anu.twuifx.mm.visualise.layout;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import au.edu.anu.twapps.mm.layout.ILayout;
  * @date 30 Mar 2020
  */
 public class RT1Node {
-	// private static final double w = 0.5;
 	private double radius;// distance to all children
 
 	private RT1Node pctParent;
@@ -92,9 +91,8 @@ public class RT1Node {
 		if (pctParent.isPctRoot)
 			return (2.0 * Math.PI * i) / m;
 		else {
-			// π − φ /2 + φ i/m + φ /(2m) NB: error in paper - π should be 2π ?
-
-			return /* 2 * Math.PI + */ ((w * i) / m) + w / (2.0 * m) - (w / 2.0);
+			// π − φ /2 + φ i/m + φ /(2m) NB: error in paper - remove π
+			return ((w * i) / m) + w / (2.0 * m) - (w / 2.0);
 		}
 	}
 
