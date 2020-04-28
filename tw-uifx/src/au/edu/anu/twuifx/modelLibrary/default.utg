@@ -12,6 +12,30 @@ treegraph // saved by OmugiGraphExporter on Thu Apr 16 10:13:46 CEST 2020
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String("")
 	dataDefinition dDef
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String("#")
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String("#")
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String("#")
 	experiment defaultExperiment
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
@@ -39,12 +63,24 @@ treegraph // saved by OmugiGraphExporter on Thu Apr 16 10:13:46 CEST 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 		structure community
-			categorySet HIERARCHY
-				category GROUP
-				category LIFE_CYCLE
-				category SYSTEM
-				category COMPONENT
+			categorySet *systemElements*
+				category *arena*
+				category "*life cycle*"
+				category *group*
+				category *component*
+				category *relation*
+				category *space*
+			categorySet *lifespan*
+				category *permanent*
+				category *ephemeral*
+			categorySet *composition*
+				category *population*
+				category *individual*
 
 // CROSS-LINKS
 [widget:defaultController] trackTime trksTmOf [dynamics:simulator]
 [experiment:defaultExperiment] baseLine bsln [system:system]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*population*] autoVar auto [record:AVPopulation]
+[system:system] belongsTo blgstqn [category:*arena*]
+[system:system] belongsTo blgstkn [category:*permanent*]
