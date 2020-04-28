@@ -148,7 +148,7 @@
                <bottom>
             		<ToolBar BorderPane.alignment="CENTER">
             			<items>
-            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Check" />
+            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Compile" />
             				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Deploy">
                            <graphic>
                               <ImageView pickOnBounds="true" preserveRatio="true">
@@ -159,7 +159,7 @@
                            </graphic>
                         </Button>
             				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.5" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Label fx:id="lblChecking" text="checking..." visible="false">
+                        <Label fx:id="lblChecking" style="-fx-background-color: white; -fx-font-style: italic;" text="compiling..." visible="false">
                            <font>
                               <Font size="12.0" />
                            </font>

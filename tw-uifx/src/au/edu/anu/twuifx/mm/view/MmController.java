@@ -337,7 +337,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
 		menuNew.getItems().clear();
+		
 		for (LibraryTable entry : LibraryTable.values()) {
+			boolean inserted = false;
+			if (!inserted && !entry.isTemplate()) {
+				menuNew.getItems().add(new SeparatorMenuItem());
+				inserted = true;
+			}
 			MenuItem mi = new MenuItem(entry.displayName());
 			mi.setMnemonicParsing(false);
 			map.put(mi, entry);
