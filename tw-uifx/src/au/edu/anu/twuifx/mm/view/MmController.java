@@ -95,6 +95,8 @@ import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
+import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
@@ -258,6 +260,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// and IntelliJ have been tested
 	private IDETypes ideType = IDETypes.eclipse;
 
+	/*******************************************************************************
+	 * NB any function that causes checking to take place (e.g. an edit) also causes
+	 * SetButtonState() to be called.
+	 *******************************************************************************/
 	@FXML
 	public void initialize() {
 		cbxLayoutChoice.getItems().setAll(LayoutType.values());
@@ -299,8 +305,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnLayout.setTooltip(new Tooltip("Apply layout function"));
 		btnXLinks.setTooltip(new Tooltip("Show/hide cross-links"));
 		btnChildLinks.setTooltip(new Tooltip("Show/hide parent-child edges"));
-		// Set a handler to update the menu when openMenu is shown
+
+		/** Set a handler to refresh the Open menu items when asked to show */
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
+
+		/** add template entries to the "New" menu */
 		buildNewMenu();
 
 		// This class has all the housework for managing graph
@@ -334,19 +343,16 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			map.put(mi, entry);
 			menuNew.getItems().add(mi);
 			mi.setOnAction((e) -> {
-				if (model.canClose()) {
-					LibraryTable lt = map.get(e.getSource());
-					TreeGraph<TreeGraphDataNode, ALEdge> templateGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
-							.importGraph(lt.fileName(), LibraryTable.class);
+				LibraryTable lt = map.get(e.getSource());
+				TreeGraph<TreeGraphDataNode, ALEdge> templateGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
+						.importGraph(lt.fileName(), LibraryTable.class);
 
-					String uName = System.getProperty("user.name");
-					TreeGraphDataNode rn = templateGraph.root();
-					StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
-					authors.setByInt(uName, 0);
+				String uName = System.getProperty("user.name");
+				TreeGraphDataNode rn = templateGraph.root();
+				StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
+				authors.setByInt(uName, 0);
 
-					model.doNewProject(templateGraph);
-					setButtonState();
-				}
+				model.doNewProject(templateGraph);
 			});
 		}
 
@@ -426,24 +432,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void handleCheck(ActionEvent event) {
-//		btnDeploy.setDisable(true);
-//		btnCheck.setDisable(true);
-//		trafficLight.fillProperty().set(Color.RED);
-//		Task<Void> checkTask = new Task<Void>() {
-//
-//			@Override
-//			protected Void call() throws Exception {
 		ConfigGraph.validateGraph();
-//				return null;
-//			}
-//		};
-//		checkTask.setOnScheduled(e -> {
-//		});
-//		checkTask.setOnSucceeded(e -> {
-//			btnCheck.setDisable(false);
-//			setButtonState();
-//		});
-//		new Thread(checkTask).start();
 	}
 
 	@FXML
@@ -530,7 +519,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void handleSave(ActionEvent event) {
 		model.doSave();
-		setButtonState();
+		// setButtonState();
 	}
 
 	@FXML
@@ -539,7 +528,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		for (VisualNode root : visualGraph.roots())
 			if (root.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))
 				visualiser.onNodeRenamed(root);
-		setButtonState();
+		// setButtonState();
 	}
 
 	public void setStage(Stage stage) {
@@ -549,7 +538,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void handleImport(ActionEvent event) {
 		model.doImport();
-		setButtonState();
+		// setButtonState();
 	}
 
 	private static final String mainFrameName = "mainFrame";
@@ -704,14 +693,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //================== ERROR MSG LISTENER =============
 	@Override
 	public void onStartCheck() {
-		// System.out.println("Start check: "+Thread.currentThread().getName());
-		btnDeploy.setDisable(true);
-		btnCheck.setDisable(true);
-		lblChecking.setVisible(true);
-		trafficLight.fillProperty().set(Color.RED);
+		Platform.runLater(() -> {
+			btnDeploy.setDisable(true);
+			btnCheck.setDisable(true);
+			lblChecking.setVisible(true);
+			trafficLight.fillProperty().set(Color.RED);
 
-		textAreaErrorMsgs.clear();
-		lstErrorMsgs.clear();
+			textAreaErrorMsgs.clear();
+			lstErrorMsgs.clear();
+		});
 		// Don't know why the trafficLight and disable buttons don't work unless this
 		// method is initiated by the Check button itself.
 	}
@@ -719,10 +709,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void onEndCheck(boolean valid) {
 		isValid = valid;
-		// System.out.println("End check: "+Thread.currentThread().getName());
 		Platform.runLater(() -> {
-			// System.out.println("Finish check: "+Thread.currentThread().getName());
-			// System.out.println("----------------------------------------");
 			btnDeploy.setDisable(false);
 			btnCheck.setDisable(false);
 			lblChecking.setVisible(false);
@@ -742,6 +729,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
+	private boolean unsavedFlagged() {
+		for (ErrorMessagable e : lstErrorMsgs) {
+			if (e.errorName().equals(ModelBuildErrors.DEPLOY_PROJECT_UNSAVED.name()))
+				return true;
+		}
+		return false;
+	}
+
 	@Override
 	public void onReceiveMsg(ErrorMessagable msg) {
 		Platform.runLater(() -> {
@@ -750,24 +745,28 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			textAreaErrorMsgs.clear();
 			for (ErrorMessagable m : lstErrorMsgs)
 				textAreaErrorMsgs.appendText(getMessageText(m));
+
+			setButtonState();
 		});
 	}
 
 	// ===============================================
-
+// Should we call 
+	// GraphState.clear();?
+	// Clear listeners of ErrorList.?
 	@Override
 	public void onProjectClosing() {
-		visualiser.close();
+		GraphState.clear();
+		if (visualiser != null)
+			visualiser.close();
 		visualiser = null;
-		// clearGraphView(visualGraph);
-		// clearPropertySheets();
-		// setButtons(no project);
 		nodePropertySheet.getItems().clear();
 		allElementsPropertySheet.getItems().clear();
 		zoomTarget.getChildren().clear();
 		visualGraph = null;
 		lastSelectedNode = null;
 		UserProjectLink.unlinkUserProject();
+		stage.setTitle(DefaultWindowSettings.defaultName());
 		setButtonState();
 		putPreferences();
 	}
@@ -786,10 +785,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser.initialiseView();
 		initialisePropertySheets();
 		setCursor(oldCursor);
-		// GraphState.setChanged();
-		GraphState.clear();
-		ConfigGraph.validateGraph();
-		setButtonState();
+		stage.setTitle(Project.getDisplayName());
 	}
 
 	private IGraphVisualiser visualiser;
@@ -949,7 +945,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			newNode = null;
 			lastSelectedNode = newNode;
 			initialisePropertySheets();
-			setButtonState();
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
 		}
@@ -959,26 +954,23 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onNodeDeleted() {
 		lastSelectedNode = null;
 		initialisePropertySheets();
-		setButtonState();
 	}
 
 	@Override
 	public void onTreeCollapse() {
 		lastSelectedNode = null;
 		initialisePropertySheets();
-		setButtonState();
 	}
 
 	@Override
 	public void onTreeExpand() {
 		lastSelectedNode = null;
 		initialisePropertySheets();
-		setButtonState();
 	}
 
 	@Override
 	public void onStateChange(boolean state) {
-		setButtonState();
+		 setButtonState();
 	}
 
 	public void setButtonState() {
@@ -1013,7 +1005,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void onElementRenamed() {
 		initialisePropertySheets();
-		setButtonState();
+		// setButtonState();
 	}
 
 	@Override
@@ -1030,13 +1022,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void onNewEdge(VisualEdge e) {
 		initialisePropertySheets();
-		setButtonState();
+		// setButtonState();
 	}
 
 	@Override
 	public void onEdgeDeleted() {
 		initialisePropertySheets();
-		setButtonState();
+		// setButtonState();
 
 	}
 
@@ -1099,6 +1091,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		textArea.selectPositionCaret(0);
 		textArea.deselect();
 		dlg.showAndWait();
+	}
+
+	@Override
+	public void setDefaultTitle() {
+		stage.setTitle(DefaultWindowSettings.defaultName());
+
 	}
 
 }

@@ -14,34 +14,34 @@ import au.edu.anu.twapps.mm.layout.ILayout;
  *
  * @date 30 Mar 2020
  */
-public class RT1Node {
+public class RT1Vertex {
 	private double radius;// distance to all children
 
-	private RT1Node pctParent;
-	private VisualNode node;
+	private RT1Vertex _parent;
+	private VisualNode _vNode;
 	private int index;// ith child
-	private List<RT1Node> children;
-	private boolean isPctRoot;
+	private List<RT1Vertex> _children;
+	//private boolean isPctRoot;
 
-	public RT1Node(RT1Node pctParent, VisualNode node, int index) {
-		isPctRoot = (pctParent == null);
-		this.pctParent = pctParent;
-		this.node = node;
+	public RT1Vertex(RT1Vertex parent, VisualNode node, int index) {
+		//isPctRoot = (parent == null);
+		this._parent = parent;
+		this._vNode = node;
 		this.index = index;
-		children = new ArrayList<>();
+		_children = new ArrayList<>();
 	}
 
 	protected void setXY(double x, double y) {
-		node.setX(x);
-		node.setY(y);
+		_vNode.setX(x);
+		_vNode.setY(y);
 	}
 
 	protected double getX() {
-		return node.getX();
+		return _vNode.getX();
 	}
 
 	protected double getY() {
-		return node.getY();
+		return _vNode.getY();
 	}
 
 	protected double getRadius() {
@@ -52,7 +52,7 @@ public class RT1Node {
 		this.radius = value;
 		// determine next radius
 		double nextRadius = 0;
-		int n = children.size();
+		int n = _children.size();
 		if (n==0)// leaf
 			return;
 		else if (n == 1)// children have no siblings.
@@ -61,14 +61,14 @@ public class RT1Node {
 			double diff = Double.POSITIVE_INFINITY;
 			int idx = 0;
 			for (int i = 1; i < n; i++) {
-				double aDiff = Math.abs(children.get(i - 1).getAngle() - children.get(i).getAngle());
+				double aDiff = Math.abs(_children.get(i - 1).getAngle() - _children.get(i).getAngle());
 				if (aDiff < diff) {
 					diff = aDiff;
 					idx = i;
 				}
 			}
 
-			double theta1 = children.get(idx).getAngle();
+			double theta1 = _children.get(idx).getAngle();
 			double theta2 = theta1 + diff / 2.0;
 			Duple<Double, Double> p1 = polarToCartesian(theta1, radius);
 			Duple<Double, Double> p2 = polarToCartesian(theta2, radius);
@@ -77,52 +77,49 @@ public class RT1Node {
 		}
 
 		// update recursively;
-		for (RT1Node cf : children)
+		for (RT1Vertex cf : _children)
 			cf.setRadius(nextRadius);
 	}
 
 	private static final double w = Math.PI; // = 45 deg for two children
 
 	protected double getAngle() {
-		if (isPctRoot)
+		if (!hasParent())
 			return 0.0;
-		double m = pctParent.getChildren().size();
+		double m = _parent.getChildren().size();
 		double i = index;
-		if (pctParent.isPctRoot)
+		if (!getParent().hasParent())
 			return (2.0 * Math.PI * i) / m;
 		else {
-			// π − φ /2 + φ i/m + φ /(2m) NB: error in paper - remove π
+			// π − φ /2 + φ i/m + φ /(2m) NB: error in paper : remove π
 			return ((w * i) / m) + w / (2.0 * m) - (w / 2.0);
 		}
 	}
 
-	protected RT1Node getPctParent() {
-		return pctParent;
+	protected RT1Vertex getParent() {
+		return _parent;
 	}
 
-	protected VisualNode getNode() {
-		return node;
+	protected VisualNode getvNode() {
+		return _vNode;
 	}
 
 	protected int getIndex() {
 		return index;
 	}
 
-	protected List<RT1Node> getChildren() {
-		return children;
+	protected List<RT1Vertex> getChildren() {
+		return _children;
 	}
 
-	protected void addChild(RT1Node child) {
-		children.add(child);
-	}
 
 	@Override
 	public String toString() {
-		return node.getDisplayText(false);
+		return _vNode.getDisplayText(false);
 	}
 
 	protected boolean hasParent() {
-		return pctParent != null;
+		return _parent != null;
 	}
 
 	public static Duple<Double, Double> polarToCartesian(double radiant, double magnitude) {
@@ -134,7 +131,7 @@ public class RT1Node {
 	public void getLayoutBounds(Point2D min, Point2D max) {
 		min.setLocation(Math.min(min.getX(), getX()), Math.min(min.getY(), getY()));
 		max.setLocation(Math.max(max.getX(), getX()), Math.max(max.getY(), getY()));
-		for (RT1Node child : getChildren())
+		for (RT1Vertex child : getChildren())
 			child.getLayoutBounds(min, max);
 
 	}
@@ -143,7 +140,7 @@ public class RT1Node {
 		double x = ILayout.rescale(getX(), fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
 		double y = ILayout.rescale(getY(), fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
 		setXY(x, y);
-		for (RT1Node child : getChildren())
+		for (RT1Vertex child : getChildren())
 			child.normalise(fromMin, fromMax, toMin, toMax);
 
 	}

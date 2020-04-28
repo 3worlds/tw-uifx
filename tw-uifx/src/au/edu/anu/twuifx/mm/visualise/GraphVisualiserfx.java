@@ -52,6 +52,7 @@ import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import au.edu.anu.twuifx.mm.visualise.layout.FRLayout;
 import au.edu.anu.twuifx.mm.visualise.layout.OTLayout;
 import au.edu.anu.twuifx.mm.visualise.layout.RT1Layout;
+import au.edu.anu.twuifx.mm.visualise.layout.RT2Layout;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.TreeNode;
@@ -633,13 +634,22 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 //			layout = new OTLayoutOld(visualGraph);
 			break;
 		}
-		case RadialTree: {
+		case RadialTree1: {
 			layout = new RT1Layout(root);
+			break;
+		}
+		case RadialTree2: {
+			layout = new RT2Layout(root);
 			break;
 		}
 		case SpringGraph: {
 			layout = new FRLayout(visualGraph, usePCEdges, useXEdges);
 			break;
+		}
+		case LombardiGraph:{
+			//TODO: Lombardi layout
+			layout = new FRLayout(visualGraph, usePCEdges, useXEdges);
+			break;		
 		}
 		default: {
 			throw new TwuifxException("Unknown layout type '" + layoutType + "',");

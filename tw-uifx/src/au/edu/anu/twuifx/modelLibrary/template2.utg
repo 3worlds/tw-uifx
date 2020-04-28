@@ -12,7 +12,7 @@ treegraph // saved by OmugiGraphExporter on Fri Apr 17 11:20:00 AEST 2020
 //		next.y(pars.x()*current.y()*(1-current.y()));
 //
 // example settings: 
-// pars: x = 4.0 
+// pars: x = between 3.57 and  4 
 // vars: y = 0.1
 	
 // TREE

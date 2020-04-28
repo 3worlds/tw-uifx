@@ -27,15 +27,15 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
  * @date 24 Apr 2020
  */
 public class OTLayout implements ILayout{
-	private OTNode root;
+	private OTVertex root;
 
 	public OTLayout (VisualNode vRoot) {
-		root = new OTNode(null,vRoot);
+		root = new OTVertex(null,vRoot);
 		buildSpanningTree(root);
 		}
 
 	
-	private void buildSpanningTree(OTNode lNode) {
+	private void buildSpanningTree(OTVertex lNode) {
 		List<VisualNode> sortList = new ArrayList<>();
 		String parentId="";
 		if (lNode.hasParent())
@@ -56,7 +56,7 @@ public class OTLayout implements ILayout{
 			}
 		});
 		for (VisualNode child: sortList) {
-			OTNode lChild = new OTNode(lNode,child);
+			OTVertex lChild = new OTVertex(lNode,child);
 			lNode.getChildren().add(lChild);
 			buildSpanningTree(lChild);
 		}
@@ -65,8 +65,8 @@ public class OTLayout implements ILayout{
 
 	@Override
 	public ILayout compute() {
-		OTNode.m_maxDepth=0;
-		Arrays.fill(OTNode.m_depths, 0);
+		OTVertex.maxLevels=0;
+		Arrays.fill(OTVertex.levels, 0);
 		
 		root.firstWalk(0,1);
 		
@@ -85,8 +85,8 @@ public class OTLayout implements ILayout{
 	}
 	
 	private static void determineDepths() {
-		for (int i = 1; i < OTNode.m_maxDepth; ++i)
-			OTNode.m_depths[i] +=OTNode. m_depths[i - 1];
+		for (int i = 1; i < OTVertex.maxLevels; ++i)
+			OTVertex.levels[i] +=OTVertex.levels[i - 1];
 	}
 
 }

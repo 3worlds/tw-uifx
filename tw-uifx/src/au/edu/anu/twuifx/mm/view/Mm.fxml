@@ -186,7 +186,7 @@
                   </ToolBar>
                </bottom>
                <center>
-                  <ScrollPane fx:id="scrollPane" BorderPane.alignment="CENTER">
+                  <ScrollPane fx:id="scrollPane" pannable="true" BorderPane.alignment="CENTER">
                      <content>
                         <StackPane fx:id="scrollContent" style="-fx-background-color: lightgrey;">
                            <children>

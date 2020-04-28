@@ -38,6 +38,7 @@ import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.IGraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -87,7 +88,8 @@ public class GraphStatefx implements IGraphState {
 					}
 					propertyTitle.setValue(title);
 				}
-			}
+			} else
+				propertyTitle.setValue(DefaultWindowSettings.defaultName());
 			onChange();
 		});
 
@@ -103,6 +105,8 @@ public class GraphStatefx implements IGraphState {
 		propertyHasChanged.setValue(true);
 		if (!ErrorList.haveErrors())
 			ErrorList.add(new ModelBuildErrorMsg(ModelBuildErrors.DEPLOY_PROJECT_UNSAVED));
+		else
+			onChange();
 		setTitle();
 	}
 

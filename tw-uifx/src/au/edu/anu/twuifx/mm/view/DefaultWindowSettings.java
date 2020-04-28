@@ -11,6 +11,7 @@ public class DefaultWindowSettings {
 	private static double y = (screenBounds.getHeight() - h) / 3;
 	private static double splitter1 = 0.4;
 	private static double splitter2 = 0.5;
+	private static String defaultMMName = "3Worlds Model Maker";
 	public static double getWidth() {
 		return w;
 	}
@@ -28,6 +29,9 @@ public class DefaultWindowSettings {
 	}
 	public static double splitter2() {
 		return splitter2;
+	}
+	public static String defaultName() {
+		return defaultMMName;
 	}
 	
 

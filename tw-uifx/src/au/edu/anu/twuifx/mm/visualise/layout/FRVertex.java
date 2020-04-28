@@ -9,15 +9,17 @@ import fr.cnrs.iees.uit.space.Distance;
  * @date 13 Apr 2020
  */
 
-public class FRNode {
+public class FRVertex {
 	private VisualNode node;
 	private double dispX; // total displacement of x and y
 	private double dispY;
 	private String id;
+	private boolean hasEdges;
 
-	public FRNode(VisualNode node) {
+	public FRVertex(VisualNode node) {
 		this.node = node;
 		this.id = node.getDisplayText(false);
+		this.hasEdges = false;
 	}
 
 	/**
@@ -27,7 +29,7 @@ public class FRNode {
 	 * @param other
 	 * @param k     spacing constant (ideal spring length)
 	 */
-	public void setRepulsionDisplacement(FRNode other, double k) {
+	public void setRepulsionDisplacement(FRVertex other, double k) {
 		double force = fRepulsion(other, k);
 		double direction = Math.atan2(dy(other), dx(other));
 		double x = force * Math.cos(direction);
@@ -44,7 +46,7 @@ public class FRNode {
 	 * @param other
 	 * @param k     spacing constant (ideal spring length)
 	 */
-	public void setAttractionDisplacement(FRNode other, double k) {
+	public void setAttractionDisplacement(FRVertex other, double k) {
 		double force = fAttraction(other, k);
 		double direction = Math.atan2(dy(other), dx(other));
 		double x = force * Math.cos(direction);
@@ -59,16 +61,16 @@ public class FRNode {
 	 * @param t temperature
 	 * @return energy
 	 */
-	public double displace(double t) {	
-			double direction = Math.atan2(dispY, dispX);
-			double distance = Math.sqrt((dispX * dispX) + (dispY * dispY));
-			distance = Math.min(t, distance);
-			double dx = distance * Math.cos(direction);
-			double dy = distance * Math.sin(direction);
-			double nx = dx + getX();
-			double ny = dy + getY();
-			setPosition(nx, ny);
-			return Distance.euclidianDistance(0, 0, dx, dy);
+	public double displace(double t) {
+		double direction = Math.atan2(dispY, dispX);
+		double distance = Math.sqrt((dispX * dispX) + (dispY * dispY));
+		distance = Math.min(t, distance);
+		double dx = distance * Math.cos(direction);
+		double dy = distance * Math.sin(direction);
+		double nx = dx + getX();
+		double ny = dy + getY();
+		setPosition(nx, ny);
+		return Distance.euclidianDistance(0, 0, dx, dy);
 	}
 
 	protected String id() {
@@ -89,7 +91,7 @@ public class FRNode {
 
 	@Override
 	public boolean equals(Object other) {
-		FRNode lother = (FRNode) other;
+		FRVertex lother = (FRVertex) other;
 		return id.equals(lother.id);
 	}
 
@@ -106,15 +108,15 @@ public class FRNode {
 		return node.getY();
 	}
 
-	private void setPosition(double x, double y) {
+	public void setPosition(double x, double y) {
 		node.setPosition(x, y);
 	}
 
-	private double dx(FRNode other) {
+	private double dx(FRVertex other) {
 		return other.getX() - getX();
 	}
 
-	private double dy(FRNode other) {
+	private double dy(FRVertex other) {
 		return other.getY() - getY();
 	}
 
@@ -123,9 +125,17 @@ public class FRNode {
 		return "[" + getX() + "," + getY() + "]" + id();
 	}
 
+	public void hasEdge() {
+		hasEdges = true;
+	}
+
+	public boolean hasEdges() {
+		return hasEdges;
+	}
+
 	private static double close = 0.0000001;
 
-	public double fRepulsion(FRNode other, double k) {
+	public double fRepulsion(FRVertex other, double k) {
 		double d = Distance.euclidianDistance(getX(), getY(), other.getX(), other.getY());
 		if (d < close) {
 			System.out.println("R Distance zero");
@@ -134,7 +144,7 @@ public class FRNode {
 		return fRepulsion(k, d);
 	}
 
-	public double fAttraction(FRNode other, double k) {
+	public double fAttraction(FRVertex other, double k) {
 		double d = Distance.euclidianDistance(getX(), getY(), other.getX(), other.getY());
 		if (d < close) {
 			System.out.println("A Distance zero");

@@ -40,6 +40,7 @@ import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.images.Images;
+import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
 import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -92,7 +93,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		EnumProperties.recordEnums();
 //		ValidPropertyTypes.listTypes(); // uncomment this if you want to make sure all property types are here
 		mainStage = primaryStage;
-		mainStage.setTitle("3Worlds Model Maker");
+		mainStage.setTitle(DefaultWindowSettings.defaultName());
 		createMainWindow();
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
 		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));

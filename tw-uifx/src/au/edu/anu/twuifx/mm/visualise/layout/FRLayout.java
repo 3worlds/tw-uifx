@@ -32,45 +32,41 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 public class FRLayout implements ILayout {
 
-	private List<FRNode> lNodes;
-	private List<Duple<FRNode, FRNode>> lEdges;
+	private List<FRVertex> lNodes;
+	private List<Duple<FRVertex, FRVertex>> lEdges;
 	private int interations = 100;
 	private double initTemp = 0.1;
 
 	/** It would be nice to move nodes without edges out of the way? */
 	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
-//		//exclude isolated nodes??
-//		boolean pinable = false;
-//		if (!usePCEdges && useXEdges)
-//			pinable = true;
-			
-
 		lNodes = new ArrayList<>();
 		lEdges = new ArrayList<>();
 		// collect all visible nodes
 		for (VisualNode v : graph.nodes()) {
 			if (!v.isCollapsed()) {
-				lNodes.add(new FRNode(v));
+				lNodes.add(new FRVertex(v));
 			}
 		}
-		lNodes.sort(new Comparator<FRNode>() {
+		lNodes.sort(new Comparator<FRVertex>() {
 
 			@Override
-			public int compare(FRNode o1, FRNode o2) {
+			public int compare(FRVertex o1, FRVertex o2) {
 				return o1.id().compareTo(o2.id());
 			}
 
 		});
 
 		// set edges
-		for (FRNode ln : lNodes) {
+		for (FRVertex ln : lNodes) {
 			// add parent/children edges
 			VisualNode vn = ln.getNode();
 			if (usePCEdges)
 				for (VisualNode cn : vn.getChildren())
 					if (!cn.isCollapsed()) {
-						FRNode cln = vn2ln(cn);
-						lEdges.add(new Duple<FRNode, FRNode>(ln, cln));
+						FRVertex cln = vn2ln(cn);
+						lEdges.add(new Duple<FRVertex, FRVertex>(ln, cln));
+						ln.hasEdge();
+						cln.hasEdge();
 					}
 
 			// add xlink edges
@@ -79,15 +75,35 @@ public class FRLayout implements ILayout {
 				List<VisualNode> toNodes = (List<VisualNode>) get(vn.edges(Direction.OUT), edgeListEndNodes());
 				for (VisualNode toNode : toNodes)
 					if (!toNode.isCollapsed()) {
-						FRNode toln = vn2ln(toNode);
-						lEdges.add(new Duple<FRNode, FRNode>(ln, toln));
+						FRVertex toln = vn2ln(toNode);
+						lEdges.add(new Duple<FRVertex, FRVertex>(ln, toln));
+						ln.hasEdge();
+						toln.hasEdge();
 					}
 			}
 		}
+		List<FRVertex> isolatedVertices = new ArrayList<>();
+		for (FRVertex v:lNodes) {
+			if (!v.hasEdges())
+				isolatedVertices.add(v);
+		}
+		for (FRVertex v:isolatedVertices) {
+			lNodes.remove(v);
+		}
+		double inc = 360.0/isolatedVertices.size();
+		double angle = 0;
+		double d = Math.PI;
+		for (FRVertex v:isolatedVertices) {
+			double x = d*Math.cos(Math.toRadians(angle));
+			double y = d*Math.sin(Math.toRadians(angle));
+			v.setPosition(x, y);
+			angle+=inc;		
+		}
+		
 	}
 
-	private FRNode vn2ln(VisualNode cn) {
-		for (FRNode ln : lNodes)
+	private FRVertex vn2ln(VisualNode cn) {
+		for (FRVertex ln : lNodes)
 			if (ln.getNode().id().equals(cn.id()))
 				return ln;
 		return null;
@@ -100,19 +116,19 @@ public class FRLayout implements ILayout {
 		double t = initTemp; // temperature;
 		for (int i = 0; i < interations; i++) {
 
-			for (FRNode v : lNodes) {
+			for (FRVertex v : lNodes) {
 				v.clearDisplacement();
-				for (FRNode u : lNodes)
+				for (FRVertex u : lNodes)
 					if (!v.equals(u))
 						v.setRepulsionDisplacement(u, k);
 			}
 
-			for (Duple<FRNode, FRNode> e : lEdges) {
+			for (Duple<FRVertex, FRVertex> e : lEdges) {
 				e.getFirst().setAttractionDisplacement(e.getSecond(), k);
 				e.getSecond().setAttractionDisplacement(e.getFirst(), k);
 			}
 
-			for (FRNode v : lNodes)
+			for (FRVertex v : lNodes)
 				v.displace(t);
 
 			/**

@@ -16,7 +16,7 @@ import fr.ens.biologie.generic.utils.Duple;
  */
 public class RT1Layout implements ILayout {
 	
-	private RT1Node root;
+	private RT1Vertex root;
 
 	/**
 	 * Build a spanning tree based upon the given root. The visual node is wrapped
@@ -24,23 +24,23 @@ public class RT1Layout implements ILayout {
 	 * can redefine the direction of parent/child relations.
 	 */
 	public RT1Layout(VisualNode vRoot) {
-		root = new RT1Node(null, vRoot, 0);
+		root = new RT1Vertex(null, vRoot, 0);
 		buildSpanningTree(root);
 		root.setRadius(1.0);
 
 	}
 
-	private void buildSpanningTree(RT1Node lNode) {
+	private void buildSpanningTree(RT1Vertex v) {
 		List<VisualNode> sortList = new ArrayList<>();
 		String parentId = "";
-		if (lNode.hasParent())
-			parentId = lNode.getPctParent().getNode().id();
-		for (VisualNode vChild : lNode.getNode().getChildren()) {
+		if (v.hasParent())
+			parentId = v.getParent().getvNode().id();
+		for (VisualNode vChild : v.getvNode().getChildren()) {
 			String childId = vChild.id();
 			if (!vChild.isCollapsed() && !childId.equals(parentId))
 				sortList.add(vChild);
 		}
-		VisualNode parentNode = lNode.getNode().getParent();
+		VisualNode parentNode = v.getvNode().getParent();
 		if (parentNode != null)
 			if (!parentNode.isCollapsed() && !parentNode.id().equals(parentId))
 				sortList.add(parentNode);
@@ -52,9 +52,9 @@ public class RT1Layout implements ILayout {
 			}
 		});
 		for (int idx = 0; idx < sortList.size(); idx++) {
-			RT1Node lChild = new RT1Node(lNode, sortList.get(idx), idx);
-			lNode.addChild(lChild);
-			buildSpanningTree(lChild);
+			RT1Vertex w = new RT1Vertex(v, sortList.get(idx), idx);
+			v.getChildren().add(w);
+			buildSpanningTree(w);
 		}
 	}
 
@@ -73,20 +73,20 @@ public class RT1Layout implements ILayout {
 		return this;
 	}
 
-	private void toCartesian(RT1Node lNode, int depth, double angleSum) {
+	private void toCartesian(RT1Vertex lNode, int depth, double angleSum) {
 		if (!lNode.hasParent()) {// root
 			lNode.setXY(0, 0);
-			for (RT1Node cw : lNode.getChildren())
+			for (RT1Vertex cw : lNode.getChildren())
 				toCartesian(cw, depth + 1, cw.getAngle());
 		} else {
-			double distance = lNode.getPctParent().getRadius();
-			Duple<Double, Double> p = RT1Node.polarToCartesian(angleSum, distance);
-			double px = lNode.getPctParent().getX();
-			double py = lNode.getPctParent().getY();
+			double distance = lNode.getParent().getRadius();
+			Duple<Double, Double> p = RT1Vertex.polarToCartesian(angleSum, distance);
+			double px = lNode.getParent().getX();
+			double py = lNode.getParent().getY();
 			double cx = p.getFirst();
 			double cy = p.getSecond();
 			lNode.setXY(px + cx, py + cy);
-			for (RT1Node cf : lNode.getChildren()) // children
+			for (RT1Vertex cf : lNode.getChildren()) // children
 				toCartesian(cf, depth + 1, angleSum + cf.getAngle());
 
 		}
