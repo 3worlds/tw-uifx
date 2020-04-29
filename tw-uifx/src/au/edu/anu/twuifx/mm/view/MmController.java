@@ -95,7 +95,6 @@ import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
 import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
@@ -337,7 +336,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
 		menuNew.getItems().clear();
-		
+
 		for (LibraryTable entry : LibraryTable.values()) {
 			boolean inserted = false;
 			if (!inserted && !entry.isTemplate()) {
@@ -558,10 +557,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String Mode = "_mode";
 	private static final String AccordionSelection = "_AccSel";
 	private static final String LayoutChoice = "layoutChoice";
+	private static final String ScrollHValue = "HValue";
+	private static final String ScrollVValue = "VValue";
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-//			System.out.println("Write preferences");
 
 			Preferences.putString(UserProjectPath, userProjectPath.get());
 			Preferences.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
@@ -583,20 +583,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
 			Preferences.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
 			Preferences.putEnum(LayoutChoice, cbxLayoutChoice.getValue());
+			Preferences.putDouble(scrollPane.idProperty().get() + ScrollHValue, scrollPane.getHvalue());
+			Preferences.putDouble(scrollPane.idProperty().get() + ScrollVValue, scrollPane.getVvalue());
 
 			Preferences.flush();
 		}
 	}
 
-	// private File pfile;
-
 	public void getPreferences() {
-//		pfile = Project.makeProjectPreferencesFile();
-//		System.out.println("Read from preferences");
+		// TODO: Needs cleaning up but proceed cautiously and test changes incrementally.
 		Preferences.initialise(Project.makeProjectPreferencesFile());
 		String prjtmp = Preferences.getString(UserProjectPath, "");
-
-		// should store in preferences??
 		if (!prjtmp.equals("")) {
 			UserProjectLink.unlinkUserProject();
 			if (UserProjectLinkFactory.makeEnv(new File(prjtmp), ideType)) {
@@ -615,6 +612,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			stage.setHeight(ws[3]);
 			stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
 		});
+		System.out.println("FONT SIZE ETXC");
 
 		setFontSize(Preferences.getInt(fontSizeKey, 10));
 		setNodeRadius(Preferences.getInt(nodeSizeKey, 8));
@@ -625,6 +623,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Platform.runLater(() -> {
 			LayoutType lt = (LayoutType) Preferences.getEnum(LayoutChoice, LayoutType.OrderedTree);
 			cbxLayoutChoice.setValue(lt);
+			// TODO do this by enum now!
 			boolean m = Preferences.getBoolean(nodePropertySheet.idProperty().get() + Mode, true);
 			PropertySheet.Mode md = PropertySheet.Mode.CATEGORY;
 			if (m)
@@ -639,22 +638,29 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			int idx = Preferences.getInt(AccordionSelection, -1);
 			UiHelpers.setExpandedPane(allElementsPropertySheet, idx);
 		});
+
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
 
-		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX()));
-		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY()));
+		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, 1));
+		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, 1));
+
 		// get splitPanes later after UI has settled down
 		splitPane1.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Platform.runLater(() -> {
+					System.out.println("SPLITTERS");
 					double s1 = Preferences.getDouble(splitPane1.getId(), DefaultWindowSettings.splitter1());
 					double s2 = Preferences.getDouble(splitPane2.getId(), DefaultWindowSettings.splitter2());
 					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(s1, splitPane1.getId()));
 					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(s2, splitPane2.getId()));
 					observable.removeListener(this);
+					System.out.println("SCROLLBARS");
+					scrollPane.setHvalue(Preferences.getDouble(scrollPane.idProperty().get() + ScrollHValue, 0));
+					scrollPane.setVvalue(Preferences.getDouble(scrollPane.idProperty().get() + ScrollVValue, 0));
+
 				});
 			}
 		});
@@ -781,15 +787,20 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onProjectOpened(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
 		this.visualGraph = layoutGraph;
 		Cursor oldCursor = setWaitCursor();
-		getPreferences();
+
 		visualiser = new GraphVisualiserfx(visualGraph, //
 				zoomTarget, //
 				nodeRadiusProperty, //
 				btnChildLinks.selectedProperty(), //
 				btnXLinks.selectedProperty(), //
 				fontProperty, this);
+
 		visualiser.initialiseView();
+
 		initialisePropertySheets();
+
+		getPreferences();
+
 		setCursor(oldCursor);
 		stage.setTitle(Project.getDisplayName());
 	}
@@ -976,7 +987,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@Override
 	public void onStateChange(boolean state) {
-		 setButtonState();
+		setButtonState();
 	}
 
 	public void setButtonState() {
