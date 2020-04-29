@@ -336,17 +336,28 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
 		menuNew.getItems().clear();
-
+		Menu muTemplates = new Menu("Templates");
+		Menu muTutorials = new Menu("Tutorials");
+		Menu muModels = new Menu("Model Library");
+		menuNew.getItems().addAll(muTemplates, muTutorials, muModels);
 		for (LibraryTable entry : LibraryTable.values()) {
-			boolean inserted = false;
-			if (!inserted && !entry.isTemplate()) {
-				menuNew.getItems().add(new SeparatorMenuItem());
-				inserted = true;
-			}
 			MenuItem mi = new MenuItem(entry.displayName());
 			mi.setMnemonicParsing(false);
 			map.put(mi, entry);
-			menuNew.getItems().add(mi);
+			switch (entry.libraryType()) {
+			case Template: {
+				muTemplates.getItems().add(mi);
+				break;
+			}
+			case Tutorial: {
+				muTutorials.getItems().add(mi);
+				break;
+			}
+			default: {
+				muModels.getItems().add(mi);
+			}
+			}
+
 			mi.setOnAction((e) -> {
 				LibraryTable lt = map.get(e.getSource());
 				TreeGraph<TreeGraphDataNode, ALEdge> templateGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
@@ -591,7 +602,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	public void getPreferences() {
-		// TODO: Needs cleaning up but proceed cautiously and test changes incrementally.
+		// TODO: Needs cleaning up but proceed cautiously and test changes
+		// incrementally.
 		Preferences.initialise(Project.makeProjectPreferencesFile());
 		String prjtmp = Preferences.getString(UserProjectPath, "");
 		if (!prjtmp.equals("")) {
@@ -612,7 +624,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			stage.setHeight(ws[3]);
 			stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
 		});
-		System.out.println("FONT SIZE ETXC");
 
 		setFontSize(Preferences.getInt(fontSizeKey, 10));
 		setNodeRadius(Preferences.getInt(nodeSizeKey, 8));
@@ -651,13 +662,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Platform.runLater(() -> {
-					System.out.println("SPLITTERS");
 					double s1 = Preferences.getDouble(splitPane1.getId(), DefaultWindowSettings.splitter1());
 					double s2 = Preferences.getDouble(splitPane2.getId(), DefaultWindowSettings.splitter2());
 					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(s1, splitPane1.getId()));
 					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(s2, splitPane2.getId()));
 					observable.removeListener(this);
-					System.out.println("SCROLLBARS");
 					scrollPane.setHvalue(Preferences.getDouble(scrollPane.idProperty().get() + ScrollHValue, 0));
 					scrollPane.setVvalue(Preferences.getDouble(scrollPane.idProperty().get() + ScrollVValue, 0));
 

@@ -36,24 +36,23 @@ package au.edu.anu.twuifx.modelLibrary;
  */
 /**
  * Lookup struc for entries in ModelMaker "New" menu. Display order is the
- * declaration order in this enum. A menu separator is inserted between
- * templates and models. Templates MUST be listed first and flagged "true";
- * models listed second and flagged "false".
+ * declaration order in this enum. 
  */
 public enum LibraryTable {
-	Empty(/*             */"Empty", /*                     */"vide.utg", /*       */true), //
-	Template1(/*         */"Template 1", /*                */"default.utg", /*    */true), //
-	Model1(/*             */"Tut 1", /*                    */"tut1.utg", /*       */false), //
+	Empty(/*             */"Blank", /*                     */"vide.utg", /*       */LibraryType.Template), //
+	Template1(/*         */"Template 1", /*                */"default.utg", /*    */LibraryType.Template), //
+	Tut1(/*              */"Tut 1", /*                     */"tut1.utg", /*       */LibraryType.Tutorial), //
+	Model1(/*            */"French", /*                    */"french.utg", /*     */LibraryType.Model), //
 	;
 
 	private final String displayName;
 	private final String fileName;
-	private final boolean isTemplate;
+	private final LibraryType libraryType;
 
-	private LibraryTable(String displayName, String fileName, boolean isTemplate) {
+	private LibraryTable(String displayName, String fileName, LibraryType lt) {
 		this.displayName = displayName;
 		this.fileName = fileName;
-		this.isTemplate = isTemplate;
+		this.libraryType = lt;
 	}
 
 	public String displayName() {
@@ -64,8 +63,8 @@ public enum LibraryTable {
 		return fileName;
 	}
 
-	public boolean isTemplate() {
-		return isTemplate;
+	public LibraryType libraryType() {
+		return libraryType;
 	}
 
 }

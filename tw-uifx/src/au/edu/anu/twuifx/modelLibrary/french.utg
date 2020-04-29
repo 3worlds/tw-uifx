@@ -1,0 +1,812 @@
+treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+//  CODE SNIPPETS for user-defined functions:
+
+//public class PotentialGrowth extends ChangeStateFunction {
+//
+//	@Override
+//	public void changeState(double t, double dt,
+//			TwData ecosystemPar, ComponentContainer ecosystemPopulationData,
+//			TwData lifeCyclePar, ComponentContainer lifeCyclePopulationData,
+//			TwData groupPar, ComponentContainer groupPopulationData,
+//			Box limits,
+//			SystemData auto, TwData drv, TwData ltc, Point loc,
+//			TwData decc, TwData nextDrv, double[] nextLoc) {
+//		TreeDrv ct = (TreeDrv) drv;
+//		TreeDec dec = (TreeDec) decc;
+//		TreePar par = (TreePar) groupPar;
+//		double D = ct.d();
+//		double H = height(0,par.Hmax(),par.Dmax(),D);
+//		dec.h(H);
+//		double CR = crownRadius(par.acr(),par.bcr(),H);
+//		dec.cr(CR);
+//		// potential growth
+//		// resprout growth enhancement factor due to reserves
+//		double rootAge = ((SystemData) auto).age();
+//		double ageDif = rootAge - ct.stemAge() ;
+//		double fact2 = par.a()*par.pmax()*ageDif*exp(-par.b()*ageDif);
+//		double Rs = 1;
+//		if (rootAge > par.optAge())
+//			fact2 *= par.a()*par.b()*rootAge*rootAge*exp(-par.b()*rootAge*rootAge);
+//		Rs = 1+fact2;
+//		// growth stimulation by fire (due to stress)
+//		double fact3 = 1.0;
+//		if (par.pmax2()>0)
+//			fact3 = 1+exp(log(par.pmax2()*(ct.stemAge()+1)));
+//		dec.potG(par.rgr()*Rs*fact3); // maximal growth coefficient, not real growth
+//	}
+//
+//	protected static double height(double href, double hmax, double dmax, double d) {
+//		return href + 2*(hmax-href)/dmax*d - (hmax-href)/(dmax*dmax)*(d*d);
+//	}
+//	protected static double crownRadius(double acr, double bcr, double h) {
+//		double logcs = acr + bcr*log(h);
+//		double CR = sqrt(exp(logcs)/PI);
+//		return CR;
+//	}
+//	// multiply this by growth coefficients & modifiers to get volume growth
+//	protected static double volumeGrowthCoef(double d, double h, double dmax, double hmax) {
+//		return d*d*(1-(d*h)/(dmax*hmax));
+//	}
+//	// multiply this by growth coefficients & modifiers to get height growth
+//	protected static double heightGrowthCoef(double d, double h, double dmax, double hmax) {
+//		return (dmax-d)*hmax*d*(1-(d*h)/(dmax*hmax)) / (h*dmax*dmax+2*d*hmax*(dmax-d));
+//	}
+//	// multiply this by growth coefficients & modifiers to get diameter growth
+//	protected static double diameterGrowthCoef(double d, double h, double dmax, double hmax) {
+//		return dmax*dmax*d*(1-(d*h)/(dmax*hmax)) / (2*h*dmax*dmax+2*d*hmax*(dmax-d));
+//	}
+//
+//}
+//
+//public class Neighbouring extends RelateToDecisionFunction {
+//
+//	@Override
+//	public boolean relate(double t, double dt, SystemComponent focal, SystemComponent other,
+//			Location focalLocation, Location otherLocation) {
+//		TreeDec fdec = (TreeDec)focal.decorators();
+//		TreeDec odec = (TreeDec)other.decorators();
+//		return	sqr(fdec.cr()+odec.cr()) > squaredEuclidianDistance(focalLocation.asPoint(),otherLocation.asPoint());
+//	}
+//
+//}
+//
+//public class Competition extends ChangeOtherStateFunction {
+//
+//	@Override
+//	public void changeOtherState(double t, double dt, SystemComponent focal, SystemComponent other) {
+//		TreeDec fdec = (TreeDec) focal.decorators();
+//		TreeDec odec = (TreeDec)other.decorators();
+//		// number of neighbours > 2m
+//		if (odec.h()>200) fdec.nn2(fdec.nn2()+1);
+//		// number of taller neighbours
+//		if (odec.h()>fdec.h()) fdec.nng(fdec.nng()+1);
+//	}
+//
+//}
+//
+//public class ActualGrowth extends ChangeStateFunction {
+//
+//	// Code follows that of LamtoT1 in MUSE (with errors fixed, hopefully)
+//	@Override
+//	public void changeState(double t, double dt,
+//		TwData ecosystemPar, ComponentContainer ecosystemPopulationData,
+//		TwData lifeCyclePar, ComponentContainer lifeCyclePopulationData,
+//		TwData groupPar, ComponentContainer groupPopulationData,
+//		Box limits,
+//		SystemData auto, TwData drv, TwData ltc, Point loc,
+//		TwData decc, TwData nextDrv, double[] nextLoc) {
+//
+//		TreeDec dec = (TreeDec) decc;
+//		TreePar par = (TreePar) groupPar;
+//		TreeDrv ct = (TreeDrv) drv;
+//		TreeDrv nxt = (TreeDrv) nextDrv;
+//		// competition with grass
+//		// effect of neighbours
+//		double ctg = 1-par.grassComp();
+//		if (dec.nn2()<=6)
+//			ctg = ctg+(1-ctg)*dec.nn2()/6;
+//		else
+//			ctg = 1;
+//		ctg *= 0.98;
+//		// effect of tree height
+//		if ((ctg<0.98)&(dec.h()<par.grassHt()))
+//			ctg = ctg+(1-ctg)/(1+(99-100*ctg)*exp(-2/par.grassHt()*log(99-100*ctg)*dec.h()));
+//		else
+//			ctg = 1;
+//		// competition with neighbours
+//		double ctt = exp(-par.alpha()*dec.nng());
+//		// actual growth
+//		dec.G(dec.potG()*ctg*ctt);
+//		// computation of next diameter
+//		nxt.d(ct.d()+dec.G()*diameterGrowthCoef(ct.d(),dec.h(),par.Dmax(),par.Hmax())/dt);
+//		// low growth counter
+//		if (dec.G()<dec.potG()*par.minGrw())
+//			nxt.lowGrowthCounter(ct.lowGrowthCounter()+1);
+//		else
+//			nxt.lowGrowthCounter(0);
+//		// stem age
+//		nxt.stemAge(ct.stemAge()+1);
+//	}
+//
+//public class Reproduction extends CreateOtherDecisionFunction {
+//
+//	// Code follows that of LamtoT1 in MUSE (with errors fixed, hopefully)
+//	@Override
+//	public double nNew(double t, double dt, SystemComponent focal, String newType) {
+//		if (newType.equals(focal.membership().categoryId())) {
+//			TreePar par = (TreePar) focal.parameters();
+//			TreeDec dec = (TreeDec) focal.decorators();
+//			TreeDrv ct = (TreeDrv) focal.currentState();
+//			long age = focal.autoVar().age();
+//			double nsdl =0.0;
+//			if ((age>=par.ageRepro())&(age<=par.ageMax())) {
+//				// reproduction increases with crown radius and decreases with stem age
+//				nsdl = par.pcfec() * dec.cr()/par.CRMax() * (1-ct.stemAge()/par.ageMax());
+//				// mast seeding every 4 years
+//				if (decide(0.25))
+//					nsdl *= 10;
+//			}
+//			return nsdl;
+//		}
+//		else
+//			return 0.0;
+//	}
+//
+//}
+//
+//public class Survival extends DeleteDecisionFunction {
+//
+//	// Code follows that of LamtoT1 in MUSE (with errors fixed, hopefully)
+//	@Override
+//	public boolean delete(double t, double dt, SystemComponent focal) {
+//		TreePar par = (TreePar) focal.parameters();
+//		TreeDrv ct = (TreeDrv) focal.currentState();
+//		long age = focal.autoVar().age();
+//		TreeDec dec = (TreeDec) focal.decorators();
+//		int agemin = par.ageMin();
+//		int agemax = par.ageMax();
+//		double Smin = par.Smin();
+//		double Smax = par.Smax();
+//		// elimination of too old resprouts
+//		if ((age>ct.stemAge()) &
+//			(age>par.optAge()) &
+//			(dec.h()<par.grassHt()*100)) // grassHt
+//			return decide(1-Smin);
+//		// base survival
+//		double S = 1.0;
+//		// effect of competition on survival
+//		// death after 5 years of suppression
+//		S = max(0.0,S-ct.lowGrowthCounter()/5.0);
+//		if (S<=0.0)
+//			return true;
+//		// survival due to age
+//		if (age<=agemin)
+//			S *= Smin + par.C1()*age*exp(age/agemin);
+//		else if (age<=agemax)
+//			S *= Smax;
+//		else
+//			S = par.C2()*age*exp(-(1/3)*pow(age/agemax,3));
+//		return decide(1-S);
+//	}
+//
+//}
+//
+//public class FuelIncrease extends ChangeStateFunction {
+//
+//	@Override
+//	public void changeState(double t, double dt,
+//			TwData ecosystemPar, ComponentContainer ecosystemPopulationData,
+//			TwData lifeCyclePar, ComponentContainer lifeCyclePopulationData,
+//			TwData groupPar, ComponentContainer groupPopulationData,
+//			Box limits,
+//			SystemData auto, TwData drv, TwData ltc, Point loc,
+//			TwData dec, TwData nextDrv, double[] nextLoc) {
+//		FireDrv ct = (FireDrv) drv;
+//		FireDrv nxt = (FireDrv) nextDrv;
+//		FirePar par = (FirePar) groupPar;
+//		double h95 = 0.0;
+//		// fire occurence next time step?
+//		double proba = 0.0;
+//		if (par.freq()>0)
+//			proba = 1/par.freq();
+//		if (rng().nextDouble()<proba) {
+//			// if fire occurs:
+//			double mu = par.h95m()+0.1*ct.tslf()*exp(1-0.2*ct.tslf()); // = h95m + 0.5 if tslf = 5 < otherwise
+//			h95 = rng().nextGaussian()*par.h95sd() + mu;
+//			nxt.tslf(0);
+//			nxt.h95a(h95);
+//		}
+//		else { // no fire next time step
+//			nxt.tslf(ct.tslf()+1);
+//			nxt.h95a(0.0);
+//		}
+//	}
+//
+//}
+//
+//public class TopKill extends ChangeOtherStateFunction {
+//
+//	private static double[] pf = {1,1,0.75,0.5,0.25,0.1};
+//
+//	@Override
+//	public void changeOtherState(double t, double dt, SystemComponent focal, SystemComponent other) {
+//		// NB fire occurrence was computed on previous time step
+//		FireDrv fct = (FireDrv) focal.currentState();
+//		FirePar fpar = (FirePar) focal.parameters();
+//		if (fct.tslf()>0) { // means there is a fire this time
+//			// chance / surface burnt
+//			if (rng().nextDouble()>fpar.fireHet()) {
+//				TreePar tpar = (TreePar)other.parameters();
+//				TreeDec tdec = (TreeDec)other.decorators();
+//				TreeDrv tnxt = (TreeDrv)other.nextState();
+//				double ps = 1.0;
+//				// topkill depends on size
+//				if (tpar.fireH95()>0.0)
+//					ps = 0.5+1/PI * atan( PI/20 * (tdec.h()*100*2/tpar.fireH95() + 10 - fct.h95a()*100) );
+//				// chance of no fire under tree clump increases with number of neighbours
+//				double pp = rng().nextDouble();
+//				if ( ((tdec.nn2()<=5)&(pp<pf[tdec.nn2()])) ||
+//					 ((tdec.nn2()>5)&(pp<0.05)) )
+//					// topkill
+//					if (rng().nextDouble()>ps) {
+//						tnxt.stemAge(0);
+//						tnxt.d(tpar.dini());
+//						tnxt.lowGrowthCounter(0);
+//					}
+//			}
+//		}
+//	}
+//
+//}
+//
+//public class InitSeedling extends ChangeOtherStateFunction {
+//
+//	// NB focal = parent, other = newborn
+//	@Override
+//	public void changeOtherState(double t, double dt, SystemComponent parent, SystemComponent newBorn) {
+//		TreePar par = (TreePar) parent.parameters();
+//		TreeDrv drv = (TreeDrv) newBorn.nextState();
+//		drv.d(par.dini());
+//	}
+//
+//}
+//
+// include
+// import fr.cnrs.iees.uit.space.Box;
+// import fr.cnrs.iees.uit.space.Point;
+//
+//public class Plot_TreeRelocateFunction extends RelocateFunction {
+//
+//	@Override
+//	public double[] relocate(double t, double  dt, SystemComponent  focal, Location  ctLoc,
+//			SystemComponent  other, Location otherLoc, Box limits) {
+//		double[] newLoc = new double[2];
+//		TreeDrv pct = (TreeDrv) other.currentState();
+//		TreeDec pdec = (TreeDec) other.decorators();
+//		TreePar par = (TreePar) other.parameters();
+//		double x;
+//		double y;
+//		if (rng().nextDouble()<par.dispersal()) {
+//			double dm = pct.d()/100; // parent diam in meters
+//			do {
+//				double r = sqrt(rng().nextDouble()*pdec.cr()-dm) +dm; // under parent canopy but not in trunk
+//				double teta = rng().nextDouble()*2*PI;
+//				x = r*cos(teta) + otherLoc.asPoint().x();
+//				y = r*sin(teta) + otherLoc.asPoint().y();
+//			}
+//			while (!limits.contains(Point.newPoint(x,y))); // otherwise may fall outside space
+//		}
+//		else {
+//			x = rng().nextDouble()*limits.sideLength(0) + limits.lowerBound(0);
+//			y = rng().nextDouble()*limits.sideLength(1) + limits.lowerBound(1);
+//		}
+//		newLoc[0] = x;
+//		newLoc[1] = y;
+//		return newLoc;
+//	}
+//
+//}
+
+
+// import static code.system.PotentialGrowth.*;
+//public class Init extends SecondaryParametersInitialiser {
+//
+//	private double sqr(double a) {
+//		return a*a;
+//	}
+//
+//	@Override
+//	public void setSecondaryParameters(TwData groupParameters, TwData lifeCycleParameters, TwData ecosystemParameters) {
+//		TreePar par = (TreePar) groupParameters;
+//		double a = E/par.optAge();
+//		double b = 1/par.optAge();
+//		double maxCR = crownRadius(par.acr(),par.bcr(),par.Hmax());
+//		double C1 = (par.Smax()-par.Smin())/par.ageMin()/E;
+//		double C2 = par.Smax()*exp(1/3.0)/par.ageMax();
+//		double cgc = -(1/3)*log(1-par.grassComp())/(0.999-par.grassComp()-1);
+//	    // InitD and InitH are computed so that a seedling of size InitD and InitH is able to reach  2 m
+//	    //    in one growth step according to the existing growth function
+//		// CAUTION: this computation may be completely wrong !
+//		double step=0.001;
+//		double ht=0.0;
+//		double diss=0.0;
+//		double grw = 0;
+//		do {
+//			diss += step;
+//			ht =2*(par.Hmax()/par.Dmax())*diss-(par.Hmax()/sqr(par.Dmax()))*sqr(diss);
+//			grw = par.rgr()*sqr(diss)*(1-(diss*ht*100)/(par.Hmax()*par.Dmax()));
+//		} while ((diss<par.Dmax())&(grw*(1+par.pmax())-(200-ht*100)*sqr(diss) <= 0));
+//		par.hini(ht*100);
+//		par.dini(diss*100);
+//		par.a(a);
+//		par.b(b);
+//		par.CRMax(maxCR);
+//		par.C1(C1);
+//		par.C2(C2);
+//		par.cgc(cgc);
+//		par.bgc(exp(cgc));
+//	}
+//
+//}
+
+
+// TREE
+3worlds french
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String("")
+	
+	dataDefinition dtDef
+		record firePar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(firePar)
+			field h95sd
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field h95m
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field fireHet
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field freq
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record treeDrv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(treeDrv)
+			field d
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field lowGrowthCounter
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(y)
+			field stemAge
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(yr)
+		record fireDrv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(fireDrv)
+			field h95a
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field tslf
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(year)
+		record bidon
+			field sex
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		record treePar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(treePar)
+			field Hmax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(10.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field cgc
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field bgc
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field Dmax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field Smin
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field fireH95
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,10.0])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field pmax
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field CRMax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,10.0[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field pcfec
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field ageMax
+				range = au.edu.anu.rscs.aot.util.IntegerRange(1..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field ageRepro
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(y)
+			field minGrw
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field Smax
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field grassHt
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field ageMin
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field grassComp
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field rgr
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field C2
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field C1
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field a
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field bcr
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field hini
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+			field acr
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field optAge
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(y)
+			field dini
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field b
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field alpha
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field dispersal
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field pmax2
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record treeDec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(treeDec)
+			field nn2
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field h
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+			field nng
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field G
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field potG
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field cr
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(cm)
+	experiment exp
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system system
+		dynamics dyn
+			initialiser Init
+				userClassName = java.lang.String(code.system.Init)
+			stoppingCondition stCnd
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+			timeLine timeLine
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel step
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+					process proc1
+						function PotentialGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.PotentialGrowth)
+						dataTracker poptrack
+							sampleSize = java.lang.String(1)
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(FIRST)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+					process proc3
+						function ActualGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.ActualGrowth)
+					process proc2
+						function Neighbouring
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.system.Neighbouring)
+					process proc2b
+						function Competition
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String(code.system.Competition)
+					process proc5
+						function FuelIncrease
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.FuelIncrease)
+					process proc4
+						function Reproduction
+							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.system.Reproduction)
+							function InitSeedling
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+								userClassName = java.lang.String(code.system.InitSeedling)
+						dataTracker trkr
+							sampleSize = java.lang.String(1)
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+						function Survival
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.system.Survival)
+					process proc6
+						function TopKill
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String(code.system.TopKill)
+			initialState Lamto
+				group std-tree
+					component tree1
+						variableValues varVals
+							age = java.lang.Long(25)
+							birthDate = java.lang.Long(-25)
+							d = java.lang.Double(15.0)
+							lowGrowthCounter = java.lang.Integer(0)
+							stemAge = java.lang.Integer(20)
+					parameterValues parVals
+						Dmax = java.lang.Double(45.0)
+						Hmax = java.lang.Double(800.0)
+						Smax = java.lang.Double(0.99)
+						Smin = java.lang.Double(0.2)
+						acr = java.lang.Double(-1.305)
+						ageMax = java.lang.Integer(70)
+						ageMin = java.lang.Integer(8)
+						ageRepro = java.lang.Integer(5)
+						alpha = java.lang.Double(0.32)
+						bcr = java.lang.Double(1.998)
+						dispersal = java.lang.Double(0.8)
+						fireH95 = java.lang.Double(2.0)
+						grassComp = java.lang.Double(0.5)
+						grassHt = java.lang.Double(1.5)
+						minGrw = java.lang.Double(0.4)
+						optAge = java.lang.Double(15.0)
+						pcfec = java.lang.Double(50.0)
+						pmax = java.lang.Double(0.5)
+						pmax2 = java.lang.Double(0.05)
+						rgr = java.lang.Double(57.0)
+				component F1
+					parameterValues parVals1
+						fireHet = java.lang.Double(0.2)
+						freq = java.lang.Double(1000.0)
+						h95m = java.lang.Double(1.9)
+						h95sd = java.lang.Double(0.7)
+					variableValues varVals1
+						h95a = java.lang.Double(2.0)
+						tslf = java.lang.Integer(0)
+		structure struct
+			categorySet environment
+				category disturbance
+			componentType tree
+				decoratorClass = java.lang.String(code.system.TreeDec)
+				driverClass = java.lang.String(code.system.TreeDrv)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+				mobile = java.lang.Boolean(false)
+				parameterClass = java.lang.String(code.system.TreePar)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"","code.system.Plot_TreeRelocateFunction"))
+			arena arena
+				space plot
+					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
+					precision = java.lang.Double(0.1)
+					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+					units = java.lang.String(m)
+					x-limits = fr.ens.biologie.generic.utils.Interval([0.0,50.0])
+					y-limits = fr.ens.biologie.generic.utils.Interval([0.0,50.0])
+			categorySet plants
+				category trees
+			relationType burning
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+			relationType neighbour
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			componentType fire
+				driverClass = java.lang.String(code.system.FireDrv)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				parameterClass = java.lang.String(code.system.FirePar)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	userInterface gui
+		tab tab
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget spacewgt
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
+			container cont
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+				widget popwgt
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				widget indwgt
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+		top toolBar
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+
+// CROSS-LINKS
+[category:trees] drivers drvs [record:treeDrv]
+[category:trees] decorators decs [record:treeDec]
+[category:trees] parameters pars [record:treePar]
+[category:trees] lifetimeConstants [record:bidon]
+[widget:indwgt] trackSeries trksSrsOf1 [dataTracker:trkr]
+[initialiser:Init] appliesTo aplyTo7 [category:trees]
+[componentType:fire] belongsTo blngsTo1 [category:disturbance]
+[experiment:exp] baseLine baseline [system:system]
+[category:disturbance] parameters pars1 [record:firePar]
+[category:disturbance] drivers drvs1 [record:fireDrv]
+[relationType:neighbour] fromCategory from [category:trees]
+[relationType:neighbour] toCategory to [category:trees]
+[dataTracker:trkr] trackComponent trksCmpOf [component:tree1]
+[dataTracker:trkr] trackField trksFldOf4 [field:stemAge]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trkr] trackField trksFldOf [field:h]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trkr] trackField trksFldOf3 [field:lowGrowthCounter]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trkr] trackField trksFldOf2 [field:cr]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trkr] trackField trksFldOf1 [field:d]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:poptrack] trackPopulation trksPopOf [group:std-tree]
+	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
+[componentType:tree] belongsTo blngsTo [category:trees]
+[component:F1] instanceOf instOf1 [componentType:fire]
+[process:proc5] appliesTo aplyTo4 [category:disturbance]
+[process:proc4] dependsOn depsOn3 [process:proc3]
+[process:proc4] appliesTo aplyTo3 [category:trees]
+[process:proc3] appliesTo aplyTo2 [category:trees]
+[process:proc3] dependsOn depsOn [process:proc2b]
+[process:proc2] inSpace in [space:plot]
+	searchRadius = java.lang.Double(6.0)
+[process:proc2] appliesTo aplyTo6 [relationType:neighbour]
+[process:proc2] dependsOn depsOn1 [process:proc1]
+[process:proc1] appliesTo aplyTo [category:trees]
+[group:std-tree] groupOf grpOf [componentType:tree]
+[component:tree1] location loc [space:plot]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]25.0,25.0))
+[component:tree1] instanceOf instOf [componentType:tree]
+[widget:spacewgt] trackSpace trksSpc [space:plot]
+[widget:popwgt] trackSeries trksSrsOf [dataTracker:poptrack]
+[process:proc2b] appliesTo aplyTo5 [relationType:neighbour]
+[process:proc2b] dependsOn depsOn4 [process:proc2]
+[relationType:burning] fromCategory from2 [category:disturbance]
+[relationType:burning] toCategory to2 [category:trees]
+[widget:time] trackTime tracks1 [dynamics:dyn]
+[process:proc6] dependsOn depsOn2 [process:proc3]
+[process:proc6] appliesTo aplyTo1 [relationType:burning]
