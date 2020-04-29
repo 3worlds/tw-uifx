@@ -359,9 +359,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			}
 
 			mi.setOnAction((e) -> {
-				
+
 				LibraryTable lt = map.get(e.getSource());
-				
+
 				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
 
 				String uName = System.getProperty("user.name");
@@ -616,15 +616,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		} else
 			userProjectPath.set("");
 
-		Platform.runLater(() -> {
-			double[] ws = Preferences.getDoubles(mainFrameName, DefaultWindowSettings.getX(),
-					DefaultWindowSettings.getY(), DefaultWindowSettings.getWidth(), DefaultWindowSettings.getHeight());
-			stage.setX(ws[0]);
-			stage.setY(ws[1]);
-			stage.setWidth(ws[2]);
-			stage.setHeight(ws[3]);
-			stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
-		});
+		double[] ws = Preferences.getDoubles(mainFrameName, DefaultWindowSettings.getX(), DefaultWindowSettings.getY(),
+				DefaultWindowSettings.getWidth(), DefaultWindowSettings.getHeight());
+		stage.setX(ws[0]);
+		stage.setY(ws[1]);
+		stage.setWidth(ws[2]);
+		stage.setHeight(ws[3]);
+		stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
 
 		setFontSize(Preferences.getInt(fontSizeKey, 10));
 		setNodeRadius(Preferences.getInt(nodeSizeKey, 8));
@@ -632,24 +630,22 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
-		Platform.runLater(() -> {
-			LayoutType lt = (LayoutType) Preferences.getEnum(LayoutChoice, LayoutType.OrderedTree);
-			cbxLayoutChoice.setValue(lt);
-			// TODO do this by enum now!
-			boolean m = Preferences.getBoolean(nodePropertySheet.idProperty().get() + Mode, true);
-			PropertySheet.Mode md = PropertySheet.Mode.CATEGORY;
-			if (m)
-				md = PropertySheet.Mode.NAME;
-			nodePropertySheet.setMode(md);
+		LayoutType lt = (LayoutType) Preferences.getEnum(LayoutChoice, LayoutType.OrderedTree);
+		cbxLayoutChoice.setValue(lt);
+		// TODO do this by enum now!
+		boolean m = Preferences.getBoolean(nodePropertySheet.idProperty().get() + Mode, true);
+		PropertySheet.Mode md = PropertySheet.Mode.CATEGORY;
+		if (m)
+			md = PropertySheet.Mode.NAME;
+		nodePropertySheet.setMode(md);
 
-			m = Preferences.getBoolean(allElementsPropertySheet.idProperty().get() + Mode, false);
-			md = PropertySheet.Mode.CATEGORY;
-			if (m)
-				md = PropertySheet.Mode.NAME;
-			allElementsPropertySheet.setMode(md);
-			int idx = Preferences.getInt(AccordionSelection, -1);
-			UiHelpers.setExpandedPane(allElementsPropertySheet, idx);
-		});
+		m = Preferences.getBoolean(allElementsPropertySheet.idProperty().get() + Mode, false);
+		md = PropertySheet.Mode.CATEGORY;
+		if (m)
+			md = PropertySheet.Mode.NAME;
+		allElementsPropertySheet.setMode(md);
+		int idx = Preferences.getInt(AccordionSelection, -1);
+		UiHelpers.setExpandedPane(allElementsPropertySheet, idx);
 
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));

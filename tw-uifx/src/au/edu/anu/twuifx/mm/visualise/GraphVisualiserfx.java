@@ -179,7 +179,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
+		pane.getChildren().clear();
 
 	}
 
@@ -656,6 +656,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 		}
 
+//		System.out.println("Running "+layout.getClass().getSimpleName());
 		layout.compute();
 
 		Random rnd = new Random();
