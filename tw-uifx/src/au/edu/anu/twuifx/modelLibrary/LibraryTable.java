@@ -43,6 +43,7 @@ public enum LibraryTable {
 	Template1(/*         */"Template 1", /*                */"default.utg", /*    */LibraryType.Template), //
 	Tut1(/*              */"Tut 1", /*                     */"tut1.utg", /*       */LibraryType.Tutorial), //
 	Model1(/*            */"French", /*                    */"french.utg", /*     */LibraryType.Model), //
+	Model2(/*            */"Genetics", /*                  */"gddm.utg", /*       */LibraryType.Model), //
 	;
 
 	private final String displayName;
