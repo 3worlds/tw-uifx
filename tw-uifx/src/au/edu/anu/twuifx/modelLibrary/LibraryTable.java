@@ -29,43 +29,59 @@
 
 package au.edu.anu.twuifx.modelLibrary;
 
-/**
- * @author Ian Davies
- *
- * @date 18 Nov 2019
- */
+import au.edu.anu.twuifx.modelLibrary.templates.TemplatesDummy;
+import au.edu.anu.twuifx.modelLibrary.tutorials.TutorialsDummy;
+import fr.cnrs.iees.graph.impl.ALEdge;
+import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.graph.io.GraphImporter;
+import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
+
 /**
  * Lookup struc for entries in ModelMaker "New" menu. Display order is the
- * declaration order in this enum. 
+ * declaration order in this enum.
  */
 public enum LibraryTable {
-	Empty(/*             */"Blank", /*                     */"vide.utg", /*       */LibraryType.Template), //
-	Template1(/*         */"Template 1", /*                */"default.utg", /*    */LibraryType.Template), //
-	Tut1(/*              */"Tut 1", /*                     */"tut1.utg", /*       */LibraryType.Tutorial), //
-	Model1(/*            */"French", /*                    */"french.utg", /*     */LibraryType.Model), //
-	Model2(/*            */"Genetics", /*                  */"gddm.utg", /*       */LibraryType.Model), //
+	Empty(/*             */"Blank", /*                     */"vide.utg", /*       */LibraryType.Template,
+			TemplatesDummy.class), //
+	Template1(/*         */"Template 1", /*                */"default.utg", /*    */LibraryType.Template,
+			TemplatesDummy.class), //
+	Tut1(/*              */"Tut 1", /*                     */"tut1.utg", /*       */LibraryType.Tutorial,
+			TutorialsDummy.class), //
+	Model1(/*            */"French", /*                    */"french.utg", /*     */LibraryType.Model,
+			ModelsDummy.class), //
+	Model2(/*            */"Genetics", /*                  */"gddm.utg", /*       */LibraryType.Model,
+			ModelsDummy.class), //
 	;
 
 	private final String displayName;
 	private final String fileName;
 	private final LibraryType libraryType;
+	private final Class<?> pkclass;
 
-	private LibraryTable(String displayName, String fileName, LibraryType lt) {
+	private LibraryTable(String displayName, String fileName, LibraryType lt, Class<?> pkclass) {
 		this.displayName = displayName;
 		this.fileName = fileName;
 		this.libraryType = lt;
+		this.pkclass = pkclass;
 	}
 
 	public String displayName() {
 		return displayName;
 	}
 
-	public String fileName() {
-		return fileName;
-	}
+//	public String fileName() {
+//		return fileName;
+//	}
 
 	public LibraryType libraryType() {
 		return libraryType;
+	}
+
+	@SuppressWarnings("unchecked")
+	public TreeGraph<TreeGraphDataNode, ALEdge> getGraph() {
+		return (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter.importGraph(fileName, pkclass);
+
 	}
 
 }

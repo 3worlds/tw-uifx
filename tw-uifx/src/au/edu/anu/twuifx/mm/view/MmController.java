@@ -112,6 +112,7 @@ import au.edu.anu.twuifx.mm.propertyEditors.populationType.PopTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
 import au.edu.anu.twuifx.modelLibrary.LibraryTable;
+import au.edu.anu.twuifx.modelLibrary.templates.TemplatesDummy;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import au.edu.anu.ymuit.util.CenteredZooming;
@@ -332,7 +333,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-	@SuppressWarnings("unchecked")
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
 		menuNew.getItems().clear();
@@ -359,16 +359,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			}
 
 			mi.setOnAction((e) -> {
+				
 				LibraryTable lt = map.get(e.getSource());
-				TreeGraph<TreeGraphDataNode, ALEdge> templateGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
-						.importGraph(lt.fileName(), LibraryTable.class);
+				
+				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
 
 				String uName = System.getProperty("user.name");
-				TreeGraphDataNode rn = templateGraph.root();
+				TreeGraphDataNode rn = libGraph.root();
 				StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
 				authors.setByInt(uName, 0);
 
-				model.doNewProject(templateGraph);
+				model.doNewProject(libGraph);
 			});
 		}
 
