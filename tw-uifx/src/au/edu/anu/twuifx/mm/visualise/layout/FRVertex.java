@@ -9,16 +9,17 @@ import fr.cnrs.iees.uit.space.Distance;
  * @date 13 Apr 2020
  */
 
-public class FRVertex {
-	private VisualNode node;
+public class FRVertex extends VertexAdapter{
+	//private VisualNode node;
 	private double dispX; // total displacement of x and y
 	private double dispY;
-	private String id;
+	//private String id;
 	private boolean hasEdges;
 
 	public FRVertex(VisualNode node) {
-		this.node = node;
-		this.id = node.getDisplayText(false);
+		super (node);
+//		this.node = node;
+//		this.id = node.getDisplayText(false);
 		this.hasEdges = false;
 	}
 
@@ -69,13 +70,10 @@ public class FRVertex {
 		double dy = distance * Math.sin(direction);
 		double nx = dx + getX();
 		double ny = dy + getY();
-		setPosition(nx, ny);
+		setLocation(nx, ny);
 		return Distance.euclidianDistance(0, 0, dx, dy);
 	}
 
-	protected String id() {
-		return id;
-	}
 
 	protected double getXDisp() {
 		return dispX;
@@ -85,32 +83,12 @@ public class FRVertex {
 		return dispY;
 	}
 
-	protected VisualNode getNode() {
-		return node;
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		FRVertex lother = (FRVertex) other;
-		return id.equals(lother.id);
-	}
 
 	public void clearDisplacement() {
 		dispX = 0;
 		dispY = 0;
 	}
 
-	private double getX() {
-		return node.getX();
-	}
-
-	private double getY() {
-		return node.getY();
-	}
-
-	public void setPosition(double x, double y) {
-		node.setPosition(x, y);
-	}
 
 	private double dx(FRVertex other) {
 		return other.getX() - getX();
@@ -120,10 +98,6 @@ public class FRVertex {
 		return other.getY() - getY();
 	}
 
-	@Override
-	public String toString() {
-		return "[" + getX() + "," + getY() + "]" + id();
-	}
 
 	public void hasEdge() {
 		hasEdges = true;

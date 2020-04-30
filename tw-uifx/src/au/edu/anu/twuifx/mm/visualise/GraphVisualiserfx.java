@@ -585,14 +585,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		resetZorder();
 	}
 
-	private static double jitter(double value, double jitterFraction, Random rnd) {
-		double delta = rnd.nextDouble() * jitterFraction;
-		if (rnd.nextBoolean())
-			return value + delta;
-		else
-			return value - delta;
-	}
-
 	@Override
 	public void onRemoveParentLink(VisualNode vnChild) {
 		List<Node> sceneNodes = new ArrayList<>();
@@ -646,55 +638,28 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			layout = new FRLayout(visualGraph, usePCEdges, useXEdges);
 			break;
 		}
-		case LombardiGraph:{
-			//TODO: Lombardi layout
+		case LombardiGraph: {
+			// TODO: Lombardi layout
 			layout = new FRLayout(visualGraph, usePCEdges, useXEdges);
-			break;		
+			break;
 		}
 		default: {
 			throw new TwuifxException("Unknown layout type '" + layoutType + "',");
 		}
 		}
 
-//		System.out.println("Running "+layout.getClass().getSimpleName());
-		layout.compute();
-
-		Random rnd = new Random();
-		double w = pane.getWidth();
-		double h = pane.getHeight();
-		double nrx = nodeRadius.get() / h;
-		double nry = nodeRadius.get() / h;
-
-		Point2D min = new Point2D.Double(0.0, 0.0);
-		Point2D max = new Point2D.Double(1.0, 1.0);
+		layout.compute(jitterFraction);
+		// always scaled within unit space
+		
+		// rescale to provide border for a little node radius
 		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
-				node.setX(jitter(node.getX(), jitterFraction, rnd));
-				node.setY(jitter(node.getY(), jitterFraction, rnd));
-				Text text = (Text) node.getText();
-				double th = Math.max(nrx, text.getLayoutBounds().getHeight() / h);
-				double tw = text.getLayoutBounds().getWidth() / w + nrx;
-				double top = node.getY() - th;
-				double bottom = node.getY() + nry;
-				double left = node.getX() - nrx;
-				double right = node.getX() + nrx + tw;
-				min.setLocation(Math.min(left, min.getX()), Math.min(top, min.getY()));
-				max.setLocation(Math.max(right, max.getX()), Math.max(bottom, max.getY()));
-			}
-
-		for (VisualNode node : visualGraph.nodes())
-			if (!node.isCollapsed()) {
-				double x = node.getX();
-				// I don't know why the labels don't line up on the rh side?
-				double x1 = ILayout.rescale(x, min.getX(), max.getX(), 0.00, 1.0 - 0.05);
-				double y = node.getY();
-				double y1 = ILayout.rescale(y, min.getY(), max.getY(), 0.00, 1.0);
-				node.setX(x1);
-				node.setY(y1);
+				double x = ILayout.rescale(node.getX(), 0, 1, 0.05,0.95);
+				double y = ILayout.rescale(node.getY(), 0, 1, 0.05,0.95);
+				node.setPosition(x, y);
 				Circle c = (Circle) node.getSymbol();
 				animateTo(c, node.getX() * pane.getWidth(), node.getY() * pane.getHeight());
 			}
-
 		GraphState.setChanged();
 	}
 

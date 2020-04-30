@@ -1,8 +1,13 @@
 package au.edu.anu.twuifx.mm.visualise.layout;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
+
+import au.edu.anu.omhtk.rng.Pcg32;
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -32,22 +37,24 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 public class FRLayout implements ILayout {
 
-	private List<FRVertex> lNodes;
-	private List<Duple<FRVertex, FRVertex>> lEdges;
+	private List<FRVertex> vertices;
+	private List<Duple<FRVertex, FRVertex>> edges;
+	private List<FRVertex> isolated;
 	private int interations = 100;
 	private double initTemp = 0.1;
 
 	/** It would be nice to move nodes without edges out of the way? */
 	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
-		lNodes = new ArrayList<>();
-		lEdges = new ArrayList<>();
+		vertices = new ArrayList<>();
+		edges = new ArrayList<>();
+		isolated = new ArrayList<>();
 		// collect all visible nodes
 		for (VisualNode v : graph.nodes()) {
 			if (!v.isCollapsed()) {
-				lNodes.add(new FRVertex(v));
+				vertices.add(new FRVertex(v));
 			}
 		}
-		lNodes.sort(new Comparator<FRVertex>() {
+		vertices.sort(new Comparator<FRVertex>() {
 
 			@Override
 			public int compare(FRVertex o1, FRVertex o2) {
@@ -57,16 +64,16 @@ public class FRLayout implements ILayout {
 		});
 
 		// set edges
-		for (FRVertex ln : lNodes) {
+		for (FRVertex v : vertices) {
 			// add parent/children edges
-			VisualNode vn = ln.getNode();
+			VisualNode vn = v.getNode();
 			if (usePCEdges)
 				for (VisualNode cn : vn.getChildren())
 					if (!cn.isCollapsed()) {
-						FRVertex cln = vn2ln(cn);
-						lEdges.add(new Duple<FRVertex, FRVertex>(ln, cln));
-						ln.hasEdge();
-						cln.hasEdge();
+						FRVertex u = Node2Vertex(cn);
+						edges.add(new Duple<FRVertex, FRVertex>(v, u));
+						v.hasEdge();
+						u.hasEdge();
 					}
 
 			// add xlink edges
@@ -75,60 +82,49 @@ public class FRLayout implements ILayout {
 				List<VisualNode> toNodes = (List<VisualNode>) get(vn.edges(Direction.OUT), edgeListEndNodes());
 				for (VisualNode toNode : toNodes)
 					if (!toNode.isCollapsed()) {
-						FRVertex toln = vn2ln(toNode);
-						lEdges.add(new Duple<FRVertex, FRVertex>(ln, toln));
-						ln.hasEdge();
-						toln.hasEdge();
+						FRVertex u = Node2Vertex(toNode);
+						edges.add(new Duple<FRVertex, FRVertex>(v, u));
+						v.hasEdge();
+						u.hasEdge();
 					}
 			}
 		}
-		List<FRVertex> isolatedVertices = new ArrayList<>();
-		for (FRVertex v:lNodes) {
+		for (FRVertex v : vertices)
 			if (!v.hasEdges())
-				isolatedVertices.add(v);
-		}
-		for (FRVertex v:isolatedVertices) {
-			lNodes.remove(v);
-		}
-		double inc = 360.0/isolatedVertices.size();
-		double angle = 0;
-		double d = Math.PI;
-		for (FRVertex v:isolatedVertices) {
-			double x = d*Math.cos(Math.toRadians(angle));
-			double y = d*Math.sin(Math.toRadians(angle));
-			v.setPosition(x, y);
-			angle+=inc;		
-		}
-		
+				isolated.add(v);
+
+		for (FRVertex v : isolated)
+			vertices.remove(v);
+
 	}
 
-	private FRVertex vn2ln(VisualNode cn) {
-		for (FRVertex ln : lNodes)
-			if (ln.getNode().id().equals(cn.id()))
-				return ln;
+	private FRVertex Node2Vertex(VisualNode vn) {
+		for (FRVertex v : vertices)
+			if (v.getNode().id().equals(vn.id()))
+				return v;
 		return null;
 	}
 
 	@Override
-	public ILayout compute() {
+	public ILayout compute(double jitter) {
 		// ideal spring length
-		final double k = Math.sqrt(1.0 / lNodes.size());
+		final double k = Math.sqrt(1.0 / vertices.size());
 		double t = initTemp; // temperature;
 		for (int i = 0; i < interations; i++) {
 
-			for (FRVertex v : lNodes) {
+			for (FRVertex v : vertices) {
 				v.clearDisplacement();
-				for (FRVertex u : lNodes)
+				for (FRVertex u : vertices)
 					if (!v.equals(u))
 						v.setRepulsionDisplacement(u, k);
 			}
 
-			for (Duple<FRVertex, FRVertex> e : lEdges) {
+			for (Duple<FRVertex, FRVertex> e : edges) {
 				e.getFirst().setAttractionDisplacement(e.getSecond(), k);
 				e.getSecond().setAttractionDisplacement(e.getFirst(), k);
 			}
 
-			for (FRVertex v : lNodes)
+			for (FRVertex v : vertices)
 				v.displace(t);
 
 			/**
@@ -143,7 +139,25 @@ public class FRLayout implements ILayout {
 
 		}
 
-		return null;
+		if (jitter > 0.0) {
+			Random rnd = new Pcg32();
+			for (IVertex v : vertices)
+				v.jitter(jitter, rnd);
+		}
+
+		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		for (IVertex v : vertices)
+			v.getLayoutBounds(min, max);
+
+		for (IVertex v : vertices)
+			v.normalise(ILayout.getBoundingFrame(min, max), ILayout.getFittingFrame());
+		
+		for(int i = 0; i <isolated.size();i++) {
+			IVertex v = isolated.get(i);
+			v.setLocation(1, (double)i/(double)isolated.size());
+		}
+		return this;
 	}
 
 	// linear cooling

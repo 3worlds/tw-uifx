@@ -12,9 +12,8 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
  *
  * @date 24 Apr 2020
  */
-public class OTVertex {
-	private VisualNode _vNode;
-	private OTVertex _parent;
+public class OTVertex extends TreeVertexAdapter {
+
 	private double _prelim;
 	private int _number;
 	// To traverse inside and outside contours of the three.
@@ -23,15 +22,13 @@ public class OTVertex {
 	private double _mod;
 	private double _shift;
 	private double _change;
-	private List<OTVertex> _children;
+	// private List<OTVertex> _children;
 	protected static int maxLevels = 0;
 	protected static double[] levels = new double[10];
 	private static final double distance = 1.0;
 
 	public OTVertex(OTVertex parent, VisualNode vNode) {
-		this._parent = parent;
-		this._vNode = vNode;
-		this._children = new ArrayList<>();
+		super(parent, vNode);
 	}
 
 	/**
@@ -88,31 +85,31 @@ public class OTVertex {
 	}
 
 	private OTVertex getFirstChild() {
-		return _children.get(0);
+		return (OTVertex) getChildren().get(0);
 	}
 
 	private OTVertex getLastChild() {
-		return _children.get(_children.size() - 1);
+		return (OTVertex) getChildren().get(getChildren().size() - 1);
 	}
 
 	private OTVertex prevSibling() {
-		OTVertex parent = getParent();
+		OTVertex parent = (OTVertex) getParent();
 		if (parent != null) {
 			int idx = parent.getChildren().indexOf(this);
 			idx--;
 			if (idx >= 0)
-				return parent.getChildren().get(idx);
+				return (OTVertex) parent.getChildren().get(idx);
 		}
 		return null;
 	}
 
 	private OTVertex nextSibling() {
-		OTVertex parent = getParent();
+		OTVertex parent = (OTVertex) getParent();
 		if (parent != null) {
 			int idx = parent.getChildren().indexOf(this);
 			idx++;
 			if (idx < parent.getChildren().size())
-				return parent.getChildren().get(idx);
+				return (OTVertex) parent.getChildren().get(idx);
 		}
 		return null;
 	}
@@ -137,7 +134,7 @@ public class OTVertex {
 			double sip, sim, sop, som;
 			vip = vop = this;
 			vim = w;
-			vom = vip.getParent().getChildren().get(0);
+			vom = (OTVertex) vip.getParent().getChildren().get(0);
 
 			sip = vip.getMod();
 			sop = vop.getMod();
@@ -195,15 +192,15 @@ public class OTVertex {
 	 * null if and only if this vertex is on the highest evel of its subtree.
 	 */
 	private OTVertex nextLeft() {
-		if (!_children.isEmpty())
-			return _children.get(0);
+		if (!getChildren().isEmpty())
+			return (OTVertex) getChildren().get(0);
 		return getThread();
 	}
 
 	/** Works analogously to nextLeft() */
 	private OTVertex nextRight() {
-		if (!_children.isEmpty())
-			return _children.get(_children.size() - 1);
+		if (!getChildren().isEmpty())
+			return (OTVertex) getChildren().get(getChildren().size() - 1);
 		else
 			return getThread();
 	}
@@ -214,11 +211,11 @@ public class OTVertex {
 	 */
 	private OTVertex ancestor(OTVertex insideLeftSubtree, OTVertex defaultAncestor) {
 		// inside left subtree
-		OTVertex parent = getParent();
+		OTVertex parent = (OTVertex) getParent();
 		OTVertex ancst = insideLeftSubtree.getAncestor();
 		if (ancst != null)
 			if (ancst.getParent() != null) {
-				OTVertex ancstParent = ancst.getParent();
+				OTVertex ancstParent = (OTVertex) ancst.getParent();
 				if (ancstParent.equals(parent))
 					return ancst;
 			}
@@ -279,8 +276,7 @@ public class OTVertex {
 	public void secondWalk(OTVertex p, double m, int depth) {
 		double y = getPrelim() + m;
 		double x = OTVertex.levels[depth];
-		getvNode().setX(x);
-		getvNode().setY(y);
+		setLocation(x,y);
 		depth += 1;
 		if (!isLeaf()) {
 			for (OTVertex child = getFirstChild(); child != null; child = child.nextSibling()) {
@@ -289,21 +285,21 @@ public class OTVertex {
 		}
 	}
 
-	public VisualNode getvNode() {
-		return _vNode;
-	}
+//	public VisualNode getvNode() {
+//		return _vNode;
+//	}
 
-	public void setvNode(VisualNode vNode) {
-		this._vNode = vNode;
-	}
+//	public void setvNode(VisualNode vNode) {
+//		this._vNode = vNode;
+//	}
 
-	public OTVertex getParent() {
-		return _parent;
-	}
+//	public OTVertex getParent() {
+//		return _parent;
+//	}
 
-	public void setParent(OTVertex parent) {
-		this._parent = parent;
-	}
+//	public void setParent(OTVertex parent) {
+//		this._parent = parent;
+//	}
 
 	public double getPrelim() {
 		return _prelim;
@@ -361,42 +357,42 @@ public class OTVertex {
 		this._change = change;
 	}
 
-	public List<OTVertex> getChildren() {
-		return _children;
-	}
+//	public List<OTVertex> getChildren() {
+//		return _children;
+//	}
+//
+//	public boolean hasParent() {
+//		return _parent != null;
+//	}
+//
+//	private boolean isLeaf() {
+//		return _children.isEmpty();
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return getvNode().getDisplayText(false);
+//	}
 
-	public boolean hasParent() {
-		return _parent != null;
-	}
+//	public void getLayoutBounds(Point2D min, Point2D max) {
+//		double x = getvNode().getX();
+//		double y = getvNode().getY();
+//
+//		min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
+//		max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
+//		for (OTVertex child : getChildren())
+//			child.getLayoutBounds(min, max);
+//	}
 
-	private boolean isLeaf() {
-		return _children.isEmpty();
-	}
-
-	@Override
-	public String toString() {
-		return getvNode().getDisplayText(false);
-	}
-
-	public void getLayoutBounds(Point2D min, Point2D max) {
-		double x = getvNode().getX();
-		double y = getvNode().getY();
-
-		min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
-		max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
-		for (OTVertex child : getChildren())
-			child.getLayoutBounds(min, max);
-	}
-
-	public void normalise(Point2D fromMin, Point2D fromMax, Point2D toMin, Point2D toMax) {
-		double x = getvNode().getX();
-		double y = getvNode().getY();
-		x = ILayout.rescale(x, fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
-		y = ILayout.rescale(y, fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
-		getvNode().setX(x);
-		getvNode().setY(y);
-		for (OTVertex child : _children) {
-			child.normalise(fromMin, fromMax, toMin, toMax);
-		}
-	}
+//	public void normalise(Point2D fromMin, Point2D fromMax, Point2D toMin, Point2D toMax) {
+//		double x = getvNode().getX();
+//		double y = getvNode().getY();
+//		x = ILayout.rescale(x, fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
+//		y = ILayout.rescale(y, fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
+//		getvNode().setX(x);
+//		getvNode().setY(y);
+//		for (OTVertex child : _children) {
+//			child.normalise(fromMin, fromMax, toMin, toMax);
+//		}
+//	}
 }

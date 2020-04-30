@@ -364,10 +364,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
 
-				String uName = System.getProperty("user.name");
-				TreeGraphDataNode rn = libGraph.root();
-				StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
-				authors.setByInt(uName, 0);
+// Root needs a "Created by" field
+//				String uName = System.getProperty("user.name");
+//				TreeGraphDataNode rn = libGraph.root();
+//				StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
+//				authors.setByInt(uName, 0);
 
 				model.doNewProject(libGraph);
 			});
@@ -466,9 +467,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		textAreaErrorMsgs.clear();
 		lstErrorMsgs.clear();
 		isValid = false;
-
-		// setButtonState();
-		// ConfigGraph.validateGraph();
 	}
 
 	@FXML
@@ -536,7 +534,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void handleSave(ActionEvent event) {
 		model.doSave();
-		// setButtonState();
 	}
 
 	@FXML
@@ -545,7 +542,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		for (VisualNode root : visualGraph.roots())
 			if (root.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))
 				visualiser.onNodeRenamed(root);
-		// setButtonState();
 	}
 
 	public void setStage(Stage stage) {
@@ -555,7 +551,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void handleImport(ActionEvent event) {
 		model.doImport();
-		// setButtonState();
 	}
 
 	private static final String mainFrameName = "mainFrame";
@@ -576,10 +571,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		if (Project.isOpen()) {
 
 			Preferences.putString(UserProjectPath, userProjectPath.get());
-			Preferences.putBoolean(allElementsPropertySheet.idProperty().get() + Mode,
-					(allElementsPropertySheet.getMode() == PropertySheet.Mode.NAME));
-			Preferences.putBoolean(nodePropertySheet.idProperty().get() + Mode,
-					(nodePropertySheet.getMode() == PropertySheet.Mode.NAME));
+			Preferences.putEnum(allElementsPropertySheet.idProperty().get() + Mode, allElementsPropertySheet.getMode());
+			Preferences.putEnum(nodePropertySheet.idProperty().get() + Mode, nodePropertySheet.getMode());
 			Preferences.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
 			Preferences.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
 			Preferences.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
@@ -603,11 +596,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	public void getPreferences() {
-		// TODO: Needs cleaning up but proceed cautiously and test changes
-		// incrementally.
 		Preferences.initialise(Project.makeProjectPreferencesFile());
+		// get path string for user project
 		String prjtmp = Preferences.getString(UserProjectPath, "");
 		if (!prjtmp.equals("")) {
+			// check java project still exists.
 			UserProjectLink.unlinkUserProject();
 			if (UserProjectLinkFactory.makeEnv(new File(prjtmp), ideType)) {
 				userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
@@ -632,18 +625,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		LayoutType lt = (LayoutType) Preferences.getEnum(LayoutChoice, LayoutType.OrderedTree);
 		cbxLayoutChoice.setValue(lt);
-		// TODO do this by enum now!
-		boolean m = Preferences.getBoolean(nodePropertySheet.idProperty().get() + Mode, true);
-		PropertySheet.Mode md = PropertySheet.Mode.CATEGORY;
-		if (m)
-			md = PropertySheet.Mode.NAME;
-		nodePropertySheet.setMode(md);
-
-		m = Preferences.getBoolean(allElementsPropertySheet.idProperty().get() + Mode, false);
-		md = PropertySheet.Mode.CATEGORY;
-		if (m)
-			md = PropertySheet.Mode.NAME;
-		allElementsPropertySheet.setMode(md);
+		PropertySheet.Mode mode = (PropertySheet.Mode) Preferences
+				.getEnum(allElementsPropertySheet.idProperty().get() + Mode, PropertySheet.Mode.CATEGORY);
+		allElementsPropertySheet.setMode(mode);
+		mode = (PropertySheet.Mode) Preferences.getEnum(nodePropertySheet.idProperty().get() + Mode,
+				PropertySheet.Mode.NAME);
+		nodePropertySheet.setMode(mode);
 		int idx = Preferences.getInt(AccordionSelection, -1);
 		UiHelpers.setExpandedPane(allElementsPropertySheet, idx);
 

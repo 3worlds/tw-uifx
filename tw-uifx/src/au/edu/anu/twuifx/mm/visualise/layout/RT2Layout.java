@@ -1,9 +1,12 @@
 package au.edu.anu.twuifx.mm.visualise.layout;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
+import au.edu.anu.omhtk.rng.Pcg32;
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 
@@ -21,13 +24,13 @@ public class RT2Layout implements ILayout {
 		List<VisualNode> sortList = new ArrayList<>();
 		String parentId = "";
 		if (v.hasParent())
-			parentId = v.getParent().getvNode().id();
-		for (VisualNode vChild : v.getvNode().getChildren()) {
+			parentId = v.getParent().getNode().id();
+		for (VisualNode vChild : v.getNode().getChildren()) {
 			String childId = vChild.id();
 			if (!vChild.isCollapsed() && !childId.equals(parentId))
 				sortList.add(vChild);
 		}
-		VisualNode parentNode = v.getvNode().getParent();
+		VisualNode parentNode = v.getNode().getParent();
 		if (parentNode != null)
 			if (!parentNode.isCollapsed() && !parentNode.id().equals(parentId))
 				sortList.add(parentNode);
@@ -46,7 +49,7 @@ public class RT2Layout implements ILayout {
 	}
 
 	@Override
-	public ILayout compute() {
+	public ILayout compute(double jitter) {
 		List<RT2Vertex> leaves = new ArrayList<>();
 		root.collectLeaves(leaves);
 		double angle = 0;
@@ -56,6 +59,17 @@ public class RT2Layout implements ILayout {
 			angle+=inc;
 		}
 		root.setPosition();
+		
+		if (jitter > 0) {
+			Random rnd = new Pcg32();
+			root.jitter(jitter, rnd);
+		}
+		
+		Point2D min = new Point2D.Double(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		root.getLayoutBounds(min, max);
+		root.normalise(ILayout.getBoundingFrame(min, max), ILayout.getFittingFrame());
+
 		return this;
 	}
 
