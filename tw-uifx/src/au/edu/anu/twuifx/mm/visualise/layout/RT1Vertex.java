@@ -1,3 +1,32 @@
+/**************************************************************************
+ *  TW-APPS - Applications used by 3Worlds                                *
+ *                                                                        *
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
+ *       jacques.gignoux@upmc.fr                                          *
+ *       ian.davies@anu.edu.au                                            * 
+ *                                                                        *
+ *  TW-APPS contains ModelMaker and ModelRunner, programs used to         *
+ *  construct and run 3Worlds configuration graphs. All code herein is    *
+ *  independent of UI implementation.                                     *
+ *                                                                        *
+ **************************************************************************                                       
+ *  This file is part of TW-APPS (3Worlds applications).                  *
+ *                                                                        *
+ *  TW-APPS is free software: you can redistribute it and/or modify       *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation, either version 3 of the License, or     *
+ *  (at your option) any later version.                                   *
+ *                                                                        *
+ *  TW-APPS is distributed in the hope that it will be useful,            *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *  GNU General Public License for more details.                          *                         
+ *                                                                        *
+ *  You should have received a copy of the GNU General Public License     *
+ *  along with TW-APPS.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>                   *
+  **************************************************************************/
+
 package au.edu.anu.twuifx.mm.visualise.layout;
 
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -11,13 +40,10 @@ import fr.ens.biologie.generic.utils.Duple;
  */
 public class RT1Vertex extends TreeVertexAdapter {
 	private double radius;// distance to all children
-	private int index;// ith child
 
-	public RT1Vertex(RT1Vertex parent, VisualNode node, int index) {
+	public RT1Vertex(TreeVertexAdapter parent, VisualNode node) {
 		super(parent, node);
-		this.index = index;
 	}
-
 
 	protected double getRadius() {
 		return radius;
@@ -25,7 +51,6 @@ public class RT1Vertex extends TreeVertexAdapter {
 
 	protected void setRadius(double value) {
 		this.radius = value;
-		System.out.println(toString()+"\t"+(radius));
 		// determine next radius
 		double nextRadius = 0;
 		int n = getChildren().size();
@@ -64,7 +89,7 @@ public class RT1Vertex extends TreeVertexAdapter {
 		if (!hasParent())
 			return 0.0;
 		double m = getParent().getChildren().size();
-		double i = index;
+		double i = getIndex();
 		if (!getParent().hasParent())
 			return (2.0 * Math.PI * i) / m;
 		else {
@@ -73,17 +98,40 @@ public class RT1Vertex extends TreeVertexAdapter {
 		}
 	}
 
-
 	protected int getIndex() {
-		return index;
+		if (hasParent())
+			return getParent().getChildren().indexOf(this);
+		return 0;
 	}
 
-
-	public static Duple<Double, Double> polarToCartesian(double radiant, double magnitude) {
+	private static Duple<Double, Double> polarToCartesian(double radiant, double magnitude) {
 		double x = magnitude * Math.cos(radiant);
 		double y = magnitude * Math.sin(radiant);
 		return new Duple<Double, Double>(x, y);
 	}
 
+	/** Recursively translate relative polar coords to absolute Cartesian */
+	public void locate(int depth, double angleSum) {
+		if (!hasParent()) {
+			setLocation(0, 0);
+			for (TreeVertexAdapter c : getChildren()) {
+				RT1Vertex child = (RT1Vertex) c;
+				child.locate(depth + 1, child.getAngle());
+			}
+		} else {
+			double distance = ((RT1Vertex) getParent()).getRadius();
+			Duple<Double, Double> p = RT1Vertex.polarToCartesian(angleSum, distance);
+			double px = getParent().getX();
+			double py = getParent().getY();		
+			double cx = p.getFirst();
+			double cy = p.getSecond();
+			setLocation(px + cx, py + cy);
+			for (TreeVertexAdapter c : getChildren()) {
+				RT1Vertex child = (RT1Vertex) c;
+				child.locate(depth + 1, angleSum + child.getAngle());
+			}
+
+		}
+	}
 
 }

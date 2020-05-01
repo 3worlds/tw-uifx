@@ -1,3 +1,32 @@
+/**************************************************************************
+ *  TW-APPS - Applications used by 3Worlds                                *
+ *                                                                        *
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
+ *       jacques.gignoux@upmc.fr                                          *
+ *       ian.davies@anu.edu.au                                            * 
+ *                                                                        *
+ *  TW-APPS contains ModelMaker and ModelRunner, programs used to         *
+ *  construct and run 3Worlds configuration graphs. All code herein is    *
+ *  independent of UI implementation.                                     *
+ *                                                                        *
+ **************************************************************************                                       
+ *  This file is part of TW-APPS (3Worlds applications).                  *
+ *                                                                        *
+ *  TW-APPS is free software: you can redistribute it and/or modify       *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation, either version 3 of the License, or     *
+ *  (at your option) any later version.                                   *
+ *                                                                        *
+ *  TW-APPS is distributed in the hope that it will be useful,            *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *  GNU General Public License for more details.                          *                         
+ *                                                                        *
+ *  You should have received a copy of the GNU General Public License     *
+ *  along with TW-APPS.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>                   *
+  **************************************************************************/
+
 package au.edu.anu.twuifx.mm.visualise.layout;
 
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -9,18 +38,15 @@ import fr.cnrs.iees.uit.space.Distance;
  * @date 13 Apr 2020
  */
 
-public class FRVertex extends VertexAdapter{
-	//private VisualNode node;
-	private double dispX; // total displacement of x and y
+public class FRVertex extends VertexAdapter {
+	/* total displacement of x and y */
+	private double dispX;
 	private double dispY;
-	//private String id;
+	/* vertices without edges are excluded from the algorithm */
 	private boolean hasEdges;
 
 	public FRVertex(VisualNode node) {
-		super (node);
-//		this.node = node;
-//		this.id = node.getDisplayText(false);
-		this.hasEdges = false;
+		super(node);
 	}
 
 	/**
@@ -37,7 +63,6 @@ public class FRVertex extends VertexAdapter{
 		double y = force * Math.sin(direction);
 		dispX -= x;
 		dispY -= y;
-
 	}
 
 	/**
@@ -74,7 +99,6 @@ public class FRVertex extends VertexAdapter{
 		return Distance.euclidianDistance(0, 0, dx, dy);
 	}
 
-
 	protected double getXDisp() {
 		return dispX;
 	}
@@ -83,12 +107,10 @@ public class FRVertex extends VertexAdapter{
 		return dispY;
 	}
 
-
 	public void clearDisplacement() {
 		dispX = 0;
 		dispY = 0;
 	}
-
 
 	private double dx(FRVertex other) {
 		return other.getX() - getX();
@@ -97,7 +119,6 @@ public class FRVertex extends VertexAdapter{
 	private double dy(FRVertex other) {
 		return other.getY() - getY();
 	}
-
 
 	public void hasEdge() {
 		hasEdges = true;

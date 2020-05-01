@@ -1,10 +1,34 @@
+/**************************************************************************
+ *  TW-APPS - Applications used by 3Worlds                                *
+ *                                                                        *
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
+ *       jacques.gignoux@upmc.fr                                          *
+ *       ian.davies@anu.edu.au                                            * 
+ *                                                                        *
+ *  TW-APPS contains ModelMaker and ModelRunner, programs used to         *
+ *  construct and run 3Worlds configuration graphs. All code herein is    *
+ *  independent of UI implementation.                                     *
+ *                                                                        *
+ **************************************************************************                                       
+ *  This file is part of TW-APPS (3Worlds applications).                  *
+ *                                                                        *
+ *  TW-APPS is free software: you can redistribute it and/or modify       *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation, either version 3 of the License, or     *
+ *  (at your option) any later version.                                   *
+ *                                                                        *
+ *  TW-APPS is distributed in the hope that it will be useful,            *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *  GNU General Public License for more details.                          *                         
+ *                                                                        *
+ *  You should have received a copy of the GNU General Public License     *
+ *  along with TW-APPS.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>                   *
+  **************************************************************************/
+
 package au.edu.anu.twuifx.mm.visualise.layout;
 
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
-
-import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 
 /**
@@ -22,12 +46,11 @@ public class OTVertex extends TreeVertexAdapter {
 	private double _mod;
 	private double _shift;
 	private double _change;
-	// private List<OTVertex> _children;
 	protected static int maxLevels = 0;
 	protected static double[] levels = new double[10];
 	private static final double distance = 1.0;
 
-	public OTVertex(OTVertex parent, VisualNode vNode) {
+	public OTVertex(TreeVertexAdapter parent, VisualNode vNode) {
 		super(parent, vNode);
 	}
 
@@ -285,21 +308,6 @@ public class OTVertex extends TreeVertexAdapter {
 		}
 	}
 
-//	public VisualNode getvNode() {
-//		return _vNode;
-//	}
-
-//	public void setvNode(VisualNode vNode) {
-//		this._vNode = vNode;
-//	}
-
-//	public OTVertex getParent() {
-//		return _parent;
-//	}
-
-//	public void setParent(OTVertex parent) {
-//		this._parent = parent;
-//	}
 
 	public double getPrelim() {
 		return _prelim;
@@ -357,42 +365,4 @@ public class OTVertex extends TreeVertexAdapter {
 		this._change = change;
 	}
 
-//	public List<OTVertex> getChildren() {
-//		return _children;
-//	}
-//
-//	public boolean hasParent() {
-//		return _parent != null;
-//	}
-//
-//	private boolean isLeaf() {
-//		return _children.isEmpty();
-//	}
-//
-//	@Override
-//	public String toString() {
-//		return getvNode().getDisplayText(false);
-//	}
-
-//	public void getLayoutBounds(Point2D min, Point2D max) {
-//		double x = getvNode().getX();
-//		double y = getvNode().getY();
-//
-//		min.setLocation(Math.min(x, min.getX()), Math.min(y, min.getY()));
-//		max.setLocation(Math.max(x, max.getX()), Math.max(y, max.getY()));
-//		for (OTVertex child : getChildren())
-//			child.getLayoutBounds(min, max);
-//	}
-
-//	public void normalise(Point2D fromMin, Point2D fromMax, Point2D toMin, Point2D toMax) {
-//		double x = getvNode().getX();
-//		double y = getvNode().getY();
-//		x = ILayout.rescale(x, fromMin.getX(), fromMax.getX(), toMin.getX(), toMax.getX());
-//		y = ILayout.rescale(y, fromMin.getY(), fromMax.getY(), toMin.getY(), toMax.getY());
-//		getvNode().setX(x);
-//		getvNode().setY(y);
-//		for (OTVertex child : _children) {
-//			child.normalise(fromMin, fromMax, toMin, toMax);
-//		}
-//	}
 }

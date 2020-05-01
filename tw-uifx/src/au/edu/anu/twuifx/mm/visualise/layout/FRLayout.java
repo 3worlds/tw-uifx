@@ -1,7 +1,35 @@
+/**************************************************************************
+ *  TW-APPS - Applications used by 3Worlds                                *
+ *                                                                        *
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
+ *       jacques.gignoux@upmc.fr                                          *
+ *       ian.davies@anu.edu.au                                            * 
+ *                                                                        *
+ *  TW-APPS contains ModelMaker and ModelRunner, programs used to         *
+ *  construct and run 3Worlds configuration graphs. All code herein is    *
+ *  independent of UI implementation.                                     *
+ *                                                                        *
+ **************************************************************************                                       
+ *  This file is part of TW-APPS (3Worlds applications).                  *
+ *                                                                        *
+ *  TW-APPS is free software: you can redistribute it and/or modify       *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation, either version 3 of the License, or     *
+ *  (at your option) any later version.                                   *
+ *                                                                        *
+ *  TW-APPS is distributed in the hope that it will be useful,            *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *  GNU General Public License for more details.                          *                         
+ *                                                                        *
+ *  You should have received a copy of the GNU General Public License     *
+ *  along with TW-APPS.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>                   *
+  **************************************************************************/
+
 package au.edu.anu.twuifx.mm.visualise.layout;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,21 +67,21 @@ public class FRLayout implements ILayout {
 
 	private List<FRVertex> vertices;
 	private List<Duple<FRVertex, FRVertex>> edges;
+	/* vertices excluded from the alg. These are lined up on the RH side. */
 	private List<FRVertex> isolated;
 	private int interations = 100;
-	private double initTemp = 0.1;
 
-	/** It would be nice to move nodes without edges out of the way? */
 	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
 		vertices = new ArrayList<>();
 		edges = new ArrayList<>();
 		isolated = new ArrayList<>();
-		// collect all visible nodes
+		/* make vertices of all visible nodes */
 		for (VisualNode v : graph.nodes()) {
 			if (!v.isCollapsed()) {
 				vertices.add(new FRVertex(v));
 			}
 		}
+		/* sort for predictability */
 		vertices.sort(new Comparator<FRVertex>() {
 
 			@Override
@@ -63,7 +91,7 @@ public class FRLayout implements ILayout {
 
 		});
 
-		// set edges
+		/* collect all visible edges */
 		for (FRVertex v : vertices) {
 			// add parent/children edges
 			VisualNode vn = v.getNode();
@@ -89,6 +117,8 @@ public class FRLayout implements ILayout {
 					}
 			}
 		}
+		
+		// remove isolated vertices
 		for (FRVertex v : vertices)
 			if (!v.hasEdges())
 				isolated.add(v);
@@ -109,7 +139,9 @@ public class FRLayout implements ILayout {
 	public ILayout compute(double jitter) {
 		// ideal spring length
 		final double k = Math.sqrt(1.0 / vertices.size());
-		double t = initTemp; // temperature;
+		final double t0 = 0.1;
+
+		double t = t0; // temperature;
 		for (int i = 0; i < interations; i++) {
 
 			for (FRVertex v : vertices) {
@@ -124,18 +156,13 @@ public class FRLayout implements ILayout {
 				e.getSecond().setAttractionDisplacement(e.getFirst(), k);
 			}
 
+			double energy = 0;
 			for (FRVertex v : vertices)
-				v.displace(t);
-
-			/**
-			 * NOTE: with no edges (repulsive forces only) the layout, like the universe,
-			 * expands for ever. However, this is too slow to reach large numbers. This
-			 * increase does not accumulate over repeated application of the alg because the
-			 * result is rescaled into a unit space at the end.
-			 */
+				energy += v.displace(t);
 
 			// lower the temperature
-			t = cool(t, i, initTemp, interations);
+			System.out.println(t + "\t" + energy);
+			t = cool(t, i, t0, interations);
 
 		}
 
@@ -152,17 +179,18 @@ public class FRLayout implements ILayout {
 
 		for (IVertex v : vertices)
 			v.normalise(ILayout.getBoundingFrame(min, max), ILayout.getFittingFrame());
-		
-		for(int i = 0; i <isolated.size();i++) {
+
+		// Arrange isolated nodes down the RHS
+		for (int i = 0; i < isolated.size(); i++) {
 			IVertex v = isolated.get(i);
-			v.setLocation(1, (double)i/(double)isolated.size());
+			v.setLocation(1.07, (double) i / (double) isolated.size());
 		}
 		return this;
 	}
 
 	// linear cooling
-	private double cool(double ct, double i, double t0, double max) {
-		return Math.max(0.0, ct - t0 * 1.0 / max);
+	private double cool(double ti, double i, double t0, double m) {
+		return Math.max(0.0, ti - t0 * 1.0 / m);
 	}
 
 }
