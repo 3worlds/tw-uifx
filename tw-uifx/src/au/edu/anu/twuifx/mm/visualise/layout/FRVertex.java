@@ -107,6 +107,14 @@ public class FRVertex extends VertexAdapter {
 		return dispY;
 	}
 
+	protected void addXDisp(double dx) {
+		dispX += dx;
+	}
+
+	protected void addYDisp(double dy) {
+		dispY += dy;
+	}
+
 	public void clearDisplacement() {
 		dispX = 0;
 		dispY = 0;

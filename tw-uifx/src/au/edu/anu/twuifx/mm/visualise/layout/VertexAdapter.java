@@ -41,7 +41,7 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
  *
  * @date 30 Apr 2020
  */
-public class VertexAdapter implements IVertex {
+public abstract class VertexAdapter implements IVertex {
 	private VisualNode _vNode;
 
 	public VertexAdapter(VisualNode vNode) {

@@ -43,7 +43,7 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
  *
  * @date 30 Apr 2020
  */
-public class TreeVertexAdapter extends VertexAdapter implements ITreeVertex<TreeVertexAdapter> {
+public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVertex<TreeVertexAdapter> {
 	private List<TreeVertexAdapter> _children;
 	private TreeVertexAdapter _parent;
 

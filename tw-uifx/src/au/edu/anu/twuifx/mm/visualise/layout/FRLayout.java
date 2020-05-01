@@ -161,7 +161,6 @@ public class FRLayout implements ILayout {
 				energy += v.displace(t);
 
 			// lower the temperature
-			System.out.println(t + "\t" + energy);
 			t = cool(t, i, t0, interations);
 
 		}
