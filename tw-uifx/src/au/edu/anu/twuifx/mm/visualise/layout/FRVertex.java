@@ -40,8 +40,8 @@ import fr.cnrs.iees.uit.space.Distance;
 
 public class FRVertex extends VertexAdapter {
 	/* total displacement of x and y */
-	private double dispX;
-	private double dispY;
+	protected double fx;
+	protected double fy;
 	/* vertices without edges are excluded from the algorithm */
 	private boolean hasEdges;
 
@@ -56,13 +56,8 @@ public class FRVertex extends VertexAdapter {
 	 * @param other
 	 * @param k     spacing constant (ideal spring length)
 	 */
-	public void setRepulsionDisplacement(FRVertex other, double k) {
-		double force = fRepulsion(other, k);
-		double direction = Math.atan2(dy(other), dx(other));
-		double x = force * Math.cos(direction);
-		double y = force * Math.sin(direction);
-		dispX -= x;
-		dispY -= y;
+	public double setRepulsionDisplacement(FRVertex other, double k) {
+		return repApply(this, other, k);
 	}
 
 	/**
@@ -72,88 +67,72 @@ public class FRVertex extends VertexAdapter {
 	 * @param other
 	 * @param k     spacing constant (ideal spring length)
 	 */
-	public void setAttractionDisplacement(FRVertex other, double k) {
-		double force = fAttraction(other, k);
-		double direction = Math.atan2(dy(other), dx(other));
-		double x = force * Math.cos(direction);
-		double y = force * Math.sin(direction);
-		dispX += x;
-		dispY += y;
+	public double setAttractionDisplacement(FRVertex other, double k) {
+		return attrApply(this, other, k);
 	}
 
 	/**
 	 * Update the node position with the displacement limited by temperature
 	 * 
-	 * @param t temperature
+	 * @param temperature temperature
 	 * @return energy
 	 */
-	public double displace(double t) {
-		double direction = Math.atan2(dispY, dispX);
-		double distance = Math.sqrt((dispX * dispX) + (dispY * dispY));
-		distance = Math.min(t, distance);
-		double dx = distance * Math.cos(direction);
-		double dy = distance * Math.sin(direction);
-		double nx = dx + getX();
-		double ny = dy + getY();
-		setLocation(nx, ny);
-		return Distance.euclidianDistance(0, 0, dx, dy);
+	public double displace(double temperature) {
+		double force = Math.sqrt(fx * fx + fy * fy);
+		if (force < temperature) {
+			setLocation(getX() + fx, getY() + fy);
+		} else {
+			double fact = temperature / force;
+			double dx = fx * fact;
+			double dy = fy * fact;
+			setLocation(getX() + dx, getY() + dy);
+		}
+		fx = 0;
+		fy = 0;
+		return force;
 	}
 
-	protected double getXDisp() {
-		return dispX;
-	}
-
-	protected double getYDisp() {
-		return dispY;
-	}
-
-	protected void addXDisp(double dx) {
-		dispX += dx;
-	}
-
-	protected void addYDisp(double dy) {
-		dispY += dy;
-	}
-
-	public void clearDisplacement() {
-		dispX = 0;
-		dispY = 0;
-	}
-
-	private double dx(FRVertex other) {
-		return other.getX() - getX();
-	}
-
-	private double dy(FRVertex other) {
-		return other.getY() - getY();
-	}
-
-	public void hasEdge() {
-		hasEdges = true;
+	public void setHasEdge(boolean b) {
+		hasEdges = b;
 	}
 
 	public boolean hasEdges() {
 		return hasEdges;
 	}
 
-	private static double close = 0.0000001;
-
-	public double fRepulsion(FRVertex other, double k) {
-		double d = Distance.euclidianDistance(getX(), getY(), other.getX(), other.getY());
-		if (d < close) {
-			System.out.println("R Distance zero");
-			d = Math.max(close, d);
+	private static double repApply(FRVertex p, FRVertex q, double k) {
+		double dx = q.getX() - p.getX();
+		double dy = q.getY() - p.getY();
+		double dist2 = dx * dx + dy * dy;
+		while (dist2 == 0) {
+			dx = 5 - Math.round(Math.random() * 10);
+			dy = 5 - Math.round(Math.random() * 10);
+			dist2 = dx * dx + dy * dy;
 		}
-		return fRepulsion(k, d);
+		double force = fRepulsion(k, Math.sqrt(dist2));
+		q.fx += dx * force;
+		q.fy += dy * force;
+		p.fx -= dx * force;
+		p.fy -= dy * force;
+		return force;
+
 	}
 
-	public double fAttraction(FRVertex other, double k) {
-		double d = Distance.euclidianDistance(getX(), getY(), other.getX(), other.getY());
-		if (d < close) {
-			System.out.println("A Distance zero");
-			d = Math.max(close, d);
+	public static double attrApply(FRVertex p, FRVertex q, double k) {
+		double dx = q.getX() - p.getX();
+		double dy = q.getY() - p.getY();
+		double dist2 = dx * dx + dy * dy;
+		while (dist2 == 0) {
+			dx = 5 - Math.round(Math.random() * 10);
+			dy = 5 - Math.round(Math.random() * 10);
+			dist2 = dx * dx + dy * dy;
 		}
-		return fAttract(k, d);
+		double force = fAttract(k, Math.sqrt(dist2));
+		q.fx -= dx * force;
+		q.fy -= dy * force;
+		p.fx += dx * force;
+		p.fy += dy * force;
+		return force;
 	}
 
 	/**

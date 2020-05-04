@@ -69,7 +69,6 @@ public class FRLayout implements ILayout {
 	private List<Duple<FRVertex, FRVertex>> edges;
 	/* vertices excluded from the alg. These are lined up on the RH side. */
 	private List<FRVertex> isolated;
-	private int interations = 100;
 
 	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
 		vertices = new ArrayList<>();
@@ -100,8 +99,8 @@ public class FRLayout implements ILayout {
 					if (!cn.isCollapsed()) {
 						FRVertex u = Node2Vertex(cn);
 						edges.add(new Duple<FRVertex, FRVertex>(v, u));
-						v.hasEdge();
-						u.hasEdge();
+						v.setHasEdge(true);
+						u.setHasEdge(true);
 					}
 
 			// add xlink edges
@@ -112,12 +111,12 @@ public class FRLayout implements ILayout {
 					if (!toNode.isCollapsed()) {
 						FRVertex u = Node2Vertex(toNode);
 						edges.add(new Duple<FRVertex, FRVertex>(v, u));
-						v.hasEdge();
-						u.hasEdge();
+						v.setHasEdge(true);
+						u.setHasEdge(true);
 					}
 			}
 		}
-		
+
 		// remove isolated vertices
 		for (FRVertex v : vertices)
 			if (!v.hasEdges())
@@ -137,28 +136,30 @@ public class FRLayout implements ILayout {
 
 	@Override
 	public ILayout compute(double jitter) {
-		// ideal spring length
+		final int interations = 600;
+		/* ideal spring length */
 		final double k = Math.sqrt(1.0 / vertices.size());
+		/* initial temperature */
 		final double t0 = 0.1;
 
-		double t = t0; // temperature;
+		double t = t0; // set initial temperature
 		for (int i = 0; i < interations; i++) {
-
-			for (FRVertex v : vertices) {
-				v.clearDisplacement();
-				for (FRVertex u : vertices)
-					if (!v.equals(u))
-						v.setRepulsionDisplacement(u, k);
+			for (int a = 0; a < vertices.size(); a++) {
+				FRVertex v = vertices.get(a);
+				for (int b = a + 1; b < vertices.size(); b++) {
+					FRVertex u = vertices.get(b);
+					double force = v.setRepulsionDisplacement(u, k);
+				}
 			}
 
 			for (Duple<FRVertex, FRVertex> e : edges) {
-				e.getFirst().setAttractionDisplacement(e.getSecond(), k);
-				e.getSecond().setAttractionDisplacement(e.getFirst(), k);
+				double force = e.getFirst().setAttractionDisplacement(e.getSecond(), k);
 			}
 
 			double energy = 0;
-			for (FRVertex v : vertices)
+			for (FRVertex v : vertices) {
 				energy += v.displace(t);
+			}
 
 			// lower the temperature
 			t = cool(t, i, t0, interations);
@@ -188,7 +189,7 @@ public class FRLayout implements ILayout {
 	}
 
 	// linear cooling
-	private double cool(double ti, double i, double t0, double m) {
+	public  static double cool(double ti, double i, double t0, double m) {
 		return Math.max(0.0, ti - t0 * 1.0 / m);
 	}
 

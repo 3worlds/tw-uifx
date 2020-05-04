@@ -70,7 +70,7 @@ public abstract class VertexAdapter implements IVertex {
 
 	@Override
 	public String id() {
-		return _vNode.getDisplayText(false);
+		return _vNode.id();
 	}
 
 	@Override
