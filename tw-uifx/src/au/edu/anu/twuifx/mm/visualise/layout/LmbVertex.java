@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.uit.space.Distance;
 
@@ -101,7 +99,7 @@ public class LmbVertex extends FRVertex {
 			LmbVertex nn = neighbours.get(i);
 			bestCombo[i] = tanAngleRel(nn);
 		}
-		double[] orig = bestCombo.clone();
+		//double[] orig = bestCombo.clone();
 
 		if (degree() <= maxDeterministicShuffle) {
 			// full factorial shuffle
@@ -150,19 +148,19 @@ public class LmbVertex extends FRVertex {
 		for (int i = 0; i < degree(); i++) {
 			setAngle(neighbours.get(i), bestCombo[i]);
 		}
-		dump(orig, bestCombo);
+//		dump(orig, bestCombo);
 
 	}
 
-	private void dump(double[] orig, double[] best) {
+//	private void dump(double[] orig, double[] best) {
 //		System.out.println(id());
-		for (int i = 0; i < degree(); i++) {
-			LmbVertex nn = neighbours.get(i);
+//		for (int i = 0; i < degree(); i++) {
+//			LmbVertex nn = neighbours.get(i);
 //			System.out.println("\t->\t" + nn.id() + "\t" + Math.toDegrees(orig[i]) + "\t->\t" + Math.toDegrees(best[i]));
-		}
+//		}
 //		System.out.println("--------------------------");
-
-	}
+//
+//	}
 
 	private double rfComputeTot(double rfKopp) {
 		double temprf = 0.0;
@@ -197,14 +195,14 @@ public class LmbVertex extends FRVertex {
 	return rf
 	*/
 	private double rfComputeNet(double rfKopp, double rfKadj) {
-		rf = 0;
+		double temprf = 0;
 		for (LmbVertex nn : neighbours) {
 			double opti = LmbEdge.pie(edgeAngle(nn) - nn.diffAngle(this));
 			double rot = LmbEdge.pie(opti - tanAngle(nn));
-			rf += rot * rfKopp;
-			rf -= diffAngle(nn) * rfKadj;
+			temprf += rot * rfKopp;
+			temprf -= diffAngle(nn) * rfKadj;
 		}
-		return rf;
+		return temprf;
 	}
 
 	/*-	for nn in n.nodes():#move n according to nn
@@ -239,8 +237,7 @@ public class LmbVertex extends FRVertex {
 
 	public void updateAngle(double temp) {
 		angle += rf * temp;
-		// rf = 0;??
-
+		rf = 0;
 	}
 
 	/**

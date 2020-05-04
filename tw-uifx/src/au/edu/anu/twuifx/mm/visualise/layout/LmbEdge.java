@@ -31,10 +31,11 @@ public class LmbEdge {
 		this.p = p;
 		this.q = q;
 	}
+
 	public void init() {
-		//dist = K??
+		// dist = K??
 		pa = p.nextTanAngle();
-		qa = q.nextTanAngle();		
+		qa = q.nextTanAngle();
 	}
 
 	public LmbVertex getP() {
@@ -84,7 +85,7 @@ public class LmbEdge {
 	public void setAngle(LmbVertex n, double angle) {
 		if (n == p) {
 			pa = angle;
-		}else {
+		} else {
 			qa = angle;
 		}
 	}
@@ -115,6 +116,36 @@ public class LmbEdge {
 
 	public static double mag(double x, double y) {
 		return Math.sqrt(x * x + y * y);
+	}
+
+	public boolean finalStep() {
+		boolean result = true;
+		double pd = diffAngle(p);
+		double qd = diffAngle(q);
+		double optidiff = (pd - qd) / 2.0;
+		double adjust = Math.abs(pd + qd) / 2.0;
+		if (adjust > 0.01)
+			result = false;
+		if (optidiff > pd) {// increase
+			if (p.degree() == 1)
+				pa = LmbEdge.pie2(pa + adjust * 2.0);
+			else if (q.degree() == 1)
+				qa = LmbEdge.pie2(qa + adjust * 2.0);
+			else {
+				pa = LmbEdge.pie2(pa + adjust);
+				qa = LmbEdge.pie2(qa + adjust);
+			}
+		} else {// decrease
+			if (p.degree() == 1)
+				pa = LmbEdge.pie2(pa - adjust * 2.0);
+			else if (q.degree() == 1)
+				qa = LmbEdge.pie2(qa - adjust * 2.0);
+			else {
+				pa = LmbEdge.pie2(pa - adjust * 2.0);
+				qa = LmbEdge.pie2(qa = adjust * 2.0);
+			}
+		}
+		return result;
 	}
 
 }

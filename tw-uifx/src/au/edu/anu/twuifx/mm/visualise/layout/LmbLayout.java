@@ -116,7 +116,7 @@ public class LmbLayout implements ILayout {
 		/*
 		 * max difference between two tangent diffs, for arc to be possible, in radians
 		 */
-		double maxDiff = 0.1;
+		// double maxDiff = 0.1; used in setting control points at the end.
 		/*
 		 * rotational force constant, for how opp tangents affect my rotation (want my
 		 * tan to match opp)
@@ -153,37 +153,40 @@ public class LmbLayout implements ILayout {
 				LmbVertex v = vertices.get(a);
 				for (int b = a + 1; b < vertices.size(); b++) {
 					LmbVertex u = vertices.get(b);
-					double force = v.setRepulsionDisplacement(u, k);
+					/* double force = */v.setRepulsionDisplacement(u, k);
 				}
 			}
 
 			// Attraction
 			for (LmbEdge e : edges) {
-				double force = e.setAttractionDisplacement(k);
+				/* double force = */e.setAttractionDisplacement(k);
 			}
 			// shuffle edge order
-//			if (i%shuffleEvery==0)
-//				for (LmbVertex v: vertices)
-//					v.shuffleTans(rfKopp,maxDeterministicShuffle,shuffleSamples);
+			if (i % shuffleEvery == 0)
+				for (LmbVertex v : vertices)
+					v.shuffleTans(rfKopp, maxDeterministicShuffle, shuffleSamples);
 
-//			// Rotation
-//			for (LmbVertex v : vertices) {
-//				double force = v.rotationalDisplacement(rfKopp,rfKadj);
-//			}
-//			// Tangent forces
-//			for (LmbVertex v : vertices)
-//				v.trangentialDisplacement(tangentialK);
-//
-//			for (LmbVertex v : vertices)
-//				v.updateAngle(t);
-
-			double energy = 0;
+			// Rotation
 			for (LmbVertex v : vertices) {
-				energy += v.displace(t);
+				/* double force = */ v.rotationalDisplacement(rfKopp, rfKadj);
+			}
+			// Tangent forces
+			for (LmbVertex v : vertices)
+				v.trangentialDisplacement(tangentialK);
+
+			for (LmbVertex v : vertices)
+				v.updateAngle(t);
+
+			// double energy = 0;
+			for (LmbVertex v : vertices) {
+				/* energy += */ v.displace(t);
 			}
 
 			t = FRLayout.cool(t, i, t0, interations);
 		}
+
+		for (int i = 0; i < (finalRound * interations); i++)
+			finalStep();
 
 		if (jitter > 0.0) {
 			Random rnd = new Pcg32();
@@ -205,6 +208,15 @@ public class LmbLayout implements ILayout {
 			v.setLocation(1.07, (double) i / (double) isolated.size());
 		}
 		return this;
+	}
+
+	private boolean finalStep() {
+		boolean legit = true;
+		for (LmbEdge e : edges) {
+			if (!e.finalStep())
+				legit = false;
+		}
+		return legit;
 	}
 
 	private static int factorial(int num) {
