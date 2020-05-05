@@ -78,6 +78,7 @@ public class LmbEdge {
 		return pie2(Math.atan2(y, x));
 	}
 
+	//#n is from
 	public double diffAngle(LmbVertex n) {
 		return pie(pie(tanAngle(n)) - pie(edgeAngle(n)));
 	}
@@ -89,7 +90,7 @@ public class LmbEdge {
 			qa = angle;
 		}
 	}
-
+	//#n is from
 	public void addForce(LmbVertex n, double f) {
 		if (n == p)
 			pf += f;
