@@ -1,52 +1,41 @@
-treegraph // saved by OmugiGraphExporter on Wed Apr 29 09:22:24 AEST 2020
+treegraph // saved by OmugiGraphExporter on Tue May 05 13:29:19 AEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
-	
-//		Pars pars = (Pars) focalContext.groupParameters;
-//		Vars current = (Vars)focal.currentState();
-//		Vars next = (Vars)focal.nextState();
-//		next.y(pars.x()*current.y()*(1-current.y()));
-//
-// example settings: 
-// pars: x = between 3.57 and  4 
-// vars: y = 0.1
-
+// Code snippet for logistic model
+//	// chaos *************************** INSERT YOUR CODE BELOW THIS LINE ***************************
+//		focalDrv.x = r*x*(1-x);
+//	// chaos ******************************** END CODE INSERTION ZONE *******************************
 // TREE
-3worlds tut1
+3worlds logistic1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
-	experiment expt
-		timePeriod tp
-			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(DrvLogistc)
-			field y
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record pars
+			generatedClassName = java.lang.String(vars)
 			field x
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-	userInterface gui
-		top top
-			widget ctrl
-				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+		record pars
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(pars)
+			field r
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 	system sys
-		driverClass = java.lang.String(code.system.DrvLogistc)
+		constantClass = java.lang.String(code.sys.Pars)
+		driverClass = java.lang.String(code.sys.Vars)
 		dynamics dyns
+			stoppingCondition stCnd
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			timeLine tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
@@ -61,14 +50,30 @@ treegraph // saved by OmugiGraphExporter on Wed Apr 29 09:22:24 AEST 2020
 					process proc
 						function Chaos
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.system.Func)
+							userClassName = java.lang.String(code.sys.Chaos)
 		structure struc
 			categorySet *systemElements*
 				category *arena*
+	experiment expt
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	userInterface gui
+		top top
+			widget timer
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
 
 // CROSS-LINKS
 [process:proc] appliesTo aplyTo [category:*arena*]
-[category:*arena*] drivers drvs [record:vars]
-[category:*arena*] parameters params [record:pars]
-[experiment:expt] baseLine bsln [system:sys]
 [system:sys] belongsTo blgsto [category:*arena*]
+[category:*arena*] drivers drvs [record:vars]
+[category:*arena*] lifetimeConstants params [record:pars]
+[widget:timer] trackTime trksTmOf [dynamics:dyns]
+[experiment:expt] baseLine bsln [system:sys]

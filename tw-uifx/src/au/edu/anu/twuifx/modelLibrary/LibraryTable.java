@@ -39,19 +39,17 @@ import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
 
 /**
  * Lookup struc for entries in ModelMaker "New" menu. Display order is the
- * declaration order in this enum.
+ * declaration order in this enum. Entries are grouped as either a Template,
+ * Tutorial or Model with utg files placed in the appropriate package.
  */
 public enum LibraryTable {
-	Empty(/*             */"Blank", /*                     */"vide.utg", /*       */LibraryType.Template,
-			TemplatesDummy.class), //
-	Template1(/*         */"Template 1", /*                */"default.utg", /*    */LibraryType.Template,
-			TemplatesDummy.class), //
-	Tut1(/*              */"Tut 1", /*                     */"tut1.utg", /*       */LibraryType.Tutorial,
-			TutorialsDummy.class), //
-	Model1(/*            */"French", /*                    */"french.utg", /*     */LibraryType.Model,
-			ModelsDummy.class), //
-	Model2(/*            */"Genetics", /*                  */"gddm.utg", /*       */LibraryType.Model,
-			ModelsDummy.class), //
+	/*-			Menu name,			File name,			category,		package file assocation */
+	Empty(/*    */"Blank", /*     */"vide.utg", /*     */LibraryType.Template, TemplatesDummy.class), //
+	Template1(/**/"Template 1", /**/"default.utg", /*  */LibraryType.Template, TemplatesDummy.class), //
+	Tut1(/*     */"Tut 1", /*     */"logistic.utg", /* */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut2(/*     */"Tut 1b", /*    */"logistic1.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
+	Model1(/*   */"French", /*    */"french.utg", /*   */LibraryType.Model, ModelsDummy.class), //
+	Model2(/*   */"Genetics", /*  */"gddm.utg", /*     */LibraryType.Model, ModelsDummy.class), //
 	;
 
 	private final String displayName;
