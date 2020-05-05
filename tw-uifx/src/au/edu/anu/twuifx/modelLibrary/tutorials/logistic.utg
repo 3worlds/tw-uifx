@@ -1,25 +1,23 @@
-treegraph // saved by OmugiGraphExporter on Mon May 04 16:48:09 CEST 2020
+treegraph // saved by OmugiGraphExporter on Tue May 05 14:58:18 CEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 
-// Code snippet for logistic model
-//	// chaos *************************** INSERT YOUR CODE BELOW THIS LINE ***************************
+// CODE snippet for method Lgistic.chaos(...)
 //		focalDrv.x = r*x*(1-x);
-//	// chaos ******************************** END CODE INSERTION ZONE *******************************
 
 // TREE
 3worlds logistic
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = java.lang.String()
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Logistic_map"))
+	version = java.lang.String(demo)
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(vars)
 			field x
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
@@ -27,7 +25,7 @@ treegraph // saved by OmugiGraphExporter on Mon May 04 16:48:09 CEST 2020
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(pars)
 			field r
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.ens.biologie.generic.utils.Interval(]0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
@@ -47,9 +45,19 @@ treegraph // saved by OmugiGraphExporter on Mon May 04 16:48:09 CEST 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 					process proc
+						dataTracker trkr
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 						function Chaos
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Chaos)
+		variableValues drvv
+			x = java.lang.Double(0.001)
+		constantValues cstv
+			r = java.lang.Double(3.7)
 		structure struc
 			categorySet *systemElements*
 				category *arena*
@@ -68,11 +76,21 @@ treegraph // saved by OmugiGraphExporter on Mon May 04 16:48:09 CEST 2020
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+		tab tab
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget wgt
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 
 // CROSS-LINKS
 [system:sys] belongsTo blgsto [category:*arena*]
 [widget:timer] trackTime trksTmOf [dynamics:dyns]
+[dataTracker:trkr] trackComponent trksCmpOf [system:sys]
+[dataTracker:trkr] trackField trksFldOf [field:x]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [experiment:expt] baseLine bsln [system:sys]
 [process:proc] appliesTo aplyTo [category:*arena*]
+[widget:wgt] trackSeries trksSrsOf [dataTracker:trkr]
 [category:*arena*] drivers drvs [record:vars]
 [category:*arena*] lifetimeConstants params [record:pars]
