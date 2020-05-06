@@ -39,6 +39,7 @@ public class TreeColours {
 	/*http://www.color-blindness.com/coblis-color-blindness-simulator/*/
 	private static Map<String,Color> nodeColours= new HashMap<>();
 	static {
+		nodeColours.put(ConfigurationNodeLabels.N_SYSTEM.label(), Color.DODGERBLUE);
 		nodeColours.put(ConfigurationNodeLabels.N_DYNAMICS.label(), Color.LIME);
 		nodeColours.put(ConfigurationNodeLabels.N_STRUCTURE.label(), Color.GREEN);
 		nodeColours.put(ConfigurationNodeLabels.N_DATADEFINITION.label(), Color.LIGHTGREY);
@@ -47,9 +48,6 @@ public class TreeColours {
 	}
 	public static Color getCategoryColor(String category, String label){
 		if (!nodeColours.containsKey(category))
-			if (label.equals(ConfigurationNodeLabels.N_SYSTEM.label()))
-				return Color.TEAL;
-			else
 				return Color.BLACK;
 		return nodeColours.get(category);
 	}
