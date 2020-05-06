@@ -121,6 +121,7 @@ import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.ALEdge;
+import fr.cnrs.iees.graph.impl.ALNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
@@ -361,15 +362,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			mi.setOnAction((e) -> {
 
 				LibraryTable lt = map.get(e.getSource());
-
 				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
-
-// Root needs a "Created by" field
-//				String uName = System.getProperty("user.name");
-//				TreeGraphDataNode rn = libGraph.root();
-//				StringTable authors = (StringTable) rn.properties().getPropertyValue(P_MODEL_AUTHORS.key());
-//				authors.setByInt(uName, 0);
-
+				libGraph.root().properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name"));
+//				int count =0;
+//				for (ALNode n:libGraph.nodes()) {
+//					System.out.println(count+"\t"+n.classId()+":"+n.id()+"\t"+n.getClass().getName());
+//					count++;
+//					
+//				}
 				model.doNewProject(libGraph);
 			});
 		}

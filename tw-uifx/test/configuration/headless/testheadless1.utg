@@ -12,6 +12,12 @@ treegraph // saved by OmugiGraphExporter on Wed Feb 26 15:47:58 AEDT 2020
 
 // TREE
 3worlds testheadless1
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
+	built-by = java.lang.String("")
+	precis =  java.lang.String("")
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)

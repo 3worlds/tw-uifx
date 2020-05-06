@@ -4,6 +4,12 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds genetics2
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
+	built-by = java.lang.String("")
+	precis =  java.lang.String("")
 	dataDefinition dDef
 		record parsAnimal
 			field isFemale

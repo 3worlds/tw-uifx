@@ -21,6 +21,12 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 	
 // TREE
 3worlds testdatatracker3
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
+	built-by = java.lang.String("")
+	precis =  java.lang.String("")
 	experiment exp
 		timePeriod period
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)

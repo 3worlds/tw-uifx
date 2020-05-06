@@ -10,8 +10,11 @@ treegraph // saved by OmugiGraphExporter on Tue May 05 14:58:18 CEST 2020
 3worlds logistic
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Logistic_map"))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https:/en.wikipedia.org/wiki/Logistic_map","https:/en.wikipedia.org/wiki/Chaos_theory"))
+	
 	version = java.lang.String(demo)
+	built-by = java.lang.String("")
+	precis =  java.lang.String("A minimal configuration file for 3Worlds.")
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)

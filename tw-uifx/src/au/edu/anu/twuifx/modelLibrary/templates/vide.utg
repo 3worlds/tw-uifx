@@ -8,5 +8,7 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 18 06:46:23 AEDT 2019
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = String()
+	built-by = java.lang.String("")
+	precis =  java.lang.String("")
 
 // CROSS-LINKS

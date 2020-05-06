@@ -47,6 +47,12 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 
 // TREE
 3worlds testfunction3
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
+	built-by = java.lang.String("")
+	precis =  java.lang.String("")
 	userInterface ui
 		top top1
 			widget time

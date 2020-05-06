@@ -47,7 +47,6 @@ public enum LibraryTable {
 	Empty(/*    */"Blank", /*     */"vide.utg", /*     */LibraryType.Template, TemplatesDummy.class), //
 	Template1(/**/"Template 1", /**/"default.utg", /*  */LibraryType.Template, TemplatesDummy.class), //
 	Tut1(/*     */"Tut 1", /*     */"logistic.utg", /* */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut2(/*     */"Tut 1b", /*    */"logistic1.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
 	Model1(/*   */"French", /*    */"french.utg", /*   */LibraryType.Model, ModelsDummy.class), //
 	Model2(/*   */"Genetics", /*  */"gddm.utg", /*     */LibraryType.Model, ModelsDummy.class), //
 	;

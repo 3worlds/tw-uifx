@@ -11,6 +11,8 @@ treegraph // saved by OmugiGraphExporter on Thu Apr 16 10:13:46 CEST 2020
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String("")
+	built-by = java.lang.String("")
+	precis =  java.lang.String("")
 	dataDefinition dDef
 		record AVEphemeral
 			field birthDate

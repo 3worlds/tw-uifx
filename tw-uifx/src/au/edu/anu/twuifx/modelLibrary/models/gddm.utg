@@ -8,6 +8,8 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String("")
+	built-by = java.lang.String("")
+	precis =  java.lang.String("Broken! Placeholder for Genetics, Demography and Disturbance Model (GDDM)")
 
 	dataDefinition dDef
 		record parsAnimal
