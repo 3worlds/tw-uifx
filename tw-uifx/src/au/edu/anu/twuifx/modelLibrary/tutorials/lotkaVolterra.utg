@@ -1,0 +1,99 @@
+treegraph // saved by OmugiGraphExporter on Wed May 06 16:43:06 CEST 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds lotkaVolterra
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	built-by = java.lang.String()
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	precis = java.lang.String()
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
+	experiment defaultExperiment
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	dataDefinition dDef
+		record par
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(par)
+			table r
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+			table alpha
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+			table K
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+		dimensioner nbsp
+			size = java.lang.Integer(4)
+		record var
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(var)
+			table x
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+	userInterface defaultGUI
+		top top
+			widget defaultController
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+	system system
+		constantClass = java.lang.String(code.system.Par)
+		driverClass = java.lang.String(code.system.Var)
+		dynamics simulator
+			timeLine timeLine
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel tmMo
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+					process proc
+						function CommunityGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.CommunityGrowth)
+		structure community
+			categorySet *composition*
+				category *individual*
+			categorySet *systemElements*
+				category *arena*
+			categorySet *lifespan*
+				category *permanent*
+
+// CROSS-LINKS
+[table:K] sizedBy szBy2 [dimensioner:nbsp]
+	rank = java.lang.Integer(0)
+[experiment:defaultExperiment] baseLine bsln [system:system]
+[table:alpha] sizedBy dim2 [dimensioner:nbsp]
+	rank = java.lang.Integer(1)
+[table:alpha] sizedBy dim1 [dimensioner:nbsp]
+	rank = java.lang.Integer(0)
+[widget:defaultController] trackTime trksTmOf [dynamics:simulator]
+[process:proc] appliesTo aplyTo [category:*arena*]
+[category:*arena*] drivers drvs [record:var]
+[category:*arena*] lifetimeConstants ltcs [record:par]
+[table:r] sizedBy szBy1 [dimensioner:nbsp]
+	rank = java.lang.Integer(0)
+[system:system] belongsTo blngsTo [category:*individual*]
+[system:system] belongsTo blgstqn [category:*arena*]
+[system:system] belongsTo blgstkn [category:*permanent*]
+[table:x] sizedBy szBy [dimensioner:nbsp]
+	rank = java.lang.Integer(0)
