@@ -3,13 +3,13 @@
  *                                                                        *
  *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
- *       ian.davies@anu.edu.au                                            * 
+ *       ian.davies@anu.edu.au                                            *
  *                                                                        *
  *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
  *  This is to separate concerns of UI implementation and the code for    *
  *  these java programs.                                                  *
  *                                                                        *
- **************************************************************************                                       
+ **************************************************************************
  *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
  *                                                                        *
  *  TW-UIFX is free software: you can redistribute it and/or modify       *
@@ -20,7 +20,7 @@
  *  TW-UIFX is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *  GNU General Public License for more details.                          *                         
+ *  GNU General Public License for more details.                          *
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
  *  along with TW-UIFX.                                                   *
@@ -39,7 +39,7 @@ public class TreeColours {
 	/*http://www.color-blindness.com/coblis-color-blindness-simulator/*/
 	private static Map<String,Color> nodeColours= new HashMap<>();
 	static {
-		nodeColours.put(ConfigurationNodeLabels.N_SYSTEM.label(), Color.DODGERBLUE);
+		nodeColours.put(ConfigurationNodeLabels.N_SYSTEM.label(), Color.TEAL);
 		nodeColours.put(ConfigurationNodeLabels.N_DYNAMICS.label(), Color.LIME);
 		nodeColours.put(ConfigurationNodeLabels.N_STRUCTURE.label(), Color.GREEN);
 		nodeColours.put(ConfigurationNodeLabels.N_DATADEFINITION.label(), Color.LIGHTGREY);

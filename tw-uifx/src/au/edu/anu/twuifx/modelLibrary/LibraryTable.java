@@ -3,13 +3,13 @@
  *                                                                        *
  *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
- *       ian.davies@anu.edu.au                                            * 
+ *       ian.davies@anu.edu.au                                            *
  *                                                                        *
  *  TW-APPS contains ModelMaker and ModelRunner, programs used to         *
  *  construct and run 3Worlds configuration graphs. All code herein is    *
  *  independent of UI implementation.                                     *
  *                                                                        *
- **************************************************************************                                       
+ **************************************************************************
  *  This file is part of TW-APPS (3Worlds applications).                  *
  *                                                                        *
  *  TW-APPS is free software: you can redistribute it and/or modify       *
@@ -20,7 +20,7 @@
  *  TW-APPS is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *  GNU General Public License for more details.                          *                         
+ *  GNU General Public License for more details.                          *
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
  *  along with TW-APPS.                                                   *
@@ -47,6 +47,7 @@ public enum LibraryTable {
 	Empty(/*    */"Blank", /*     */"vide.utg", /*     */LibraryType.Template, TemplatesDummy.class), //
 	Template1(/**/"Template 1", /**/"default.utg", /*  */LibraryType.Template, TemplatesDummy.class), //
 	Tut1(/*     */"Tut 1", /*     */"logistic.utg", /* */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut2(/*     */"Tut 2", /*     */"logistic2.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
 	Model1(/*   */"French", /*    */"french.utg", /*   */LibraryType.Model, ModelsDummy.class), //
 	Model2(/*   */"Genetics", /*  */"gddm.utg", /*     */LibraryType.Model, ModelsDummy.class), //
 	;
