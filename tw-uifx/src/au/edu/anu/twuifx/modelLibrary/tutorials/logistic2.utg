@@ -27,6 +27,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 06 12:08:39 CEST 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+				description = java.lang.String("population size")
 		record pars
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(pars)
@@ -35,6 +36,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 06 12:08:39 CEST 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+				description = java.lang.String("population growth rate")
 	system sys
 		constantClass = java.lang.String(code.sys.Pars)
 		driverClass = java.lang.String(code.sys.Vars)

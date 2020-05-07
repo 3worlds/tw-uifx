@@ -48,19 +48,22 @@ treegraph // saved by OmugiGraphExporter on Thu May 07 13:43:51 CEST 2020
 			generatedClassName = java.lang.String(par)
 			table r
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
+				description = java.lang.String("species growth rates")
 			table alpha
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
+				description = java.lang.String("species competition coefficients")
 			table K
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
+				description = java.lang.String("species carrying capacities")
 		dimensioner nbsp
 			size = java.lang.Integer(4)
 		record var
@@ -68,9 +71,10 @@ treegraph // saved by OmugiGraphExporter on Thu May 07 13:43:51 CEST 2020
 			generatedClassName = java.lang.String(var)
 			table x
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
+				description = java.lang.String("species population sizes")
 	userInterface defaultGUI
 		top top
 			widget defaultController
