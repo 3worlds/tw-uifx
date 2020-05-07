@@ -64,6 +64,9 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -133,6 +136,8 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.ens.biologie.generic.utils.Interval;
+
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_ROOT;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
@@ -330,9 +335,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		ErrorList.addListener(this);
 		// Setup zooming from the graph display pane (zoomTarget)
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
-		// are prefs saved regardless of graphState??
-
+		// are prefs saved regardless of graphState??		
 	}
+	
 
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
@@ -363,13 +368,21 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 				LibraryTable lt = map.get(e.getSource());
 				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
-				libGraph.root().properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name"));
-//				int count =0;
-//				for (ALNode n:libGraph.nodes()) {
-//					System.out.println(count+"\t"+n.classId()+":"+n.id()+"\t"+n.getClass().getName());
-//					count++;
-//					
-//				}
+				TreeGraphDataNode root = libGraph.root();
+				if (root == null || !root.classId().equals(N_ROOT.label())) {
+					Dialogs.errorAlert("Library error",lt.displayName(),
+							"This Tree graph does not have a single root node called '" + N_ROOT.label() + "'");
+					return;
+				}
+
+				
+				if (root.properties().hasProperty(P_MODEL_BUILTBY.key())) {
+					DateTimeFormatter fm = DateTimeFormatter.ofPattern("d MMM uuuu");
+					LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
+					String date = " ("+currentDate.format(fm)+")";
+					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name")+date);
+				}
+					
 				model.doNewProject(libGraph);
 			});
 		}

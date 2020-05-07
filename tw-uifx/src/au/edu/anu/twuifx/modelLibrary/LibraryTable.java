@@ -43,13 +43,13 @@ import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
  * Tutorial or Model with utg files placed in the appropriate package.
  */
 public enum LibraryTable {
-	/*-			Menu name,			File name,			category,		package file assocation */
-	Empty(/*    */"Blank", /*     */"vide.utg", /*     */LibraryType.Template, TemplatesDummy.class), //
-	Template1(/**/"Template 1", /**/"default.utg", /*  */LibraryType.Template, TemplatesDummy.class), //
-	Tut1(/*     */"Tut 1", /*     */"logistic.utg", /* */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut2(/*     */"Tut 2", /*     */"logistic2.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
-	Model1(/*   */"French", /*    */"french.utg", /*   */LibraryType.Model, ModelsDummy.class), //
-	Model2(/*   */"Genetics", /*  */"gddm.utg", /*     */LibraryType.Model, ModelsDummy.class), //
+	/*-			   Menu name,		|     File name,	|         category,          |  package file assocation */
+	Template1(/**/"Blank", /*          */"vide.utg", /*         */LibraryType.Template, TemplatesDummy.class), //
+	Template2(/**/"Template 1", /*     */"default.utg", /*      */LibraryType.Template, TemplatesDummy.class), //
+	Tut1(/*     */"1 Logistic", /*     */"logistic.utg", /*     */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut2(/*     */"2 Logistic", /*     */"logistic2.utg", /*    */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut3(/*     */"3 LotkaVolterra", /**/"lotkaVolterra.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
+	Model1(/*   */"Genetics", /*       */"gddm.utg", /*         */LibraryType.Model, ModelsDummy.class), //
 	;
 
 	private final String displayName;
