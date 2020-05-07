@@ -12,8 +12,8 @@ treegraph // saved by OmugiGraphExporter on Tue May 05 14:58:18 CEST 2020
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https:/en.wikipedia.org/wiki/Logistic_map","https:/en.wikipedia.org/wiki/Chaos_theory"))
 	version = java.lang.String(demo)
-	built-by = java.lang.String("gignoux")
-	precis =  java.lang.String("A minimal configuration file for 3Worlds.")
+	built-by = java.lang.String("gignoux - 4/5/2020")
+	precis =  java.lang.String("The discrete logistic model: a minimal configuration file for 3Worlds. First steps with Process, Function, Widgets and DataTrackers")
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)

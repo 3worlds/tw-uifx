@@ -48,7 +48,8 @@ public enum LibraryTable {
 	Template2(/**/"Template 1", /*     */"default.utg", /*      */LibraryType.Template, TemplatesDummy.class), //
 	Tut1(/*     */"1 Logistic", /*     */"logistic.utg", /*     */LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut2(/*     */"2 Logistic", /*     */"logistic2.utg", /*    */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut3(/*     */"3 LotkaVolterra", /**/"lotkaVolterra.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut3(/*     */"3 Logistic", /*     */"logistic3.utg", /*    */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut4(/*     */"4 LotkaVolterra", /**/"lotkaVolterra.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
 	Model1(/*   */"Genetics", /*       */"gddm.utg", /*         */LibraryType.Model, ModelsDummy.class), //
 	;
 

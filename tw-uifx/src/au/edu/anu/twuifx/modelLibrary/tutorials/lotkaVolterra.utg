@@ -1,15 +1,41 @@
-treegraph // saved by OmugiGraphExporter on Wed May 06 16:43:06 CEST 2020
+treegraph // saved by OmugiGraphExporter on Thu May 07 13:43:51 CEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+// CODE snippet for method LotkaVolterra.init(...)
+//		// initialise with random parameters
+//		for (int i=0; i<r.size(0); i++) {
+//			focalLtc.r.setByInt(random.nextDouble(),i);
+//			focalLtc.K.setByInt(0.2+random.nextDouble(),i);
+//			for (int j=0; j<alpha.size(1); j++) {
+//				if (i==j)
+//					focalLtc.alpha.setByInt(1.0,i,j);
+//				else
+//					focalLtc.alpha.setByInt(random.nextDouble(),i,j);
+//			}
+//		}
+
+// CODE snippet for method LotkaVolterra.communityGrowth(...)
+//		double[] dxdt = new double[x.size(0)];
+//		for (int i=0; i<x.size(0); i++) {
+//			double sum = 0;
+//			for (int j=0; j<alpha.size(1); j++)
+//				sum += alpha.getByInt(i,j) * x.getByInt(j);
+//			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1-sum/K.getByInt(i));
+//		}
+//		for (int i=0; i<dxdt.length; i++)
+//			focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt, i);
+
+
 // TREE
 3worlds lotkaVolterra
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String()
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String()
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = java.lang.String()
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
+	built-by = java.lang.String("gignoux - 7/5/2020")
+	precis = java.lang.String("The Lotka-Volterra competition model for n species. Illustrates the use of Tables.")
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
+	version = java.lang.String(demo)
 	experiment defaultExperiment
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
@@ -51,6 +77,16 @@ treegraph // saved by OmugiGraphExporter on Wed May 06 16:43:06 CEST 2020
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		tab tab
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget wgt
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+			widget wgt1
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 	system system
 		constantClass = java.lang.String(code.system.Par)
 		driverClass = java.lang.String(code.system.Var)
@@ -70,30 +106,43 @@ treegraph // saved by OmugiGraphExporter on Wed May 06 16:43:06 CEST 2020
 						function CommunityGrowth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.system.CommunityGrowth)
+						dataTracker trkr
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+			stoppingCondition stop
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+		function Init
+			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+			userClassName = java.lang.String(code.system.Init)
 		structure community
-			categorySet *composition*
-				category *individual*
 			categorySet *systemElements*
 				category *arena*
-			categorySet *lifespan*
-				category *permanent*
+		variableValues varVals
+			x = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([4]0.2,0.2,0.2,0.2))
 
 // CROSS-LINKS
 [table:K] sizedBy szBy2 [dimensioner:nbsp]
 	rank = java.lang.Integer(0)
 [experiment:defaultExperiment] baseLine bsln [system:system]
+[dataTracker:trkr] trackComponent trksCmpOf [system:system]
+[dataTracker:trkr] trackTable trksTblOf [table:x]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:3]"))
 [table:alpha] sizedBy dim2 [dimensioner:nbsp]
 	rank = java.lang.Integer(1)
 [table:alpha] sizedBy dim1 [dimensioner:nbsp]
 	rank = java.lang.Integer(0)
 [widget:defaultController] trackTime trksTmOf [dynamics:simulator]
 [process:proc] appliesTo aplyTo [category:*arena*]
+[widget:wgt] trackSeries trksSrsOf [dataTracker:trkr]
 [category:*arena*] drivers drvs [record:var]
 [category:*arena*] lifetimeConstants ltcs [record:par]
 [table:r] sizedBy szBy1 [dimensioner:nbsp]
 	rank = java.lang.Integer(0)
-[system:system] belongsTo blngsTo [category:*individual*]
 [system:system] belongsTo blgstqn [category:*arena*]
-[system:system] belongsTo blgstkn [category:*permanent*]
 [table:x] sizedBy szBy [dimensioner:nbsp]
 	rank = java.lang.Integer(0)
+[widget:wgt1] trackSeries trksSrsOf1 [dataTracker:trkr]

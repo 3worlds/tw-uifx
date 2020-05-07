@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Wed May 06 12:08:39 CEST 2020
+treegraph // saved by OmugiGraphExporter on Tue May 05 14:58:18 CEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -6,18 +6,14 @@ treegraph // saved by OmugiGraphExporter on Wed May 06 12:08:39 CEST 2020
 // CODE snippet for method Logistic.chaos(...)
 //		focalDrv.x = r*x*(1-x);
 
-// CODE snippet for method Logistic.init(...)
-//		focalLtc.r = random.nextDouble()*4;
-//		focalDrv.x = 0.1;
-
 // TREE
-3worlds logistic2
+3worlds logistic3
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Logistic_map"))
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https:/en.wikipedia.org/wiki/Logistic_map","https:/en.wikipedia.org/wiki/Chaos_theory"))
 	version = java.lang.String(demo)
-	built-by = java.lang.String("gignoux")
-	precis =  java.lang.String("The discrete logistic model. Illustrates the use of SetInitialStateFunction to initialise the model.")
+	built-by = java.lang.String("gignoux - 4/5/2020")
+	precis =  java.lang.String("The discrete logistic model: using stopping conditions.")
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)
@@ -60,12 +56,16 @@ treegraph // saved by OmugiGraphExporter on Wed May 06 12:08:39 CEST 2020
 						function Chaos
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Chaos)
+			stoppingCondition stop
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+		variableValues drvv
+			x = java.lang.Double(0.001)
+		constantValues cstv
+			r = java.lang.Double(3.7)
 		structure struc
 			categorySet *systemElements*
 				category *arena*
-		function Init
-			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.sys.Init)
 	experiment expt
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
