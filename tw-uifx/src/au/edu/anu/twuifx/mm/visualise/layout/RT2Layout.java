@@ -56,7 +56,7 @@ public class RT2Layout implements ILayout {
 
 	private RT2Vertex root;
 
-	public RT2Layout(VisualNode vRoot) {
+	public RT2Layout(VisualNode vRoot, boolean sideline) {
 		root = new RT2Vertex(null, vRoot);
 		TreeVertexAdapter.buildSpanningTree(root,new Factory());
 	}

@@ -149,7 +149,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private ToggleButton btnChildLinks;
-
+	
 	@FXML
 	private BorderPane rootPane;
 
@@ -335,9 +335,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		ErrorList.addListener(this);
 		// Setup zooming from the graph display pane (zoomTarget)
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
-		// are prefs saved regardless of graphState??		
+		// are prefs saved regardless of graphState??
 	}
-	
 
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
@@ -370,19 +369,18 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
 				TreeGraphDataNode root = libGraph.root();
 				if (root == null || !root.classId().equals(N_ROOT.label())) {
-					Dialogs.errorAlert("Library error",lt.displayName(),
+					Dialogs.errorAlert("Library error", lt.displayName(),
 							"This Tree graph does not have a single root node called '" + N_ROOT.label() + "'");
 					return;
 				}
 
-				
 				if (root.properties().hasProperty(P_MODEL_BUILTBY.key())) {
 					DateTimeFormatter fm = DateTimeFormatter.ofPattern("d MMM uuuu");
 					LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
-					String date = " ("+currentDate.format(fm)+")";
-					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name")+date);
+					String date = " (" + currentDate.format(fm) + ")";
+					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name") + date);
 				}
-					
+
 				model.doNewProject(libGraph);
 			});
 		}
@@ -837,12 +835,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable) {
 
 		ObservableList<Item> result = FXCollections.observableArrayList();
-
+		String propertyDesciption = null;
+		if (node.properties().hasProperty(P_FIELD_DESCRIPTION.key()))
+			propertyDesciption = (String) node.properties().getPropertyValue(P_FIELD_DESCRIPTION.key());
 		for (String key : node.properties().getKeysAsSet())
+			
 			if (node.properties().getPropertyValue(key) != null) {
 				boolean editable = model.propertyEditable(node.classId(), key);
 				if (editable || showNonEditable) {
-					String propertyDesciption = "Desciption property from archtype";
+
 					result.add(makeItemType(key, node, editable, category, propertyDesciption));
 				}
 			}

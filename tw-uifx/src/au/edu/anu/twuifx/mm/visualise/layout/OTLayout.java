@@ -66,7 +66,7 @@ public class OTLayout implements ILayout {
 
 	private OTVertex root;
 
-	public OTLayout(VisualNode vRoot) {
+	public OTLayout(VisualNode vRoot, boolean sideline) {
 		root = new OTVertex(null, vRoot);
 		TreeVertexAdapter.buildSpanningTree(root,  new Factory());
 	}

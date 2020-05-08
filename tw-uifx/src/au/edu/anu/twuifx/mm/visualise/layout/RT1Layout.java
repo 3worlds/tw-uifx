@@ -52,7 +52,7 @@ public class RT1Layout implements ILayout {
 
 	private RT1Vertex root;
 
-	public RT1Layout(VisualNode vRoot) {
+	public RT1Layout(VisualNode vRoot, boolean sideline) {
 		root = new RT1Vertex(null, vRoot);
 		TreeVertexAdapter.buildSpanningTree(root, new Factory());
 	}

@@ -623,25 +623,43 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		ILayout layout;
 		switch (layoutType) {
 		case OrderedTree: {
-			layout = new OTLayout(root);
-//			layout = new OTLayoutOld(visualGraph);
+			layout = new OTLayout(root,false);
+			break;
+		}
+		case OrderedTree_: {
+			layout = new OTLayout(root,true);
 			break;
 		}
 		case RadialTree1: {
-			layout = new RT1Layout(root);
+			layout = new RT1Layout(root,false);
+			break;
+		}
+		case RadialTree1_: {
+			layout = new RT1Layout(root,true);
 			break;
 		}
 		case RadialTree2: {
-			layout = new RT2Layout(root);
+			layout = new RT2Layout(root,false);
+			break;
+		}
+		case RadialTree2_: {
+			layout = new RT2Layout(root,true);
 			break;
 		}
 		case SpringGraph: {
-			layout = new FRLayout(visualGraph, usePCEdges, useXEdges);
+			layout = new FRLayout(visualGraph, usePCEdges, useXEdges,false);
+			break;
+		}
+		case SpringGraph_: {
+			layout = new FRLayout(visualGraph, usePCEdges, useXEdges,true);
 			break;
 		}
 		case LombardiGraph: {
-			// TODO: Lombardi layout
-			layout = new LmbLayout(visualGraph, usePCEdges, useXEdges);
+			layout = new LmbLayout(visualGraph, usePCEdges, useXEdges,false);
+			break;
+		}
+		case LombardiGraph_: {
+			layout = new LmbLayout(visualGraph, usePCEdges, useXEdges,true);
 			break;
 		}
 		default: {
@@ -650,6 +668,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 
 		layout.compute(jitterFraction);
+		
 		// always scaled within unit space
 		
 		// rescale to provide border for a little node radius

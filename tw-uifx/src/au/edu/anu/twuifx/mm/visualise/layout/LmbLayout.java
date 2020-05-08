@@ -25,7 +25,7 @@ public class LmbLayout implements ILayout {
 	// from / to
 	private Map<LmbVertex, Map<LmbVertex, LmbEdge>> adjMat;
 
-	public LmbLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
+	public LmbLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges, boolean sideline) {
 		vertices = new ArrayList<>();
 		edges = new ArrayList<>();
 		adjMat = new HashMap<>();

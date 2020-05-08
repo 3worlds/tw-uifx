@@ -70,7 +70,7 @@ public class FRLayout implements ILayout {
 	/* vertices excluded from the alg. These are lined up on the RH side. */
 	private List<FRVertex> isolated;
 
-	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges) {
+	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges, boolean sideline) {
 		vertices = new ArrayList<>();
 		edges = new ArrayList<>();
 		isolated = new ArrayList<>();
