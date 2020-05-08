@@ -1,0 +1,147 @@
+treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds idh
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	built-by = java.lang.String(gignoux (7 mai 2020))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	precis = java.lang.String()
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
+	experiment defaultExperiment
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	dataDefinition dDef
+		record commPar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(commPar)
+			table alpha
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+			table rkpar
+				description = java.lang.String()
+				record rec
+					field r
+						description = java.lang.String(growth rate)
+						interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+						precision = java.lang.Double(0.0)
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+						units = java.lang.String()
+					field K
+						description = java.lang.String(carrying capacity)
+						interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+						precision = java.lang.Double(0.0)
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+						units = java.lang.String()
+		record commRec
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(commRec)
+			table x
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+		record arenaPar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(arenaPar)
+			field freq
+				description = java.lang.String()
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+		record arenaDec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(arenaDec)
+			field disturbanceOccurence
+				description = java.lang.String()
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		dimensioner nbspecies
+			size = java.lang.Integer(5)
+	userInterface defaultGUI
+		top top
+			widget defaultController
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		tab tab
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget wgt
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+	system system
+		constantClass = java.lang.String(code.system.ArenaPar)
+		decoratorClass = java.lang.String(code.system.ArenaDec)
+		dynamics simulator
+			timeLine timeLine
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timeModel tmMo
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					runAtTimeZero = java.lang.Boolean(false)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+					process proc1
+						function DisturbanceOccurence
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.DisturbanceOccurence)
+					process proc
+						function PopulationGrwth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.PopulationGrwth)
+						dataTracker trkr
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+		structure struc
+			categorySet *systemElements*
+				category *component*
+				category *arena*
+			componentType community
+				constantClass = java.lang.String(code.system.CommPar)
+				driverClass = java.lang.String(code.system.CommRec)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				component comp
+					variableValues varVals
+						x = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([5]0.2,0.2,0.2,0.2,0.2))
+
+// CROSS-LINKS
+[process:proc1] appliesTo aplyTo1 [category:*arena*]
+[experiment:defaultExperiment] baseLine bsln [system:system]
+[dataTracker:trkr] trackComponent trksCmpOf1 [component:comp]
+[dataTracker:trkr] trackTable trksTblOf [table:x]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]""))
+[table:alpha] sizedBy szBy3 [dimensioner:nbspecies]
+	rank = java.lang.Integer(0)
+[table:alpha] sizedBy szBy2 [dimensioner:nbspecies]
+	rank = java.lang.Integer(0)
+[widget:defaultController] trackTime trksTmOf [dynamics:simulator]
+[process:proc] dependsOn depsOn [process:proc1]
+[process:proc] appliesTo aplyTo [category:*component*]
+[widget:wgt] trackSeries trksSrsOf [dataTracker:trkr]
+[category:*arena*] decorators decs [record:arenaDec]
+[category:*arena*] lifetimeConstants ltcs [record:arenaPar]
+[componentType:community] belongsTo blngsTo1 [category:*component*]
+[category:*component*] drivers drvs [record:commRec]
+[category:*component*] lifetimeConstants ltcs1 [record:commPar]
+[table:rkpar] sizedBy szBy1 [dimensioner:nbspecies]
+	rank = java.lang.Integer(0)
+[system:system] belongsTo blgstqn [category:*arena*]
+[table:x] sizedBy szBy [dimensioner:nbspecies]
+	rank = java.lang.Integer(0)
