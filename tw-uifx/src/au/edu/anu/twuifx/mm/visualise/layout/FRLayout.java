@@ -118,13 +118,14 @@ public class FRLayout implements ILayout {
 		}
 
 		// remove isolated vertices
-		for (FRVertex v : vertices)
-			if (!v.hasEdges())
-				isolated.add(v);
+		if (sideline) {
+			for (FRVertex v : vertices)
+				if (!v.hasEdges())
+					isolated.add(v);
 
-		for (FRVertex v : isolated)
-			vertices.remove(v);
-
+			for (FRVertex v : isolated)
+				vertices.remove(v);
+		}
 	}
 
 	private FRVertex Node2Vertex(VisualNode vn) {
@@ -189,7 +190,7 @@ public class FRLayout implements ILayout {
 	}
 
 	// linear cooling
-	public  static double cool(double ti, double i, double t0, double m) {
+	public static double cool(double ti, double i, double t0, double m) {
 		return Math.max(0.0, ti - t0 * 1.0 / m);
 	}
 
