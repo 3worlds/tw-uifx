@@ -65,7 +65,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 06 12:08:39 CEST 2020
 		structure struc
 			categorySet *systemElements*
 				category *arena*
-		function Init
+		initFunction Init
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys.Init)
 	experiment expt

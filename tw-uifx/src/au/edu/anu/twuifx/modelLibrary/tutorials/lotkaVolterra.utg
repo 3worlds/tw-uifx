@@ -119,7 +119,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 07 13:43:51 CEST 2020
 			stoppingCondition stop
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
-		function Init
+		initFunction Init
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.system.Init)
 		structure community
