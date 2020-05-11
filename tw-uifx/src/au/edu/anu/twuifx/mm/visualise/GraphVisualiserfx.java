@@ -30,12 +30,9 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
-
 import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
@@ -93,6 +90,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final IntegerProperty nodeRadius;
 	private final BooleanProperty showTreeLine;
 	private final BooleanProperty showGraphLine;
+	private final BooleanProperty sideline;
 	private final DropShadow ds;
 	private final ObjectProperty<Font> font;
 	// these could all be properties and therefore modifiable from the GUI
@@ -110,6 +108,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			IntegerProperty nodeRadius, //
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
+			BooleanProperty sideline,
 			ObjectProperty<Font> font, //
 			IMMController controller) {
 		this.visualGraph = visualGraph;
@@ -118,6 +117,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.nodeRadius = nodeRadius;
 		this.showGraphLine = showGraphLine;
 		this.showTreeLine = showTreeLine;
+		this.sideline = sideline;
 		this.font = font;
 		this.controller = controller;
 		ds = new DropShadow();
@@ -615,54 +615,34 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void doLayout(VisualNode root, double jitterFraction, LayoutType layoutType, boolean usePCEdges,
-			boolean useXEdges) {
+	public void doLayout(VisualNode root, double jitterFraction, LayoutType layoutType, boolean pcShowing,
+			boolean xlShowing, boolean sideline) {
 		if (root == null)
 			root = getTWRoot();
 
 		ILayout layout;
 		switch (layoutType) {
 		case OrderedTree: {
-			layout = new OTLayout(root,false);
-			break;
-		}
-		case OrderedTree_: {
-			layout = new OTLayout(root,true);
+			layout = new OTLayout(root,pcShowing,xlShowing,sideline);
 			break;
 		}
 		case RadialTree1: {
-			layout = new RT1Layout(root,false);
-			break;
-		}
-		case RadialTree1_: {
-			layout = new RT1Layout(root,true);
+			layout = new RT1Layout(root,pcShowing,xlShowing,sideline);
 			break;
 		}
 		case RadialTree2: {
-			layout = new RT2Layout(root,false);
-			break;
-		}
-		case RadialTree2_: {
-			layout = new RT2Layout(root,true);
+			layout = new RT2Layout(root,pcShowing,xlShowing,sideline);
 			break;
 		}
 		case SpringGraph: {
-			layout = new FRLayout(visualGraph, usePCEdges, useXEdges,false);
-			break;
-		}
-		case SpringGraph_: {
-			layout = new FRLayout(visualGraph, usePCEdges, useXEdges,true);
+			layout = new FRLayout(visualGraph, pcShowing, xlShowing, sideline);
 			break;
 		}
 		case LombardiGraph: {
-			layout = new LmbLayout(visualGraph, usePCEdges, useXEdges,false);
+			layout = new LmbLayout(visualGraph, pcShowing, xlShowing, sideline);
 			break;
 		}
-		case LombardiGraph_: {
-			layout = new LmbLayout(visualGraph, usePCEdges, useXEdges,true);
-			break;
-		}
-		default: {
+			default: {
 			throw new TwuifxException("Unknown layout type '" + layoutType + "',");
 		}
 		}

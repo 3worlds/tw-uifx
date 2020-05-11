@@ -55,10 +55,14 @@ public class RT2Layout implements ILayout {
 	}
 
 	private RT2Vertex root;
-
-	public RT2Layout(VisualNode vRoot, boolean sideline) {
+	private List<TreeVertexAdapter> isolated;
+	
+	public RT2Layout(VisualNode vRoot, boolean pcShowing, boolean xlShowing, boolean sideline) {
 		root = new RT2Vertex(null, vRoot);
 		TreeVertexAdapter.buildSpanningTree(root,new Factory());
+		isolated = new ArrayList<>();
+		if (sideline)
+			root.getIsolated(isolated, pcShowing, xlShowing);
 	}
 
 
@@ -83,6 +87,11 @@ public class RT2Layout implements ILayout {
 		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
 		root.getLayoutBounds(min, max);
 		root.normalise(ILayout.getBoundingFrame(min, max), ILayout.getFittingFrame());
+
+		for (int i = 0; i < isolated.size(); i++) {
+			IVertex v = isolated.get(i);
+			v.setLocation(1.07, (double) i / (double) isolated.size());
+		}
 
 		return this;
 	}

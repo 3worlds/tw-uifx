@@ -88,7 +88,7 @@ import javafx.stage.Window;
 public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
 
-	private int BUFFER_CAPACITY;// pref mm/mr or both
+	private int bufferCapacity;// pref mm/mr or both
 	// drop overlayed points
 	private int MIN_PIXEL_DISTANCE = 0;
 	// private int N_SAMPLES = 3000;// what is this?
@@ -117,6 +117,54 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		this.widgetId = id;
 	}
 
+	@Override
+	public void onMetaDataMessage(Metadata meta) {
+		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
+		Platform.runLater(() -> {
+			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+			for (DataLabel dl : tsmeta.doubleNames()) {
+				String key = dl.toString();
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				dataSetMap.put(key, ds);
+			}
+
+			for (DataLabel dl : tsmeta.intNames()) {
+				String key = dl.toString();
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				dataSetMap.put(key, ds);
+			}
+			/*
+			 * Renderers should be in the chart BEFORE dataSets are added to the renderer
+			 * otherwise when data is added to a dataset, invalidation events will not
+			 * propagate to the chart to force a repaint.
+			 */
+			// (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
+			// renderer before adding the renderer to the chart
+			// renderer_dipoleCurrent.getAxes().add(yAxis2);
+			if (dataSetMap.size() > 1) {
+				// TODO then lets at least add a second yaxis.
+				// Maybe we could allow up to 4 axes - two on each side
+			} else {
+				String ylabel = dataSetMap.keySet().iterator().next();
+				chart.getYAxis().setLabel(ylabel);
+			}
+
+			dataSetMap.entrySet().forEach(entry -> {
+				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+				initErrorDataSetRenderer(renderer);
+				chart.getRenderers().add(renderer);
+				renderer.getDatasets().add(entry.getValue());
+			});
+			timeFormatter.onMetaDataMessage(meta);
+			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+			chart.getXAxis().setUnit(TimeUtil.timeUnitName(tu, nTu));
+			// depending on the TU we could decide on xAxis.setMinorTickCount(some even
+			// division of the period)
+			// initialMessage = true;
+		});
+		// }
+	}
 	@Override
 	public void onDataMessage(final Output0DData data) {
 		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
@@ -158,65 +206,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	// private boolean initialMessage = false;
 
-	@Override
-	public void onMetaDataMessage(Metadata meta) {
-		// clear data from last run - here we could use the lovely 'history' method
-		// supplied with chartfx - TODO
-		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
-//		dataSetMap.entrySet().forEach(entry -> {
-//			entry.getValue().reset();
-//		});
-
-		// this occurs EVERY reset so take care not to recreate datasets and renderers
-		// etc
-		// if (!initialMessage) {
-		Platform.runLater(() -> {
-			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
-			for (DataLabel dl : tsmeta.doubleNames()) {
-				String key = dl.toString();
-//				log.info("Tracking: " + key);
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, BUFFER_CAPACITY);
-				dataSetMap.put(key, ds);
-			}
-
-			for (DataLabel dl : tsmeta.intNames()) {
-				String key = dl.toString();
-//				log.info("Tracking: " + key);
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, BUFFER_CAPACITY);
-				dataSetMap.put(key, ds);
-			}
-			/*
-			 * Renderers should be in the chart BEFORE dataSets are added to the renderer
-			 * otherwise when data is added to a dataset, invalidation events will not
-			 * propagate to the chart to force a repaint.
-			 */
-			// (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
-			// renderer before adding the renderer to the chart
-			// renderer_dipoleCurrent.getAxes().add(yAxis2);
-			if (dataSetMap.size() > 1) {
-				// TODO then lets at least add a second yaxis.
-				// Maybe we could allow up to 4 axes - two on each side
-			} else {
-				String ylabel = dataSetMap.keySet().iterator().next();
-				chart.getYAxis().setLabel(ylabel);
-			}
-
-			dataSetMap.entrySet().forEach(entry -> {
-				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
-				initErrorDataSetRenderer(renderer);
-				chart.getRenderers().add(renderer);
-				renderer.getDatasets().add(entry.getValue());
-			});
-			timeFormatter.onMetaDataMessage(meta);
-			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-			chart.getXAxis().setUnit(TimeUtil.timeUnitName(tu, nTu));
-			// depending on the TU we could decide on xAxis.setMinorTickCount(some even
-			// division of the period)
-			// initialMessage = true;
-		});
-		// }
-	}
 
 	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
 		r.setErrorType(ErrorStyle.NONE);
@@ -242,15 +231,20 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "");
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
 		xAxis1.setAutoRangeRounding(true);
-		xAxis1.setTimeAxis(false);
+		yAxis1.setAutoRangeRounding(true);
+
+		xAxis1.setForceZeroInRange(true);
+		yAxis1.setForceZeroInRange(true);
+
 		xAxis1.invertAxis(false);
+		yAxis1.invertAxis(false);
 		// These numbers can be very large
+		xAxis1.setTimeAxis(false);
+
 		xAxis1.setTickLabelRotation(45);
 		// for gregorian we may need something else here
 //		xAxis1.setTimeAxis(true);
 
-		yAxis1.setForceZeroInRange(true);
-		yAxis1.setAutoRangeRounding(true);
 
 		// can't create a chart without axes
 		chart = new XYChart(xAxis1, yAxis1);
@@ -284,7 +278,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		content.setHgap(3);
 		Label lbl = new Label("Buffer capacity");
 		Spinner<Integer> spCapacity = new Spinner<>();
-		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 10000, BUFFER_CAPACITY));
+		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 10000, bufferCapacity));
 		spCapacity.setMaxWidth(100);
 		spCapacity.setEditable(true);
 		content.add(lbl, 0, 0);
@@ -294,11 +288,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		// Map<String, CircularDoubleErrorDataSet>
 		if (result.get().equals(ok)) {
 			int v = spCapacity.getValue();
-			if (v != BUFFER_CAPACITY) {
-				BUFFER_CAPACITY=v;
+			if (v != bufferCapacity) {
+				bufferCapacity=v;
 				for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
 					CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
-					ds.resizeBuffer(BUFFER_CAPACITY);
+					ds.resizeBuffer(bufferCapacity);
 				}
 			}
 		}
@@ -308,12 +302,12 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void putUserPreferences() {
-		Preferences.putInt(widgetId + keyBuffer, BUFFER_CAPACITY);
+		Preferences.putInt(widgetId + keyBuffer, bufferCapacity);
 	}
 
 	@Override
 	public void getUserPreferences() {
-		BUFFER_CAPACITY = Preferences.getInt(widgetId + keyBuffer, 1000);
+		bufferCapacity = Preferences.getInt(widgetId + keyBuffer, 1000);
 	}
 
 }

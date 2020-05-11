@@ -25,7 +25,7 @@ public class LmbLayout implements ILayout {
 	// from / to
 	private Map<LmbVertex, Map<LmbVertex, LmbEdge>> adjMat;
 
-	public LmbLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges, boolean sideline) {
+	public LmbLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean pcShowing, boolean xlShowing, boolean sideline) {
 		vertices = new ArrayList<>();
 		edges = new ArrayList<>();
 		adjMat = new HashMap<>();
@@ -50,7 +50,7 @@ public class LmbLayout implements ILayout {
 		for (LmbVertex v : vertices) {
 			// add parent/children edges
 			VisualNode vn = v.getNode();
-			if (usePCEdges)
+			if (pcShowing)
 				for (VisualNode cn : vn.getChildren())
 					if (!cn.isCollapsed()) {
 						LmbVertex u = (LmbVertex) Node2Vertex(cn);
@@ -63,7 +63,7 @@ public class LmbLayout implements ILayout {
 					}
 
 			// add xlink edges
-			if (useXEdges) {
+			if (xlShowing) {
 				@SuppressWarnings("unchecked")
 				List<VisualNode> toNodes = (List<VisualNode>) get(vn.edges(Direction.OUT), edgeListEndNodes());
 				for (VisualNode toNode : toNodes)
@@ -79,19 +79,22 @@ public class LmbLayout implements ILayout {
 			}
 		}
 
-		// remove isolated vertices
-		for (LmbVertex v : vertices)
-			if (!v.hasEdges())
-				isolated.add(v);
-
-		for (LmbVertex v : isolated)
-			vertices.remove(v);
-
+		
 		for (LmbVertex v : vertices)
 			v.init();
 
 		for (LmbEdge e : edges)
 			e.init();
+		// remove isolated vertices
+		if (sideline) {
+			for (LmbVertex v : vertices)
+				if (v.degree()==0)
+					isolated.add(v);
+
+			for (LmbVertex v : isolated)
+				vertices.remove(v);
+		}
+
 	}
 
 	private Map<LmbVertex, LmbEdge> addAdjMat(LmbEdge e, LmbVertex n1, LmbVertex n2) {
@@ -148,19 +151,23 @@ public class LmbLayout implements ILayout {
 			maxDeterministicShuffle += 1;
 		double t = t0; // set initial temperature
 		// Repulsion
+//		boolean done = false;
 		for (int i = 0; i < interations; i++) {
 			for (int a = 0; a < vertices.size(); a++) {
 				LmbVertex v = vertices.get(a);
 				for (int b = a + 1; b < vertices.size(); b++) {
 					LmbVertex u = vertices.get(b);
 					/* double force = */v.setRepulsionDisplacement(u, k);
+//					if (!done)System.out.println(v.id()+"<-->"+u.id());
 				}
 			}
 
 			// Attraction
 			for (LmbEdge e : edges) {
 				/* double force = */e.setAttractionDisplacement(k);
+//				if (!done)System.out.println(e.getP().id()+"-><-"+e.getQ().id());
 			}
+//			done = true;
 			// shuffle edge order
 			if (i % shuffleEvery == 0)
 				for (LmbVertex v : vertices)

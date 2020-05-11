@@ -176,6 +176,7 @@
                         <Button fx:id="btnLayout" disable="true" onAction="#handleLayout" text="_L" />
                         <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
                         <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
+                        <ToggleButton fx:id="tglSideline" disable="true" mnemonicParsing="false" text="&gt;|" />
                         <Label text="Taille de police:" />
                         <Spinner fx:id="spinFontSize" editable="true" prefWidth="75.0" />
                         <Label text="Taille du nœud:" />

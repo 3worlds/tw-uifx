@@ -29,6 +29,8 @@
 
 package au.edu.anu.twuifx.mm.visualise.layout;
 
+import java.util.List;
+
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 
 /**
@@ -299,7 +301,7 @@ public class OTVertex extends TreeVertexAdapter {
 	public void secondWalk(OTVertex p, double m, int depth) {
 		double y = getPrelim() + m;
 		double x = OTVertex.levels[depth];
-		setLocation(x,y);
+		setLocation(x, y);
 		depth += 1;
 		if (!isLeaf()) {
 			for (OTVertex child = getFirstChild(); child != null; child = child.nextSibling()) {
@@ -307,7 +309,6 @@ public class OTVertex extends TreeVertexAdapter {
 			}
 		}
 	}
-
 
 	public double getPrelim() {
 		return _prelim;
@@ -364,5 +365,6 @@ public class OTVertex extends TreeVertexAdapter {
 	public void setChange(double change) {
 		this._change = change;
 	}
+
 
 }

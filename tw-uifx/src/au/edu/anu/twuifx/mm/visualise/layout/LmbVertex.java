@@ -26,18 +26,20 @@ public class LmbVertex extends FRVertex {
 
 	public void init() {
 		neighbours = new ArrayList<>();
-		for (LmbVertex nn : _adjMap.keySet())
-			neighbours.add(nn);
-		neighbours.sort(new Comparator<LmbVertex>() {
+		if (_adjMap != null) {
+			for (LmbVertex nn : _adjMap.keySet())
+				neighbours.add(nn);
+			neighbours.sort(new Comparator<LmbVertex>() {
 
-			@Override
-			public int compare(LmbVertex v1, LmbVertex v2) {
-				return v1.id().compareTo(v2.id());
-			}
+				@Override
+				public int compare(LmbVertex v1, LmbVertex v2) {
+					return v1.id().compareTo(v2.id());
+				}
 
-		});
-		aIncrement = (2 * Math.PI) / (double) degree();
-//		System.out.println(this.id()+"\t"+degree());
+			});
+			aIncrement = (2 * Math.PI) / (double) degree();
+		}
+
 	}
 
 	public void addNeighbour(Map<LmbVertex, LmbEdge> adjMap) {
@@ -99,7 +101,7 @@ public class LmbVertex extends FRVertex {
 			LmbVertex nn = neighbours.get(i);
 			bestCombo[i] = tanAngleRel(nn);
 		}
-		//double[] orig = bestCombo.clone();
+		// double[] orig = bestCombo.clone();
 
 		if (degree() <= maxDeterministicShuffle) {
 			// full factorial shuffle

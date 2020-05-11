@@ -70,7 +70,7 @@ public class FRLayout implements ILayout {
 	/* vertices excluded from the alg. These are lined up on the RH side. */
 	private List<FRVertex> isolated;
 
-	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean usePCEdges, boolean useXEdges, boolean sideline) {
+	public FRLayout(TreeGraph<VisualNode, VisualEdge> graph, boolean pcShowing, boolean xlShowing, boolean sideline) {
 		vertices = new ArrayList<>();
 		edges = new ArrayList<>();
 		isolated = new ArrayList<>();
@@ -94,7 +94,7 @@ public class FRLayout implements ILayout {
 		for (FRVertex v : vertices) {
 			// add parent/children edges
 			VisualNode vn = v.getNode();
-			if (usePCEdges)
+			if (pcShowing)
 				for (VisualNode cn : vn.getChildren())
 					if (!cn.isCollapsed()) {
 						FRVertex u = Node2Vertex(cn);
@@ -104,7 +104,7 @@ public class FRLayout implements ILayout {
 					}
 
 			// add xlink edges
-			if (useXEdges) {
+			if (xlShowing) {
 				@SuppressWarnings("unchecked")
 				List<VisualNode> toNodes = (List<VisualNode>) get(vn.edges(Direction.OUT), edgeListEndNodes());
 				for (VisualNode toNode : toNodes)

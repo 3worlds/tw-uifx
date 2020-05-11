@@ -30,6 +30,8 @@
 package au.edu.anu.twuifx.mm.visualise.layout;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import au.edu.anu.omhtk.rng.Pcg32;
@@ -51,10 +53,15 @@ public class RT1Layout implements ILayout {
 	}
 
 	private RT1Vertex root;
+	
+	private List<TreeVertexAdapter> isolated;
 
-	public RT1Layout(VisualNode vRoot, boolean sideline) {
+	public RT1Layout(VisualNode vRoot, boolean pcShowing,boolean xlShowing,boolean sideline) {
 		root = new RT1Vertex(null, vRoot);
 		TreeVertexAdapter.buildSpanningTree(root, new Factory());
+		isolated = new ArrayList<>();
+		if (sideline)
+			root.getIsolated(isolated, pcShowing, xlShowing);
 	}
 
 	@Override
@@ -71,6 +78,11 @@ public class RT1Layout implements ILayout {
 		Point2D max = new Point2D.Double(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
 		root.getLayoutBounds(min, max);
 		root.normalise(ILayout.getBoundingFrame(min, max), ILayout.getFittingFrame());
+
+		for (int i = 0; i < isolated.size(); i++) {
+			IVertex v = isolated.get(i);
+			v.setLocation(1.07, (double) i / (double) isolated.size());
+		}
 
 		return this;
 	}

@@ -115,7 +115,6 @@ import au.edu.anu.twuifx.mm.propertyEditors.populationType.PopTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
 import au.edu.anu.twuifx.modelLibrary.LibraryTable;
-import au.edu.anu.twuifx.modelLibrary.templates.TemplatesDummy;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import au.edu.anu.ymuit.util.CenteredZooming;
@@ -124,11 +123,9 @@ import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.ALEdge;
-import fr.cnrs.iees.graph.impl.ALNode;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
-import fr.cnrs.iees.graph.io.GraphImporter;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
@@ -149,6 +146,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private ToggleButton btnChildLinks;
+	
+	@FXML
+	private ToggleButton tglSideline;
 	
 	@FXML
 	private BorderPane rootPane;
@@ -507,7 +507,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		double dSize = size;
 		dSize = dSize / 100.0;
 		visualiser.doLayout(root, dSize, cbxLayoutChoice.getValue(), btnChildLinks.isSelected(),
-				btnXLinks.isSelected());
+				btnXLinks.isSelected(),tglSideline.isSelected());
 	}
 
 	@FXML
@@ -592,6 +592,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putBoolean(mainMaximized, stage.isMaximized());
 			Preferences.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
+			Preferences.putBoolean(tglSideline.idProperty().get(), tglSideline.isSelected());
 			Preferences.putInt(fontSizeKey, fontSize);
 			Preferences.putInt(nodeSizeKey, nodeRadiusProperty.get());
 			Preferences.putInt(jitterKey, jitterProperty.get());
@@ -647,6 +648,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
+		tglSideline.selectedProperty().set(Preferences.getBoolean(tglSideline.idProperty().get(), false));
 
 		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, 1));
 		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, 1));
@@ -797,6 +799,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				nodeRadiusProperty, //
 				btnChildLinks.selectedProperty(), //
 				btnXLinks.selectedProperty(), //
+				tglSideline.selectedProperty(),//
 				fontProperty, this);
 
 		visualiser.initialiseView();
@@ -1007,6 +1010,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		menuItemSaveAs.setDisable(!isOpen);
 		btnChildLinks.setDisable(!isOpen);
 		btnXLinks.setDisable(!isOpen);
+		tglSideline.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;

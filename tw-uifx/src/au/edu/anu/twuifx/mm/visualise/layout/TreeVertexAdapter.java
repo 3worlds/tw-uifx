@@ -52,6 +52,9 @@ public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVe
 		this._parent = parent;
 		this._children = new ArrayList<>();
 	}
+	public boolean nodeHasEdges() {
+		return getNode().edges().iterator().hasNext();
+	}
 
 	@Override
 	public boolean isLeaf() {
@@ -121,5 +124,16 @@ public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVe
 			buildSpanningTree(vChild,factory);
 		}
 	}
+	public void getIsolated(List<TreeVertexAdapter> lstIsolated, boolean pcShowing, boolean xlShowing) {
+		if (!pcShowing)
+			if (!xlShowing)
+				lstIsolated.add(this);
+			else if (!nodeHasEdges())
+				lstIsolated.add(this);
+		for (TreeVertexAdapter c:getChildren()) {
+			c.getIsolated(lstIsolated,pcShowing,xlShowing);
+		}
+	}
+
 
 }
