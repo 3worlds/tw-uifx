@@ -260,7 +260,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 		formatter = Decimals.getDecimalFormat(decimalPlaces);
 		lblLow.setText(formatter.format(minValue));
 		lblHigh.setText(formatter.format(maxValue));
-		resolution = Preferences.getInt(widgetId + keyResolution, 1);
+		resolution = Preferences.getInt(widgetId + keyResolution, 50);
 		// dataToCanvas();
 
 	}
