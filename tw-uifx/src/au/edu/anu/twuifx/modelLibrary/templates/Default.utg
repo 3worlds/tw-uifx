@@ -1,18 +1,21 @@
-treegraph // saved by OmugiGraphExporter on Thu Apr 16 10:13:46 CEST 2020
+treegraph // saved by OmugiGraphExporter on Wed May 13 05:42:10 AEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
-
-// Default setup to start ModelMaker with
-
 // TREE
-3worlds default
+3worlds Default
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	precis = java.lang.String()
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = java.lang.String("")
-	built-by = java.lang.String("")
-	precis =  java.lang.String("")
+	version = java.lang.String()
+	experiment expt
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	dataDefinition dDef
 		record AVEphemeral
 			field birthDate
@@ -29,31 +32,25 @@ treegraph // saved by OmugiGraphExporter on Thu Apr 16 10:13:46 CEST 2020
 			field count
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String("#")
+				units = java.lang.String(#)
 			field nAdded
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String("#")
+				units = java.lang.String(#)
 			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String("#")
-	experiment defaultExperiment
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
-		timePeriod tp
-			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-	userInterface defaultGUI
+				units = java.lang.String(#)
+	userInterface gui
 		top top
-			widget defaultController
+			widget ctrl
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
-	system system
+	system sys
 		parameterClass = java.lang.String()
-		dynamics simulator
-			timeLine timeLine
+		dynamics sim
+			timeLine tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
@@ -64,25 +61,24 @@ treegraph // saved by OmugiGraphExporter on Thu Apr 16 10:13:46 CEST 2020
 					runAtTimeZero = java.lang.Boolean(false)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
-		structure community
-			categorySet *systemElements*
-				category *arena*
-				category "*life cycle*"
-				category *group*
-				category *component*
-				category *relation*
-				category *space*
-			categorySet *lifespan*
-				category *permanent*
-				category *ephemeral*
+		structure comm
 			categorySet *composition*
 				category *population*
 				category *individual*
+			categorySet *systemElements*
+				category *life cycle*
+				category *group*
+				category *relation*
+				category *component*
+				category *space*
+				category *arena*
+			categorySet *lifespan*
+				category *ephemeral*
+				category *permanent*
 
 // CROSS-LINKS
-[widget:defaultController] trackTime trksTmOf [dynamics:simulator]
-[experiment:defaultExperiment] baseLine bsln [system:system]
+[experiment:expt] baseLine bsln [system:sys]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[system:sys] belongsTo blngsTo1 [category:*arena*]
+[system:sys] belongsTo blngsTo2 [category:*permanent*]
 [category:*population*] autoVar auto [record:AVPopulation]
-[system:system] belongsTo blgstqn [category:*arena*]
-[system:system] belongsTo blgstkn [category:*permanent*]

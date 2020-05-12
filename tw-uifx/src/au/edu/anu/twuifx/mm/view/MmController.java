@@ -524,13 +524,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		File[] files = Project.getAllProjectPaths();
 		String[] names = Project.extractDisplayNames(files);
 		for (int i = 0; i < files.length; i++) {
-			MenuItem mi = new MenuItem(names[i]);
+			MenuItem mi = new MenuItem((i+1)+" "+names[i]);
 			// // Stop the first underscore from being removed - not needed anymore?
 			// // https://bugs.openjdk.java.net/browse/JDK-8095296
 			mi.setMnemonicParsing(false);
 			menuOpen.getItems().add(mi);
 			map.put(mi, files[i]);
 			String id = Project.extractDateTime(files[i]);
+			
 			if (Objects.equals(cid, id))
 				mi.setDisable(true);
 			else

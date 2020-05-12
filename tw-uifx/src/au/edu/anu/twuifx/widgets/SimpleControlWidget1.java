@@ -3,13 +3,13 @@
  *                                                                        *
  *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
- *       ian.davies@anu.edu.au                                            * 
+ *       ian.davies@anu.edu.au                                            *
  *                                                                        *
  *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
  *  This is to separate concerns of UI implementation and the code for    *
  *  these java programs.                                                  *
  *                                                                        *
- **************************************************************************                                       
+ **************************************************************************
  *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
  *                                                                        *
  *  TW-UIFX is free software: you can redistribute it and/or modify       *
@@ -20,99 +20,76 @@
  *  TW-UIFX is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *  GNU General Public License for more details.                          *                         
+ *  GNU General Public License for more details.                          *
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
  *  along with TW-UIFX.                                                   *
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-
 package au.edu.anu.twuifx.widgets;
-
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import au.edu.anu.twcore.data.runtime.Metadata;
-import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
-import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
-import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
-import fr.cnrs.iees.rvgrid.rendezvous.RendezvousProcess;
+import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineObserver;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
  * @author Ian Davies
  *
- * @date 29 Jan 2020
+ * @date 2 Sep 2019
+ *
+ *       Simplest possible state machine controller (experiment Deployer)
+ *       widget.
+ *
+ *       The Run/Pause button does triple service:
+ *
+ *       - if the state is running then it's a pause button.
+ *
+ *       - If the state is Pausing then its a continue button
+ *
+ *       - If the state is Waiting then its a Run button.
+ *
+ *       setButtonLogic() prevents invalid events being sent by
+ *       enabling/disabling control buttons.
+ *
+ *       TODO Ideally, a quit event should be sent before the program is closed
+ *       to prevent hanging threads. This would need to be called by something
+ *       external to this class. Should the ancestor (StateMachineController)
+ *       have a public quit method? - little bit flaky because quit is not valid
+ *       from and state.
+ *
  */
-public class SimpleControlWidget1 extends StateMachineController
-		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
-
+public class SimpleControlWidget1 extends StateMachineController implements WidgetGUI {
 	private Button btnRunPause;
 	private Button btnStep;
 	private Button btnReset;
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
-
-	private WidgetTrackingPolicy<TimeData> policy;
-
-	private Label lblRealTime;
-	private Label lblDelta;
-	private long startTime;
-	private long prevDuration;
-	private long idleTime;
-	private long idleStartTime;
-
 	private static Logger log = Logging.getLogger(SimpleControlWidget1.class);
 
 	public SimpleControlWidget1(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
-		policy = new SimpleWidgetTrackingPolicy();
-		// RV for simulator time messages
-		addRendezvous(new RendezvousProcess() {
-			@Override
-			public void execute(RVMessage message) {
-				if (message.getMessageHeader().type() == DataMessageTypes.TIME) {
-					TimeData data = (TimeData) message.payload();
-					onDataMessage(data);
-				}
-			}
-		}, DataMessageTypes.TIME);
-		// RV for metadata messages
-		addRendezvous(new RendezvousProcess() {
-			@Override
-			public void execute(RVMessage message) {
-				if (message.getMessageHeader().type() == DataMessageTypes.METADATA) {
-					Metadata meta = (Metadata) message.payload();
-					onMetaDataMessage(meta);
-				}
-			}
-		}, DataMessageTypes.METADATA);
-
 	}
 
 	@Override
@@ -139,103 +116,73 @@ public class SimpleControlWidget1 extends StateMachineController
 		HBox pane = new HBox();
 		pane.setAlignment(Pos.BASELINE_LEFT);
 		pane.getChildren().addAll(buttons);
-		lblRealTime = new Label("0");
-		lblDelta = new Label("0");
 
 		pane.setSpacing(5.0);
-		pane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
-				lblRealTime, new Label("[ms]"));
 
 		nullButtons();
-
+		
 		getUserPreferences();
 		
 		return pane;
 	}
 
-	private void handleResetPressed() {
+	private Object handleResetPressed() {
 		nullButtons();
 		sendEvent(reset.event());
-		Platform.runLater(() -> {
-			lblRealTime.setText("0");
-		});
+		return null;
 	}
 
-	private void handleStepPressed() {
-		long now = System.currentTimeMillis();
-		State state = stateMachine().getCurrentState();
+	private Object handleStepPressed() {
 		nullButtons();
-		if (isSimulatorState(state, waiting)) {
-			startTime = now;
-			idleTime = 0;
-			sendEvent(step.event());
-		} else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping)) {
-			if (idleStartTime > 0)
-				idleTime += (now - idleStartTime);
-			sendEvent(step.event());
-		}
+		sendEvent(step.event());
+		return null;
 	}
 
-	private void handleRunPausePressed() {
-		long now = System.currentTimeMillis();
+	private Object handleRunPausePressed() {
 		nullButtons();
 		State state = stateMachine().getCurrentState();
-
-		if (isSimulatorState(state, waiting)) {
-			startTime = now;
-			idleTime = 0;
-			sendEvent(run.event());
-		} else if (isSimulatorState(state, running)) {
-			sendEvent(pause.event());
-		} else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping)) {
-			// total idleTime here
-			if (idleStartTime > 0)
-				idleTime += (now - idleStartTime);
-			sendEvent(goOn.event());
-		}
-	}
-
-	private long getDuration(long now) {
-		return now - (startTime + idleTime);
-
+		Event event = null;
+		if (isSimulatorState(state, waiting))
+			event = run.event();
+		else if (isSimulatorState(state, running))
+			event = pause.event();
+		else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping))
+			event = goOn.event();
+		if (event != null)
+			sendEvent(event);
+		return null;
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
-		final long now = System.currentTimeMillis();
-		if (isSimulatorState(state, finished)) {
-			long duration = getDuration(now);
-			final String strDuration = Long.toString(duration);
-			long delta = duration - prevDuration;
-			final String strDelta = Long.toString(delta);
-			prevDuration = duration;
-
-			Platform.runLater(() -> {
-				lblRealTime.setText(strDuration);
-				lblDelta.setText(strDelta);
-			});
-		}
-		if (isSimulatorState(state, stepping)) {
-			idleStartTime = now;
-		}
-		if (isSimulatorState(state, pausing)) {
-			idleStartTime = now;
-		}
-		if (isSimulatorState(state, waiting)) {
-			idleTime = 0;
-			idleStartTime = 0;
-			prevDuration = 0;
-			startTime = 0;
-			Platform.runLater(() -> {
-				lblRealTime.setText("0");
-				lblDelta.setText("0");
-			});
-		}
+		log.info(state.toString());
 		setButtonLogic(state);
 	}
 
+	private void setButtonLogic(State state) {
+		Platform.runLater(() -> {
+			if (isSimulatorState(state, waiting)) {
+				setButtons(false, false, true, runGraphic);
+				return;
+			} else if (isSimulatorState(state, running)) {
+				setButtons(false, true, true, pauseGraphic);
+				return;
+			} else if (isSimulatorState(state, stepping)) {
+				setButtons(false, false, false, runGraphic);
+				return;
+			} else if (state.getName().equals(finished.name())) {
+				setButtons(true, true, false, runGraphic);
+				return;
+			} else if (isSimulatorState(state, pausing)) {
+				setButtons(false, false, false, runGraphic);
+				return;
+			}
+		});
+	}
+
 	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
+	public Object getMenuContainer() {
+		return null;
 	}
 
 	@Override
@@ -246,26 +193,8 @@ public class SimpleControlWidget1 extends StateMachineController
 	public void getUserPreferences() {
 	}
 
-	private void setButtonLogic(State state) {
-		Platform.runLater(() -> {
-			log.info("setButtonLogic: " + state);
-			if (isSimulatorState(state, waiting)) {
-				setButtons(false, false, true, runGraphic);
-				return;
-			} else if (isSimulatorState(state, running)) {
-				setButtons(false, true, true, pauseGraphic);
-				return;
-			} else if (isSimulatorState(state, stepping)) {
-				setButtons(false, false, false, runGraphic);
-				return;
-			} else if (isSimulatorState(state, finished)) {
-				setButtons(true, true, false, runGraphic);
-				return;
-			} else if (isSimulatorState(state, pausing)) {
-				setButtons(false, false, false, runGraphic);
-				return;
-			}
-		});
+	@Override
+	public void setProperties(String id, SimplePropertyList properties) {
 	}
 
 	private void nullButtons() {
@@ -278,30 +207,6 @@ public class SimpleControlWidget1 extends StateMachineController
 		btnReset.setDisable(resetDisable);
 		if (iv != null)
 			btnRunPause.setGraphic(iv);
-	}
-
-	@Override
-	public Object getMenuContainer() {
-	return null;
-	}
-
-	@Override
-	public void onDataMessage(TimeData data) {
-		if (policy.canProcessDataMessage(data)) {
-			long duration = getDuration(System.currentTimeMillis());
-			final String strDur = Long.toString(duration);
-			long delta = duration - prevDuration;
-			final String strDelta = Long.toString(delta);
-			prevDuration = duration;
-			Platform.runLater(() -> {
-				lblRealTime.setText(strDur);
-				lblDelta.setText(strDelta);
-			});
-		}
-	}
-
-	@Override
-	public void onMetaDataMessage(Metadata meta) {
 	}
 
 }

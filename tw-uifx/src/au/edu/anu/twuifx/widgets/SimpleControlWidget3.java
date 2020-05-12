@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
+import static au.edu.anu.twcore.ui.runtime.StatusWidget.isSimulatorState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,12 @@ import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
+import de.gsi.chart.XYChart;
+import de.gsi.chart.axes.spi.DefaultNumericAxis;
+import de.gsi.chart.renderer.ErrorStyle;
+import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
+import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
+import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
 import fr.cnrs.iees.rvgrid.rendezvous.RendezvousProcess;
@@ -60,15 +67,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
  * @author Ian Davies
  *
  * @date 29 Jan 2020
+ * 
+ *       Produces a plots of cpu time.
+ * 
+ *       There is clearly an opportunity for a common ancestor for this and SCW1
+ *       and perhaps SCW.
  */
-public class SimpleControlWidget2 extends StateMachineController
+public class SimpleControlWidget3 extends StateMachineController
 		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 
 	private Button btnRunPause;
@@ -83,16 +95,24 @@ public class SimpleControlWidget2 extends StateMachineController
 	private Label lblRealTime;
 	private Label lblDelta;
 	private long startTime;
-	private long prevDuration;
 	private long idleTime;
 	private long idleStartTime;
+	private long prevDuration;
 
-	private static Logger log = Logging.getLogger(SimpleControlWidget2.class);
+	private static Logger log = Logging.getLogger(SimpleControlWidget3.class);
 
-	public SimpleControlWidget2(StateMachineEngine<StateMachineController> observed) {
+	private int BUFFER_CAPACITY = 100;// pref mm/mr or both
+	// drop overlayed points
+	private int MIN_PIXEL_DISTANCE = 0;
+	private XYChart chart;
+	private CircularDoubleErrorDataSet dataSet;
+
+	public SimpleControlWidget3(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
+		log.info("Thread: " + Thread.currentThread().getId());
 		policy = new SimpleWidgetTrackingPolicy();
-		// RV for simulator time messages
+
+		// RV for data messages
 		addRendezvous(new RendezvousProcess() {
 			@Override
 			public void execute(RVMessage message) {
@@ -136,28 +156,67 @@ public class SimpleControlWidget2 extends StateMachineController
 		btnStep.setOnAction(e -> handleStepPressed());
 		btnReset.setOnAction(e -> handleResetPressed());
 
-		HBox pane = new HBox();
-		pane.setAlignment(Pos.BASELINE_LEFT);
-		pane.getChildren().addAll(buttons);
+		HBox topPane = new HBox();
+		topPane.setAlignment(Pos.BASELINE_LEFT);
+		topPane.getChildren().addAll(buttons);
 		lblRealTime = new Label("0");
 		lblDelta = new Label("0");
 
-		pane.setSpacing(5.0);
-		pane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
+		topPane.setSpacing(5.0);
+		topPane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
 				lblRealTime, new Label("[ms]"));
+
+		BorderPane content = new BorderPane();
+		content.setTop(topPane);
+		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("\u03A3", "ms");
+		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("Step", "");
+		xAxis1.setAutoRangeRounding(true);
+		xAxis1.setTimeAxis(false);
+		xAxis1.invertAxis(false);
+		// These numbers can be very large
+		xAxis1.setTickLabelRotation(45);
+
+		yAxis1.setForceZeroInRange(true);
+		yAxis1.setAutoRangeRounding(true);
+
+		// can't create a chart without axes
+		chart = new XYChart(xAxis1, yAxis1);
+		chart.legendVisibleProperty().set(true);
+		chart.setAnimated(false);
+		content.setCenter(chart);
+		dataSet = new CircularDoubleErrorDataSet("time", BUFFER_CAPACITY);
+//		chart.getYAxis().setLabel("duration");
+//		chart.getYAxis().setUnit("ms");
+		/*
+		 * Renderers should be in the chart BEFORE dataSets are added to the renderer
+		 * otherwise when data is added to a dataset, invalidation events will not
+		 * propagate to the chart to force a repaint.
+		 */
+
+		ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+		// initRenderer
+		renderer.setErrorType(ErrorStyle.NONE);
+		renderer.setDashSize(MIN_PIXEL_DISTANCE);
+		renderer.setPointReduction(true);
+		renderer.setDrawMarker(false);
+		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) renderer.getRendererDataReducer();
+		reductionAlgorithm.setMinPointPixelDistance(MIN_PIXEL_DISTANCE);
+
+		chart.getRenderers().add(renderer);
+		renderer.getDatasets().add(dataSet);
 
 		nullButtons();
 
 		getUserPreferences();
-		
-		return pane;
+
+		return content;
 	}
 
 	private void handleResetPressed() {
 		nullButtons();
 		sendEvent(reset.event());
 		Platform.runLater(() -> {
-			lblRealTime.setText("0");
+			this.lblRealTime.setText("0");
 		});
 	}
 
@@ -197,7 +256,6 @@ public class SimpleControlWidget2 extends StateMachineController
 
 	private long getDuration(long now) {
 		return now - (startTime + idleTime);
-
 	}
 
 	@Override
@@ -226,6 +284,7 @@ public class SimpleControlWidget2 extends StateMachineController
 			idleStartTime = 0;
 			prevDuration = 0;
 			startTime = 0;
+			dataSet.reset();
 			Platform.runLater(() -> {
 				lblRealTime.setText("0");
 				lblDelta.setText("0");
@@ -247,6 +306,7 @@ public class SimpleControlWidget2 extends StateMachineController
 	}
 
 	private void setButtonLogic(State state) {
+
 		Platform.runLater(() -> {
 			log.info("setButtonLogic: " + state);
 			if (isSimulatorState(state, waiting)) {
@@ -282,20 +342,22 @@ public class SimpleControlWidget2 extends StateMachineController
 
 	@Override
 	public Object getMenuContainer() {
-	return null;
+		return null;
 	}
 
 	@Override
 	public void onDataMessage(TimeData data) {
 		if (policy.canProcessDataMessage(data)) {
-			long duration = getDuration(System.currentTimeMillis());
+			final long duration = getDuration(System.currentTimeMillis());
 			final String strDur = Long.toString(duration);
 			long delta = duration - prevDuration;
 			final String strDelta = Long.toString(delta);
 			prevDuration = duration;
+			long x = data.time();
 			Platform.runLater(() -> {
 				lblRealTime.setText(strDur);
 				lblDelta.setText(strDelta);
+				dataSet.add(x, duration, 1, 1);
 			});
 		}
 	}

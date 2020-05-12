@@ -1,42 +1,38 @@
-treegraph // saved by OmugiGraphExporter on Tue May 05 14:58:18 CEST 2020
+treegraph // saved by OmugiGraphExporter on Wed May 13 06:19:00 AEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
-
-// CODE snippet for method Logistic.chaos(...)
-//		focalDrv.x = r*x*(1-x);
-
 // TREE
-3worlds logistic3
+3worlds Logistic3
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
+	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
+	precis = java.lang.String(The discrete logistic model: using stopping conditions.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https:/en.wikipedia.org/wiki/Logistic_map","https:/en.wikipedia.org/wiki/Chaos_theory"))
 	version = java.lang.String(demo)
-	built-by = java.lang.String("gignoux - 4/5/2020")
-	precis =  java.lang.String("The discrete logistic model: using stopping conditions.")
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(vars)
 			field x
+				description = java.lang.String(population size)
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-				description = java.lang.String("population size")
 		record pars
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(pars)
 			field r
+				description = java.lang.String(population growth rate)
 				interval = fr.ens.biologie.generic.utils.Interval(]0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-				description = java.lang.String("population growth rate")
 	system sys
 		constantClass = java.lang.String(code.sys.Pars)
 		driverClass = java.lang.String(code.sys.Vars)
-		dynamics dyns
+		dynamics sim
 			timeLine tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
@@ -48,7 +44,7 @@ treegraph // saved by OmugiGraphExporter on Tue May 05 14:58:18 CEST 2020
 					runAtTimeZero = java.lang.Boolean(false)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
-					process proc
+					process p
 						dataTracker trkr
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
@@ -58,12 +54,12 @@ treegraph // saved by OmugiGraphExporter on Tue May 05 14:58:18 CEST 2020
 						function Chaos
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Chaos)
-			stoppingCondition stop
+			stoppingCondition stCnd
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
-		variableValues drvv
+		variableValues initx
 			x = java.lang.Double(0.001)
-		constantValues cstv
+		constantValues initr
 			r = java.lang.Double(3.7)
 		structure struc
 			categorySet *systemElements*
@@ -76,28 +72,28 @@ treegraph // saved by OmugiGraphExporter on Tue May 05 14:58:18 CEST 2020
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	userInterface gui
 		top top
-			widget timer
+			widget time
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 		tab tab
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget wgt
+			widget srsx
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 
 // CROSS-LINKS
 [system:sys] belongsTo blgsto [category:*arena*]
-[widget:timer] trackTime trksTmOf [dynamics:dyns]
-[dataTracker:trkr] trackComponent trksCmpOf [system:sys]
-[dataTracker:trkr] trackField trksFldOf [field:x]
+[widget:time] trackTime trks4 [dynamics:sim]
+[dataTracker:trkr] trackComponent trks2 [system:sys]
+[dataTracker:trkr] trackField trks1 [field:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [experiment:expt] baseLine bsln [system:sys]
-[process:proc] appliesTo aplyTo [category:*arena*]
-[widget:wgt] trackSeries trksSrsOf [dataTracker:trkr]
+[process:p] appliesTo aplyTo [category:*arena*]
+[widget:srsx] trackSeries trks3 [dataTracker:trkr]
 [category:*arena*] drivers drvs [record:vars]
 [category:*arena*] lifetimeConstants params [record:pars]

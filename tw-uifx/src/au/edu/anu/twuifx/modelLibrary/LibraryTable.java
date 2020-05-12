@@ -44,12 +44,12 @@ import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
  */
 public enum LibraryTable {
 	/*-			   Menu name,		|     File name,	|         category,          |  package file assocation */
-	Template1(/**/"Blank", /*          */"vide.utg", /*         */LibraryType.Template, TemplatesDummy.class), //
-	Template2(/**/"Template 1", /*     */"default.utg", /*      */LibraryType.Template, TemplatesDummy.class), //
-	Tut1(/*     */"1 Logistic", /*     */"logistic.utg", /*     */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut2(/*     */"2 Logistic", /*     */"logistic2.utg", /*    */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut3(/*     */"3 Logistic", /*     */"logistic3.utg", /*    */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut4(/*     */"4 LotkaVolterra", /**/"lotkaVolterra.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
+	Template1(/**/"Blank", /*          */"Blank.utg", /*        */LibraryType.Template, TemplatesDummy.class), //
+	Template2(/**/"Template 1", /*     */"Default.utg", /*      */LibraryType.Template, TemplatesDummy.class), //
+	Tut1(/*     */"1 Logistic", /*     */"Logistic1.utg", /*    */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut2(/*     */"2 Logistic", /*     */"Logistic2.utg", /*    */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut3(/*     */"3 Logistic", /*     */"Logistic3.utg", /*    */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut4(/*     */"4 LotkaVolterra", /**/"LotkaVolterra.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
 	Model1(/*   */"Genetics", /*       */"gddm.utg", /*         */LibraryType.Model, ModelsDummy.class), //
 	;
 

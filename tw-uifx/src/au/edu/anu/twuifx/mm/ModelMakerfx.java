@@ -62,7 +62,8 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 
 	private void createMainWindow() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
-		URL URLView = ModelMakerfx.class.getResource("view/Mmfr.fxml");
+//		URL URLView = ModelMakerfx.class.getResource("view/Mmfr.fxml");
+		URL URLView = ModelMakerfx.class.getResource("view/Mm.fxml");
 		loader.setLocation(URLView);
 		root = (Parent) loader.load();
 		controller = loader.getController();
