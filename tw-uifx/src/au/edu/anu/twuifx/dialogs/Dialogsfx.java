@@ -52,6 +52,8 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.DirectoryChooser;
@@ -129,12 +131,17 @@ public class Dialogsfx implements IDialogs {
 	}
 
 	@Override
-	public String getText(String title, String header, String content, String prompt) {
+	public String getText(String title, String header, String content, String prompt, String validFormat) {
 		TextInputDialog dialog = new TextInputDialog(prompt);
 		dialog.initOwner(owner);
 		dialog.setTitle(title);
 		dialog.setHeaderText(header);
 		dialog.setContentText(content);
+		if (validFormat != null) {
+			TextField tf = dialog.getEditor();
+			tf.setTextFormatter(
+					new TextFormatter<>(change -> (change.getControlNewText().matches(validFormat) ? change : null)));
+		}
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent())
 			return result.get();
@@ -298,12 +305,12 @@ public class Dialogsfx implements IDialogs {
 
 	@Override
 	public File promptForOpenFile(File directory, String title, String[]... exts) {
-		return getFile(directory,title,true,exts);
+		return getFile(directory, title, true, exts);
 	}
 
 	@Override
 	public File promptForSaveFile(File directory, String title, String[]... exts) {
-		return getFile(directory,title,false,exts);
+		return getFile(directory, title, false, exts);
 	}
 
 	@Override
