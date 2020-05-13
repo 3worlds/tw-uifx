@@ -120,9 +120,9 @@ public class SimpleControlWidget1 extends StateMachineController implements Widg
 		pane.setSpacing(5.0);
 
 		nullButtons();
-		
+
 		getUserPreferences();
-		
+
 		return pane;
 	}
 

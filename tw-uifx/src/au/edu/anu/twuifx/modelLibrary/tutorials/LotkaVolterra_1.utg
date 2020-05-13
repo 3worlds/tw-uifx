@@ -2,7 +2,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
-LokaVolterra
 
 // CODE snippet for method LotkaVolterra.init(...)
 //		// initialise with random parameters
