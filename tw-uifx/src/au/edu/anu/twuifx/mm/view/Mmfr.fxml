@@ -39,12 +39,12 @@
                     </items>
                   </Menu>
 						<SeparatorMenuItem mnemonicParsing="false" />
-						<Menu fx:id="menuOpen" mnemonicParsing="false" text="Ouvert">
+						<Menu fx:id="menuOpen" mnemonicParsing="false" text="Ouvrir">
 							<items>
 								<MenuItem mnemonicParsing="false" text="Action 1" />
 							</items>
 						</Menu>
-                  <MenuItem fx:id="menuItemImport" mnemonicParsing="false" onAction="#handleImport" text="Importation..." />
+                  <MenuItem fx:id="menuItemImport" mnemonicParsing="false" onAction="#handleImport" text="Importer..." />
 						<MenuItem fx:id="menuItemSave" disable="true" mnemonicParsing="false" onAction="#handleSave" text="Enregistrer">
 							<accelerator>
 								<KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -82,11 +82,11 @@
                   <Menu mnemonicParsing="false" text="Projet Java">
                     <items>
                         <MenuItem fx:id="miDisconnect" disable="true" mnemonicParsing="false" onAction="#handleDisconnectJavaProject" text="Déconnecter" />
-                        <MenuItem fx:id="miSetCodePath" disable="true" mnemonicParsing="false" onAction="#handleSetCodePath" text="Relier..." />
+                        <MenuItem fx:id="miSetCodePath" disable="true" mnemonicParsing="false" onAction="#handleSetCodePath" text="Connecter..." />
                     </items>
                   </Menu>
                </items></Menu>
-            <Menu mnemonicParsing="false" text="Aidez-moi">
+            <Menu mnemonicParsing="false" text="Aide">
               <items>
                 <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="À propos" />
               </items>
@@ -134,7 +134,7 @@
                            <top>
                               <ToolBar BorderPane.alignment="CENTER">
                                 <items>
-                                    <Label text="Verbosité: " />
+                                    <Label text="Détails : " />
                                     <RadioButton fx:id="rb1" mnemonicParsing="false" selected="true" text="1" />
                                     <RadioButton fx:id="rb2" mnemonicParsing="false" text="2" />
                                     <RadioButton fx:id="rb3" mnemonicParsing="false" text="3" />
@@ -148,8 +148,8 @@
                <bottom>
             		<ToolBar BorderPane.alignment="CENTER">
             			<items>
-            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Compiler" />
-            				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Déployer">
+            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Compilation" />
+            				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Déploiement">
                            <graphic>
                               <ImageView pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -177,11 +177,11 @@
                         <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
                         <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
                         <ToggleButton fx:id="tglSideline" disable="true" mnemonicParsing="false" text="&gt;|" />
-                        <Label text="Taille de police:" />
+                        <Label text="Taille de police :" />
                         <Spinner fx:id="spinFontSize" editable="true" prefWidth="75.0" />
-                        <Label text="Taille du nœud:" />
+                        <Label text="Taille du nœud :" />
                         <Spinner fx:id="spinNodeSize" editable="true" prefWidth="75.0" />
-                        <Label text="Jitter: " />
+                        <Label text="Dispersion : " />
                         <Spinner fx:id="spinJitter" />
                     </items>
                   </ToolBar>
