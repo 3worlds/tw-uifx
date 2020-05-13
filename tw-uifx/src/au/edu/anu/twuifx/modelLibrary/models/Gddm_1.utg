@@ -3,7 +3,7 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
-3worlds genetics2
+3worlds Genetics_1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -80,7 +80,7 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 
 // CROSS-LINKS
 [experiment:expt] baseLine bsln [system:sys]
