@@ -2,8 +2,12 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:19:00 AEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+// CODE snippet for method Logistic.chaos(...)
+//		focalDrv.x = r*x*(1-x);
+
 // TREE
-3worlds Logistic3
+3worlds Logistic_3
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))

@@ -2,8 +2,16 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	
+// CODE snippet for method Logistic.chaos(...)
+//		focalDrv.x = r*x*(1-x);
+
+// CODE snippet for method Logistic.init(...)
+//		focalLtc.r = random.nextDouble()*4;
+//		focalDrv.x = 0.1;
+	
 // TREE
-3worlds Logistic2
+3worlds Logistic_2
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
@@ -32,6 +40,12 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 	system sys
 		constantClass = java.lang.String(code.sys.Pars)
 		driverClass = java.lang.String(code.sys.Vars)
+		initFunction Init
+			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+			userClassName = java.lang.String(code.sys.Init)
+		structure struc
+			categorySet *systemElements*
+				category *arena*
 		dynamics sim
 			timeLine tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
@@ -54,12 +68,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 						function Chaos
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys.Chaos)
-		initFunction Init
-			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.sys.Init)
-		structure struc
-			categorySet *systemElements*
-				category *arena*
 	experiment expt
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
@@ -84,12 +92,12 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 
 // CROSS-LINKS
 [system:sys] belongsTo blgsto [category:*arena*]
-[widget:time] trackTime trks4 [dynamics:sim]
 [dataTracker:trkr] trackComponent trks2 [system:sys]
 [dataTracker:trkr] trackField trks1 [field:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [experiment:expt] baseLine bsln [system:sys]
 [process:proc] appliesTo aplyTo [category:*arena*]
-[widget:srsx] trackSeries trks3 [dataTracker:trkr]
 [category:*arena*] drivers drvs [record:vars]
 [category:*arena*] lifetimeConstants params [record:pars]
+[widget:srsx] trackSeries trks3 [dataTracker:trkr]
+[widget:time] trackTime trks4 [dynamics:sim]

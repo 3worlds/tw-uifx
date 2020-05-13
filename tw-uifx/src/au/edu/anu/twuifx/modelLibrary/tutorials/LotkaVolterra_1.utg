@@ -2,8 +2,34 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+LokaVolterra
+
+// CODE snippet for method LotkaVolterra.init(...)
+//		// initialise with random parameters
+//		for (int i=0; i<r.size(0); i++) {
+//			focalLtc.r.setByInt(random.nextDouble(),i);
+//			focalLtc.K.setByInt(0.2+random.nextDouble(),i);
+//			for (int j=0; j<alpha.size(1); j++) {
+//				if (i==j)
+//					focalLtc.alpha.setByInt(1.0,i,j);
+//				else
+//					focalLtc.alpha.setByInt(random.nextDouble(),i,j);
+//			}
+//		}
+
+// CODE snippet for method LotkaVolterra.growth(...)
+//		double[] dxdt = new double[x.size(0)];
+//		for (int i=0; i<x.size(0); i++) {
+//			double sum = 0;
+//			for (int j=0; j<alpha.size(1); j++)
+//				sum += alpha.getByInt(i,j) * x.getByInt(j);
+//			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1-sum/K.getByInt(i));
+//		}
+//		for (int i=0; i<dxdt.length; i++)
+//			focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt, i);
+
 // TREE
-3worlds LotkaVolterra
+3worlds LotkaVolterra_1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
