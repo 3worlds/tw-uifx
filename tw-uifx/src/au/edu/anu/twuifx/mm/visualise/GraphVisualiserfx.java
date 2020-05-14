@@ -108,8 +108,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			IntegerProperty nodeRadius, //
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
-			BooleanProperty sideline,
-			ObjectProperty<Font> font, //
+			BooleanProperty sideline, ObjectProperty<Font> font, //
 			IMMController controller) {
 		this.visualGraph = visualGraph;
 
@@ -623,15 +622,15 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		ILayout layout;
 		switch (layoutType) {
 		case OrderedTree: {
-			layout = new OTLayout(root,pcShowing,xlShowing,sideline);
+			layout = new OTLayout(root, pcShowing, xlShowing, sideline);
 			break;
 		}
 		case RadialTree1: {
-			layout = new RT1Layout(root,pcShowing,xlShowing,sideline);
+			layout = new RT1Layout(root, pcShowing, xlShowing, sideline);
 			break;
 		}
 		case RadialTree2: {
-			layout = new RT2Layout(root,pcShowing,xlShowing,sideline);
+			layout = new RT2Layout(root, pcShowing, xlShowing, sideline);
 			break;
 		}
 		case SpringGraph: {
@@ -642,25 +641,33 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			layout = new LmbLayout(visualGraph, pcShowing, xlShowing, sideline);
 			break;
 		}
-			default: {
+		default: {
 			throw new TwuifxException("Unknown layout type '" + layoutType + "',");
 		}
 		}
 
 		layout.compute(jitterFraction);
-		
+
 		// always scaled within unit space
-		
+
 		// rescale to provide border for a little node radius
+		Timeline timeline = new Timeline();
 		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
-				double x = ILayout.rescale(node.getX(), 0, 1, 0.05,0.95);
-				double y = ILayout.rescale(node.getY(), 0, 1, 0.05,0.95);
+				double x = ILayout.rescale(node.getX(), 0, 1, 0.05, 0.95);
+				double y = ILayout.rescale(node.getY(), 0, 1, 0.05, 0.95);
 				node.setPosition(x, y);
 				Circle c = (Circle) node.getSymbol();
-				animateTo(c, node.getX() * pane.getWidth(), node.getY() * pane.getHeight());
+				KeyFrame f = getKeyFrame(c, node.getX() * pane.getWidth(), node.getY() * pane.getHeight());
+				timeline.getKeyFrames().add(f);
 			}
-		GraphState.setChanged();
+			GraphState.setChanged();
+	}
+
+	private static KeyFrame getKeyFrame(Circle c, double x, double y) {
+		KeyValue endX = new KeyValue(c.centerXProperty(), x, Interpolator.EASE_BOTH);
+		KeyValue endY = new KeyValue(c.centerYProperty(), y, Interpolator.EASE_BOTH);
+		return  new KeyFrame(Duration.millis(animateDuration), endX, endY);
 	}
 
 	private static void animateTo(Circle c, double x, double y) {
