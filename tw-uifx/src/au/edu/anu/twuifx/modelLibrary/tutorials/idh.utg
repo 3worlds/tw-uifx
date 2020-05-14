@@ -17,9 +17,10 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 //		}
 
 // CODE SNIPPET for function PopulationGrowth(...)
-//			if (disturbanceOccurence) {
+//		if (disturbanceOccurence) {
 //			// reduction of population size by 99%
 //			for (int i=0; i<x.size(0); i++)
+//				if (x.getByInt(i)>0.01)
 //				focalDrv.x.setByInt(x.getByInt(i)*0.01, i);
 //		}
 //		else {
@@ -34,15 +35,23 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 //			for (int i=0; i<dxdt.length; i++)
 //				focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt, i);
 //		}
+//		// compute diversity
+//		double xtot = 0.0;
+//		for (int i=0; i<focalDrv.x.size(0);i++)
+//			xtot += focalDrv.x.getByInt(i);
+//		focalDec.div = 0.0;
+//		for  (int i=0; i<focalDrv.x.size(0);i++)
+//			focalDec.div -= (focalDrv.x.getByInt(i)/xtot) * log(focalDrv.x.getByInt(i)/xtot);
+//		System.out.println(focalDec.div);
 
 // CODE SNIPPET for function disturbanceOccurence(...)
 //		focalDec.disturbanceOccurence = (random.nextDouble()<(1.0/freq));
 
 
 // TREE
-3worlds idh
+3worlds Idh
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(gignoux (7 mai 2020))
+	built-by = java.lang.String(gignoux (14 mai 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model for n species. Illustrates the use of a SystemComponent.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
@@ -103,6 +112,15 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		dimensioner nbspecies
 			size = java.lang.Integer(5)
+		record commDec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(commDec)
+			field div
+				description = java.lang.String(Shannon diversity)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 	userInterface defaultGUI
 		top top
 			widget defaultController
@@ -151,8 +169,11 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 			categorySet *systemElements*
 				category *component*
 				category *arena*
+			categorySet *lifespan*
+				category *permanent*
 			componentType community
 				constantClass = java.lang.String(code.system.CommPar)
+				decoratorClass = java.lang.String(code.system.CommDec)
 				driverClass = java.lang.String(code.system.CommRec)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
@@ -169,6 +190,8 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 // CROSS-LINKS
 [process:proc1] appliesTo aplyTo1 [category:*arena*]
 [experiment:defaultExperiment] baseLine bsln [system:system]
+[dataTracker:trkr] trackField trks1 [field:div]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trkr] trackComponent trksCmpOf1 [component:comp]
 [dataTracker:trkr] trackTable trksTblOf [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]""))
@@ -182,8 +205,10 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 [widget:wgt] trackSeries trksSrsOf [dataTracker:trkr]
 [category:*arena*] decorators decs [record:arenaDec]
 [category:*arena*] lifetimeConstants ltcs [record:arenaPar]
+[componentType:community] belongsTo blngsTo2 [category:*permanent*]
 [componentType:community] belongsTo blngsTo1 [category:*component*]
 [category:*component*] drivers drvs [record:commRec]
+[category:*component*] decorators decs1 [record:commDec]
 [category:*component*] lifetimeConstants ltcs1 [record:commPar]
 [table:rkpar] sizedBy szBy1 [dimensioner:nbspecies]
 	rank = java.lang.Integer(0)
