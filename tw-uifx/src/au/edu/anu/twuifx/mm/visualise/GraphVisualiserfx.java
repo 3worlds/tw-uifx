@@ -98,6 +98,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
 	private static final Double animateDuration = 1000.0;
+	private final static Interpolator interpolator = Interpolator.EASE_BOTH; 
 	private final IMMController controller;
 
 	private boolean edgeClassOnly = false;
@@ -661,18 +662,19 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				KeyFrame f = getKeyFrame(c, node.getX() * pane.getWidth(), node.getY() * pane.getHeight());
 				timeline.getKeyFrames().add(f);
 			}
-			GraphState.setChanged();
+		timeline.play();
+		GraphState.setChanged();
 	}
 
 	private static KeyFrame getKeyFrame(Circle c, double x, double y) {
-		KeyValue endX = new KeyValue(c.centerXProperty(), x, Interpolator.EASE_BOTH);
-		KeyValue endY = new KeyValue(c.centerYProperty(), y, Interpolator.EASE_BOTH);
-		return  new KeyFrame(Duration.millis(animateDuration), endX, endY);
+		KeyValue endX = new KeyValue(c.centerXProperty(), x, interpolator);
+		KeyValue endY = new KeyValue(c.centerYProperty(), y, interpolator);
+		return new KeyFrame(Duration.millis(animateDuration), endX, endY);
 	}
 
 	private static void animateTo(Circle c, double x, double y) {
-		KeyValue endX = new KeyValue(c.centerXProperty(), x, Interpolator.EASE_BOTH);
-		KeyValue endY = new KeyValue(c.centerYProperty(), y, Interpolator.EASE_BOTH);
+		KeyValue endX = new KeyValue(c.centerXProperty(), x, interpolator);
+		KeyValue endY = new KeyValue(c.centerYProperty(), y, interpolator);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
