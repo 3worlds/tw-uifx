@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
-import au.edu.anu.twcore.data.runtime.Output0DData;
+import au.edu.anu.twcore.data.runtime.OutputXYData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
@@ -36,7 +36,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 
-public class SimpleXYPlotWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
+public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
 	private String widgetId;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
@@ -45,7 +45,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<Output0DData, Meta
 	private XYChart chart;
 
 	public SimpleXYPlotWidget(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.TIME_SERIES);
+		super(statusSender, DataMessageTypes.XY);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		dataSetMap = new HashMap<>();
@@ -91,7 +91,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<Output0DData, Meta
 
 				chart.getRenderers().setAll(renderer);
 				chart.getDatasets().addAll(ds);
-				
+
 				// ------------------ dummy data
 				for (int i = 0; i < 100; i++)
 					ds.add(Math.random(), Math.random());
@@ -108,7 +108,11 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<Output0DData, Meta
 	}
 
 	@Override
-	public void onDataMessage(Output0DData data) {
+	public void onDataMessage(OutputXYData data) {
+
+		// JG: debug
+		System.out.println("Data message received: x="+data.getX()+" y="+data.getY());
+
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
 				/*- loop on x,y data pairs{
@@ -151,10 +155,10 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<Output0DData, Meta
 		yAxis1.setForceZeroInRange(true);
 
 		xAxis1.setTickLabelRotation(45);
-		
+
 		xAxis1.setUnit("x unit?");
 		yAxis1.setUnit("y unit?");
-		
+
 		xAxis1.setLabel("x label");
 		yAxis1.setLabel("y label");
 
@@ -163,7 +167,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<Output0DData, Meta
 		chart.setAnimated(false);
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
-		
+
 
 		getUserPreferences();
 

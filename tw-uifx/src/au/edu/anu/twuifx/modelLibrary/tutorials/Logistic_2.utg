@@ -2,23 +2,34 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
-	
+
 // CODE snippet for method Logistic.chaos(...)
 //		focalDrv.x = r*x*(1-x);
+//		focalDec.xnew = focalDrv.x;
+
 
 // CODE snippet for method Logistic.init(...)
 //		focalLtc.r = random.nextDouble()*4;
 //		focalDrv.x = 0.1;
-	
+
 // TREE
 3worlds Logistic_2
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String()
+	built-by = java.lang.String(gignoux (15 mai 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(The discrete logistic model. Illustrates the use of SetInitialStateFunction to initialise the model.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Logistic_map"))
 	version = java.lang.String(demo)
 	dataDefinition dDef
+		record deco
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(deco)
+			field xnew
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 		record vars
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(vars)
@@ -39,6 +50,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 				units = java.lang.String()
 	system sys
 		constantClass = java.lang.String(code.sys.Pars)
+		decoratorClass = java.lang.String(code.sys.Deco)
 		driverClass = java.lang.String(code.sys.Vars)
 		initFunction Init
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
@@ -59,6 +71,12 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 					process proc
+						dataTracker trkr1
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTrackerXY)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 						dataTracker trkr
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
@@ -85,6 +103,10 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 		tab tab
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget wgt
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleXYPlotWidget)
 			widget srsx
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
@@ -97,7 +119,14 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [experiment:expt] baseLine bsln [system:sys]
 [process:proc] appliesTo aplyTo [category:*arena*]
+[widget:wgt] trackSeries trks7 [dataTracker:trkr1]
 [category:*arena*] drivers drvs [record:vars]
 [category:*arena*] lifetimeConstants params [record:pars]
+[category:*arena*] decorators decs1 [record:deco]
 [widget:srsx] trackSeries trks3 [dataTracker:trkr]
+[dataTracker:trkr1] trackComponent trks8 [system:sys]
+[dataTracker:trkr1] trackField trks6 [field:xnew]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trkr1] trackField trks5 [field:x]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [widget:time] trackTime trks4 [dynamics:sim]
