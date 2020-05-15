@@ -42,7 +42,6 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 //		focalDec.div = 0.0;
 //		for  (int i=0; i<focalDrv.x.size(0);i++)
 //			focalDec.div -= (focalDrv.x.getByInt(i)/xtot) * log(focalDrv.x.getByInt(i)/xtot);
-//		System.out.println(focalDec.div);
 
 // CODE SNIPPET for function disturbanceOccurence(...)
 //		focalDec.disturbanceOccurence = (random.nextDouble()<(1.0/freq));
@@ -69,7 +68,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 			table alpha
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
 			table rkpar
@@ -93,7 +92,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 			table x
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
 		record arenaPar
@@ -101,7 +100,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 			generatedClassName = java.lang.String(arenaPar)
 			field freq
 				description = java.lang.String()
-				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(1..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 		record arenaDec
