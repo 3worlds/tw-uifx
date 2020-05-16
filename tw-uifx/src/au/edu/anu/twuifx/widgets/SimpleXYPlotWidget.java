@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.data.runtime.OutputXYData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
@@ -43,13 +45,22 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	private Map<String, DoubleDataSet> dataSetMap;
 	private static Logger log = Logging.getLogger(SimpleXYPlotWidget.class);
 	private XYChart chart;
+	private Output0DMetadata d0Metadata;
+	private static final DefaultMarker[] symbols = { //
+			DefaultMarker.RECTANGLE, //
+			DefaultMarker.DIAMOND, //
+			DefaultMarker.CIRCLE, //
+			DefaultMarker.CROSS, //
+			DefaultMarker.RECTANGLE2, //
+			DefaultMarker.DIAMOND2, //
+			DefaultMarker.CIRCLE2, //
+	};
 
 	public SimpleXYPlotWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.XY);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		dataSetMap = new HashMap<>();
-
 	}
 
 	@Override
@@ -70,32 +81,21 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		Platform.runLater(() -> {
-			// loop on some meta data type to create these
-			String name = "Some unique name";
-			DoubleDataSet ds = new DoubleDataSet(name, bufferSize);
-			dataSetMap.put(name, ds);
-			// end loop
+			d0Metadata = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+			for (DataLabel dl : d0Metadata.doubleNames()) {
+				String name = dl.toString();
+				DoubleDataSet ds = new DoubleDataSet(name, bufferSize);
+				dataSetMap.put(name, ds);
+			}
+			int i = 0;
 			dataSetMap.entrySet().forEach(entry -> {
 				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
 				renderer.setErrorType(ErrorStyle.NONE);
 				renderer.setPolyLineStyle(LineStyle.NONE);
 				renderer.setMarkerSize(4);
-//				renderer.setMarker(DefaultMarker.DIAMOND);// filled
-//				renderer.setMarker(DefaultMarker.DIAMOND2);// no fill
-				renderer.setMarker(DefaultMarker.CROSS);
-//				renderer.setMarker(DefaultMarker.CIRCLE);// filled
-//				renderer.setMarker(DefaultMarker.CIRCLE2);// no fill
-//				renderer.setMarker(DefaultMarker.RECTANGLE);// filled
-//				renderer.setMarker(DefaultMarker.RECTANGLE2);// no fill
-
-
+				renderer.setMarker(symbols[i%symbols.length]);// filled
 				chart.getRenderers().setAll(renderer);
-				chart.getDatasets().addAll(ds);
-
-				// ------------------ dummy data
-				for (int i = 0; i < 100; i++)
-					ds.add(Math.random(), Math.random());
-				//-----------------------------
+				chart.getDatasets().addAll(entry.getValue());
 
 			});
 			timeFormatter.onMetaDataMessage(meta);
@@ -111,18 +111,15 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	public void onDataMessage(OutputXYData data) {
 
 		// JG: debug
-		System.out.println("Data message received: x="+data.getX()+" y="+data.getY());
+		System.out.println("Data message received: x=" + data.getX() + " y=" + data.getY());
 
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
-				/*- loop on x,y data pairs{
-				   String name = name for this pair
-				   DoubleDataSet ds = dataSetMap.get(name);
-				   double/int get x value
-				   double/int get y value
-				   ds.add(x,y);
-					}*/
-
+				for (DataLabel dl : d0Metadata.doubleNames()) {
+					String key = dl.toString();
+					DoubleDataSet ds = dataSetMap.get(key);
+					ds.add(data.getX(), data.getY());
+				}
 			});
 		}
 	}
@@ -140,7 +137,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	public Object getUserInterfaceContainer() {
 		BorderPane content = new BorderPane();
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("", "x label");
-		//xAxis1.setUnitScaling(MetricPrefix.);
+		// xAxis1.setUnitScaling(MetricPrefix.);
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "?");
 		xAxis1.setAutoRangeRounding(true);
 		yAxis1.setAutoRangeRounding(true);
@@ -167,7 +164,6 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		chart.setAnimated(false);
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
-
 
 		getUserPreferences();
 

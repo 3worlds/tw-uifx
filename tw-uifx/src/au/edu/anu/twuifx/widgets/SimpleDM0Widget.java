@@ -72,7 +72,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  * pair widget
  */
 public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
-	private Output0DMetadata tsmeta;
+	private Output0DMetadata d0Metadata;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private static Logger log = Logging.getLogger(SimpleDM0Widget.class);
@@ -94,13 +94,13 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
 		Platform.runLater(() -> {
 			tableDataList = FXCollections.observableArrayList();
-			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+			d0Metadata = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 			timeFormatter.onMetaDataMessage(meta);
 			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));	
 
-			for (DataLabel dl : tsmeta.doubleNames())
+			for (DataLabel dl : d0Metadata.doubleNames())
 				tableDataList.add(new TableData(dl.toString()));
-			for (DataLabel dl : tsmeta.intNames())
+			for (DataLabel dl : d0Metadata.intNames())
 				tableDataList.add(new TableData(dl.toString()));
 
 			table.setItems(tableDataList);
@@ -116,15 +116,15 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 			Platform.runLater(() -> {
 				lblItemLabel.setText(data.itemLabel().toString());
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
-				for (DataLabel dl : tsmeta.doubleNames()) {
-					int idx = tsmeta.indexOf(dl);
+				for (DataLabel dl : d0Metadata.doubleNames()) {
+					int idx = d0Metadata.indexOf(dl);
 					Double value = data.getDoubleValues()[idx];
 					TableData td = tableDataList.get(idx);
 					td.stats.add(value);
 					td.setValue(value);
 				}
-				for (DataLabel dl : tsmeta.intNames()) {
-					int idx = tsmeta.indexOf(dl);
+				for (DataLabel dl : d0Metadata.intNames()) {
+					int idx = d0Metadata.indexOf(dl);
 					TableData td = tableDataList.get(idx);
 					Long value = data.getIntValues()[idx];
 					td.stats.add(value);
