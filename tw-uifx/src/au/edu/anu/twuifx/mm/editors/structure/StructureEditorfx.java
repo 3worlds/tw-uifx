@@ -81,9 +81,17 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_NODE);
 			for (SimpleDataTreeNode child : filteredChildSpecs) {
 				String childLabel = (String) child.properties().getPropertyValue(aaIsOfClass);
-				MenuItem mi = MenuLabels.addMenuItem(mu, childLabel);
+				String childId = null;
+				String dispName = childLabel;
+				if (child.properties().hasProperty(aaHasId)) {
+					childId = (String) child.properties().getPropertyValue(aaHasId);
+					dispName +=":"+childId;
+					
+				}
+				final String chldId = childId;
+				MenuItem mi = MenuLabels.addMenuItem(mu,dispName );
 				mi.setOnAction((e) -> {
-					onNewChild(childLabel, child);
+					onNewChild(childLabel,chldId, child);
 				});
 			}
 		}
@@ -287,5 +295,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			return result;
 		}
 	}
+
+
 
 }
