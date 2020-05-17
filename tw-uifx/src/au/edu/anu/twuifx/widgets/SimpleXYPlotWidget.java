@@ -6,8 +6,11 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMOD
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
+import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.Output0DMetadata;
@@ -25,8 +28,8 @@ import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.marker.DefaultMarker;
 import de.gsi.chart.renderer.ErrorStyle;
 import de.gsi.chart.renderer.LineStyle;
+import de.gsi.chart.renderer.Renderer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
-import de.gsi.chart.ui.geometry.Side;
 import de.gsi.dataset.spi.DoubleDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -34,9 +37,17 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Window;
 
 public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
 	private String widgetId;
@@ -55,6 +66,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 			DefaultMarker.DIAMOND2, //
 			DefaultMarker.CIRCLE2, //
 	};
+	private int symbolSize;
 
 	public SimpleXYPlotWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.XY);
@@ -92,8 +104,8 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
 				renderer.setErrorType(ErrorStyle.NONE);
 				renderer.setPolyLineStyle(LineStyle.NONE);
-				renderer.setMarkerSize(4);
-				renderer.setMarker(symbols[i%symbols.length]);// filled
+				renderer.setMarkerSize(symbolSize);
+				renderer.setMarker(symbols[i % symbols.length]);// filled
 				chart.getRenderers().setAll(renderer);
 				chart.getDatasets().addAll(entry.getValue());
 
@@ -172,20 +184,52 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		Menu mu = new Menu(widgetId);
+		MenuItem miEdit = new MenuItem("Edit...");
+		mu.getItems().add(miEdit);
+		miEdit.setOnAction(e -> edit());
+		return mu;
 	}
+	private void edit() {
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle(widgetId);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		dialog.initOwner((Window) Dialogs.owner());
+		GridPane content = new GridPane();
+		content.setVgap(5);
+		content.setHgap(3);
+		Label lbl = new Label("Buffer capacity");
+		Spinner<Integer> spCapacity = new Spinner<>();
+		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, symbolSize));
+		spCapacity.setMaxWidth(100);
+		spCapacity.setEditable(true);
+		content.add(lbl, 0, 0);
+		content.add(spCapacity, 1, 0);
+		dialog.getDialogPane().setContent(content);
+		Optional<ButtonType> result = dialog.showAndWait();
+		if (result.get().equals(ok)) {
+			int v = spCapacity.getValue();
+			if (v != symbolSize) {
+				symbolSize=v;
+				for (Renderer renderer: chart.getRenderers()) {
+					ErrorDataSetRenderer r = (ErrorDataSetRenderer) renderer;
+					r.setMarkerSize(symbolSize);
+				}
+			}
+		}
+	}
+
+	private static final String keySymbolSize = "symbolSize";
 
 	@Override
 	public void putUserPreferences() {
-		// TODO Auto-generated method stub
-
+		Preferences.putInt(widgetId + keySymbolSize, symbolSize);
 	}
 
 	@Override
 	public void getUserPreferences() {
-		// TODO Auto-generated method stub
-
+		symbolSize = Preferences.getInt(widgetId + keySymbolSize, 2);
 	}
 
 }

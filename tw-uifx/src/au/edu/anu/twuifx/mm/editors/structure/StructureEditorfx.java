@@ -237,10 +237,20 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				});
 			}
 		}
+		{
 		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_LAYOUT);
 		mi.setOnAction((e) -> {
 			controller.doFocusedLayout(editableNode.getSelectedVisualNode());
 		});
+		}
+//		{
+//		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_FILTEREDGES);
+//		mi.setOnAction((e)->{
+//			gvisualiser.doFilterEdges(editableNode.getSelectedVisualNode(),1);
+//		
+//		});
+//		}
+		
 	}
 
 	private enum MenuLabels {
@@ -261,7 +271,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_DELETE_NODE/*       */("Delete node"), // config
 		// --------------------------------------------
 		ML_ALL/*               */("All"),//
-		ML_LAYOUT/*            */("Focused Tree layout"),
+		ML_LAYOUT/*            */("Focus layout"),
+		ML_FILTEREDGES/*       */("Filter edges"),
 		;
 
 		private final String label;

@@ -510,6 +510,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				btnXLinks.isSelected(),tglSideline.isSelected());
 	}
 
+
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
 		model.doDeploy();
@@ -1127,5 +1128,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		stage.setTitle(DefaultWindowSettings.defaultName());
 
 	}
+
 
 }

@@ -32,7 +32,10 @@ package au.edu.anu.twuifx.mm.visualise;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
@@ -77,6 +80,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
+import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 /**
  * Author Ian Davies
@@ -98,11 +103,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
 	private static final Double animateDuration = 1000.0;
-	private final static Interpolator interpolator = Interpolator.EASE_BOTH; 
+	private final static Interpolator interpolator = Interpolator.EASE_BOTH;
 	private final IMMController controller;
 
 	private boolean edgeClassOnly = false;
 	private boolean nodeClassOnly = false;
+
+	private List<VisualEdge> filteredEdges;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
@@ -112,7 +119,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			BooleanProperty sideline, ObjectProperty<Font> font, //
 			IMMController controller) {
 		this.visualGraph = visualGraph;
-
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
 		this.showGraphLine = showGraphLine;
@@ -124,6 +130,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
+		filteredEdges = new ArrayList<>();
 
 	}
 
@@ -575,7 +582,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			nextText.yProperty().unbind();
 			nextText.xProperty().bind(lastText.xProperty());
 			nextText.yProperty().bind(lastText.yProperty().add(nextText.boundsInLocalProperty().get().getHeight()));
-//			System.out.println(nextText.getText());
 		}
 
 	}
@@ -617,6 +623,16 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void doLayout(VisualNode root, double jitterFraction, LayoutType layoutType, boolean pcShowing,
 			boolean xlShowing, boolean sideline) {
+		/**
+		 * Can we figure out a way to show just the local neighbourhood to some path
+		 * length?
+		 * 
+		 * use a radial layout and avoid circular paths
+		 * 
+		 * We want to show all children and the parent AND cross edges but no others
+		 * This is easy enough. But the problem is how to hide a specific list of edges.
+		 */
+
 		if (root == null)
 			root = getTWRoot();
 
@@ -679,6 +695,51 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
 		timeline.play();
+	}
+
+	@Override
+	public void doFilterEdges(VisualNode root, int pathLength) {
+		Set<VisualNode> nnNodes = new HashSet<>();
+		// add parent lines
+		VisualNode node = root;
+
+		int depth = 0;
+		while (node != null && depth <= pathLength) {
+			nnNodes.add(node);
+			depth++;
+			node = node.getParent();
+		}
+		getChildNodes(root, nnNodes, 0, pathLength);
+
+		getEdgeNodes(root, nnNodes, 0, pathLength);
+		for (VisualNode n: nnNodes) {
+			System.out.println(n.getDisplayText(false));
+		}
+
+	}
+
+	private static void getEdgeNodes(VisualNode node, Set<VisualNode> nnNodes, int depth, int pathLength) {
+		if (depth <= pathLength) {
+			nnNodes.add(node);
+			List<VisualNode> outNodes = (List<VisualNode>) get(node.edges(Direction.OUT), edgeListEndNodes());
+			for (VisualNode on : outNodes)
+				getEdgeNodes(on, nnNodes, depth + 1, pathLength);
+			List<VisualNode> inNodes = (List<VisualNode>) get(node.edges(Direction.IN), edgeListStartNodes());
+			for (VisualNode in : inNodes) {
+				getEdgeNodes(in, nnNodes, depth + 1, pathLength);
+			}
+
+		}
+
+	}
+
+	private static void getChildNodes(VisualNode parent, Set<VisualNode> nnNodes, int depth, int pathLength) {
+		if (depth <= pathLength) {
+			nnNodes.add(parent);
+			for (VisualNode child : parent.getChildren()) {
+				getChildNodes(child, nnNodes, depth + 1, pathLength);
+			}
+		}
 	}
 
 }
