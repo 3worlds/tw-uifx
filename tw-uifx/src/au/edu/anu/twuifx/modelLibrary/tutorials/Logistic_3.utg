@@ -42,10 +42,9 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:19:00 AEST 2020
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-				timeModel tmMo
+				timer clock
 					dt = java.lang.Long(1)
 					nTimeUnits = java.lang.Integer(1)
-					runAtTimeZero = java.lang.Boolean(false)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 					process p

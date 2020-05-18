@@ -67,7 +67,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	@Override
 	public void buildgui() {
 		// if (haveSpecification()) {
-		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(editableNode,baseSpec, subClassSpec, TWA.getRoot());
+		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(editableNode, baseSpec, subClassSpec,
+				TWA.getRoot());
 		List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
 		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
@@ -85,13 +86,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				String dispName = childLabel;
 				if (child.properties().hasProperty(aaHasId)) {
 					childId = (String) child.properties().getPropertyValue(aaHasId);
-					dispName +=":"+childId;
-					
+					dispName += ":" + childId;
+
 				}
 				final String chldId = childId;
-				MenuItem mi = MenuLabels.addMenuItem(mu,dispName );
+				MenuItem mi = MenuLabels.addMenuItem(mu, dispName);
 				mi.setOnAction((e) -> {
-					onNewChild(childLabel,chldId, child);
+					onNewChild(childLabel, chldId, child);
 				});
 			}
 		}
@@ -238,10 +239,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 		}
 		{
-		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_LAYOUT);
-		mi.setOnAction((e) -> {
-			controller.doFocusedLayout(editableNode.getSelectedVisualNode());
-		});
+			// add controller.isTreeLayout to enable / disable this
+			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_LAYOUT);
+			mi.setOnAction((e) -> {
+				controller.doFocusedLayout(editableNode.getSelectedVisualNode());
+			});
 		}
 //		{
 //		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_FILTEREDGES);
@@ -250,7 +252,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 //		
 //		});
 //		}
-		
+
 	}
 
 	private enum MenuLabels {
@@ -270,10 +272,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_DELETE_TREE/*-      */("Delete tree"), // config
 		ML_DELETE_NODE/*       */("Delete node"), // config
 		// --------------------------------------------
-		ML_ALL/*               */("All"),//
-		ML_LAYOUT/*            */("Focus layout"),
-		ML_FILTEREDGES/*       */("Filter edges"),
-		;
+		ML_ALL/*               */("All"), //
+		ML_LAYOUT/*            */("Focus layout"), ML_FILTEREDGES/*       */("Filter edges"),;
 
 		private final String label;
 
@@ -295,18 +295,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		public static MenuItem addMenuItem(Menu mu, String label) {
 			MenuItem result = new MenuItem(label);
 			result.setMnemonicParsing(false);
-		mu.getItems().add(result);
+			mu.getItems().add(result);
 			return result;
 		}
 
 		public static MenuItem addMenuItem(ContextMenu cm, MenuLabels ml) {
 			MenuItem result = new MenuItem(ml.label());
 			result.setMnemonicParsing(false);
-		cm.getItems().add(result);
+			cm.getItems().add(result);
 			return result;
 		}
 	}
-
-
 
 }
