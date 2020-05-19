@@ -4,8 +4,6 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.wait
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_NTU;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_TU;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -13,7 +11,6 @@ import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
-import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.data.runtime.OutputXYData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
@@ -28,8 +25,8 @@ import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.marker.DefaultMarker;
 import de.gsi.chart.plugins.DataPointTooltip;
 import de.gsi.chart.plugins.EditAxis;
-import de.gsi.chart.plugins.EditDataSet;
-import de.gsi.chart.plugins.Panner;
+import de.gsi.chart.plugins.ParameterMeasurements;
+import de.gsi.chart.plugins.TableViewer;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
 import de.gsi.chart.renderer.LineStyle;
@@ -183,11 +180,10 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		content.setRight(new Label(" "));
 		chart.getPlugins().add(new Zoomer());
 //		chart.getPlugins().add(new Panner());
-//		chart.getPlugins().add(new EditAxis());
-//		chart.getPlugins().add(new EditDataSet());
+//		chart.getPlugins().add(new EditAxis());// crashes
+		chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
-		// chart.getPlugins().add(new Renderer());
-
+		//chart.getPlugins().add(new ParameterMeasurements());// crashes
 		getUserPreferences();
 
 		return content;
