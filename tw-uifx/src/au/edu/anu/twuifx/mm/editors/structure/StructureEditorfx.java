@@ -245,13 +245,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				controller.doFocusedLayout(editableNode.getSelectedVisualNode());
 			});
 		}
-//		{
-//		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_FILTEREDGES);
-//		mi.setOnAction((e)->{
-//			gvisualiser.doFilterEdges(editableNode.getSelectedVisualNode(),1);
-//		
-//		});
-//		}
+		{
+		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_FILTEREDGES);
+		mi.setOnAction((e)->{
+			// Dialog for the required pathdepth
+			gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(),1);
+		
+		});
+		}
 
 	}
 

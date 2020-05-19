@@ -131,6 +131,23 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
 		filteredEdges = new ArrayList<>();
+		
+		showGraphLine.addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
+				System.out.println("SHOW XLINKS: "+newValue);
+			}
+			
+		});
+		showTreeLine.addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
+				System.out.println("SHOW PARENT LINKS: "+newValue);
+			}
+			
+		});
 
 	}
 
@@ -698,7 +715,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void doFilterEdges(VisualNode root, int pathLength) {
+	public void showLocalGraph(VisualNode root, int pathLength) {
 		Set<VisualNode> nnNodes = new HashSet<>();
 		// add parent lines
 		VisualNode node = root;
