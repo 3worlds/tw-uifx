@@ -5,18 +5,12 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 05:42:10 AEST 2020
 // TREE
 3worlds Default_1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String()
+	built-by = java.lang.String(gignoux (19 mai 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String()
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
-	experiment expt
-		timePeriod tp
-			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
-	dataDefinition dDef
+	predefined *categories*
 		record AVEphemeral
 			field birthDate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -41,12 +35,20 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 05:42:10 AEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-	userInterface gui
-		top top
-			widget ctrl
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		categorySet *composition*
+			category *population*
+			category *individual*
+		categorySet *systemElements*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+			category *space*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
+	dataDefinition dDef
 	system sys
 		parameterClass = java.lang.String()
 		dynamics sim
@@ -61,23 +63,22 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 05:42:10 AEST 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 		structure comm
-			categorySet *composition*
-				category *population*
-				category *individual*
-			categorySet *systemElements*
-				category *life cycle*
-				category *group*
-				category *relation*
-				category *component*
-				category *space*
-				category *arena*
-			categorySet *lifespan*
-				category *ephemeral*
-				category *permanent*
+	experiment expt
+		timePeriod tp
+			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	userInterface gui
+		top top
+			widget ctrl
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 
 // CROSS-LINKS
-[experiment:expt] baseLine bsln [system:sys]
-[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[system:sys] belongsTo blngsTo1 [category:*arena*]
 [system:sys] belongsTo blngsTo2 [category:*permanent*]
+[system:sys] belongsTo blngsTo1 [category:*arena*]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[experiment:expt] baseLine bsln [system:sys]
 [category:*population*] autoVar auto [record:AVPopulation]
