@@ -56,6 +56,7 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
+import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
@@ -209,7 +210,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
 		r.setErrorType(ErrorStyle.NONE);
-		r.setDashSize(MIN_PIXEL_DISTANCE);
+		r.setDashSize(0);
 		r.setPointReduction(true);
 		r.setDrawMarker(false);
 		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) r.getRendererDataReducer();
@@ -240,6 +241,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		yAxis1.invertAxis(false);
 		// These numbers can be very large
 		xAxis1.setTimeAxis(false);
+		yAxis1.setTimeAxis(false);
 
 		xAxis1.setTickLabelRotation(45);
 		// for gregorian we may need something else here
@@ -250,6 +252,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		chart = new XYChart(xAxis1, yAxis1);
 		chart.legendVisibleProperty().set(true);
 		chart.setAnimated(false);
+		chart.getPlugins().add(new Zoomer());
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
 

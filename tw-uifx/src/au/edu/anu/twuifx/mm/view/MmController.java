@@ -75,6 +75,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
@@ -146,10 +147,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private ToggleButton btnChildLinks;
-	
+
 	@FXML
 	private ToggleButton tglSideline;
-	
+
 	@FXML
 	private BorderPane rootPane;
 
@@ -266,6 +267,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// and IntelliJ have been tested
 	private IDETypes ideType = IDETypes.eclipse;
 
+
 	/*******************************************************************************
 	 * NB any function that causes checking to take place (e.g. an edit) also causes
 	 * SetButtonState() to be called.
@@ -336,7 +338,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		// Setup zooming from the graph display pane (zoomTarget)
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
-	}
+	}	
 
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
@@ -449,15 +451,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
-	// Property to be bound to xlink lines
-	public BooleanProperty xLinksProperty() {
-		return btnXLinks.selectedProperty();
-	}
-
-	// Property to be bound to child lines
-	public BooleanProperty childLinksProperty() {
-		return btnChildLinks.selectedProperty();
-	}
+//	// Property to be bound to xlink lines
+//	public BooleanProperty xLinksProperty() {
+//		return btnXLinks.selectedProperty();
+//	}
+//
+//	// Property to be bound to child lines
+//	public BooleanProperty childLinksProperty() {
+//		return btnChildLinks.selectedProperty();
+//	}
 
 	@FXML
 	void handleCheck(ActionEvent event) {
@@ -506,10 +508,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 100.0;
-		visualiser.doLayout(root, dSize, cbxLayoutChoice.getValue(), btnChildLinks.isSelected(),
-				btnXLinks.isSelected(),tglSideline.isSelected());
+		visualiser.doLayout(root, dSize, cbxLayoutChoice.getValue(), btnChildLinks.isSelected(), btnXLinks.isSelected(),
+				tglSideline.isSelected());
 	}
-
 
 	@FXML
 	void handleOnDeploy(ActionEvent event) {
@@ -525,14 +526,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		File[] files = Project.getAllProjectPaths();
 		String[] names = Project.extractDisplayNames(files);
 		for (int i = 0; i < files.length; i++) {
-			MenuItem mi = new MenuItem((i+1)+" "+names[i]);
+			MenuItem mi = new MenuItem((i + 1) + " " + names[i]);
 			// // Stop the first underscore from being removed - not needed anymore?
 			// // https://bugs.openjdk.java.net/browse/JDK-8095296
 			mi.setMnemonicParsing(false);
 			menuOpen.getItems().add(mi);
 			map.put(mi, files[i]);
 			String id = Project.extractDateTime(files[i]);
-			
+
 			if (Objects.equals(cid, id))
 				mi.setDisable(true);
 			else
@@ -801,7 +802,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				nodeRadiusProperty, //
 				btnChildLinks.selectedProperty(), //
 				btnXLinks.selectedProperty(), //
-				tglSideline.selectedProperty(),//
+				tglSideline.selectedProperty(), //
 				fontProperty, this);
 
 		visualiser.initialiseView();
@@ -844,7 +845,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		if (node.properties().hasProperty(P_FIELD_DESCRIPTION.key()))
 			propertyDesciption = (String) node.properties().getPropertyValue(P_FIELD_DESCRIPTION.key());
 		for (String key : node.properties().getKeysAsSet())
-			
+
 			if (node.properties().getPropertyValue(key) != null) {
 				boolean editable = model.propertyEditable(node.classId(), key);
 				if (editable || showNonEditable) {
@@ -1128,6 +1129,5 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		stage.setTitle(DefaultWindowSettings.defaultName());
 
 	}
-
 
 }
