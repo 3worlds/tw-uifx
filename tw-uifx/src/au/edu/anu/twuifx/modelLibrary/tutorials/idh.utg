@@ -55,6 +55,44 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 	precis = java.lang.String(Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model for n species. Illustrates the use of a SystemComponent.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
 	version = java.lang.String(demo)
+	predefined *categories*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *composition*
+			category *population*
+			category *individual*
+		categorySet *systemElements*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+			category *space*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
 	experiment defaultExperiment
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
@@ -164,11 +202,6 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 		structure struc
-			categorySet *systemElements*
-				category *component*
-				category *arena*
-			categorySet *lifespan*
-				category *permanent*
 			componentType community
 				constantClass = java.lang.String(code.system.CommPar)
 				decoratorClass = java.lang.String(code.system.CommDec)
@@ -213,3 +246,5 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 [system:system] belongsTo blgstqn [category:*arena*]
 [table:x] sizedBy szBy [dimensioner:nbspecies]
 	rank = java.lang.Integer(0)
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*population*] autoVar auto [record:AVPopulation]

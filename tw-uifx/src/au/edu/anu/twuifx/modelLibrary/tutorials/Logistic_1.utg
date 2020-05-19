@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 
 // CODE snippet for method Logistic.chaos(...)
 //		focalDrv.x = r*x*(1-x);
-	
+
 // TREE
 3worlds Logistic_1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
@@ -14,6 +14,44 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 	precis = java.lang.String(The discrete logistic model: a minimal configuration file for 3Worlds. First steps with Process, Function, Widgets and DataTrackers)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https:/en.wikipedia.org/wiki/Logistic_map","https:/en.wikipedia.org/wiki/Chaos_theory"))
 	version = java.lang.String(demo)
+	predefined *categories*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *composition*
+			category *population*
+			category *individual*
+		categorySet *systemElements*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+			category *space*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
 	dataDefinition dDef
 		record vars
 			dynamic = java.lang.Boolean(true)
@@ -62,8 +100,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 		constantValues initr
 			r = java.lang.Double(3.7)
 		structure struc
-			categorySet *systemElements*
-				category *arena*
 	experiment expt
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
@@ -97,3 +133,5 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 [widget:srsx] trackSeries trks3 [dataTracker:trkr]
 [category:*arena*] drivers drvs [record:vars]
 [category:*arena*] lifetimeConstants params [record:pars]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*population*] autoVar auto [record:AVPopulation]

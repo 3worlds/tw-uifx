@@ -20,6 +20,44 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 	precis = java.lang.String(The discrete logistic model. Illustrates the use of SetInitialStateFunction to initialise the model.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Logistic_map"))
 	version = java.lang.String(demo)
+	predefined *categories*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *composition*
+			category *population*
+			category *individual*
+		categorySet *systemElements*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+			category *space*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
 	dataDefinition dDef
 		record deco
 			dynamic = java.lang.Boolean(false)
@@ -56,8 +94,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys.Init)
 		structure struc
-			categorySet *systemElements*
-				category *arena*
 		dynamics sim
 			timeLine tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
@@ -129,3 +165,5 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 [dataTracker:trkr1] trackField trks5 [field:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [widget:time] trackTime trks4 [dynamics:sim]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*population*] autoVar auto [record:AVPopulation]

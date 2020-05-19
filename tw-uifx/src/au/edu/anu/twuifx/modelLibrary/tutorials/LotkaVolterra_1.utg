@@ -29,12 +29,50 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 
 // TREE
 3worlds LotkaVolterra_1
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(( [2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(The Lotka-Volterra competition model for n species. Illustrates the use of Tables.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
 	version = java.lang.String(demo)
+	predefined *categories*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *composition*
+			category *population*
+			category *individual*
+		categorySet *systemElements*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+			category *space*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
 	dataDefinition dDef
 		record par
 			dynamic = java.lang.Boolean(false)
@@ -101,8 +139,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 		structure comm
-			categorySet *systemElements*
-				category *arena*
 	experiment expt
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
@@ -146,3 +182,5 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 [widget:srsx] trackSeries trks4 [dataTracker:trkr]
 [table:x] sizedBy szBy [dimensioner:nbsp]
 	rank = java.lang.Integer(0)
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*population*] autoVar auto [record:AVPopulation]

@@ -3,13 +3,13 @@
  *                                                                        *
  *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
- *       ian.davies@anu.edu.au                                            * 
+ *       ian.davies@anu.edu.au                                            *
  *                                                                        *
  *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
  *  This is to separate concerns of UI implementation and the code for    *
  *  these java programs.                                                  *
  *                                                                        *
- **************************************************************************                                       
+ **************************************************************************
  *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
  *                                                                        *
  *  TW-UIFX is free software: you can redistribute it and/or modify       *
@@ -20,7 +20,7 @@
  *  TW-UIFX is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *  GNU General Public License for more details.                          *                         
+ *  GNU General Public License for more details.                          *
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
  *  along with TW-UIFX.                                                   *
@@ -85,7 +85,7 @@ import javafx.stage.Window;
  * @author Ian Davies
  *
  * @date 29 Oct 2019
- * 
+ *
  *       Trial of chart-fx based on the "RollingBufferSample"
  */
 public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
@@ -175,7 +175,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 			/*
 			 * TODO Still some problems with how we manage this.
-			 * 
+			 *
 			 */
 
 			Platform.runLater(() -> {
@@ -236,8 +236,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		xAxis1.setAutoRangeRounding(true);
 		yAxis1.setAutoRangeRounding(true);
 
-		xAxis1.setForceZeroInRange(true);
-		yAxis1.setForceZeroInRange(true);
+//		xAxis1.setForceZeroInRange(true);
+//		yAxis1.setForceZeroInRange(true);
 
 		xAxis1.invertAxis(false);
 		yAxis1.invertAxis(false);
