@@ -179,7 +179,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
 		chart.getPlugins().add(new Zoomer());
-//		chart.getPlugins().add(new Panner());
+//		chart.getPlugins().add(new Panner());// confusing!
 //		chart.getPlugins().add(new EditAxis());// crashes
 		chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
