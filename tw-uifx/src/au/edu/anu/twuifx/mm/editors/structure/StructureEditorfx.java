@@ -68,7 +68,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	@Override
 	public void buildgui() {
-		// if (haveSpecification()) {
 		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(editableNode, baseSpec, subClassSpec,
 				TWA.getRoot());
 		List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
@@ -102,7 +101,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				}
 			}
 		}
-		if (!filteredEdgeSpecs.isEmpty()) {
+		if (!filteredEdgeSpecs.isEmpty() && !editableNode.isPredefined()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_EDGE);
 			for (Tuple<String, VisualNode, SimpleDataTreeNode> p : filteredEdgeSpecs) {
 				boolean reserved = ConfigurationReservedEdgeLabels.isPredefined(p.getFirst());
@@ -114,7 +113,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				}
 			}
 		}
-		if (!orphanedChildren.isEmpty()) {
+		if (!orphanedChildren.isEmpty() && !editableNode.isPredefined()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_CHILD_LINK);
 			for (VisualNode vn : orphanedChildren) {
 				MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
