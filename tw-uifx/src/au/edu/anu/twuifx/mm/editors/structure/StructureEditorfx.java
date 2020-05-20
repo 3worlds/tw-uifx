@@ -221,14 +221,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_EDGE);
 			for (VisualEdge edge : editableNode.getOutEdges()) {
 				VisualNode vn = (VisualNode) edge.endNode();
-				if (!vn.isPredefined() && !editableNode.isPredefined()) {
-					MenuItem mi = MenuLabels.addMenuItem(mu,
-							edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
-					mi.setOnAction((e) -> {
-						onDeleteEdge(edge);
-					});
-				}
+
+				MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
+				mi.setOnAction((e) -> {
+					onDeleteEdge(edge);
+				});
 			}
+
 		}
 
 		if (editableNode.hasChildren() && !editableNode.isPredefined()) {
