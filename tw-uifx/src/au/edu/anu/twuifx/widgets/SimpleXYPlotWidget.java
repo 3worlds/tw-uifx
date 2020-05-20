@@ -162,8 +162,8 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		xAxis1.invertAxis(false);
 		yAxis1.invertAxis(false);
 
-		xAxis1.setForceZeroInRange(true);
-		yAxis1.setForceZeroInRange(true);
+//		xAxis1.setForceZeroInRange(true);
+//		yAxis1.setForceZeroInRange(true);
 
 		xAxis1.setTickLabelRotation(45);
 

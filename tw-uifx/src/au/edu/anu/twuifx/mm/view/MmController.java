@@ -1130,4 +1130,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
+	@Override
+	public void collapsePredef() {
+		visualiser.collapsePredef();
+		
+	}
+
 }

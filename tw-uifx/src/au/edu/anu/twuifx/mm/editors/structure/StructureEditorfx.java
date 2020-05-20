@@ -39,6 +39,8 @@ import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
+import fr.cnrs.iees.twcore.constants.ConfigurationReservedEdgeLabels;
+import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -76,7 +78,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		boolean section1Entries = !filteredChildSpecs.isEmpty() || !filteredEdgeSpecs.isEmpty()
 				|| !orphanedChildren.isEmpty();
 		boolean section2Entries = editableNode.hasChildren() || !filteredChildSpecs.isEmpty();
-		boolean section3Entries = editableNode.hasChildren() || editableNode.canDelete() || editableNode.canRename();
+		boolean section3Entries = editableNode.hasChildren();
+		// ;// || editableNode.canDelete() || editableNode.canRename();
 
 		if (!filteredChildSpecs.isEmpty()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_NODE);
@@ -84,26 +87,31 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				String childLabel = (String) child.properties().getPropertyValue(aaIsOfClass);
 				String childId = null;
 				String dispName = childLabel;
+				boolean reserved = false;
 				if (child.properties().hasProperty(aaHasId)) {
 					childId = (String) child.properties().getPropertyValue(aaHasId);
+					reserved = ConfigurationReservedNodeId.isPredefined(childId);
 					dispName += ":" + childId;
-
 				}
 				final String chldId = childId;
-				MenuItem mi = MenuLabels.addMenuItem(mu, dispName);
-				mi.setOnAction((e) -> {
-					onNewChild(childLabel, chldId, child);
-				});
+				if (!reserved) {
+					MenuItem mi = MenuLabels.addMenuItem(mu, dispName);
+					mi.setOnAction((e) -> {
+						onNewChild(childLabel, chldId, child);
+					});
+				}
 			}
 		}
 		if (!filteredEdgeSpecs.isEmpty()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_EDGE);
 			for (Tuple<String, VisualNode, SimpleDataTreeNode> p : filteredEdgeSpecs) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().getDisplayText(false));
-				mi.setOnAction((e) -> {
-					onNewEdge(p);
-				});
-
+				boolean reserved = ConfigurationReservedEdgeLabels.isPredefined(p.getFirst());
+				if (!reserved) {
+					MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().getDisplayText(false));
+					mi.setOnAction((e) -> {
+						onNewEdge(p);
+					});
+				}
 			}
 		}
 		if (!orphanedChildren.isEmpty()) {
@@ -134,10 +142,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (editableNode.hasChildren()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPORT_TREE);
 			for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren()) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
-				mi.setOnAction((e) -> {
-					onExportTree(vn);
-				});
+				if (!vn.isPredefined()) {
+					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
+					mi.setOnAction((e) -> {
+						onExportTree(vn);
+					});
+				}
 			}
 		}
 		if (editableNode.hasChildren()) {
@@ -180,14 +190,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		if (section2Entries && section3Entries)
 			cm.getItems().add(new SeparatorMenuItem());
 
-		if (editableNode.canDelete()) {
+		if (!editableNode.isRoot() && !editableNode.isPredefined()) {
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_DELETE_NODE);
 			mi.setOnAction((e) -> {
 				onDeleteNode();
 			});
 		}
 
-		if (editableNode.canRename()) {
+		if (!editableNode.isRoot() && !editableNode.isPredefined()) {
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_RENAME_NODE);
 			mi.setOnAction((e) -> {
 				onRenameNode();
@@ -198,11 +208,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_RENAME_EDGE);
 			for (VisualEdge edge : editableNode.getOutEdges()) {
 				VisualNode vn = (VisualNode) edge.endNode();
-				MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
-				mi.setOnAction((e) -> {
-					onRenameEdge(edge);
-				});
-
+				if (!vn.isPredefined() && !editableNode.isPredefined()) {
+					MenuItem mi = MenuLabels.addMenuItem(mu,
+							edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
+					mi.setOnAction((e) -> {
+						onRenameEdge(edge);
+					});
+				}
 			}
 		}
 
@@ -210,20 +222,25 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_EDGE);
 			for (VisualEdge edge : editableNode.getOutEdges()) {
 				VisualNode vn = (VisualNode) edge.endNode();
-				MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
-				mi.setOnAction((e) -> {
-					onDeleteEdge(edge);
-				});
+				if (!vn.isPredefined() && !editableNode.isPredefined()) {
+					MenuItem mi = MenuLabels.addMenuItem(mu,
+							edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
+					mi.setOnAction((e) -> {
+						onDeleteEdge(edge);
+					});
+				}
 			}
 		}
 
 		if (editableNode.hasChildren()) {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_CHILD);
 			for (VisualNode child : editableNode.getSelectedVisualNode().getChildren()) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, child.getDisplayText(false));
-				mi.setOnAction((e) -> {
-					onDeleteParentLink(child);
-				});
+				if (!child.isPredefined()) {
+					MenuItem mi = MenuLabels.addMenuItem(mu, child.getDisplayText(false));
+					mi.setOnAction((e) -> {
+						onDeleteParentLink(child);
+					});
+				}
 			}
 
 		}
@@ -232,10 +249,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_TREE);
 			Iterable<VisualNode> lst = editableNode.getSelectedVisualNode().getChildren();
 			for (VisualNode vn : lst) {
-				MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
-				mi.setOnAction((e) -> {
-					onDeleteTree(vn);
-				});
+				if (!vn.isPredefined()) {
+					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
+					mi.setOnAction((e) -> {
+						onDeleteTree(vn);
+					});
+				}
 			}
 		}
 		{
@@ -246,12 +265,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			});
 		}
 		{
-		MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_FILTEREDGES);
-		mi.setOnAction((e)->{
-			// Dialog for the required pathdepth
-			gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(),1);
-		
-		});
+			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_LOCALGRAPH);
+			mi.setOnAction((e) -> {
+				// Dialog for the required pathdepth
+				gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), 1);
+
+			});
 		}
 
 	}
@@ -274,7 +293,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_DELETE_NODE/*       */("Delete node"), // config
 		// --------------------------------------------
 		ML_ALL/*               */("All"), //
-		ML_LAYOUT/*            */("Focus layout"), ML_FILTEREDGES/*       */("Filter edges"),;
+		ML_LAYOUT/*            */("Set layout root"), //
+		ML_LOCALGRAPH/*        */("Show neighbourhood"),;
 
 		private final String label;
 

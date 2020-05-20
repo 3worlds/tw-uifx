@@ -42,9 +42,10 @@ public class TreeColours {
 		nodeColours.put(ConfigurationNodeLabels.N_SYSTEM.label(), Color.TEAL);
 		nodeColours.put(ConfigurationNodeLabels.N_DYNAMICS.label(), Color.LIME);
 		nodeColours.put(ConfigurationNodeLabels.N_STRUCTURE.label(), Color.GREEN);
-		nodeColours.put(ConfigurationNodeLabels.N_DATADEFINITION.label(), Color.LIGHTGREY);
+		nodeColours.put(ConfigurationNodeLabels.N_DATADEFINITION.label(), Color.SALMON);
 		nodeColours.put(ConfigurationNodeLabels.N_EXPERIMENT.label(), Color.GOLDENROD);
 		nodeColours.put(ConfigurationNodeLabels.N_UI.label(), Color.WHITE);
+		nodeColours.put(ConfigurationNodeLabels.N_PREDEFINED.label(),Color.LIGHTGREY);
 	}
 	public static Color getCategoryColor(String category, String label){
 		if (!nodeColours.containsKey(category))

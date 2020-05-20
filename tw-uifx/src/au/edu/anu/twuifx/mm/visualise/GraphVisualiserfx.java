@@ -59,6 +59,7 @@ import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -82,6 +83,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 /**
  * Author Ian Davies
@@ -131,22 +133,22 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
 		filteredEdges = new ArrayList<>();
-		
+
 		showGraphLine.addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
-				System.out.println("SHOW XLINKS: "+newValue);
+				System.out.println("SHOW XLINKS: " + newValue);
 			}
-			
+
 		});
 		showTreeLine.addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
-				System.out.println("SHOW PARENT LINKS: "+newValue);
+				System.out.println("SHOW PARENT LINKS: " + newValue);
 			}
-			
+
 		});
 
 	}
@@ -729,7 +731,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		getChildNodes(root, nnNodes, 0, pathLength);
 
 		getEdgeNodes(root, nnNodes, 0, pathLength);
-		for (VisualNode n: nnNodes) {
+		for (VisualNode n : nnNodes) {
 			System.out.println(n.getDisplayText(false));
 		}
 
@@ -757,6 +759,18 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				getChildNodes(child, nnNodes, depth + 1, pathLength);
 			}
 		}
+	}
+
+	@Override
+	public void collapsePredef() {
+		for (VisualNode root : visualGraph.roots()) {
+			if (root.cClassId().equals(N_ROOT.label())) {
+				VisualNode predef = (VisualNode) get(root.getChildren(),
+						selectOne(hasTheName(ConfigurationReservedNodeId.categories.id())));
+				collapseTree(predef);
+			}
+		}
+
 	}
 
 }
