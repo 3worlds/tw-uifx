@@ -178,7 +178,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
-		tab timeseries
+		tab time series
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget populationWidget
 				order = java.lang.Integer(0)
