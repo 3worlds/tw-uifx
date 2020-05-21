@@ -735,9 +735,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		traversal(root, 0, pathLength, localNodes);
 		localNodes.add(root);
 
-		Set<Shape> visibleItems = getSymbols(localNodes);
+		Set<Shape> localShapes = getShapes(localNodes);
 		
-//		hideNonLocalShapes(visibleItems);
+//		showShapes(localShapes);
 
 		System.out.println("focus: " + root.getDisplayText(false));
 		for (VisualNode n : localNodes) {
@@ -747,20 +747,21 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	}
 
-	private void hideNonLocalShapes(Set<Shape> visibleItems) {
+	private void showShapes(Set<Shape> visibleItems) {
 		for (Node item : pane.getChildren())
 			if (item instanceof Circle || item instanceof Line) {
-				if (!visibleItems.contains(item)) {
+				if (!visibleItems.contains(item)) {// TODO get rid of all visibleProperty bindings
 					if (item.visibleProperty().isBound())
 						item.visibleProperty().unbind();
 					item.setVisible(false);
-				}
+				} //else
+					//item.setVisible(true);
 			}
 
 		
 	}
 
-	private Set<Shape> getSymbols(Set<VisualNode> localNodes) {
+	private Set<Shape> getShapes(Set<VisualNode> localNodes) {
 		Set<Shape> result = new HashSet<>();
 		for (VisualNode v : localNodes) {
 			result.add((Shape) v.getSymbol());
