@@ -267,7 +267,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// and IntelliJ have been tested
 	private IDETypes ideType = IDETypes.eclipse;
 
-
 	/*******************************************************************************
 	 * NB any function that causes checking to take place (e.g. an edit) also causes
 	 * SetButtonState() to be called.
@@ -338,7 +337,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		// Setup zooming from the graph display pane (zoomTarget)
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
-	}	
+	}
 
 	private void buildNewMenu() {
 		Map<MenuItem, LibraryTable> map = new HashMap<>();
@@ -371,13 +370,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
 				TreeGraphDataNode root = libGraph.root();
 				if (root == null || !root.classId().equals(N_ROOT.label())) {
-					String rnames=lt.displayName()+" roots:\n";
+					String rnames = lt.displayName() + " roots:\n";
 					int i = 0;
-					for (TreeGraphDataNode r:libGraph.roots())
-						rnames+=((++i)+") "+r.toShortString()+"\n");
+					for (TreeGraphDataNode r : libGraph.roots())
+						rnames += ((++i) + ") " + r.toShortString() + "\n");
 					String title = "Library graph error";
-					String content = "Graphs must have a single root (ref '"+ N_ROOT.label() + "').";
-					Dialogs.errorAlert(title, content,rnames);
+					String content = "Graphs must have a single root (ref '" + N_ROOT.label() + "').";
+					Dialogs.errorAlert(title, content, rnames);
 					return;
 				}
 
@@ -1138,7 +1137,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void collapsePredef() {
 		visualiser.collapsePredef();
-		
+
 	}
 
 }
