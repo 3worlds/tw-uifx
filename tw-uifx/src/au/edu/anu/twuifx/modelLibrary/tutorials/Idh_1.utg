@@ -230,10 +230,10 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 	rank = java.lang.Integer(0)
 [table:alpha] sizedBy szBy2 [dimensioner:nbspecies]
 	rank = java.lang.Integer(0)
-[widget:defaultController] trackTime trksTmOf [dynamics:simulator]
+[widget:controller] trackTime trksTmOf [dynamics:simulator]
 [process:proc] dependsOn depsOn [process:proc1]
 [process:proc] appliesTo aplyTo [category:*component*]
-[widget:wgt] trackSeries trksSrsOf [dataTracker:trkr]
+[widget:timeseries] trackSeries trksSrsOf [dataTracker:trkr]
 [category:*arena*] decorators decs [record:arenaDec]
 [category:*arena*] lifetimeConstants ltcs [record:arenaPar]
 [componentType:community] belongsTo blngsTo2 [category:*permanent*]
