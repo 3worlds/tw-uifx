@@ -78,6 +78,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -717,51 +718,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void showLocalGraph(VisualNode root, int pathLength) {
-		Set<VisualNode> nnNodes = new HashSet<>();
-		// add parent lines
-		VisualNode node = root;
-
-		int depth = 0;
-		while (node != null && depth <= pathLength) {
-			nnNodes.add(node);
-			depth++;
-			node = node.getParent();
-		}
-		getChildNodes(root, nnNodes, 0, pathLength);
-
-		getEdgeNodes(root, nnNodes, 0, pathLength);
-		for (VisualNode n : nnNodes) {
-			System.out.println(n.getDisplayText(false));
-		}
-
-	}
-
-	private static void getEdgeNodes(VisualNode node, Set<VisualNode> nnNodes, int depth, int pathLength) {
-		if (depth <= pathLength) {
-			nnNodes.add(node);
-			List<VisualNode> outNodes = (List<VisualNode>) get(node.edges(Direction.OUT), edgeListEndNodes());
-			for (VisualNode on : outNodes)
-				getEdgeNodes(on, nnNodes, depth + 1, pathLength);
-			List<VisualNode> inNodes = (List<VisualNode>) get(node.edges(Direction.IN), edgeListStartNodes());
-			for (VisualNode in : inNodes) {
-				getEdgeNodes(in, nnNodes, depth + 1, pathLength);
-			}
-
-		}
-
-	}
-
-	private static void getChildNodes(VisualNode parent, Set<VisualNode> nnNodes, int depth, int pathLength) {
-		if (depth <= pathLength) {
-			nnNodes.add(parent);
-			for (VisualNode child : parent.getChildren()) {
-				getChildNodes(child, nnNodes, depth + 1, pathLength);
-			}
-		}
-	}
-
-	@Override
 	public void collapsePredef() {
 		for (VisualNode root : visualGraph.roots()) {
 			if (root.cClassId().equals(N_ROOT.label())) {
@@ -770,7 +726,85 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				collapseTree(predef);
 			}
 		}
+	}
 
+	@Override
+	public void showLocalGraph(VisualNode root, int pathLength) {
+
+		Set<VisualNode> localNodes = new HashSet<>();
+		traversal(root, 0, pathLength, localNodes);
+		localNodes.add(root);
+
+		Set<Shape> visibleItems = getSymbols(localNodes);
+		
+//		hideNonLocalShapes(visibleItems);
+
+		System.out.println("focus: " + root.getDisplayText(false));
+		for (VisualNode n : localNodes) {
+			if (!n.equals(root))
+				System.out.println("\t" + n.getDisplayText(false));
+		}
+
+	}
+
+	private void hideNonLocalShapes(Set<Shape> visibleItems) {
+		for (Node item : pane.getChildren())
+			if (item instanceof Circle || item instanceof Line) {
+				if (!visibleItems.contains(item)) {
+					if (item.visibleProperty().isBound())
+						item.visibleProperty().unbind();
+					item.setVisible(false);
+				}
+			}
+
+		
+	}
+
+	private Set<Shape> getSymbols(Set<VisualNode> localNodes) {
+		Set<Shape> result = new HashSet<>();
+		for (VisualNode v : localNodes) {
+			result.add((Shape) v.getSymbol());
+			if (localNodes.contains(v.getParent()))
+				result.add((Shape) v.getParentLine());
+			for (Edge e : v.edges()) {
+				VisualEdge ve = (VisualEdge) e;
+				if (localNodes.contains(ve.startNode()) && localNodes.contains(ve.endNode())) {
+					result.add((Shape) ve.getSymbol());
+				}
+			}
+		}
+		return result;
+	}
+
+	private void traversal(VisualNode root, int depth, int pathLength, Set<VisualNode> nnNodes) {
+		if (depth < pathLength) {
+			Set<VisualNode> nn = new HashSet<>();
+
+			VisualNode parent = root.getParent();
+			if (parent != null && !nnNodes.contains(parent))
+				nn.add(root.getParent());
+
+			for (VisualNode n : root.getChildren())
+				if (!nnNodes.contains(n))
+					nn.add(n);
+
+			List<VisualNode> outNodes = (List<VisualNode>) get(root.edges(Direction.OUT), edgeListEndNodes());
+			for (VisualNode n : outNodes)
+				if (!nnNodes.contains(n)) {
+					nn.add(n);
+				}
+
+			List<VisualNode> inNodes = (List<VisualNode>) get(root.edges(Direction.IN), edgeListStartNodes());
+			for (VisualNode n : inNodes)
+				if (!nnNodes.contains(n))
+					nn.add(n);
+
+			nnNodes.addAll(nn);
+
+			for (VisualNode n : nn)
+				traversal(n, depth + 1, pathLength, nnNodes);
+
+		}
 	}
 
 }

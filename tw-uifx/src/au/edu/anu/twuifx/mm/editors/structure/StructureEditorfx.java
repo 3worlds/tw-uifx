@@ -31,6 +31,8 @@
 package au.edu.anu.twuifx.mm.editors.structure;
 
 import java.util.List;
+
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
@@ -263,8 +265,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_LOCALGRAPH);
 			mi.setOnAction((e) -> {
-				// Dialog for the required pathdepth
-				gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), 1);
+				String result = Dialogs.getText(MenuLabels.ML_LOCALGRAPH.label(),
+						editableNode.getSelectedVisualNode().getDisplayText(false), "Traversal depth: ", "1",
+						Dialogs.vsNumeric);
+				if (result != null) {
+					int depth = Integer.parseInt(result);
+					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
+				}
 
 			});
 		}
@@ -289,7 +296,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_DELETE_NODE/*       */("Delete node"), // config
 		// --------------------------------------------
 		ML_ALL/*               */("All"), //
-		ML_LAYOUT/*            */("Set layout root"), //
+		ML_LAYOUT/*            */("Set as layout root"), //
 		ML_LOCALGRAPH/*        */("Show neighbourhood"),;
 
 		private final String label;
