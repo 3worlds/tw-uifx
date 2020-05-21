@@ -178,7 +178,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
-		tab time series
+		tab time_series
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget populationWidget
 				order = java.lang.Integer(0)
@@ -228,3 +228,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [table:x] sizedBy szBy1 [dimensioner:nSpecies]
 	rank = java.lang.Integer(0)
+[componentType:disturbance] belongsTo blngsTo41 [category:*individual*]
+[componentType:community] belongsTo blngsTo37 [category:*individual*]
+[system:sys] belongsTo blngsTo28 [category:*population*]
