@@ -158,15 +158,15 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-	userInterface defaultGUI
+	userInterface gui
 		top top
-			widget defaultController
+			widget controller
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
 		tab tab
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget wgt
+			widget timeseries
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)

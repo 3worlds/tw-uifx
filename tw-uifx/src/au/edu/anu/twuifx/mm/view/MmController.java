@@ -371,8 +371,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
 				TreeGraphDataNode root = libGraph.root();
 				if (root == null || !root.classId().equals(N_ROOT.label())) {
-					Dialogs.errorAlert("Library error", lt.displayName(),
-							"This Tree graph does not have a single root node called '" + N_ROOT.label() + "'");
+					String rnames=lt.displayName()+" roots:\n";
+					int i = 0;
+					for (TreeGraphDataNode r:libGraph.roots())
+						rnames+=((++i)+") "+r.toShortString()+"\n");
+					String title = "Library graph error";
+					String content = "Graphs must have a single root (ref '"+ N_ROOT.label() + "').";
+					Dialogs.errorAlert(title, content,rnames);
 					return;
 				}
 
