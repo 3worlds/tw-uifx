@@ -29,7 +29,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 
 // TREE
 3worlds LotkaVolterra1
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(( [2]"Jacques Gignoux","Ian D. Davies"))
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(The Lotka-Volterra competition model for n species. Illustrates the use of Tables.)
