@@ -737,7 +737,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		Set<Shape> localShapes = getShapes(localNodes);
 		
-//		showShapes(localShapes);
+		//showShapes(localShapes);
 
 		System.out.println("focus: " + root.getDisplayText(false));
 		for (VisualNode n : localNodes) {
