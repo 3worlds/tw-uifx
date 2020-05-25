@@ -29,8 +29,6 @@
 
 package au.edu.anu.twuifx.mm.visualise.layout;
 
-import java.util.List;
-
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 
 /**

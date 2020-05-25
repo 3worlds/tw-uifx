@@ -104,12 +104,12 @@ public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVe
 			parentId = vertex.getParent().getNode().id();
 		for (VisualNode nChild : vertex.getNode().getChildren()) {
 			String childId = nChild.id();
-			if (!nChild.isCollapsed() && !childId.equals(parentId))
+			if (!nChild.isCollapsed() && !childId.equals(parentId)&& nChild.isVisible())
 				sortList.add(nChild);
 		}
 		VisualNode nParent = vertex.getNode().getParent();
 		if (nParent != null)
-			if (!nParent.isCollapsed() && !nParent.id().equals(parentId))
+			if (!nParent.isCollapsed() && !nParent.id().equals(parentId)&& nParent.isVisible())
 				sortList.add(nParent);
 
 		sortList.sort(new Comparator<VisualNode>() {

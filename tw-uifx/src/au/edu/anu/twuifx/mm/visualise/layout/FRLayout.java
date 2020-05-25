@@ -40,11 +40,9 @@ import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.Direction;
+import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.ens.biologie.generic.utils.Duple;
-
-import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
-import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 /**
  * @author Ian Davies
@@ -76,7 +74,7 @@ public class FRLayout implements ILayout {
 		isolated = new ArrayList<>();
 		/* make vertices of all visible nodes */
 		for (VisualNode v : graph.nodes()) {
-			if (!v.isCollapsed()) {
+			if (!v.isCollapsed() && v.isVisible()) {
 				vertices.add(new FRVertex(v));
 			}
 		}
@@ -96,7 +94,7 @@ public class FRLayout implements ILayout {
 			VisualNode vn = v.getNode();
 			if (pcShowing)
 				for (VisualNode cn : vn.getChildren())
-					if (!cn.isCollapsed()) {
+					if (!cn.isCollapsed() && cn.isVisible()) {
 						FRVertex u = Node2Vertex(cn);
 						edges.add(new Duple<FRVertex, FRVertex>(v, u));
 						v.setHasEdge(true);
@@ -105,15 +103,18 @@ public class FRLayout implements ILayout {
 
 			// add xlink edges
 			if (xlShowing) {
-				@SuppressWarnings("unchecked")
-				List<VisualNode> toNodes = (List<VisualNode>) get(vn.edges(Direction.OUT), edgeListEndNodes());
-				for (VisualNode toNode : toNodes)
-					if (!toNode.isCollapsed()) {
-						FRVertex u = Node2Vertex(toNode);
-						edges.add(new Duple<FRVertex, FRVertex>(v, u));
-						v.setHasEdge(true);
-						u.setHasEdge(true);
+				for (Edge e : vn.edges(Direction.OUT)) {
+					VisualEdge ve = (VisualEdge) e;
+					if (ve.isVisible()) {
+						VisualNode endNode = (VisualNode) ve.endNode();
+						if (!endNode.isCollapsed() && endNode.isVisible()) {
+							FRVertex u = Node2Vertex(endNode);
+							edges.add(new Duple<FRVertex, FRVertex>(v, u));
+							v.setHasEdge(true);
+							u.setHasEdge(true);
+						}
 					}
+				}
 			}
 		}
 
@@ -149,17 +150,17 @@ public class FRLayout implements ILayout {
 				FRVertex v = vertices.get(a);
 				for (int b = a + 1; b < vertices.size(); b++) {
 					FRVertex u = vertices.get(b);
-					double force = v.setRepulsionDisplacement(u, k);
+					/* double force = */v.setRepulsionDisplacement(u, k);
 				}
 			}
 
 			for (Duple<FRVertex, FRVertex> e : edges) {
-				double force = e.getFirst().setAttractionDisplacement(e.getSecond(), k);
+				/* double force = */ e.getFirst().setAttractionDisplacement(e.getSecond(), k);
 			}
 
-			double energy = 0;
+			/* double energy = 0; */
 			for (FRVertex v : vertices) {
-				energy += v.displace(t);
+				/* energy += */v.displace(t);
 			}
 
 			// lower the temperature

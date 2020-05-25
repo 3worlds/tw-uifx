@@ -1,8 +1,5 @@
 package au.edu.anu.twuifx.mm.visualise.layout;
 
-import static au.edu.anu.rscs.aot.queries.CoreQueries.edgeListEndNodes;
-import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
-
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,8 +13,16 @@ import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.Direction;
+import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 
+/**
+ * @author Ian Davies
+ *
+ * @date 25 May 2020
+ */
+
+// NOTE : WIP
 public class LmbLayout implements ILayout {
 	private List<LmbVertex> vertices;
 	private List<LmbEdge> edges;
@@ -32,7 +37,7 @@ public class LmbLayout implements ILayout {
 		isolated = new ArrayList<>();
 		/* make vertices of all visible nodes */
 		for (VisualNode v : graph.nodes()) {
-			if (!v.isCollapsed()) {
+			if (!v.isCollapsed() && v.isVisible()) {
 				vertices.add(new LmbVertex(v));
 			}
 		}
@@ -52,7 +57,7 @@ public class LmbLayout implements ILayout {
 			VisualNode vn = v.getNode();
 			if (pcShowing)
 				for (VisualNode cn : vn.getChildren())
-					if (!cn.isCollapsed()) {
+					if (!cn.isCollapsed() && cn.isVisible()) {
 						LmbVertex u = (LmbVertex) Node2Vertex(cn);
 						LmbEdge e = new LmbEdge(v, u);
 						edges.add(e);
@@ -64,22 +69,24 @@ public class LmbLayout implements ILayout {
 
 			// add xlink edges
 			if (xlShowing) {
-				@SuppressWarnings("unchecked")
-				List<VisualNode> toNodes = (List<VisualNode>) get(vn.edges(Direction.OUT), edgeListEndNodes());
-				for (VisualNode toNode : toNodes)
-					if (!toNode.isCollapsed()) {
-						LmbVertex u = (LmbVertex) Node2Vertex(toNode);
-						LmbEdge e = new LmbEdge(v, u);
-						edges.add(e);
-						Map<LmbVertex, LmbEdge> adjMap1 = addAdjMat(e, v, u);
-						v.addNeighbour(adjMap1);
-						Map<LmbVertex, LmbEdge> adjMap2 = addAdjMat(e, u, v);
-						u.addNeighbour(adjMap2);
+				for (Edge e : vn.edges(Direction.OUT)) {
+					VisualEdge ve = (VisualEdge) e;
+					if (ve.isVisible()) {
+						VisualNode endNode = (VisualNode) ve.endNode();
+						if (!endNode.isCollapsed() && endNode.isVisible()) {
+							LmbVertex u = (LmbVertex) Node2Vertex(endNode);
+							LmbEdge le = new LmbEdge(v, u);
+							edges.add(le);
+							Map<LmbVertex, LmbEdge> adjMap1 = addAdjMat(le, v, u);
+							v.addNeighbour(adjMap1);
+							Map<LmbVertex, LmbEdge> adjMap2 = addAdjMat(le, u, v);
+							u.addNeighbour(adjMap2);
+						}
 					}
+				}
 			}
 		}
 
-		
 		for (LmbVertex v : vertices)
 			v.init();
 
@@ -88,7 +95,7 @@ public class LmbLayout implements ILayout {
 		// remove isolated vertices
 		if (sideline) {
 			for (LmbVertex v : vertices)
-				if (v.degree()==0)
+				if (v.degree() == 0)
 					isolated.add(v);
 
 			for (LmbVertex v : isolated)

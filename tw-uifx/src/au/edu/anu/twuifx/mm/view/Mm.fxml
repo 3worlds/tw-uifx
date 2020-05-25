@@ -172,17 +172,18 @@
                <bottom>
                   <ToolBar BorderPane.alignment="CENTER">
                     <items>
-                        <ComboBox fx:id="cbxLayoutChoice" prefWidth="150.0" />
                         <Button fx:id="btnLayout" disable="true" onAction="#handleLayout" text="_L" />
                         <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
                         <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
                         <ToggleButton fx:id="tglSideline" disable="true" mnemonicParsing="false" text="&gt;|" />
+                        <Button fx:id="btnSelectAll" disable="true" mnemonicParsing="false" onAction="#onSelectAll" text="A" />
                         <Label text="Font size:" />
                         <Spinner fx:id="spinFontSize" editable="true" prefWidth="75.0" />
                         <Label text="Node size:" />
                         <Spinner fx:id="spinNodeSize" editable="true" prefWidth="75.0" />
                         <Label text="Jitter: " />
                         <Spinner fx:id="spinJitter" />
+                        <ComboBox fx:id="cbxLayoutChoice" prefWidth="150.0" visible="false" />
                     </items>
                   </ToolBar>
                </bottom>

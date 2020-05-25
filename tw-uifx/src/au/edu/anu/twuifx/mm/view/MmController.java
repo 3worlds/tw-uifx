@@ -32,7 +32,6 @@ package au.edu.anu.twuifx.mm.view;
 
 import javafx.application.Platform;
 import javafx.beans.Observable;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -75,8 +74,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.Set;
-
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 
@@ -99,7 +96,7 @@ import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
+//import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
@@ -150,6 +147,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private ToggleButton tglSideline;
+
+	@FXML
+	private Button btnSelectAll;
 
 	@FXML
 	private BorderPane rootPane;
@@ -240,8 +240,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private Label lblChecking;
 
-	@FXML
-	private ComboBox<LayoutType> cbxLayoutChoice;
+//	@FXML
+//	private ComboBox<LayoutType> cbxLayoutChoice;
 
 	public enum Verbosity {
 		brief, medium, full;
@@ -259,6 +259,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private IntegerProperty jitterProperty = new SimpleIntegerProperty(1);
 	private ObjectProperty<Font> fontProperty;
 
+	private LayoutType currentLayout;
+
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private Font font;
 	private int fontSize;
@@ -273,8 +275,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	 *******************************************************************************/
 	@FXML
 	public void initialize() {
-		cbxLayoutChoice.getItems().setAll(LayoutType.values());
-		cbxLayoutChoice.setValue(LayoutType.OrderedTree);
+//		cbxLayoutChoice.getItems().setAll(LayoutType.values());
+//		cbxLayoutChoice.setValue(LayoutType.OrderedTree);
 
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
@@ -309,11 +311,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		});
 
-		btnLayout.setTooltip(new Tooltip("Apply layout function"));
+		btnLayout.setTooltip(new Tooltip("Re-apply layout"));
 		btnXLinks.setTooltip(new Tooltip("Show/hide cross-links"));
 		btnChildLinks.setTooltip(new Tooltip("Show/hide parent-child edges"));
+		btnSelectAll.setTooltip(new Tooltip("Show all nodes"));
+		tglSideline.setTooltip(new Tooltip("Move isolated nodes aside"));
 
-		/** Set a handler to refresh the Open menu items when asked to show */
+		/** Set a handler to refresh the Open menu items when selected */
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
 
 		/** add template entries to the "New" menu */
@@ -455,16 +459,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
-//	// Property to be bound to xlink lines
-//	public BooleanProperty xLinksProperty() {
-//		return btnXLinks.selectedProperty();
-//	}
-//
-//	// Property to be bound to child lines
-//	public BooleanProperty childLinksProperty() {
-//		return btnChildLinks.selectedProperty();
-//	}
-
 	@FXML
 	void handleCheck(ActionEvent event) {
 		ConfigGraph.validateGraph();
@@ -500,19 +494,20 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@Override
 	public void doLayout() {
-		callLayout(null);
+		callLayout(null, currentLayout);
 	}
 
 	@Override
-	public void doFocusedLayout(VisualNode root) {
-		callLayout(root);
+	public void doFocusedLayout(VisualNode root, LayoutType layout) {
+		callLayout(root, layout);
+		currentLayout = layout;
 	}
 
-	private void callLayout(VisualNode root) {
+	private void callLayout(VisualNode root, LayoutType layout) {
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 100.0;
-		visualiser.doLayout(root, dSize, cbxLayoutChoice.getValue(), btnChildLinks.isSelected(), btnXLinks.isSelected(),
+		visualiser.doLayout(root, dSize, layout, btnChildLinks.isSelected(), btnXLinks.isSelected(),
 				tglSideline.isSelected());
 	}
 
@@ -581,7 +576,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String jitterKey = "jitter";
 	private static final String Mode = "_mode";
 	private static final String AccordionSelection = "_AccSel";
-	private static final String LayoutChoice = "layoutChoice";
+	private static final String CurrentLayoutKey = "currentLayout";
 	private static final String ScrollHValue = "HValue";
 	private static final String ScrollVValue = "VValue";
 
@@ -606,7 +601,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putInt(tabPaneProperties.idProperty().get(),
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
 			Preferences.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
-			Preferences.putEnum(LayoutChoice, cbxLayoutChoice.getValue());
+			Preferences.putEnum(CurrentLayoutKey, currentLayout);
 			Preferences.putDouble(scrollPane.idProperty().get() + ScrollHValue, scrollPane.getHvalue());
 			Preferences.putDouble(scrollPane.idProperty().get() + ScrollVValue, scrollPane.getVvalue());
 
@@ -642,8 +637,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
-		LayoutType lt = (LayoutType) Preferences.getEnum(LayoutChoice, LayoutType.OrderedTree);
-		cbxLayoutChoice.setValue(lt);
+		currentLayout = (LayoutType) Preferences.getEnum(CurrentLayoutKey, LayoutType.OrderedTree);
+
 		PropertySheet.Mode mode = (PropertySheet.Mode) Preferences
 				.getEnum(allElementsPropertySheet.idProperty().get() + Mode, PropertySheet.Mode.CATEGORY);
 		allElementsPropertySheet.setMode(mode);
@@ -754,14 +749,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-	private boolean unsavedFlagged() {
-		for (ErrorMessagable e : lstErrorMsgs) {
-			if (e.errorName().equals(ModelBuildErrors.DEPLOY_PROJECT_UNSAVED.name()))
-				return true;
-		}
-		return false;
-	}
-
 	@Override
 	public void onReceiveMsg(ErrorMessagable msg) {
 		Platform.runLater(() -> {
@@ -776,9 +763,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	// ===============================================
-// Should we call 
-	// GraphState.clear();?
-	// Clear listeners of ErrorList.?
 	@Override
 	public void onProjectClosing() {
 		GraphState.clear();
@@ -836,13 +820,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			boolean showNonEditables = true;
 			ObservableList<Item> list = null;
 			if (cn instanceof DataHolder) {
-				list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables);
+				list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables, visualNode.isPredefined());
 				nodePropertySheet.getItems().setAll(list);
 			}
 		}
 	}
 
-	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable) {
+	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable,
+			boolean isPredef) {
 
 		ObservableList<Item> result = FXCollections.observableArrayList();
 		String propertyDesciption = null;
@@ -853,8 +838,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			if (node.properties().getPropertyValue(key) != null) {
 				boolean editable = model.propertyEditable(node.classId(), key);
 				if (editable || showNonEditable) {
-
-					result.add(makeItemType(key, node, editable, category, propertyDesciption));
+					boolean canEdit = editable;
+					if (isPredef)
+						canEdit = false;
+					result.add(makeItemType(key, node, canEdit, category, propertyDesciption));
 				}
 			}
 
@@ -865,7 +852,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				for (String key : dataEdge.properties().getKeysAsSet()) {
 					boolean editable = model.propertyEditable(edge.classId(), key);
 					if (editable || showNonEditable) {
-						result.add(makeItemType(key, dataEdge, editable, category, "Something"));
+						boolean canEdit = editable;
+						if (isPredef)
+							canEdit = false;
+						result.add(makeItemType(key, dataEdge, canEdit, category, "Something"));
 					}
 				}
 			}
@@ -894,7 +884,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				TreeGraphNode cn = vn.getConfigNode();
 				ObservableList<Item> obsSubList = null;
 				if (cn instanceof DataHolder) {
-					obsSubList = getNodeItems((TreeGraphDataNode) cn, cat, showNonEditables);
+					obsSubList = getNodeItems((TreeGraphDataNode) cn, cat, showNonEditables, vn.isPredefined());
 					obsList.addAll(obsSubList);
 				}
 			}
@@ -908,17 +898,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			FileTypeItem fti = new FileTypeItem(this, key, (ElementAdapter) element, true, category, description);
 			return fti;
 		} else if (value instanceof StatisticalAggregatesSet)
-			return new StatsTypeItem(this, key, (ElementAdapter) element, true, category, description);
+			return new StatsTypeItem(this, key, (ElementAdapter) element, editable, category, description);
 		else if (value instanceof PopulationVariablesSet)
-			return new PopTypeItem(this, key, (ElementAdapter) element, true, category, description);
+			return new PopTypeItem(this, key, (ElementAdapter) element, editable, category, description);
 		else if (value instanceof DateTimeType) {
-			return new DateTimeItem(this, key, (ElementAdapter) element, true, category, description);
+			return new DateTimeItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof TrackerType) {
-			return new TrackerTypeItem(this, key, (ElementAdapter) element, true, category, description);
+			return new TrackerTypeItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof Interval) {
-			return new IntervalItem(this, key, (ElementAdapter) element, true, category, description);
+			return new IntervalItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof IntegerRange) {
-			return new IntegerRangeItem(this, key, (ElementAdapter) element, true, category, description);
+			return new IntegerRangeItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof StringTable) {
 			StringTable st = (StringTable) value;
 			if (st.getDimensioners().length == 1)
@@ -1017,6 +1007,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		menuItemSaveAs.setDisable(!isOpen);
 		btnChildLinks.setDisable(!isOpen);
 		btnXLinks.setDisable(!isOpen);
+		btnSelectAll.setDisable(!isOpen);
 		tglSideline.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
 		btnCheck.setDisable(!isOpen);
@@ -1040,7 +1031,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void onElementRenamed() {
 		initialisePropertySheets();
-		// setButtonState();
 	}
 
 	@Override
@@ -1057,14 +1047,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void onNewEdge(VisualEdge e) {
 		initialisePropertySheets();
-		// setButtonState();
 	}
 
 	@Override
 	public void onEdgeDeleted() {
 		initialisePropertySheets();
-		// setButtonState();
-
 	}
 
 	@FXML
@@ -1140,4 +1127,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
+	@FXML
+	void onSelectAll(ActionEvent event) {
+
+		visualiser.onSelectAll();
+
+	}
 }

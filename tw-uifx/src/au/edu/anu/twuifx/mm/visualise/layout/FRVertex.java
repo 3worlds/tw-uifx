@@ -30,7 +30,6 @@
 package au.edu.anu.twuifx.mm.visualise.layout;
 
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import fr.cnrs.iees.uit.space.Distance;
 
 /**
  * @author Ian Davies
