@@ -2,6 +2,57 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+// CODE SNIPPET for function InitDist(...)
+//		focalLtc.freq = 5+random.nextInt(50);
+//		focalLtc.intensity = random.nextDouble()*100;
+//
+// CODE SNIPPET for function InitComm(...)
+//		double initfreq = 1.0/x.size();
+//		focalDrv.x.fillWith(initfreq);
+//		for (int i=0; i<r.size(0); i++) {
+//			focalLtc.r.setByInt(random.nextDouble(),i);
+//			focalLtc.K.setByInt(5.0+initfreq+random.nextDouble(),i);
+//			for (int j=0; j<alpha.size(1); j++) {
+//				if (i==j)
+//					focalLtc.alpha.setByInt(1.0,i,j);
+//				else
+//					focalLtc.alpha.setByInt(max(0.0001,random.nextDouble()),i,j);
+//			}
+//		}
+//
+// CODE SNIPPET for function setup(...)
+// 		return true;
+//
+// CODE SNIPPET for function growth(...)
+//		// population growth
+//		double[] dxdt = new double[x.size(0)];
+//		for (int i=0; i<x.size(0); i++) {
+//			double sum = 0;
+//			for (int j=0; j<alpha.size(1); j++)
+//				sum += alpha.getByInt(i,j) * x.getByInt(j);
+//			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1-sum/K.getByInt(i));
+//		}
+//		for (int i=0; i<dxdt.length; i++)
+//			focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt, i);
+//		// compute diversity
+//		double xtot = 0.0;
+//		for (int i=0; i<focalDrv.x.size(0);i++)
+//			xtot += focalDrv.x.getByInt(i);
+//		focalDec.div = 0.0;
+//		for  (int i=0; i<focalDrv.x.size(0);i++)
+//			if (focalDrv.x.getByInt(i)>0.0)
+//				focalDec.div -= (focalDrv.x.getByInt(i)/xtot) * log(focalDrv.x.getByInt(i)/xtot);
+//
+// CODE SNIPPET for function occurrence(...)
+//		double proba = 1.0/freq;
+//		if (random.nextDouble()<(proba)) {
+//			for (int i=0; i<x.size(); i++) {
+//				if (x.getByInt(i)>K.getByInt(i)*intensity/100000)
+//					otherDrv.x.setByInt(otherDrv.x.getByInt(i)*K.getByInt(i)*intensity/10000, i);
+//			}
+//		}
+
 // TREE
 3worlds Idh_2
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
