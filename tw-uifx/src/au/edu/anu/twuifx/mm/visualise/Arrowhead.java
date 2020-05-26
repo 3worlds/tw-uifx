@@ -1,6 +1,7 @@
 package au.edu.anu.twuifx.mm.visualise;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -10,7 +11,7 @@ import javafx.scene.shape.Line;
  * @date 25 May 2020
  */
 public class Arrowhead extends Line {
-	public Arrowhead(Line line) {
+	public Arrowhead(Line line, IntegerProperty offset) {
 		super();
 		Color c = (Color) line.getStroke();
 //		setStroke(c.darker());

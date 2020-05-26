@@ -57,7 +57,7 @@ public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVe
 	}
 
 	@Override
-	public boolean isLeaf() {
+	public boolean isChildless() {
 		return _children.isEmpty();
 	}
 

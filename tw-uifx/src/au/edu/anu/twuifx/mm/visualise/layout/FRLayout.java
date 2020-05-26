@@ -124,8 +124,10 @@ public class FRLayout implements ILayout {
 				if (!v.hasEdges())
 					isolated.add(v);
 
-			for (FRVertex v : isolated)
+			for (FRVertex v : isolated) {
+//				System.out.println("ISOLATED: " + v.toString());
 				vertices.remove(v);
+			}
 		}
 	}
 

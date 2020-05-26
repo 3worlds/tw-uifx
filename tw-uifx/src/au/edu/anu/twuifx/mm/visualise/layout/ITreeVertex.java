@@ -38,7 +38,8 @@ import java.util.List;
  */
 // if this extends IVertex then we can probaly remove refs to the relevant adapter
 public interface ITreeVertex<V> /* extends IVertex */ {
-	public boolean isLeaf();
+	
+	public boolean isChildless();
 
 	public boolean hasParent();
 

@@ -1133,4 +1133,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser.onSelectAll();
 
 	}
+
+	@Override
+	public LayoutType getCurrentLayout() {
+		return currentLayout;
+	}
 }

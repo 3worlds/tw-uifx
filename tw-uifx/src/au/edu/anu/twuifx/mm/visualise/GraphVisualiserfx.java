@@ -291,9 +291,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			Circle parentCircle = (Circle) parent.getSymbol();
 			Circle childCircle = (Circle) child.getSymbol();
 			Line line = new Line();
-			child.setParentLine(line);
 
-				line.setStroke(treeEdgeColor);
+			line.setStroke(treeEdgeColor);
 			line.startXProperty().bind(parentCircle.centerXProperty());
 			line.startYProperty().bind(parentCircle.centerYProperty());
 
@@ -301,7 +300,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			line.endYProperty().bind(childCircle.centerYProperty());
 
 			line.visibleProperty().bind(show);
-			Arrowhead arrow = new Arrowhead(line);
+			Arrowhead arrow = new Arrowhead(line,nodeRadius);
+			
+			child.setParentLine(line, arrow);
+
 			pane.getChildren().add(line);
 			pane.getChildren().add(arrow);
 
@@ -328,7 +330,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Line line = new Line();
 		Text text = new Text(newLabel);
 		text.fontProperty().bind(font);
-		edge.setVisualElements(line, text);
 		// TODO use property here
 		line.setStroke(graphEdgeColor);
 
@@ -340,8 +341,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		line.endYProperty().bind(toCircle.centerYProperty());
 
 		line.visibleProperty().bind(show);
+
+		Arrowhead arrow = new Arrowhead(line,nodeRadius);
 		
-		Arrowhead arrow = new Arrowhead(line);
+		edge.setVisualElements(line, arrow,text);
 
 		// bind text position to the mid-point of the line
 		text.xProperty().bind(fromCircle.centerXProperty().add(toCircle.centerXProperty()).divide(2.0));
@@ -368,7 +371,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		});
 
 		arrangeLineText(startNode, endNode);
-		pane.getChildren().addAll(line, arrow,text);
+		pane.getChildren().addAll(line, arrow, text);
 
 	}
 
@@ -399,7 +402,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		circle.setVisible(true);
 		node.setVisible(true);
 		if (node.getParent() != null && node.getParent().isVisible()) {
-			Shape s = (Shape) node.getParentLine();
+			Shape s = (Shape) node.getParentLine().getFirst();
 			if (!s.visibleProperty().isBound())
 				s.visibleProperty().bind(parentLineVisibleProperty);
 		}
@@ -459,7 +462,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			VisualNode en = (VisualNode) e.endNode();
 			if (sn.isCollapsed() || en.isCollapsed()) {
 				VisualEdge ve = (VisualEdge) e;
-				Line line = (Line) ve.getSymbol();
+				Line line = (Line) ve.getSymbol().getFirst();
 				if (line.visibleProperty().isBound()) {
 					line.visibleProperty().unbind();
 					line.setVisible(false);
@@ -491,7 +494,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (!sn.isCollapsed() && !en.isCollapsed())
 				if (sn.isVisible() && en.isVisible()) {
 					VisualEdge ve = (VisualEdge) e;
-					Line line = (Line) ve.getSymbol();
+					ve.setVisible(true);
+					Line line = (Line) ve.getSymbol().getFirst();
 					if (!line.visibleProperty().isBound()) {
 						line.visibleProperty().bind(show);
 					}
@@ -513,15 +517,18 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) visualNode.getSymbol());
 		sceneNodes.add((Node) visualNode.getText());
-		sceneNodes.add((Node) visualNode.getParentLine());
+		sceneNodes.add((Node) visualNode.getParentLine().getFirst());
+		sceneNodes.add((Node) visualNode.getParentLine().getSecond());
 		for (VisualNode child : visualNode.getChildren()) {
-			sceneNodes.add((Node) child.getParentLine());
+			sceneNodes.add((Node) child.getParentLine().getFirst());
+			sceneNodes.add((Node) child.getParentLine().getSecond());
 			child.removeParentLine();
 		}
 		for (Edge e : visualNode.edges()) {
 			VisualEdge ve = (VisualEdge) e;
 			sceneNodes.add((Node) ve.getText());
-			sceneNodes.add((Node) ve.getSymbol());
+			sceneNodes.add((Node) ve.getSymbol().getFirst());
+			sceneNodes.add((Node) ve.getSymbol().getSecond());
 		}
 		pane.getChildren().removeAll(sceneNodes);
 	}
@@ -537,7 +544,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		removeFromBinding(edge);
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) edge.getText());
-		sceneNodes.add((Node) edge.getSymbol());
+		sceneNodes.add((Node) edge.getSymbol().getFirst());
+		sceneNodes.add((Node) edge.getSymbol().getSecond());
 		pane.getChildren().removeAll(sceneNodes);
 	}
 
@@ -617,7 +625,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onRemoveParentLink(VisualNode vnChild) {
 		List<Node> sceneNodes = new ArrayList<>();
-		sceneNodes.add((Node) vnChild.getParentLine());
+		sceneNodes.add((Node) vnChild.getParentLine().getFirst());
+		sceneNodes.add((Node) vnChild.getParentLine().getSecond());
 		vnChild.removeParentLine();
 		pane.getChildren().removeAll(sceneNodes);
 	}
@@ -768,14 +777,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		// no binding for node visibility
 		if (n.getParent() != null) {
 			if (visibleNodes.contains(n.getParent())) {
-				s = (Shape) n.getParentLine();
+				s = (Shape) n.getParentLine().getFirst();
 				s.visibleProperty().bind(parentVisibleProperty);// TODO check what happens to bindings on collapse /
 																// expand
 			}
 		}
 		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
 			if (visibleNodes.contains(e.endNode())) {
-				s = (Shape) e.getSymbol();
+				s = (Shape) e.getSymbol().getFirst();
 				s.visibleProperty().bind(edgeVisibleProperty);
 				e.setVisible(s.isVisible());
 			}
@@ -793,9 +802,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		hideShape((Shape) n.getSymbol());
 		n.setVisible(false);
 		if (n.getParent() != null)
-			hideShape((Shape) n.getParentLine());
+			hideShape((Shape) n.getParentLine().getFirst());
 		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
-			hideShape((Shape) e.getSymbol());
+			hideShape((Shape) e.getSymbol().getFirst());
 			e.setVisible(false);
 		}
 	}

@@ -63,7 +63,7 @@ public class OTVertex extends TreeVertexAdapter {
 	public void firstWalk(int num, int depth) {
 		setNumber(num);
 		updateDepths(depth);
-		if (isLeaf()) {
+		if (isChildless()) {
 			setPrelim(0.0);
 			OTVertex leftSibling = prevSibling();
 			if (leftSibling != null)
@@ -301,7 +301,7 @@ public class OTVertex extends TreeVertexAdapter {
 		double x = OTVertex.levels[depth];
 		setLocation(x, y);
 		depth += 1;
-		if (!isLeaf()) {
+		if (!isChildless()) {
 			for (OTVertex child = getFirstChild(); child != null; child = child.nextSibling()) {
 				child.secondWalk(this, m + getMod(), depth);
 			}

@@ -61,7 +61,7 @@ public class RT2Vertex extends TreeVertexAdapter {
 	public double getAngle() {
 		if (!hasParent())
 			return 0.0;
-		if (isLeaf())
+		if (isChildless())
 			return _angle;
 		else {
 			RT2Vertex left = getLefthand();
@@ -73,7 +73,7 @@ public class RT2Vertex extends TreeVertexAdapter {
 	}
 
 	public void collectLeaves(List<RT2Vertex> leaves) {
-		if (isLeaf())
+		if (isChildless())
 			leaves.add(this);
 		for (TreeVertexAdapter c : getChildren())
 			((RT2Vertex) c).collectLeaves(leaves);
@@ -92,13 +92,13 @@ public class RT2Vertex extends TreeVertexAdapter {
 	}
 
 	private RT2Vertex getLefthand() {
-		if (isLeaf())
+		if (isChildless())
 			return this;
 		return ((RT2Vertex) getChildren().get(0)).getLefthand();
 	}
 
 	private RT2Vertex getRightHand() {
-		if (isLeaf())
+		if (isChildless())
 			return this;
 		return ((RT2Vertex) getChildren().get(getChildren().size() - 1)).getRightHand();
 	}
