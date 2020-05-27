@@ -40,6 +40,8 @@ import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.UndoRedo;
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.ILayout;
@@ -746,6 +748,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (!n.isCollapsed())
 				visibleNodes.add(n);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
+		
+		GraphState.setChanged();
+		UndoRedo.saveState(ConfigGraph.getGraph(),visualGraph);
 	}
 
 	@Override
@@ -755,7 +760,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		traversal(root, 0, pathLength, visibleNodes);
 		visibleNodes.add(root);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-
+		GraphState.setChanged();
+		UndoRedo.saveState(ConfigGraph.getGraph(), visualGraph);
 	}
 
 	private static void updateGraphVisibility(TreeGraph<VisualNode, VisualEdge> g, Set<VisualNode> visibleNodes,
