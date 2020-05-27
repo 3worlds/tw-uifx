@@ -88,6 +88,7 @@ import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
+import au.edu.anu.twapps.mm.UndoRedo;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.layout.LayoutType;
@@ -467,6 +468,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void handleMenuExit(ActionEvent event) {
 		if (model.canClose()) {
+			UndoRedo.finalise();
 			putPreferences();
 			Platform.exit();
 			System.exit(0);
