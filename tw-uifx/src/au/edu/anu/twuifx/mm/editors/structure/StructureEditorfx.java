@@ -34,6 +34,8 @@ import java.util.List;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.Rollover;
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
@@ -102,6 +104,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						MenuItem mi = MenuLabels.addMenuItem(mu, dispName);
 						mi.setOnAction((e) -> {
 							onNewChild(childLabel, chldId, child);
+							Rollover.saveState(MenuLabels.ML_NEW_NODE.label() + childLabel, ConfigGraph.getGraph(),
+									gvisualiser.getVisualGraph());
 						});
 					}
 				}
@@ -119,6 +123,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 								p.getFirst() + "->" + p.getSecond().getDisplayText(false));
 						mi.setOnAction((e) -> {
 							onNewEdge(p);
+							Rollover.saveState(MenuLabels.ML_NEW_EDGE.label() + p.getFirst(), ConfigGraph.getGraph(),
+									gvisualiser.getVisualGraph());
 						});
 					}
 				}
@@ -133,6 +139,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 					mi.setOnAction((e) -> {
 						onReconnectChild(vn);
+						Rollover.saveState(MenuLabels.ML_NEW_CHILD_LINK.label() + vn.getDisplayText(false),
+								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 				}
 			} else
@@ -151,12 +159,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 						mi.setOnAction(e -> onExpandTree(vn));
+						Rollover.saveState(MenuLabels.ML_EXPAND.label() + " " + vn.getDisplayText(false),
+								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					}
 				}
 				if (count > 1) {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
 					mi.setOnAction(e -> onExpandTrees());
+					Rollover.saveState(MenuLabels.ML_EXPAND.label() + " All ", ConfigGraph.getGraph(),
+							gvisualiser.getVisualGraph());
 				}
 			} else
 				mu.setDisable(true);
@@ -171,12 +183,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 						mi.setOnAction(e -> onCollapseTree(vn));
+						Rollover.saveState(MenuLabels.ML_COLLAPSE.label() + " " + vn.getDisplayText(false),
+								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					}
 				}
 				if (count > 1) {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
 					mi.setOnAction(e -> onCollapseTrees());
+					Rollover.saveState(MenuLabels.ML_COLLAPSE.label() + " All ", ConfigGraph.getGraph(),
+							gvisualiser.getVisualGraph());
 				}
 			} else
 				mu.setDisable(true);
@@ -194,6 +210,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				mi.setOnAction((e) -> {
 					LayoutType layout = (LayoutType) ((MenuItem) e.getSource()).getUserData();
 					controller.doFocusedLayout(editableNode.getSelectedVisualNode(), layout);
+
 				});
 			}
 		}
@@ -210,6 +227,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				if (result != null) {
 					int depth = Integer.parseInt(result);
 					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
+					Rollover.saveState(
+							MenuLabels.ML_SHOWLOCALGRAPH.label() + " "
+									+ editableNode.getSelectedVisualNode().getDisplayText(false),
+							ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 				}
 
 			});
@@ -222,6 +243,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (!editableNode.isRoot() && !editableNode.isPredefined()) {
 				mi.setOnAction((e) -> {
 					onDeleteNode();
+					Rollover.saveState(
+							MenuLabels.ML_DELETE_NODE.label() + " "
+									+ editableNode.getSelectedVisualNode().getDisplayText(false),
+							ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 				});
 			} else
 				mi.setDisable(true);
@@ -237,6 +262,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 							edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
 					mi.setOnAction((e) -> {
 						onDeleteEdge(edge);
+						Rollover.saveState(
+								MenuLabels.ML_DELETE_EDGE.label() + " "
+										+ editableNode.getSelectedVisualNode().getDisplayText(false),
+								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 				}
 
@@ -253,6 +282,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
 						onDeleteParentLink(child);
+						Rollover.saveState(MenuLabels.ML_DELETE_CHILD.label() + " " + child.getDisplayText(false),
+								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 				}
 			} else
@@ -269,6 +300,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
 						onDeleteTree(vn);
+						Rollover.saveState(MenuLabels.ML_DELETE_TREE.label() + " " + vn.getDisplayText(false),
+								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 				}
 			} else
@@ -282,7 +315,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 			if (!editableNode.isRoot() && !editableNode.isPredefined()) {
 				mi.setOnAction((e) -> {
+					String oldName = editableNode.getSelectedVisualNode().getDisplayText(false);
 					onRenameNode();
+					Rollover.saveState(MenuLabels.ML_RENAME_NODE.label() + " " + oldName, ConfigGraph.getGraph(),
+							gvisualiser.getVisualGraph());
 				});
 			} else
 				mi.setDisable(true);
@@ -297,7 +333,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						MenuItem mi = MenuLabels.addMenuItem(mu,
 								edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
 						mi.setOnAction((e) -> {
+							String oldName = edge.getDisplayText(false);
 							onRenameEdge(edge);
+							Rollover.saveState(MenuLabels.ML_RENAME_EDGE.label() + " " + oldName,
+									ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 						});
 					}
 				}
@@ -315,6 +354,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 							(String) childSpec.properties().getPropertyValue(aaIsOfClass));
 					mi.setOnAction((e) -> {
 						onImportTree(childSpec);
+						Rollover.saveState(
+								MenuLabels.ML_IMPORT_TREE.label() + " "
+										+ (String) childSpec.properties().getPropertyValue(aaIsOfClass),
+								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 
 				}
@@ -359,7 +402,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// --------------------------------------------
 		ML_ALL/*               */("All"), //
 		ML_APPLYLAYOUT/*       */("Apply layout"), //
-		ML_SHOWLOCALGRAPH/*    */("Show neighbourhood"),;
+		ML_SHOWLOCALGRAPH/*    */("Show neighbourhood..."),;
 
 		private final String label;
 

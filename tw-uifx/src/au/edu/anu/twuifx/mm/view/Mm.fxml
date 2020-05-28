@@ -45,6 +45,7 @@
 							</items>
 						</Menu>
                   <MenuItem fx:id="menuItemImport" mnemonicParsing="false" onAction="#handleImport" text="Import..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
 						<MenuItem fx:id="menuItemSave" disable="true" mnemonicParsing="false" onAction="#handleSave" text="Save">
 							<accelerator>
 								<KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -77,8 +78,11 @@
 						</MenuItem>
 					</items>
 				</Menu>
-				<Menu mnemonicParsing="false" text="Preferences">
+				<Menu mnemonicParsing="false" text="Edit">
                <items>
+                  <MenuItem fx:id="miUndo" disable="true" mnemonicParsing="false" onAction="#doUndo" text="Undo" />
+                  <MenuItem fx:id="miRedo" disable="true" mnemonicParsing="false" onAction="#doRedo" text="Redo" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Java project">
                     <items>
                         <MenuItem fx:id="miDisconnect" disable="true" mnemonicParsing="false" onAction="#handleDisconnectJavaProject" text="Disconnect" />

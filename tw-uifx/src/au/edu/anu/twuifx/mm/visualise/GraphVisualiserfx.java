@@ -40,7 +40,7 @@ import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.UndoRedo;
+import au.edu.anu.twapps.mm.Rollover;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
@@ -95,7 +95,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
  */
 public final class GraphVisualiserfx implements IGraphVisualiser {
 
-	private final TreeGraph<VisualNode, VisualEdge> visualGraph;
+	private  TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private final Pane pane;
 	private final IntegerProperty nodeRadius;
 	private final BooleanProperty parentLineVisibleProperty;
@@ -712,6 +712,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				timeline.getKeyFrames().add(f);
 			}
 		timeline.play();
+//		Rollover.saveState("Layout "+layoutType,ConfigGraph.getGraph(), visualGraph);
+
 		GraphState.setChanged();
 	}
 
@@ -750,7 +752,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 		
 		GraphState.setChanged();
-		UndoRedo.saveState(ConfigGraph.getGraph(),visualGraph);
+		Rollover.saveState("Show all",ConfigGraph.getGraph(),visualGraph);
 	}
 
 	@Override
@@ -761,7 +763,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		visibleNodes.add(root);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 		GraphState.setChanged();
-		UndoRedo.saveState(ConfigGraph.getGraph(), visualGraph);
+//		Rollover.saveState("Show neighbourhood",ConfigGraph.getGraph(), visualGraph);
 	}
 
 	private static void updateGraphVisibility(TreeGraph<VisualNode, VisualEdge> g, Set<VisualNode> visibleNodes,
@@ -842,6 +844,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				traversal(n, depth + 1, pathLength, nnNodes);
 
 		}
+	}
+
+	@Override
+	public void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+		this.visualGraph = layoutGraph;
+		pane.getChildren().clear();
+		this.initialiseView();
 	}
 
 }
