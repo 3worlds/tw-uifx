@@ -34,7 +34,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 //			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1-sum/K.getByInt(i));
 //		}
 //		for (int i=0; i<dxdt.length; i++)
-//			focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt, i);
+//			focalDrv.x.setByInt(max(x.getByInt(i)+dxdt[i]*dt,0.0), i);
 //		// compute diversity
 //		double xtot = 0.0;
 //		for (int i=0; i<focalDrv.x.size(0);i++)

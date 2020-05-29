@@ -127,6 +127,8 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:19:00 AEST 2020
 
 // CROSS-LINKS
 [system:sys] belongsTo blgsto [category:*arena*]
+[system:sys] belongsTo blngsTo1 [category:*individual*]
+[system:sys] belongsTo blngsTo2 [category:*permanent*]
 [widget:time] trackTime trks4 [dynamics:sim]
 [dataTracker:trkr] trackComponent trks2 [system:sys]
 [dataTracker:trkr] trackField trks1 [field:x]

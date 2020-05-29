@@ -17,8 +17,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 //		}
 
 // CODE SNIPPET for function PopulationGrowth(...)
-//		if (disturbanceOccurence) {
-//			// reduction of population size by 99%
+//		// reduction of population size by 99%
 //			for (int i=0; i<x.size(0); i++)
 //				if (x.getByInt(i)>0.01)
 //				focalDrv.x.setByInt(x.getByInt(i)*0.01, i);
@@ -33,7 +32,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 //				dxdt[i] = rkpar.getByInt(i).r() * x.getByInt(i) * (1-sum/rkpar.getByInt(i).K());
 //			}
 //			for (int i=0; i<dxdt.length; i++)
-//				focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt, i);
+//				focalDrv.x.setByInt(max(x.getByInt(i)+dxdt[i]*dt*integrationStep,0.0), i);
 //		}
 //		// compute diversity
 //		double xtot = 0.0;
@@ -41,89 +40,52 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 //			xtot += focalDrv.x.getByInt(i);
 //		focalDec.div = 0.0;
 //		for  (int i=0; i<focalDrv.x.size(0);i++)
-//			focalDec.div -= (focalDrv.x.getByInt(i)/xtot) * log(focalDrv.x.getByInt(i)/xtot);
+//			if (focalDrv.x.getByInt(i)>0.0)
+//				focalDec.div -= (focalDrv.x.getByInt(i)/xtot) * log(focalDrv.x.getByInt(i)/xtot);
 
 // CODE SNIPPET for function disturbanceOccurence(...)
-//		focalDec.disturbanceOccurence = (random.nextDouble()<(1.0/freq));
+//		focalDec.disturbanceOccurence = (random.nextDouble()<integrationStep/freq);
 
 
 // TREE
 3worlds Idh_1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(gignoux (14 mai 2020))
+	built-by = java.lang.String(gignoux (28 mai 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model for n species. Illustrates the use of a SystemComponent.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
 	version = java.lang.String(demo)
-	predefined *categories*
-		record AVEphemeral
-			field birthDate
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field age
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record AVPopulation
-			field count
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nAdded
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nRemoved
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-		categorySet *composition*
-			category *population*
-			category *individual*
-		categorySet *systemElements*
-			category *life cycle*
-			category *group*
-			category *relation*
-			category *component*
-			category *space*
-			category *arena*
-		categorySet *lifespan*
-			category *ephemeral*
-			category *permanent*
 	experiment defaultExperiment
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
 			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	dataDefinition dDef
 		record commPar
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(commPar)
-			table alpha
-				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
-				precision = java.lang.Double(0.0)
-				units = java.lang.String()
 			table rkpar
 				description = java.lang.String()
 				record rec
-					field r
-						description = java.lang.String(growth rate)
-						interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-						precision = java.lang.Double(0.0)
-						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-						units = java.lang.String()
 					field K
 						description = java.lang.String(carrying capacity)
 						interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 						precision = java.lang.Double(0.0)
 						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 						units = java.lang.String()
+					field r
+						description = java.lang.String(growth rate)
+						interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+						precision = java.lang.Double(0.0)
+						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+						units = java.lang.String()
+			table alpha
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
 		record commRec
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(commRec)
@@ -133,20 +95,6 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
-		record arenaPar
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(arenaPar)
-			field freq
-				description = java.lang.String()
-				range = au.edu.anu.rscs.aot.util.IntegerRange(1..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String()
-		record arenaDec
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(arenaDec)
-			field disturbanceOccurence
-				description = java.lang.String()
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		dimensioner nbspecies
 			size = java.lang.Integer(5)
 		record commDec
@@ -158,6 +106,26 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+		record arenaPar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(arenaPar)
+			field freq
+				description = java.lang.String()
+				range = au.edu.anu.rscs.aot.util.IntegerRange(1..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field integrationStep
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record arenaDec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(arenaDec)
+			field disturbanceOccurence
+				description = java.lang.String()
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 	userInterface gui
 		top top
 			widget controller
@@ -170,6 +138,44 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+	predefined *categories*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
+		categorySet *systemElements*
+			category *life cycle*
+			category *space*
+			category *group*
+			category *component*
+			category *relation*
+			category *arena*
+		record AVPopulation
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *composition*
+			category *population*
+			category *individual*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 	system system
 		constantClass = java.lang.String(code.system.ArenaPar)
 		decoratorClass = java.lang.String(code.system.ArenaDec)
@@ -187,20 +193,20 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
-					process proc1
-						function DisturbanceOccurence
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.system.DisturbanceOccurence)
 					process proc
-						function PopulationGrwth
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.system.PopulationGrwth)
 						dataTracker trkr
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+						function PopulationGrwth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.PopulationGrwth)
+					process proc1
+						function DisturbanceOccurence
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.system.DisturbanceOccurence)
 		structure struc
 			componentType community
 				constantClass = java.lang.String(code.system.CommPar)
@@ -209,42 +215,46 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-				initFunction Init
-					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-					userClassName = java.lang.String(code.system.Init)
 				component comp
 					variableValues varVals
 						x = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([5]0.2,0.2,0.2,0.2,0.2))
-		constantValues cstVals
+				initFunction Init
+					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+					userClassName = java.lang.String(code.system.Init)
+		constantValues initCsts
 			freq = java.lang.Integer(10)
+			integrationStep = java.lang.Double(0.01)
 
 // CROSS-LINKS
-[process:proc1] appliesTo aplyTo1 [category:*arena*]
 [experiment:defaultExperiment] baseLine bsln [system:system]
+[widget:timeseries] trackSeries trksSrsOf [dataTracker:trkr]
+[componentType:community] belongsTo blngsTo5 [category:*individual*]
+[componentType:community] belongsTo blngsTo2 [category:*permanent*]
+[componentType:community] belongsTo blngsTo1 [category:*component*]
+[category:*component*] decorators decs1 [record:commDec]
+[category:*component*] lifetimeConstants ltcs1 [record:commPar]
+[category:*component*] drivers drvs [record:commRec]
+[table:rkpar] sizedBy szBy1 [dimensioner:nbspecies]
+	rank = java.lang.Integer(0)
+[category:*population*] autoVar auto [record:AVPopulation]
+[system:system] belongsTo blngsTo4 [category:*population*]
+[system:system] belongsTo blngsTo3 [category:*permanent*]
+[system:system] belongsTo blgstqn [category:*arena*]
+[process:proc1] appliesTo aplyTo1 [category:*arena*]
 [dataTracker:trkr] trackField trks1 [field:div]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trkr] trackComponent trksCmpOf1 [component:comp]
 [dataTracker:trkr] trackTable trksTblOf [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]""))
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [table:alpha] sizedBy szBy3 [dimensioner:nbspecies]
 	rank = java.lang.Integer(0)
 [table:alpha] sizedBy szBy2 [dimensioner:nbspecies]
 	rank = java.lang.Integer(0)
 [widget:controller] trackTime trksTmOf [dynamics:simulator]
-[process:proc] dependsOn depsOn [process:proc1]
 [process:proc] appliesTo aplyTo [category:*component*]
-[widget:timeseries] trackSeries trksSrsOf [dataTracker:trkr]
+[process:proc] dependsOn depsOn [process:proc1]
 [category:*arena*] decorators decs [record:arenaDec]
 [category:*arena*] lifetimeConstants ltcs [record:arenaPar]
-[componentType:community] belongsTo blngsTo2 [category:*permanent*]
-[componentType:community] belongsTo blngsTo1 [category:*component*]
-[category:*component*] drivers drvs [record:commRec]
-[category:*component*] decorators decs1 [record:commDec]
-[category:*component*] lifetimeConstants ltcs1 [record:commPar]
-[table:rkpar] sizedBy szBy1 [dimensioner:nbspecies]
-	rank = java.lang.Integer(0)
-[system:system] belongsTo blgstqn [category:*arena*]
 [table:x] sizedBy szBy [dimensioner:nbspecies]
 	rank = java.lang.Integer(0)
-[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[category:*population*] autoVar auto [record:AVPopulation]

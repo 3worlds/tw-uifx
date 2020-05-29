@@ -6,7 +6,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 // CODE snippet for method LotkaVolterra.init(...)
 //		// initialise with random parameters
 //		for (int i=0; i<r.size(0); i++) {
-//			focalLtc.r.setByInt(random.nextDouble(),i);
+//			focalLtc.r.setByInt(random.nextDouble()*2.0,i);
 //			focalLtc.K.setByInt(0.2+random.nextDouble(),i);
 //			for (int j=0; j<alpha.size(1); j++) {
 //				if (i==j)
@@ -17,6 +17,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 //		}
 
 // CODE snippet for method LotkaVolterra.growth(...)
+//		double integrationStep = 0.01;
 //		double[] dxdt = new double[x.size(0)];
 //		for (int i=0; i<x.size(0); i++) {
 //			double sum = 0;
@@ -25,7 +26,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 //			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1-sum/K.getByInt(i));
 //		}
 //		for (int i=0; i<dxdt.length; i++)
-//			focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt, i);
+//			focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt*integrationStep, i);
 
 // TREE
 3worlds LotkaVolterra1
