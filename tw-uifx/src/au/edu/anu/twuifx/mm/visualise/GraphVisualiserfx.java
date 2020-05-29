@@ -40,8 +40,6 @@ import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.Rollover;
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.ILayout;
@@ -752,7 +750,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 		
 		GraphState.setChanged();
-		Rollover.saveState("Show all",ConfigGraph.getGraph(),visualGraph);
+//		Rollover.saveState("Show all",ConfigGraph.getGraph(),visualGraph);
 	}
 
 	@Override

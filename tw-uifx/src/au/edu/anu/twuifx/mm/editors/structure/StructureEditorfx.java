@@ -46,16 +46,11 @@ import au.edu.anu.twcore.archetype.TWA;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedEdgeLabels;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import fr.ens.biologie.generic.utils.Tuple;
 
@@ -103,9 +98,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					if (!reserved) {
 						MenuItem mi = MenuLabels.addMenuItem(mu, dispName);
 						mi.setOnAction((e) -> {
+							String desc = MenuLabels.ML_NEW_NODE.label() + " " + childLabel;
 							onNewChild(childLabel, chldId, child);
-							Rollover.saveState(MenuLabels.ML_NEW_NODE.label() + childLabel, ConfigGraph.getGraph(),
-									gvisualiser.getVisualGraph());
+
+							/*-
+							 * NB: Graph is not valid at until node is placed on screen in the controller!
+							 * Rollover is done then.
+							 */
 						});
 					}
 				}
@@ -123,8 +122,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 								p.getFirst() + "->" + p.getSecond().getDisplayText(false));
 						mi.setOnAction((e) -> {
 							onNewEdge(p);
-							Rollover.saveState(MenuLabels.ML_NEW_EDGE.label() + p.getFirst(), ConfigGraph.getGraph(),
-									gvisualiser.getVisualGraph());
+
+							String desc = MenuLabels.ML_NEW_EDGE.label() + " [" + p.getFirst() + "->"
+									+ p.getSecond().getConfigNode().toShortString() + "]";
+							Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 						});
 					}
 				}
@@ -138,9 +139,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (VisualNode vn : orphanedChildren) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 					mi.setOnAction((e) -> {
+
 						onReconnectChild(vn);
-						Rollover.saveState(MenuLabels.ML_NEW_CHILD_LINK.label() + vn.getDisplayText(false),
-								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
+						String desc = MenuLabels.ML_NEW_CHILD_LINK.label() + " [" + vn.getConfigNode().toShortString()
+								+ "]";
+						Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
 					});
 				}
 			} else
@@ -158,17 +163,21 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					if (vn.isCollapsed()) {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
-						mi.setOnAction(e -> onExpandTree(vn));
-						Rollover.saveState(MenuLabels.ML_EXPAND.label() + " " + vn.getDisplayText(false),
-								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+						mi.setOnAction((e) -> {
+//							Rollover.saveState(MenuLabels.ML_EXPAND.label() + " " + vn.getDisplayText(false),
+//									ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+							onExpandTree(vn);
+						});
 					}
 				}
 				if (count > 1) {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
-					mi.setOnAction(e -> onExpandTrees());
-					Rollover.saveState(MenuLabels.ML_EXPAND.label() + " All ", ConfigGraph.getGraph(),
-							gvisualiser.getVisualGraph());
+					mi.setOnAction((e) -> {
+//						Rollover.saveState(MenuLabels.ML_EXPAND.label() + " All ", ConfigGraph.getGraph(),
+//								gvisualiser.getVisualGraph());
+						onExpandTrees();
+					});
 				}
 			} else
 				mu.setDisable(true);
@@ -183,16 +192,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(false));
 						mi.setOnAction(e -> onCollapseTree(vn));
-						Rollover.saveState(MenuLabels.ML_COLLAPSE.label() + " " + vn.getDisplayText(false),
-								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+//						Rollover.saveState(MenuLabels.ML_COLLAPSE.label() + " " + vn.getDisplayText(false),
+//								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					}
 				}
 				if (count > 1) {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
 					mi.setOnAction(e -> onCollapseTrees());
-					Rollover.saveState(MenuLabels.ML_COLLAPSE.label() + " All ", ConfigGraph.getGraph(),
-							gvisualiser.getVisualGraph());
+//					Rollover.saveState(MenuLabels.ML_COLLAPSE.label() + " All ", ConfigGraph.getGraph(),
+//							gvisualiser.getVisualGraph());
 				}
 			} else
 				mu.setDisable(true);
@@ -211,6 +220,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					LayoutType layout = (LayoutType) ((MenuItem) e.getSource()).getUserData();
 					controller.doFocusedLayout(editableNode.getSelectedVisualNode(), layout);
 
+					String desc = MenuLabels.ML_APPLYLAYOUT.label + " [" + layout.name() + "]";
+					Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
 				});
 			}
 		}
@@ -227,10 +239,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				if (result != null) {
 					int depth = Integer.parseInt(result);
 					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
-					Rollover.saveState(
-							MenuLabels.ML_SHOWLOCALGRAPH.label() + " "
-									+ editableNode.getSelectedVisualNode().getDisplayText(false),
-							ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
+					String desc = MenuLabels.ML_SHOWLOCALGRAPH.label() + " ["
+							+ editableNode.getConfigNode().toShortString() + "(" + depth + ")]";
+					Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 				}
 
 			});
@@ -242,11 +254,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_DELETE_NODE);
 			if (!editableNode.isRoot() && !editableNode.isPredefined()) {
 				mi.setOnAction((e) -> {
+
+					String desc = MenuLabels.ML_DELETE_NODE.label() + " ["
+							+ editableNode.getConfigNode().toShortString() + "]";
+
 					onDeleteNode();
-					Rollover.saveState(
-							MenuLabels.ML_DELETE_NODE.label() + " "
-									+ editableNode.getSelectedVisualNode().getDisplayText(false),
-							ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
+					Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
 				});
 			} else
 				mi.setDisable(true);
@@ -261,11 +276,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = MenuLabels.addMenuItem(mu,
 							edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
 					mi.setOnAction((e) -> {
+
 						onDeleteEdge(edge);
-						Rollover.saveState(
-								MenuLabels.ML_DELETE_EDGE.label() + " "
-										+ editableNode.getSelectedVisualNode().getDisplayText(false),
-								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
+						String desc = MenuLabels.ML_DELETE_EDGE.label() + " ["
+								+ editableNode.getConfigNode().toShortString() + "]";
+						Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 				}
 
@@ -274,16 +290,20 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		// ---
 		{
-			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_CHILD);
+			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_CHILD_EDGE);
 			if (editableNode.hasChildren() && !editableNode.isPredefined()) {
 				for (VisualNode child : editableNode.getSelectedVisualNode().getChildren()) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, child.getDisplayText(false));
 					if (child.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
+
+						String desc = MenuLabels.ML_DELETE_CHILD_EDGE.label() + " ["
+								+ child.getConfigNode().toShortString() + "]";
+
 						onDeleteParentLink(child);
-						Rollover.saveState(MenuLabels.ML_DELETE_CHILD.label() + " " + child.getDisplayText(false),
-								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
+						Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 				}
 			} else
@@ -299,9 +319,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					if (vn.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
+						String desc = MenuLabels.ML_DELETE_TREE.label + " [" + vn.getConfigNode().toShortString() + "]";
+
 						onDeleteTree(vn);
-						Rollover.saveState(MenuLabels.ML_DELETE_TREE.label() + " " + vn.getDisplayText(false),
-								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
+						Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 				}
 			} else
@@ -315,10 +337,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 			if (!editableNode.isRoot() && !editableNode.isPredefined()) {
 				mi.setOnAction((e) -> {
-					String oldName = editableNode.getSelectedVisualNode().getDisplayText(false);
+					String desc = MenuLabels.ML_RENAME_NODE.label() + " ["
+							+ editableNode.getConfigNode().toShortString() + "]";
+
 					onRenameNode();
-					Rollover.saveState(MenuLabels.ML_RENAME_NODE.label() + " " + oldName, ConfigGraph.getGraph(),
-							gvisualiser.getVisualGraph());
+
+					Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 				});
 			} else
 				mi.setDisable(true);
@@ -333,10 +357,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						MenuItem mi = MenuLabels.addMenuItem(mu,
 								edge.getDisplayText(false) + "->" + vn.getDisplayText(false));
 						mi.setOnAction((e) -> {
-							String oldName = edge.getDisplayText(false);
+							String desc = MenuLabels.ML_RENAME_EDGE.label() + " ["
+									+ edge.getConfigEdge().toShortString() + "]";
+
 							onRenameEdge(edge);
-							Rollover.saveState(MenuLabels.ML_RENAME_EDGE.label() + " " + oldName,
-									ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
+							Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 						});
 					}
 				}
@@ -353,11 +379,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = MenuLabels.addMenuItem(mu,
 							(String) childSpec.properties().getPropertyValue(aaIsOfClass));
 					mi.setOnAction((e) -> {
+
+						String desc = MenuLabels.ML_IMPORT_TREE.label() + " ["
+								+ (String) childSpec.properties().getPropertyValue(aaIsOfClass) + "]";
+
 						onImportTree(childSpec);
-						Rollover.saveState(
-								MenuLabels.ML_IMPORT_TREE.label() + " "
-										+ (String) childSpec.properties().getPropertyValue(aaIsOfClass),
-								ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
+
+						Rollover.preserveState(desc, ConfigGraph.getGraph(), gvisualiser.getVisualGraph());
 					});
 
 				}
@@ -396,7 +424,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_RENAME_NODE /*      */("Rename node"), // config
 		ML_RENAME_EDGE/*       */("Rename edge"), // config
 		ML_DELETE_EDGE/*       */("Delete edge"), // config
-		ML_DELETE_CHILD/*      */("Delete child edge"), // config
+		ML_DELETE_CHILD_EDGE/* */("Delete child edge"), // config
 		ML_DELETE_TREE/*-      */("Delete tree"), // config
 		ML_DELETE_NODE/*       */("Delete node"), // config
 		// --------------------------------------------

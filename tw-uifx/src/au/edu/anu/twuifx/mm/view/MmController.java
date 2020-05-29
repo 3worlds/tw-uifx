@@ -97,7 +97,6 @@ import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-//import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
@@ -131,7 +130,6 @@ import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
-import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_ROOT;
@@ -499,7 +497,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void handleLayout(ActionEvent event) {
+		
 		doLayout();
+		
+		String desc = btnLayout.getTooltip().getText()+" ["+currentLayout.name()+"]";
+		Rollover.preserveState(desc, ConfigGraph.getGraph(), visualGraph);
 	}
 
 	@Override
@@ -976,11 +978,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			newNode.setPosition(e.getX() / zoomTarget.getWidth(), e.getY() / zoomTarget.getHeight());
 			visualiser.onNewNode(newNode);
 			zoomTarget.setCursor(Cursor.DEFAULT);
-			newNode = null;
+			String desc = "New node ["+ newNode.getConfigNode().toShortString()+"]";
 			lastSelectedNode = newNode;
+			newNode = null;
 			initialisePropertySheets();
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
+			Rollover.preserveState(desc, ConfigGraph.getGraph(), visualGraph);
 		}
 	}
 
@@ -1023,17 +1027,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;
 		btnDeploy.setDisable(!cleanAndValid);
-//		miRedo.setDisable(!Rollover.canRedo());
-//		if (Rollover.canRedo()) {
-//			miRedo.setText("Redo '" + Rollover.getRedoText() + "'");
-//		} else
-//			miRedo.setText("Redo");
-//
-//		miUndo.setDisable(!Rollover.canUndo());
-//		if (Rollover.canUndo()) {
-//			miUndo.setText("Undo '" + Rollover.getUndoText() + "'");
-//		} else
-//			miUndo.setText("Undo");
+		miRedo.setDisable(!Rollover.canRedo());
+		if (Rollover.canRedo()) {
+			miRedo.setText("Redo '" + Rollover.getRedoText() + "'");
+		} else
+			miRedo.setText("Redo");
+
+		miUndo.setDisable(!Rollover.canUndo());
+		if (Rollover.canUndo()) {
+			miUndo.setText("Undo '" + Rollover.getUndoText() + "'");
+		} else
+			miUndo.setText("Undo");
 
 		if (isOpen) {
 			trafficLight.setOpacity(1.0);
@@ -1164,47 +1168,48 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	void doRedo(ActionEvent event) {
 
 //		System.out.println("Roll forward to " + Rollback.getRedoText());
+//		Rollover.getSuccState();
+		model.rollback(Rollover.getSuccState());
+		GraphState.setChanged();
 
-//		model.rollback(Rollover.getSuccState());
-//		GraphState.setChanged();
-//
-//		miRedo.setDisable(!Rollover.canRedo());
-//		if (Rollover.canRedo()) {
-//			miRedo.setText("Redo '" + Rollover.getRedoText() + "'");
-//		} else
-//			miRedo.setText("Redo");
-//
-//		miUndo.setDisable(!Rollover.canUndo());
-//		if (Rollover.canUndo()) {
-//			miUndo.setText("Undo '" + Rollover.getUndoText() + "'");
-//		} else
-//			miUndo.setText("Undo");
+		miRedo.setDisable(!Rollover.canRedo());
+		if (Rollover.canRedo()) {
+			miRedo.setText("Redo '" + Rollover.getRedoText() + "'");
+		} else
+			miRedo.setText("Redo");
+
+		miUndo.setDisable(!Rollover.canUndo());
+		if (Rollover.canUndo()) {
+			miUndo.setText("Undo '" + Rollover.getUndoText() + "'");
+		} else
+			miUndo.setText("Undo");
 
 	}
 
 	@FXML
 	void doUndo(ActionEvent event) {
 //		System.out.println("Roll back to " + Rollback.getUndoText());
-	
-//		model.rollback(Rollover.getPrevState());
-//		GraphState.setChanged();
-//
-//		miRedo.setDisable(!Rollover.canRedo());
-//		if (Rollover.canRedo()) {
-//			miRedo.setText("Redo '" + Rollover.getRedoText() + "'");
-//		} else
-//			miRedo.setText("Redo");
-//
-//		miUndo.setDisable(!Rollover.canUndo());
-//		if (Rollover.canUndo()) {
-//			miUndo.setText("Undo '" + Rollover.getUndoText() + "'");
-//		} else
-//			miUndo.setText("Undo");
-//
+//		Rollover.getPrevState();
+		model.rollback(Rollover.getPrevState());
+		GraphState.setChanged();
+
+		miRedo.setDisable(!Rollover.canRedo());
+		if (Rollover.canRedo()) {
+			miRedo.setText("Redo '" + Rollover.getRedoText() + "'");
+		} else
+			miRedo.setText("Redo");
+
+		miUndo.setDisable(!Rollover.canUndo());
+		if (Rollover.canUndo()) {
+			miUndo.setText("Undo '" + Rollover.getUndoText() + "'");
+		} else
+			miUndo.setText("Undo");
+
 	}
 
 	@Override
 	public void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+		visualGraph = layoutGraph;
 		visualiser.onRollback(layoutGraph);
 		lastSelectedNode = null;
 		initialisePropertySheets();	
