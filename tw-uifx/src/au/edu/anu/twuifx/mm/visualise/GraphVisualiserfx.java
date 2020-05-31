@@ -40,6 +40,7 @@ import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.Originator;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.ILayout;
@@ -71,6 +72,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
@@ -93,7 +96,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
  */
 public final class GraphVisualiserfx implements IGraphVisualiser {
 
-	private  TreeGraph<VisualNode, VisualEdge> visualGraph;
+	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private final Pane pane;
 	private final IntegerProperty nodeRadius;
 	private final BooleanProperty parentLineVisibleProperty;
@@ -105,9 +108,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Color hoverColor;
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
-	private static final Double animateDuration = 1000.0;
+	private static final Double animateDurationSlow = 1000.0;
+	private static final Double animateDurationFast = 10.0;
+	private static Double animateDuration;
 	private final static Interpolator interpolator = Interpolator.EASE_BOTH;
 	private final IMMController controller;
+	private final Originator recorder;
 
 	private boolean edgeClassOnly = false;
 	private boolean nodeClassOnly = false;
@@ -118,7 +124,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
 			BooleanProperty sideline, ObjectProperty<Font> font, //
-			IMMController controller) {
+			IMMController controller, Originator recorder) {
 		this.visualGraph = visualGraph;
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
@@ -127,15 +133,17 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		// this.sideLineProperty = sideline;
 		this.font = font;
 		this.controller = controller;
+		this.recorder = recorder;
 		ds = new DropShadow();
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
-
+		animateDuration = animateDurationSlow;
 	}
 
 	@Override
 	public void initialiseView() {
+		animateDuration = animateDurationFast;
 		pane.setPrefHeight(pane.getHeight());
 		pane.setPrefWidth(pane.getWidth());
 
@@ -261,7 +269,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
-				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this);
+				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this, recorder);
 			} else
 				controller.onNodeSelected(n);
 
@@ -300,8 +308,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			line.endYProperty().bind(childCircle.centerYProperty());
 
 			line.visibleProperty().bind(show);
-			Arrowhead arrow = new Arrowhead(line,nodeRadius);
-			
+			Arrowhead arrow = new Arrowhead(line, nodeRadius);
+
 			child.setParentLine(line, arrow);
 
 			pane.getChildren().add(line);
@@ -342,9 +350,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		line.visibleProperty().bind(show);
 
-		Arrowhead arrow = new Arrowhead(line,nodeRadius);
-		
-		edge.setVisualElements(line, arrow,text);
+		Arrowhead arrow = new Arrowhead(line, nodeRadius);
+
+		edge.setVisualElements(line, arrow, text);
 
 		// bind text position to the mid-point of the line
 		text.xProperty().bind(fromCircle.centerXProperty().add(toCircle.centerXProperty()).divide(2.0));
@@ -410,15 +418,15 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		animateTo(circle, x, y);
 	}
 
-	private static void collapse(TreeNode parent, DoubleProperty xp, DoubleProperty yp) {
+	private static void collapse(TreeNode parent, DoubleProperty xp, DoubleProperty yp, double duration) {
 		VisualNode vParent = (VisualNode) parent;
-		setCollapseBindings(vParent, xp, yp);
+		setCollapseBindings(vParent, xp, yp,duration);
 		vParent.setCollapse(true);
 		for (TreeNode child : parent.getChildren())
-			collapse(child, xp, yp);
+			collapse(child, xp, yp,duration);
 	}
 
-	private static void setCollapseBindings(VisualNode node, DoubleProperty xp, DoubleProperty yp) {
+	private static void setCollapseBindings(VisualNode node, DoubleProperty xp, DoubleProperty yp,double duration) {
 		Circle circle = (Circle) node.getSymbol();
 		// Some subtrees may already be collapsed
 		if (node.isCollapsed()) {
@@ -428,9 +436,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		KeyValue endX = new KeyValue(circle.centerXProperty(), xp.getValue(), Interpolator.EASE_BOTH);
 		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.EASE_BOTH);
-		KeyFrame keyFrame = new KeyFrame(Duration.millis(animateDuration), endX, endY);
+		KeyFrame keyFrame = new KeyFrame(Duration.millis(duration), endX, endY);
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
+
 		timeline.setOnFinished((e) -> {
 			circle.setVisible(false);
 			node.setVisible(false);
@@ -451,12 +460,15 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		DoubleProperty xp = circle.centerXProperty();
 		DoubleProperty yp = circle.centerYProperty();
 		// Recursively, collapse the tree to the position of the parent of the tree.
-		collapse(childRoot, xp, yp);
+		double duration = animateDuration;
+		collapse(childRoot, xp, yp,duration);
 		// Hide every edge between this tree and other non-collapsed nodes
 		hideEdges(childRoot);
+		animateDuration = animateDurationSlow;
 	}
 
 	private static void hideEdges(VisualNode vNode) {
+		// May not word due to threading.
 		for (Edge e : vNode.edges()) {
 			VisualNode sn = (VisualNode) e.startNode();
 			VisualNode en = (VisualNode) e.endNode();
@@ -484,6 +496,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		// Recursively unbind nodes from the position of the sub-tree's parent.
 		expand(childRoot, w, h, parentLineVisibleProperty);
 		// rebind edges to the showGraphLine property.
+		// isCollapsed may not be set here due to threading?
 		showEdges(childRoot, edgeLineVisibleProperty);
 	}
 
@@ -700,6 +713,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		// rescale to provide border for a little node radius
 		Timeline timeline = new Timeline();
+		timeline.setOnFinished(e -> {
+			animateDuration = animateDurationSlow;
+		});
+
 		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
 				double x = ILayout.rescale(node.getX(), 0, 1, 0.05, 0.95);
@@ -710,7 +727,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				timeline.getKeyFrames().add(f);
 			}
 		timeline.play();
-//		Rollover.saveState("Layout "+layoutType,ConfigGraph.getGraph(), visualGraph);
 
 		GraphState.setChanged();
 	}
@@ -732,6 +748,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public void collapsePredef() {
+		animateDuration = animateDurationFast;
 		for (VisualNode root : visualGraph.roots()) {
 			if (root.cClassId().equals(N_ROOT.label())) {
 				VisualNode predef = (VisualNode) get(root.getChildren(),
@@ -748,9 +765,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (!n.isCollapsed())
 				visibleNodes.add(n);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-		
+
 		GraphState.setChanged();
-//		Rollover.saveState("Show all",ConfigGraph.getGraph(),visualGraph);
+		recorder.addState("Show all");
 	}
 
 	@Override
@@ -761,7 +778,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		visibleNodes.add(root);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 		GraphState.setChanged();
-//		Rollover.saveState("Show neighbourhood",ConfigGraph.getGraph(), visualGraph);
+		recorder.addState("Show neighbourhood");
 	}
 
 	private static void updateGraphVisibility(TreeGraph<VisualNode, VisualEdge> g, Set<VisualNode> visibleNodes,
