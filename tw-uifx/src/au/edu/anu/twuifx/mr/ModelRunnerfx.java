@@ -34,6 +34,7 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.hasTheLabel;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrOne;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UI;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_MODEL_BUILTBY;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_WIDGET_SUBCLASS;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import java.util.Timer;
@@ -78,6 +79,7 @@ public class ModelRunnerfx extends Application {
 		config = config1;
 		uiNode = (TreeGraphNode) get(config.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label())));
 		String[] args = new String[0];
+		MrSplash.builtBy= (String) config.root().properties().getPropertyValue(P_MODEL_BUILTBY.key());
 		System.setProperty("javafx.preloader",MrSplash.class.getCanonicalName());
 		launch(args);
 		//LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);

@@ -34,6 +34,7 @@ import java.io.File;
 import java.util.Scanner;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mr.IMRController;
 import au.edu.anu.twapps.mr.IMRModel;
@@ -42,6 +43,8 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twuifx.dialogs.ISParametersDlg;
 import au.edu.anu.twuifx.images.Images;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.properties.SimplePropertyList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -51,6 +54,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -66,6 +70,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
  * @author Ian Davies
@@ -103,7 +109,7 @@ public class MrController implements IMRController {
 	@FXML
 	private HBox statusBar;
 
-	//private IRunTimeParameterizer dashboard;
+	// private IRunTimeParameterizer dashboard;
 
 	public TabPane getTabPane() {
 		return tabPane;
@@ -125,14 +131,46 @@ public class MrController implements IMRController {
 	void onAboutModelRunner(ActionEvent event) {
 		Dialog<ButtonType> dlg = new Dialog<>();
 		dlg.initOwner((Window) Dialogs.owner());
-		dlg.setTitle("About ModelMaker");
+		dlg.setTitle("About ModelRunner");
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		HBox content = new HBox();
-		VBox leftContent = new VBox();
 		VBox rightContent = new VBox();
+		VBox leftContent = new VBox();
 		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
 		imageView.preserveRatioProperty().set(true);
-		rightContent.getChildren().addAll(imageView, new Label("Three Worlds - M. C. Escher (1955)"));
+		TextArea attribution = new TextArea();
+		attribution.setWrapText(true);
+		attribution.setPrefWidth(330);
+		attribution.setEditable(false);
+		ScrollPane attrScroller = new ScrollPane(attribution);
+		
+		
+		SimplePropertyList rootProps = model.getGraph().root().properties();
+		StringTable t;
+		attribution.appendText(P_MODEL_PRECIS.key()+":\n"+rootProps.getPropertyValue(P_MODEL_PRECIS.key()) + "\n");
+
+		attribution.appendText("\n"+P_MODEL_AUTHORS.key() + ":\n");
+		t = (StringTable) rootProps.getPropertyValue(P_MODEL_AUTHORS.key());
+		for (int i = 0; i < t.size(); i++)
+			attribution.appendText("\t" + t.getWithFlatIndex(i) + "\n");
+
+		attribution.appendText("\n"+P_MODEL_CITATIONS.key() + ":\n");
+		t = (StringTable) rootProps.getPropertyValue(P_MODEL_CITATIONS.key());
+		for (int i = 0; i < t.size(); i++)
+			attribution.appendText("\t" + t.getWithFlatIndex(i) + "\n");
+	
+		attribution.appendText("\n"+P_MODEL_CONTACTS.key() + ":\n");
+		t = (StringTable) rootProps.getPropertyValue(P_MODEL_CONTACTS.key());
+		for (int i = 0; i < t.size(); i++)
+			attribution.appendText("\t" + t.getWithFlatIndex(i) + "\n");
+		
+		attribution.appendText("\n"+P_MODEL_VERSION.key()+": "+rootProps.getPropertyValue(P_MODEL_VERSION.key()) + "\n");
+
+		attribution.appendText("\n"+P_MODEL_BUILTBY.key()+": "+rootProps.getPropertyValue(P_MODEL_BUILTBY.key()));
+		
+		
+
+		leftContent.getChildren().addAll(imageView, new Label("Three Worlds - M. C. Escher (1955)"), attrScroller);
 		TextFlow textFlow = new TextFlow();
 		textFlow.setPrefWidth(400);
 		textFlow.setTextAlignment(TextAlignment.CENTER);
@@ -156,7 +194,7 @@ public class MrController implements IMRController {
 
 		textFlow.getChildren().addAll(text_1, text_2, text_3);
 
-		content.getChildren().addAll(rightContent, leftContent);
+		content.getChildren().addAll(leftContent, rightContent);
 		TextArea textArea = new TextArea();
 		Scanner sc = new Scanner(MrController.class.getResourceAsStream("aboutMR.txt"));
 
@@ -172,13 +210,15 @@ public class MrController implements IMRController {
 		TextFlow authors = new TextFlow();
 		authors.setTextAlignment(TextAlignment.CENTER);
 		authors.getChildren().add(new Text("Authors: J. Gignoux, I. Davies and S. Flint"));
-		leftContent.getChildren().addAll(textFlow, textArea, new Label(), authors);
+		rightContent.getChildren().addAll(textFlow, textArea, new Label(), authors);
 
 		dlg.getDialogPane().setContent(content);
 		dlg.getDialogPane().getButtonTypes().addAll(done);
 		// dlg.setResizable(true);
 		textArea.selectPositionCaret(0);
 		textArea.deselect();
+		attribution.selectPositionCaret(0);
+		attribution.deselect();
 		dlg.showAndWait();
 
 	}
@@ -206,9 +246,9 @@ public class MrController implements IMRController {
 	@FXML
 	void onISSaveAs(ActionEvent event) {
 		String[] exts = new String[2];
-		exts[0]="Initial state (*.isf)";
-		exts[1]=".isf";
-		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save state as",exts);
+		exts[0] = "Initial state (*.isf)";
+		exts[1] = ".isf";
+		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save state as", exts);
 		if (file != null) {
 			System.out.println(file);
 			model.doISSaveAs(file);
@@ -221,37 +261,37 @@ public class MrController implements IMRController {
 		model.setISSelection(idx);
 	}
 
-	 @FXML
-	    void onParEdit(ActionEvent event) {
-		 new ISParametersDlg(model.getGraph());
-	    }
+	@FXML
+	void onParEdit(ActionEvent event) {
+		new ISParametersDlg(model.getGraph());
+	}
 
-	    @FXML
-	    void onParOpen(ActionEvent event) {
-	    	String[] exts = new String[2];
-			exts[0]="Model parameters (*.mpf)";
-			exts[1]=".mpf";
-	    	File file = Dialogs.promptForOpenFile(Project.makeFile(ProjectPaths.RUNTIME), "Open parameters", exts);
-	    	System.out.println(file);
-	    }
+	@FXML
+	void onParOpen(ActionEvent event) {
+		String[] exts = new String[2];
+		exts[0] = "Model parameters (*.mpf)";
+		exts[1] = ".mpf";
+		File file = Dialogs.promptForOpenFile(Project.makeFile(ProjectPaths.RUNTIME), "Open parameters", exts);
+		System.out.println(file);
+	}
 
-	    @FXML
-	    void onParSave(ActionEvent event) {
-	    	String[] exts = new String[2];
-			exts[0]="Model parameters (*.mpf)";
-			exts[1]=".mpf";
-	    	File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save parameters", exts);
-	    	System.out.println(file);
-	    }
+	@FXML
+	void onParSave(ActionEvent event) {
+		String[] exts = new String[2];
+		exts[0] = "Model parameters (*.mpf)";
+		exts[1] = ".mpf";
+		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save parameters", exts);
+		System.out.println(file);
+	}
 
 	@FXML
 	public void initialize() {
 		model = new MRModel();
 		statusBar.setSpacing(5);
 		statusBar.setPadding(new Insets(1, 1, 1, 1));
-		//statusBar.setStyle("-fx-background-color: lightgray");
+		// statusBar.setStyle("-fx-background-color: lightgray");
 		toolBar.setSpacing(5);
-		//toolBar.setStyle("-fx-background-color: lightgray");
+		// toolBar.setStyle("-fx-background-color: lightgray");
 	}
 
 	private Stage stage;

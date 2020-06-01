@@ -56,6 +56,7 @@ import javafx.stage.StageStyle;
  */
 public class MrSplash extends Preloader {
 	public static long startTime;
+	public static String builtBy;
 	private static Stage stage;
 	private Scene scene;
 	private TextField lblNodeName;
@@ -75,7 +76,7 @@ public class MrSplash extends Preloader {
 		Platform.runLater(() -> {
 			BorderPane root = new BorderPane();
 
-			TextField label = new TextField("Initialising simulator...");
+			TextField label = new TextField(builtBy+": Initialising simulator...");
 			label.setAlignment(Pos.CENTER);
 
 			progressBar = new ProgressBar();
