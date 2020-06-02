@@ -47,6 +47,7 @@ import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.layout.LayoutType;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twcore.ecosystem.dynamics.TimeLine;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
@@ -62,6 +63,7 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import fr.ens.biologie.generic.utils.Duple;
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -109,11 +111,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	// private final BooleanProperty sideLineProperty;
 	private final DropShadow ds;
 	private final ObjectProperty<Font> font;
-	// these could all be properties and therefore modifiable from the GUI
 	private final Color hoverColor;
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
-//	private static Double animateDuration;
 	private final static Interpolator interpolator = Interpolator.EASE_BOTH;
 	private final IMMController controller;
 	private final Originator recorder;
@@ -175,8 +175,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				visibleNodes.add(n);
 
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-
-//		animateDuration = animateDurationSlow;
 
 	}
 
@@ -403,7 +401,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	private static void setExpandBindings(VisualNode node, double w, double h,
-			BooleanProperty parentLineVisibleProperty, double duration) {
+			BooleanProperty parentLineVisibleProperty, List<Animation> timelines, double duration) {
 		Circle circle = (Circle) node.getSymbol();
 		double x = node.getX();
 		double y = node.getY();
@@ -420,18 +418,20 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				s.visibleProperty().bind(parentLineVisibleProperty);
 		}
 
-		animateTo(circle, x, y, duration);
+		animateTo(circle, x, y, timelines, duration);
 	}
 
-	private static void collapse(TreeNode parent, DoubleProperty xp, DoubleProperty yp, double duration) {
+	private static void collapse(TreeNode parent, DoubleProperty xp, DoubleProperty yp, List<Animation> timelines,
+			double duration) {
 		VisualNode vParent = (VisualNode) parent;
-		setCollapseBindings(vParent, xp, yp, duration);
+		setCollapseBindings(vParent, xp, yp, timelines, duration);
 		vParent.setCollapse(true);
 		for (TreeNode child : parent.getChildren())
-			collapse(child, xp, yp, duration);
+			collapse(child, xp, yp, timelines, duration);
 	}
 
-	private static void setCollapseBindings(VisualNode node, DoubleProperty xp, DoubleProperty yp, double duration) {
+	private static void setCollapseBindings(VisualNode node, DoubleProperty xp, DoubleProperty yp,
+			List<Animation> timelines, double duration) {
 		Circle circle = (Circle) node.getSymbol();
 		// Some subtrees may already be collapsed
 		if (node.isCollapsed()) {
@@ -443,6 +443,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		KeyValue endY = new KeyValue(circle.centerYProperty(), yp.getValue(), Interpolator.EASE_BOTH);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(duration), endX, endY);
 		Timeline timeline = new Timeline();
+		timelines.add(timeline);
 		timeline.getKeyFrames().add(keyFrame);
 
 		timeline.setOnFinished((e) -> {
@@ -451,7 +452,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			circle.centerXProperty().bind(xp);
 			circle.centerYProperty().bind(yp);
 		});
-		timeline.play();
+		// timeline.play();
 	}
 
 	@Override
@@ -459,17 +460,26 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		collapseTree(childRoot, duration);
 	}
 
-	private static void collapseTree(VisualNode childRoot, double duration) {
+	private  void collapseTree(VisualNode childRoot, double duration) {
+		List<Animation> timelines = new ArrayList<>();
 		VisualNode parent = childRoot.getParent();
 		Circle circle = (Circle) parent.getSymbol();
 		DoubleProperty xp = circle.centerXProperty();
 		DoubleProperty yp = circle.centerYProperty();
 		// Recursively, collapse the tree to the position of the parent of the tree.
-//		double duration = animateDuration;
-		collapse(childRoot, xp, yp, duration);
-		// Hide every edge between this tree and other non-collapsed nodes
-		hideEdges(childRoot);
-//		animateDuration = animateDurationSlow;
+		collapse(childRoot, xp, yp, timelines, duration);
+
+		ParallelTransition pt = new ParallelTransition();
+		pt.getChildren().addAll(timelines);
+		pt.setOnFinished(e -> {
+			// Hide every edge between this tree and other non-collapsed nodes
+			hideEdges(childRoot);
+			// if we do this we need a flag to indicate if this should be recorded.
+			// e.g not during initialise(..) not during add edge etc etc.
+//			String desc = "Collapse [" + childRoot.getConfigNode().toShortString() + "]";
+//			recorder.addState(desc);
+	});
+		pt.play();
 	}
 
 	private static void hideEdges(VisualNode vNode) {
@@ -496,14 +506,22 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	private void expandTree(VisualNode childRoot, double duration) {
+		List<Animation> timelines = new ArrayList<>();
 		double w = pane.getWidth();
 		double h = pane.getHeight();
 //		double duration = animateDuration;
 		// Recursively unbind nodes from the position of the sub-tree's parent.
-		expand(childRoot, w, h, parentLineVisibleProperty, duration);
-		// rebind edges to the showGraphLine property.
-		// isCollapsed may not be set here due to threading?
-		showEdges(childRoot, edgeLineVisibleProperty);
+		expand(childRoot, w, h, parentLineVisibleProperty, timelines, duration);
+
+		ParallelTransition pt = new ParallelTransition();
+		pt.getChildren().addAll(timelines);
+		pt.setOnFinished(e -> {
+			// rebind edges to the showGraphLine property.
+			showEdges(childRoot, edgeLineVisibleProperty);
+//			String desc = "Expand [" + childRoot.getConfigNode().toShortString() + "]";
+//			recorder.addState(desc);
+		});
+		pt.play();
 	}
 
 	private static void showEdges(VisualNode vNode, BooleanProperty show) {
@@ -526,10 +544,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	private static void expand(TreeNode parent, double w, double h, BooleanProperty parentLineVisibleProperty,
-			double duration) {
-		setExpandBindings((VisualNode) parent, w, h, parentLineVisibleProperty, duration);
+			List<Animation> timelines, double duration) {
+		setExpandBindings((VisualNode) parent, w, h, parentLineVisibleProperty, timelines, duration);
 		for (TreeNode child : parent.getChildren())
-			expand(child, w, h, parentLineVisibleProperty, duration);
+			expand(child, w, h, parentLineVisibleProperty, timelines, duration);
 	}
 
 	@Override
@@ -578,8 +596,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			arrowFade.setNode(arrow);
 
 			ParallelTransition pt = new ParallelTransition();
-	
-			
+
 			pt.getChildren().addAll(bodyFade, arrowFade);
 			pt.setOnFinished(e -> {
 				body.setVisible(false);// arrow vis is bound to this
@@ -753,11 +770,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		// always scaled within unit space
 
 		// rescale to provide border for a little node radius
-//		double duration = animateDuration;
 		Timeline timeline = new Timeline();
-//		timeline.setOnFinished(e -> {
-//			animateDuration = animateDurationSlow;
-//		});
 
 		for (VisualNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
@@ -779,13 +792,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		return new KeyFrame(Duration.millis(duration), endX, endY);
 	}
 
-	private static void animateTo(Circle c, double x, double y, double duration) {
+	private static void animateTo(Circle c, double x, double y, List<Animation> timelines, double duration) {
 		KeyValue endX = new KeyValue(c.centerXProperty(), x, interpolator);
 		KeyValue endY = new KeyValue(c.centerYProperty(), y, interpolator);
 		KeyFrame keyFrame = new KeyFrame(Duration.millis(duration), endX, endY);
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
-		timeline.play();
+		timelines.add(timeline);
+		// timeline.play();
 	}
 
 	@Override
