@@ -496,8 +496,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void handleLayout(ActionEvent event) {
+		final double duration = GraphVisualiserfx.animateSlow;
 
-		doLayout();
+		doLayout(duration);
 
 		String desc = btnLayout.getTooltip().getText() + " [" + currentLayout.name() + "]";
 
@@ -505,22 +506,22 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	public void doLayout() {
-		callLayout(null, currentLayout);
+	public void doLayout(double duration) {
+		callLayout(null, currentLayout,duration);
 	}
 
 	@Override
-	public void doFocusedLayout(VisualNode root, LayoutType layout) {
-		callLayout(root, layout);
+	public void doFocusedLayout(VisualNode root, LayoutType layout,double duration) {
+		callLayout(root, layout,duration);
 		currentLayout = layout;
 	}
 
-	private void callLayout(VisualNode root, LayoutType layout) {
+	private void callLayout(VisualNode root, LayoutType layout,double duration) {
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 100.0;
 		visualiser.doLayout(root, dSize, layout, btnChildLinks.isSelected(), btnXLinks.isSelected(),
-				tglSideline.isSelected());
+				tglSideline.isSelected(),duration);
 	}
 
 	@FXML
@@ -805,7 +806,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				tglSideline.selectedProperty(), //
 				fontProperty, this, model);
 
-		visualiser.initialiseView();
+		final double duration = GraphVisualiserfx.animateFast;
+		visualiser.initialiseView(duration);
 
 		initialisePropertySheets();
 
