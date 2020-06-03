@@ -47,7 +47,6 @@ import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.layout.LayoutType;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
-import au.edu.anu.twcore.ecosystem.dynamics.TimeLine;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
@@ -77,8 +76,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
@@ -166,7 +163,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		for (VisualNode parent : collapsedParents)
 			for (VisualNode child : parent.getChildren()) {
 				if (child.isCollapsed())
-					collapseTree(child, duration);
+					collapseTree(child, false, duration);
 			}
 		Set<VisualNode> visibleNodes = new HashSet<>();
 
@@ -456,11 +453,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void collapseTreeFrom(VisualNode childRoot, double duration) {
-		collapseTree(childRoot, duration);
+	public void collapseTreeFrom(VisualNode childRoot, boolean record, double duration) {
+		collapseTree(childRoot, record, duration);
 	}
 
-	private  void collapseTree(VisualNode childRoot, double duration) {
+	private void collapseTree(VisualNode childRoot, boolean record, double duration) {
 		List<Animation> timelines = new ArrayList<>();
 		VisualNode parent = childRoot.getParent();
 		Circle circle = (Circle) parent.getSymbol();
@@ -474,11 +471,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pt.setOnFinished(e -> {
 			// Hide every edge between this tree and other non-collapsed nodes
 			hideEdges(childRoot);
-			// if we do this we need a flag to indicate if this should be recorded.
-			// e.g not during initialise(..) not during add edge etc etc.
-//			String desc = "Collapse [" + childRoot.getConfigNode().toShortString() + "]";
-//			recorder.addState(desc);
-	});
+			if (record) {
+				// Problem stemming from CollapseAll
+//				String desc = "Collapse [" + childRoot.getConfigNode().toShortString() + "]";
+//				recorder.addState(desc);
+//				GraphState.setChanged();
+			}
+		});
 		pt.play();
 	}
 
@@ -501,11 +500,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void expandTreeFrom(VisualNode childRoot, double duration) {
-		expandTree(childRoot, duration);
+	public void expandTreeFrom(VisualNode childRoot, boolean record, double duration) {
+		expandTree(childRoot, record, duration);
 	}
 
-	private void expandTree(VisualNode childRoot, double duration) {
+	private void expandTree(VisualNode childRoot, boolean record, double duration) {
 		List<Animation> timelines = new ArrayList<>();
 		double w = pane.getWidth();
 		double h = pane.getHeight();
@@ -518,8 +517,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pt.setOnFinished(e -> {
 			// rebind edges to the showGraphLine property.
 			showEdges(childRoot, edgeLineVisibleProperty);
-//			String desc = "Expand [" + childRoot.getConfigNode().toShortString() + "]";
-//			recorder.addState(desc);
+			if (record) {
+				// Problem stemming from CollapseAll
+//				String desc = "Expand [" + childRoot.getConfigNode().toShortString() + "]";
+//				recorder.addState(desc);
+//				GraphState.setChanged();
+			}
 		});
 		pt.play();
 	}
@@ -808,7 +811,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (root.cClassId().equals(N_ROOT.label())) {
 				VisualNode predef = (VisualNode) get(root.getChildren(),
 						selectOne(hasTheName(ConfigurationReservedNodeId.categories.id())));
-				collapseTree(predef, 1.0);
+				collapseTree(predef, false, 1.0);
 			}
 		}
 	}
