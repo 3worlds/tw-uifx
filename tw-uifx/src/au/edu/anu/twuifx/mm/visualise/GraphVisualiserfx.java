@@ -472,6 +472,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			// Hide every edge between this tree and other non-collapsed nodes
 			hideEdges(childRoot);
 			if (record) {
+				// Don't do this so "record" can be removed sometime
 				// Problem stemming from CollapseAll
 //				String desc = "Collapse [" + childRoot.getConfigNode().toShortString() + "]";
 //				recorder.addState(desc);
@@ -518,6 +519,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			// rebind edges to the showGraphLine property.
 			showEdges(childRoot, edgeLineVisibleProperty);
 			if (record) {
+				// Don't save collapsed cmds - there are too many. Therefore, remove "record"
+				// arg sometime.
 				// Problem stemming from CollapseAll
 //				String desc = "Expand [" + childRoot.getConfigNode().toShortString() + "]";
 //				recorder.addState(desc);
@@ -543,7 +546,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 		for (VisualNode vChild : vNode.getChildren())
 			showEdges(vChild, show);
-
 	}
 
 	private static void expand(TreeNode parent, double w, double h, BooleanProperty parentLineVisibleProperty,
@@ -825,7 +827,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 
 		GraphState.setChanged();
-		recorder.addState("Show all");
+//		recorder.addState("Show all");
 	}
 
 	@Override
@@ -835,7 +837,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		visibleNodes.add(root);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 		GraphState.setChanged();
-		recorder.addState("Show neighbourhood");
+//		recorder.addState("Show neighbourhood");
 	}
 
 	private static void updateGraphVisibility(TreeGraph<VisualNode, VisualEdge> g, Set<VisualNode> visibleNodes,

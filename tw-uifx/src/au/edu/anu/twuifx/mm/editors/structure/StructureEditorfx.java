@@ -226,9 +226,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					LayoutType layout = (LayoutType) ((MenuItem) e.getSource()).getUserData();
 					controller.doFocusedLayout(editableNode.getSelectedVisualNode(), layout,duration);
 
-					String desc = MenuLabels.ML_APPLYLAYOUT.label + " [" + layout.name() + "]";
-
-					recorder.addState(desc);
+//					String desc = MenuLabels.ML_APPLYLAYOUT.label + " [" + layout.name() + "]";
+//
+//					recorder.addState(desc);
 
 				});
 			}
@@ -247,9 +247,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					int depth = Integer.parseInt(result);
 					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
 
-					String desc = MenuLabels.ML_SHOWLOCALGRAPH.label() + " ["
-							+ editableNode.getConfigNode().toShortString() + "(" + depth + ")]";
-					recorder.addState(desc);
+//					String desc = MenuLabels.ML_SHOWLOCALGRAPH.label() + " ["
+//							+ editableNode.getConfigNode().toShortString() + "(" + depth + ")]";
+//					recorder.addState(desc);
 				}
 
 			});

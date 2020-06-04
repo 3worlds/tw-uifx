@@ -500,9 +500,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		doLayout(duration);
 
-		String desc = btnLayout.getTooltip().getText() + " [" + currentLayout.name() + "]";
-
-		model.addState(desc);
+//		String desc = btnLayout.getTooltip().getText() + " [" + currentLayout.name() + "]";
+//
+//		model.addState(desc);
 	}
 
 	@Override
