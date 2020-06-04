@@ -55,12 +55,12 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 
 // TREE
 3worlds Idh_2
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
+	precis = java.lang.String(Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model for n species. Illustrates the use of different ComponentTypes.)
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
+	version = java.lang.String(demo)
 	built-by = java.lang.String(gignoux (22 mai 2020))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String()
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = java.lang.String()
 	dataDefinition dDef
 		record commDrv
 			dynamic = java.lang.Boolean(true)
