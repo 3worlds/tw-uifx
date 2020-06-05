@@ -2,6 +2,61 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+// CODE SNIPPET for function growth(...)
+//		// population growth
+//		double[] dxdt = new double[x.size(0)];
+//		for (int i=0; i<x.size(0); i++) {
+//			double sum = 0;
+//			for (int j=0; j<alpha.size(1); j++)
+//				sum += alpha.getByInt(i,j) * x.getByInt(j);
+//			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1-sum/K.getByInt(i));
+//		}
+//		for (int i=0; i<dxdt.length; i++)
+//			focalDrv.x.setByInt(max(x.getByInt(i)+dxdt[i]*dt,0.0), i);
+//		// compute diversity
+//		double xtot = 0.0;
+//		for (int i=0; i<focalDrv.x.size(0);i++)
+//			xtot += focalDrv.x.getByInt(i);
+//		focalDec.div = 0.0;
+//		for  (int i=0; i<focalDrv.x.size(0);i++)
+//			if (focalDrv.x.getByInt(i)>0.0)
+//				focalDec.div -= (focalDrv.x.getByInt(i)/xtot) * log(focalDrv.x.getByInt(i)/xtot);
+
+// CODE SNIPPET for function initDist(...)
+//		focalLtc.freq = 30+random.nextInt(50);
+//		focalLtc.intensity = random.nextDouble()*100;
+//		// populate the time event queue with 10000 events
+//		double nextT = 0;
+//		for (int i=0; i<100; i++) {
+//		// reciprocal of exponential cumulative distribution function
+//			nextT += max(1.0,log(1-random.nextDouble())*(-focalLtc.freq));
+//			eventT.postTimeEvent(nextT);
+//		}
+
+// CODE SNIPPET for function effects(...)
+///		for (int i=0; i<x.size(); i++) {
+//			if (x.getByInt(i)>K.getByInt(i)*intensity/100000)
+//				otherDrv.x.setByInt(otherDrv.x.getByInt(i)*K.getByInt(i)*intensity/10000, i);
+//		}
+
+// CODE SNIPPET for function setup(...)
+//		return true;
+
+// CODE SNIPPET for function initComm(...)
+//		double initfreq = 1.0/x.size();
+//		focalDrv.x.fillWith(initfreq);
+//		for (int i=0; i<r.size(0); i++) {
+//			focalLtc.r.setByInt(random.nextDouble(),i);
+//			focalLtc.K.setByInt(5.0+initfreq+random.nextDouble(),i);
+//			for (int j=0; j<alpha.size(1); j++) {
+//				if (i==j)
+//					focalLtc.alpha.setByInt(1.0,i,j);
+//				else
+//					focalLtc.alpha.setByInt(max(0.0001,random.nextDouble()),i,j);
+//			}
+//		}
+
 // TREE
 3worlds Idh3
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
@@ -113,10 +168,6 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
 				timer eventT
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.EventTimer)
-					process procOcc
-						function Occurrence
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys.Occurrence)
 					process procDist
 						function Effects
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
@@ -223,7 +274,6 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [dataTracker:trkr] trackTable trks2 [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:39]"))
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[process:procOcc] appliesTo aplyTo4 [category:distrb]
 [category:plants] decorators decs1 [record:commDec]
 [category:plants] drivers drvs1 [record:commDrv]
 [category:plants] lifetimeConstants ltcs1 [record:commPar]
@@ -242,5 +292,4 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [category:distrb] lifetimeConstants ltcs2 [record:distPar]
 [table:x] sizedBy szBy1 [dimensioner:nSpecies]
 	rank = java.lang.Integer(0)
-[timer:eventT] fedBy fedBy1 [function:Occurrence]
 [timer:eventT] fedBy fedBy2 [initFunction:InitDist]
