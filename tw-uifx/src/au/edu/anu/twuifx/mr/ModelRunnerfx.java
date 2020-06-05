@@ -82,7 +82,6 @@ public class ModelRunnerfx extends Application {
 		MrSplash.builtBy= (String) config.root().properties().getPropertyValue(P_MODEL_BUILTBY.key());
 		System.setProperty("javafx.preloader",MrSplash.class.getCanonicalName());
 		launch(args);
-		//LauncherImpl.launchApplication(ModelRunnerfx.class, MrSplash.class, args);
 	}
 
 	public static String getInitNodeName() {
