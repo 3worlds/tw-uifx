@@ -1,125 +1,153 @@
 === Tutorial 1: Construct and run a model for the first time
 
-In this tutorial we focus on the basic housework required to build and run a model using `ModelMaker` and https://www.eclipse.org/downloads/[eclipse]. We will use `ModelMaker` to create a 3Worlds project and construct a configuration file. We will then use https://www.eclipse.org/downloads/[eclipse] to create a Java project and then link `ModelMaker` to this project. We then finish by writing a few lines of java code with https://www.eclipse.org/downloads/[eclipse], running the model and checking the results.
+In this tutorial we demonstrate the use of _ModelMaker_ by implementing a simple logistic function as a simulation. This is indeed a complicated way to demonstate a simple function but the purpose here is not to be distracted by model complexity so we can concentrate on the process of model development. 
+
+In _3Worlds_, a model is defined by constructing a graph of nodes and edges and setting their property values. The graph constitutes the model specifications. While building the graph, _ModelMaker_ constantly checks that it complies with the _3Worlds Archetype_. The _ModelMaker_ interface guides you through this process by showing what options are currently available at each stage in the graph construction through enabling and disabling options and showing a constatnly undated list of task messages. The graph is both a tree and a graph in that each node has a parent (apart from the root node) and nodes can have additional edges between nodes referred to here as cross-links. The simulation can be run once the graph has been constructed and complies with that archetype.
+
+If you haven't already done so, please read "About ModelMaker" from the main menu `Help->About`.
 
 ==== Creating a model configuration
 
 . Start `ModelMaker`.
-. Create a new project (`Main menu: Projects -> new`)
-. When prompted enter `tut1`. A single black node called  `3Worlds:tut1` now appears in the _graph_ window. 
+. Create a new project (`Main menu: Projects->New->Templates->Blank`)
+. When prompted enter `Tut1` (must begin with uppercase). A single node called  `3Worlds:Tut1` now appears centered in the _graph_ window.
 
-+
-[#fig-screenshot-1]
-image::tutorial1-shot1.png[align="center"]
+This node will be the root of a graph that represents the structure of a model. All nodes are identified with a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is the unique identifier for a node of the given type. A few node types, like the root node, must have names begining with an uppercase letter. These nodes are used to generate Java classes. (*NEED SOME USER FEEDBACK WHEN ATTEMPTING TO ENTER INVALID CHARS CAUSE IT LOOKS WEIRD*). 
 
-+
-This node will be the root of a graph that represents the configuration. All nodes are identified in the graph display using a _label:name_ pair. The _label_ is the type of node, representing its role in the configuration, while the _name_ is the unique identifier for a node of the given type (for example `person:claudine` or `kangaroo:skippy`). In addition, a list of tasks remaining to be completed appears at the bottom of the main `ModelMaker` window (_Compliance tasks_). This list grows and shrinks as the as the developing configuration is checked against the 3Worlds specifications.  A check takes place every time the graph or its properties change. On the left-hand side of the main window are two _Property editors_.  It is here that values are entered for the properties of the graph nodes created in the following steps. Only some nodes have properties and at this stage there are none to edit. 
+You can:
 
+. Move this node around the graph display by dragging it with the left mouse button;
 
-====
-It is worth pausing here to see the directories and files that appear when a project is created.  
-[#fig-screenshot-2]
-image::tutorial1-shot2.png[align="center"]
+. Zoom in and out using the mouse wheel while holding down the `ctrl` (or equivalent on your operating system);
 
-The project root directory is called `.3w` and was created when `3w.zip` was unzipped. The dot indicates it’s a hidden directory so you will need to do what ever is required by your operating system to show hidden files. Within `.3w` there is now a directory called something like `project_tut1_18D6C7B0A519-000001650DB5CA2F-0000`. Every project directory begins with the key word `project` and then the name of the project you entered (`tut1` in this case). The series of hexadecimal numbers are an encoded creation date and instance number. At the moment all that you need to know is that _this system makes it impossible to overwrite a project because the project directory name will always be **unique**_. Inside this directory are 3 files: `tut1.dsl` (the configuration file we are constructing), `layout.dsl` (contains visualisation data for `ModelMaker` to display the configuration). When you close a project (quit `ModelMaker` or change to a different project), a preferences file is created (`MM.dsl`) containing project settings such as the size of windows and the position of controls. There are two other directories which will be discussed later. These three files are text files and you can open them with a simple text editor. However, _you should never need to edit them and it is likely to lead to *problems* for your project if you do_. You can safely delete project directories unless the project is currently open in `ModelMaker` or the project simulator has been launched.
-====
+. Change the node and text size with the controls at the bottom of the display; and,
 
-Returning to `ModelMaker`, you will see the project name is displayed in the window title along with the creation date (decoded as a readable time stamp from the project directory discussed in above). The compliance task list currently shows four nodes are required. This list can be dealt with in any order you chose but for now, we will first add an `ecology` node.
+. See available edit options for this node by right-clicking on it to display a local popup menu.
+
+A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing configuration graph is checked against the 3Worlds archetype.  A check takes place every time the graph structure or its properties change. 
+
+At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  One shows properties for the entire graph and the other properties of a single selected node (mouse left-click). It is here that values are entered for the properties of nodes and edges created in the following steps. At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended provide a minimal amount of documentation for this project. By default, the property `build-by` is filled out with your account name and this project's creation date.
+
+At the bottom of the graph display are a number of controls that will be explained at relevant places in this first tutorial. Float the mouse over these controls to see a hint as to their purpose.
+
+All projects are located within the 3Worlds root directory called `.3w`. The dot indicates it’s a hidden directory (*WHY*). to see these files you may need to do what ever is required by your operating system to show hidden files. 
+
+Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project directory begins with the key word `project` and then the name of the project you entered (`Tut1` in this case) followed by the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to overwrite a project inadvertantly. 
+
+Inside this directory are a number of text files:
+
+. `Tut1.utg` is the model configuration graph we are constructing;
+. `layout.utg` contains information used to display the graph;
+. `MM.xml` contains the session's preference settings.
+. `__StateA1` and similarly named files are temporary rollback files to support the program's undo/redo editing operations. These files are created during a session and deleted when the session ends.  
+
+All these files are text files and you can open them with a simple text editor. However, _you should never need to edit them and it is likely to lead to *problems* for your project if you do_. You can safely delete project directories at any time if you wish. If a project directory is deleted for the currently open session, all will be recreated automatically apart from the rollback data.(*TODO CHECK FOR ROLLBACK FILES*)
+
+Returning to `ModelMaker`, you will see the project name is displayed in the window title along with the creation date. The task list currently shows four nodes are required. This list can be dealt with in any order but for now we will first add a `system` node. The `system` node forms the root of a subtree that defines the struture and dynamics of the modelled system. Other subtrees deal with topics such as designing the user interface, the simulation experiment and the definition of the data used to geneate the software for the simulation model. 
 
 [start=4]
-. *Ecology*: Right-click on the `3worlds:tut1` node and select `new -> ecology` from the popup menu. You 
-are then prompted for a name for this node. The default name is the label name. Accept this and click `ok`. 
-The mouse pointer immediately becomes a cross-hair. `ModelMaker` is asking where you want to place this node. 
-Move to some place within the graph display and left-click the mouse. The `ecology:ecology1` node appears 
-(lime green) connected by a dark green line to the root node (black). 
+. *System*: Right-click on the `3worlds:Tut1` node and select `new -> system` from the popup menu. You are then prompted for a name for this node. The default name is `sys1`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: `ModelMaker` is asking where you want to place this node. Move to some place within the graph display and left-click the mouse. The `system:sys1` node appears (teal coloured) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. It is thicker at the child end of the line indicating `system:sys1` is a child of `3worlds:Tut1`.
 
 +
-[#fig-screenshot-3]
-image::tutorial1-shot3.png[align="center"]
+All nodes in the configuration graph are children of some parent except for the root node. You can only create nodes by right-clicking on a parent and making a selection from from the popup menu. The items in this menu vary according to the possibilities allowed by the 3Worlds specifications. This is one of the ways `ModelMaker` ensures that the developing configuration conforms with the specifications and greatly simplifies an otherwise very complex situation. 
 
 +
-Green lines indicate a _parent/child_ (hierarchical) relationship throughout the graph. All nodes are colour coded by category. Nodes that are children of `ecology` for example, are in the ecology category and will be the same lime green. All nodes, except the root node, are children of some parent. You can only create nodes by right-clicking on a parent and choosing a new node from the available options. The local menu varies according to the possibilities allowed by the 3Worlds specifications. This is one of the ways `ModelMaker` ensures that the developing configuration file is valid and greatly simplifies an otherwise very complex situation. 
+The specifications allow more than one `system` node.
 
-+
-The specifications actually allow more than one `ecology` node. You can go mad if you like, and create and delete nodes to your hearts content using the popup menus. To clean up and return to this place in the tutorial, you can not only delete single nodes but also entire trees below a parent node. You can also collapse/expand all nodes in a tree and export or import them to and from disk. This can be useful for assembling models from saved sub-trees.
+. Right-click the root node and create a second `system` as above. The prompt will add an incremented number to the name to make sure the _label:name_ pair remains unique with in the configuration file. You can name a node anything you want (it must be alpha-numeric) but the prompt won't allow duplicate names within the graph.
 
-. Right click the root name and create another `ecology` as in 4). The prompt will add an incremented number to the name to make sure the _label:name_ pair remains unique with in the configuration file.
+. We won’t use this second `system` node so either right-click on it and select `Delete node` or undo the last operation: `Edit->Undo 'new node [system.sys2]'`.
 
-. We won’t use this second `ecology` node so right click on it and select `delete`. You can’t edit the name of a node but if you want to change it, simply delete and recreate the node.
+The addition of the `system` node has added four more tasks to the task list. Two of these tasks are asking for edges to be added from the `system:sys1` node. However, its not apparent where these nodes are at this stage. Even though we started this project from a "Blank" template, a subtree has already be added and hidden from view when the project was created. To view this subtree, right-click on root node (`3worlds:Tut1`) and select `expand -> predefined:*categories*`.
 
-The addition of the `ecology` node has added more items to the compliance task list. However, we will ignore this for now and focus on creating the required nodes from the root. The `ecology` node and its sub-trees contain all ecological concepts defined in your model. For more information on this and other node types, see the <<truereference-of-3worlds-configuration,reference>> section. 
+The gray coloured subtree cannot be edited. It is present in all models but can be largely ignored for this tutorial except that we must first connect the new system node to parts of it.
+
+The first task asks that we create an edge from the system node to something called the `*Arena*` (`1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*arena*]`).
+
+. Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*arena*` and accept the default name for this edge.  A red cross-link line then appears between these two nodes with the line thicker at the end node. All cross-link lines are red and all parent-child lines are green.
+
+The task list has now updated. The task just completed has gone and an new message indicating that the configuration is unsaved has appeared. Press `ctrl-S` to save.
+
+. Repeat the above steps for the next task `1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*permanent*]`.
+
+The next task is essentially the same thing but expressed slightly differently. Its asking that we connect an edge for the system node to either a node named *individual* or *population*. (*TODO: AN ODD THING FOR A LOGISTIC EQUATION*)
+
+. Repeat the above steps and select `New edge->belongsTo->category:*individual*`.
+
+We've now finished with the `predefined` subtree and can hide it again to simplify the display.
+
+. Right-click the root node and select `Collapse->predefined:*categories*. 
+
+We now continue addressing tasks associated with the system node. These are to create the `structure` and `dynamics` subtrees.
+
+. *Dynamics*: In this subtree we create in order, nodes called `timeLine`,`timer`, `process`, `function` and `dataTracker`. We will assume the default name is excepted unless otherwise noted.
+
+. Create a `dynamics` node as a child of `system:sys1`. All nodes that are children of dynamics are coloured lime green.
+
+. Create a `timeline` from the `dynamics` node. The timeline defines the time scale type for the simulation. In the properties editor the drop down list for the 'tmln1:scale` property shows ten differnt types are available: all of them exact subdivisions of time except for the Gregorian scale type which is the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial.
+
+. Create a 'timer' node (child of timeline). Here an extra prompt appears asking for the class of the timer: {ClockTimer, EventTimer, ScenarioTimer}. Select `ClockTimer`. This class of timer increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularites such as leap years are managed. There is now a new type of task indicating a property value for the new timer is incorrect.
+
+. In the property editor, change both `tmr1:dt` and `tmr1:nTimeUnits` to 1. `dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types avaiable from microseconds to millennia. The current default value of `UNSPECIFIED` if fine for this tutorial.
+
+. Create a process node as child of `timer:tmr1`.
+
+
+
+
+
+
+
+However, we will ignore this for now and focus on creating the required nodes from the root. The `system` node and its sub-trees contain all concepts defined in your model. For more information on this and other node types, see the <<truereference-of-3worlds-configuration,reference>> section. 
 
 [start=7]
-. *Code source*: Right click on the root node and select `new -> codeSource`, accept the default name and place it somewhere in the graph window. All nodes in the `codeSource` category are light gray. 
+. *Data definition*: Right click on the root node and select `new -> dataDefinition`, accept the default name and place it somewhere in the graph window. While there can be many `system` nodes in a configuration there can be only node of `dataDefinition` type. Hence the prompted name does not end with a number. Note also that this new node is a differnet colour. All nodes in the `dataDefinition` category are a pale red colour. 
 
 +
-[#fig-screenshot-4]
-image::tutorial1-shot4.png[align="center"]
+Note the change in the task list. Adding `dataDefinition` did not add any more tasks to the list (but removed one – this task). The `dataDefinition` node will become the parent of all data types (records, fields and tables and their dimensions) that supply the necessary information for `ModelMaker` to make the required Java files.
 
-+
-Note the change in the task list. Adding `codeSource` did not add any more tasks to the list (but removed one – this task). The `codeSource` node will become the parent of all data and process types that will supply the necessary information for `ModelMaker` to make the required Java files.
+. *Experiment*: Right click again on the graph root and select `new -> experiment` and proceed as before. All nodes in the `experiment` category (children of `experiment`) will be the same (gold) colour. This section of the configuration determines how the model is to run. This could be anything from a simple single run to a factorial experiment or may reference a file that contains other experimental designs.
 
-. *Experiment*: Right click again on the graph root and select `new -> experiment` and proceed as before. All nodes in the `experiment` category (children of `experiment`) will be the same (gold) colour. This section of the configuration will determine how the model is run. This could be anything from a simple single run to a factorial experiment or may reference a file that contains other information.
+. *User interface*: Again, right-click on the root node and create a new `userInterface` node. In this category we can design the user interface and choose the _widgets_ necessary to control the model and display results. _Widgets_ are autonomous components of a user interface that can be freely assembled to customize the user interface as required.
 
-. *User interface*: Again, right-click on the root node and create a new `userInterface` node. In this category we can design the user interface and choose the _widgets_ necessary to control the model and display results. _Widgets_ are autonomous components of a user interface that can be freely assembled to customize the user interface to your needs.
-
-[#fig-screenshot-5]
-image::tutorial1-shot5.png[align="center"]
-
-We now have a minimum set of children of the configuration root. You can delete and recreate any of these nodes
-at any time, with the exception of the root node. If you select the tab `All editable properties` (AEP), you 
-will see there is only one property displayed (memory).  This is a property of the `ecology:ecology1` node with a default value of 0. More on this later but for now leave the value at 0. Notice that, after these edits, the main window title has a star added (unsaved). Press `ctrl-S` to save (or select `Projects -> Save`). Use `Save as...` if you want to save the project under a new name. You can save it under the same name if you like. Because the new project will have a different time stamp, it won’t overwrite the previous project.
+We now have a minimum set of children of the configuration root. You can delete, recreate or rename any of these nodes at any time, with the exception of the root node. After these edits, the main window title has a star added (unsaved). Press `ctrl-S` to save (or select `Projects -> Save`). Use `Save as...` if you want to save the project under a new name.
 
 [start=10]
-. *Cross-links*: Many nodes require information from nodes other than their children or parents. In the task 
-list is currently a requirement to add an edge from experiment to ecology. To create this, right click on 
-experiment:experiment and select `connect to -> baseline - > ecology:ecology1`. A gray line will appear with 
-the name ‘baseline’ between these two nodes. All cross-linked lines are gray.
+. *Cross-links*: Many nodes require information from nodes other than their children or parents. In the task list is a requirement to add an edge from experiment to system (`[Edge] Add edge [baseLine:] from 'experiment:expt' to [system:].`). To create this, right click on `experiment:expt` and select `New edge -> baseline - > system:sys1`. A red  line will appear with the name `bsln` between these two nodes. All cross-linked lines are red with the thick end of the line indicating the end node. In this case, the link can be read as "experiment:expt is the baseline for system:sys1" - *WHY I DON'T KNOW*
 
 ====
 At the bottom of the graph display is a set of controls:
 
-[#fig-screenshot-6]
-image::tutorial1-shot6.png[align="center"]
+. The `L` button re-applies the current graph layout algorithm. The default layout function (`OrderedTree`) displays children from top to bottom in alphabetical order. The layout will not be applied to any nodes not connected to the graph root (nodes that have become isolated during editing). You can choose differnt layout methods from a node's local menu. There are 5 layout algoritms - three are specific to graphs with a single tree root and two a two are general "Spring" based layouts that make no assumption about tree structures. If a tree algorithm is chosen, the selecdted node becomes the root of the tree in the display. This does not change the underlying tree structure of the configuration file. 
 
 . The `X` shows/hides the cross-link lines. As the graph becomes more crowded, you may want to hide these for clarity. 
 
-. The `<` shows/hides the parent/child lines. Usually you want these displayed. 
+. The `<` shows/hides the parent/child lines. Usually you want these displayed.
 
-. The `L` button applies a layout method for displaying hierarchical graphs. The layout function displays children from top to bottom in alphabetical order. The layout will not be applied to any nodes not connected to the graph root.
+. The `>|` button will move any nodes isolated by either of the above two toggles to one side of the graph display.
 
-. Reapplying the layout (`L)` may cause the graph to be bigger than the display. You can zoom the graph display in and out by holding down the `ctrl` key while turning the mouse wheel. If the graph is larger than the display, you can drag it around using the mouse (left button down). Having readjusted the graph position or magnification, you can change the font or node size to suit. Whenever the layout is reapplied, there will be a small change in the horizontal position of nodes. This is just a random jiggle added to prevent vertical lines from being one on top of the other. 
+You can zoom the graph display in and out by holding down the `ctrl` key while turning the mouse wheel. If the graph is larger than the display, you can drag it around using the mouse (left button down). Having readjusted the graph position or magnification, you can change the font or node size to suit. Whenever the layout is re-applied, there will be a small change in the horizontal position of nodes. This is just a random jiggle added to prevent vertical lines from being one on top of the other. 
+
+. The Jitter button adds a small random displayment to the layed out nodes to help show overlapped lines and text. If this is >0, the nodes will move slightly (% of the graph display dimensions) everytime the layout operation is re-applied.
 
 . When the mouse floats over a node, the node becomes highlighted (red). When highlighted, you can drag the node anywhere with in the display.
 
-. If you left-click on a highlighted node, its properties will be displayed in the _Selected Properties editor_ (SPE) display on the right-hand side of the _Property editor_ window. This display will show not only editable properties (if there are any) but any other non-editable properties including the node’s label, name and sometimes other properties. 
+. If you left-click on a highlighted node, its properties will be displayed in the _Selected Properties_ tab (SPT) on the top-left of the main window. This display will show not only editable properties (if any) but any other non-editable properties there may be. 
 All these control settings are automatically recorded in the project preferences file (`MM.dsl`) so when you reopen this project, its appearance will be as you left it. 
 ====
 
 We will now proceed to develop the configuration by addressing all the tasks in the task list, until we have a minimal valid graph. 
 
 [start=11]
-. *Experiment design*:  Right-click on `experiment:experiment1` and add a new design node. In addition to the name, you will be prompted for a choice between a predefined experiment type and a file name. Choose `type`. Left-click on the new design node and look at its properties with the SPE.  
-
-+
-[#fig-screenshot-7]
-image::tutorial1-shot7.png[align="center"]
-
-+
-The `type` property is shown there and the default value is  `singleRun`. The drop down list for this property shows that `crossFactorial` is also an option. 
-
-====
-Sometimes, more convenient way to examine properties is with the other property editor `All editable properties` 
-(AEP). Click on this tab and you will see the `design:design1#type` property (`singleRun`) and the 
-`ecology:ecology1#memory` property (`0`). As more nodes are added to the graph, the list of properties can become
-overwhelming. In this case you can display properties by category (click the icon next to the search box in the
-AEP). There are only two categories containing properties that can be edited at this time: `ecology:ecology1` 
-and `experiment:experiment1`.
-====
+. *Experiment design*:  Right-click on `experiment:expt` and add a new design node. In addition to the name, you will be prompted for a choice between a predefined experiment type and a file name. Choose `type`. Left-click on the new design node and look at its properties in the property editor (top-left).  The `type` property is shown there with its default value of  `singleRun`. The drop down list for this property shows that `crossFactorial` is also an option. 
 
 [start=12]
-. *Experiment time period*: Use the experiment node to add a `timePeriod` node to the graph. Once done there will
-appear a request to add an edge from this node to `ecology:/engine:` in the task list. However, we don’t have such a node at this time so we should move over to the `ecology` node. 
+. *Experiment time period*: Use the experiment node to add a `timePeriod` node to the graph. Once done there will appear a request to add an edge from this node to `ecology:/engine:` in the task list. However, we don’t have such a node at this time so we should move over to the `ecology` node. *SOMETHING WRONG WITH THE QUERIES HERE:*
+
+NOTE: verbose1: [Node] system:sys1 start -1, end 1, length 1
+verbose2: [Node] [NODE_QUERY_UNSATISFIED] [system:sys1=[↑3worlds:Tut1 ←experiment:expt] parameterClass=] start -1, end 1, length 1
+[Specification: [mustSatisfyQuery:exclusiveCategoryCheckForSystemSpec ↑hasNode:systemSpec className=au.edu.anu.twcore.archetype.tw.ExclusiveCategoryQuery]].
+
 
 . *Ecology engine*: Create an `engine` from the `ecology` node. This is the simulator that will manage executing processes at the appropriate time. 
 
@@ -343,5 +371,7 @@ reset (by the controller widget).
 unless this is done. Right-click on the plot node and select `connect to -> channelListener - > dataTracker:dataTracker1`.
 
 . Save your work and run the simulator. *[TODO screen capture]*
+
+
 
 
