@@ -135,7 +135,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 	system sys
 		dynamics sim
-			timeLine tmLn
+			timeline tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)

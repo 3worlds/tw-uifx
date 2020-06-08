@@ -95,7 +95,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 			userClassName = java.lang.String(code.sys.Init)
 		structure struc
 		dynamics sim
-			timeLine tmLn
+			timeline tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)

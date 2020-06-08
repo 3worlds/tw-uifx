@@ -31,7 +31,7 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 			stoppingCondition stCnd
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
-			timeLine tmLn
+			timeline tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
