@@ -161,7 +161,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 			size = java.lang.Integer(40)
 	system sys
 		dynamics sim
-			timeLine tmLn
+			timeline tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)

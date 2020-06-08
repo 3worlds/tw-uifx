@@ -246,9 +246,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private Label lblChecking;
 
-//	@FXML
-//	private ComboBox<LayoutType> cbxLayoutChoice;
-
 	public enum Verbosity {
 		brief, medium, full;
 	}
@@ -279,10 +276,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	 * NB any function that causes checking to take place (e.g. an edit) also causes
 	 * SetButtonState() to be called.
 	 *******************************************************************************/
+
+	// --------------------------- FXML Start ----------------------
 	@FXML
 	public void initialize() {
-//		cbxLayoutChoice.getItems().setAll(LayoutType.values());
-//		cbxLayoutChoice.setValue(LayoutType.OrderedTree);
 
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
@@ -329,7 +326,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		/** add template entries to the "New" menu */
 		buildNewMenu();
 
-		// This class has all the housework for managing graph
+		/** This class has all the housework for managing graph */
 		model = new MMModel(this);
 
 		// build a toggle group for the verbosity level of archetype error
@@ -342,96 +339,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			verbosityChange(t);
 		});
 
-		// Listen for error msgs from validategraph
+		// Listen for error msgs from error system
 		ErrorList.addListener(this);
+
 		// Setup zooming from the graph display pane (zoomTarget)
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
-	}
-
-	private void buildNewMenu() {
-		Map<MenuItem, LibraryTable> map = new HashMap<>();
-		menuNew.getItems().clear();
-		Menu muTemplates = new Menu("Templates");
-		Menu muTutorials = new Menu("Tutorials");
-		Menu muModels = new Menu("Model Library");
-		menuNew.getItems().addAll(muTemplates, muTutorials, muModels);
-		for (LibraryTable entry : LibraryTable.values()) {
-			MenuItem mi = new MenuItem(entry.displayName());
-			mi.setMnemonicParsing(false);
-			map.put(mi, entry);
-			switch (entry.libraryType()) {
-			case Template: {
-				muTemplates.getItems().add(mi);
-				break;
-			}
-			case Tutorial: {
-				muTutorials.getItems().add(mi);
-				break;
-			}
-			default: {
-				muModels.getItems().add(mi);
-			}
-			}
-
-			mi.setOnAction((e) -> {
-
-				LibraryTable lt = map.get(e.getSource());
-				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
-				TreeGraphDataNode root = libGraph.root();
-				if (root == null || !root.classId().equals(N_ROOT.label())) {
-					String rnames = lt.displayName() + " roots:\n";
-					int i = 0;
-					for (TreeGraphDataNode r : libGraph.roots())
-						rnames += ((++i) + ") " + r.toShortString() + "\n");
-					String title = "Library graph error";
-					String content = "Graphs must have a single root (ref '" + N_ROOT.label() + "').";
-					Dialogs.errorAlert(title, content, rnames);
-					return;
-				}
-
-				if (root.properties().hasProperty(P_MODEL_BUILTBY.key())) {
-					DateTimeFormatter fm = DateTimeFormatter.ofPattern("d MMM uuuu");
-					LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
-					String date = " (" + currentDate.format(fm) + ")";
-					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name") + date);
-				}
-
-				model.doNewProject(libGraph);
-			});
-		}
-
-	}
-
-	public void setFontSize(int size) {
-		this.fontSize = size;
-		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, fontSize));
-		fontProperty.set(Font.font("Verdana", fontSize));
-	}
-
-	public void setNodeRadius(int size) {
-		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, size));
-		nodeRadiusProperty.set(size);
-	}
-
-	private void setJitter(int size) {
-		spinJitter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, size));
-		jitterProperty.set(size);
-	};
-
-	private void verbosityChange(Observable t) {
-		RadioButton rb = (RadioButton) tgArchetype.getSelectedToggle();
-		if (rb == rb1)
-			verbosity = Verbosity.brief;
-		else if (rb == rb2)
-			verbosity = Verbosity.medium;
-		else
-			verbosity = Verbosity.full;
-//		textFlowErrorMsgs.getChildren().clear();
-		textAreaErrorMsgs.clear();
-		sortErrors();
-		for (ErrorMessagable msg : lstErrorMsgs)
-			textAreaErrorMsgs.appendText(getMessageText(msg));
 	}
 
 	@FXML
@@ -442,7 +355,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		UserProjectLink.unlinkUserProject();
 		ConfigGraph.validateGraph();
 		Dialogs.infoAlert("Project disconnected", header, "");
-		;
 	}
 
 	@FXML
@@ -480,81 +392,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
-	private void openProject(File file) {
-		model.doOpenProject(file);
-		textAreaErrorMsgs.clear();
-		lstErrorMsgs.clear();
-		isValid = false;
-	}
-
-	@FXML
-	void handlePaneOnMouseMoved(MouseEvent e) {
-		// modelMaker.onPaneMouseMoved(e.getX(), e.getY(), zoomTarget.getWidth(),
-		// zoomTarget.getHeight());
-		// captureDrawingSize();
-	}
-
 	@FXML
 	void handleLayout(ActionEvent event) {
 		final double duration = GraphVisualiserfx.animateSlow;
 
 		doLayout(duration);
 
-//		String desc = btnLayout.getTooltip().getText() + " [" + currentLayout.name() + "]";
-//
-//		model.addState(desc);
-	}
-
-	@Override
-	public void doLayout(double duration) {
-		callLayout(null, currentLayout,duration);
-	}
-
-	@Override
-	public void doFocusedLayout(VisualNode root, LayoutType layout,double duration) {
-		callLayout(root, layout,duration);
-		currentLayout = layout;
-	}
-
-	private void callLayout(VisualNode root, LayoutType layout,double duration) {
-		int size = jitterProperty.get();
-		double dSize = size;
-		dSize = dSize / 100.0;
-		visualiser.doLayout(root, dSize, layout, btnChildLinks.isSelected(), btnXLinks.isSelected(),
-				tglSideline.isSelected(),duration);
 	}
 
 	@FXML
-	void handleOnDeploy(ActionEvent event) {
-		model.doDeploy();
-	}
-
-	private void updateOpenProjectsMenu(Menu menuOpen) {
-		Map<MenuItem, File> map = new HashMap<>();
-		String cid = null;
-		if (Project.isOpen())
-			cid = Project.getProjectDateTime();
-		menuOpen.getItems().clear();
-		File[] files = Project.getAllProjectPaths();
-		String[] names = Project.extractDisplayNames(files);
-		for (int i = 0; i < files.length; i++) {
-			MenuItem mi = new MenuItem((i + 1) + " " + names[i]);
-			// // Stop the first underscore from being removed - not needed anymore?
-			// // https://bugs.openjdk.java.net/browse/JDK-8095296
-			mi.setMnemonicParsing(false);
-			menuOpen.getItems().add(mi);
-			map.put(mi, files[i]);
-			String id = Project.extractDateTime(files[i]);
-
-			if (Objects.equals(cid, id))
-				mi.setDisable(true);
-			else
-				mi.setDisable(false);
-			mi.setOnAction((e) -> {
-				File file = map.get(e.getSource());
-				openProject(file);
-			});
-		}
+	void handleImport(ActionEvent event) {
+		model.doImport();
 	}
 
 	@FXML
@@ -570,15 +418,250 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				visualiser.onNodeRenamed(root);
 	}
 
-	public void setStage(Stage stage) {
-		this.stage = stage;
+	@FXML
+	void handleOnDeploy(ActionEvent event) {
+		model.doDeploy();
 	}
 
 	@FXML
-	void handleImport(ActionEvent event) {
-		model.doImport();
+	void handlePaneOnMouseClicked(MouseEvent e) {
+		if (newNode != null) {
+			newNode.setPosition(e.getX() / zoomTarget.getWidth(), e.getY() / zoomTarget.getHeight());
+			visualiser.onNewNode(newNode);
+			zoomTarget.setCursor(Cursor.DEFAULT);
+			String desc = "New node [" + newNode.getConfigNode().toShortString() + "]";
+			lastSelectedNode = newNode;
+			newNode = null;
+			initialisePropertySheets();
+			GraphState.setChanged();
+			ConfigGraph.validateGraph();
+
+			model.addState(desc);
+		}
 	}
 
+	@FXML
+	void doRedo(ActionEvent event) {
+		model.restore((MMMemento) Caretaker.succ());
+		setUndoRedoBtns();
+		GraphState.setChanged();
+	}
+
+	@FXML
+	void doUndo(ActionEvent event) {
+		model.restore((MMMemento) Caretaker.prev());
+		setUndoRedoBtns();
+		GraphState.setChanged();
+	}
+
+	@FXML
+	void onSelectAll(ActionEvent event) {
+		visualiser.onSelectAll();
+	}
+
+	@FXML
+	void onAbout(ActionEvent event) {
+		Dialog<ButtonType> dlg = new Dialog<>();
+		dlg.initOwner((Window) Dialogs.owner());
+		dlg.setTitle("About ModelMaker");
+		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
+		HBox content = new HBox();
+		VBox leftContent = new VBox();
+		VBox rightContent = new VBox();
+		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
+		imageView.preserveRatioProperty().set(true);
+		rightContent.getChildren().addAll(imageView, new Label("Three Worlds - M. C. Escher (1955)"));
+		TextFlow textFlow = new TextFlow();
+		textFlow.setPrefWidth(400);
+		textFlow.setTextAlignment(TextAlignment.CENTER);
+		textFlow.setLineSpacing(10);
+		DropShadow dropShadow = new DropShadow();
+		dropShadow.setOffsetX(4);
+		dropShadow.setOffsetY(6);
+		dropShadow.setHeight(5);
+		Text text_1 = new Text("ModelMaker\n");
+		text_1.setEffect(dropShadow);
+		text_1.setFont(Font.font("Helvetica", 30));
+
+		Text text_2 = new Text("\"Though the organisms may claim our primary interest, " + //
+				"when we are trying to think fundamentally, we cannot separate them from their special environment, " + //
+				"with which they form one physical system\"");
+
+		text_2.setFont(Font.font("Helvetica", FontPosture.ITALIC, 12));
+
+		Text text_3 = new Text(" A. G. Tanlsey (1935).\n");
+		text_3.setFont(Font.font("Helvetica", 12));
+
+		textFlow.getChildren().addAll(text_1, text_2, text_3);
+
+		content.getChildren().addAll(rightContent, leftContent);
+		TextArea textArea = new TextArea();
+		Scanner sc = new Scanner(MmController.class.getResourceAsStream("aboutMM.txt"));
+
+		while (sc.hasNext()) {
+			textArea.appendText(sc.nextLine());
+			textArea.appendText("\n");
+		}
+		sc.close();
+
+		textArea.setWrapText(true);
+		textArea.setPrefHeight(400);
+		textArea.setEditable(false);
+		TextFlow authors = new TextFlow();
+		authors.setTextAlignment(TextAlignment.CENTER);
+		authors.getChildren().add(new Text("Authors: J. Gignoux, I. Davies and S. Flint"));
+		leftContent.getChildren().addAll(textFlow, textArea, new Label(), authors);
+
+		dlg.getDialogPane().setContent(content);
+		dlg.getDialogPane().getButtonTypes().addAll(done);
+		// dlg.setResizable(true);
+		textArea.selectPositionCaret(0);
+		textArea.deselect();
+		dlg.showAndWait();
+	}
+	// ---------------FXML End -------------------------
+
+	// ---------------IMMController Start ---------------------
+	@Override
+	public void onProjectClosing() {
+		GraphState.clear();
+		if (visualiser != null)
+			visualiser.close();
+		visualiser = null;
+		nodePropertySheet.getItems().clear();
+		allElementsPropertySheet.getItems().clear();
+		zoomTarget.getChildren().clear();
+		visualGraph = null;
+		lastSelectedNode = null;
+		UserProjectLink.unlinkUserProject();
+		stage.setTitle(DefaultWindowSettings.defaultName());
+		setButtonState();
+		putPreferences();
+	}
+
+	@Override
+	public void onProjectOpened(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+		this.visualGraph = layoutGraph;
+		Cursor oldCursor = setWaitCursor();
+
+		visualiser = new GraphVisualiserfx(visualGraph, //
+				zoomTarget, //
+				nodeRadiusProperty, //
+				btnChildLinks.selectedProperty(), //
+				btnXLinks.selectedProperty(), //
+				tglSideline.selectedProperty(), //
+				fontProperty, this, model);
+
+		final double duration = GraphVisualiserfx.animateFast;
+		visualiser.initialiseView(duration);
+
+		initialisePropertySheets();
+
+		getPreferences();
+
+		setCursor(oldCursor);
+		stage.setTitle(Project.getDisplayName());
+	}
+
+	private VisualNode newNode;
+
+	@Override
+	public void onNewNode(VisualNode node) {
+		zoomTarget.setCursor(Cursor.CROSSHAIR);
+		newNode = node;
+	}
+
+	@Override
+	public void onNewEdge(VisualEdge e) {
+		initialisePropertySheets();
+	}
+
+	@Override
+	public void onEdgeDeleted() {
+		initialisePropertySheets();
+	}
+
+	@Override
+	public void onNodeDeleted() {
+		lastSelectedNode = null;
+		initialisePropertySheets();
+	}
+
+	@Override
+	public void onTreeCollapse() {
+		lastSelectedNode = null;
+		initialisePropertySheets();
+	}
+
+	@Override
+	public void onTreeExpand() {
+		lastSelectedNode = null;
+		initialisePropertySheets();
+	}
+
+	@Override
+	public void doLayout(double duration) {
+		callLayout(null, currentLayout, duration);
+	}
+
+	@Override
+	public void doFocusedLayout(VisualNode root, LayoutType layout, double duration) {
+		callLayout(root, layout, duration);
+		currentLayout = layout;
+	}
+
+	// used only by Visualiser?? Passed by a node onClicked if not for local popup
+	// menu
+	@Override
+	public void onNodeSelected(VisualNode node) {
+		lastSelectedNode = node;
+		fillNodePropertySheet(lastSelectedNode);
+	}
+
+	@Override
+	public void onElementRenamed() {
+		initialisePropertySheets();
+	}
+
+	@Override
+	public void onItemEdit(Object changedItem) {
+		Item item = (Item) changedItem;
+		if (nodePropertySheet.getItems().contains(item))
+			fillGraphPropertySheet();
+		else if (allElementsPropertySheet.getItems().contains(item)) {
+			fillNodePropertySheet(lastSelectedNode);
+
+		}
+	}
+
+	@Override
+	public void setDefaultTitle() {
+		stage.setTitle(DefaultWindowSettings.defaultName());
+
+	}
+
+	@Override
+	public void collapsePredef() {
+		visualiser.collapsePredef();
+
+	}
+
+	@Override
+	public LayoutType getCurrentLayout() {
+		return currentLayout;
+	}
+
+	@Override
+	public void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+		visualGraph = layoutGraph;
+		visualiser.onRollback(layoutGraph);
+		lastSelectedNode = null;
+		initialisePropertySheets();
+	}
+
+	// -------------- IMMController End ---------------------
+
+	// -------------- Preferencable Start ---------------------
 	private static final String mainFrameName = "mainFrame";
 	private static final String mainMaximized = mainFrameName + "_" + "maximized";
 	private static final String scaleX = "_scaleX";
@@ -688,15 +771,200 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-	// not used i think
-	@Override
-	public String getUserProjectPath() {
-		return userProjectPath.get();
+	// -------------- Preferencable End ---------------------
+
+	// -------------- ModelMakerfx Start---------------------
+	public boolean canClose() {
+		return model.canClose();
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 
 	// humm... suspect. Should refer to UserProjectLink
 	public StringProperty getUserProjectPathProperty() {
 		return userProjectPath;
+	}
+
+	// -------------- ModelMakerfx End ---------------------
+
+	// ----------------- ErrorListListener Start ------------
+	@Override
+	public void onStartCheck() {
+		Platform.runLater(() -> {
+			btnDeploy.setDisable(true);
+			btnCheck.setDisable(true);
+			lblChecking.setVisible(true);
+			trafficLight.fillProperty().set(Color.RED);
+
+			textAreaErrorMsgs.clear();
+			lstErrorMsgs.clear();
+		});
+		// Don't know why the trafficLight and disable buttons don't work unless this
+		// method is initiated by the Check button itself.
+	}
+
+	private boolean isValid = false;
+
+	@Override
+	public void onEndCheck(boolean valid) {
+		isValid = valid;
+		Platform.runLater(() -> {
+			btnDeploy.setDisable(false);
+			btnCheck.setDisable(false);
+			lblChecking.setVisible(false);
+			setButtonState();
+		});
+	}
+
+	@Override
+	public void onReceiveMsg(ErrorMessagable msg) {
+		Platform.runLater(() -> {
+			lstErrorMsgs.add(msg);
+			refreshErrorMessages();
+			setButtonState();
+		});
+	}
+
+	// ----------------- ErrorListListener END ------------
+
+	// ----------------- GraphStatetListener Start ------------
+	@Override
+	public void onStateChange(boolean state) {
+		setButtonState();
+	}
+	// ----------------- GraphStatetListener End ------------
+
+	private void buildNewMenu() {
+		Map<MenuItem, LibraryTable> map = new HashMap<>();
+		menuNew.getItems().clear();
+		Menu muTemplates = new Menu("Templates");
+		Menu muTutorials = new Menu("Tutorials");
+		Menu muModels = new Menu("Model Library");
+		menuNew.getItems().addAll(muTemplates, muTutorials, muModels);
+		for (LibraryTable entry : LibraryTable.values()) {
+			MenuItem mi = new MenuItem(entry.displayName());
+			mi.setMnemonicParsing(false);
+			map.put(mi, entry);
+			switch (entry.libraryType()) {
+			case Template: {
+				muTemplates.getItems().add(mi);
+				break;
+			}
+			case Tutorial: {
+				muTutorials.getItems().add(mi);
+				break;
+			}
+			default: {
+				muModels.getItems().add(mi);
+			}
+			}
+
+			mi.setOnAction((e) -> {
+
+				LibraryTable lt = map.get(e.getSource());
+				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
+				TreeGraphDataNode root = libGraph.root();
+				if (root == null || !root.classId().equals(N_ROOT.label())) {
+					String rnames = lt.displayName() + " roots:\n";
+					int i = 0;
+					for (TreeGraphDataNode r : libGraph.roots())
+						rnames += ((++i) + ") " + r.toShortString() + "\n");
+					String title = "Library graph error";
+					String content = "Graphs must have a single root (ref '" + N_ROOT.label() + "').";
+					Dialogs.errorAlert(title, content, rnames);
+					return;
+				}
+
+				if (root.properties().hasProperty(P_MODEL_BUILTBY.key())) {
+					DateTimeFormatter fm = DateTimeFormatter.ofPattern("d MMM uuuu");
+					LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
+					String date = " (" + currentDate.format(fm) + ")";
+					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name") + date);
+				}
+
+				model.doNewProject(libGraph);
+			});
+		}
+
+	}
+
+	private void setFontSize(int size) {
+		this.fontSize = size;
+		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, fontSize));
+		fontProperty.set(Font.font("Verdana", fontSize));
+	}
+
+	private void setNodeRadius(int size) {
+		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, size));
+		nodeRadiusProperty.set(size);
+	}
+
+	private void setJitter(int size) {
+		spinJitter.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 50, size));
+		jitterProperty.set(size);
+	};
+
+	private void verbosityChange(Observable t) {
+		RadioButton rb = (RadioButton) tgArchetype.getSelectedToggle();
+		if (rb == rb1)
+			verbosity = Verbosity.brief;
+		else if (rb == rb2)
+			verbosity = Verbosity.medium;
+		else
+			verbosity = Verbosity.full;
+		refreshErrorMessages();
+	}
+
+	private void refreshErrorMessages() {
+		textAreaErrorMsgs.clear();
+		sortErrors();
+		int count = 0;
+		for (ErrorMessagable msg : lstErrorMsgs) {
+			count++;
+			textAreaErrorMsgs.appendText(count + ". " + getMessageText(msg));
+		}
+
+	}
+
+	private void callLayout(VisualNode root, LayoutType layout, double duration) {
+		int size = jitterProperty.get();
+		double dSize = size;
+		dSize = dSize / 100.0;
+		visualiser.doLayout(root, dSize, layout, btnChildLinks.isSelected(), btnXLinks.isSelected(),
+				tglSideline.isSelected(), duration);
+	}
+
+	private void updateOpenProjectsMenu(Menu menuOpen) {
+		Map<MenuItem, File> map = new HashMap<>();
+		String cid = null;
+		if (Project.isOpen())
+			cid = Project.getProjectDateTime();
+		menuOpen.getItems().clear();
+		File[] files = Project.getAllProjectPaths();
+		String[] names = Project.extractDisplayNames(files);
+		for (int i = 0; i < files.length; i++) {
+			MenuItem mi = new MenuItem((i + 1) + " " + names[i]);
+			// // Stop the first underscore from being removed - not needed anymore?
+			// // https://bugs.openjdk.java.net/browse/JDK-8095296
+			mi.setMnemonicParsing(false);
+			menuOpen.getItems().add(mi);
+			map.put(mi, files[i]);
+			String id = Project.extractDateTime(files[i]);
+
+			if (Objects.equals(cid, id))
+				mi.setDisable(true);
+			else
+				mi.setDisable(false);
+			mi.setOnAction((e) -> {
+				File file = map.get(e.getSource());
+				model.doOpenProject(file);
+				textAreaErrorMsgs.clear();
+				lstErrorMsgs.clear();
+				isValid = false;
+			});
+		}
 	}
 
 	private String getMessageText(ErrorMessagable msg) {
@@ -723,33 +991,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		return t;
 	}
 
-//================== ERROR MSG LISTENER =============
-	@Override
-	public void onStartCheck() {
-		Platform.runLater(() -> {
-			btnDeploy.setDisable(true);
-			btnCheck.setDisable(true);
-			lblChecking.setVisible(true);
-			trafficLight.fillProperty().set(Color.RED);
-
-			textAreaErrorMsgs.clear();
-			lstErrorMsgs.clear();
-		});
-		// Don't know why the trafficLight and disable buttons don't work unless this
-		// method is initiated by the Check button itself.
-	}
-
-	@Override
-	public void onEndCheck(boolean valid) {
-		isValid = valid;
-		Platform.runLater(() -> {
-			btnDeploy.setDisable(false);
-			btnCheck.setDisable(false);
-			lblChecking.setVisible(false);
-			setButtonState();
-		});
-	}
-
 	private void sortErrors() {
 		lstErrorMsgs.sort(new Comparator<ErrorMessagable>() {
 
@@ -760,61 +1001,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			}
 		});
 
-	}
-
-	@Override
-	public void onReceiveMsg(ErrorMessagable msg) {
-		Platform.runLater(() -> {
-			lstErrorMsgs.add(msg);
-			sortErrors();
-			textAreaErrorMsgs.clear();
-			for (ErrorMessagable m : lstErrorMsgs)
-				textAreaErrorMsgs.appendText(getMessageText(m));
-
-			setButtonState();
-		});
-	}
-
-	// ===============================================
-	@Override
-	public void onProjectClosing() {
-		GraphState.clear();
-		if (visualiser != null)
-			visualiser.close();
-		visualiser = null;
-		nodePropertySheet.getItems().clear();
-		allElementsPropertySheet.getItems().clear();
-		zoomTarget.getChildren().clear();
-		visualGraph = null;
-		lastSelectedNode = null;
-		UserProjectLink.unlinkUserProject();
-		stage.setTitle(DefaultWindowSettings.defaultName());
-		setButtonState();
-		putPreferences();
-	}
-
-	@Override
-	public void onProjectOpened(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
-		this.visualGraph = layoutGraph;
-		Cursor oldCursor = setWaitCursor();
-
-		visualiser = new GraphVisualiserfx(visualGraph, //
-				zoomTarget, //
-				nodeRadiusProperty, //
-				btnChildLinks.selectedProperty(), //
-				btnXLinks.selectedProperty(), //
-				tglSideline.selectedProperty(), //
-				fontProperty, this, model);
-
-		final double duration = GraphVisualiserfx.animateFast;
-		visualiser.initialiseView(duration);
-
-		initialisePropertySheets();
-
-		getPreferences();
-
-		setCursor(oldCursor);
-		stage.setTitle(Project.getDisplayName());
 	}
 
 	private IGraphVisualiser visualiser;
@@ -954,65 +1140,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		return result;
 	}
 
-	public boolean canClose() {
-		return model.canClose();
-	}
-
 	private VisualNode lastSelectedNode = null;
-
-	@Override
-	public void onNodeSelected(VisualNode node) {
-		lastSelectedNode = node;
-		fillNodePropertySheet(lastSelectedNode);
-	}
-
-	private VisualNode newNode;
-
-	@Override
-	public void onNewNode(VisualNode node) {
-		zoomTarget.setCursor(Cursor.CROSSHAIR);
-		newNode = node;
-	}
-
-	@FXML
-	void handlePaneOnMouseClicked(MouseEvent e) {
-		if (newNode != null) {
-			newNode.setPosition(e.getX() / zoomTarget.getWidth(), e.getY() / zoomTarget.getHeight());
-			visualiser.onNewNode(newNode);
-			zoomTarget.setCursor(Cursor.DEFAULT);
-			String desc = "New node [" + newNode.getConfigNode().toShortString() + "]";
-			lastSelectedNode = newNode;
-			newNode = null;
-			initialisePropertySheets();
-			GraphState.setChanged();
-			ConfigGraph.validateGraph();
-
-			model.addState(desc);
-		}
-	}
-
-	@Override
-	public void onNodeDeleted() {
-		lastSelectedNode = null;
-		initialisePropertySheets();
-	}
-
-	@Override
-	public void onTreeCollapse() {
-		lastSelectedNode = null;
-		initialisePropertySheets();
-	}
-
-	@Override
-	public void onTreeExpand() {
-		lastSelectedNode = null;
-		initialisePropertySheets();
-	}
-
-	@Override
-	public void onStateChange(boolean state) {
-		setButtonState();
-	}
 
 	private void setUndoRedoBtns() {
 		miRedo.setDisable(!Caretaker.hasSucc());
@@ -1052,7 +1180,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			miRedo.setText("Redo");
 
 		setUndoRedoBtns();
-		
+
 		if (isOpen) {
 			trafficLight.setOpacity(1.0);
 		} else {
@@ -1063,141 +1191,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			trafficLight.fillProperty().set(Color.GREEN);
 		else
 			trafficLight.fillProperty().set(Color.RED);
-	}
-
-	private boolean isValid = false;
-
-	@Override
-	public void onElementRenamed() {
-		initialisePropertySheets();
-	}
-
-	@Override
-	public void onItemEdit(Object changedItem) {
-		Item item = (Item) changedItem;
-		if (nodePropertySheet.getItems().contains(item))
-			fillGraphPropertySheet();
-		else if (allElementsPropertySheet.getItems().contains(item)) {
-			fillNodePropertySheet(lastSelectedNode);
-
-		}
-	}
-
-	@Override
-	public void onNewEdge(VisualEdge e) {
-		initialisePropertySheets();
-	}
-
-	@Override
-	public void onEdgeDeleted() {
-		initialisePropertySheets();
-	}
-
-	@FXML
-	void onAbout(ActionEvent event) {
-		Dialog<ButtonType> dlg = new Dialog<>();
-		dlg.initOwner((Window) Dialogs.owner());
-		dlg.setTitle("About ModelMaker");
-		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
-		HBox content = new HBox();
-		VBox leftContent = new VBox();
-		VBox rightContent = new VBox();
-		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
-		imageView.preserveRatioProperty().set(true);
-		rightContent.getChildren().addAll(imageView, new Label("Three Worlds - M. C. Escher (1955)"));
-		TextFlow textFlow = new TextFlow();
-		textFlow.setPrefWidth(400);
-		textFlow.setTextAlignment(TextAlignment.CENTER);
-		textFlow.setLineSpacing(10);
-		DropShadow dropShadow = new DropShadow();
-		dropShadow.setOffsetX(4);
-		dropShadow.setOffsetY(6);
-		dropShadow.setHeight(5);
-		Text text_1 = new Text("ModelMaker\n");
-		text_1.setEffect(dropShadow);
-		text_1.setFont(Font.font("Helvetica", 30));
-
-		Text text_2 = new Text("\"Though the organisms may claim our primary interest, " + //
-				"when we are trying to think fundamentally, we cannot separate them from their special environment, " + //
-				"with which they form one physical system\"");
-
-		text_2.setFont(Font.font("Helvetica", FontPosture.ITALIC, 12));
-
-		Text text_3 = new Text(" A. G. Tanlsey (1935).\n");
-		text_3.setFont(Font.font("Helvetica", 12));
-
-		textFlow.getChildren().addAll(text_1, text_2, text_3);
-
-		content.getChildren().addAll(rightContent, leftContent);
-		TextArea textArea = new TextArea();
-		Scanner sc = new Scanner(MmController.class.getResourceAsStream("aboutMM.txt"));
-
-		while (sc.hasNext()) {
-			textArea.appendText(sc.nextLine());
-			textArea.appendText("\n");
-		}
-		sc.close();
-
-		textArea.setWrapText(true);
-		textArea.setPrefHeight(400);
-		textArea.setEditable(false);
-		TextFlow authors = new TextFlow();
-		authors.setTextAlignment(TextAlignment.CENTER);
-		authors.getChildren().add(new Text("Authors: J. Gignoux, I. Davies and S. Flint"));
-		leftContent.getChildren().addAll(textFlow, textArea, new Label(), authors);
-
-		dlg.getDialogPane().setContent(content);
-		dlg.getDialogPane().getButtonTypes().addAll(done);
-		// dlg.setResizable(true);
-		textArea.selectPositionCaret(0);
-		textArea.deselect();
-		dlg.showAndWait();
-	}
-
-	@Override
-	public void setDefaultTitle() {
-		stage.setTitle(DefaultWindowSettings.defaultName());
-
-	}
-
-	@Override
-	public void collapsePredef() {
-		visualiser.collapsePredef();
-
-	}
-
-	@FXML
-	void onSelectAll(ActionEvent event) {
-
-		visualiser.onSelectAll();
-
-	}
-
-	@Override
-	public LayoutType getCurrentLayout() {
-		return currentLayout;
-	}
-
-	@FXML
-	void doRedo(ActionEvent event) {
-		model.restore((MMMemento) Caretaker.succ());
-		setUndoRedoBtns();
-		GraphState.setChanged();
-	}
-
-	@FXML
-	void doUndo(ActionEvent event) {
-		model.restore((MMMemento) Caretaker.prev());
-		setUndoRedoBtns();
-		GraphState.setChanged();
-	}
-
-	@Override
-	public void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
-		visualGraph = layoutGraph;
-		visualiser.onRollback(layoutGraph);
-		lastSelectedNode = null;
-		initialisePropertySheets();
 	}
 
 }

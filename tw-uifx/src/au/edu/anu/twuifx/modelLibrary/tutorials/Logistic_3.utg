@@ -75,7 +75,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:19:00 AEST 2020
 		constantClass = java.lang.String(code.sys.Pars)
 		driverClass = java.lang.String(code.sys.Vars)
 		dynamics sim
-			timeLine tmLn
+			timeline tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)

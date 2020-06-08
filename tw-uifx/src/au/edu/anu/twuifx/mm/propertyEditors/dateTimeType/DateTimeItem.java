@@ -37,7 +37,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twcore.ecosystem.dynamics.TimeLine;
+import au.edu.anu.twcore.ecosystem.dynamics.Timeline;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALEdge;
@@ -60,9 +60,9 @@ public class DateTimeItem extends SimpleMMPropertyItem {
 
 	public DateTimeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
 		super(controller,key, element, canEdit, category, description);
-		TimeLine timeline = null;
+		Timeline timeline = null;
 		if (element.classId().equals(N_TIMELINE.label()))
-			timeline = (TimeLine) element;
+			timeline = (Timeline) element;
 		else
 			timeline = findSingleTimeLine();
 		if (timeline != null) {
@@ -85,7 +85,7 @@ public class DateTimeItem extends SimpleMMPropertyItem {
 	}
 
 	@SuppressWarnings("unchecked")
-	private TimeLine findSingleTimeLine() {
+	private Timeline findSingleTimeLine() {
 		// At the moment, this is only possible if there exists ONE timeline connected
 		// to the graph tw root;
 		TreeGraph<TreeGraphDataNode, ALEdge> graph = ConfigGraph.getGraph();
@@ -106,7 +106,7 @@ public class DateTimeItem extends SimpleMMPropertyItem {
 				selectZeroOrOne(hasTheLabel(N_TIMELINE.label())));
 		if (timeline == null)
 			return null;
-		return (TimeLine) timeline;
+		return (Timeline) timeline;
 	}
 
 	@Override
