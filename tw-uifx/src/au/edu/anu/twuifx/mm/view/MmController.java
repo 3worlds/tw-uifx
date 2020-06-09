@@ -442,16 +442,34 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void doRedo(ActionEvent event) {
-		model.restore((MMMemento) Caretaker.succ());
+		// try and recover from a deleted project directory
+		MMMemento m = (MMMemento) Caretaker.succ();
+		if (mementoFilesExist(m)) {
+			model.restore(m);
+			GraphState.setChanged();
+		} else {
+			Caretaker.initialise();
+			model.doSave();
+		}
 		setUndoRedoBtns();
-		GraphState.setChanged();
+	}
+
+	private boolean mementoFilesExist(MMMemento m) {
+		return (m.getState().getFirst().exists() && m.getState().getSecond().exists()
+				&& m.getState().getThird().exists());
 	}
 
 	@FXML
 	void doUndo(ActionEvent event) {
-		model.restore((MMMemento) Caretaker.prev());
+		MMMemento m = (MMMemento) Caretaker.prev();
+		if (mementoFilesExist(m)) {
+			model.restore(m);
+			GraphState.setChanged();
+		} else {
+			Caretaker.initialise();
+			model.doSave();
+		}
 		setUndoRedoBtns();
-		GraphState.setChanged();
 	}
 
 	@FXML

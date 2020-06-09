@@ -1,10 +1,12 @@
 === Tutorial 1: Construct and run a model for the first time
 
-In this tutorial we demonstrate the use of _ModelMaker_ by implementing a simple logistic function as a simulation. This is indeed a complicated way to demonstate a simple function but the purpose here is to avoid been distracted by model complexity and instead focus on the process of model development. 
+In this tutorial we demonstrate the use of _ModelMaker_ by implementing a simple logistic function as a simulation. This is a complicated way to demonstate a simple function which could be done more simply in a spreadsheet. However, the purpose here is to avoid been distracted by model complexity to focus on the process of model development. 
 
-In _3Worlds_, a model is defined by constructing a graph of nodes and edges and setting their property values. The graph constitutes the model specifications. While building the graph, _ModelMaker_ constantly checks that it complies with the _3Worlds Archetype_. The _ModelMaker_ interface guides you through this process by showing what options are currently available at each stage in the graph construction through enabling and disabling options and showing a constatnly undated list of task messages. The graph is both a tree and a graph in that each node has a parent (apart from the root node) and nodes can have additional edges between nodes referred to here as cross-links. The simulation can be run once the graph has been constructed and complies with that archetype.
+In _3Worlds_, a model is defined by constructing a graph of nodes and edges and setting their property values. The graph constitutes the model specifications. While building the graph, _ModelMaker_ constantly checks that these specifications comply with an archetype -  _3Worlds Archetype_. The _ModelMaker_ interface guides you through this process by showing what options are currently available at each stage in the graph construction by enabling and disabling options and showing a constatnly undated list of task messages: edits that need to be done for the specifications to comply with the archetype. 
 
-If you haven't yet read any other_3Worlds_ documentaton, please read "About ModelMaker" from the main menu `Help->About`to get some context.
+The graph is both a tree and a more general directed graph. Because it's a tree, each node has a parent (apart from the root node). Because it's also a directed graph, nodes can have additional edges from one node to another to indicate relationships between nodes. These we refer to here as cross-links. Once the task list is complete, the simulation is ready to run.
+
+If you haven't yet read any other_3Worlds_ documentaton, please read "About ModelMaker" from the main menu `Help->About` to get some context.
 
 ==== Creating a model configuration
 
@@ -12,13 +14,13 @@ If you haven't yet read any other_3Worlds_ documentaton, please read "About Mode
 . Create a new project (`Main menu: Projects->New->Templates->Blank`)
 . When prompted enter `Tut1` (must begin with uppercase). A single node called  `3Worlds:Tut1` now appears centered in the _graph_ window.
 
-This node will be the root of a graph that represents the structure of a model. All nodes are identified with a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is the unique identifier for a node of the given type. A few node types, like the root node, must have names begining with an uppercase letter. These nodes are used to generate Java classes.
+This node will be the root of a graph that represents the structure of a model. All nodes are identified with a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is the unique identifier for a node of the given type. A few node types, of which the root node is one, must have names begining with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
 
-At this stage you can experiment with a few edit operations:
+At this stage you can experiment with a few basic edit operations:
 
-. Move this node around the graph display by dragging it with the left mouse button;
+. Move a node around the graph display by dragging it with the left mouse button;
 
-. Zoom in and out in the graph display window using the mouse wheel while holding down the `ctrl` key (or equivalent on your operating system);
+. Zoom in and out in the graph display window using the mouse wheel while holding down the `ctrl` key (or equivalent on your operating system). The focus of the zoom is provided by the mouse position;
 
 . Change the node and text size with the controls at the bottom of the display; and,
 
@@ -26,7 +28,7 @@ At this stage you can experiment with a few edit operations:
 
 A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing configuration graph is checked against the 3Worlds archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
-At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  One shows properties for the entire graph and the other properties of a single selected node (mouse left-click). It is here that values are entered for the properties of nodes and edges created in the following steps. At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended provide a minimal amount of documentation for this project. By default, the property `build-by` is filled out with your account name and this project's creation date.
+At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph and for a single selected node  (mouse left-click) respectivly. It is here that values are entered for the properties of nodes and edges created in the following steps. At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended provide a minimal amount of documentation for this project. By default, the property `build-by` is filled out with your account name and this project's creation date.
 
 At the bottom of the graph display are a number of controls that will be explained at relevant places in this first tutorial. Float the mouse over these controls to see a hint as to their purpose.
 
@@ -49,18 +51,18 @@ Returning to `ModelMaker`, you will see the project name is displayed in the win
 . *System*: Right-click on the `3worlds:Tut1` node (the root node) and select `new -> system` from the popup menu. You are then prompted for a name for this node. The default name is `sys1`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: `ModelMaker` is asking where you want to place this node. Move to some place within the graph display and left-click the mouse. The `system:sys1` node appears (teal coloured) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. It is thicker at the child end of the line indicating `system:sys1` is a child of `3worlds:Tut1`.
 
 +
-All nodes in the configuration graph are children of some parent except for the root node. You can only create nodes by right-clicking on a parent and making a selection from from the popup menu. The items in this menu vary according to the possibilities allowed by the 3Worlds specifications. This is one of the ways `ModelMaker` ensures that the developing configuration conforms with the specifications and greatly simplifies an otherwise very complex situation. 
+All nodes in the configuration graph are children of some parent except for the root node. You can only create nodes by right-clicking on a parent and making a selection from from the popup menu. The items in this menu vary according to the possibilities allowed by the 3Worlds archetype. This is one way `ModelMaker` ensures that the developing configuration conforms with the archetype and greatly simplifies an otherwise very complex situation. 
 
 +
 The specifications allow more than one `system` node.
 
-. Right-click the root node and create a second `system` as above. The prompt will add an incremented number to the name to make sure the _label:name_ pair remains unique with in the configuration file. You can name a node anything you want (it must be alpha-numeric) but the prompt won't allow duplicate names within the graph.
+. Right-click the root node and create a second `system` as above. The prompt will add an incremented number to the name to make sure the _label:name_ pair remains unique with in the graph. You can name a node anything you want (it must be alpha-numeric) but the prompt won't allow duplicate names.
 
 . We won’t use this second `system` node so either right-click on it and select `Delete node` or undo the last operation: `Edit->Undo 'new node [system.sys2]'`.
 
 The addition of the `system` node has added four more tasks to the task list. Two of these tasks are asking for edges to be added from the `system:sys1` node. However, its not apparent where these nodes are at this stage. 
 
-Even though we started this project from a "Blank" template, a sub-tree has already be added and hidden from view when the project was created. To view this sub-tree, right-click on root node (`3worlds:Tut1`) and select `expand -> predefined:*categories*`.
+Even though we started this project from a "Blank" template, a sub-tree has already be added and hidden from view when the project was created. To view this sub-tree, right-click on root node and select `expand -> predefined:*categories*`.
 
 This sub-tree (all gray nodes) cannot be edited. It is present in all models but can be largely ignored for this tutorial except that we must first connect the new system node to parts of it.
 
@@ -72,11 +74,11 @@ The task list has now updated. The task just completed has gone and an new messa
 
 . Repeat the above steps for the next task `1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*permanent*]`.
 
-The next task is essentially the same thing but expressed slightly differently. Its asking that we connect an edge for the system node to either a node named *individual* or *population*. 
+The next task is essentially the same thing but expressed slightly differently. Its asking that we connect an edge from the system node to either a node named *individual* or *population*. 
 
 . Repeat the above steps and select `New edge->belongsTo->category:*individual*`.
 
-The meaning of these connections will be more apparent when developing more complex models. We can say here that _3Worlds_ handles hierarchical systems and our single equation is understood as an "individual" simply because it is a single entity not made of parts. In a more complex model, biological and physical entities can be modelled as a population of parts.(*???*)
+The meaning of these connections will be more apparent when developing more complex models. See the (*REF* for more details).
 
 We've now finished with the `predefined` sub-tree and can hide it again to simplify the display.
 
@@ -84,38 +86,83 @@ We've now finished with the `predefined` sub-tree and can hide it again to simpl
 
 We now continue addressing tasks associated with the system node. These are to create the `structure` and `dynamics` sub-trees.
 
-. *Dynamics*: In this sub-tree we create, in order, nodes called `timeLine`,`timer`, `process`, `function` and `dataTracker`. We will assume the default name is excepted in every case unless otherwise noted.
+. *Dynamics*: In this sub-tree we create, in order, nodes called `timeLine`,`timer`, `process`, `function` and `dataTracker`. We will assume the default name is accepted in every case unless otherwise noted.
 
 . Create a `dynamics` node as a child of `system:sys1`. All nodes that are children of `dynamics` are coloured lime green.
 
-. Create a `timeline` from the `dynamics` node. The timeline defines the time scale type for the simulation. In the properties editor, the drop down list for the 'tmln1:scale` property shows ten differnt types are available: all of them exact subdivisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial.
+. Create a `timeline` from the `dynamics` node. The timeline defines the time scale type for the simulation. In the properties editor, the drop down list for the 'tmln1#scale` property shows ten differnt types are available: all of them exact subdivisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial.
 
-. Create a 'timer' node (child of timeline). Here an extra prompt appears asking for the class of the timer: {ClockTimer, EventTimer, ScenarioTimer}. Select `ClockTimer`. This class of timer increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularites such as leap years are managed. There is now a new type of task indicating a property value for the new timer is incorrect.
+. Create a 'timer' node (child of timeline). Here an extra prompt appears asking for the class of the timer: {`ClockTimer`, `EventTime`r, `ScenarioTimer`}. Select `ClockTimer`. This class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularites such as leap years are managed. There is now a new type of task indicating a property value for the new timer is incorrect.
 
-. In the property editor, change both `tmr1:dt` and `tmr1:nTimeUnits` to 1. `dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types avaiable from microseconds to millennia. The current default value of `UNSPECIFIED` if fine for this tutorial.
+. In the property editor, change both `tmr1#dt` and `tmr1#nTimeUnits` to 1. `dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types avaiable from microseconds to millennia. The current default value of `UNSPECIFIED` is fine for this tutorial.
 
 . Create a process node as child of `timer:tmr1`. A process is a set of computions acting on model entities. These entities are defined in the `stucture` sub-tree discussed below. Processes can be composed of any number of functions of ten different types. We need just one function to implement the logistic equation.
 
-. Create a function node as a child of `process:p1`. After naming the function a prompt appears for the funtion type. Select the first option `ChangeState`. You cannot change the function type after the node is created. If you've made a mistake, delete the node and recreate it.
+. Create a function node as a child of `process:p1`. After naming the function a prompt appears for the funtion type. Select the first option `ChangeState`. You cannot change the function type after the node is created. If you've made a mistake, delete the node and recreate it. The name of a function node must start with an uppercase letter. Functions directly translate into Java classes which, by convention, begin with an uppercase letter.
 
-The logistic equation we're going to implement is x(t+1) = rx(t)/(1-x(t). To view the value of x over time we use a dataTracker connected to `process:p1`. 
- 
+The logistic equation we're going to implement is x(t+1) = rx(t)(1-x(t). To view the value of x we use a dataTracker connected to `process:p1`. 
 
 . Create a `dataTracker` node as a child of `process:p1`. _x is a scalar number so when prompted for the dataTracker type, select DM0 (zero dimensions).
 
-Before creating the entity to function operates on we should define the model's data: in this case it is simply r and x.
+_ModelMaker_ interfaces with Integrated Development Environments (IDE) such as _Eclipse_  to write code for these functions. In this tutorial, the situation is simple enough that we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
 
-. Select the root node of the graph and create a dataDefinition node.
+. Create a `snippet` node as a child of `function:F1`. In the property editor, locate the `snp1#code` property, click the edit button (`...`) and enter the following text:
+`focalDrv.x = r*x*(1-x);`
 
-. Create record node as a child of `dataDefinition:dDef` and name it `par`.
+Before creating the entity for the function to operate on, we should define the model's data: in this case it is simply r and x.
 
-. Create a field node as child of `record:par` and name it `r` and select its type a `Double`.
+. Select the root node of the graph and create a `dataDefinition` node.
 
-. Create another record as child of `dataDefinition:dDef` and name it `var`.
+. Create `record` node as a child of `dataDefinition:dDef` and name it `par`.
 
-. Create a field node as child of `record:var` and name it `x` and select the type `Double`.
+. Create a `field` node as child of `record:par` and name it `r` and select its type as `Double`.
 
-This is all the data we need to define. To arrange the display in an orderly way click the `L` at the bottom of the graph dispay.
+. Create another `record` as child of `dataDefinition:dDef` and name it `var`.
+
+. Create a `field` node as child of `record:var` and name it `x` and select the type `Double`.
+
+We can now connect the dataTracker to this field.
+
+. From the `dataTracker` node, create an edge `trackField -> field:x`.
+
+This is all the data we need to define. We can now deal with some of the simpler tasks before finishing off with the `structure` sub-tree of the `system`. These are the experimental design and the user interface.
+
+. From the root node create an `experiment` node.
+
+. From the `experiment:expt` node create a `design` node and choose `Type` when prompted. The default type is `SingleRun`.
+
+
+For the user interface of the simulation model, we need some control to start/stop and pause simulations (a controller) and a time series chart of `x`. These nodes are collectivily called `widgets`. The user interface is organised into a toolbar at the top, a status bar at the bottom and any number of tabs containing widgets. We'll put the controller in the toobar and the time series chart in a tab.
+
+. Create a `userInterface` node from the root node.
+
+. Create a `top` noder from the `userInterface:gui` node.
+
+. Create a 'tab' node from the  `userInterface:gui` node.
+
+. Create a `widget` node from the `top:top` node, name it `ctrl` and select `SimpleControlWidget` from the drop-down list.
+
+. Create a 'widget' node from the 'tab:tab1` node, name it `srsx` and select `SimpleTimeSeriesWidget` from the drop-down list.
+
+. Create a `trackSeries` edge from `widget:srsx` to `dataTracker:trk1`. This connects the srsx widget to the `x` variable through the intervening data tracker. Data trackers work in an analogous way to real data trackers in the field. They track some environmental variable and can produce some statistical treatment of the raw data. 
+
+You can tidy up the graph by pressing the `L` button at the bottom of the graph display.
+
+Finally we need to build the `structure` sub-tree. 
+
+. Do task number 3 in the task list: `3. [Node] Add node [structure:] to 'system:sys1'.` to create the root of the structure sub-tree.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -147,7 +194,7 @@ We now have a minimum set of children of the configuration root. You can delete,
 ====
 At the bottom of the graph display is a set of controls:
 
-. The `L` button re-applies the current graph layout algorithm. The default layout function (`OrderedTree`) displays children from top to bottom in alphabetical order. The layout will not be applied to any nodes not connected to the graph root (nodes that have become isolated during editing). You can choose differnt layout methods from a node's local menu. There are 5 layout algoritms - three are specific to graphs with a single tree root and two a two are general "Spring" based layouts that make no assumption about tree structures. If a tree algorithm is chosen, the selecdted node becomes the root of the tree in the display. This does not change the underlying tree structure of the configuration file. 
+. The `L` button re-applies the current graph layout algorithm. The default layout function (`OrderedTree`) displays children from top to bottom in alphabetical order. The layout will not be applied to any nodes not connected to the graph root (nodes that have become isolated during editing). You can choose differnt layout methods from a node's local menu. There are 5 layout algoritms - three are specific to graphs with a single tree root and two a two are general "Spring" based layouts that make no assumption about tree structures. If a tree algorithm is chosen, the selected node becomes the root of the tree in the display. This does not change the underlying tree structure of the configuration file. 
 
 . The `X` shows/hides the cross-link lines. As the graph becomes more crowded, you may want to hide these for clarity. 
 
