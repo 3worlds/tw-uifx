@@ -115,7 +115,7 @@ public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVe
 		sortList.sort(new Comparator<VisualNode>() {
 			@Override
 			public int compare(VisualNode o1, VisualNode o2) {
-				return o1.getDisplayText(false).compareTo(o2.getDisplayText(false));
+				return o1.getDisplayText().compareTo(o2.getDisplayText());
 			}
 		});
 		for (VisualNode nChild : sortList) {

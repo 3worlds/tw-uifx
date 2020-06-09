@@ -710,13 +710,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onNodeRenamed(VisualNode vNode) {
 		Text text = (Text) vNode.getText();
-		text.setText(vNode.getDisplayText(false));
+		text.setText(vNode.getDisplayText());
 	}
 
 	@Override
 	public void onEdgeRenamed(VisualEdge vEdge) {
 		Text text = (Text) vEdge.getText();
-		text.setText(vEdge.getDisplayText(false));
+		text.setText(vEdge.getDisplayText());
 	}
 
 	private VisualNode getTWRoot() {
