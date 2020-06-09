@@ -1,12 +1,12 @@
 === Tutorial 1: Construct and run a model for the first time
 
-In this tutorial we demonstrate the use of _ModelMaker_ by implementing a simple logistic function as a simulation. This is a complicated way to demonstate a simple function which could be done more simply in a spreadsheet. However, the purpose here is to avoid been distracted by model complexity to focus on the process of model development. 
+In this tutorial we introduce _ModelMaker_ by implementing a simple logistic function as a simulation. As a way of looking at the behaviour of a simple equation, this is quite elaborate approach but our aim is to focus on the use of _ModelMaker_ without the distraction of a complex model.
 
-In _3Worlds_, a model is defined by constructing a graph of nodes and edges and setting their property values. The graph constitutes the model specifications. While building the graph, _ModelMaker_ constantly checks that these specifications comply with an archetype -  _3Worlds Archetype_. The _ModelMaker_ interface guides you through this process by showing what options are currently available at each stage in the graph construction by enabling and disabling options and showing a constatnly undated list of task messages: edits that need to be done for the specifications to comply with the archetype. 
+In _3Worlds_, a simulation model is defined by constructing a graph of nodes and edges and setting their property values. The nodes represent elements of interest in the model and the edges represent the relationships between them. The graph constitutes the model specifications and once complete, can be run. As you assemble the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an archetype -  _3Worlds Archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph assembly and providing a constantly unpdated list of tasks requiring attention for the specifications to be compliant with the archetype. 
 
-The graph is both a tree and a more general directed graph. Because it's a tree, each node has a parent (apart from the root node). Because it's also a directed graph, nodes can have additional edges from one node to another to indicate relationships between nodes. These we refer to here as cross-links. Once the task list is complete, the simulation is ready to run.
+The graph is both a tree and a directed graph. Each node has a parent (apart from the root node) and nodes can have additional edges from one node to another to indicate relationships between nodes. These we refer to as cross-links. Once the task list is complete, the simulation is ready to run.
 
-If you haven't yet read any other_3Worlds_ documentaton, please read "About ModelMaker" from the main menu `Help->About` to get some context.
+If you haven't yet read any other_3Worlds_ documentaton, reading "About ModelMaker" from the main menu `Help->About` will provide some prelimonary context.
 
 ==== Creating a model configuration
 
@@ -14,7 +14,7 @@ If you haven't yet read any other_3Worlds_ documentaton, please read "About Mode
 . Create a new project (`Main menu: Projects->New->Templates->Blank`)
 . When prompted enter `Tut1` (must begin with uppercase). A single node called  `3Worlds:Tut1` now appears centered in the _graph_ window.
 
-This node will be the root of a graph that represents the structure of a model. All nodes are identified with a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is the unique identifier for a node of the given type. A few node types, of which the root node is one, must have names begining with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
+This node will be the root of a graph that defines the model. All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is the unique identifier for a node of the given type. A few node types, of which the root node is one, must have names begining with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
 
 At this stage you can experiment with a few basic edit operations:
 
@@ -26,7 +26,7 @@ At this stage you can experiment with a few basic edit operations:
 
 . See available edit options for this particular node by right-clicking on it to display a local popup menu.
 
-A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing configuration graph is checked against the 3Worlds archetype.  A check takes place in the background every time the graph structure or its properties change. 
+A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the _3Worlds archetype_.  A check takes place in the background every time the graph structure or its properties change. 
 
 At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph and for a single selected node  (mouse left-click) respectivly. It is here that values are entered for the properties of nodes and edges created in the following steps. At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended provide a minimal amount of documentation for this project. By default, the property `build-by` is filled out with your account name and this project's creation date.
 
