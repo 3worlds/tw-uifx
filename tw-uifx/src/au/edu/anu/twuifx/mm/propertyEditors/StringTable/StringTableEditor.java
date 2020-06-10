@@ -62,7 +62,6 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		view = this.getEditor();
 		dtItem = (StringTableItem) this.getProperty();
 
-		// we need to find the timeline to create the meta-data for time editing
 		view.setOnAction(e -> onAction());
 	}
 
