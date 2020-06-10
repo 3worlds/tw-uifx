@@ -169,42 +169,42 @@ public class RunTimeData {
 
 	@SuppressWarnings("unchecked")
 	public static void dumpGraphState(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
-		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(configGraph.root().getChildren(),
-				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
-		for (TreeGraphDataNode system : systems) {
-			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
-					selectOne(hasTheLabel(N_DYNAMICS.label())));
-			TreeNode st = (TreeNode) get(system.getChildren(), selectOne(hasTheLabel(N_STRUCTURE.label())));
-			List<ComponentType> cts = (List<ComponentType>) get(st.getChildren(),
-					selectOneOrMany(hasTheLabel(N_COMPONENTTYPE.label())));
-			for (ComponentType ct : cts) {
-				ct.categoryId();
-				for (SystemFactory sf : ct.getFactories().values()) {
-					System.out.println("FACTORY: " + system.id() + ":" + ct.categoryId() + ":" + ct.id());
-					// NB side-effects: increments instance count MAX 2^31-1 LONG : 2^63-1
-					// Does NOT add to the factory graph - there is none
-					System.out.println("example instance: " + sf.newInstance());
-				}
-			}
-			for (Simulator sim : simNode.getSimulators()) {
-				ComponentContainer community = sim.community();
-
-				int count = 0;
-				System.out.println("STATE");
-				for (SystemComponent sc : community.allItems()) {
-					if (count <= 10)
-						System.out.println(sc);
-					count++;
-				}
-				if (count > 10)
-					System.out.println("... and " + (count - 10) + " other(s).");
-
-				System.out.println("CONTAINERS");
-				printContainer(community);
-
-			}
-		}
-		System.out.println("----------------- END --------------------------");
+//		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(configGraph.root().getChildren(),
+//				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
+//		for (TreeGraphDataNode system : systems) {
+//			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
+//					selectOne(hasTheLabel(N_DYNAMICS.label())));
+//			TreeNode st = (TreeNode) get(system.getChildren(), selectZeroOrOne(hasTheLabel(N_STRUCTURE.label())));
+//			List<ComponentType> cts = (List<ComponentType>) get(st.getChildren(),
+//					selectOneOrMany(hasTheLabel(N_COMPONENTTYPE.label())));
+//			for (ComponentType ct : cts) {
+//				ct.categoryId();
+//				for (SystemFactory sf : ct.getFactories().values()) {
+//					System.out.println("FACTORY: " + system.id() + ":" + ct.categoryId() + ":" + ct.id());
+//					// NB side-effects: increments instance count MAX 2^31-1 LONG : 2^63-1
+//					// Does NOT add to the factory graph - there is none
+//					System.out.println("example instance: " + sf.newInstance());
+//				}
+//			}
+//			for (Simulator sim : simNode.getSimulators()) {
+//				ComponentContainer community = sim.community();
+//
+//				int count = 0;
+//				System.out.println("STATE");
+//				for (SystemComponent sc : community.allItems()) {
+//					if (count <= 10)
+//						System.out.println(sc);
+//					count++;
+//				}
+//				if (count > 10)
+//					System.out.println("... and " + (count - 10) + " other(s).");
+//
+//				System.out.println("CONTAINERS");
+//				printContainer(community);
+//
+//			}
+//		}
+//		System.out.println("----------------- END --------------------------");
 	}
 
 	private static void printContainer(ComponentContainer container) {

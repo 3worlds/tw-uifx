@@ -61,6 +61,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -314,11 +315,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		});
 
-		btnLayout.setTooltip(new Tooltip("Re-apply layout"));
-		btnXLinks.setTooltip(new Tooltip("Show/hide cross-links"));
-		btnChildLinks.setTooltip(new Tooltip("Show/hide parent-child edges"));
-		btnSelectAll.setTooltip(new Tooltip("Show all nodes"));
-		tglSideline.setTooltip(new Tooltip("Move isolated nodes aside"));
+		btnLayout.setTooltip(getFastToolTip("Re-apply layout"));
+		btnXLinks.setTooltip(getFastToolTip("Show/hide cross-links"));
+		btnChildLinks.setTooltip(getFastToolTip("Show/hide parent-child edges"));
+		btnSelectAll.setTooltip(getFastToolTip("Show all nodes"));
+		tglSideline.setTooltip(getFastToolTip("Move isolated nodes aside"));
 
 		/** Set a handler to refresh the Open menu items when selected */
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
@@ -345,6 +346,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		// Setup zooming from the graph display pane (zoomTarget)
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
+	}
+	private Tooltip getFastToolTip(String text) {
+		Tooltip result =new Tooltip(text);
+		result.setShowDelay(Duration.millis(200));
+		result.setHideDelay(Duration.millis(200));
+		return result;
 	}
 
 	@FXML

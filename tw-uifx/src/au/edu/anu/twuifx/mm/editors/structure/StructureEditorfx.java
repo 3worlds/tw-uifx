@@ -122,9 +122,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (Tuple<String, VisualNode, SimpleDataTreeNode> p : filteredEdgeSpecs) {
 					boolean reserved = ConfigurationReservedEdgeLabels.isPredefined(p.getFirst());
 					if (!reserved) {
-						MenuItem mi = MenuLabels.addMenuItem(mu,
-								p.getFirst() + "->" + p.getSecond().getDisplayText());
-						if (ConfigurationReservedNodeId.isPredefined(p.getSecond().id()))
+						MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().getDisplayText());
+						if (ConfigurationReservedNodeId.isPredefined(p.getSecond().id())
+								&& ConfigurationReservedNodeId.isPredefined(editableNode.cClassId()))
 							mi.setDisable(true);
 						mi.setOnAction((e) -> {
 
@@ -277,9 +277,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (VisualEdge edge : editableNode.getOutEdges()) {
 					VisualNode vn = (VisualNode) edge.endNode();
 
-					MenuItem mi = MenuLabels.addMenuItem(mu,
-							edge.getDisplayText() + "->" + vn.getDisplayText());
-					if (ConfigurationReservedNodeId.isPredefined(vn.id()))
+					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText() + "->" + vn.getDisplayText());
+					if (ConfigurationReservedNodeId.isPredefined(vn.id())
+							&& ConfigurationReservedNodeId.isPredefined(editableNode.cClassId()))
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
 
@@ -360,8 +360,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (VisualEdge edge : editableNode.getOutEdges()) {
 					VisualNode vn = (VisualNode) edge.endNode();
 					if (!vn.isPredefined() && !editableNode.isPredefined()) {
-						MenuItem mi = MenuLabels.addMenuItem(mu,
-								edge.getDisplayText() + "->" + vn.getDisplayText());
+						MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText() + "->" + vn.getDisplayText());
 						mi.setOnAction((e) -> {
 							String desc = MenuLabels.ML_RENAME_EDGE.label() + " ["
 									+ edge.getConfigEdge().toShortString() + "]";

@@ -2,19 +2,19 @@
 
 In this tutorial we introduce _ModelMaker_ by implementing a simple logistic function as a simulation. As a way of looking at the behaviour of a simple equation, this is quite elaborate approach but our aim is to focus on the use of _ModelMaker_ without the distraction of a complex model.
 
-In _3Worlds_, a simulation model is defined by constructing a graph of nodes and edges and setting their property values. The nodes represent elements of interest in the model and the edges represent the relationships between them. The graph constitutes the model specifications and once complete, can be run. As you assemble the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an archetype -  _3Worlds Archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph assembly and providing a constantly unpdated list of tasks requiring attention for the specifications to be compliant with the archetype. 
+In _3Worlds_, a simulation model is defined by constructing a graph of nodes and edges and setting their property values. The nodes represent elements of interest in the model and the edges represent the relationships between them. The graph constitutes the model specifications and once complete, can be run. As you assemble the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an archetype -  _3Worlds Archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph assembly and providing an updated list of tasks requiring attention for the specifications to be compliant with the archetype. The over-arching purpose of this approach is that because any two models developed in this way are guarenteed to comply with the archetype, model comparison studies can proceed on much firmer ground as the differences between them are more apparent when specifications are compared. In short, arbitrary models need no longer have arbitrary designs.
 
 The graph is both a tree and a directed graph. Each node has a parent (apart from the root node) and nodes can have additional edges from one node to another to indicate relationships between nodes. These we refer to as cross-links. Once the task list is complete, the simulation is ready to run.
 
-If you haven't yet read any other_3Worlds_ documentaton, reading "About ModelMaker" from the main menu `Help->About` will provide some prelimonary context.
+If you haven't yet read any other_3Worlds_ documentation, reading "About ModelMaker" from the main menu `Help->About` will provide some preliminary context.
 
 ==== Creating a model configuration
 
 . Start `ModelMaker`.
 . Create a new project (`Main menu: Projects->New->Templates->Blank`)
-. When prompted enter `Tut1` (must begin with uppercase). A single node called  `3Worlds:Tut1` now appears centered in the _graph_ window.
+. When prompted enter `Tut1` (must begin with uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _graph_ window.
 
-This node will be the root of a graph that defines the model. All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is the unique identifier for a node of the given type. A few node types, of which the root node is one, must have names begining with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
+This node will be the root of a graph that defines the model. All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is the unique identifier for a node of the given type. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
 
 At this stage you can experiment with a few basic edit operations:
 
@@ -28,31 +28,31 @@ At this stage you can experiment with a few basic edit operations:
 
 A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the _3Worlds archetype_.  A check takes place in the background every time the graph structure or its properties change. 
 
-At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph and for a single selected node  (mouse left-click) respectivly. It is here that values are entered for the properties of nodes and edges created in the following steps. At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended provide a minimal amount of documentation for this project. By default, the property `build-by` is filled out with your account name and this project's creation date.
+At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph and for a single selected node (mouse left-click) respectively. It is here that values are entered for the properties of nodes and edges created in the following steps. At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended provide a minimal amount of documentation for this project. By default, the property `build-by` is filled out with your computer login name and this project's creation date.
 
-At the bottom of the graph display are a number of controls that will be explained at relevant places in this first tutorial. Float the mouse over these controls to see a hint as to their purpose.
+At the bottom of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.
 
 All projects are located within the 3Worlds root directory called `.3w`. The dot indicates it’s a hidden directory (*WHY*). To see these files you may need to do what ever is required by your operating system to show hidden files. 
 
-Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project directory begins with the key word `project` followed by the name of the project you entered (`Tut1` in this case) and the the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to overwrite a project inadvertantly. 
+Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project directory begins with the key word `project` followed by the name of the project you entered (`Tut1` in this case) and the the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to overwrite a project inadvertently. 
 
 Inside this directory are a number of text files:
 
 . `Tut1.utg` is the model configuration graph we are constructing;
 . `layout.utg` contains information used to display the graph;
 . `MM.xml` contains the session's preference settings.
-. `__StateA1` and similarly named files are temporary rollback files to support the program's undo/redo editing operations. These files are created during a session and deleted when the session ends.  
+. `__StateA1` and sequences of similarly named files are temporary files to support the program's undo/redo editing operations. These files are created during a session and deleted when the session ends.  
 
-All these files are text files and you can open them with a simple text editor. However, _you should never need to edit them and it is likely to lead to *problems* for your project if you do_. You can safely delete project directories at any time if you wish. If a project directory is deleted for the currently open session, all will be recreated automatically apart from the rollback data.(*TODO CHECK FOR ROLLBACK FILES*)
+All these files are text files and you can open them with a simple text editor. However, _you should never need to edit them and it is likely to lead to *problems* for your project if you do_. You can safely delete project directories at any time if you wish. If a project directory is deleted for the currently open session, all will be recreated automatically apart from the rollback data.
 
-Returning to `ModelMaker`, you will see the project name is displayed in the window title along with the creation date. The task list currently shows four nodes are required. This list can be dealt with in any order but for now we will first add a `system` node. The `system` node forms the root of a sub-tree that defines the struture and dynamics of the modelled system. Other sub-trees deal with topics such as designing the user interface, the simulation experiment and the definition of the data used to geneate the software for the simulation model. 
+Returning to `ModelMaker`, you will see the project name is displayed in the window title along with the creation date. The task list currently shows four nodes are required. This list can be dealt with in any order but for now we will first add a `system` node. The `system` node forms the root of a sub-tree that defines the structure and dynamics of the modelled system. Other sub-trees deal with topics such as designing the user interface, the simulation experiment and the definition of data types used to generate the software for the simulation model. 
 
 [start=4]
-. *System*: Right-click on the `3worlds:Tut1` node (the root node) and select `new -> system` from the popup menu. You are then prompted for a name for this node. The default name is `sys1`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: `ModelMaker` is asking where you want to place this node. Move to some place within the graph display and left-click the mouse. The `system:sys1` node appears (teal coloured) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. It is thicker at the child end of the line indicating `system:sys1` is a child of `3worlds:Tut1`.
+. *System*: Right-click on the `3worlds:Tut1` node (the root node) and select `new -> system` from the popup menu. You are then prompted for a name for this node. The default name is `sys1`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: `ModelMaker` is asking where you want to place this node. Move to some place within the graph display and left-click the mouse. The `system:sys1` node appears (teal coloured) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. These lines are thicker at the child end of the line indicating `system:sys1` is a child of `3worlds:Tut1`.
 
 +
-All nodes in the configuration graph are children of some parent except for the root node. You can only create nodes by right-clicking on a parent and making a selection from from the popup menu. The items in this menu vary according to the possibilities allowed by the 3Worlds archetype. This is one way `ModelMaker` ensures that the developing configuration conforms with the archetype and greatly simplifies an otherwise very complex situation. 
-
+All nodes in the configuration graph are children of some parent except, of course, the root node. You can only create nodes by right-clicking on a parent and making a selection from of possible child nodes from the popup menu. The items in this menu vary according to the possibilities allowed by the 3Worlds archetype. This is one way `ModelMaker` ensures that the developing configuration conforms with the archetype and greatly simplifies an otherwise very complex situation.
+ 
 +
 The specifications allow more than one `system` node.
 
@@ -60,15 +60,15 @@ The specifications allow more than one `system` node.
 
 . We won’t use this second `system` node so either right-click on it and select `Delete node` or undo the last operation: `Edit->Undo 'new node [system.sys2]'`.
 
-The addition of the `system` node has added four more tasks to the task list. Two of these tasks are asking for edges to be added from the `system:sys1` node. However, its not apparent where these nodes are at this stage. 
+The addition of the `system` node has added three more tasks to the task list. Two of these tasks are asking for edges to be added from the `system:sys1` node. However, its not apparent where these nodes are at this stage. 
 
-Even though we started this project from a "Blank" template, a sub-tree has already be added and hidden from view when the project was created. To view this sub-tree, right-click on root node and select `expand -> predefined:*categories*`.
+Even though we started this project from a "Blank" template, a sub-tree has already been added and hidden from view when the project was created. To view this sub-tree, right-click on root node and select `expand -> predefined:*categories*`.
 
-This sub-tree (all gray nodes) cannot be edited. It is present in all models but can be largely ignored for this tutorial except that we must first connect the new system node to parts of it.
+This sub-tree (all gray nodes) cannot be edited except for adding edges to or from nodes outside the tree. It's present in all models but can be largely ignored for this tutorial except that we must first connect the new system node to parts of it. The meaning of these connections will be more apparent when developing more complex models later. See the (*REF* for more details).
 
 The first task asks that we create an edge from the system node to something called the `*Arena*` (`1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*arena*]`).
 
-. Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*arena*` and accept the default name for this edge.  A red cross-link line then appears between these two nodes with the line thicker at the end node. All cross-link lines are red and all parent-child lines are green.
+. Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*arena*` and accept the default name for this edge.  A red cross-link line then appears between these two nodes with the line thicker at the end node. All cross-link lines are red and all parent-child lines are green. You can show or hide these types of lines using the `X` or `<` toggle buttons at the bottom of the graph display.
 
 The task list has now updated. The task just completed has gone and an new message indicating that the configuration is unsaved has appeared. Press `ctrl-S` to save.
 
@@ -78,35 +78,34 @@ The next task is essentially the same thing but expressed slightly differently. 
 
 . Repeat the above steps and select `New edge->belongsTo->category:*individual*`.
 
-The meaning of these connections will be more apparent when developing more complex models. See the (*REF* for more details).
 
 We've now finished with the `predefined` sub-tree and can hide it again to simplify the display.
 
 . Right-click the root node and select `Collapse->predefined:*categories*. 
 
-We now continue addressing tasks associated with the system node. These are to create the `structure` and `dynamics` sub-trees.
+We now continue with the task associated with the system node. This is to create the `dynamics` sub-tree. In this simple model, We don't need to create a `structure` sub-tree. The need for that has been dealt with by the connections we just made to the `predefined` sub-tree. 
 
-. *Dynamics*: In this sub-tree we create, in order, nodes called `timeLine`,`timer`, `process`, `function` and `dataTracker`. We will assume the default name is accepted in every case unless otherwise noted.
+. *Dynamics*: In this sub-tree we create, in order, nodes called `timeLine`,`timer`, `process`, `function` and `dataTracker`. To avoid confusion in what follows, accept the default names unless otherwise noted.
 
 . Create a `dynamics` node as a child of `system:sys1`. All nodes that are children of `dynamics` are coloured lime green.
 
-. Create a `timeline` from the `dynamics` node. The timeline defines the time scale type for the simulation. In the properties editor, the drop down list for the 'tmln1#scale` property shows ten differnt types are available: all of them exact subdivisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial.
+. From the dynamics node create a `timeline` node. The timeline defines the time scale type for the simulation. In the properties editor, the drop down list for the 'tmln1#scale` property shows ten differnt types are available: all of them exact subdivisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial.
 
-. Create a 'timer' node (child of timeline). Here an extra prompt appears asking for the class of the timer: {`ClockTimer`, `EventTime`r, `ScenarioTimer`}. Select `ClockTimer`. This class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularites such as leap years are managed. There is now a new type of task indicating a property value for the new timer is incorrect.
+. Create a 'timer' node (child of timeline). Here an extra prompt appears asking for the class of the timer: {`ClockTimer`, `EventTime`r, `ScenarioTimer`}. Select `ClockTimer`. This class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularites such as leap years are managed. There is now a new type of task indicating a property value for the new timer is incorrect :`5. [Property] ['[Property:dt=0]' does not satisfy '[Property 'dt=0' must be within [1.0; 9.223372036854776E18].]']`. This just means the value of `dt` must be >= 1.
 
 . In the property editor, change both `tmr1#dt` and `tmr1#nTimeUnits` to 1. `dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types avaiable from microseconds to millennia. The current default value of `UNSPECIFIED` is fine for this tutorial.
 
-. Create a process node as child of `timer:tmr1`. A process is a set of computions acting on model entities. These entities are defined in the `stucture` sub-tree discussed below. Processes can be composed of any number of functions of ten different types. We need just one function to implement the logistic equation.
+. Create a process node as child of `timer:tmr1`. A process is a set of computions acting on model entities. These entities are defined in either the `predefined` or `stucture` sub-tree (the latter not being needed). Processes can be composed of any number of functions of ten different types. We need just one function to implement the logistic equation.
 
-. Create a function node as a child of `process:p1`. After naming the function a prompt appears for the funtion type. Select the first option `ChangeState`. You cannot change the function type after the node is created. If you've made a mistake, delete the node and recreate it. The name of a function node must start with an uppercase letter. Functions directly translate into Java classes which, by convention, begin with an uppercase letter.
+. Create a function node as a child of `process:p1`. Name it "Chaos" as this logistic equation can have interesting chaotic behaviour. After naming the function, a prompt appears for the funtion type. Select the first option `ChangeState`. The function type can't be changedafter the node is created. If you've made a mistake, delete the node (or "undo") and recreate it. The name of a function node must start with an uppercase letter. Functions directly translate into Java classes which, by convention, begin with an uppercase letter.
 
-The logistic equation we're going to implement is x(t+1) = rx(t)(1-x(t). To view the value of x we use a dataTracker connected to `process:p1`. 
+The equation we're going to implement is x(t+1) = rx(t)(1-x(t). To view the value of x we use a dataTracker connected to `process:p1`. 
 
-. Create a `dataTracker` node as a child of `process:p1`. _x is a scalar number so when prompted for the dataTracker type, select DM0 (zero dimensions).
+. Create a `dataTracker` node as a child of `process:p1`. _x is a scalar number so when prompted for the dataTracker type, select `dataTrackerD0` (zero dimensions).
 
-_ModelMaker_ interfaces with Integrated Development Environments (IDE) such as _Eclipse_  to write code for these functions. In this tutorial, the situation is simple enough that we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
+_ModelMaker_ interfaces with Integrated Development Environments (IDE) such as _Eclipse_  to write code for these functions. In this tutorial however, the situation is simple enough that we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
 
-. Create a `snippet` node as a child of `function:F1`. In the property editor, locate the `snp1#code` property, click the edit button (`...`) and enter the following text:
+. Create a `snippet` node as a child of `function:Chaos`. In the property editor, locate the `snpt1#javaCode` property, click the edit button (`...`) and enter the following text:
 `focalDrv.x = r*x*(1-x);`
 
 Before creating the entity for the function to operate on, we should define the model's data: in this case it is simply r and x.
