@@ -115,9 +115,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final IMMController controller;
 	private final Originator recorder;
 
-	private boolean edgeClassOnly = false;
-	private boolean nodeClassOnly = false;
-
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
 			IntegerProperty nodeRadius, //
@@ -220,7 +217,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		Circle c = new Circle(x, y, nodeRadius.get());
 		c.radiusProperty().bind(nodeRadius);
-		Text text = new Text(n.getDisplayText(nodeClassOnly));
+		Text text = new Text(n.getDisplayText());
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
@@ -331,7 +328,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		VisualNode startNode = (VisualNode) edge.startNode();
 		VisualNode endNode = (VisualNode) edge.endNode();
-		String newLabel = edge.getDisplayText(edgeClassOnly);
+		String newLabel = edge.getDisplayText();
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();

@@ -278,7 +278,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					VisualNode vn = (VisualNode) edge.endNode();
 
 					MenuItem mi = MenuLabels.addMenuItem(mu,
-							edge.getDisplayText(false) + "->" + vn.getDisplayText());
+							edge.getDisplayText() + "->" + vn.getDisplayText());
 					if (ConfigurationReservedNodeId.isPredefined(vn.id()))
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {

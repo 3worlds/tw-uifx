@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Random;
 
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import fr.cnrs.iees.graph.Edge;
 
 /**
  * @author Ian Davies
@@ -52,8 +53,14 @@ public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVe
 		this._parent = parent;
 		this._children = new ArrayList<>();
 	}
-	public boolean nodeHasEdges() {
-		return getNode().edges().iterator().hasNext();
+	public boolean nodeHasEdgesToVisibleNodes() {
+		for (Edge e: getNode().edges()) {
+			VisualNode startNode = (VisualNode) e.startNode();
+			VisualNode endNode = (VisualNode)e.endNode();
+			if (startNode.isVisible()&& endNode.isVisible())
+				return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -128,7 +135,7 @@ public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVe
 		if (!pcShowing)
 			if (!xlShowing)
 				lstIsolated.add(this);
-			else if (!nodeHasEdges())
+			else if (!nodeHasEdgesToVisibleNodes())
 				lstIsolated.add(this);
 		for (TreeVertexAdapter c:getChildren()) {
 			c.getIsolated(lstIsolated,pcShowing,xlShowing);
