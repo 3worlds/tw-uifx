@@ -124,7 +124,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					if (!reserved) {
 						MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().getDisplayText());
 						if (ConfigurationReservedNodeId.isPredefined(p.getSecond().id())
-								&& ConfigurationReservedNodeId.isPredefined(editableNode.cClassId()))
+								&& ConfigurationReservedNodeId.isPredefined(editableNode.getConfigNode().id()))
 							mi.setDisable(true);
 						mi.setOnAction((e) -> {
 
@@ -279,7 +279,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText() + "->" + vn.getDisplayText());
 					if (ConfigurationReservedNodeId.isPredefined(vn.id())
-							&& ConfigurationReservedNodeId.isPredefined(editableNode.cClassId()))
+							&& ConfigurationReservedNodeId.isPredefined(editableNode.getConfigNode().id()))
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
 
