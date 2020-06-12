@@ -1,20 +1,24 @@
 === Tutorial 1: Construct and run a model for the first time
 
-In this tutorial we introduce _ModelMaker_ by implementing a simple logistic function as a simulation. As a way of looking at the behaviour of a simple equation, this is quite elaborate approach but our aim is to focus on the use of _ModelMaker_ without the distraction of a complex model.
+In this tutorial we introduce _ModelMaker_ by implementing a simple logistic function as a simulation. As a way of examining the behaviour of a simple function, what follows would be overly complicated to say the least. However the purpose in this tutorial is to introduce the workflow of constructing a simulation model using _ModelMaker_ without the distraction of a complex model.
 
-In _3Worlds_, a simulation model is defined by constructing a graph of nodes and edges and setting their property values. The nodes represent elements of interest in the model and the edges represent the relationships between them. The entrie graph constitutes the model specifications and once complete, can be run. As you assemble the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an archetype -  _3Worlds Archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph assembly and providing an updated list of tasks requiring attention. The over-arching purpose of this approach is that because any two models developed in this way are guarenteed to comply with the archetype, model comparison studies can proceed on a much firmer basis. The differences between any two models are more easily seen by comparing their specifications. In short, arbitrary models need no longer have arbitrary designs.
+In _3Worlds_, a simulation model is defined by constructing a graph of nodes and edges and setting their property values. The nodes represent elements of interest in the model and the edges represent the relationships between them. The entrie graph constitutes the model specifications and once complete, can be run.
 
-The graph is both a tree and a directed graph. Each node has a parent (apart from the root node) and nodes can have additional edges from one node to another to indicate relationships. We refer to these edges as cross-links to distinguish them from edges that represent parent-child relationships. Once the task list is complete, the simulation is ready to run.
+As you assemble the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an archetype -  _3Worlds Archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph assembly and providing an updated list of tasks requiring attention. 
 
-If you haven't yet read any other_3Worlds_ documentation, reading "About ModelMaker" from the main menu `Help->About` will provide some preliminary context.
+The purpose of this approach is that because any two models developed in this way are guarenteed to comply with the archetype, model comparison studies can proceed on a much firmer basis: differences between any two models are more easily seen by comparing their specifications. In short, arbitrary models need no longer have arbitrary designs.
+
+The graph is both a tree and a directed graph. Each node has a parent (apart from the root node) and nodes can have additional edges from one node to another to indicate relationships. We refer to these edges as cross-links to distinguish them from edges that represent parent-child relationships. Once the task list is empty, the simulation is ready to run.
+
+If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu `Help -> About` will provide some preliminary context.
 
 ==== Creating a model configuration
 
 . Start `ModelMaker`.
-. Create a new project (`Main menu: Projects->New->Templates->Blank`)
-. When prompted enter `Tut1` (must begin with uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _Graph display_.
+. Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
+. When prompted enter `Tut1` (first letter uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _Graph display_.
 
-This node will be the root of a graph that defines the model. All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is the unique identifier for a node of the given type. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
+This node will be the root of a graph forms the model specifications. All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is a unique identifier. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
 
 At this stage you can try out a few basic edit operations:
 
@@ -26,7 +30,7 @@ At this stage you can try out a few basic edit operations:
 
 . See available edit options for this particular node by right-clicking on it to display a local popup menu.
 
-A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the _3Worlds archetype_.  A check takes place in the background every time the graph structure or its properties change. 
+A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
 At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph and for a single selected node (mouse left-click) respectively. It is here that values are entered for the properties of nodes and edges created in the following steps. At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended provide a minimal amount of documentation for this project. By default, the property `build-by` is filled out with your computer login name and this project's creation date.
 
@@ -43,43 +47,43 @@ Inside this directory are a number of text files:
 . `MM.xml` contains the session's preference settings.
 . `__StateA1` and sequences of similarly named files are temporary files to support the program's undo/redo editing operations. These files are created during a session and deleted when the session ends.  
 
-All these files are text files and you can open them with a simple text editor. However, _editing the files will likely to lead to *problems* for your project_. On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, all will be recreated automatically by _ModelMaker_ apart from the _undo-redo_ data.
+All these files are text files and you can open them with a simple text editor. However, _editing the files will likely to lead to problems for your project_. On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, all will be recreated automatically by _ModelMaker_ apart from the _undo-redo_ data.
 
-Returning to _ModelMaker_, you'll see the project name is displayed in the window title along with the creation date and time. The task list currently shows four nodes are required. This list can be dealt with in any order but for now we will first add a `system` node. The `system` node forms the root of a sub-tree that defines the structure and dynamics of the modelled system. Other sub-trees deal with topics such as designing the user interface, the simulation experiment and the definition of data types required by the model. 
+The project's title is displayed at the top of the _ModelMaker_ main window long with the creation date and time. The task list currently shows four nodes are required. This list can be dealt with in any order but for now we will first add a `system` node. The `system` node forms the root of a sub-tree that defines the structure and dynamics of the modelled system. Other sub-trees deal with topics such as designing the user interface, the simulation experiment and the definition of data types required by the model. 
 
 [start=4]
-. *System*: Right-click on the `3worlds:Tut1` node (the root node) and select `new -> system` from the popup menu. You are then prompted for a name for this node. The default name is `sys1`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: `ModelMaker` is asking where you want to place this node. Move to some place within the graph display and left-click the mouse. The `system:sys1` node appears (teal coloured) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. These lines are thicker at the child end of the line indicating `system:sys1` is a child of `3worlds:Tut1`.
+. *System*: Right-click on the `3worlds:Tut1` node (the root node) and select `New node -> system` from the popup menu. You are then prompted for a name for this node. The default name is `sys1`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: _ModelMaker_ is asking where you want to place this node. Move to some place within the graph display and left-click the mouse. The `system:sys1` node appears (teal coloured) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. These lines are thicker at the child end of the line indicating that `3worlds:Tut1` has a `system:sys1` node.
 
 +
-All nodes in the configuration graph are children of some parent except, of course, the root node. You can only create nodes by right-clicking on a parent and making a selection from of possible child nodes from the popup menu. The items in this menu vary according to the possibilities allowed by the 3Worlds archetype. This is one way `ModelMaker` ensures that the developing configuration conforms with the archetype and greatly simplifies an otherwise very complex situation.
+All nodes in the configuration graph are children of some parent except, of course, the root node. You can only create nodes by right-clicking on a parent and making a selection from the popup menu. The items in this menu vary according to the possibilities allowed by the _archetype_. This is one way _ModelMaker_ ensures the developing configuration conforms with the _archetype_ greatly simplifying an otherwise very complex workflow.
  
 +
-The specifications allow more than one `system` node.
+As an aside, the specifications allow more than one `system` node:
 
-. Right-click the root node and create a second `system` as above. The prompt will add an incremented number to the name to make sure the _label:name_ pair remains unique with in the graph. You can name a node anything you want (it must be alpha-numeric) but the prompt won't allow duplicate names.
+. Right-click the root node and create a second `system` as above. The prompt will add an incremented number to the name to make sure the _label:name_ pair remains unique with in the graph. You can name a node anything you like (though it must be alpha-numeric) but the prompt will prevent duplicate names.
 
 . We won’t use this second `system` node so either right-click on it and select `Delete node` or undo the last operation: `Edit->Undo 'new node [system.sys2]'`.
 
 The addition of the `system` node has added three more tasks to the task list. Two of these tasks are asking for edges to be added from the `system:sys1` node. However, its not apparent where these nodes are at this stage. 
 
-Even though we started this project from a "Blank" template, a sub-tree has already been added and removed from view when the project was created. To view this sub-tree, right-click on root node and select `expand -> predefined:*categories*`.
+Even though we started this project from a "Blank" template, a sub-tree has already been added and hidden from view when the project was created. To view this sub-tree, right-click on root node and select `expand -> predefined:*categories*`.
 
-This sub-tree (all gray nodes with two red cross-link edges) cannot be edited except for adding edges to or from nodes outside this sub-tree. It's present in all models but can be largely ignored for this tutorial except that we must first connect the new system node to parts of it. The meaning of these connections will be more apparent when developing more complex models later. See the (*REF* for more details).
+This sub-tree (all gray nodes with two red cross-link edges) cannot be edited apart from adding edges to or from nodes outside this sub-tree. It's present in all models but can be largely ignored for this tutorial except that we must first connect the new system node to parts of it. The meaning of these connections will be more apparent when developing more complex models later. See the (*REF* for more details).
 
-The first task asks that we create an edge from the system node to something called the `*Arena*` (`1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*arena*]`).
+The first task asks that we create an edge from the system node to something called the "\*Arena*" (`1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*arena*]`).
 
-. Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*arena*` and accept the default name for this edge.  A red cross-link line then appears between these two nodes with the line thicker at the end node. All cross-link lines are red and all parent-child lines are green. You can show or hide these types of lines using the `X` or `<` toggle buttons at the bottom of the graph display.
+. Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*arena*` and accept the default name for this edge.  A red cross-link line then appears between these two nodes with the line thicker at the end node. All cross-link lines are red and all parent-child lines are green. You can show or hide these types of lines using the *X* or *<* toggle buttons at the bottom of the graph display.
 
 The task list has now updated. The task just completed has gone and an new message indicating that the configuration is unsaved has appeared. Press `ctrl-S` to save.
 
 . Repeat the above steps for the next task `1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*permanent*]`.
 
-The next task is essentially the same thing but expressed slightly differently. It asks that we connect an edge from the system node to either a node named *individual* or *population*. 
+The next task is essentially the same thing but expressed slightly differently. It asks that we connect an edge from the system node to either a node named \*individual* or \*population*. 
 
 . Repeat the above steps and select `New edge->belongsTo->category:*individual*`.
 
 
-We've now finished with the `predefined` sub-tree and can hide it again to simplify the display.
+We've finished with the `predefined` sub-tree for the moment and can hide it again to simplify the display.
 
 . Right-click the root node and select `Collapse->predefined:*categories*. 
 
@@ -163,7 +167,9 @@ For the user interface of the simulation model, we need some control to start/st
 
 . Create a `widget` node from the `top:top` node, name it `ctrl` and select `SimpleControlWidget` from the drop-down list.
 
-The model specifications now comply with the archetype and the code has compiled. Save your work (Ctrl S) and the task list will be empty, the "Deploy" button enabled and the traffic light has changed to green. 
+The model specifications now comply with the archetype and the code has compiled. Save your work (Ctrl S) and the task list will be empty, the "Deploy" button enabled and the traffic light has changed to green.
+
+Some new files and a dirctory have now appeared within the project directory. 
 
 . Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run time application. At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. However, there is nothing to see! We still need an widget to view the time series of `x`. This is an optional requirement so the task list was silent on this point.
 
@@ -520,6 +526,7 @@ reset (by the controller widget).
 unless this is done. Right-click on the plot node and select `connect to -> channelListener - > dataTracker:dataTracker1`.
 
 . Save your work and run the simulator. *[TODO screen capture]*
+
 
 
 
