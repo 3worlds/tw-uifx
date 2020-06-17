@@ -51,7 +51,7 @@ Inside this directory are a number of text files:
 - `MM.xml` contains the session's preference settings.
 - `__StateA1` and sequences of similarly named files are temporary files to support the program's undo/redo editing operations. These files are created during a session and deleted when the session ends.  
 
-All these files are text files and you can open them with a simple text editor. However, _editing these files will likely to lead to problems for your project_. On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by _ModelMaker_ apart from the _undo-redo_ data.
+All these files are text files and you can open them with a simple text editor. However, _editing these files will likely to lead to problems for your project_. On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by _ModelMaker_ apart from the _undo-redo_ data. However, if you delete the entire .3w directory you will loose the `tw-dep.jar` file. You should keep a backup of this jar as it contains all Java dependencies for _3Worlds_.
 
 
 ==== Building the specifications graph
@@ -307,7 +307,7 @@ Finally, you can of course move a node anywhere within the graph window.
 That's the end of this tutorial. Recreate this project at anytime from the main menu (`Project -> New -> Tutorials -> 1 Logistic`).
 
 ==== Next
-The next tutorial will demonstrate linking the project to an IDE, examine the generated Java files and add some Java program code.
+The next tutorial (Tutorial 2) will demonstrate linking the project to an IDE and adding some Java program code.
 
 
 
