@@ -7,7 +7,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 //		focalDrv.x = r*x*(1-x);
 
 // TREE
-3worlds Logistic_1
+3worlds Logistic1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
@@ -53,69 +53,66 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record vars
-			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(vars)
-			field x
-				description = java.lang.String(population size)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record pars
+		record par
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(pars)
+			generatedClassName = java.lang.String(par)
 			field r
-				description = java.lang.String(population growth rate)
-				interval = fr.ens.biologie.generic.utils.Interval(]0.0,+∞[)
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-	system sys
-		constantClass = java.lang.String(code.sys.Pars)
-		driverClass = java.lang.String(code.sys.Vars)
-		dynamics sim
-			timeline tmLn
+		record var
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(var)
+			field x
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+	system sys1
+		constantClass = java.lang.String(code.sys1.Par)
+		driverClass = java.lang.String(code.sys1.Var)
+		dynamics sim1
+			stoppingCondition stCd1
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-				timer clock
+				timer tmr1
 					dt = java.lang.Long(1)
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
-					process p
-						dataTracker trkr
+					process p1
+						function Chaos
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.Chaos)
+							snippet snpt1
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"code here for logistic equation"))
+						dataTracker trk1
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-						function Chaos
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys.Chaos)
-		variableValues initx
+		variableValues initVars1
 			x = java.lang.Double(0.001)
-		constantValues initr
+		constantValues initCsts1
 			r = java.lang.Double(3.7)
-		structure struc
 	experiment expt
-		timePeriod tp
-			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	userInterface gui
 		top top
-			widget time
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
-			widget ctrl
+			widget crtl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
-		tab tab
+		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget srsx
 				order = java.lang.Integer(0)
@@ -123,17 +120,15 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 
 // CROSS-LINKS
-[system:sys] belongsTo blgsto [category:*arena*]
-[system:sys] belongsTo blngsTo2 [category:*permanent*]
-[system:sys] belongsTo blngsTo1 [category:*individual*]
-[widget:time] trackTime trksTmOf [dynamics:sim]
-[dataTracker:trkr] trackComponent trks2 [system:sys]
-[dataTracker:trkr] trackField trks1 [field:x]
+[process:p1] appliesTo aplyTo1 [category:*arena*]
+[dataTracker:trk1] trackComponent trks2 [system:sys1]
+[dataTracker:trk1] trackField trks1 [field:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[experiment:expt] baseLine bsln [system:sys]
-[process:p] appliesTo aplyTo [category:*arena*]
-[widget:srsx] trackSeries trks3 [dataTracker:trkr]
-[category:*arena*] drivers drvs [record:vars]
-[category:*arena*] lifetimeConstants params [record:pars]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[category:*population*] autoVar auto [record:AVPopulation]
+[category:*arena*] drivers drvs1 [record:var]
+[category:*arena*] lifetimeConstants ltcs1 [record:par]
+[system:sys1] belongsTo bt3 [category:*individual*]
+[system:sys1] belongsTo bt2 [category:*permanent*]
+[system:sys1] belongsTo bt1 [category:*arena*]
+[widget:srsx] trackSeries trks3 [dataTracker:trk1]
+[category:*population*] autoVar auto2 [record:AVPopulation]

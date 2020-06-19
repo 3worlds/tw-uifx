@@ -1,6 +1,6 @@
 === Tutorial 2: Linking a _3Worlds_ project to a Integrated Development Environment (IDE)
 
-In Tutorial 1 we showed how to add a code snippet to the model specifications and how to set an initial value for the model data. In this tutorial we demonstrate how to link the project to an IDE and achieve the same thing by writing Java code. Generally, you'll need to link your project to an IDE for any but the simplest of models.
+In Tutorial 1 we showed how to add a code snippet to the model specifications and two ways of setting initial values for the model data. In this tutorial we demonstrate how to link the project to an IDE and achieve the same thing by writing Java code. Generally, you'll need to link your project to an IDE for any but the simplest of models.
 
 First create a Java project in _Eclipse_.
 
@@ -8,11 +8,14 @@ First create a Java project in _Eclipse_.
 
 . Right-click on the new project and select  `properties -> Java Build Path`.
 
-. Highlight `Classpath` under the `Libraries` tab, and  click the `Add External JARs...` button on the right.
+. Under the `Libraries` tab, highlight `Classpath` and  click the `Add External JARs...` button to the right.
 
 . Navigate to the .3w directory and select `tw-dep.jar`.
 
 . Click `Apply and close`.
+
+This installs the _3Worlds_ dependencies for this java project.
+
 
 Now create a _3Worlds_ project using tutorial 1 as a starting point.
 
@@ -28,7 +31,7 @@ Now create a _3Worlds_ project using tutorial 1 as a starting point.
 
 . From the `system:sys1` node, create an `initFunction` node.
 
-. Save (`ctrl-s`)
+. Save (`Ctrl+s`)
 
 Next link this project to the Java project created above.
 
@@ -48,10 +51,10 @@ In the `src` folder of `tut2`, you'll now find a new package called `code` and `
 
 Near the bottom of the file are two methods: `chaos` and `init1`, mapped from the names of the function and initFunction nodes we created in `Tut2` with _ModelMaker_. Within the body of these methods are a pair of insertion markers: 
 
-- `insert Begin-->`; and 
-- `insert End----<`.
+- `insert Begin-- >`; and 
+- `insert End---- <`.
 
-. Add the following code between these markers, taking care to leave the markers unchanged.
+. Add the following code between these markers, taking care to leave the text of the markers unchanged.
 
 [source,Java]
 -----------------
@@ -71,12 +74,12 @@ Near the bottom of the file are two methods: `chaos` and `init1`, mapped from th
 
 As noted above, these two methods are mapped to this generated file from the specifications created in _ModelMaker_. It follows that changes to the specifications may result in changes to these methods. So the question arises, how does _ModelMaker_ manage this without losing the Java code you write?
 
-If there have been changes to the number, name or type of Function used in the specification, or changes to anything in the `dataDefinition` sub-tree, _ModelMaker_ will back up your old file as a text file with a unique name (e.g `_Tut2_1.txt`,`_Tut2_2.txt` etc...) within the current java package. This way you can copy and paste you code back to the proper place. Otherwise _ModelMaker_ will never overwrite your code. 
+If there have been changes to the number, name or type of Function used in the specification, or changes to anything in the `dataDefinition` sub-tree, _ModelMaker_ will back up your old file as a text file with a unique name (e.g `\_Tut2_1.txt`,`_Tut2_2.txt` etc...) within the current java package. This way you can copy and paste you code back to the proper place. Otherwise _ModelMaker_ will never overwrite your code. 
 
-When _ModelMaker_ is looking for differences between previous and current versions of this Java file, it will ignore any comments and import statements. The key text that the system looks for are the begin and end of the code insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of these markers. 
+When _ModelMaker_ is looking for differences between previous and current versions of this Java file, it will ignore any comments and import statements. The key text that the system looks for are two code insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of these markers. 
 
 ==== Next
-The next tutorial (Tutorial 3) will demonstrate the use of tables and some new output `Widgets`.
+The next tutorial (Tutorial 3) will introduce the use of tables and some additional `widgets`.
 
 
 

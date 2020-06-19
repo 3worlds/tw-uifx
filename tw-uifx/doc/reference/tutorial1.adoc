@@ -1,14 +1,14 @@
 === Tutorial 1: Construct and run a simulation for the first time
 
-In this tutorial we introduce _ModelMaker_ by implementing a simple logistic function as a simulation. The purpose of this tutorial is to focus on the workflow of constructing a simulation without being distracted by a complex model.
+In this tutorial we demonstate the procedure for creating a simulation using _ModelMaker_. We implement a very simple logistic function as a simulation leaving more complex models to later tutorials
 
 In _3Worlds_, a simulation model is defined by constructing a graph of nodes and edges and setting their properties. Nodes in the graph represent elements of interest in the model and the edges represent the relationships between them. The entire graph constitutes the model specifications. The simulation can be run as as soon as the specifications are complete.
 
-As you construct the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an _archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph construction and providing an updated list of tasks requiring attention. 
+As you construct the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an _archetype_. _ModelMaker_ guides you through this proc.ess by managing the available options at each stage in the graph construction and providing an updated list of tasks requiring attention. 
 
-The purpose of this approach is not just to speed up model development. More importantly, it's to provide a firm basis for model comparison. As all models developed with _ModelMaker_ must comply with the archetype, structural differences are apparent by comparing specifications. That is: while you can construct any model, the design will not be arbitrary. Of course, this is not the only difference between models. The code for each function defined by the specifications will be bespoke but at least these differences are encapsulated at particular places in the model implementation.
+While this process greatly accelerates model development, a more important aim is to provide a firm basis for model comparison. As all models developed with _ModelMaker_ must comply with the archetype, structural differences are apparent by comparing specifications. That is, while you can construct any model, the design, being constrained by the _archetype_, will not be arbitrary. Of course, this is not the only difference between models. The code for each function defined by the specifications will be particular but at least these differences are encapsulated at specific places in the model implementation.
 
-The graph is both a tree and a directed graph. Aside from the root, each node has a parent and may have additional edges from one node to another to define particular relationships. We refer to these edges as cross-links to distinguish them from edges that represent parent-child relationships. Once the task list is empty, the simulation is ready to run.
+The graph is both a tree and a directed graph. Aside from the root, each node has a parent and may have additional edges from one node to another to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships. Once the task list is empty, the simulation is ready to run.
 
 If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
 
@@ -24,13 +24,13 @@ At this stage you can try out a few basic edit operations:
 
 - Move a node around the graph display by dragging it with the left mouse button;
 
-- Zoom in and out in the graph display using the mouse wheel while holding down the `ctrl` key (or equivalent on your operating system). The focus of the zoom is provided by the mouse position;
+- Zoom in and out in the graph display using the mouse wheel while holding down the `ctrl` key (or equivalent on your operating system). The focus of the zoom is set by the mouse position;
 
 - Pan the drawing surface by dragging with the left-mouse button anywhere outside a node;
 
 - Change the node and text size with the controls at the bottom of the display; and,
 
-- See the available edit options for this particular node by right-clicking on it to display a local popup menu.
+- See a range of edit options for this particular node by right-clicking on it to display a local popup menu.
 
 A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
@@ -55,140 +55,173 @@ All these files are text files and you can open them with a simple text editor. 
 
 
 ==== Building the specifications graph
-The task list currently shows four nodes are required. This list can be dealt with in any order but for now we will first add a `system` node. 
+The task list currently shows four nodes are required. This list can be dealt with in any order but for now we first add a `system` node (the third task in the list). 
 
 *System*: The `system` node forms the root of a sub-tree that defines the structure and dynamics of the modelled system. Other sub-trees deal with topics such as designing the user interface, the simulation experiment and the definition of data types required by the model. 
 
 [start=1]
-. Right-click on the root node (`3worlds:Tut1` ) and select `New node -> system` from the popup menu. You are then prompted for a name. The default name is `sys1`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: _ModelMaker_ is asking where you want to place this node. Move to some place within the graph display and left-click the mouse. The `system:sys1` node appears (teal coloured) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. These lines are thicker at the child end and can be read as "`3worlds:Tut1` has a `system:sys1`".
+. Right-click on the root node (`3worlds:Tut1` ) and select `New node -> system` from the popup menu. You are then prompted for a name. The default name is `sys1`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: _ModelMaker_ is asking where to place this node. Move to some place within the graph display and left-click the mouse. 
+
+The `system:sys1` node appears (teal coloured) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. These lines are thicker at the child end and can be read as "`3worlds:Tut1` has a `system:sys1`".
 
 All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and making a selection from the popup menu. The items in this menu vary according to the possibilities allowed by the _archetype_. This is one way _ModelMaker_ ensures the developing configuration conforms with the _archetype_, greatly simplifying an otherwise very complex workflow.
  
-
 The addition of the `system` node has added three more tasks to the task list. Two of these tasks are asking for edges to be added from the `system:sys1` node. However, it's not apparent where these nodes are at this stage. 
 
-
-*Connecting to the predefined sub-tree*: We started this project from a "Blank" template, however, a sub-tree has already been added and hidden from view when the project was created. To view this sub-tree:
+*Connecting to the predefined sub-tree*: Although we started this project from a supposedly "Blank" template, in fact it's not blank:  a sub-tree has already been added and hidden from view when the project was created. To view this sub-tree:
 
 [start=2]
 
 . Right-click on root node and select `expand -> predefined:*categories*`.
 
-This sub-tree (all grey nodes with two red cross-link edges) cannot be edited apart from adding edges to or from nodes outside this sub-tree. With these edges we will define the newly added system as a "permanent individual residing in an arena". It's _permanent_ because the entity does not die, it's an _individual_ because it's not an aggregate of smaller components and it resides in an _arena_ because, well, everything's got to be somewhere. This seems cumbersome for just a simple equation but it hints at what is a very powerful approach to structuring complex hierarchical dynamic systems. System structuring will be introduced over the course of these tutorials.
+This sub-tree (all grey nodes with two red cross-link edges) cannot be edited apart from adding edges to nodes outside this sub-tree. With these edges we will define the newly added system as a "permanent individual residing in an arena". It's _permanent_ because the entity does not die, it's an _individual_ because it's not an aggregate of smaller components and it resides in an _arena_ because, well, everything's got to be somewhere. This seems cumbersome for just a simple equation but it hints at what is a very powerful approach to structuring complex hierarchical dynamic systems of interacting physical and biological components. The system structure will be elaborated upon over the course of these tutorials.
 
-The first task asks that we create an edge from the system node to the "\*arena*" (`1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*arena*]`).
+The _predefined_ sub-trees has many nodes which can be ignored for now and can be hidden to simplify the _graph display_. To do this:
 
-[start=3]
+[start = 3]
+
+. Right-click on the `predefined:*categories*` node and select `Collapse -> All`
+
+. Right-click again on `predefined:*categories*` and select `Exapnd -> categorySet:*composition*`.
+
+. Repeat this for `categorySet:*lifespane*` and `categorySet:*systemElements*`.
+
+. Right-click on `categorySet:*systemElements*` and select `Collapse -> All`.
+
+. Right-click again on `categorySet:*systemElements*` and select `Exapnd -> category:*arena*`.
+
+. Finally, re-apply the layout by clicking the "*L*" button.
+
+
+The first task in the list is to create an edge from the system node to a category node named "\*arena*" (`1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*arena*]`). This defines where this equation "resides".
+
+[start=9]
 
 . Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*arena*` and accept the default name for this edge.  
 
-A red cross-link line then appears between these two nodes with the line thicker at the _end node_. All cross-link lines are red and all parent-child lines are green. You can show or hide these types of lines using the '*X*' or '*<*' toggle buttons at the bottom of the graph display.
+A red _cross-link_ line then appears between these two nodes with the line thicker at the _end node_. All cross-link lines are red and all parent-child lines are green. You can show or hide these types of lines using the '*X*' or '*<*' toggle buttons at the bottom of the graph display.
 
 The task list has now updated. The task just completed has gone and an new message indicating that the configuration is unsaved has appeared.
 
-[start=4]
-. Press `ctrl-s` to save.
+[start=10]
+. Press `Ctrl+s` to save.
 
-. Repeat the above steps for the next task `1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*permanent*]`.
+. Repeat the above steps for the next task `1. [Edge] Add edge [belongsTo:] from 'system:sys1' to [category:*permanent*]`. Biological components are born, reproduce and die. The logisitic equation does none of these so it's defined as _permanent_ rather than _ephemeral_.
 
 The next task is essentially the same thing but expressed slightly differently. It asks that we connect an edge from the system node to either a node named \*individual* or \*population*. 
 
-[start=6]
-. Repeat the above steps and select `New edge->belongsTo->category:*individual*`.
+[start=12]
+. Repeat the above steps and select `New edge->belongsTo->category:*individual*`. Again, the logistic equation is not composed of sub-components - it's just an equation - so it's defined as an _individual_ rather than a _population_.
 
 
-We've finished with the predefined sub-tree for the moment and can hide it again to simplify the display.
+We've finished with the predefined sub-tree for the moment. However, we'll return later to make other edges to the `category:*arena*` but can collapse the other two sub-trees.
 
-[start=7]
-. Right-click the root node and select `Collapse->predefined:*categories*. 
+[start=13]
+. Right-click on `predefined:*categories*` and select `Collapse -> categorySet:*composition*` and `categorySet:*lifespan*`.
 
-*Dynamics sub-tree*: We now continue with the task associated with the system node. This is to create the `dynamics` sub-tree. In this simple model, we don't need to create a `structure` sub-tree. The need for that has been dealt with in this simple example by the connections we just made to the `predefined` sub-tree.
+Notice that the two red _cross link_ edges have disappeared. Once you're familiar with this sub-tree, you can, in fact, create edges *to* it without expanding it (or any other sub-tree) as we've just done. To provide some visual clue that the addition has occured, the newly created edge is shown initially and then slowly fades way.
+
+
+*Dynamics sub-tree*: We now continue with the task associated with the system node. This is to create the `dynamics` sub-tree (task 2). In this simple model, we don't need to create a `structure` sub-tree. The need for that has been dealt with in this simple example by the connections we just made to the `predefined` sub-tree.
  
-In the `dynamics` sub-tree, we create, in order, nodes called `timeLine`,`timer`, `process`, `function` and `dataTracker`. To follow along easily, accept the default names unless otherwise indicated.
+In the `dynamics` sub-tree, we create, in order, nodes called `timeLine`,`timer`, `process`, `function` and `dataTracker`. All nodes this sub-tree are lime green. To follow along easily, accept the default names unless otherwise indicated.
 
-. *dynamics*: Create a `dynamics` node as a child of `system:sys1`. All nodes in the `dynamics` sub-tree are lime green.
+. Create a `dynamics` node as a child of `system:sys1`. This node represents the simulator.
 
-. *timeline*: From the `dynamics` node create a `timeline` node. The timeline defines the time scale type for the simulation. In the properties editor, the drop-down list for the `tmln1#scale` property shows ten different types are available: all of them exact subdivisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial.
+There is now a new task to add a `timeline` node. 
 
-. *timer*: From the `timeline` node, create a `timer` node. Here an extra prompt appears asking for the class of the timer: {`ClockTimer`, `EventTimer`, `ScenarioTimer`}. Select `ClockTimer`. This class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularities such as leap years are managed. 
+[start = 2]
+. From the `dynamics` node create a `timeline` node. The timeline defines the time scale type for the simulation. 
+
+In the properties editor, the drop-down list for the `tmln1#scale` property shows ten different types are available: all of them exact sub-divisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial. There is now a new task to add a `timer` node to the `timeline`.
+
+[start = 3]
+. From the `timeline` node, create a `timer` node. Here an extra prompt appears asking for the class of the timer: {`ClockTimer`, `EventTimer`, `ScenarioTimer`}. Select `ClockTimer`. This class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularities such as leap years are managed. 
+
 
 There is now a new type of task indicating a property value for the new timer is incorrect : `5. [Property] ['[Property:dt=0]' does not satisfy '[Property 'dt=0' must be within [1.0; 9.223372036854776E18].]']`. This just means the value of `dt` must be >= 1.
 
 [start = 4]
 
-. In the property editor, change both `tmr1#dt` and `tmr1#nTimeUnits` to 1. `dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types available from microseconds to millennia. The current default value of `UNSPECIFIED` is fine for this tutorial. Note that a model can have any number of `timers` using any of the available time steps and time units as long as the time units selected are compatible with the parent `timeline`. The task messages will indicate if this is not the case.
+. In the property editor, change `tmr1#dt` to 1, whereupon a new task appears saying the same thing for `tmr1#nTimeUnits` so set that to 1 as well. 
 
-. *process*: Create a process node as child of `timer:tmr1`. A process is a set of computations acting on model entities driven at the rate of the parent `timer`. These entities are defined in either the `predefined` or `structure` sub-tree. Processes can be composed of any number of functions of ten different types. We need just one function to implement the logistic equation.
+`dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types available from microseconds to millennia. The current default value of `UNSPECIFIED` is fine for this tutorial. Note that a model can have any number of `timers` using any of the available time steps and time units as long as the time units selected are compatible with the parent `timeline`. The task messages will indicate if this is not the case. Because the specifications allow for more than one system, it follows there can be many dynamics sub-trees, that is many simulators with their own time system.
 
-. *function*: Create a function node as a child of `process:p1`. Name it "Chaos" as this logistic equation can have interesting chaotic behaviour. After naming the function, a prompt appears for the function type. Select the first option `ChangeState`. 
+A new task has been posted requiring a `process` node.
+
+[start = 5]
+. Create a process node as child of `timer:tmr1`. 
+
+A process is a set of computations acting on model entities driven at the rate of the parent `timer`. These entities are defined in either the `predefined` or `structure` sub-tree. Processes can be composed of any number of functions of ten different types. We need just one function to implement the logistic equation.
+
+Two new tasks have appeared requiring that the process we just added have a `function` or `dataTracker` child and that it should have an edge to a `category` or `relationType`. The latter message defines the entity or _category_ the process is applied to - in our case, `category:*arena*` . 
+
+[start = 6]
+
+. Right-click on `process:p1` and select 'New edge -> appliesTo -> category:*arena*'.
+
+
+. Create a function node as a child of `process:p1`. Name it "Chaos" as this logistic equation can have interesting chaotic behaviour. After naming the function, a prompt appears for the function type. Select the first option `ChangeState`. 
 
 The function type can't be changed after the node is created. If you've made a mistake, delete the node (or "undo") and recreate it. The name of a function node can only start with an uppercase letter. Functions directly translate into Java classes which, by convention, begin with an uppercase letter.
 
-The equation we're going to implement is _x(t+1) = rx(t)(1-x(t)_. To view the value of _x_ we use a dataTracker connected to `process:p1`. 
-
-[start = 7]
-
-. *dataTracker*: Create a `dataTracker` node as a child of `process:p1`. _x_ is a scalar variable so when prompted for the dataTracker type, select `dataTrackerD0` (zero dimensions).
-
-_ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Eclipse_  to write code for these functions. In this tutorial however, the situation is simple enough that we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
+The logistic equation is _x(t+1) = rx(t)(1-x(t)_. To view the value of _x_ we use a dataTracker connected to `process:p1`. 
 
 [start = 8]
 
-. *snippet*: Create a `snippet` node as a child of `function:Chaos`. In the property editor, locate the `snpt1#javaCode` property, click the edit button ('*...*') and enter the following text:
-`focalDrv.x = r*x*(1-x);`
+. Create a `dataTracker` node as a child of `process:p1`. _x_ is a scalar variable so when prompted for the dataTracker type, select `dataTrackerD0` (zero dimensions).
 
-Before creating the entity for the function to operate on, we should define the model's data: in this case it is simply _r_ and _x_.
+There is now a new task saying the dataTracker needs to be connected to something (a field, table or component). In a complex model requiring a `structure` sub-tree, many different components can be defined. These will be discussed in later tutorials. In this tutorial, the 'model' is just a single equation and the `system` node can stand in for a component. Therefore, we can connect `dataTracker:trk1` to `system:sys`.
 
 [start = 9]
 
-. *dataDefinition*: Select the root node of the graph and create a `dataDefinition` node.
+. Right-click on `dataTracker:trk1` and select `New edge -> trackComponent -> system:sys1'.
 
-. *record*: Create `record` node as a child of `dataDefinition:dDef` and name it `par`.
+The task list is now complaining that we also need an edge to a field or table. We can't do anything about this until we have defined some data.
 
-. *field*: Create a `field` node as child of `record:par` and name it `r` and select its type as `Double`.
-
-. Create another `record` as child of `dataDefinition:dDef` and name it `var`.
-
-. Create a `field` node as child of `record:var` and name it `x` and select the type `Double`.
-
-We can now connect the dataTracker to this field and to the `system.sys1` node (*WHY?*).
-
-[start = 14]
-
-. From the `dataTracker` node, create an edge `trackField -> field:x`.
-
-. Again, from the `dataTracker` node, create an edge `trackComponent -> system.sys1`.
+*dataDefinition*: We now turn to the `dataDefinition` sub-tree. Once this is constructed, we can 1) connect a data tracker to some part of the sub-tree and 2) define how this data is associated with the `category:*arena*` node that `process:p1` applies to. To do this we first define fields "r" and "x".
 
 
-This is all the data and data tracking we need to define for this tutorial. It only remains to associate this data with the `Chaos` function. This is done through the `category:\*arena*` node found in the `predefined` sub-tree. Before doing this, we first take a moment to demonstrate arranging the graph display.
+. Select the root node of the graph and create a `dataDefinition` node.
 
-*Collapsing and expanding sub-trees*: To hide irrelevant nodes, we can just collapse and expand some sub-trees so of all the nodes in the `predefined` sub-tree, only the `category:*arena*` node is shown.
+. Create `record` node as a child of `dataDefinition:dDef` and name it 'par'.
 
-[start = 16]
+. Create a `field` node as child of `record:par`, name it 'r' and select its type as `Double`.
 
-. select the root node and expand `predefined:*categories*`. 
+. Create another `record` as child of `dataDefinition:dDef` and name it 'var'.
 
-. Select the `predefined:*categories*` and from the popup menu select `Collapse -> All`. 
+. Create a `field` node as child of `record:var`, name it 'x' and select the type `Double`.
 
-. Select the `predefined:*categories*` again and from the popup menu select `Expand ->categorySet:*systemElements*`.
+Note that the names 'var' and 'par' don't imply any meaning to the specifications - they're just names. Their role will be defined later.
 
-. Select the `categorySet:*systemElements*` and select `Collapse -> All`.
+This is all the data required for this tutorial and we can now connect the dataTracker to  "x" to address the task left over above.
 
-. Finally select this node again and choose `Expand -> category:\*arena*`.
+[start = 6]
 
-Tidy up the _Graph display_ by re-applying the layout (*L* button at the bottom of the display - more on layouts later). If some of the text overlaps, you can off-set node positions by adding some random amount to each node. To do this, increase the 'jitter' amount (control at the bottom of the _Graph display_) by, say, 12 and re-apply the layout (*L*).
+. Right-click on `dataTracker:trk1` and select `New edge -> trackField->field:x`.
 
-The first message in the task list now says in effect, that the value the dataTracker is tracking, does not belong to any category of the dataTracker's process. To fix this:
+A new task appears saying that the "x" being tracked doesn't belong to any category associated with 'process:p1'. This is where we define "x" as a "driver": data that changes over the course of the simulation. Recall, the category the process applies to is `category:*arena*` (i.e. the _cross link_ `appliesTo:aplyTo1` in the graph display). To define "x" as a driver:
 
-[start = 21]
+[start = 7]
 
-. Select `category:*arena*` and create the edge `drivers -> record:var`. The `var` record owns the `field:x` field.
+. Right-click on `category:*arena*` and select 'New edge -> drivers->record:var'.
 
-. Again select the `category:*arena* and create the edge `lifetimeConstants -> record:par`. There should now be only two tasks showing, the first to add an experiment and the second to add a user interface. We can now hide the predefined sub-tree to finish up the model specifications.
+Note that this edge is to `record:var` rather than `field:x`. The `dataDefinition` sub-tree can become quite elaborate. It incorporates records and tables of any number of dimensions defined recursively. That is, records can contain tables that contain records and so on with out limit.  In the present case, any additial data defined in a sub-tree from `record:var` will be a defined as a driver in the model.
 
-. Select the root node and collapse `predefined:*categories*`.
+There are now two tasks listed but before dealing with these, we have yet to finally enter code for the logistic equation.
 
-. Tidy up the graph by re-applying the layout.
+*Inline code snippets*: _ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Eclipse_, to write code for these functions. In this tutorial however, the situation is simple enough that we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
+
+[start = 8]
+
+. Create a `snippet` node as a child of `function:Chaos`. 
+
+. In the property editor, locate the `snpt1#javaCode` property, click the edit button ('*...*') and enter the following text:
+`focalDrv.x = r*x*(1-x);`
+
+
+
+
 
 *Experiment*: We now create an experiment, which in this case is the simplest possible: a single run of the model.
 
@@ -197,21 +230,27 @@ The first message in the task list now says in effect, that the value the dataTr
 . From the `experiment:expt` node create a `design` node. When prompted, select the `type` property. Experimental designs can take many forms including predefined types such as `crossFactorial` or designs read from a file. For now we just use a predefined `type` - the default value is `singleRun`.
 
 
-*User interface*: For the simulator's user interface, we need widgets to control the simulator (start, step, stop and pause) and some output (a time series chart of _x_). When the simulation is run, its user interface has optionally, a toolbar at the top, a status bar at the bottom and any number of tabs containing any number of widgets. We'll put the controller in the toobar and the time series chart in a tab.
+*User interface*: We now define the simulator's user interface. We will need at least a widget to control the simulator (start, step, stop and pause) and one for output (a time series chart of _x_) but will add this later after trying out the simulator. 
+
+When the simulation is run, its user interface has optionally, a toolbar at the top, a status bar at the bottom and any number of tabs containing any number of widgets. The controller must be placed either in the toolbar or status bar. Here we place it in the toolbar.
 
 . Create a `userInterface` node from the root node.
 
 . Create a `top` node from the `userInterface:gui` node.
 
-. Create a `widget` node from the `top:top` node, name it `ctrl` and select `SimpleControlWidget1` from the drop-down list.
+. Create a `widget` node from the `top:top` node, name it 'ctrl' and select `SimpleControlWidget1` from the drop-down list.
 
 ==== Running the model for the first time
-The model specifications now comply with the archetype and the code has compiled. Save your work (`Ctrl s`) and the task list will be empty, the *Deploy* button enabled and the traffic light has changed to green.
 
+The model specifications now comply with the archetype and the code has compiled. Save your work (`Ctrl+s`) and the task list will be empty. The *Deploy* button is now enabled and the traffic light has changed from red to green (bottom left corner of _ModelMaker_).
 
-. Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run time application _ModelRunner_. 
+. Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run-time application. 
 
-At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. This is the `SimpleControlWidget1` we added above. However, we've yet to add an output widget. This is an optional requirement so the task list was silent on this point.
+At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. This is the `SimpleControlWidget1` we added above. They work analogously to DVD player controls. The run button becomes a pause button while running and the stop button resets the simulator to its starting state. 
+
+However, there is no output as we've yet to add an output widget. This is an optional requirement so the task list was silent on this point.
+
+To add a time series for "x":
 
 [start = 2]
 
@@ -221,15 +260,15 @@ At the top of _ModelRunner_ are some control buttons to start, step and stop the
 
 . Create a `widget` node from `tab:tab1`, name it `srsx` and select `SimpleTimeSeriesWidget` from the drop-down list. 
 
-A new task has been added to the list asking to add an edge from this widget to a dataTracker.
+A new task has been added to the list requiring an edge from this widget to a dataTracker.
 
 [start = 5]
 
-. Create a `trackSeries` edge from `widget:srsx` to `dataTracker:trk1`. This connects the srsx widget to the _x_ variable through the intervening data tracker. Data trackers work in an analogous way to real data trackers in the field. They track some environmental variable and can produce some statistical treatment of the raw data before sending to a widget for display.
+. Create a `trackSeries` edge from `widget:srsx` to `dataTracker:trk1`. This connects the 'srsx' widget to the _x_ variable through the intervening data tracker. Data trackers work in an analogous way to real data trackers in the field. They track some environmental variable and can optionally produce some statistical treatment of the raw data before sending to a widget for display.
  
-If you examine the graph and all its properties, you may notice that there is no indication as to how long the simulation should run i.e. how many time steps. This means that when we run it we should expect it to continue indefinitely. You may or may not want this. If your model contains an unconstrained exponential graph function, it will eventually crash. You can add a variety of simple or complicated stopping conditions to the `dynamics` node. This will be discussed in Tutorial 2.
+*Stopping conditions*: If you examine the graph and all its properties, you may notice that there is no indication as to how long the simulation should run. This means that when we run it we should expect it to continue indefinitely. You may or may not want this. If your model contains an unconstrained exponential graph function, it may eventually crash unless your code takes measures to handle this. You can add a variety of simple or complicated stopping conditions to the `dynamics` node. These will be discussed in later tutorials.
 
-When we first ran this model (above) it had no output. Now that we have a time series chart, displaying data of unlimited length will make the _ModelRunner_ fairly unresponsive. If you press the run button and then the stop or pause button it may take a while for the model to actually stop running. So for now, it's best to test the simulation with the `Step` button.
+When we first ran this model it had no output. Now that we have a time series chart, displaying data of unlimited length will make the _ModelRunner_ fairly unresponsive. If you press the run button and then the stop or pause button it may take a while for the model to actually stop running. So for now, it's best to test the simulation with the `Step` button.
 [start =6]
 
 . Deploy _ModelRunner_ (saving first if prompted)
@@ -238,25 +277,32 @@ When we first ran this model (above) it had no output. Now that we have a time s
 
 . Click the `run` button twice in rapid succession. The time (x axis) now reads approximately 30,000 or so depending on the speed of your computer.
 
-The display is still uninteresting because we have not set an initial value for _x_ or parameterised _r_. This can be done in a number of ways but for this tutorial we can just add nodes to the graph with that set these two values.
+The display is still uninteresting because we have not set an initial value for _x_ or parameterised _r_. This can be done in a number of ways but for this tutorial we can just add nodes to the graph that set these two values.
 
 [start=9]
 
 . Quit _ModelRunner_ and return to _ModelMaker_.
 
-. From the `system:sys1` node, add a `constantValues` node.
+. Right-click the the `system:sys1` node, add a `variableValues` node.
 
-. Select this new node and set the `initCsts1#r` property value to 3.7
+. Select this new node and in the _Selected properties_ editor, set the `initVars1#x` property value to 0.001.
 
-. Again from the `system:sys1` node, add a `variableValues` node.
+. From the `system:sys1` node, add a `constantValues` node. 
 
-. Select this new node and set the `initVars1#x` property value to 0.001
+A task has appeared now saying no properties have been defined. While we previously defined what constitues 'driver' data for the `category:*arena*`, we haven't defined what is a constant. To fix this we must delete the node, make the definition and then recreate the node:
 
-. Save (`ctrl-s`)
+[start = 13]
 
-. Deploy and step the simualtion forward to see the evolving Chaos function.
+. Right-click on `constantValues:initCnst1` and select `Delete node`.
 
-*Stopping conditions*: To add a simple stopping condition:
+. Right-click on `category:*arena*` and select `New edge -> lifetimeConstants-> record:par`. (*WHY NOT Parameters?*)
+
+. Right-click on `system.sys` again, and recreate the `constantValues` node.
+
+. Select this new node and in the _Selected properties_ editor, set the `iniCsts1#r` property value to 3.7.
+
+
+To complete this tutorial, add a simple stopping condition:
 
 [start=16]
 
@@ -267,6 +313,22 @@ The display is still uninteresting because we have not set an initial value for 
 . Select this new node and in the properties editor, set the value of `stCd1#endTime` to 100.
 
 . Save, re-deploy and run the simulation. You'll now see a time series of the chaos function of 100 time steps.
+
+As an alternative to adding these nodes to initialise the simulation you can add an `initFunction` and a code snippet. To do this:
+
+. Delete the `constantValues:initCnst1` and `variableValues:initVars1` nodes.
+
+. Right-click `system.sys` and create an `initFunction` node.
+
+. Right-click on `initFunction:init1` and create a `snippet` node.
+
+. In the property editor, locate the `snpt2#javaCode` property, click the edit button ('*...*') and enter the following two lines:
+
+- `focalDrv.x =3.7;`
+
+- `focalLtc.r = 0.001;`
+
+If you make a typo, the task list will show the details of the compile error.
 
 ==== Graph layouts
 The final aspect of _ModelMaker_ we have yet to examine is the graph layout system.
@@ -279,7 +341,7 @@ _ModelMaker_ has a number of features to help arrange the graph display. These f
 
 Two of the Tree methods produce a radial layout. These are best suited to examining nodes that have many children such as a record with many fields.
 
-All Tree methods can select any node as the root of the tree. This is achieved from the popup menu of each node. When the "re-apply layout" button is pressed (*L*) while using a Tree method, the root of the tree becomes is the root of the graph (`3worlds:Tut1`).
+All Tree methods allow selecting any node as the root of the tree. This is achieved from the popup menu of each node. When the "re-apply layout" button is pressed (*L*) while using a Tree method, the root of the tree becomes is the root of the graph (`3worlds:Tut1`).
 
 When a project is first created, the default layout is an *orderedTree*. To change to other layouts, use the local popup menu for any node. This layout persists for repeated applications of the layout function until another is chosen.
 
@@ -289,17 +351,17 @@ Finally, you can of course move a node anywhere within the graph window.
 
 *Information hiding*: The following operations can help to hide temporally irrelevent information:
 
-- *collapse/expand*: You can hide or show sub-trees from any node from its local popup menu. All properites of collapsed sub-trees and removed from the property editor;
+- *collapse/expand*: You can hide or show sub-trees from any node from its local popup menu. In addition, all properties of collapsed sub-trees and removed from the property editor;
 - *X* Show/hide cross-link edges. 
 - *<* Show/hide parent-child edges.
 - *>|* Move all isolated nodes to one side (after re-applying the layout)
-- *Show neighbourhood*:  With this feature you can show only nodes within a given path distance from a selected node.
+- *Show neighbourhood*:  With this feature, you can choose to show only nodes within a given path distance from a selected node.
 - *A*: Show all nodes. That is, undo the above operation.
 
 *Resizing*:
 
 - *Zoom*: Zoom in and out in the graph window with the mouse pointer as the focus point (`Ctrl - mouse wheel`)
-- *Pan*: Drag the drawing surface of the graph window (left click outside a node)
+- *Pan*: If the drawing surface is larger than the window, you can drag the drawing surface of the graph window (left click outside a node)
 - *Node Size*
 - *Font size*
 
