@@ -44,8 +44,8 @@ import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
  */
 public enum LibraryTable {
 	/*-			   Menu name,		|     File name,	|         category,          |  package file assocation */
-	Template1(/**/"Blank", /*          */"Blank.utg", /*    */LibraryType.Template, TemplatesDummy.class), //
-	Template2(/**/"Template 1", /*     */"Default_1.utg", /**/LibraryType.Template, TemplatesDummy.class), //
+	Template1(/**/"Blank", /*          */"Blank.utg", /*        */LibraryType.Template, TemplatesDummy.class), //
+	Template2(/**/"SimpleClock 1", /*  */"SimpleClock_1.utg", /**/LibraryType.Template, TemplatesDummy.class), //
 	//
 	Tut1(/*     */"1 Logistic", /*     */"Logistic_1.utg", /*     */LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut2(/*     */"2 Logistic", /*     */"Logistic_2.utg", /*     */LibraryType.Tutorial, TutorialsDummy.class), //
