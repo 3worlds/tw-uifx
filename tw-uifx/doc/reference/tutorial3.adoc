@@ -1,0 +1,45 @@
+=== Tutorial 3: Using tables 
+
+==== Introduction 
+In this tutorial we implement a competitive Lotka-Volterra equation with N-Species to demonstrate the use of tables in _ModelMaker_.
+
+This equation has three constants and one drive:
+
+- _K_: carrying capacity
+- _r_: growth rate
+- _alpha_: species interaction effect
+- _x_: the population. 
+
+All this data is dimensioned by the number of species.
+
+==== Specifications
+
+For convenience, we start building the specifications from a model templates.
+
+. Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project "Tut3".
+
+As this tutorial initially focuses on tables, we will limit the display to show just the relevent parts of the graph.
+
+[start = 2]
+
+. Right-click the root node and select `Collapse -> All`.
+
+. Right-click again on the root node and select `Expand -> dataDefinition:dDef`.
+
+. Right-click on `record:par` node, and select `New node -> table`. Name it "K", choose `dataElementType` and then choose `Double` as the table type.
+
+The type of a table can be any of the standard elemental types such as integers, booleans etc, or they can be tables of records whose contents are defined later. Used recursively, tables and records can encompass all the data requirements in the model's specifications. 
+
+. Create two more tables as children of `record:par`, named "r" and "alpha" and set both as type `Double`.
+
+. Right-click on `record:var` and create a table called "x" and again set it as type `Double`.
+
+To complete the definition, it only remains to dimension the tables and set the indexing order.
+
+
+
+
+
+
+
+
