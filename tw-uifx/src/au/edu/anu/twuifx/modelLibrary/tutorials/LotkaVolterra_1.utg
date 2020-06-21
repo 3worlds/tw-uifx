@@ -14,6 +14,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 //				else
 //					focalLtc.alpha.setByInt(random.nextDouble(),i,j);
 //			}
+// missing x init values
 //		}
 
 // CODE snippet for method LotkaVolterra.growth(...)
