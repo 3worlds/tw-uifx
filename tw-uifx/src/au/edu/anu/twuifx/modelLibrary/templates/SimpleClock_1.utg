@@ -27,17 +27,17 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nAdded
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
 			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
 		categorySet *composition*
-			category *population*
 			category *individual*
+			category *population*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
@@ -55,9 +55,15 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 		record var
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(var)
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
-		constantClass = java.lang.String(code.sys.Par)
-		driverClass = java.lang.String(code.sys.Var)
+		constantClass = java.lang.String(code.sys1.Par)
+		driverClass = java.lang.String(code.sys1.Var)
+		initFunction Init1
+			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+			userClassName = java.lang.String(code.sys1.Init1)
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -72,9 +78,10 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
-	experiment expt
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+					process p1
+						function F1
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.Growth)
 	userInterface gui
 		top top
 			widget ctrl
@@ -82,8 +89,11 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 
 // CROSS-LINKS
+[process:p1] appliesTo aplyTo1 [category:*arena*]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*arena*] drivers drvs [record:var]
 [category:*arena*] lifetimeConstants ltcs [record:par]
+[system:sys1] belongsTo bt3 [category:*permanent*]
+[system:sys1] belongsTo bt2 [category:*individual*]
 [system:sys1] belongsTo bt1 [category:*arena*]
 [category:*population*] autoVar auto [record:AVPopulation]
