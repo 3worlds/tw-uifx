@@ -186,15 +186,15 @@ The task list is now complaining that we also need an edge to a field or table. 
 
 . Select the root node of the graph and create a `dataDefinition` node.
 
-. Create `record` node as a child of `dataDefinition:dDef` and name it 'par'.
+. Create `record` node as a child of `dataDefinition:dDef` and name it 'cst'.
 
-. Create a `field` node as child of `record:par`, name it 'r' and select its type as `Double`.
+. Create a `field` node as child of `record:cst`, name it 'r' and select its type as `Double`.
 
-. Create another `record` as child of `dataDefinition:dDef` and name it 'var'.
+. Create another `record` as child of `dataDefinition:dDef` and name it 'drv'.
 
-. Create a `field` node as child of `record:var`, name it 'x' and select the type `Double`.
+. Create a `field` node as child of `record:drv`, name it 'x' and select the type `Double`.
 
-Note that the names 'var' and 'par' don't imply any meaning to the specifications - they're just names. Their role will be defined later.
+Note that the names 'drv' and 'cst' don't imply any meaning to the specifications - they're just names. Their roles as drivers and constants will be defined later.
 
 This is all the data required for this tutorial and we can now connect the dataTracker to  "x" to address the task left over above.
 
@@ -206,9 +206,9 @@ A new task appears saying that the "x" being tracked doesn't belong to any categ
 
 [start = 7]
 
-. Right-click on `category:*arena*` and select 'New edge -> drivers->record:var'.
+. Right-click on `category:*arena*` and select 'New edge -> drivers->record:drv'.
 
-Note that this edge is to `record:var` rather than `field:x`. The `dataDefinition` sub-tree can become quite elaborate. It incorporates records and tables of any number of dimensions defined recursively. That is, records can contain tables that contain records and so on with out limit.  In the present case, any additial data defined in a sub-tree from `record:var` will be a defined as a driver in the model.
+Note that this edge is to `record:drv` rather than `field:x`. The `dataDefinition` sub-tree can become quite elaborate. It incorporates records and tables of any number of dimensions defined recursively. That is, records can contain tables that contain records and so on with out limit.  In the present case, any additial data defined in a sub-tree from `record:drv` will be a defined as a driver in the model.
 
 There are now two tasks listed but before dealing with these, we have yet to finally enter code for the logistic equation.
 
@@ -297,7 +297,7 @@ A task has appeared now saying no properties have been defined. While we previou
 
 . Right-click on `constantValues:initCnst1` and select `Delete node`.
 
-. Right-click on `category:*arena*` and select `New edge -> lifetimeConstants-> record:par`. (*WHY NOT Parameters?*)
+. Right-click on `category:*arena*` and select `New edge -> lifetimeConstants-> record:cst`. (*WHY NOT Parameters?*)
 
 . Right-click on `system.sys` again, and recreate the `constantValues` node.
 

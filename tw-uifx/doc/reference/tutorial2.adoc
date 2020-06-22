@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-In Tutorial 1 we showed how to add a code snippet to the model specifications and two ways of setting initial values for the model data. In this tutorial we demonstrate how to link the project to an IDE and achieve the same thing by writing Java code. Generally, you'll need to link your project to an IDE for any but the simplest of models.
+In Tutorial 1 demonstrated how to add a code snippet to the model specifications and two ways of setting initial values for the model data. In this tutorial we demonstrate how to link the project to an IDE and achieve the same thing by writing Java code. Generally, you'll always link your project to an IDE for any but the simplest of models.
 
 ==== New Java project
 

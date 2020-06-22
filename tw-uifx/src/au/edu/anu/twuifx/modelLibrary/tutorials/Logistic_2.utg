@@ -59,18 +59,18 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record par
+		record cst
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(par)
+			generatedClassName = java.lang.String(cst)
 			field r
 				description = java.lang.String()
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-		record var
+		record drv
 			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(var)
+			generatedClassName = java.lang.String(drv)
 			field x
 				description = java.lang.String()
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -78,8 +78,8 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 	system sys1
-		constantClass = java.lang.String(code.sys1.Par)
-		driverClass = java.lang.String(code.sys1.Var)
+		constantClass = java.lang.String(code.sys1.Cst)
+		driverClass = java.lang.String(code.sys1.Drv)
 		initFunction Init1
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.Init1)
@@ -128,8 +128,8 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:10:41 AEST 2020
 [dataTracker:trk1] trackField trks1 [field:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[category:*arena*] drivers drvs1 [record:var]
-[category:*arena*] lifetimeConstants ltcs1 [record:par]
+[category:*arena*] drivers drvs1 [record:drv]
+[category:*arena*] lifetimeConstants ltcs1 [record:cst]
 [system:sys1] belongsTo bt3 [category:*individual*]
 [system:sys1] belongsTo bt2 [category:*permanent*]
 [system:sys1] belongsTo bt1 [category:*arena*]

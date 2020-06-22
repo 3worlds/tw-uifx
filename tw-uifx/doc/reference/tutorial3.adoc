@@ -8,8 +8,8 @@ Thw model equation has three constants and one driver:
 
 - _K_: carrying capacity
 - _r_: growth rate
-- _alpha_: species interaction effect
-- _x_: the population. 
+- _alpha_: interspecific competition coefficient
+- _x_: population size. 
 
 All this data is dimensioned by the number of species.
 
@@ -27,15 +27,15 @@ As this tutorial initially focuses on tables, we can limit the display to show j
 
 . Right-click on the root node again and select `Expand -> dataDefinition:dDef`.
 
-. Right-click on `record:par` node, and select `New node -> table`. Name it "K", choose `dataElementType` and then choose `Double` as the table type.
+. Right-click on `record:cst` node, and select `New node -> table`. Name it "K", choose `dataElementType` and then choose `Double` as the table type.
 
 The type of a table can be any of the standard Java elemental types such as integers, booleans etc, or they can be tables of records whose contents are defined later. Used recursively, tables and records can encompass all the data requirements in the model's specifications. 
 
 [start = 5]
 
-. Create two more tables as children of `record:par`, named "r" and "alpha" and set both as `dataElementType` of type `Double`.
+. Create two more tables as children of `record:cst`, named "r" and "alpha" and set both as `dataElementType` of type `Double`.
 
-. Right-click on `record:var` and create a table called "x" and again set it as `dataElementType` of type `Double`.
+. Right-click on `record:drv` and create a table called "x" and again set it as `dataElementType` of type `Double`.
 
 To complete the definition, it only remains to dimension the tables and set the indexing order. Only one dimensioner is needed: this is the number of species. This is done by creating a single `dimensioner` node to be associated with all the newly created tables.
 
@@ -128,7 +128,7 @@ for (int i = 0;i<x.size(0); i++)
 #// init1 ---- Code insert End----<
 -----------------
 
-The above method simply the initialises the equation constants: growth (_r_), carrying capacity (_K_) and the species interaction factor (_alpha_) with random values. There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNG into groups so, for example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality. _ModelMaker_ has two types of RNG classes in addition to the standard Java RNG. These two are faster and produce streams of higher quality. There are also various ways of seeding RNGs to ensure their uniqueness and to help with debugging.  
+The above method simply the initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_) with random values. There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNG into groups so, for example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality. _ModelMaker_ has two types of RNG classes in addition to the standard Java RNG. These two are faster and produce streams of higher quality. There are also various ways of seeding RNGs to ensure their uniqueness and to help with debugging.  
 
 [source,Java]
 -----------------

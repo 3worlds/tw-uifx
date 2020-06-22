@@ -49,18 +49,19 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record par
+		record cst
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(par)
-		record var
+			generatedClassName = java.lang.String()
+		record dec
+		record drv
 			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(var)
+			generatedClassName = java.lang.String()
 	experiment expt
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
-		constantClass = java.lang.String(code.sys1.Par)
-		driverClass = java.lang.String(code.sys1.Var)
+		constantClass = java.lang.String()
+		driverClass = java.lang.String()
 		initFunction Init1
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.Init1)
@@ -91,8 +92,8 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 // CROSS-LINKS
 [process:p1] appliesTo aplyTo1 [category:*arena*]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[category:*arena*] drivers drvs [record:var]
-[category:*arena*] lifetimeConstants ltcs [record:par]
+[category:*arena*] drivers drvs [record:drv]
+[category:*arena*] lifetimeConstants ltcs [record:cst]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*individual*]
 [system:sys1] belongsTo bt1 [category:*arena*]
