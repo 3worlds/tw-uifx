@@ -1,6 +1,7 @@
 === Tutorial 3: Using tables 
 
 ==== Introduction 
+
 In this tutorial we implement a competitive Lotka-Volterra equation with N-Species to demonstrate specifiying tables in _ModelMaker_.
 
 Thw model equation has three constants and one driver:
@@ -46,7 +47,7 @@ A new tasks appears in the task list saying the "size" property must be greater 
 
 [start = 8]
 
-. Click on the `dimensioner:nspp` node and then select the `Selected properties` tab. Set a value for the property `npp#size` of say, 5 (five species).
+. Click on the `dimensioner:nspp` node and then select the `Selected properties` tab. Set a value for the property `npp#size` of say, 4 (four species).
 
 There are now four tasks in the task list indicating we have yet to associate the dimensioner the the four tables. _K_, _r_ and _x_ have one dimension and _alpha_ has two.
 
@@ -59,7 +60,7 @@ Now set the rank order for the indexing of _alpha_.
 
 . Click on `table:alpha` and examine its properties in the `Selected properties` editor.
 
-. Set the value of `SzBy5#rank` to 1 (assuming you've used the default names for the newly created edges to the dimensioner node).
+. Set the value of `SzBy5#rank` to 1 (assuming you've used the default names for the newly created edges to the dimensioner node). Actually, in this spp x spp matrix we needn't care about the rank order as the equation is only concerned with the diagonal of the matrix.
 
 Although the task list is now empty (i.e. the specifications are now deployable), we have yet to write the model equation and provide some output. First, rename the function provided by the template to something meaningful in the present context, and add a data tracker to follow _x_.
 
@@ -81,7 +82,7 @@ As we are using a scalar data tracker (`DataTrackerD0`) to follow a table, we mu
 
 [start = 16]
 
-. Click on `dataTracker:trk1` and in the _Selected properites_ tab, edit the `trks#index` property by clicking the editor button (*...*). The prompt shows the range of this table - here [0:4] being 5 elements. We can select any or all of these elements. For now choose "[0:3]". Check the validity of the entered expression with the "validate" feature. 
+. Click on `dataTracker:trk1` and in the _Selected properites_ tab, edit the `trks#index` property by clicking the editor button (*...*). The prompt shows the range of this table - here [0:3] being 4 elements. We can select any or all of these elements. For now choose all of them ("[0:3]"). Check the validity of the entered expression with the "validate" feature. 
 
 This indexing will provide four data outputs. Indexing statements can select any number of contiguous or discontiguous table elements. The syntax is the same as the  "R" statisical software.
 
@@ -150,3 +151,8 @@ The model is now ready to run. However, you may want to change the time duration
 Running the simulation directly from _ModelMaker_ is a convenience in speeding up turn-around times in comparing specifications and model behaviour. Once the specifications are stable, you can run _ModelRunner_ from _Eclipse_ and debug your equations by running _UserCodeRunner_, a Java file found in the 'src(Default package)' in Java project directory. 
 
 Of course, _ModelRunner_ can also be run as a stand-alone jar file from its `.3w` project directory. _ModelRunner_ assumes the specifications are valid. If they're not, it will crash.
+
+==== Next
+
+The tutorials to follow begin to elaborate the Lotka-Volterra model by developing the `structure` sub-tree for the first time to add a disturbance component to the specifications and finally by driving the simuations with an `EventTimer` rather than the `ClockTimer` we have used so far.
+

@@ -54,17 +54,17 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nAdded
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
 			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
 		categorySet *composition*
-			category *population*
 			category *individual*
+			category *population*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
@@ -81,108 +81,103 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 			generatedClassName = java.lang.String(par)
 			table r
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(species growth rates)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
 			table alpha
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(species competition coefficients)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
 			table K
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(species carrying capacities)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
-		dimensioner nbsp
-			size = java.lang.Integer(4)
 		record var
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(var)
 			table x
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(species population sizes)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
-	system sys
-		constantClass = java.lang.String(code.sys.Par)
-		driverClass = java.lang.String(code.sys.Var)
-		initFunction Init
+		dimensioner nspp
+			size = java.lang.Integer(4)
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system sys1
+		constantClass = java.lang.String(code.sys1.Par)
+		driverClass = java.lang.String(code.sys1.Var)
+		initFunction Init1
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.sys.Init)
-		variableValues initx
-			x = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([4]0.2,0.2,0.2,0.2))
-		dynamics sim
-			stoppingCondition stCnd
-				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+			userClassName = java.lang.String(code.sys1.Init1)
+		dynamics sim1
+			stoppingCondition stCd1
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(1000)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
-			timeline tmln
+			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-				timer clock
+				timer clock1
 					dt = java.lang.Long(1)
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
-					process p
+					process p1
 						function Growth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys.Growth)
-						dataTracker trkr
+							userClassName = java.lang.String(code.sys1.Growth)
+						dataTracker trk1
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-		structure comm
-	experiment expt
-		timePeriod tp
-			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-			start = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	userInterface gui
 		top top
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
-		tab tab
+		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget tblx
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 			widget srsx
-				order = java.lang.Integer(1)
+				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 
 // CROSS-LINKS
-[table:K] sizedBy szBy2 [dimensioner:nbsp]
+[process:p1] appliesTo aplyTo1 [category:*arena*]
+[table:K] sizedBy szBy1 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
-[system:sys] belongsTo blgstqn [category:*arena*]
-[widget:tblx] trackSeries trks3 [dataTracker:trkr]
-[dataTracker:trkr] trackComponent trks2 [system:sys]
-[dataTracker:trkr] trackTable trks1 [table:x]
+[widget:tblx] trackSeries trks3 [dataTracker:trk1]
+[dataTracker:trk1] trackComponent trks2 [system:sys1]
+[dataTracker:trk1] trackTable trks1 [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:3]"))
-[table:alpha] sizedBy dim2 [dimensioner:nbsp]
-	rank = java.lang.Integer(1)
-[table:alpha] sizedBy dim1 [dimensioner:nbsp]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[table:alpha] sizedBy szBy5 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
-[experiment:expt] baseLine bsln [system:sys]
+[table:alpha] sizedBy szBy4 [dimensioner:nspp]
+	rank = java.lang.Integer(0)
 [category:*arena*] drivers drvs [record:var]
 [category:*arena*] lifetimeConstants ltcs [record:par]
-[process:p] appliesTo aplyTo [category:*arena*]
-[table:r] sizedBy szBy1 [dimensioner:nbsp]
+[widget:srsx] trackSeries trks4 [dataTracker:trk1]
+[table:r] sizedBy szBy2 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
-[widget:srsx] trackSeries trks4 [dataTracker:trkr]
-[table:x] sizedBy szBy [dimensioner:nbsp]
-	rank = java.lang.Integer(0)
-[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[system:sys1] belongsTo bt3 [category:*permanent*]
+[system:sys1] belongsTo bt2 [category:*individual*]
+[system:sys1] belongsTo bt1 [category:*arena*]
 [category:*population*] autoVar auto [record:AVPopulation]
+[table:x] sizedBy szBy3 [dimensioner:nspp]
+	rank = java.lang.Integer(0)

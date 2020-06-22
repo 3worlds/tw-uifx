@@ -1,5 +1,7 @@
 === Tutorial 1: Construct and run a simulation for the first time
 
+==== Introduction 
+
 In this tutorial we demonstate the procedure for creating a simulation using _ModelMaker_. We implement a very simple logistic function as a simulation leaving more complex models to later tutorials
 
 In _3Worlds_, a simulation model is defined by constructing a graph of nodes and edges and setting their properties. Nodes in the graph represent elements of interest in the model and the edges represent the relationships between them. The entire graph constitutes the model specifications. The simulation can be run as as soon as the specifications are complete.
@@ -369,6 +371,7 @@ Finally, you can of course move a node anywhere within the graph window.
 That's the end of this tutorial. Recreate this project at anytime from the main menu (`Project -> New -> Tutorials -> 1 Logistic`).
 
 ==== Next
+
 The next tutorial (Tutorial 2) will demonstrate linking the project to an IDE and adding some Java program code.
 
 
