@@ -1,0 +1,24 @@
+=== Elaborating the model structure: Testing the Intermediate Disturbance Hypothesis
+
+==== Introduction
+
+In this tutorial we add a disturbance to effect a community of plants modelled using the competitive Lotka-Volterra equation from the Tutorial 3. This will provide a tool to examine the Intermediate Disturbance Hypothesis (IDH). In Tutorial 3, we had one function for the Lotka-Volterra equation named "Growth". We now add a second function to implement disturbance. We will also output a diversity index. Such variables are called "decorators" in the specifications as they are derived from the current state of the model "drivers".
+
+In the tutorial following this, we will modify these specifications to make a cleaner design.
+
+==== Specifications
+
+The quickest way to begin is to start a new project using `SimpleClock` template and build from there.
+
+. Create a new project from on `Templates -> 2 SimpleClock` and name it "Tut4".
+
+. Collapse the `userInterface` and `experiment` sub-trees and re-apply the layout.
+
+. Rename node `function:F1` to `function:Growth`.
+
+. We will redesign the `dataDefinition` sub-tree so for now delete nodes `record:var` and `record:par`.
+
+
+
+==== Next
+

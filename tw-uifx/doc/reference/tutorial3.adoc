@@ -124,7 +124,7 @@ for (int i = 0; i < r.size(0); i++) {
 	}
 }
 for (int i = 0;i<x.size(0); i++)
-    focalDrv.x.setByInt(1.0, i);
+    focalDrv.x.setByInt(0.2, i);
 #// init1 ---- Code insert End----<
 -----------------
 
@@ -154,5 +154,5 @@ Of course, _ModelRunner_ can also be run as a stand-alone jar file from its `.3w
 
 ==== Next
 
-The tutorials to follow begin to elaborate the Lotka-Volterra model by developing the `structure` sub-tree for the first time to add a disturbance component to the specifications and finally by driving the simuations with an `EventTimer` rather than the `ClockTimer` we have used so far.
+The next two tutorials (4 & 5) begin to elaborate the Lotka-Volterra model by developing the `structure` sub-tree for the first time. A disturbance component is added to the specifications to test the Intermediate Disturbance Hypothesis. So far, we have used a "Clock" timer to drive the simulations. Tutorial 6 introduces event driven simulations for the first time.
 
