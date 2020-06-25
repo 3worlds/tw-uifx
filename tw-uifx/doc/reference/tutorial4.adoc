@@ -36,7 +36,7 @@ The previously defined records could now be named more appropriately. A trick wi
 
 . Re-apply the layout. The data fields should now be in a more sensible arrangement.
 
-Fill out the meta-data properties with at least the desciption of the data. As mentioned, these descpritons become part of the comments in the generated Java code so the file can be largely self-documenting.
+Fill out the meta-data properties with at least the desciption of the data. As mentioned, these descriptions are incorporated in the comments for the generated Java code.
 
 Add the following descriptions to the new data defintions:
 
@@ -44,9 +44,19 @@ Add the following descriptions to the new data defintions:
 - `severity#description:`"% population decrease"
 - `div#description:` "shannon diversity"
 
-That's all the data need for this model and now we can attend to process and then structure. The task list is empty at this stage.
+That's all the data needed for this tutorial. The task list should be empty.
 
 ===== Process
+
+. Collapse the `dataDefinition` and expand the `system:sys1`.
+
+. Delete `initFunction:Init1`: it's not needed for this project. An initialising function will be added later when we introduce componentTypes.
+
+
+
+
+
+.
 
 
 
