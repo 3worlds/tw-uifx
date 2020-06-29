@@ -68,15 +68,6 @@ To do this, we first define a class of components (a `componentType`) to specify
 
 
 -Ahh! I'm completely lost with this!
-I see  componentProcess class is still being written. I guess these tuts are to test and develop that. Anyway i don't understand why the design is as it is and so can't begin to explain it.i.e i don't know if the things i've said in this and the previous tutorials is actually correct.
-
-I would imagine the CLV would be identical to tut 3. Then add a distance componentType and component, define it as permanent individal, link it to the cst and drivers and propose functions to :
-Decide if we have a disturbance this time step.
-If true, determine intensity.
-effect other component i.e the CLV by mapping intensity to severity.
-set dependsOn as required. ie. if dist occurs before or after growth. Probably doesnt matter.
-
-In disturbance terminology intensity is a property of the disturbance and severity is a property of the veg model. A low intensity fire might kill if early in the year and not if late in the year depending on the spp. etc etc.
 
 
 
