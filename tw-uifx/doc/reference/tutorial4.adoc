@@ -2,35 +2,33 @@
 
 ==== Introduction
 
-In this tutorial we add a disturbance to effect the community of plants modelled with the competitive Lotka-Volterra equation (CLV) used in Tutorial 3. This will provide a tool to examine the Intermediate Disturbance Hypothesis (IDH). 
-
-In the tutorial following this, we will modify these specifications to make a cleaner design.
+In this tutorial we add a disturbance to effect a community of plants modelled with the competitive Lotka-Volterra equation (CLV) used in Tutorial 3. This will provide a tool to examine the Intermediate Disturbance Hypothesis (IDH). 
 
 ==== Specifications
 
 Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials` menu as a starting point.
 
-. Create a new project from on `Tutorials -> 4 LotkaVolterra` and name it "Tut4".
+. Create a new project from on `Tutorials -> 4 LotkaVolterra` and name it 'Tut4'.
 
-===== Data definitions
+===== Data definition
 
 . Collapse all nodes except for the `dataDefinition` sub-tree, hide the _cross-links_ ('*X*' button), and re-apply the layout ('*L*' button).
 
-. Add a new `record` to  `dataDefinition:dDef` and name it "dec".
+. Add a new `record` as a child of `dataDefinition:dDef` and name it 'dec'.
 
-Data is divided into three classes in _3Worlds archetype_: constants (cst), drivers (drv) and decorators (dec). Decorators are values derived from the current value of the drivers. In this tutorial we will output a species diversity index (Shannon's), derived from relative abundance of each species. 
+Data is divided into three classes in _3Worlds archetype_: _constants_ (cst), _drivers_ (drv) and _decorators_ (dec). Decorators are values derived from the current value of the drivers. In this tutorial we will output a species diversity index (Shannon's), derived from relative abundance of each species. 
 
-As noted previously, these names are just for clarity - they don't impose a role. You can name a record any thing you like. The role is defined when these records are later collected together within a `category` (cf ).
+As noted previously, these names are just for clarity - they don't impose a _role_. You can name a record any thing you like. The _role_ is defined when these records are later collected together within a `category` belonging to a `component`.
 
-. Add a `field` to `record:dec`, name it "div" (diversity index) of type `Double`.
+. Add a `field` as a child of `record:dec`, name it 'div' (diversity index) of type `Double`.
 
 The disturbance model is simply one with a frequency and severity.
 
-. Add a new `record` to `dataDefinition:dDef` and name it "distCst" (disturbance constants).
+. Add a new `record` to `dataDefinition:dDef` and name it 'distCst' (disturbance constants).
 
-. Add two fields to this record, both of type `Double` called "freq" and "severity" respectively. 
+. Add two fields to this record, both of type `Double` called 'freq' and 'severity' respectively. 
 
-The previously defined records could now be named more appropriately. A trick with the layout functions is that they order the trees alphbetically. To arrange things so related nodes of a particular role are close together, prefix the name with the same string - in this case "dist". We could name all the data associated with the CLV with "comm" (community).
+The previously defined records could now be named more appropriately. A trick with the layout functions is that they order the trees alphbetically. To arrange things so related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We could name all the data associated with the CLV with 'comm' (community).
 
 . Rename `record:cst` to `record:commCst`, `record:drv` to `record:commDrv` and `record:dec` to `record:commDec`.
 
@@ -40,18 +38,45 @@ Fill out the meta-data properties with at least the desciption of the data. As m
 
 Add the following descriptions to the new data defintions:
 
-- `freq#description`: "average return time"
-- `severity#description:`"% population decrease"
-- `div#description:` "shannon diversity"
+- `freq#description`: 'average return time'
+- `severity#description:`'% population decrease'
+- `div#description:` 'shannon diversity'
 
 That's all the data needed for this tutorial. The task list should be empty.
 
-===== Process
+===== Dynamics
 
-. Collapse the `dataDefinition` and expand the `system:sys1`.
+In this section we add another `process` and `function` for the disturbance.
 
-. Delete `initFunction:Init1`: it's not needed for this project. An initialising function will be added later when we introduce componentTypes.
+. Collapse all sub-trees and expand `system:sys`.
 
+. Create a `process` as child of `timer:clock1` and name it 'procDist`.
+
+. Create a `function` as child of `process:procDist` and name it 'dist' and set its type as `ChangeState`.
+
+The name the process for growth should be changed to something more explict now:
+
+. Rename `process:p1` to `process:procGrowth`.
+
+That's all that's required in this section. The task list indicates that the new disturbance process must belong to a category. To do that we need to move on to the structure of the specifications.
+
+===== Structure
+
+Currently, the `system:sys1` is acting as the default `component` for the `process:procGrowth`. We now develop the `structure` sub-tree to add a disturbance component. 
+
+To do this, we first define a class of components (a `componentType`) to specify the _role_ of components of this type and the data structures common to them. This can be defined through edges from the `componentType` and various categories - as was done with `system:sys` in previous tutorials. (its both a componentType AND and component??)
+
+
+-Ahh! I'm completely lost with this!
+I see  componentProcess class is still being written. I guess these tuts are to test and develop that. Anyway i don't understand why the design is as it is and so can't begin to explain it.i.e i don't know if the things i've said in this and the previous tutorials is actually correct.
+
+I would imagine the CLV would be identical to tut 3. Then add a distance componentType and component, define it as permanent individal, link it to the cst and drivers and propose functions to :
+Decide if we have a disturbance this time step.
+If true, determine intensity.
+effect other component i.e the CLV by mapping intensity to severity.
+set dependsOn as required. ie. if dist occurs before or after growth. Probably doesnt matter.
+
+In disturbance terminology intensity is a property of the disturbance and severity is a property of the veg model. A low intensity fire might kill if early in the year and not if late in the year depending on the spp. etc etc.
 
 
 

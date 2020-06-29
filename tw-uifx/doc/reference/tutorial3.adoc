@@ -2,52 +2,49 @@
 
 ==== Introduction 
 
-In this tutorial we implement a competitive Lotka-Volterra equation with N-Species to demonstrate specifiying tables in _ModelMaker_.
+This tutorial implements a competitive Lotka-Volterra equation (CLV) with N-Species to demonstrate the use of tables in _ModelMaker_.
 
-Thw model equation has three constants and one driver:
+The equation has three _constants_ and one _driver_:
 
 - _K_: carrying capacity
 - _r_: growth rate
 - _alpha_: interspecific competition coefficient
 - _x_: population size. 
 
-All this data is dimensioned by the number of species.
-
 ==== Specifications
 
-For convenience, we start building the specifications from a library of model templates. Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1 and 2. The template has already defined a _permanent individual_ residing in an _arena_, a "clock" timer driving a single process and function, a simple experimental design and a basic user interface.
+For convenience, we start building the specifications from a library of model templates. Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1 and 2. The template has already defined a _permanent individual_ residing in an _arena_, a 'clock' timer driving a single process and function, a simple experimental design and a basic user interface.
 
-. Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project "Tut3".
+. Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project 'Tut3'.
 
-As this tutorial initially focuses on tables, we can limit the display to show just the relevent parts of the graph.
+===== Data definition
 
 [start = 2]
 
-. Right-click the root node and select `Collapse -> All`.
+. Collapse all sub-trees from the root node and then expand `dataDefinition:dDef`.
 
-. Right-click on the root node again and select `Expand -> dataDefinition:dDef`.
 
-. Right-click on `record:cst` node, and select `New node -> table`. Name it "K", choose `dataElementType` and then choose `Double` as the table type.
+. Create a `table` as a child of `record:cst`, name it 'K', choose `dataElementType` and then choose `Double` as the table type.
 
 The type of a table can be any of the standard Java elemental types such as integers, booleans etc, or they can be tables of records whose contents are defined later. Used recursively, tables and records can encompass all the data requirements in the model's specifications. 
 
 [start = 5]
 
-. Create two more tables as children of `record:cst`, named "r" and "alpha" and set both as `dataElementType` of type `Double`.
+. Create two more tables as children of `record:cst`, named 'r' and 'alpha' and set both as `dataElementType` of type `Double`.
 
-. Right-click on `record:drv` and create a table called "x" and again set it as `dataElementType` of type `Double`.
+. Create a `table` as a child of `record:drv`, name it 'x' and again set it as `dataElementType` of type `Double`.
 
-To complete the definition, it only remains to dimension the tables, set the indexing order and add a description to each table. Only one dimensioner is needed: this is the number of species. This is done by creating a single `dimensioner` node to be associated with all the newly created tables.
+To complete the definition, we must set the table dimensions, their indexing order and add a description to each table. Only one dimensioner is needed: the number of species. This is done by creating a single `dimensioner` node to be associated with all the newly created tables.
 
 [start = 7]
 
-. Right-click `dataDefinition:dtDef` and create a `dimensioner` node and name it "nspp".
+. Create a `dimensioner` as a child of `dataDefinition:dtDef` and name it 'nspp'.
 
-A new tasks appears in the task list saying the "size" property must be greater than zero.(*NB doesn't say which node this property belongs to*)
+A new tasks appears in the task list saying the 'size' property must be greater than zero.
 
 [start = 8]
 
-. Click on the `dimensioner:nspp` node and then select the `Selected properties` tab. Set a value for the property `npp#size` of say, 4 (four species).
+. Click on `dimensioner:nspp` and go to the `Selected properties` tab. Set a value of `npp#size` to 4 (four species).
 
 Finally, locate the `description` property for each of these tables and add the text from the introduction above. This text, together with other property meta-data such as `range` and `units`, appears as part of the Java documentation when generating Java code from _ModelMaker_.
 
@@ -62,51 +59,52 @@ Now set the rank order for the indexing of _alpha_.
 
 . Click on `table:alpha` and examine its properties in the `Selected properties` editor.
 
-. Set the value of `SzBy5#rank` to 1 (assuming you've used the default names for the newly created edges to the dimensioner node). Actually, in this spp x spp matrix we needn't care about the rank order as the equation is only concerned with the diagonal of the matrix.
+. Set the value of `SzBy5#rank` to 1 (assuming you've used the default names for the newly created edges to the dimensioner node).
 
 Although the task list is now empty (i.e. the specifications are now deployable), we have yet to write the model equation and provide some output. First, rename the function provided by the template to something meaningful in the present context, and add a data tracker to follow _x_.
 
-[start = 12]
+===== Dynamics
 
-. Right-click on `Function:F`, select `Rename node` and name it "Growth".
+. Right-click on `Function:F`, select `Rename node` and name it 'Growth'.
 
-. Create a data tracker (child of `process:p`) and select `DataTrackerD0` as the type.
+. Create a data tracker as a child of `process:p` and select `DataTrackerD0` as the type.
 
 . Create an edge from the data tracker to _x_: `trackTable -> table:x`.
 
-There are now two tasks in the list, one about "indexing" and the other asking which "component" to track. As with the previous tutorials, the component to track is the `system.sys` node.
+There are now two tasks in the list, one about 'indexing' and the other asking which 'component' to track. As with the previous tutorials, the component to track is the `system.sys1` node.
 
-[start = 15]
+[start = 4]
 
-. Create the edge `trackComponent -> system:sys` from the data tracker node.
+. Create the edge `trackComponent -> system:sys1` from the data tracker node.
 
-As we are using a scalar data tracker (`DataTrackerD0`) to follow a table, we must specify which element of `table:x` to track. Indexing is a property of the edge between data tracker and the table. Edge properties appear in the property list of nodes that are the _start node_ of the edge - in this case `dataTracker:trk1`.
+As we are using a scalar data tracker (`DataTrackerD0`) to follow a table, we must specify which element of `table:x` to track. Indexing is a property of the edge between data tracker and the table. Edge properties appear in the property list of nodes that are at the start of the end (thin line) - in this case `dataTracker:trk1`.
 
-[start = 16]
+[start = 5]
 
-. Click on `dataTracker:trk1` and in the _Selected properites_ tab, edit the `trks#index` property by clicking the editor button (*...*). The prompt shows the range of this table - here [0:3] being 4 elements. We can select any or all of these elements. For now choose all of them ("[0:3]"). Check the validity of the entered expression with the "validate" feature. 
+. Click on `dataTracker:trk1` and in the _Selected properites_ tab, edit the `trks#index` property by clicking the editor button (*...*). 
+The prompt shows the range of this table - here [0:3] being 4 elements. We can select any or all of these elements. For now choose all of them ('[0:3]'). Check the validity of the entered expression with the 'validate' feature. 
 
-This indexing will provide four data outputs. Indexing statements can select any number of contiguous or discontiguous table elements. The syntax is the same as the  "R" statisical software.
+This indexing will provide four data outputs. Indexing statements can select any number of contiguous or discontiguous table elements. The syntax is the same as that found in the 'R` statisical software.
 
-We can now add some additional widgets to the user interface. The template just provides a controller. 
+===== User interface
 
-[start = 17]
+We can now add some additional widgets to the user interface. The template provided only a controller. 
 
 . Hide all nodes and expand the `userInterface:gui` node.
 
-. Add a `tab` node to the `userInterface:gui`.
+. Add a `tab` as a child of `userInterface:gui`.
 
-. Add a `widget` to the tab, name it "srsx" and select `SimpleTimeSeriesWidget`.
+. Add a `widget` as a child of `tab:tab1`, name it 'srsx and select `SimpleTimeSeriesWidget` as the widget class.
 
-. Add another `widget` to the tab, name it "tblx" and select `SimpleDM0Widget`.
+. Add a second `widget` as a child of `tab:tab1`, name it 'tblx' and select `SimpleDM0Widget`.
 
-Both these widgets track a `DataTrackerD0` tracker but the `SimpleTimeSeriesWidget` produces a chart while the `SimpleDM0Widget` displays the data as a continuously updated table. The task list requires these widgets to be connected to a data tracker. Note when edges are added to a node in a collapsed sub-tree, as is the case here, the edge appears for a moment to indicate action has taken place, and then fades away. To keep the graph display clean, edges from any node to a node in a collapsed sub-tree are hidden.
+Both these widgets are compatible with this data tracker class: the `SimpleTimeSeriesWidget` produces a chart while the `SimpleDM0Widget` displays the data as a continuously updated table. The task list requires these widgets to be connected to a data tracker. 
 
-The specifications are now deployable again and now we can create a Java project to write the "Growth" and "init" functions, the latter being provided by the `SimpleClock` template we started this tutorial with. 
+The specifications are ready to run and we can now create a Java project to write the 'Growth' and 'init' functions, the latter having been provided by the `SimpleClock` template we started this tutorial with. 
 
-[start = 21]
+===== Link to a Java project
 
-. Follow the steps in Tutorial 2 to create a Java project with _Eclipse_ and name it "tut3".
+. Follow the steps in Tutorial 2 to create a Java project with _Eclipse_ and name it 'tut3'.
 
 . Link it to this _ModelMaker_ project.
 
@@ -130,7 +128,11 @@ for (int i = 0;i<x.size(0); i++)
 #// init1 ---- Code insert End----<
 -----------------
 
-The above method simply the initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_) with random values. There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNG into groups so, for example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality. _ModelMaker_ has two types of RNG classes in addition to the standard Java RNG. These two are faster and produce streams of higher quality. There are also various ways of seeding RNGs to ensure their uniqueness and to help with debugging.  
+The above method simply initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_) with random values. 
+
+There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNG into groups so, for example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality.
+
+_ModelMaker_ has two types of RNG classes in addition to the standard Java RNG. These two are faster and produce streams of higher quality. There are also various ways of seeding RNGs to ensure their uniqueness and to help with debugging.  
 
 [source,Java]
 -----------------
@@ -150,11 +152,12 @@ for (int i = 0; i < dxdt.length; i++)
 
 The model is now ready to run. However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.
 
-Running the simulation directly from _ModelMaker_ is a convenience in speeding up turn-around times in comparing specifications and model behaviour. Once the specifications are stable, you can run _ModelRunner_ from _Eclipse_ and debug your equations by running _UserCodeRunner_, a Java file found in the 'src(Default package)' in Java project directory. 
-
-Of course, _ModelRunner_ can also be run as a stand-alone jar file from its `.3w` project directory. _ModelRunner_ assumes the specifications are valid. If they're not, it will crash.
 
 ==== Next
 
-The next two tutorials (4 & 5) begin to elaborate the Lotka-Volterra model by developing the `structure` sub-tree for the first time. A disturbance component is added to the specifications to test the Intermediate Disturbance Hypothesis. So far, we have used a "Clock" timer to drive the simulations. Tutorial 6 introduces event driven simulations for the first time.
+The next two tutorials (4 & 5) begin to elaborate the Lotka-Volterra model by developing the `structure` sub-tree for the first time. 
+
+A disturbance component is added to the specifications to test the Intermediate Disturbance Hypothesis. 
+
+So far, we have used a 'Clock' timer to drive the simulations. Tutorial 6 introduces event timer class.
 

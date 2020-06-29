@@ -77,6 +77,11 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 	system sys1
 		constantClass = java.lang.String(code.sys1.Cst)
 		driverClass = java.lang.String(code.sys1.Drv)
+		initFunction Init1
+			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+			userClassName = java.lang.String(code.sys1.Init1)
+			snippet snpt2
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"init snippet"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -103,10 +108,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
-		variableValues initVars1
-			x = java.lang.Double(0.001)
-		constantValues initCsts1
-			r = java.lang.Double(3.7)
 	userInterface gui
 		top top
 			widget crtl

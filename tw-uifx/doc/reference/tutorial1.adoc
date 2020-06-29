@@ -328,7 +328,7 @@ When we first ran this model it had no output. Now that we have a time series ch
 . Click the `step` button a few times. A time series of zeros is shown. 
 . Click the `run` button twice in rapid succession. The time (x axis) now reads approximately 30,000 or so depending on the speed of your computer.
 
-The display is still uninteresting because we have not set an initial value for _x_ or parameterised _r_. This can be done in a number of ways but for this tutorial and an initialisation function and a code snippet. We will also include a `stoppingCondition`.
+The display is still uninteresting because we haven't set an initial value for _x_ or parameterised _r_. This can be done in a number of ways but for this tutorial and an initialisation function and a code snippet. We will also include a `stoppingCondition`.
 
 [start=9]
 
