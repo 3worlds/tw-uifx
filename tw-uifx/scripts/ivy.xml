@@ -30,7 +30,7 @@
 	</publications>
 
 	<dependencies>
-		<dependency org="fr.ens.biologie" name="generics" rev="[0.1.12,)"/>
+		<dependency org="fr.ens.biologie" name="generics" rev="[0.1.17,)"/>
 		<dependency org="au.edu.anu.rscs.aot" name="omugi" rev="[0.2.16,)"/>
 		<dependency org="fr.cnrs.iees.tw-core" name="tw-core" rev="[0.3.19,)"/>
 		<dependency org="au.edu.anu.rscs.aot" name="aot" rev="[0.1.8,)"/>

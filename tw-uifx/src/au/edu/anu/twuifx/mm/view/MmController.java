@@ -147,6 +147,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private MenuItem miRedo;
 
 	@FXML
+	private ToggleButton tglEdgeName;
+
+	@FXML
 	private ToggleButton btnXLinks;
 
 	@FXML
@@ -347,8 +350,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
 	}
+
 	private Tooltip getFastToolTip(String text) {
-		Tooltip result =new Tooltip(text);
+		Tooltip result = new Tooltip(text);
 		result.setShowDelay(Duration.millis(200));
 		result.setHideDelay(Duration.millis(200));
 		return result;
@@ -543,6 +547,19 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		textArea.selectPositionCaret(0);
 		textArea.deselect();
 		dlg.showAndWait();
+	}
+
+	@FXML
+	void onEdgeName(ActionEvent event) {
+
+		// TODO if
+		if (tglEdgeName.isSelected()) {
+			// hide edge names
+
+		} else {
+			// show edge names
+		}
+
 	}
 	// ---------------FXML End -------------------------
 
@@ -1192,6 +1209,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		menuItemSaveAs.setDisable(!isOpen);
 		btnChildLinks.setDisable(!isOpen);
 		btnXLinks.setDisable(!isOpen);
+		tglEdgeName.setDisable(!isOpen);
 		btnSelectAll.setDisable(!isOpen);
 		tglSideline.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
