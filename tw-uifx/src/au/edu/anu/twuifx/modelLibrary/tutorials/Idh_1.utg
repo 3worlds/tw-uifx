@@ -17,7 +17,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 //		}
 
 // CODE SNIPPET for function PopulationGrowth(...)
-//		if (disturbanceOccurrence) {
+//		if (disturbanceOccurence) {
 //		// reduction of population size by 99%
 //			for (int i=0; i<x.size(0); i++)
 //				if (x.getByInt(i)>0.01)

@@ -64,7 +64,7 @@ That's all that's required in this section. The task list indicates that the new
 
 Currently, the `system:sys1` is acting as the default `component` for the `process:procGrowth`. We now develop the `structure` sub-tree to add a disturbance component. 
 
-To do this, we first define a class of components (a `componentType`) to specify the _role_ of components of this type and the data structures common to them. This can be defined through edges from the `componentType` and various categories - as was done with `system:sys` in previous tutorials. (its both a componentType AND and component??)
+To do this, we first define a class of components (a `componentType`) to specify the _role_ of components of this type and the data structures common to them. This can be defined through edges from the `componentType` and various categories - as was done with `system:sys1` in previous tutorials. (its both a componentType AND and component??)
 
 
 -Ahh! I'm completely lost with this!
