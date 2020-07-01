@@ -179,7 +179,7 @@
                         <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
                         <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
                         <ToggleButton fx:id="tglSideline" disable="true" mnemonicParsing="false" text="&gt;|" />
-                        <ToggleButton fx:id="tglEdgeName" disable="true" mnemonicParsing="false" onAction="#onEdgeName" text="N" />
+                        <ToggleButton fx:id="tglEdgeName" disable="true" mnemonicParsing="false" text=":N" />
                         <Button fx:id="btnSelectAll" disable="true" mnemonicParsing="false" onAction="#onSelectAll" text="A" />
                         <Label text="Font size:" />
                         <Spinner fx:id="spinFontSize" editable="true" prefWidth="75.0" />

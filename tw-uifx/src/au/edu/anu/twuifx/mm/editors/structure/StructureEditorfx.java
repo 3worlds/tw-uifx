@@ -277,7 +277,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (VisualEdge edge : editableNode.getOutEdges()) {
 					VisualNode vn = (VisualNode) edge.endNode();
 
-					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText() + "->" + vn.getDisplayText());
+					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(true) + "->" + vn.getDisplayText());
 					if (ConfigurationReservedNodeId.isPredefined(vn.id())
 							&& ConfigurationReservedNodeId.isPredefined(editableNode.getConfigNode().id()))
 						mi.setDisable(true);
@@ -359,7 +359,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (editableNode.hasOutEdges()) {
 				for (VisualEdge edge : editableNode.getOutEdges()) {
 					VisualNode vn = (VisualNode) edge.endNode();
-					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText() + "->" + vn.getDisplayText());
+					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(true) + "->" + vn.getDisplayText());
 					if (vn.isPredefined() && editableNode.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {

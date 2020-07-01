@@ -323,6 +323,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnChildLinks.setTooltip(getFastToolTip("Show/hide parent-child edges"));
 		btnSelectAll.setTooltip(getFastToolTip("Show all nodes"));
 		tglSideline.setTooltip(getFastToolTip("Move isolated nodes aside"));
+		tglEdgeName.setTooltip(getFastToolTip("Show/hide edge names"));
 
 		/** Set a handler to refresh the Open menu items when selected */
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
@@ -549,18 +550,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		dlg.showAndWait();
 	}
 
-	@FXML
-	void onEdgeName(ActionEvent event) {
-
-		// TODO if
-		if (tglEdgeName.isSelected()) {
-			// hide edge names
-
-		} else {
-			// show edge names
-		}
-
-	}
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
@@ -591,6 +580,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				nodeRadiusProperty, //
 				btnChildLinks.selectedProperty(), //
 				btnXLinks.selectedProperty(), //
+				tglEdgeName.selectedProperty(),//
 				tglSideline.selectedProperty(), //
 				fontProperty, this, model);
 
@@ -733,6 +723,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
 			Preferences.putBoolean(tglSideline.idProperty().get(), tglSideline.isSelected());
+			Preferences.putBoolean(tglEdgeName.idProperty().get(), tglEdgeName.isSelected());
 			Preferences.putInt(fontSizeKey, fontSize);
 			Preferences.putInt(nodeSizeKey, nodeRadiusProperty.get());
 			Preferences.putInt(jitterKey, jitterProperty.get());
@@ -789,6 +780,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
 		tglSideline.selectedProperty().set(Preferences.getBoolean(tglSideline.idProperty().get(), false));
+		tglEdgeName.selectedProperty().set(Preferences.getBoolean(tglEdgeName.idProperty().get(), true));
 
 		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, 1));
 		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, 1));
