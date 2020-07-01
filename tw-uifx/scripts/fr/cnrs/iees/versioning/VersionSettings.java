@@ -55,7 +55,7 @@ public class VersionSettings {
 	 */
 	protected static String[][] DEPS = {
 		{"fr.ens.biologie", "generics", "[0.1.17,)", null},
-		{"au.edu.anu.rscs.aot", "omugi", "[0.2.16,)", null},
+		{"au.edu.anu.rscs.aot", "omugi", "[0.2.17,)", null},
 		{"fr.cnrs.iees.tw-core", "tw-core", "[0.3.19,)", null},
 		{"au.edu.anu.rscs.aot", "aot", "[0.1.8,)", null},
 		{"au.edu.anu.tw-apps", "tw-apps", "[0.2.2,)", null},
@@ -71,6 +71,7 @@ public class VersionSettings {
 //		{"org.openjfx", "javafx-swing", "[11,)", "_os"},
 		{"org.controlsfx", "controlsfx", "[11,)", null},
 	    {"org.apache.commons","commons-math", "[2,)", null},
+//	    {"org.apache.commons","commons-math3","[3.6.1,)",null},
 	    {"de.gsi", "chartfx", "11.0.4", null},
 	    {"de.gsi", "chartfx-samples", "11.0.4", null},
 	    {"de.gsi.chart", "chartfx-chart", "11.0.4", null},
