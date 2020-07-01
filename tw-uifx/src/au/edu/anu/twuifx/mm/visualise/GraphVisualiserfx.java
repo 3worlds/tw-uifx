@@ -45,6 +45,7 @@ import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.layout.LayoutType;
+import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -74,6 +75,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
@@ -105,7 +107,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final IntegerProperty nodeRadius;
 	private final BooleanProperty parentLineVisibleProperty;
 	private final BooleanProperty edgeLineVisibleProperty;
-	private final BooleanProperty showEdgeNamesProperty;
+
 	// private final BooleanProperty sideLineProperty;
 	private final DropShadow ds;
 	private final ObjectProperty<Font> font;
@@ -115,37 +117,51 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final static Interpolator interpolator = Interpolator.EASE_BOTH;
 	private final IMMController controller;
 	private final Originator recorder;
+	private final ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
+	private final ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
 			IntegerProperty nodeRadius, //
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
-			BooleanProperty showEdgeNames, //
-			BooleanProperty sideline, ObjectProperty<Font> font, //
-			IMMController controller, Originator recorder) {
+			ReadOnlyObjectProperty<ElementDisplayText> nodeSelect, //
+			ReadOnlyObjectProperty<ElementDisplayText> edgeSelect, //
+			BooleanProperty sideline, //
+			ObjectProperty<Font> font, //
+			IMMController controller, //
+			Originator recorder) {
 		this.visualGraph = visualGraph;
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
 		this.edgeLineVisibleProperty = showGraphLine;
 		this.parentLineVisibleProperty = showTreeLine;
-		this.showEdgeNamesProperty = showEdgeNames;
+
 		// this.sideLineProperty = sideline;
 		this.font = font;
 		this.controller = controller;
 		this.recorder = recorder;
+		this.edgeSelect=edgeSelect;
+		this.nodeSelect=nodeSelect;
 		ds = new DropShadow();
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
-		showEdgeNamesProperty.addListener(e -> {
+		
+		this.nodeSelect.addListener(e_ -> {
 			for (VisualNode n : visualGraph.nodes()) {
-				for (Edge edge : n.edges(Direction.OUT)) {
-					VisualEdge ve = (VisualEdge) edge;
-					Text txt = (Text) ve.getText();
-					txt.setText(ve.getDisplayText(showEdgeNamesProperty.get()));
-				}
+				Text txt = (Text)n.getText();
+				txt.setText(n.getDisplayText(nodeSelect.get()));
 			}
+		});
+		this.edgeSelect.addListener(e -> {
+			for (VisualNode n : visualGraph.nodes()) {
+			for (Edge edge : n.edges(Direction.OUT)) {
+				VisualEdge ve = (VisualEdge) edge;
+				Text txt = (Text) ve.getText();
+				txt.setText(ve.getDisplayText(edgeSelect.get()));
+			}
+		}
 		});
 
 	}
@@ -229,7 +245,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		Circle c = new Circle(x, y, nodeRadius.get());
 		c.radiusProperty().bind(nodeRadius);
-		Text text = new Text(n.getDisplayText());
+		Text text = new Text(n.getDisplayText(nodeSelect.get()));
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
@@ -344,7 +360,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
 		Line line = new Line();
-		Text text = new Text(edge.getDisplayText(showEdgeNamesProperty.get()));
+		Text text = new Text(edge.getDisplayText(edgeSelect.get()));
 		text.fontProperty().bind(font);
 		// TODO use property here
 		line.setStroke(graphEdgeColor);
@@ -718,13 +734,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onNodeRenamed(VisualNode vNode) {
 		Text text = (Text) vNode.getText();
-		text.setText(vNode.getDisplayText());
+		text.setText(vNode.getDisplayText(nodeSelect.get()));
 	}
 
 	@Override
 	public void onEdgeRenamed(VisualEdge vEdge) {
 		Text text = (Text) vEdge.getText();
-		text.setText(vEdge.getDisplayText(showEdgeNamesProperty.get()));
+		text.setText(vEdge.getDisplayText(edgeSelect.get()));
 	}
 
 	private VisualNode getTWRoot() {

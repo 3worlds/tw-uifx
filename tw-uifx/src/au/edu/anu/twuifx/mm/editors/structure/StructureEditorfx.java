@@ -39,6 +39,7 @@ import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
 import au.edu.anu.twapps.mm.layout.LayoutType;
+import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
@@ -122,7 +123,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (Tuple<String, VisualNode, SimpleDataTreeNode> p : filteredEdgeSpecs) {
 					boolean reserved = ConfigurationReservedEdgeLabels.isPredefined(p.getFirst());
 					if (!reserved) {
-						MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().getDisplayText());
+						MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().getDisplayText(ElementDisplayText.RoleName));
 						if (ConfigurationReservedNodeId.isPredefined(p.getSecond().id())
 								&& ConfigurationReservedNodeId.isPredefined(editableNode.getConfigNode().id()))
 							mi.setDisable(true);
@@ -145,7 +146,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_CHILD_LINK);
 			if (!orphanedChildren.isEmpty() && !editableNode.isPredefined()) {
 				for (VisualNode vn : orphanedChildren) {
-					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText());
+					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					mi.setOnAction((e) -> {
 
 						onReconnectChild(vn);
@@ -170,7 +171,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren()) {
 					if (vn.isCollapsed()) {
 						count++;
-						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText());
+						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 						mi.setOnAction((e) -> {
 							onExpandTree(vn, duration);
 						});
@@ -196,7 +197,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren()) {
 					if (!vn.isCollapsed()) {
 						count++;
-						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText());
+						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 						mi.setOnAction(e -> onCollapseTree(vn, duration));
 					}
 				}
@@ -236,7 +237,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_SHOWLOCALGRAPH);
 			mi.setOnAction((e) -> {
 				String title = MenuLabels.ML_SHOWLOCALGRAPH.label();
-				String header = "Show graph surrounding '" + editableNode.getSelectedVisualNode().getDisplayText()
+				String header = "Show graph surrounding '" + editableNode.getSelectedVisualNode().getDisplayText(ElementDisplayText.RoleName)
 						+ "'.";
 				String content = "Path length: ";
 				String defaultValue = "1";
@@ -277,7 +278,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (VisualEdge edge : editableNode.getOutEdges()) {
 					VisualNode vn = (VisualNode) edge.endNode();
 
-					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(true) + "->" + vn.getDisplayText());
+					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->" + vn.getDisplayText(ElementDisplayText.RoleName));
 					if (ConfigurationReservedNodeId.isPredefined(vn.id())
 							&& ConfigurationReservedNodeId.isPredefined(editableNode.getConfigNode().id()))
 						mi.setDisable(true);
@@ -299,7 +300,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_CHILD_EDGE);
 			if (editableNode.hasChildren() && !editableNode.isPredefined()) {
 				for (VisualNode child : editableNode.getSelectedVisualNode().getChildren()) {
-					MenuItem mi = MenuLabels.addMenuItem(mu, child.getDisplayText());
+					MenuItem mi = MenuLabels.addMenuItem(mu, child.getDisplayText(ElementDisplayText.RoleName));
 					if (child.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
@@ -321,7 +322,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (editableNode.hasChildren() && !editableNode.isPredefined()) {
 				Iterable<VisualNode> lst = editableNode.getSelectedVisualNode().getChildren();
 				for (VisualNode vn : lst) {
-					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText());
+					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					if (vn.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
@@ -359,7 +360,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (editableNode.hasOutEdges()) {
 				for (VisualEdge edge : editableNode.getOutEdges()) {
 					VisualNode vn = (VisualNode) edge.endNode();
-					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(true) + "->" + vn.getDisplayText());
+					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->" + vn.getDisplayText(ElementDisplayText.RoleName));
 					if (vn.isPredefined() && editableNode.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
@@ -403,7 +404,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPORT_TREE);
 			if (editableNode.hasChildren() && !editableNode.isPredefined()) {
 				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren()) {
-					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText());
+					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					if (vn.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {

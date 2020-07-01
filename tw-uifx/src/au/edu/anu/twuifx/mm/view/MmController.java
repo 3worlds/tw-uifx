@@ -97,6 +97,7 @@ import au.edu.anu.twapps.mm.userProjectFactory.IDETypes;
 import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.IMMModel;
 import au.edu.anu.twapps.mm.MMMemento;
+import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -146,8 +147,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private MenuItem miRedo;
 
-	@FXML
-	private ToggleButton tglEdgeName;
+//	@FXML
+//	private Button btnNodeTextChoice;
+//	
+//	@FXML
+//	private ToggleButton tglEdgeName;
 
 	@FXML
 	private ToggleButton btnXLinks;
@@ -250,6 +254,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private Label lblChecking;
 
+	@FXML
+	private ComboBox<ElementDisplayText> cbNodeTextChoice;
+
+	@FXML
+	private ComboBox<ElementDisplayText> cbEdgeTextChoice;
+
 	public enum Verbosity {
 		brief, medium, full;
 	}
@@ -268,6 +278,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private LayoutType currentLayout;
 
+//	private ElementDisplayText nodeText;
+//	private ElementDisplayText edgeText;
+
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private Font font;
 	private int fontSize;
@@ -284,6 +297,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// --------------------------- FXML Start ----------------------
 	@FXML
 	public void initialize() {
+
+		cbNodeTextChoice.getItems().addAll(ElementDisplayText.values());
+		cbNodeTextChoice.getSelectionModel().select(ElementDisplayText.RoleName);
+		cbEdgeTextChoice.getItems().addAll(ElementDisplayText.values());
+		cbEdgeTextChoice.getSelectionModel().select(ElementDisplayText.RoleName);
 
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
@@ -323,7 +341,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnChildLinks.setTooltip(getFastToolTip("Show/hide parent-child edges"));
 		btnSelectAll.setTooltip(getFastToolTip("Show all nodes"));
 		tglSideline.setTooltip(getFastToolTip("Move isolated nodes aside"));
-		tglEdgeName.setTooltip(getFastToolTip("Show/hide edge names"));
+		cbEdgeTextChoice.setTooltip(getFastToolTip("Edge text display options"));
+		cbNodeTextChoice.setTooltip(getFastToolTip("Node text display options"));
+		// tglEdgeName.setTooltip(getFastToolTip("Show/hide edge names"));
 
 		/** Set a handler to refresh the Open menu items when selected */
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
@@ -574,13 +594,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onProjectOpened(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
 		this.visualGraph = layoutGraph;
 		Cursor oldCursor = setWaitCursor();
-
 		visualiser = new GraphVisualiserfx(visualGraph, //
 				zoomTarget, //
 				nodeRadiusProperty, //
 				btnChildLinks.selectedProperty(), //
 				btnXLinks.selectedProperty(), //
-				tglEdgeName.selectedProperty(),//
+				cbNodeTextChoice.getSelectionModel().selectedItemProperty(), //
+				cbEdgeTextChoice.getSelectionModel().selectedItemProperty(), //
 				tglSideline.selectedProperty(), //
 				fontProperty, this, model);
 
@@ -705,6 +725,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String Mode = "_mode";
 	private static final String AccordionSelection = "_AccSel";
 	private static final String CurrentLayoutKey = "currentLayout";
+
+	private static final String NodeTextDisplayChoice = "nodeTextDisplayChoice";
+	private static final String EdgeTextDisplayChoice = "edgeTextDisplayChoice";
 	private static final String ScrollHValue = "HValue";
 	private static final String ScrollVValue = "VValue";
 
@@ -723,7 +746,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
 			Preferences.putBoolean(tglSideline.idProperty().get(), tglSideline.isSelected());
-			Preferences.putBoolean(tglEdgeName.idProperty().get(), tglEdgeName.isSelected());
 			Preferences.putInt(fontSizeKey, fontSize);
 			Preferences.putInt(nodeSizeKey, nodeRadiusProperty.get());
 			Preferences.putInt(jitterKey, jitterProperty.get());
@@ -731,6 +753,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
 			Preferences.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
 			Preferences.putEnum(CurrentLayoutKey, currentLayout);
+			Preferences.putEnum(NodeTextDisplayChoice, cbNodeTextChoice.getSelectionModel().getSelectedItem());
+			Preferences.putEnum(EdgeTextDisplayChoice, cbEdgeTextChoice.getSelectionModel().getSelectedItem());
 			Preferences.putDouble(scrollPane.idProperty().get() + ScrollHValue, scrollPane.getHvalue());
 			Preferences.putDouble(scrollPane.idProperty().get() + ScrollVValue, scrollPane.getVvalue());
 
@@ -767,6 +791,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
 		currentLayout = (LayoutType) Preferences.getEnum(CurrentLayoutKey, LayoutType.OrderedTree);
+		cbNodeTextChoice.getSelectionModel()
+				.select((ElementDisplayText) Preferences.getEnum(NodeTextDisplayChoice, ElementDisplayText.RoleName));
+		cbEdgeTextChoice.getSelectionModel()
+				.select((ElementDisplayText) Preferences.getEnum(EdgeTextDisplayChoice, ElementDisplayText.RoleName));
 
 		PropertySheet.Mode mode = (PropertySheet.Mode) Preferences
 				.getEnum(allElementsPropertySheet.idProperty().get() + Mode, PropertySheet.Mode.CATEGORY);
@@ -780,7 +808,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
 		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
 		tglSideline.selectedProperty().set(Preferences.getBoolean(tglSideline.idProperty().get(), false));
-		tglEdgeName.selectedProperty().set(Preferences.getBoolean(tglEdgeName.idProperty().get(), true));
 
 		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, 1));
 		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, 1));
@@ -1201,7 +1228,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		menuItemSaveAs.setDisable(!isOpen);
 		btnChildLinks.setDisable(!isOpen);
 		btnXLinks.setDisable(!isOpen);
-		tglEdgeName.setDisable(!isOpen);
+		cbNodeTextChoice.setDisable(!isOpen);
+		cbEdgeTextChoice.setDisable(!isOpen);
 		btnSelectAll.setDisable(!isOpen);
 		tglSideline.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);

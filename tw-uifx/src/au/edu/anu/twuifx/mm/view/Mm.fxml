@@ -2,6 +2,7 @@
 
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -179,14 +180,17 @@
                         <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
                         <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
                         <ToggleButton fx:id="tglSideline" disable="true" mnemonicParsing="false" text="&gt;|" />
-                        <ToggleButton fx:id="tglEdgeName" disable="true" mnemonicParsing="false" text=":N" />
                         <Button fx:id="btnSelectAll" disable="true" mnemonicParsing="false" onAction="#onSelectAll" text="A" />
                         <Label text="Font size:" />
-                        <Spinner fx:id="spinFontSize" editable="true" prefWidth="75.0" />
+                        <Spinner fx:id="spinFontSize" editable="true" prefWidth="65.0" />
                         <Label text="Node size:" />
-                        <Spinner fx:id="spinNodeSize" editable="true" prefWidth="75.0" />
+                        <Spinner fx:id="spinNodeSize" editable="true" prefWidth="65.0" />
                         <Label text="Jitter: " />
-                        <Spinner fx:id="spinJitter" />
+                        <Spinner fx:id="spinJitter" prefWidth="65.0" />
+                        <Label text="N text" />
+                        <ComboBox fx:id="cbNodeTextChoice" disable="true" prefWidth="115.0" />
+                        <Label text="E text" />
+                        <ComboBox fx:id="cbEdgeTextChoice" disable="true" prefWidth="115.0" />
                     </items>
                   </ToolBar>
                </bottom>

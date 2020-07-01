@@ -36,6 +36,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import fr.cnrs.iees.graph.Edge;
 
@@ -122,7 +123,7 @@ public abstract class TreeVertexAdapter extends VertexAdapter implements ITreeVe
 		sortList.sort(new Comparator<VisualNode>() {
 			@Override
 			public int compare(VisualNode o1, VisualNode o2) {
-				return o1.getDisplayText().compareTo(o2.getDisplayText());
+				return o1.getDisplayText(ElementDisplayText.RoleName).compareTo(o2.getDisplayText(ElementDisplayText.RoleName));
 			}
 		});
 		for (VisualNode nChild : sortList) {
