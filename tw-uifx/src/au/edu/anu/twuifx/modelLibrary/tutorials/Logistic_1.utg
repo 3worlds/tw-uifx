@@ -81,7 +81,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.Init1)
 			snippet snpt2
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"init snippet"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"focalLtc.r = 3.7","focalDrv.x = 0.01;"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -101,7 +101,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys1.Chaos)
 							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"code here for logistic equation"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"focalDrv.x = r*x*(1-x);"))
 						dataTracker trk1
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
