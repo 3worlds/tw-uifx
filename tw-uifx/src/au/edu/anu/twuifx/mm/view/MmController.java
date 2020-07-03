@@ -992,7 +992,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private void callLayout(VisualNode root, LayoutType layout, double duration) {
 		int size = jitterProperty.get();
 		double dSize = size;
-		dSize = dSize / 100.0;
+		dSize = dSize / 10.0;
 		visualiser.doLayout(root, dSize, layout, btnChildLinks.isSelected(), btnXLinks.isSelected(),
 				tglSideline.isSelected(), duration);
 	}

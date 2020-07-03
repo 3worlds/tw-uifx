@@ -23,6 +23,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.PropertySheet?>
@@ -99,7 +100,7 @@
 		</MenuBar>
 	</top>
    <center>
-      <SplitPane fx:id="splitPane1" dividerPositions="0.4" BorderPane.alignment="CENTER">
+      <SplitPane fx:id="splitPane1" dividerPositions="0.3" BorderPane.alignment="CENTER">
          <items>
             <BorderPane>
                <center>
@@ -176,12 +177,7 @@
                <bottom>
                   <ToolBar BorderPane.alignment="CENTER">
                     <items>
-                        <Button fx:id="btnLayout" disable="true" onAction="#handleLayout" text="_L" />
-                        <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" />
-                        <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" />
-                        <ToggleButton fx:id="tglSideline" disable="true" mnemonicParsing="false" text="&gt;|" />
-                        <Button fx:id="btnSelectAll" disable="true" mnemonicParsing="false" onAction="#onSelectAll" text="A" />
-                        <Label text="Font size:" />
+                        <Label text="Font size:" textAlignment="RIGHT" />
                         <Spinner fx:id="spinFontSize" editable="true" prefWidth="65.0" />
                         <Label text="Node size:" />
                         <Spinner fx:id="spinNodeSize" editable="true" prefWidth="65.0" />
@@ -209,6 +205,18 @@
                      </content>
                   </ScrollPane>
                </center>
+               <right>
+                  <ToolBar orientation="VERTICAL" BorderPane.alignment="CENTER">
+                    <items>
+                        <VBox alignment="CENTER" VBox.vgrow="ALWAYS" />
+                        <Button fx:id="btnLayout" disable="true" onAction="#handleLayout" text="_L" textAlignment="CENTER" />
+                        <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" textAlignment="CENTER" />
+                        <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" textAlignment="CENTER" />
+                        <ToggleButton fx:id="tglSideline" disable="true" mnemonicParsing="false" text="&gt;|" textAlignment="CENTER" />
+                        <Button fx:id="btnSelectAll" disable="true" mnemonicParsing="false" onAction="#onSelectAll" text="A" textAlignment="CENTER" />
+                    </items>
+                  </ToolBar>
+               </right>
             </BorderPane>
          </items>
       </SplitPane>
