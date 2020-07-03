@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for creating a simulation with _ModelMaker_ for the first time. The user interface of _ModelMaker_ is introduced starting with a simple logistic equation as a test case. New modelling capabilities are gradually introduced over the course of these tutorials.
+This tutorial explains the procedure for creating a simulation with _ModelMaker_ for the first time. The user interface of _ModelMaker_ is introduced using with a simple logistic equation as a test case. New modelling capabilities are gradually introduced over the course of these tutorials.
 
 In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. Nodes in the graph represent elements of interest in the model and the edges represent the relationships between them. The entire graph constitutes the model specifications. The simulation can be run as as soon as the specifications are complete.
 
@@ -153,7 +153,7 @@ A new task has been posted requiring a `process` node.
 
 . Create a process node as child of `timer:tmr1`. 
 
-A 'process' is a set of computations acting on model components driven at the rate of the parent `timer`. A 'component` is any physical or biology entity you want to include in your model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere and so on) *TODO actually more than this* .
+A 'process' is a set of computations acting on model components driven at the rate of the parent `timer`. A 'component` is any physical or biology entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere and so on).
 
 Processes can be composed of any number of functions of various types (much more on this later). We need just one function to implement the logistic equation - a `ChangeState` function that takes the current state of a component and calculates the next state.
 

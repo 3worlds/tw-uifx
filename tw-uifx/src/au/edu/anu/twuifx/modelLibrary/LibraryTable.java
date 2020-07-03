@@ -38,7 +38,7 @@ import fr.cnrs.iees.graph.io.GraphImporter;
 import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
 
 /**
- * Lookup struc for entries in ModelMaker "New" menu. Display order is the
+ * A lookup enum for entries in ModelMaker "New" menu. Display order is the
  * declaration order in this enum. Entries are grouped as either a Template,
  * Tutorial or Model with utg files placed in the appropriate package.
  */
@@ -48,11 +48,10 @@ public enum LibraryTable {
 	Template2(/**/"2 SimpleClock", /*    */"SimpleClock_1.utg", /**/LibraryType.Template, TemplatesDummy.class), //
 	//
 	Tut1(/*     */"1 Logistic", /*     */"Logistic_1.utg", /*     */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut2(/*     */"2 Logistic", /*     */"Logistic_2.utg", /*     */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut4(/*     */"4 LotkaVolterra", /**/"LotkaVolterra_1.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut5(/*     */"5 I.D.H.", /*	   */"Idh_1.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut6(/*     */"6 I.D.H.", /*	   */"Idh_2.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut7(/*     */"7 I.D.H.", /*	   */"Idh_3.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut2(/*     */"2 LotkaVolterra", /**/"LotkaVolterra_1.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut3(/*     */"3 I.D.H.", /*	   */"Idh_1.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut6(/*     */"4 I.D.H.", /*	   */"Idh_2.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut7(/*     */"5 I.D.H.", /*	   */"Idh_3.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	//
 	Model1(/*   */"Genetics", /*       */"Gddm_1.utg", /**/LibraryType.Model, ModelsDummy.class), //
 	;
