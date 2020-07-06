@@ -2,7 +2,7 @@
 
 ==== Introduction
 
-In this tutorial we add a disturbance to effect a community of plants modelled with the competitive Lotka-Volterra equation (CLV) from Tutorial 3. This will provide a tool to examine the Intermediate Disturbance Hypothesis (IDH). 
+In this tutorial we add a disturbance to effect a community of plants modelled with the competitive Lotka-Volterra equation (CLV) from Tutorial 3. With this model, we can examine the Intermediate Disturbance Hypothesis (IDH). 
 
 ==== Specifications
 
@@ -26,7 +26,7 @@ Data is divided into three classes in the _3Worlds archetype_:
 
 Decorators are values derived from the current value of the drivers. Here, the _decorator_  will be a species diversity index (Shannon's), derived from relative abundance of each species. 
 
-As noted previously, these names are just for clarity - they don't impose a _role_. Apart from uniqueness, you can name a node any thing you like. Here, the records are named to align with their intended roles to keep things organised. The _role_ is formally defined when these records are later collected together within a `category` that `belongsTo` a `component`.
+As noted previously, these names are just for clarity - they don't impose a _role_. You can name a node any thing you like as long as the names are unique. Here, the records are named to align with their intended roles to keep things organised. The _role_ is formally defined when these records are later collected together within a `category` that `belongsTo` a `component`.
 
 . Add a `field` as a child of `record:dec`, name it 'div' (diversity index) of type `Double`.
 
@@ -42,7 +42,7 @@ The previously defined records should now be given better names. A trick with th
 
 . Re-apply the layout. The data fields should now be in a more sensible order.
 
-Fill out the meta-data properties with at least the desciption of the data. As mentioned, these descriptions are incorporated in the comments for the generated Java code.
+Fill out the meta-data properties with at least the desciption of the data. As mentioned, these descriptions are incorporated in the comments of the generated Java code.
 
 Add the following descriptions to the new data defintions:
 
@@ -50,32 +50,53 @@ Add the following descriptions to the new data defintions:
 - `inten#description:`'% population decrease'
 - `div#description:` 'shannon diversity'
 
+For simplicity, we define intensity as a constant rather than a driver.
+
 That's all the data needed for this tutorial and the task list should now be empty.
 
 ===== Dynamics
 
-In this section we add another `process` and `function` for the disturbance.
+In this section we add a function to initiate a disturbance and second to apply the disturbance to the community.
 
 . Collapse all sub-trees and expand `system:sys1`.
 
-. Create a `process` as child of `timer:clock1` and name it 'procDist`.
+. Create a `process` as child of `timer:clock1` and name it 'procDistOccurance`.
 
-. Create a `function` as child of `process:procDist` and name it 'Dist' and set its type as `ChangeState`.
+. Create a `function` as child of `process:procDistOccurrence` and name it 'DistOccurrence' and set its type as `RelateToDecision`.
 
-The name the process for growth should now be changed to something more particular:
+. Create a second `process` as child of `timer:clock1` and name it 'procDistEffects'.
 
-[start = 4]
+. Create a `function` as child of `process:procDistEffects`, name it 'DistEffects' and set its type to `ChangeOtherState`.
 
-. Rename `process:p1` to `process:procGrowth`.
+The name the growth process and function should now be changed to something more appropriate:
 
-The function `function:Growth` will perform the same function as it did in the previous tutorial: calculate the next state of _x_ from its current state. However, we will add the effect of disturbance as well: if there is a disturbance then reduce the population in some proportion of the disturbance intensity. 
-This implies that `function:Dist` must occur first. As both functions are driven by the same `timer` and therefore occur simulateously, it means we must make the calling order explict. To do this we add an edge saying `process:procGrowth` depends on `process:procDist`.
+[start = 6]
 
-[start=5]
+. Rename `process:p1` to `process:procCommGrowth`.
 
-. Right-click on `process:procGrowth` and select `New edge -> dependsOn -> process:procDist`.
+. Rename `function:Growth` to `function:CommGrowth`.
 
-That's all that's required in this section. The task list indicates that the new disturbance process must belong to a category. To do that we need to move on to the structure of the specifications.
+The function `function:CommGrowth` will perform the same function as it did in the previous tutorial: calculate the next state of _x_ from its current state. 
+
+The function `function:DistOccurrence`, a `RelateToDecision` function, will decide if a disturbance is to occur or not. 
+
+If a disturbance occurs, `function:DistEffects` will implement the consequences of the disturbance on the community.
+
+This implies an order of execution of these three functions. As all these functions are driven by the same `timer` and therefore occur simulateously, it means we must make the calling order explict. To do this we add an edge saying 'X depends on Y'.
+
+First, set `process:procDistEffects`to depend on `process:procDistOccurrence`.
+
+[start=8]
+
+. Right-click on `process:procDistEffects` and select `New edge -> dependsOn -> process:procDistOccurrence.
+
+To be consistence in the order, make `process:procCommGrowth` depend on `process:procDistEffects`.
+
+[start = 9]
+
+. Right-click on `process:procCommGrowth` and select `New edge -> dependsOn -> process:procDistEffects`.
+
+That's all that's required in this section. The task list indicates that the new processes must belong to some categories. To do that we need to move on to the structure of the specifications.
 
 ===== Structure
 
@@ -91,15 +112,31 @@ Recall from the previous tutorial, that `system:sys1` is acting as a single comp
 
 ... has `process:p1` applied to it.
 
-The _arena_ is a special category. It must exist in every specification and the data (_constants_, _drivers_ and _decorators_) associated with it are available to all other components. The scope of this data is therefore global. 
+The _arena_ is a special category. It must exist in every specification and can only have data  (_constants_, _drivers_ and _decorators_) associated with it if it belongs to `category:individual`. With the addition of disturbance there will now be multiple components associated with the _arena_ so it must be categorised as a `population`(?) and can no longer have data. If it were allowed to have data, the data would be available to all functions. This would imply a relationshipe between functions that would not be apparent from the specifications. 
 
-The discussion above about how the Growth function will interact with the disturbance function, implies that the disturbance effects will take place in the Growth function. This means data indicating that a disturbance has taken place must be known to the Growth function. The reverse is not true: the disturbance function (which simply decides if a disturbance is to take place) does not need to know anything about the Growth function. Therefore, the disturabnce function is global and this component will belong to the _arena_ rather than as is currently the case, the community component.  
+The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define a _role_ to associate the disturbance with the effected community.
 
-This relationship between the disturbance and the community breaks an aim of this project: that the specifications should make all these relationships manifest. Here this relationship is hidden through the use of global data. 
+. Create a `structure` as a child of `system:sys1`.
+
+. Delete `initFunction:init` as it's not needed for these specifications.
+
+. Create a `componentType` as a child of `structure:struc1` and name it 'distType'.
+
+. Create a `component` as child of `componentType:distType` and name it 'dist'.
+
+. Create a second `componentType` as child of `structure:struc1` and name it 'commType'.
+
+. Create a `component` as child of `componentType:commType` and name it 'comm'.
+
+. Create a `relationType` as child of `structure:struc1` and name it 'distToComm'.
+
+We now define the _roles_ of the two `componentTypes`, and what categories are related by the `relationType`. But first we should redefine the _role_ of `system:sys` that we inherited from Tutorial 3 when starting this project.
 
 
 
-STOP HERE AND REDO FOR IDH_2
+
+
+
 
 
 
