@@ -2,13 +2,13 @@
 
 ==== Introduction
 
-In this tutorial we add a disturbance to effect a community of plants modelled with the competitive Lotka-Volterra equation (CLV) used in Tutorial 3. This will provide a tool to examine the Intermediate Disturbance Hypothesis (IDH). 
+In this tutorial we add a disturbance to effect a community of plants modelled with the competitive Lotka-Volterra equation (CLV) from Tutorial 3. This will provide a tool to examine the Intermediate Disturbance Hypothesis (IDH). 
 
 ==== Specifications
 
 Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials` menu as a starting point.
 
-. Create a new project from on `Tutorials -> 4 LotkaVolterra` and name it 'Tut4'.
+. Create a new project from on `Tutorials -> 2 LotkaVolterra` and name it 'Tut4'.
 
 ===== Data definition
 
@@ -16,58 +16,91 @@ Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials`
 
 . Add a new `record` as a child of `dataDefinition:dDef` and name it 'dec'.
 
-Data is divided into three classes in _3Worlds archetype_: _constants_ (cst), _drivers_ (drv) and _decorators_ (dec). Decorators are values derived from the current value of the drivers. In this tutorial we will output a species diversity index (Shannon's), derived from relative abundance of each species. 
+Data is divided into three classes in the _3Worlds archetype_:
 
-As noted previously, these names are just for clarity - they don't impose a _role_. You can name a record any thing you like. The _role_ is defined when these records are later collected together within a `category` belonging to a `component`.
+... _constants_ (cst), 
+
+... _drivers_ (drv) and 
+
+... _decorators_ (dec). 
+
+Decorators are values derived from the current value of the drivers. Here, the _decorator_  will be a species diversity index (Shannon's), derived from relative abundance of each species. 
+
+As noted previously, these names are just for clarity - they don't impose a _role_. Apart from uniqueness, you can name a node any thing you like. Here, the records are named to align with their intended roles to keep things organised. The _role_ is formally defined when these records are later collected together within a `category` that `belongsTo` a `component`.
 
 . Add a `field` as a child of `record:dec`, name it 'div' (diversity index) of type `Double`.
 
-The disturbance model is simply one with a frequency and severity.
+We now define some data for the simple disturbance model: frequency and intensity.
 
 . Add a new `record` to `dataDefinition:dDef` and name it 'distCst' (disturbance constants).
 
-. Add two fields to this record, both of type `Double` called 'freq' and 'severity' respectively. 
+. Add two fields to this record, both of type `Double` called 'freq' and 'inten' respectively. 
 
-The previously defined records could now be named more appropriately. A trick with the layout functions is that they order the trees alphbetically. To arrange things so related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We could name all the data associated with the CLV with 'comm' (community).
+The previously defined records should now be given better names. A trick with the Tree layout functions is that they order the trees alphbetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We could name all the data associated with the CLV with 'comm' (community).
 
 . Rename `record:cst` to `record:commCst`, `record:drv` to `record:commDrv` and `record:dec` to `record:commDec`.
 
-. Re-apply the layout. The data fields should now be in a more sensible arrangement.
+. Re-apply the layout. The data fields should now be in a more sensible order.
 
 Fill out the meta-data properties with at least the desciption of the data. As mentioned, these descriptions are incorporated in the comments for the generated Java code.
 
 Add the following descriptions to the new data defintions:
 
 - `freq#description`: 'average return time'
-- `severity#description:`'% population decrease'
+- `inten#description:`'% population decrease'
 - `div#description:` 'shannon diversity'
 
-That's all the data needed for this tutorial. The task list should be empty.
+That's all the data needed for this tutorial and the task list should now be empty.
 
 ===== Dynamics
 
 In this section we add another `process` and `function` for the disturbance.
 
-. Collapse all sub-trees and expand `system:sys`.
+. Collapse all sub-trees and expand `system:sys1`.
 
 . Create a `process` as child of `timer:clock1` and name it 'procDist`.
 
-. Create a `function` as child of `process:procDist` and name it 'dist' and set its type as `ChangeState`.
+. Create a `function` as child of `process:procDist` and name it 'Dist' and set its type as `ChangeState`.
 
-The name the process for growth should be changed to something more explict now:
+The name the process for growth should now be changed to something more particular:
+
+[start = 4]
 
 . Rename `process:p1` to `process:procGrowth`.
+
+The function `function:Growth` will perform the same function as it did in the previous tutorial: calculate the next state of _x_ from its current state. However, we will add the effect of disturbance as well: if there is a disturbance then reduce the population in some proportion of the disturbance intensity. 
+This implies that `function:Dist` must occur first. As both functions are driven by the same `timer` and therefore occur simulateously, it means we must make the calling order explict. To do this we add an edge saying `process:procGrowth` depends on `process:procDist`.
+
+[start=5]
+
+. Right-click on `process:procGrowth` and select `New edge -> dependsOn -> process:procDist`.
 
 That's all that's required in this section. The task list indicates that the new disturbance process must belong to a category. To do that we need to move on to the structure of the specifications.
 
 ===== Structure
 
-Currently, the `system:sys1` is acting as the default `component` for the `process:procGrowth`. We now develop the `structure` sub-tree to add a disturbance component. 
+Recall from the previous tutorial, that `system:sys1` is acting as a single component. It's _role_ was defined as:
 
-To do this, we first define a class of components (a `componentType`) to specify the _role_ of components of this type and the data structures common to them. This can be defined through edges from the `componentType` and various categories - as was done with `system:sys1` in previous tutorials. (its both a componentType AND and component??)
+... _permanent_;
+
+... _individual_; 
+
+... belongs to the _arena_; 
+
+... accessing particular data from the `dataDefinition` sub-tree; and,
+
+... has `process:p1` applied to it.
+
+The _arena_ is a special category. It must exist in every specification and the data (_constants_, _drivers_ and _decorators_) associated with it are available to all other components. The scope of this data is therefore global. 
+
+The discussion above about how the Growth function will interact with the disturbance function, implies that the disturbance effects will take place in the Growth function. This means data indicating that a disturbance has taken place must be known to the Growth function. The reverse is not true: the disturbance function (which simply decides if a disturbance is to take place) does not need to know anything about the Growth function. Therefore, the disturabnce function is global and this component will belong to the _arena_ rather than as is currently the case, the community component.  
+
+This relationship between the disturbance and the community breaks an aim of this project: that the specifications should make all these relationships manifest. Here this relationship is hidden through the use of global data. 
 
 
--Ahh! I'm completely lost with this!
+
+STOP HERE AND REDO FOR IDH_2
+
 
 
 

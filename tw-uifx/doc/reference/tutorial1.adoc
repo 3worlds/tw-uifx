@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for creating a simulation with _ModelMaker_ for the first time. The user interface of _ModelMaker_ is introduced using with a simple logistic equation as a test case. New modelling capabilities are gradually introduced over the course of these tutorials.
+This tutorial explains the procedure for creating a simulation with _ModelMaker_. As the use of _ModelMaker_ is the primary focus of this tutorial, a simple logistic equation is implemented as a test case. New modelling capabilities are gradually introduced over the course of these tutorials.
 
 In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. Nodes in the graph represent elements of interest in the model and the edges represent the relationships between them. The entire graph constitutes the model specifications. The simulation can be run as as soon as the specifications are complete.
 
@@ -38,9 +38,9 @@ A list of tasks remaining to be completed appears at the bottom-left of the main
 
 At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It's here that values are entered for the properties of nodes and edges created in the following steps. 
 
-At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended provide a minimal amount of documentation for this project. By default, the property '`build-by`' is filled out with your computer login name and the creation date of the project.
+At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. By default, the property '`build-by`' is filled out with your computer login name and the creation date of the project.
 
-At the bottom of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.
+At the bottom and right-hand side of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.
 
 ===== Directory structure
 
@@ -48,7 +48,7 @@ All projects are located within the 3Worlds root directory called `.3w`. The dot
 
 The `.3w` directory contains a Jar file called `tw-dep.jar`. This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
 
-Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project directory begins with the key word `project`, followed by the name of the project you entered (`Tut1` in this case) and the the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to overwrite a project inadvertently. 
+Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project directory begins with the key word `project`, followed by the name of the project you entered (`Tut1` in this case) and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to overwrite a project inadvertently. 
 
 Inside this directory are a number of text files:
 
@@ -64,27 +64,27 @@ On the other hand, you can safely delete project directories at any time if you 
 
 ==== Creating the specifications
 
-Having created `Tut1`, the task list shows four nodes are required. This list can be dealt with in any order but in general, a logical approach is to build the specifications in the following order: 
+Having created `Tut1`, the task list shows four nodes are required. This list can be dealt with in any order but in general, a logical approach is to build the specifications in the order: 
 
 ... *data definition*: the data structures required;
 ... *dynamics*: how the modelled system evolves over time.
 ... *structure*: the organisation of components - their roles and relationships. 
 
-For the most part, these tutorials will proceed in this order and leave dealing with the user interface and experimental design until last. 
+For the most part, these tutorials will proceed in this order and leave defining the simulation's user interface and experimental design until last. 
 
-These sections are organised as sub-trees of the graph, with the nodes of each sub-tree of a particular colour.
+These sections are organised as sub-trees of the graph, with the nodes of each sub-tree having a particular colour.
 
 ===== Data definition
 
-The logistic equation we implement is: _x(t+1) = rx(t)(1-x(t)_. Though simple, it has interesting chaotic behaviour for values of _r_ between 3.7 and 4.0. All we have to do for the data definition section is to define the parameter _r_ and the state variable _x_. 
+The logistic equation we implement is: _x(t+1) = rx(t)(1-x(t)_. Though simple, it has interesting chaotic behaviour for values of _r_ between 3.7 and 4.0. All we need do for the data definition section is to define the parameter _r_ and the state variable _x_. 
 
-From here on and throughout these tutorials, parameters are called _constants_ and state variables _drivers_.
+From here on and throughout these tutorials, parameters are called _constants_ (data that does not change over the course of a simulation) and state variables _drivers_ (data that drives the simulation from one time to the next).
 
 . Right-click on the root node (`3worlds:Tut1`) and select `New node -> dataDefinition` from the popup menu. You're then prompted for a name. The default name is `dDef`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: _ModelMaker_ is asking where to place this node. Move to some place within the graph display and left-click the mouse. 
 
-You can name nodes and edges anything you like but accepting the recommended names and edges will make these tutorials easier to follow.
+You can name nodes and edges anything you like but accepting the recommended names and edges will make these tutorials easier to follow. _ModelMaker_ will prevent naming nodes or edges with duplicate names.
 
-The `dataDefinition:dDef` node appears (pale red) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. The lines are thick at the child end and thin at the parent end.
+The `dataDefinition:dDef` node appears (pale red) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. The lines are thin at the parent end and thick at the child end indicating that `3worlds:Tut1` is the parent of `dataDefinition:dDef`.
 
 All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and making a selection from the popup menu. The items in this menu vary according to the possibilities allowed by the _archetype_. This is one way _ModelMaker_ ensures the developing configuration conforms with the _archetype_, greatly simplifying an otherwise complex workflow.
 
@@ -153,7 +153,7 @@ A new task has been posted requiring a `process` node.
 
 . Create a process node as child of `timer:tmr1`. 
 
-A 'process' is a set of computations acting on model components driven at the rate of the parent `timer`. A 'component` is any physical or biology entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere and so on).
+A `process` defines a set of computations acting on model components driven at the rate of the parent `timer`. A `component` is definition of a unit of simulation. It can be any physical or biology entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).
 
 Processes can be composed of any number of functions of various types (much more on this later). We need just one function to implement the logistic equation - a `ChangeState` function that takes the current state of a component and calculates the next state.
 
@@ -164,7 +164,7 @@ Processes can be composed of any number of functions of various types (much more
 
 The function type can't be changed after creating node, so if you make a mistake, delete and recreate it (`Delete` from the popup menu or `Undo` from the main menu).
 
-_ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Eclipse_, to write code for these functions. In this tutorial however, the situation is simple enough that we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
+_ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Eclipse_, to write code for these functions. In this tutorial the funcion is one line of code and we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
 
 [start = 8]
 
@@ -176,15 +176,15 @@ _ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Ec
 
 ===== Structure
 
-The `structure` sub-tree describes how the modelled system is organised into separate `components` playing particular roles. In an elaborate model, there can be many `components` but in the present case, we need only one, and for convenience, the `system` node can act as this single `component` without the necessity of actually creating a `component1` within a `structure` sub-tree. 
+The `structure` sub-tree describes how the modelled system is organised into separate `components` playing particular roles. In an elaborate model, there can be many `components` but in the present case, we need only one, and for convenience, the `system` node can act as this single `component` without the necessity of actually creating a `component` within a `structure` sub-tree. 
 
-Here, the component's _role_ is defined as: a _permanent individual_ residing in an _arena_. It uses _r_ as a constant and _x_ as a driver and the process that operates on it is `process:p1`. 
+Here, the component's _role_ is defined as: a _permanent individual_ residing in an _arena_. It uses _r_ as a constant and _x_ as a driver and the process that applies to it is `process:p1`. 
 
-The component is _permanent_ because it doesn't die, it's an _individual_ simply because it's not part of a population of related components and it resides in an _arena_ because, well, everything's got to be somewhere. No matter how many components a model has, exactly one of them must belong to an _arena_, a unique top level component. 
+The component is _permanent_ because it doesn't die, it's an _individual_ simply because it is the only one, and it resides in an _arena_ because, well, everything's got to be somewhere. No matter how many components a model has, exactly one of them must belong to an _arena_, a unique top level component - its more or less a global component accessible to all other components. 
 
 While this is complicated for such a simple function, later tutorials will show how this can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
 
-To create this role, we use nodes of the type `categorySet` and `category`. A `categorySet` is a set of mutually exclusive categories. By that we mean a `component` can only be associated with one category of a given categorySet. So for example _permanent_ and _ephemeral_  are two categories within a set called _lifespan_ and obviously, a component can only be one or the other. 
+To create this role, we use nodes of the type `categorySet` and `category`. A `categorySet` is a set of mutually exclusive categories. By that we mean a `component` can only be associated with one category of a given categorySet. So for example _permanent_ and _ephemeral_  are two categories within a set called _lifespan_ and obviously, a component can only be one or the other. Categories and CategorySets are recursive: a CategerySet contains Categories and Categories can contain CategorySets without limit. 
 
 Apart from the `system` node doubling as a `component`, an additional convenience is provided: a sub-tree of predefined category sets and categories. We use these nodes to define the role described above. To see this sub-tree:
 
@@ -216,7 +216,7 @@ We are now in a position to define the _role_ of the `system` node (a.k.a. `comp
 
 . Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*permanent*`.
 
-The above edits have created three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. The relationship can be read as: `system:sys1 belongs to category:*arena*`.
+The above edits have created three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_ and are named. The relationship can be read as: `system:sys1 belongs to category:*arena*`.
 
 Finally, we need to apply `process:p` to a category - in this case, the _arena_.
 
@@ -237,13 +237,15 @@ We now specify the simplest possible experiment: a single run of the model.
 
 . Create a `design` as a child of `experiment:expt` and when prompted, select the `type` property. 
 
-Experimental designs can take many forms including predefined types such as `crossFactorial` or designs read from a file. For now we just use a predefined `type` - the default value is `singleRun`.
+Experimental designs can take many forms including predefined types such as `crossFactorial` or designs read from a file. For now we just use a predefined `type` with its default value of `singleRun`.
 
 ===== User interface sub-tree
 
 The minimum requirement for a user interface is a controller widget: something that can start and stop a simulation. Of course, we'll also need to display the value of _x_ with, say, a time series chart. This can be added later after trying out the simulator. 
 
-When the simulation is run, its user interface has optionally, a toolbar at the top, a status bar at the bottom and any number of tabs containing any number of widgets. The controller must be placed either in the toolbar or status bar. Here we place it in the toolbar.
+Simulations can also run without any graphical user interface - they still must have a user interface but it need not be visible. This situation is called a 'headless' simulator and can be used on unsupervised systems or systems where a user interface is not possible.
+
+When the simulation is run, its graphical user interface has optionally, a toolbar at the top, a status bar at the bottom and any number of tabs containing any number of widgets. The controller must be placed either in the toolbar or status bar. Here we place it in the toolbar.
 
 . Collpase `experiment:expt` from the root node.
 
@@ -257,15 +259,15 @@ The model specifications now comply with the archetype and the code has compiled
 
 ===== Deployment: launching _ModelRunner_
 
-. Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run-time application. 
+. Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run-time application: _ModelRunner_. 
 
 At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. This is the `SimpleControlWidget1` we added above. The _run_ button becomes a _pause_ button while running and the _stop_ button resets the simulator to its starting state. 
 
-However, as expected, there's nothing to see so the next step is to add a time series widget. This is an optional requirement so the task list was silent on this point. 
+However, as expected, there's nothing to see so the next step is to add a time series widget. This is an optional requirement so the task list didn't complain about this. 
 
 You can move easily between design and execution of the specifications simply by deploying _ModelRunner_, checking the simulation and quitting to return to _ModelMaker_.
 
-To add a time series for "x":
+To add a time series for _x_:
 
 [start = 2]
 
@@ -289,7 +291,7 @@ Visually, something different happened this time: the edge appeared and then fad
 
 . Create an edge from `widget:srsx` to the new data tracker.
 
-. Create an edge from `dataTracker:trk1` to a `component` i.e in this case `system.sys`. A data tracker must not only track some data but also the `component` that uses this data. However, from the task list it can be seen that _x_ and _r_ are not part of the _role_ defined for `system.sys1`. To do this, we categorise _x_ as a _driver_ and _r_ as a _constant_. The appropriate category belonging to `system:sys1` is the `category:*arena*`. Before doing this we can tidy up the display and practice a little fiddling with the collapse/expand functions by showing just the nodes we're concerned with for defining the roles of _x_ and _r_:
+. Create an edge from `dataTracker:trk1` to a `component` i.e in this case `system.sys1`. A data tracker must not only track some data but also the `component` that uses this data. However, from the task list it can be seen that _x_ and _r_ are not part of the _role_ defined for `system.sys1`. To do this, we categorise _x_ as a _driver_ and _r_ as a _constant_. The appropriate category belonging to `system:sys1` is the `category:*arena*`. Before doing this we can tidy up the display and practice a little fiddling with the collapse/expand functions by showing just the nodes we're concerned with for defining the roles of _x_ and _r_:
 
 . Collapse the all sub-trees from the root node.
 
@@ -326,9 +328,10 @@ When we first ran this model it had no output. Now that we have a time series ch
 . Deploy _ModelRunner_ (saving first if prompted)
 
 . Click the `step` button a few times. A time series of zeros is shown. 
+
 . Click the `run` button twice in rapid succession. The time (x axis) now reads approximately 30,000 or so depending on the speed of your computer.
 
-The display is still uninteresting because we haven't set an initial value for _x_ or parameterised _r_. This can be done in a number of ways but for this tutorial and an initialisation function and a code snippet. We will also include a `stoppingCondition`.
+The display is still uninteresting because we haven't set an initial value for _x_ or parameterised _r_. This can be done in a number of ways but for this tutorial we will add an initialisation function and a code snippet. We will also include a `stoppingCondition`.
 
 [start=9]
 
@@ -362,13 +365,13 @@ The final aspect of _ModelMaker_ we have yet to examine is the graph layout syst
 
 While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges. The advantage in using a graph is that the huge number of options possible can be constrained by context. For example, to have a dynamic `process`, it makes sense that it's associated with a particular `timer`, that other processes working at the same rate are associated with the same `timer` and that all timers are coordinated by the one `timeline`. The user interface for problems such as this would be very error-prone if presented say, as a series of dialog boxes.
 
-_ModelMaker_ has a number of features to help arrange the graph display. These fall into three categories: arranging,  hiding and resizing.
+_ModelMaker_ has a number of features to help arrange the graph display. These fall into three categories: arranging, hiding and resizing.
 
-*Arranging*: There are five layout algorithms currently available in _ModelMaker_ of which three use the tree structure of the graph to arrange nodes and two are 'Spring' based algorithms. Tree methods are ideal for examining the parent-child structure while the last two are better suited to examining relations between nodes. Tree methods are deterministic while Spring methods are not. Thus Tree methods are better for maintaining your orientation to the graph but have the disadvantage of not arranging cross-link edges clearly. Spring methods do a better job of this but the resulting arrangement can change with each application of the layout.
+*Arranging*: There are five layout algorithms currently available in _ModelMaker_ of which three use the tree structure of the graph to arrange nodes and two are 'Spring' based algorithms. Tree methods are ideal for examining the parent-child structure while the last two are better suited to examining relations between nodes. Tree methods are deterministic while Spring methods are not. Thus, Tree methods are better for maintaining your orientation to the graph but have the disadvantage of not arranging cross-link edges clearly. Spring methods do a better job of this but the resulting arrangement can change with each application of the layout.
 
 Two of the Tree methods produce a radial layout. These are best suited to examining nodes that have many children such as a record with many fields.
 
-All Tree methods allow selecting any node as the root of the tree. This is achieved from the popup menu of each node. When the "re-apply layout" button is pressed (*L*) while using a Tree method, the root of the tree becomes is the root of the graph (`3worlds:Tut1`).
+All Tree methods allow selecting any node as the root of the tree. This is achieved from the popup menu of each node. When the 're-apply layout' button is pressed ('*L*') while using a Tree method, the root of the tree becomes is the root of the graph (`3worlds:Tut1`).
 
 When a project is first created, the default layout is an *orderedTree*. To change to other layouts, use the local popup menu for any node. This layout persists for repeated applications of the layout function until another is chosen.
 
@@ -392,6 +395,8 @@ Finally, you can of course move a node anywhere within the graph window.
 - *Node Size*
 - *Font size*
 
+You can also change font sizes, node sizes and node and edge names by hiding or showing either or both roles and names.
+ 
 As an exercise if you wish, try displaying just the nodes with _cross links_ using the SpringGraph layout.
 
 . Expand all sub-trees from the root node.
@@ -408,5 +413,5 @@ That's the end of this tutorial. Recreate this project at anytime from the main 
 
 ==== Next
 
-The next tutorial (Tutorial 2) will demonstrate linking the project to an IDE and adding some Java program code.
+The next tutorial (Tutorial 2) will demonstrate linking this project to an IDE and adding some Java program code.
 
