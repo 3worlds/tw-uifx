@@ -1,0 +1,237 @@
+treegraph // saved by OmugiGraphExporter on Tue Jul 07 16:22:11 CEST 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds Panmixy
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	built-by = java.lang.String(gignoux (6 juil. 2020))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	precis = java.lang.String()
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
+	predefined *categories*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *composition*
+			category *individual*
+			category *population*
+		categorySet *systemElements*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+			category *space*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
+	dataDefinition dDef
+		record cst
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(cst)
+			field female
+				description = java.lang.String(sex)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		record drv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(drv)
+			field pSur
+				description = java.lang.String(survival probability)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field maturation
+				description = java.lang.String(time for egg maturation)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record arCst
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(arCst)
+			field maxLifeSpan
+				description = java.lang.String(maximal life span)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field pcFec
+				description = java.lang.String(per capita fecundity)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field maturationTime
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field k
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age1stRep
+				description = java.lang.String(age at first reproduction)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system sys1
+		constantClass = java.lang.String(code.sys1.ArCst)
+		dynamics sim1
+			stoppingCondition stCd1
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+			timeline tmLn1
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timer clock1
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+					process p4
+						dataTracker trk1
+							sampleSize = java.lang.String(1)
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+					process p3
+						function Fertilize
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String(code.sys1.Fertilize)
+							snippet snpt6
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"otherDrv.maturation = dt;"))
+					process p2
+						function Mate
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.Mate)
+							snippet snpt5
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([8]"// if focal is male, other is female and not pregnant, and both are over age at 1st repro, then mate.","if (!female)","if (age>=age1stRep)","if (other_female)","if (other_age>=age1stRep)","if (other_maturation==0.0)","return true;","return false;"))
+					process p1
+						function Spawn
+							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.sys1.Spawn)
+							snippet snpt3
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"if (maturation>=maturationTime)","return pcFec+random.nextGaussian();","return 0.0;"))
+							function SetupOffspring
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
+								userClassName = java.lang.String(code.sys1.SetupOffspring)
+								snippet snpt2
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"otherDrv.maturation = 0.0;","otherDrv.pSur = 1.0;","otherLtc.female = random.nextBoolean();"))
+						function Maturate
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.Maturate)
+							snippet snpt1
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"// mortality","focalDrv.pSur = 1-exp(-k*age);","// reproduction","if (female) {","if (maturation>=dt)","focalDrv.maturation += dt;","else if (maturation>=maturationTime)","focalDrv.maturation = 0.0;","}"))
+						function Survive
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.sys1.Survive)
+							snippet snpt4
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"if (age>maxLifeSpan)","return true;","return decider.decide(1-pSur);"))
+		structure structure
+			relationType mating
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			categorySet alive
+				category fishy
+			componentType fish
+				constantClass = java.lang.String(code.sys1.Cst)
+				driverClass = java.lang.String(code.sys1.Drv)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				component fish2
+				initFunction InitFish
+					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+					userClassName = java.lang.String(code.sys1.InitFish)
+					snippet snpt8
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"focalDrv.maturation = 0.0;","focalDrv.pSur = 1.0;","focalLtc.female = random.nextBoolean();"))
+				component fish1
+		initFunction InitCommunity
+			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+			userClassName = java.lang.String(code.sys1.InitCommunity)
+			snippet snpt7
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"focalLtc.age1stRep = 3.0;","focalLtc.maxLifeSpan = 12.0;","focalLtc.pcFec = 2.43;","focalLtc.k = log(100)/maxLifeSpan;","focalLtc.maturationTime = 3.0;"))
+	userInterface gui
+		top top
+			widget timer
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget numbers
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+
+// CROSS-LINKS
+[widget:numbers] trackSeries trks2 [dataTracker:trk1]
+[relationType:mating] fromCategory from1 [category:fishy]
+[relationType:mating] fromCategory from2 [category:*ephemeral*]
+[relationType:mating] toCategory to2 [category:*ephemeral*]
+[relationType:mating] toCategory to1 [category:fishy]
+[dataTracker:trk1] trackComponent trks6 [system:sys1]
+[dataTracker:trk1] trackField trks4 [field:nAdded]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trk1] trackField trks5 [field:nRemoved]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trk1] trackField trks3 [field:count]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[system:sys1] belongsTo bt3 [category:*permanent*]
+[system:sys1] belongsTo bt2 [category:*population*]
+[system:sys1] belongsTo bt1 [category:*arena*]
+[category:*population*] autoVar auto [record:AVPopulation]
+[process:p1] appliesTo aplyTo1 [category:fishy]
+[process:p1] appliesTo aplyTo4 [category:*ephemeral*]
+[process:p2] appliesTo aplyTo2 [relationType:mating]
+[process:p3] dependsOn depsOn1 [process:p2]
+[process:p3] appliesTo aplyTo3 [relationType:mating]
+[process:p4] appliesTo aplyTo6 [category:*arena*]
+[process:p4] appliesTo aplyTo5 [category:*population*]
+[widget:timer] trackTime trks1 [dynamics:sim1]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*arena*] lifetimeConstants ltcs2 [record:arCst]
+[category:fishy] drivers drvs1 [record:drv]
+[category:fishy] lifetimeConstants ltcs1 [record:cst]
+[componentType:fish] belongsTo bt7 [category:*individual*]
+[componentType:fish] belongsTo bt6 [category:*ephemeral*]
+[componentType:fish] belongsTo bt5 [category:*component*]
+[componentType:fish] belongsTo bt4 [category:fishy]
