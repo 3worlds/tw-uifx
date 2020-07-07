@@ -64,7 +64,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 				units = java.lang.String(#)
 		categorySet *composition*
 			category *individual*
-			category *population*
+			category *assemblage*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
@@ -178,6 +178,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 [table:r] sizedBy szBy4 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
 [widget:srsx] trackSeries trks3 [dataTracker:trk1]
-[category:*population*] autoVar auto [record:AVPopulation]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [table:x] sizedBy szBy5 [dimensioner:nspp]
 	rank = java.lang.Integer(0)

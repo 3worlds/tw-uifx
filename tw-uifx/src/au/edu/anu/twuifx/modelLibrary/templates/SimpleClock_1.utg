@@ -37,7 +37,7 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 				units = java.lang.String(#)
 		categorySet *composition*
 			category *individual*
-			category *population*
+			category *assemblage*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
@@ -97,4 +97,4 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*individual*]
 [system:sys1] belongsTo bt1 [category:*arena*]
-[category:*population*] autoVar auto [record:AVPopulation]
+[category:*assemblage*] autoVar auto [record:AVPopulation]

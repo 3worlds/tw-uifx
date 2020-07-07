@@ -87,7 +87,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
 		categorySet *composition*
-			category *population*
+			category *assemblage*
 			category *individual*
 		categorySet *systemElements*
 			category *group*
@@ -277,10 +277,10 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 [process:procCommGrowth] dependsOn depsOn2 [process:procDistEffects]
 [process:procCommGrowth] appliesTo aplyTo1 [category:commCat]
 [system:sys1] belongsTo bt3 [category:*permanent*]
-[system:sys1] belongsTo bt2 [category:*population*]
+[system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
 [widget:srsx] trackSeries trks3 [dataTracker:trk1]
-[category:*population*] autoVar auto [record:AVPopulation]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [table:K] sizedBy szBy1 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
 [widget:tblx] trackSeries trks4 [dataTracker:trk1]

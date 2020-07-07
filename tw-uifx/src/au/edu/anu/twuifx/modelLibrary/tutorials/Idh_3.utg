@@ -91,7 +91,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
 		categorySet *composition*
-			category *population*
+			category *assemblage*
 			category *individual*
 		categorySet *systemElements*
 			category *life cycle*
@@ -259,7 +259,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [componentType:community] belongsTo blngsTo3 [category:*component*]
 [relationType:DistToComm] fromCategory from1 [category:distrb]
 [relationType:DistToComm] toCategory to1 [category:plants]
-[category:*population*] autoVar auto [record:AVPopulation]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [widget:populationWidget] trackSeries trks6 [dataTracker:trkr]
 [componentType:disturbance] belongsTo blngsTo8 [category:distrb]
 [componentType:disturbance] belongsTo blngsTo7 [category:*permanent*]
@@ -269,7 +269,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 	rank = java.lang.Integer(0)
 [system:sys] belongsTo blngsTo2 [category:*permanent*]
 [system:sys] belongsTo blngsTo1 [category:*arena*]
-[system:sys] belongsTo blngsTo28 [category:*population*]
+[system:sys] belongsTo blngsTo28 [category:*assemblage*]
 [dataTracker:trkr] trackComponent trks4 [component:savanna]
 [dataTracker:trkr] trackTable trks2 [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:39]"))
