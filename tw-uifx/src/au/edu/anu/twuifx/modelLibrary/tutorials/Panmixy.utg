@@ -37,7 +37,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 07 16:22:11 CEST 2020
 				units = java.lang.String(#)
 		categorySet *composition*
 			category *individual*
-			category *population*
+			category *assemblage*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
@@ -216,16 +216,16 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 07 16:22:11 CEST 2020
 [dataTracker:trk1] trackField trks3 [field:count]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [system:sys1] belongsTo bt3 [category:*permanent*]
-[system:sys1] belongsTo bt2 [category:*population*]
+[system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
-[category:*population*] autoVar auto [record:AVPopulation]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [process:p1] appliesTo aplyTo1 [category:fishy]
 [process:p1] appliesTo aplyTo4 [category:*ephemeral*]
 [process:p2] appliesTo aplyTo2 [relationType:mating]
 [process:p3] dependsOn depsOn1 [process:p2]
 [process:p3] appliesTo aplyTo3 [relationType:mating]
 [process:p4] appliesTo aplyTo6 [category:*arena*]
-[process:p4] appliesTo aplyTo5 [category:*population*]
+[process:p4] appliesTo aplyTo5 [category:*assemblage*]
 [widget:timer] trackTime trks1 [dynamics:sim1]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*arena*] lifetimeConstants ltcs2 [record:arCst]
