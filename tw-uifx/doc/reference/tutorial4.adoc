@@ -18,7 +18,7 @@ Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials`
 
 Data is divided into three classes in the _3Worlds archetype_:
 
-... _constants_ (cst), 
+... _constants_ (cnt), 
 
 ... _drivers_ (drv) and 
 
@@ -32,13 +32,13 @@ As noted previously, these names are just for clarity - they don't impose a _rol
 
 We now define some data for the simple disturbance model: frequency and intensity.
 
-. Add a new `record` to `dataDefinition:dDef` and name it 'distCst' (disturbance constants).
+. Add a new `record` to `dataDefinition:dDef` and name it 'distCnt' (disturbance constants).
 
 . Add two fields to this record, both of type `Double` called 'freq' and 'inten' respectively. 
 
 The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order the trees alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We could name all the data associated with the CLV with 'comm' (community).
 
-. Rename `record:cst` to `record:commCst`, `record:drv` to `record:commDrv` and `record:dec` to `record:commDec`.
+. Rename `record:cnt` to `record:commCnt`, `record:drv` to `record:commDrv` and `record:dec` to `record:commDec`.
 
 . Re-apply the layout. The data fields should now be in a more sensible order.
 
@@ -168,7 +168,7 @@ Remove the data associated with the _arena_.
 
 . Right-click on `category:*arena*` and select `Delete edge -> drivers -> record:commDrv`.
 
-. Right-click again on  `category:*arena*` and select `Delete edge -> constants -> record:commCst`.
+. Right-click again on  `category:*arena*` and select `Delete edge -> constants -> record:commCnt`.
 
 `system:sys` is now defined as simply a _permanent assemblage_ belonging to the _arena_.
 
@@ -190,11 +190,11 @@ Define the data for these new categories.
 
 ... `drivers -> record:commDrv`.
 
-... `constants -> record:commCst`.
+... `constants -> record:commCnt`.
 
 ... `decorators -> record:commDec`.
 
-. Right-click on `category:commDist` and select `New edge -> constants -> record:distCst`.
+. Right-click on `category:commDist` and select `New edge -> constants -> record:distCnt`.
 
 
 Now define the _roles_ of the new component types for the community and disturbance. Both are _permanent atomic_ belonging to the _component_ category and access data through their respective categories. 
@@ -292,13 +292,13 @@ The simulation can now be run but, of course, we have yet to add code to the var
 double initFreq = 1.0 / x.size();
 focalDrv.x.fillWith(initFreq);
 for (int i = 0; i < r.size(0); i++) {
-	focalLtc.r.setByInt(random.nextDouble(), i);
-	focalLtc.K.setByInt(5.0 + initFreq + random.nextDouble(), i);
+	focalCnt.r.setByInt(random.nextDouble(), i);
+	focalCnt.K.setByInt(5.0 + initFreq + random.nextDouble(), i);
 	for (int j = 0; j < alpha.size(1); j++) {
 		if (i == j)
-			focalLtc.alpha.setByInt(1.0, i, j);
+			focalCnt.alpha.setByInt(1.0, i, j);
 		else
-			focalLtc.alpha.setByInt(max(0.0001, random.nextDouble()), i, j);
+			focalCnt.alpha.setByInt(max(0.0001, random.nextDouble()), i, j);
 	}
 }
 -----------------
@@ -308,8 +308,8 @@ for (int i = 0; i < r.size(0); i++) {
 
 [source, Java]
 -----------------
-focalLtc.freq = 5 + random.nextInt(50);
-focalLtc.inten = random.nextDouble()*100;
+focalCnt.freq = 5 + random.nextInt(50);
+focalCnt.inten = random.nextDouble()*100;
 -----------------
 
 `function:CommGrowth`:

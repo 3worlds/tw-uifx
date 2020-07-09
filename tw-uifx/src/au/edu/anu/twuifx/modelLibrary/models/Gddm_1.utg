@@ -91,5 +91,5 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 [process:procA] inSpace in [space:space]
 	searchRadius = java.lang.Double(1.0)
 [process:procA] appliesTo aplyTo [category:catAnimal]
-[category:catAnimal] constants csts [record:ltPars]
+[category:catAnimal] constants cnts [record:ltPars]
 [widget:time] trackTime trksTmOf [dynamics:dyns]

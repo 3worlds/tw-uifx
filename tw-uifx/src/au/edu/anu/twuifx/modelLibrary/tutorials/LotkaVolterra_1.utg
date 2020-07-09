@@ -6,13 +6,13 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 // CODE snippet for method LotkaVolterra.init(...)
 //		// initialise with random parameters
 //		for (int i=0; i<r.size(0); i++) {
-//			focalLtc.r.setByInt(random.nextDouble()*2.0,i);
-//			focalLtc.K.setByInt(0.2+random.nextDouble(),i);
+//			focalCnt.r.setByInt(random.nextDouble()*2.0,i);
+//			focalCnt.K.setByInt(0.2+random.nextDouble(),i);
 //			for (int j=0; j<alpha.size(1); j++) {
 //				if (i==j)
-//					focalLtc.alpha.setByInt(1.0,i,j);
+//					focalCnt.alpha.setByInt(1.0,i,j);
 //				else
-//					focalLtc.alpha.setByInt(random.nextDouble(),i,j);
+//					focalCnt.alpha.setByInt(random.nextDouble(),i,j);
 //			}
 // missing x init values
 //		}
@@ -76,9 +76,9 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record cst
+		record cnt
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(cst)
+			generatedClassName = java.lang.String(cnt)
 			table alpha
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				description = java.lang.String(interspecific competition coefficient)
@@ -112,7 +112,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
-		constantClass = java.lang.String(code.sys1.Cst)
+		constantClass = java.lang.String(code.sys1.Cnt)
 		driverClass = java.lang.String(code.sys1.Drv)
 		initFunction Init1
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
@@ -171,7 +171,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 [table:alpha] sizedBy szBy2 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
 [category:*arena*] drivers drvs [record:drv]
-[category:*arena*] constants csts [record:cst]
+[category:*arena*] constants cnts [record:cnt]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*atomic*]
 [system:sys1] belongsTo bt1 [category:*arena*]

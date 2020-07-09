@@ -73,7 +73,7 @@ Near the bottom of the file are two methods: `chaos` and `init1`, mapped from th
 [source,Java]
 -----------------
 	focalDrv.x = 0.001;
-	focalLtc.r = 3.7;
+	focalCnt.r = 3.7;
 -----------------
 
 Because these two methods are mapped to this generated file from the specifications created in _ModelMaker_, it follows that changes to the specifications may result in changes to these methods. So the question arises, how does _ModelMaker_ manage this without losing the Java code you write?

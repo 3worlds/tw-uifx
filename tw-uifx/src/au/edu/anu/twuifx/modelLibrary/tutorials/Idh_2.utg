@@ -4,20 +4,20 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 
 // CODE SNIPPET for function InitDist(...)
-//		focalLtc.freq = 5+random.nextInt(50);
-//		focalLtc.intensity = random.nextDouble()*100;
+//		focalCnt.freq = 5+random.nextInt(50);
+//		focalCnt.intensity = random.nextDouble()*100;
 //
 // CODE SNIPPET for function InitComm(...)
 //		double initfreq = 1.0/x.size();
 //		focalDrv.x.fillWith(initfreq);
 //		for (int i=0; i<r.size(0); i++) {
-//			focalLtc.r.setByInt(random.nextDouble(),i);
-//			focalLtc.K.setByInt(5.0+initfreq+random.nextDouble(),i);
+//			focalCnt.r.setByInt(random.nextDouble(),i);
+//			focalCnt.K.setByInt(5.0+initfreq+random.nextDouble(),i);
 //			for (int j=0; j<alpha.size(1); j++) {
 //				if (i==j)
-//					focalLtc.alpha.setByInt(1.0,i,j);
+//					focalCnt.alpha.setByInt(1.0,i,j);
 //				else
-//					focalLtc.alpha.setByInt(max(0.0001,random.nextDouble()),i,j);
+//					focalCnt.alpha.setByInt(max(0.0001,random.nextDouble()),i,j);
 //			}
 //		}
 //
@@ -268,7 +268,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:39]"))
 [dataTracker:trkr] trackComponent trks4 [component:savanna]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[category:plants] constants csts1 [record:commPar]
+[category:plants] constants cnts1 [record:commPar]
 [category:plants] decorators decs1 [record:commDec]
 [category:plants] drivers drvs1 [record:commDrv]
 [table:alpha] sizedBy szBy3 [dimensioner:nSpecies]
@@ -283,6 +283,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 [dataTracker:trkr1] trackField trks3 [field:div]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trkr1] trackComponent trks5 [component:savanna]
-[category:distrb] constants csts2 [record:distPar]
+[category:distrb] constants cnts2 [record:distPar]
 [table:x] sizedBy szBy1 [dimensioner:nSpecies]
 	rank = java.lang.Integer(0)

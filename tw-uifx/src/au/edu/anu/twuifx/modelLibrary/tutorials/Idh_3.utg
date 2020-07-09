@@ -24,13 +24,13 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 //				focalDec.div -= (focalDrv.x.getByInt(i)/xtot) * log(focalDrv.x.getByInt(i)/xtot);
 
 // CODE SNIPPET for function initDist(...)
-//		focalLtc.freq = 30+random.nextInt(50);
-//		focalLtc.intensity = random.nextDouble()*100;
+//		focalCnt.freq = 30+random.nextInt(50);
+//		focalCnt.intensity = random.nextDouble()*100;
 //		// populate the time event queue with 10000 events
 //		double nextT = 0;
 //		for (int i=0; i<100; i++) {
 //		// reciprocal of exponential cumulative distribution function
-//			nextT += max(1.0,log(1-random.nextDouble())*(-focalLtc.freq));
+//			nextT += max(1.0,log(1-random.nextDouble())*(-focalCnt.freq));
 //			eventT.postTimeEvent(nextT);
 //		}
 
@@ -47,13 +47,13 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 //		double initfreq = 1.0/x.size();
 //		focalDrv.x.fillWith(initfreq);
 //		for (int i=0; i<r.size(0); i++) {
-//			focalLtc.r.setByInt(random.nextDouble(),i);
-//			focalLtc.K.setByInt(5.0+initfreq+random.nextDouble(),i);
+//			focalCnt.r.setByInt(random.nextDouble(),i);
+//			focalCnt.K.setByInt(5.0+initfreq+random.nextDouble(),i);
 //			for (int j=0; j<alpha.size(1); j++) {
 //				if (i==j)
-//					focalLtc.alpha.setByInt(1.0,i,j);
+//					focalCnt.alpha.setByInt(1.0,i,j);
 //				else
-//					focalLtc.alpha.setByInt(max(0.0001,random.nextDouble()),i,j);
+//					focalCnt.alpha.setByInt(max(0.0001,random.nextDouble()),i,j);
 //			}
 //		}
 
@@ -276,7 +276,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:plants] decorators decs1 [record:commDec]
 [category:plants] drivers drvs1 [record:commDrv]
-[category:plants] constants csts1 [record:commPar]
+[category:plants] constants cnts1 [record:commPar]
 [table:alpha] sizedBy szBy3 [dimensioner:nSpecies]
 	rank = java.lang.Integer(1)
 [table:alpha] sizedBy szBy2 [dimensioner:nSpecies]
@@ -289,7 +289,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [dataTracker:trkr1] trackComponent trks5 [component:savanna]
 [dataTracker:trkr1] trackField trks3 [field:div]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[category:distrb] constants csts2 [record:distPar]
+[category:distrb] constants cnts2 [record:distPar]
 [table:x] sizedBy szBy1 [dimensioner:nSpecies]
 	rank = java.lang.Integer(0)
 [timer:eventT] fedBy fedBy2 [initFunction:InitDist]

@@ -29,11 +29,11 @@ There is usually more than one way of defining the data for any model. For the C
 
 . Delete `record:dec`. This record was provided by the template is not needed here.
 
-. Create a `table` as a child of `record:cst`, name it 'alpha', choose `dataElementType` and then set its type to `Double` (the default).
+. Create a `table` as a child of `record:cnt`, name it 'alpha', choose `dataElementType` and then set its type to `Double` (the default).
 
-. Create a second `table` as child of `record:cst`, name it 'r' and choose `dataElementType` and then set its type to `Double`.
+. Create a second `table` as child of `record:cnt`, name it 'r' and choose `dataElementType` and then set its type to `Double`.
 
-. Create a second `table` as child of `record:cst`, name it 'K' and choose `dataElementType` and then set its type to `Double`.
+. Create a second `table` as child of `record:cnt`, name it 'K' and choose `dataElementType` and then set its type to `Double`.
 
 . Create a  `table` as child of `record:drv`, name it 'x', choose `dataElementType` and set its type to `Double`.
 
@@ -126,13 +126,13 @@ Save the specifications (`Ctrl+s`) and they're now ready to run. The next step i
 [source,Java]
 -----------------
 for (int i = 0; i < r.size(0); i++) {
-    focalLtc.r.setByInt(random.nextDouble() * 2.0, i);
-	focalLtc.K.setByInt(0.2 + random.nextDouble(), i);
+    focalCnt.r.setByInt(random.nextDouble() * 2.0, i);
+	focalCnt.K.setByInt(0.2 + random.nextDouble(), i);
 	for (int j = 0; j < alpha.size(1); j++) {
 	    if (i == j)
-		    focalLtc.alpha.setByInt(1.0, i, j);
+		    focalCnt.alpha.setByInt(1.0, i, j);
 		else
-		    focalLtc.alpha.setByInt(random.nextDouble(), i, j);
+		    focalCnt.alpha.setByInt(random.nextDouble(), i, j);
 	}
 }
 for (int i = 0;i<x.size(0); i++)

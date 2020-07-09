@@ -91,7 +91,7 @@ All nodes in the configuration graph are children of some parent (apart from the
 [start = 2]
 . Create a `record` node as a child of `dataDefinition:dDef` and name it 'cst'.
 
-. Create a `field` node as child of `record:cst`, name it 'r' and when prompted, set its type as `Double`.
+. Create a `field` node as child of `record:cnt`, name it 'r' and when prompted, set its type as `Double`.
 
 All `fields` (and later `tables`) must be children of some `record`. 
 
@@ -101,7 +101,7 @@ All `fields` (and later `tables`) must be children of some `record`.
 
 . Create a `field` node as child of `record:drv`, name it 'x' and again set the type to `Double`.
 
-Note that the names 'drv' and 'cst' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
+Note that the names 'drv' and 'cnt' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
 
 This is all the data required for this tutorial.  The task to add a `dataDefinition` node has now gone and three tasks remain.
 
@@ -345,7 +345,7 @@ The display is still uninteresting because we haven't set an initial value for _
 
 . Enter the following two lines in the `snpt2#javaCode` property:
   ... `focalDrv.x = 0.001;`
-  ... `focalLtc.r = 3.7;`
+  ... `focalCnt.r = 3.7;`
 
 If you make a typo, the task list will show the details of the compile error.
 

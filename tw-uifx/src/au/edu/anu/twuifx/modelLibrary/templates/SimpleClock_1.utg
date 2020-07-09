@@ -49,7 +49,7 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record cst
+		record cnt
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String()
 		record dec
@@ -93,7 +93,7 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 [process:p1] appliesTo aplyTo1 [category:*arena*]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*arena*] drivers drvs [record:drv]
-[category:*arena*] constants csts [record:cst]
+[category:*arena*] constants cnts [record:cnt]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*atomic*]
 [system:sys1] belongsTo bt1 [category:*arena*]
