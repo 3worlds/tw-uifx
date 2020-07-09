@@ -52,6 +52,7 @@ public enum LibraryTable {
 	Tut3(/*     */"3 I.D.H.", /*	   */"Idh_1.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	//Tut6(/*     */"4 I.D.H.", /*	   */"Idh_2.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut4(/*     */"4 I.D.H.", /*	   */"Idh_3.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut5(/*     */"5 Panmixy", /*	   */"Panmixy.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	//
 	Model1(/*   */"Genetics", /*       */"Gddm_1.utg", /**/LibraryType.Model, ModelsDummy.class), //
 	;

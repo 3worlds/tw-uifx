@@ -1,16 +1,19 @@
-treegraph // saved by OmugiGraphExporter on Wed Jul 08 17:32:17 CEST 2020
+treegraph // saved by OmugiGraphExporter on Thu Jul 09 18:09:57 CEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
-3worlds Panmixy
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+3worlds Panmixy1
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String(gignoux (6 juil. 2020))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String()
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
+	precis = java.lang.String("An individual based model featuring the creation/deletion of indivduals in a completely random mating reproduction system.")
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = java.lang.String()
+	version = java.lang.String(demo)
 	predefined *categories*
+		categorySet *organisation*
+			category *assemblage*
+			category *atomic*
 		record AVEphemeral
 			field birthDate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -35,9 +38,6 @@ treegraph // saved by OmugiGraphExporter on Wed Jul 08 17:32:17 CEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		categorySet *organisation*
-			category *assemblage*
-			category *atomic*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
@@ -49,27 +49,6 @@ treegraph // saved by OmugiGraphExporter on Wed Jul 08 17:32:17 CEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record cnt
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(cnt)
-			field female
-				description = java.lang.String(sex)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
-		record drv
-			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(drv)
-			field pSur
-				description = java.lang.String(survival probability)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
-				precision = java.lang.Double(0.001)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field maturation
-				description = java.lang.String(time for egg maturation)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
 		record arCnt
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(arCnt)
@@ -99,6 +78,27 @@ treegraph // saved by OmugiGraphExporter on Wed Jul 08 17:32:17 CEST 2020
 				units = java.lang.String()
 			field age1stRep
 				description = java.lang.String(age at first reproduction)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record cnt
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(cnt)
+			field female
+				description = java.lang.String(sex)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		record drv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(drv)
+			field pSur
+				description = java.lang.String(survival probability)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field maturation
+				description = java.lang.String(time for egg maturation)
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
@@ -157,12 +157,12 @@ treegraph // saved by OmugiGraphExporter on Wed Jul 08 17:32:17 CEST 2020
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys1.Maturate)
 							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"// mortality","focalDrv.pSur = 1-exp(-k*(age+0.1));","// reproduction","if (female) {","if (maturation>=dt)","focalDrv.maturation += dt;","else if (maturation>=maturationTime)","focalDrv.maturation = 0.0;","}"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([12]"// mortality","if (age<=maxLifeSpan)","focalDrv.pSur = 1-exp(-k*(age+0.1));","else","focalDrv.pSur = exp (-(age-maxLifeSpan));","// reproduction","if (female) {","if (maturation>=dt)","focalDrv.maturation += dt;","else if (maturation>=maturationTime)","focalDrv.maturation = 0.0;","}"))
 						function Survive
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.sys1.Survive)
 							snippet snpt4
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"if (age>maxLifeSpan)","return true;","return decider.decide(1-pSur);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"return decider.decide(1-pSur);"))
 		structure structure
 			relationType mating
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
@@ -174,22 +174,21 @@ treegraph // saved by OmugiGraphExporter on Wed Jul 08 17:32:17 CEST 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-				component fish2
-					constantValues initCnts2
-						female = java.lang.Boolean(false)
+				component fishes
+					nInstances = java.lang.Integer(50)
+					variableValues initVars1
+						age = java.lang.Long(4)
+						birthDate = java.lang.Long(-4)
 				initFunction InitFish
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 					userClassName = java.lang.String(code.sys1.InitFish)
 					snippet snpt8
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"focalDrv.maturation = 3.0;","focalDrv.pSur = 1.0;","focalCnt.female = random.nextBoolean();"))
-				component fish1
-					constantValues initCnts1
-						female = java.lang.Boolean(true)
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"focalDrv.maturation = random.nextDouble()*4.0;","focalDrv.pSur = 1.0;","focalCnt.female = random.nextBoolean();"))
 		initFunction InitCommunity
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.InitCommunity)
 			snippet snpt7
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"focalCnt.age1stRep = 3.0;","focalCnt.maxLifeSpan = 12.0;","focalCnt.pcFec = 2.43;","focalCnt.k = log(100)/focalCnt.maxLifeSpan;","focalCnt.maturationTime = 3.0;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"focalCnt.age1stRep = 3.0;","focalCnt.maxLifeSpan = 20.0;","focalCnt.pcFec = 21.5;","focalCnt.k = log(100)/focalCnt.maxLifeSpan;","focalCnt.maturationTime = 3.0;"))
 	userInterface gui
 		top top
 			widget timer
@@ -229,6 +228,8 @@ treegraph // saved by OmugiGraphExporter on Wed Jul 08 17:32:17 CEST 2020
 [process:p3] appliesTo aplyTo3 [relationType:mating]
 [process:p4] appliesTo aplyTo6 [category:*arena*]
 [process:p4] appliesTo aplyTo5 [category:*assemblage*]
+[process:p4] dependsOn depsOn2 [process:p1]
+[process:p4] dependsOn depsOn3 [process:p3]
 [widget:timer] trackTime trks1 [dynamics:sim1]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
