@@ -90,9 +90,9 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		categorySet *composition*
+		categorySet *organisation*
 			category *assemblage*
-			category *individual*
+			category *atomic*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
@@ -255,7 +255,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [widget:diversityWidget] trackSeries trks7 [dataTracker:trkr1]
 [componentType:community] belongsTo blngsTo6 [category:plants]
 [componentType:community] belongsTo blngsTo5 [category:*permanent*]
-[componentType:community] belongsTo blngsTo37 [category:*individual*]
+[componentType:community] belongsTo blngsTo37 [category:*atomic*]
 [componentType:community] belongsTo blngsTo3 [category:*component*]
 [relationType:DistToComm] fromCategory from1 [category:distrb]
 [relationType:DistToComm] toCategory to1 [category:plants]
@@ -263,7 +263,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [widget:populationWidget] trackSeries trks6 [dataTracker:trkr]
 [componentType:disturbance] belongsTo blngsTo8 [category:distrb]
 [componentType:disturbance] belongsTo blngsTo7 [category:*permanent*]
-[componentType:disturbance] belongsTo blngsTo41 [category:*individual*]
+[componentType:disturbance] belongsTo blngsTo41 [category:*atomic*]
 [componentType:disturbance] belongsTo blngsTo4 [category:*component*]
 [table:K] sizedBy szBy4 [dimensioner:nSpecies]
 	rank = java.lang.Integer(0)

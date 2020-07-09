@@ -86,9 +86,9 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		categorySet *composition*
+		categorySet *organisation*
 			category *assemblage*
-			category *individual*
+			category *atomic*
 		categorySet *systemElements*
 			category *group*
 			category *life cycle*
@@ -273,7 +273,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 [componentType:distType] belongsTo bt7 [category:*permanent*]
 [componentType:distType] belongsTo bt6 [category:*component*]
 [componentType:distType] belongsTo bt5 [category:distCat]
-[componentType:distType] belongsTo bt8 [category:*individual*]
+[componentType:distType] belongsTo bt8 [category:*atomic*]
 [process:procCommGrowth] dependsOn depsOn2 [process:procDistEffects]
 [process:procCommGrowth] appliesTo aplyTo1 [category:commCat]
 [system:sys1] belongsTo bt3 [category:*permanent*]
@@ -297,7 +297,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 [category:distCat] lifetimeConstants ltcs2 [record:distCst]
 [componentType:commType] belongsTo bt11 [category:*permanent*]
 [componentType:commType] belongsTo bt4 [category:commCat]
-[componentType:commType] belongsTo bt10 [category:*individual*]
+[componentType:commType] belongsTo bt10 [category:*atomic*]
 [componentType:commType] belongsTo bt9 [category:*component*]
 [table:x] sizedBy szBy5 [dimensioner:nspp]
 	rank = java.lang.Integer(0)

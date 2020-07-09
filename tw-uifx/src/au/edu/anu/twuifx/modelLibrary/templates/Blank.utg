@@ -35,9 +35,9 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 10:38:38 AEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		categorySet *composition*
+		categorySet *organisation*
 			category *assemblage*
-			category *individual*
+			category *atomic*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
