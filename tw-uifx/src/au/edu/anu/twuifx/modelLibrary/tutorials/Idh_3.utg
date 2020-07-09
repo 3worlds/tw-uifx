@@ -276,7 +276,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:plants] decorators decs1 [record:commDec]
 [category:plants] drivers drvs1 [record:commDrv]
-[category:plants] lifetimeConstants ltcs1 [record:commPar]
+[category:plants] constants csts1 [record:commPar]
 [table:alpha] sizedBy szBy3 [dimensioner:nSpecies]
 	rank = java.lang.Integer(1)
 [table:alpha] sizedBy szBy2 [dimensioner:nSpecies]
@@ -289,7 +289,7 @@ treegraph // saved by OmugiGraphExporter on Thu May 28 16:02:38 CEST 2020
 [dataTracker:trkr1] trackComponent trks5 [component:savanna]
 [dataTracker:trkr1] trackField trks3 [field:div]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[category:distrb] lifetimeConstants ltcs2 [record:distPar]
+[category:distrb] constants csts2 [record:distPar]
 [table:x] sizedBy szBy1 [dimensioner:nSpecies]
 	rank = java.lang.Integer(0)
 [timer:eventT] fedBy fedBy2 [initFunction:InitDist]

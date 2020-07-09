@@ -260,7 +260,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 // CROSS-LINKS
 [category:commCat] decorators decs1 [record:commDec]
 [category:commCat] drivers drvs1 [record:commDrv]
-[category:commCat] lifetimeConstants ltcs1 [record:commCst]
+[category:commCat] constants csts1 [record:commCst]
 [dataTracker:trk1] trackComponent trks2 [component:comm]
 [dataTracker:trk1] trackTable trks1 [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:3]"))
@@ -294,7 +294,7 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 [relationType:distEffectComm] toCategory to1 [category:commCat]
 [table:r] sizedBy szBy4 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
-[category:distCat] lifetimeConstants ltcs2 [record:distCst]
+[category:distCat] constants csts2 [record:distCst]
 [componentType:commType] belongsTo bt11 [category:*permanent*]
 [componentType:commType] belongsTo bt4 [category:commCat]
 [componentType:commType] belongsTo bt10 [category:*atomic*]

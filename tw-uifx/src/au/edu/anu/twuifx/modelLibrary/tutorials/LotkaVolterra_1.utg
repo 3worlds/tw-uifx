@@ -171,7 +171,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 [table:alpha] sizedBy szBy2 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
 [category:*arena*] drivers drvs [record:drv]
-[category:*arena*] lifetimeConstants ltcs [record:cst]
+[category:*arena*] constants csts [record:cst]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*atomic*]
 [system:sys1] belongsTo bt1 [category:*arena*]

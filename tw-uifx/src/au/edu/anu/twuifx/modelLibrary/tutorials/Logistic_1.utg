@@ -127,7 +127,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*arena*] drivers drvs1 [record:drv]
-[category:*arena*] lifetimeConstants ltcs1 [record:cst]
+[category:*arena*] constants csts1 [record:cst]
 [system:sys1] belongsTo bt3 [category:*atomic*]
 [system:sys1] belongsTo bt2 [category:*permanent*]
 [system:sys1] belongsTo bt1 [category:*arena*]

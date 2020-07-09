@@ -104,7 +104,7 @@ Recall from the previous tutorial, that `system:sys1` is acting as a single comp
 
 ... _permanent_;
 
-... _individual_; 
+... _atomic_; 
 
 ... belonging to the _arena_; 
 
@@ -158,7 +158,7 @@ Redefine the _role_ of `system:sys1` as an `assemblage`.
 
 [start = 16]
 
-. Right-click on `system:sys1` and select `Delete edge -> belongsTo -> category:*individual*`.
+. Right-click on `system:sys1` and select `Delete edge -> belongsTo -> category:*atomic*`.
 
 . Right-click again on `system:sys1` and select `New edge -> belongsTo -> category:*assemblage*`.
 
@@ -197,13 +197,13 @@ Define the data for these new categories.
 . Right-click on `category:commDist` and select `New edge -> constants -> record:distCst`.
 
 
-Now define the _roles_ of the new component types for the community and disturbance. Both are _permanent individuals_ belonging to the _component_ category and access data through their respective categories. 
+Now define the _roles_ of the new component types for the community and disturbance. Both are _permanent atomic_ belonging to the _component_ category and access data through their respective categories. 
 
 [start = 25]
 
-. Right-click on `componentType:commType` and create `belongsTo` edges to `category:*permanent*`,`category:*individual*`,`category:*component*` and `category:commCat`. 
+. Right-click on `componentType:commType` and create `belongsTo` edges to `category:*permanent*`,`category:*atomic*`,`category:*component*` and `category:commCat`. 
 
-. Right-click on `componentType:distType` and create `belongsTo` edges to `category:*permanent*`,`category:*individual*`,`category:*component*` and `category:distCat`. 
+. Right-click on `componentType:distType` and create `belongsTo` edges to `category:*permanent*`,`category:*atomic*`,`category:*component*` and `category:distCat`. 
 
 Now define the relation between disturbance and the community.
 
