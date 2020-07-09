@@ -89,7 +89,7 @@ The `dataDefinition:dDef` node appears (pale red) connected by a green line to t
 All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and making a selection from the popup menu. The items in this menu vary according to the possibilities allowed by the _archetype_. This is one way _ModelMaker_ ensures the developing configuration conforms with the _archetype_, greatly simplifying an otherwise complex workflow.
 
 [start = 2]
-. Create a `record` node as a child of `dataDefinition:dDef` and name it 'cst'.
+. Create a `record` node as a child of `dataDefinition:dDef` and name it 'cnt'.
 
 . Create a `field` node as child of `record:cnt`, name it 'r' and when prompted, set its type as `Double`.
 
@@ -178,9 +178,19 @@ _ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Ec
 
 The `structure` sub-tree describes how the modelled system is organised into separate `components` playing particular roles. In an elaborate model, there can be many `components` but in the present case, we need only one, and for convenience, the `system` node can act as this single `component` without the necessity of actually creating a `component` within a `structure` sub-tree. 
 
-Here, the component's _role_ is defined as: a _permanent atomic_ residing in an _arena_. It uses _r_ as a constant and _x_ as a driver and the process that applies to it is `process:p1`. 
+Here, the component's _role_ is defined as:
 
-The component is _permanent_ because it doesn't die, it's an _atomic_ simply because it is the only one, and it resides in an _arena_ because, well, everything's got to be somewhere. No matter how many components a model has, exactly one of them must belong to an _arena_, a unique top level component - its more or less a global component accessible to all other components. 
+- lifetime: _permanent_; 
+
+- organisation: _atomic_ 
+
+- category: _arena_. 
+
+- It uses _r_ as a constant and _x_ as a driver; and,
+
+- `process:p1` applies to it. 
+
+The component is _permanent_ because it doesn't die, it's an _atomic_ simply because it is a single indivisable component, residing in an _arena_ because, well, everything's got to be somewhere. No matter how many components a model has, exactly one of them must belong to the _arena_ category, a unique top level component - its more or less a global component accessible to all other components. 
 
 While this is complicated for such a simple function, later tutorials will show how this can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
 

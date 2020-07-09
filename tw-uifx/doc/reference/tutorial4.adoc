@@ -251,7 +251,7 @@ We have inherited a data tracker from the previous tutorial that tracks the popu
 
 . Create a `trackField` edge from `dataTracker:trk2` to `field:div`.
 
-. Create a 'trackComponent' edge from `dataTracker:trk2` to `component:comm`.
+. Create a `trackComponent` edge from `dataTracker:trk2` to `component:comm`.
 
 
 ===== User interface
@@ -265,7 +265,7 @@ The `tab` node can contain upto two widgets or two containers that in turn can c
 .... srs x widget
 .... srs diversity widget
 
-This means we need to insert a `container` and set the `widget:srsx` and the new `widget:srsdiv` as children of it. We don't need to delete and and their edges. Instead, we can delete the parent-child link, insert a container and re-establish the parent-child links.
+This means we need to insert a `container` and set the `widget:srsx` and the new `widget:srsdiv` as children of it. We don't need to delete them and their edges. Instead, we can delete the parent-child link, insert a container and re-establish the parent-child links.
 
 . Expand the `userInterface:gui` sub-tree from the root and re-apply the layout.
 
