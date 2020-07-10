@@ -1,0 +1,241 @@
+treegraph // saved by OmugiGraphExporter on Fri Jul 10 14:39:20 AEST 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds Tut5
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
+	built-by = java.lang.String(ian (5 Jul. 2020))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
+	precis = java.lang.String(The Lotka-Volterra competition model for n species. Illustrates the use of Tables.)
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
+	version = java.lang.String(demo)
+	predefined *categories*
+		categorySet *organisation*
+			category *assemblage*
+			category *atomic*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *systemElements*
+			category *group*
+			category *life cycle*
+			category *relation*
+			category *component*
+			category *space*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
+	dataDefinition dDef
+		record distCnt
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(distCnt)
+			field inten
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record commCnt
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(commCnt)
+			table r
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(growth rate)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+			table alpha
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(interspecific competition coefficient)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+			table K
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(carrying capacity)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+		record commDrv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(commDrv)
+			table x
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(population size)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+		record commDec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(commDec)
+			field div
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		dimensioner nspp
+			size = java.lang.Integer(4)
+	system sys1
+		dynamics sim1
+			stoppingCondition stCd1
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+			timeline tmLn1
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timer event1
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.EventTimer)
+					process procDistEffects
+						function DistEffectsComm
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String(code.sys1.DistEffectsComm)
+							snippet snpt2
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"for (int i = 0; i < other_x.size(); i++)","if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)","otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);"))
+				timer clock1
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+					process procCommGrowth
+						dataTracker trk2
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+						dataTracker trk1
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+						function CommGrowth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.CommGrowth)
+							snippet snpt1
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([23]"double[] dxdt = new double[x.size(0)];","double sumDensity = 0;","for (int i = 0; i < x.size(0); i++) {","double sum = 0;","for (int j = 0; j < alpha.size(1); j++)","sum += alpha.getByInt(i, j) * x.getByInt(j);","dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));","sumDensity+= x.getByInt(i)/K.getByInt(i);","}","double meanDensity = sumDensity/x.size();","System.out.println(meanDensity);","if (meanDensity>0.25)","event1.postTimeEvent(t+1);","for (int i = 0; i < dxdt.length; i++)","focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);","// compute diversity","double xtot = 0.0;","for (int i = 0; i < focalDrv.x.size(0); i++)","xtot += focalDrv.x.getByInt(i);","focalDec.div = 0.0;","for (int i = 0; i < focalDrv.x.size(0); i++)","if (focalDrv.x.getByInt(i) > 0.0)","focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);"))
+		structure struc1
+			relationType distEffectComm
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			componentType distType
+				constantClass = java.lang.String(code.sys1.DistCnt)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				initFunction InitDist
+					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+					userClassName = java.lang.String(code.sys1.InitDist)
+					snippet snpt4
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"focalCnt.inten = random.nextDouble() * 100;"))
+				component dist
+			categorySet world
+				category distCat
+				category commCat
+			componentType commType
+				constantClass = java.lang.String(code.sys1.CommCnt)
+				decoratorClass = java.lang.String(code.sys1.CommDec)
+				driverClass = java.lang.String(code.sys1.CommDrv)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				initFunction InitComm
+					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+					userClassName = java.lang.String(code.sys1.InitComm)
+					snippet snpt5
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([12]"double initFreq = 1.0 / x.size();","focalDrv.x.fillWith(initFreq);","for (int i = 0; i < r.size(0); i++) {","focalCnt.r.setByInt(random.nextDouble(), i);","focalCnt.K.setByInt(5.0 + initFreq + random.nextDouble(), i);","for (int j = 0; j < alpha.size(1); j++) {","if (i == j)","focalCnt.alpha.setByInt(1.0, i, j);","else","focalCnt.alpha.setByInt(max(0.0001, random.nextDouble()), i, j);","}","}"))
+				component comm
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	userInterface gui
+		top top1
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			container cont1
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				widget srsdiv
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				widget srsx
+					order = java.lang.Integer(0)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			widget tblx
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+
+// CROSS-LINKS
+[category:commCat] decorators decs1 [record:commDec]
+[category:commCat] drivers drvs1 [record:commDrv]
+[category:commCat] constants cnts1 [record:commCnt]
+[dataTracker:trk1] trackComponent trks2 [component:comm]
+[dataTracker:trk1] trackTable trks1 [table:x]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:3]"))
+[dataTracker:trk2] trackComponent trks6 [component:comm]
+[dataTracker:trk2] trackField trks5 [field:div]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[process:procDistEffects] appliesTo aplyTo2 [relationType:distEffectComm]
+[widget:srsdiv] trackSeries trks7 [dataTracker:trk2]
+[componentType:distType] belongsTo bt7 [category:*permanent*]
+[componentType:distType] belongsTo bt6 [category:*component*]
+[componentType:distType] belongsTo bt5 [category:distCat]
+[componentType:distType] belongsTo bt8 [category:*atomic*]
+[process:procCommGrowth] dependsOn depsOn2 [process:procDistEffects]
+[process:procCommGrowth] appliesTo aplyTo1 [category:commCat]
+[system:sys1] belongsTo bt3 [category:*permanent*]
+[system:sys1] belongsTo bt2 [category:*assemblage*]
+[system:sys1] belongsTo bt1 [category:*arena*]
+[widget:srsx] trackSeries trks3 [dataTracker:trk1]
+[table:K] sizedBy szBy1 [dimensioner:nspp]
+	rank = java.lang.Integer(0)
+[widget:tblx] trackSeries trks4 [dataTracker:trk1]
+[timer:event1] fedBy fedBy1 [function:CommGrowth]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[table:alpha] sizedBy szBy3 [dimensioner:nspp]
+	rank = java.lang.Integer(1)
+[table:alpha] sizedBy szBy2 [dimensioner:nspp]
+	rank = java.lang.Integer(0)
+[relationType:distEffectComm] fromCategory from1 [category:distCat]
+[relationType:distEffectComm] toCategory to1 [category:commCat]
+[table:r] sizedBy szBy4 [dimensioner:nspp]
+	rank = java.lang.Integer(0)
+[category:distCat] constants cnts2 [record:distCnt]
+[componentType:commType] belongsTo bt11 [category:*permanent*]
+[componentType:commType] belongsTo bt4 [category:commCat]
+[componentType:commType] belongsTo bt10 [category:*atomic*]
+[componentType:commType] belongsTo bt9 [category:*component*]
+[table:x] sizedBy szBy5 [dimensioner:nspp]
+	rank = java.lang.Integer(0)
