@@ -94,6 +94,7 @@
             <Menu mnemonicParsing="false" text="Help">
               <items>
                 <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="About" />
+                  <MenuItem fx:id="miCGMetrics" disable="true" mnemonicParsing="false" onAction="#onCGMetrics" text="Info" />
               </items>
             </Menu>
 			</menus>

@@ -48,6 +48,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -147,12 +148,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private MenuItem miRedo;
 
-//	@FXML
-//	private Button btnNodeTextChoice;
-//	
-//	@FXML
-//	private ToggleButton tglEdgeName;
-
 	@FXML
 	private ToggleButton btnXLinks;
 
@@ -188,6 +183,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private MenuItem miSetCodePath;
+
+	@FXML
+	private MenuItem miCGMetrics;
 
 	@FXML
 	private MenuItem miDisconnect;
@@ -278,9 +276,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private LayoutType currentLayout;
 
-//	private ElementDisplayText nodeText;
-//	private ElementDisplayText edgeText;
-
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private Font font;
 	private int fontSize;
@@ -343,7 +338,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		tglSideline.setTooltip(getFastToolTip("Move isolated nodes aside"));
 		cbEdgeTextChoice.setTooltip(getFastToolTip("Edge text display options"));
 		cbNodeTextChoice.setTooltip(getFastToolTip("Node text display options"));
-		// tglEdgeName.setTooltip(getFastToolTip("Show/hide edge names"));
 
 		/** Set a handler to refresh the Open menu items when selected */
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
@@ -507,6 +501,43 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void onSelectAll(ActionEvent event) {
 		visualiser.onSelectAll();
+	}
+
+	@FXML
+	void onCGMetrics(ActionEvent event) {
+		Dialog<ButtonType> dlg = new Dialog<>();
+		dlg.initOwner((Window) Dialogs.owner());
+		dlg.setTitle(Project.getDisplayName()+" Information");
+		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(done);
+		TabPane content = new TabPane();
+		content.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		dlg.getDialogPane().setContent(content);
+		Tab tbMetrics = new Tab("Metrics");
+		Tab tbFlowChart = new Tab("Flow chart");
+		Tab tbODD = new Tab("ODD");
+		content.getTabs().add(tbMetrics);
+		content.getTabs().add(tbFlowChart);
+		content.getTabs().add(tbODD);
+		ConfigInfo info = new ConfigInfo(ConfigGraph.getGraph());
+		TextArea taMetrics = new TextArea();
+		TextArea taFlowChart = new TextArea();
+		TextArea taODD = new TextArea();
+		taMetrics.setWrapText(true);
+		taFlowChart.setWrapText(false);
+		taODD.setWrapText(true);
+		//textArea.setPrefHeight(400);
+		taMetrics.setEditable(false);
+		taFlowChart.setEditable(false);
+		taODD.setEditable(false);
+
+		tbMetrics.setContent(taMetrics);
+		tbFlowChart.setContent(taFlowChart);
+		tbODD.setContent(taODD);
+		taMetrics.appendText(info.metricsToString());	
+		taFlowChart.appendText(info.flowChartToString());
+		taODD.appendText(info.ODDToString());
+		dlg.showAndWait();
 	}
 
 	@FXML
@@ -1230,6 +1261,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnXLinks.setDisable(!isOpen);
 		cbNodeTextChoice.setDisable(!isOpen);
 		cbEdgeTextChoice.setDisable(!isOpen);
+		miCGMetrics.setDisable(!isOpen || !isValid);
 		btnSelectAll.setDisable(!isOpen);
 		tglSideline.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
