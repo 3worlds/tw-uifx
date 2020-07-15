@@ -94,7 +94,7 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 			List<String> entries = new ArrayList<>();
 			String[] parts = s.split("\\n");
 			for (String p : parts) {
-				p = p.trim();
+				//p = p.trim();
 				if (p.length() > 0)
 					entries.add(p);
 			}

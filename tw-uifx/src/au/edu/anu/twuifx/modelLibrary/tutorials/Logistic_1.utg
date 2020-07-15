@@ -81,7 +81,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.Init1)
 			snippet snpt2
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"focalCnt.r = 3.7","focalDrv.x = 0.01;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"focalCnt.r = 3.7;","focalDrv.x = 0.01;"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
