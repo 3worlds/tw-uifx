@@ -94,7 +94,6 @@ treegraph // saved by OmugiGraphExporter on Fri May 08 16:50:47 CEST 2020
 			category *life cycle*
 			category *relation*
 			category *component*
-			category *space*
 			category *arena*
 		categorySet *lifespan*
 			category *ephemeral*

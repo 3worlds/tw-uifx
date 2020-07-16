@@ -35,21 +35,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		record CSpace
-			field dimension
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-			table lowerLimit
-				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-			table upperLimit
-				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-			field precision
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-			field units
-				type = fr.cnrs.iees.twcore.constants.DataElementType(String)
-		dimensioner spaceDimension
-			size = Integer(2)
 		categorySet *organisation*
 			category *assemblage*
 			category *atomic*
@@ -58,7 +43,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 			category *group*
 			category *relation*
 			category *component*
-			category *space*
 			category *arena*
 		categorySet *lifespan*
 			category *ephemeral*
@@ -109,11 +93,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*arena*] drivers drvs [record:drv]
 [category:*arena*] constants cnts [record:cnt]
-[category:*space*] constants auto3 [record:CSpace]
-[table:lowerLimit] sizedBy sz1 [dimensioner:spaceDimension]
-	rank = Integer(0)
-[table:upperLimit] sizedBy sz2 [dimensioner:spaceDimension]
-	rank = Integer(1)
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*atomic*]
 [system:sys1] belongsTo bt1 [category:*arena*]

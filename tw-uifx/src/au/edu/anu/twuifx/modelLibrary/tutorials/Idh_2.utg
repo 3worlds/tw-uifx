@@ -209,7 +209,6 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 11:18:00 CEST 2020
 			category *relation*
 			category *life cycle*
 			category *group*
-			category *space*
 		record AVPopulation
 			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)

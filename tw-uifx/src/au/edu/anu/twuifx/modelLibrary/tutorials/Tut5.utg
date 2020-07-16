@@ -43,7 +43,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 10 14:39:20 AEST 2020
 			category *life cycle*
 			category *relation*
 			category *component*
-			category *space*
 			category *arena*
 		categorySet *lifespan*
 			category *ephemeral*
