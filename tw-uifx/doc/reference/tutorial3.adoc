@@ -13,7 +13,7 @@ The equation has three _constants_ and one _driver_:
 
 ==== Specifications
 
-Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a _permanent atomic_ residing in an _arena_, a 'clock' timer driving a single process and function, a simple experimental design and a basic user interface.
+Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a system which is _permanent atomic_ residing in an _arena_, a 'clock' timer driving a single process and function, a simple experimental design and a basic user interface.
 
 . Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project 'Tut3'.
 

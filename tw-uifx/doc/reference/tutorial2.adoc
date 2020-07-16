@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-The previous tutorial used code snippets to insert Java code into the model specifications. In this tutorial, we show how to use an Integrated Development Environment (IDE) for the same purpose. Generally, the only way to develop any but the simplest of models is to code in a professional IDE such as _Eclipse_, _Intellij_ or _NetBeans_. At the time of writing, linking specifications to a Java project has only be tested with the _Eclipse_ IDE.
+The previous tutorial used code snippets to insert Java code into the model specifications. In this tutorial, we show how to use an Integrated Development Environment (IDE) to achieve the same ends. Generally, the only way to develop any but the simplest of models is to code in a professional IDE such as _Eclipse_, _Intellij_ or _NetBeans_. At the time of writing, linking specifications to a Java project has only be tested with the _Eclipse_ IDE.
 
 ==== New Java project
 

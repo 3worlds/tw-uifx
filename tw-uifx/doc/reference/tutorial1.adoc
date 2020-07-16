@@ -2,15 +2,15 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for creating a simulation with _ModelMaker_. As the use of _ModelMaker_ is the primary focus of this tutorial, only a simple logistic equation is implemented as a test case. New modelling capabilities are gradually introduced over the course of these tutorials.
+This tutorial explains the procedure for creating a simulation with _ModelMaker_. In this first tutorial we use a simple logistic equation as a test case. In the tutorials that follow, new capabilities are gradually introduced as we explore the full range of modelling features. 
 
-In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. Nodes in the graph represent elements of interest in the model and the edges represent the relationships between them. The entire graph constitutes the model specifications. The simulation can be run as as soon as the specifications are complete.
+In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as as soon as the specifications are complete and Java code has been written to define the behaviour the functions you have specified.
 
-As you construct the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an _archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph construction and providing an updated list of tasks requiring attention. 
+As you construct the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an _archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph construction and by providing an updated list of tasks requiring attention. 
 
 While this process greatly accelerates model development, a more important aim is to provide a firm basis for model comparison. As all models developed with _ModelMaker_ must comply with the _archetype_, structural differences become apparent when comparing specifications. That is, while you can construct any model, the design, being constrained by the _archetype_, will not be arbitrary. Of course, this is not the only difference between models. The code for each function defined by the specifications will be particular but at least these differences are encapsulated at specific places in the model implementation.
 
-The graph is both a tree and a directed graph. Aside from the root, each node has a parent and may have additional edges between nodes to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships. Once the task list is empty, the simulation is ready to run.
+The graph is both a tree and a directed graph. Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships.
 
 If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
 
