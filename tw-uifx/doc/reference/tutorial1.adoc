@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for creating a simulation with _ModelMaker_. As the use of _ModelMaker_ is the primary focus of this tutorial, a simple logistic equation is implemented as a test case. New modelling capabilities are gradually introduced over the course of these tutorials.
+This tutorial explains the procedure for creating a simulation with _ModelMaker_. As the use of _ModelMaker_ is the primary focus of this tutorial, only a simple logistic equation is implemented as a test case. New modelling capabilities are gradually introduced over the course of these tutorials.
 
 In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. Nodes in the graph represent elements of interest in the model and the edges represent the relationships between them. The entire graph constitutes the model specifications. The simulation can be run as as soon as the specifications are complete.
 
@@ -32,7 +32,7 @@ At this stage you can try out a few basic edit operations:
 
 - Change the node and text size with the controls at the bottom of the display; and,
 
-- See a range of edit options for this particular node by right-clicking on it to display a local popup menu. These local popup menus are how the graph is constructed.
+- See a range of edit options for this particular node by right-clicking on it to display a local popup menu. The graph is constructed through these popup menus.
 
 A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
@@ -64,7 +64,7 @@ On the other hand, you can safely delete project directories at any time if you 
 
 ==== Creating the specifications
 
-Having created `Tut1`, the task list shows four nodes are required. This list can be dealt with in any order but in general, a logical approach is to build the specifications in the order: 
+Having created `Tut1`, the task list shows four nodes are required. This list can be dealt with in any order but in general, a logical approach is to build the specifications as follows: 
 
 ... *data definition*: the data structures required;
 ... *dynamics*: how the modelled system evolves over time.
@@ -115,7 +115,7 @@ The `dynamics` sub-tree is a child of the `system` node - the root of the modell
 
 . Right-click on the root node (`3worlds:Tut1`) and select `New node -> system` from the popup menu. 
 
-The addition of the `system` node has removed one task (to add a `system`) and added four more to the task list. One of these tasks is to add a `dynamics` node.
+The addition of the `system` node has removed one task (to add a `system`) and added four more. One of these tasks is to add a `dynamics` node.
 
 [start = 2]
 
@@ -226,7 +226,7 @@ We are now in a position to define the _role_ of the `system` node (a.k.a. `comp
 
 . Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*permanent*`.
 
-The above edits have created three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_ and are named. The relationship can be read as: `system:sys1 belongs to category:*arena*`.
+The above edits have created three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` at the bottom of the Graph display, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongs to category:*arena*`.
 
 Finally, we need to apply `process:p` to a category - in this case, the _arena_.
 
@@ -257,15 +257,19 @@ Simulations can also run without any graphical user interface - they still must 
 
 When the simulation is run, its graphical user interface has optionally, a toolbar at the top, a status bar at the bottom and any number of tabs containing any number of widgets. The controller must be placed either in the toolbar or status bar. Here we place it in the toolbar.
 
-. Collpase `experiment:expt` from the root node.
+. Collapse `experiment:expt` from the root node.
 
 . Create a `userInterface` as a child of the root.
 
 . Create a `top` as a child of `userInterface:gui`.
 
-. Create a `widget` as a child of `top:top`, name it 'ctrl' and select `SimpleControlWidget1` from the drop-down list as its class.
+. Create a `widget` as a child of `top:top1`, name it 'ctrl' and select `SimpleControlWidget1` from the drop-down list as its class.
 
 The model specifications now comply with the archetype and the code has compiled. Save your work (`Ctrl+s`) and the task list will be empty. The *Deploy* button is now enabled and the traffic light has changed from red to green (bottom left corner of _ModelMaker_).
+
+In addition, the specifications have been automatically documented by the production of an ODD template (Overview, Design concepts and Details) (`Tut1.odt`), an established standard for documenting simulation models. This file is always generated after every edit of a valid specification. When you are statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model. 
+
+NB: If you edit the file without making a copy, those edits will be lost whenever the specifications are modified.  
 
 ===== Deployment: launching _ModelRunner_
 
@@ -285,7 +289,7 @@ To add a time series for _x_:
 
 . Create a `tab` node from the  `userInterface:gui` node. 
 
-. Create a `widget` node from `tab:tab1`, name it `srsx` and select `SimpleTimeSeriesWidget` from the drop-down list. 
+. Create a `widget` node from `tab:tab1`, name it 'srsx' and select `SimpleTimeSeriesWidget` from the drop-down list. 
 
 A new task has been added to the list requiring an edge from this widget to a dataTracker. 
 
@@ -371,7 +375,8 @@ To complete this tutorial, add a simple stopping condition:
 
 
 ==== Graph layouts
-The final aspect of _ModelMaker_ we have yet to examine is the graph layout system.
+
+An aspect of _ModelMaker_ we have only touched on so far, is the graph layout system.
 
 While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges. The advantage in using a graph is that the huge number of options possible can be constrained by context. For example, to have a dynamic `process`, it makes sense that it's associated with a particular `timer`, that other processes working at the same rate are associated with the same `timer` and that all timers are coordinated by the one `timeline`. The user interface for problems such as this would be very error-prone if presented say, as a series of dialog boxes.
 
@@ -397,6 +402,7 @@ Finally, you can of course move a node anywhere within the graph window.
 - *>|* Move all isolated nodes to one side (after re-applying the layout)
 - *Show neighbourhood*:  With this feature, you can choose to show only nodes within a given path distance from a selected node.
 - *A*: Show all nodes. That is, undo the above operation.
+- change the node and edge text this is displayed with the `N-text` and `E-text` drop-down lists.
 
 *Resizing*:
 
@@ -405,9 +411,9 @@ Finally, you can of course move a node anywhere within the graph window.
 - *Node Size*
 - *Font size*
 
-You can also change font sizes, node sizes and node and edge names by hiding or showing either or both roles and names.
+You can also change font sizes, node sizes and, as noted, the node and edge names by hiding or showing either or both roles and names.
  
-As an exercise if you wish, try displaying just the nodes with _cross links_ using the SpringGraph layout.
+As an exercise if you wish, try displaying just the nodes with _cross links_ using the SpringGraph layout. This is a common way to look at just the _cross link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just _parent-child_ relationships make useful additions to the ODD appendix.
 
 . Expand all sub-trees from the root node.
 
