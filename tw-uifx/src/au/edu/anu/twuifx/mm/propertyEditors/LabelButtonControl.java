@@ -65,7 +65,7 @@ public class LabelButtonControl extends GridPane {
 		super();
 		label = new Label("");
 		label.setPadding(new Insets(5, 2, 0, 0));
-		label.setMinWidth(100);
+		label.setMaxWidth(150);
 		button = new Button("");
 		// TODO: This won't work when MM is running from jar.cf MRSplash.java
 		File file = Resources.getFile(fileName, packageName);
