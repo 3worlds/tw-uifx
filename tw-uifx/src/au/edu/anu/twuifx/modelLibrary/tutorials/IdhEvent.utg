@@ -138,8 +138,6 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 11:27:56 AEST 2020
 						function Setup
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
 							userClassName = java.lang.String(code.sys1.Setup)
-							snippet snpt2
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 					process procCommGrowth
 						dataTracker trkr
 							sampleSize = java.lang.String()
