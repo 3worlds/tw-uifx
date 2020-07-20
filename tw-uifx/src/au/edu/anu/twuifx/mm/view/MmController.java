@@ -185,9 +185,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private MenuItem miSetCodePath;
 
 	@FXML
-	private MenuItem miCGMetrics;
-
-	@FXML
 	private MenuItem miDisconnect;
 
 	@FXML
@@ -195,9 +192,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private Circle trafficLight;
+	
+	@FXML
+	private Button btnDocument;
 
 	@FXML
 	private SplitPane splitPane1;
+	
 	@FXML
 	private SplitPane splitPane2;
 
@@ -503,42 +504,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser.onSelectAll();
 	}
 
-	@FXML
-	void onCGMetrics(ActionEvent event) {
-		Dialog<ButtonType> dlg = new Dialog<>();
-		dlg.initOwner((Window) Dialogs.owner());
-		dlg.setTitle(Project.getDisplayName()+" Information");
-		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
-		dlg.getDialogPane().getButtonTypes().addAll(done);
-		TabPane content = new TabPane();
-		content.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-		dlg.getDialogPane().setContent(content);
-		Tab tbMetrics = new Tab("Metrics");
-		Tab tbFlowChart = new Tab("Flow chart");
-		Tab tbODD = new Tab("ODD");
-		content.getTabs().add(tbMetrics);
-		content.getTabs().add(tbFlowChart);
-		content.getTabs().add(tbODD);
-		ConfigInfo info = new ConfigInfo(ConfigGraph.getGraph());
-		TextArea taMetrics = new TextArea();
-		TextArea taFlowChart = new TextArea();
-		TextArea taODD = new TextArea();
-		taMetrics.setWrapText(true);
-		taFlowChart.setWrapText(false);
-		taODD.setWrapText(true);
-		//textArea.setPrefHeight(400);
-		taMetrics.setEditable(false);
-		taFlowChart.setEditable(false);
-		taODD.setEditable(false);
-
-		tbMetrics.setContent(taMetrics);
-		tbFlowChart.setContent(taFlowChart);
-		tbODD.setContent(taODD);
-		taMetrics.appendText(info.metricsToString());	
-		taFlowChart.appendText(info.flowChartToString());
-		taODD.appendText(info.ODDToString());
-		dlg.showAndWait();
-	}
 
 	@FXML
 	void onAbout(ActionEvent event) {
@@ -600,7 +565,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		textArea.deselect();
 		dlg.showAndWait();
 	}
-
+	
+    @FXML
+    void doDocumentation(ActionEvent event) {
+    	DocoGenerator gen = new DocoGenerator(ConfigGraph.getGraph());
+    	gen.generate();
+    }
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
@@ -886,6 +856,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onStartCheck() {
 		Platform.runLater(() -> {
 			btnDeploy.setDisable(true);
+			btnDocument.setDisable(true);
 			btnCheck.setDisable(true);
 			lblChecking.setVisible(true);
 			trafficLight.fillProperty().set(Color.RED);
@@ -904,6 +875,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		isValid = valid;
 		Platform.runLater(() -> {
 			btnDeploy.setDisable(false);
+			btnDocument.setDisable(false);
 			btnCheck.setDisable(false);
 			lblChecking.setVisible(false);
 			setButtonState();
@@ -1261,13 +1233,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnXLinks.setDisable(!isOpen);
 		cbNodeTextChoice.setDisable(!isOpen);
 		cbEdgeTextChoice.setDisable(!isOpen);
-		miCGMetrics.setDisable(!isOpen || !isValid);
 		btnSelectAll.setDisable(!isOpen);
 		tglSideline.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;
 		btnDeploy.setDisable(!cleanAndValid);
+		btnDocument.setDisable(!cleanAndValid);
 		miRedo.setDisable(!Caretaker.hasSucc());
 		if (Caretaker.hasSucc()) {
 			miRedo.setText("Redo '" + Caretaker.getSuccDescription() + "'");

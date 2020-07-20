@@ -4,7 +4,7 @@
 
 This tutorial introduces the use of tables in _ModelMaker_ by implementing a multi-species competitive Lotka-Volterra equation (CLV).
 
-The equation has three _constants_ and one _driver_:
+The equation has three _constants_ and one _driver_; all of which are tables:
 
 - _K_: carrying capacity
 - _r_: growth rate
@@ -13,13 +13,13 @@ The equation has three _constants_ and one _driver_:
 
 ==== Specifications
 
-Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a system which is _permanent atomic_ residing in an _arena_, a 'clock' timer driving a single process and function, a simple experimental design and a basic user interface.
+Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a system which is _permanent_, _atomic_, belongs to the _arena_, has a 'clock' timer driving a single process and function, a simple experimental design and a basic user interface.
 
 . Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project 'Tut3'.
 
 ===== Data definition
 
-Data is defined through the recursive use of tables and records: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java privite types but also user-defined records. Tables can have any number of dimensions.
+Data is defined through the recursive use of tables and records: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records. Tables can have any number of dimensions.
 
 There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for _alpha_, a 1-dimensional table for  _r_ and _K_ and another 1-dimensional table for the population _x_.
 
@@ -64,11 +64,12 @@ Now set the rank order for the indexing of `table:alpha`.
 
 . Click on `table:alpha` and examine its properties in the `Selected properties` editor.
 
-. Set the value of on of its rank properties to 1.
+. Set the value of one of its rank properties to 1 - it doesn't matter which.
+
+===== Dynamics
 
 Although the task list is now empty (i.e. the specifications are now deployable), we have yet to write the model equation and provide some output. We can now rename the function provided by the template to something meaningful in the present context and add a data tracker to follow _x_.
 
-===== Dynamics
 
 . Expand the `system.sys1` sub-tree from the root node and re-apply the layout.
 
@@ -101,7 +102,7 @@ We can now add some additional widgets to the user interface as the template pro
 
 . Add a `tab` as a child of `userInterface:gui`.
 
-. Add a `widget` as a child of `tab:tab1`, name it 'srsx and select `SimpleTimeSeriesWidget` as the widget class.
+. Add a `widget` as a child of `tab:tab1`, name it 'srsx' and select `SimpleTimeSeriesWidget` as the widget class.
 
 . Add a second `widget` as a child of `tab:tab1`, name it 'tblx' and select `SimpleDM0Widget`.
 
@@ -139,9 +140,9 @@ for (int i = 0;i<x.size(0); i++)
     focalDrv.x.setByInt(0.2, i);
 -----------------
 
-The above method simply initialises the equation constants: growth rate (_r_), carrying capacity (_K_), the interspecific competition coefficient (_alpha_) and the population size (_x_) with random values. 
+The above method simply initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_)to random values and the population size (_x_) to 0.2. 
 
-There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNG into groups so, for example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality.
+There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNGs into groups. For example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality.
 
 _ModelMaker_ has two types of RNG classes in addition to the standard Java RNG. These two are faster and produce streams of higher quality than the standard Java RNG. There are also various ways of seeding RNGs to ensure their uniqueness and to help with debugging.  
 

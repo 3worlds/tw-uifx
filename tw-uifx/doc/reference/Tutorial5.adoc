@@ -7,12 +7,9 @@ Many processes in nature are described as 'event driven': something that happens
 The previous tutorials have used a clock timer to drive the simulation dynamics. In essence, a clock timer simply issues regular time events autonomously, at intervals determined by its properties – its time step. 
 An event timer, on the other hand, is not autonomous. It drives its child processes through events posted from somewhere else for some time in the future. That 'somewhere else' entails other functions that determine when those circumstances have arisen.
 
-In this tutorial, based on Tutorial 4, we show how to drive disturbance from the state of the modelled community. We will create an event timer to drive the disturbance effects process and post events in the future to its queue from the community growth function. The time an event is triggered is not necessarily the time the event effects take place. For example, population density might be sufficient to set an epidemic in train, but there may be a delay before significant mortality takes place, by which time the original triggering conditions may have changed. In other words, cause and effect are not necessarily simultaneous. Thus, a decision has to be made as to whether or not 2 events that trigger the same process makes sense. IF two events are identical in type and time then the new one is rejected. Otherwise, if two events are equal in type but scheduled for different times, the one nearest the head of the queue is kept and the other rejected.
+In this tutorial, based on Tutorial 4, we show how to drive disturbance from the state of the modelled community. We will create an event timer to drive the disturbance effects process and post events to its queue from the community growth function. 
 
-*FLAWS*: Is all this crap?? Should duplicate events be allowed: duplicate as in type rather than time? I think what has to happen is if 2 events are equal then remove the event furthest from the queue head. What equal means is this: time events have an optional bitset for flags and an  payload object. If both are the same (including nulls) then they're equal. What we do with the bitset and payload apart from this i'm not sure. In Firescape, the payload was a cell object where the ignition or propagation was to take place - so it was passed to the process to decide what to do with this. If you agree this should be the approach, then it means passing time event payload and bitset in generated code. So in the case here, bitset and payload are null so 'time' determines what to do and the queue will only retain one event at a time. All this worked in Firescape with weather update events, fire perimeter updates and ignition events. But does it make general sense? Not sure. I guess duplicate events are allowed if the source is exogenous to the process. For example you have have as many ignitions for the same place as you like because they will have no effect if the cell is already burning. Likewise if a disturbance causes community mortality, its ok to have multitple events if the source of the events was not the current state of the community.
-
-
-I don't know - bit of a mess.
+The event queue cannot contain two identical events. If an attempt is made to do this, only the most imminent event is kept. What constitues 'indentical' is discussed in later tutorials.
 
 As the frequency of disturbance will now be an emergent property of the growth of the community, we no longer need to prescribe this and can remove the associated constant and process. 
 
@@ -54,10 +51,52 @@ It only remains to modify the java code of `function:CommGrowth` to post a time 
 
 
 
+*DistEffectsComm*:
 
 [source, Java]
 ------------------------
+		for (int i = 0; i < other_x.size(); i++)
+			if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)
+				otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
+------------------------
 
+*InitDist*:
+
+[source, Java]
+------------------------
+		focalCnt.inten = random.nextDouble() * 100;
+------------------------
+
+*CommGrowth*:
+
+[source, Java]
+------------------------
+		double[] dxdt = new double[x.size(0)];
+		double sumDensity = 0;
+		for (int i = 0; i < x.size(0); i++) {
+			double sum = 0;
+			for (int j = 0; j < alpha.size(1); j++)
+				sum += alpha.getByInt(i, j) * x.getByInt(j);
+			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));
+			sumDensity+= x.getByInt(i)/K.getByInt(i);
+		}
+		double meanDensity = sumDensity/x.size();
+		
+		if (meanDensity>0.25)
+			event1.postTimeEvent(t+1);
+		
+		for (int i = 0; i < dxdt.length; i++)
+			focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);
+		
+		
+		// compute diversity
+		double xtot = 0.0;
+		for (int i = 0; i < focalDrv.x.size(0); i++)
+			xtot += focalDrv.x.getByInt(i);
+		focalDec.div = 0.0;
+		for (int i = 0; i < focalDrv.x.size(0); i++)
+			if (focalDrv.x.getByInt(i) > 0.0)
+				focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);
 ------------------------
 
 ==== Next

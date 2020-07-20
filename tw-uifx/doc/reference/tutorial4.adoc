@@ -24,13 +24,17 @@ Data is divided into three classes in the _3Worlds archetype_:
 
 ... _decorators_ (dec). 
 
-Decorators are values derived from the current value of the drivers. Here, the _decorator_  will be a species diversity index (Shannon's), derived from relative abundance of each species. 
+Decorators are values derived from the current value of the drivers. They are set to zero at the begining of each time step. Here, the _decorator_  will be a species diversity index (Shannon's), derived from relative abundance of each species. 
 
-As noted previously, these names are just for clarity - they don't impose a _role_. You can name a node any thing you like as long as the names are unique. Here, the records are named to align with their intended roles to keep things organised. The _role_ is formally defined when these records are later collected together within a `category` that `belongsTo` a `component`.
+As noted previously, these names are just for clarity - they don't impose a _role_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. The _role_ is formally defined when these records are later collected together within a `category` that `belongsTo` a `component`.
+
+[start = 3]
 
 . Add a `field` as a child of `record:dec`, name it 'div' (diversity index) of type `Double`.
 
 We now define some data for the simple disturbance model: frequency and intensity.
+
+[start = 4]
 
 . Add a new `record` to `dataDefinition:dDef` and name it 'distCnt' (disturbance constants).
 
@@ -38,13 +42,17 @@ We now define some data for the simple disturbance model: frequency and intensit
 
 The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order the trees alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We could name all the data associated with the CLV with 'comm' (community).
 
+[start = 6]
+
 . Rename `record:cnt` to `record:commCnt`, `record:drv` to `record:commDrv` and `record:dec` to `record:commDec`.
 
 . Re-apply the layout. The data fields should now be in a more sensible order.
 
 Fill out the meta-data properties with at least the description of the data as these descriptions will be incorporated in the comments of the generated Java code.
 
-Add the following descriptions to the new data definitions properties:
+[start = 8]
+
+. Add the following descriptions to the new data definitions properties:
 
 - `freq#description`: 'average return time'
 - `inten#description:`'% population decrease'
@@ -112,9 +120,9 @@ Recall from the previous tutorial, that `system:sys1` is acting as a single comp
 
 ... has `process:p1` applied to it.
 
-The _arena_ is a special category. It must exist in every specification. Any data associated with it (_constants_, _drivers_ and _decorators_) is available to all `functions`: the data is in effect global. 
+The _arena_ is a special category. It must exist in every specification. Any data associated with it (_constants_, _drivers_ and _decorators_) is available to all `functions`: the data is global. 
 
-The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define the association between the disturbance with the effected community.
+The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define the association between the disturbance and the effected community.
 
 . Create a `structure` as child of `system:sys1`.
 
@@ -132,7 +140,7 @@ Before proceeding to the definition of the _roles_ of these component types, we 
 
 `system:sys1`, in aliasing as a `componentType`, must now be redefined as an `assemblage` with no functions or data associated with it. 
 
-First, arrange the graph display so only relevant parts are displayed. These instructions may be as tedious to follow as to write, but its worth it.
+First, arrange the graph display so only relevant parts are displayed. These instructions are as tedious to write as they are to follow, but its worth it.
 
 [start = 7]
 
@@ -197,7 +205,7 @@ Define the data for these new categories.
 . Right-click on `category:commDist` and select `New edge -> constants -> record:distCnt`.
 
 
-Now define the _roles_ of the new component types for the community and disturbance. Both are _permanent atomic_ belonging to the _component_ category and access data through their respective categories. 
+Now define the _roles_ of the new component types for the community and disturbance. Both are _permanent_, atomic_, belong to the _component_ category and access data through their respective categories.
 
 [start = 25]
 
@@ -223,7 +231,7 @@ Finally, add initialisation functions for the disturbance and community componen
 
 . Create an `initFunction` as child of `componentType:distType` and name it 'InitDist'.
 
-. Delete `initFunction:Init` that was carried over from Tutorial 3 as its no longer needed.
+. Delete `initFunction:Init`. This was carried over from Tutorial 3 as its no longer needed.
 
 That's all that is required in this section. To finish up, we now need to connect various various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.
 
@@ -256,7 +264,7 @@ We have inherited a data tracker from the previous tutorial that tracks the popu
 
 ===== User interface
 
-The specifications have inherited a controller, time series and table for _x_ from the previous tutorial. We just need one more time series to view the species diversity index ('div'). We'll take this opportunity to examine how to define the simulator's user interface.
+The specifications have inherited a controller, time series and table for _x_ from the previous tutorial. We just need one more time series to view the species diversity index ('div'). W can take this opportunity to examine a bit more about defining the simulator's user interface.
 The `tab` node can contain upto two widgets or two containers that in turn can contain widgets (or a combination of both). What we need then is:
 
 .. tab
