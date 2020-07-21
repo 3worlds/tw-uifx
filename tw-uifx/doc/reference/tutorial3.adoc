@@ -51,7 +51,7 @@ A new task appears in the task list saying the 'size' property must be greater t
 
 . Click on `dimensioner:nspp` and go to the `Selected properties` tab. Set a value of `npp#size` to 4 (four species).
 
-Finally, locate the `description` property for each of these tables and add the text from the introduction above. This text, together with other property meta-data such as `range` and `units`, appears as part of the Java documentation when generating Java code from _ModelMaker_.
+Finally, locate the `description` property for each of these tables and add the text from the introduction above. This text, together with other property meta-data such as `range` and `units`, appears as part of the Java documentation when generating Java code from _ModelMaker_. These descriptions are also used when generating the ODD document.
 
 There are now four tasks in the task list indicating we have yet to associate the dimensioner the the four tables. _K_, _r_ and _x_ have one dimension and _alpha_ has two.
 
@@ -169,7 +169,5 @@ The model is now ready to run. However, you may want to change the time duration
 ==== Next
 
 The next two tutorials (4 & 5) begin to elaborate the Lotka-Volterra model by developing the `structure` sub-tree through the addition of a disturbance component. 
-
-With this model, the Intermediate Disturbance Hypothesis can be tested. 
 
 

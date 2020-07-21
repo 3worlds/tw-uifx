@@ -2,102 +2,19 @@
 
 ==== Introduction
 
+TODO: update using previous event driven model
+
 Many processes in nature are described as 'event driven': something that happens when an evolving condition reaches some state. For example, in arid environments, reproduction may be episodic with organisms remaining dormant for many years until significant rainfall occurs; an epidemic may occur when a population reaches a certain density or bushfires might be triggered from natural or anthropogenic sources.
 
 The previous tutorials have used a clock timer to drive the simulation dynamics. In essence, a clock timer simply issues regular time events autonomously, at intervals determined by its properties – its time step. 
 An event timer, on the other hand, is not autonomous. It drives its child processes through events posted from somewhere else for some time in the future. That 'somewhere else' entails other functions that determine when those circumstances have arisen.
 
-In this tutorial, based on Tutorial 4, we show how to drive disturbance from the state of the modelled community. We will create an event timer to drive the disturbance effects process and post events to its queue from the community growth function. 
-
-The event queue cannot contain two identical events. If an attempt is made to do this, only the most imminent event is kept. What constitues 'indentical' is discussed in later tutorials.
-
-As the frequency of disturbance will now be an emergent property of the growth of the community, we no longer need to prescribe this and can remove the associated constant and process. 
+In this tutorial, based on Tutorial 4, we show how to drive disturbance from... 
 
 There can be any number of event timers in a specification and each timer can be driven by any number of functions posting events at any time in the future. This design allows specifying very complex causal chains.
 
 ==== Specifications
 
-. Create a new project from on `Tutorials -> 3 I.D.H` and name it 'Tut5'.
-
-. Collapse all sub-trees to the root and expand `dataDefinition:dDef` and `system:sys1` sub-trees.
-
-. Collapse `structure:struc1` to `system:sys1` and re-apply the layout.
-
-Delete the nodes that are no longer required.
-
-[start = 4]
-
-. Right-click on `timer:clock1` and select `Delete tree -> process:procDistOccurrence`.
-
-. Delete the node `field:freq`.
-
-Create the new event timer and reassign the associated process.
-
-[start = 6]
-
-. Create a `timer` as child of `timeline:tmln1`, name it 'event1' and select `EventTimer` as its class.
-
-. Right-click on `timer:clock1` and select `Delete child edge -> process:procDistEffects`.
-
-. Right-click on `timer:event1` and select `New child edge -> process:procDistEffects`.
-
-Set a process to post events to the event timer.
-
-[start = 9]
-
-. Right-click again on `timer:event1` and select `New edge -> fedBy -> function:CommGrowth`.
-
-It only remains to modify the java code of `function:CommGrowth` to post a time event to the timer's queue. You can do this by either pasting the following code into the function's snippet or create a Java project and add the code there.
-
-
-
-*DistEffectsComm*:
-
-[source, Java]
-------------------------
-		for (int i = 0; i < other_x.size(); i++)
-			if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)
-				otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
-------------------------
-
-*InitDist*:
-
-[source, Java]
-------------------------
-		focalCnt.inten = random.nextDouble() * 100;
-------------------------
-
-*CommGrowth*:
-
-[source, Java]
-------------------------
-		double[] dxdt = new double[x.size(0)];
-		double sumDensity = 0;
-		for (int i = 0; i < x.size(0); i++) {
-			double sum = 0;
-			for (int j = 0; j < alpha.size(1); j++)
-				sum += alpha.getByInt(i, j) * x.getByInt(j);
-			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));
-			sumDensity+= x.getByInt(i)/K.getByInt(i);
-		}
-		double meanDensity = sumDensity/x.size();
-		
-		if (meanDensity>0.25)
-			event1.postTimeEvent(t+1);
-		
-		for (int i = 0; i < dxdt.length; i++)
-			focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);
-		
-		
-		// compute diversity
-		double xtot = 0.0;
-		for (int i = 0; i < focalDrv.x.size(0); i++)
-			xtot += focalDrv.x.getByInt(i);
-		focalDec.div = 0.0;
-		for (int i = 0; i < focalDrv.x.size(0); i++)
-			if (focalDrv.x.getByInt(i) > 0.0)
-				focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);
-------------------------
 
 ==== Next
 

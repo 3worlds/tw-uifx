@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-The previous tutorial used code snippets to insert Java code into the model specifications. In this tutorial, we show how to use an Integrated Development Environment (IDE) to achieve the same ends. Generally, the only way to develop any but the simplest of models is to code in a professional IDE such as _Eclipse_, _Intellij_ or _NetBeans_. At the time of writing, linking specifications to a Java project has only be tested with the _Eclipse_ IDE.
+The previous tutorial used code snippets to insert Java code into the model specifications. In this tutorial we show how to use an Integrated Development Environment (IDE) to achieve the same end. Generally, the only way to develop any but the simplest of models is to code in a professional IDE such as _Eclipse_, _Intellij_ or _NetBeans_. At the time of writing, linking specifications to a Java project has only be tested with the _Eclipse_ IDE.
 
 ==== New Java project
 
@@ -80,7 +80,7 @@ Because these two methods are mapped to this generated file from the specificati
 
 If there have been changes to the number, name or type of `function` used in the specification, changes to anything in the `dataDefinition` sub-tree, or changes to the _roles_ of `components`, _ModelMaker_ will back up your old file as a text file with a unique name (e.g `\_Tut2_1.txt`,`_Tut2_2.txt` etc...) within the current java package. This way you can copy and paste you code back to the proper place. Otherwise _ModelMaker_ will never overwrite this file. 
 
-When _ModelMaker_ searches for differences between previous and current versions of this Java file, it will ignore any comments and import statements and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themseleves. 
+When _ModelMaker_ searches for differences between previous and current versions of this Java file, it will ignore any comments and import statements and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themselves. 
 
 If the task list is empty, you can now execute the specifications by deploying them from _ModelMaker_.
 
@@ -90,7 +90,7 @@ Running the simulation directly from _ModelMaker_ is a convenient way to speed u
 
 . Open a terminal, change to your project directory and enter the following text: `java -jar Tut1.jar 0 <project directory>`
 
-The first parameter (`0`) is an instance number. You can launch the simulation any number of times. This number prevents output files (if any) from overwriting each other. The second parmaeter is your project directory: not the full path, just the project relative to `.3w`.
+The first parameter (`0`) is an instance number. Because you can launch the simulation any number of times, this number prevents output files (if any) from overwriting each other. The second parameter is your project directory: not the full path, just the project relative to `.3w`.
 
 
 Finally we discuss how to debug your equations by running your model from the IDE.
@@ -103,7 +103,7 @@ In the default package of the linked java project (`tut2`) is a java file called
 
 ==== Next
 
-The next tutorial (Tutorial 3) will introduce the use of tables and some additional output `widgets` to add to the simulator's user interface.
+The next tutorial will introduce the use of tables and some additional output `widgets` to add to the simulator's user interface.
 
 
 

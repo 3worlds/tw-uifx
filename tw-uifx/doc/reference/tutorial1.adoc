@@ -2,21 +2,21 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for creating a simulation with _ModelMaker_. In this first tutorial we use a simple logistic equation as a test case. In the tutorials that follow, new capabilities are gradually introduced as we explore the full range of modelling features. 
+This tutorial explains the procedure for creating a simulation with _ModelMaker_, using a simple logistic equation as a test case. In the tutorials that follow, new capabilities are gradually introduced as we explore the full range of modelling features. 
 
-In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as as soon as the specifications are complete and Java code has been written to define the behaviour the functions you have specified.
+In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as soon as the specifications are complete and Java code has been written to define the behaviour of the functions you have specified.
 
 As you construct the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an _archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph construction and by providing an updated list of tasks requiring attention. 
 
 While this process greatly accelerates model development, a more important aim is to provide a firm basis for model comparison. As all models developed with _ModelMaker_ must comply with the _archetype_, structural differences become apparent when comparing specifications. That is, while you can construct any model, the design, being constrained by the _archetype_, will not be arbitrary. Of course, this is not the only difference between models. The code for each function defined by the specifications will be particular but at least these differences are encapsulated at specific places in the model implementation.
 
-The graph is both a tree and a directed graph. Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships.
+The specification graph is both a tree and a directed graph. Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships.
 
 If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
 
 ==== Creating a new 3Worlds project
 
-. Start `ModelMaker`.
+. Start `ModelMaker` at a terminal with this command: `java -jar ModelMaker.jar`.
 . Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
 . When prompted enter `Tut1` (first letter uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _Graph display_.
 
@@ -48,7 +48,7 @@ All projects are located within the 3Worlds root directory called `.3w`. The dot
 
 The `.3w` directory contains a Jar file called `tw-dep.jar`. This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
 
-Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project directory begins with the key word `project`, followed by the name of the project you entered (`Tut1` in this case) and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to overwrite a project inadvertently. 
+Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project directory begins with the key word `project`, followed by the name of the project you entered (`Tut1` in this case) and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to inadvertently overwrite a project. 
 
 Inside this directory are a number of text files:
 
@@ -67,8 +67,8 @@ On the other hand, you can safely delete project directories at any time if you 
 Having created `Tut1`, the task list shows four nodes are required. This list can be dealt with in any order but in general, a logical approach is to build the specifications as follows: 
 
 ... *data definition*: the data structures required;
-... *dynamics*: how the modelled system evolves over time.
-... *structure*: the organisation of components - their roles and relationships. 
+... *dynamics*: define how the modelled system evolves over time.
+... *structure*: define the organisation of components - their roles and relationships. 
 
 For the most part, these tutorials will proceed in this order and leave defining the simulation's user interface and experimental design until last. 
 
@@ -86,7 +86,7 @@ You can name nodes and edges anything you like but accepting the recommended nam
 
 The `dataDefinition:dDef` node appears (pale red) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. The lines are thin at the parent end and thick at the child end indicating that `3worlds:Tut1` is the parent of `dataDefinition:dDef`.
 
-All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and making a selection from the popup menu. The items in this menu vary according to the possibilities allowed by the _archetype_. This is one way _ModelMaker_ ensures the developing configuration conforms with the _archetype_, greatly simplifying an otherwise complex workflow.
+All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and selecting a child to create from the available options provided by the popup menu. The items in this menu vary according to the possibilities allowed by the _archetype_. This is one way _ModelMaker_ ensures the developing configuration conforms with the _archetype_, greatly simplifying an otherwise complex workflow.
 
 [start = 2]
 . Create a `record` node as a child of `dataDefinition:dDef` and name it 'cnt'.
@@ -143,9 +143,9 @@ There is now a new type of task indicating that a property value for the new tim
 
 . In the property editor, change `tmr1#dt` to 1, whereupon a new task appears saying the same thing for `tmr1#nTimeUnits` so set that to 1 as well. 
 
-`dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types available ranging from microseconds to millennia. The current default value of `UNSPECIFIED` is fine for this tutorial - time here is just a sequence of steps. 
+`dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types available ranging from microseconds to millennia. The current default value of `UNSPECIFIED` is fine for this tutorial - here time is just a sequence of steps. 
 
-Note that a model can have any number of `timers` using any of the available time steps and time units as long as the time units selected are compatible with the parent `timeline`. The task messages will indicate if this is not the case. Because the specifications allow for more than one system, it follows there can be many dynamics sub-trees, each with their own time system. (*can we really do this?*)
+Note that a model can have any number of `timers` using any of the available time steps and time units as long as the time units selected are compatible with the parent `timeline`. The task messages will indicate if this is not the case. Because the specifications allow for more than one system, it follows there can be many dynamics sub-trees, each with their own time system.
 
 A new task has been posted requiring a `process` node.
 
@@ -153,7 +153,7 @@ A new task has been posted requiring a `process` node.
 
 . Create a process node as child of `timer:tmr1`. 
 
-A `process` defines a set of computations acting on model components driven at the rate of the parent `timer`. A `component` is definition of a unit of simulation. It can be any physical or biology entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).
+A `process` defines a set of computations acting on model components driven at the rate of the parent `timer`. A `component` is defined as a unit of simulation. It can be any physical or biology entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).
 
 Processes can be composed of any number of functions of various types (much more on this later). We need just one function to implement the logistic equation - a `ChangeState` function that takes the current state of a component and calculates the next state.
 
@@ -190,7 +190,7 @@ Here, the component's _role_ is defined as:
 
 - `process:p1` applies to it. 
 
-The component is _permanent_ because it doesn't die, it's an _atomic_ simply because it is a single indivisable component, residing in an _arena_ because, well, everything's got to be somewhere. No matter how many components a model has, exactly one of them must belong to the _arena_ category, a unique top level component - its more or less a global component accessible to all other components. 
+The component is _permanent_ because it doesn't die; it's  _atomic_ simply because it is a single indivisable component and it belongs to the _arena_. No matter how many components a model has, exactly one of them must belong to the _arena_ category, a unique top level component - its more or less a global component accessible to all other components. 
 
 While this is complicated for such a simple function, later tutorials will show how this can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
 
@@ -253,7 +253,7 @@ Experimental designs can take many forms including predefined types such as `cro
 
 The minimum requirement for a user interface is a controller widget: something that can start and stop a simulation. Of course, we'll also need to display the value of _x_ with, say, a time series chart. This can be added later after trying out the simulator. 
 
-Simulations can also run without any graphical user interface - they still must have a user interface but it need not be visible. This situation is called a 'headless' simulator and can be used on unsupervised systems or systems where a user interface is not possible.
+Simulations can also run without any _graphical_ user interface - they still must have a user interface but it need not be visible. This situation is called a 'headless' simulator and can be used on unsupervised systems or systems where a user interface is not possible.
 
 When the simulation is run, its graphical user interface has optionally, a toolbar at the top, a status bar at the bottom and any number of tabs containing any number of widgets. The controller must be placed either in the toolbar or status bar. Here we place it in the toolbar.
 
@@ -267,9 +267,9 @@ When the simulation is run, its graphical user interface has optionally, a toolb
 
 The model specifications now comply with the archetype and the code has compiled. Save your work (`Ctrl+s`) and the task list will be empty. The *Deploy* button is now enabled and the traffic light has changed from red to green (bottom left corner of _ModelMaker_).
 
-In addition, the specifications have been automatically documented by the production of an ODD template (Overview, Design concepts and Details) (`Tut1.odt`), an established standard for documenting simulation models. This file is always generated after every edit of a valid specification. When you are statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model. 
+In addition, the *Document* button has been enabled. Clicking this button generates an ODD template (Overview, Design concepts and Details) (`Tut1.odt`), an established standard for documenting simulation models. This file can be generated anytime the specifications are valid. When you are statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model. 
 
-NB: If you edit the file without making a copy, those edits will be lost whenever the specifications are modified.  
+NB: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.  
 
 ===== Deployment: launching _ModelRunner_
 
@@ -330,13 +330,13 @@ To create the _roles_ for _x_ and _r_:
 
 . Save the graph (`Ctrl+s`). 
 
-The task list should be empty and the simulation can be re-deployed.
+The task list should be empty and the simulation can be re-deployed. You can re-generate the ODD again if you wish.
  
 ===== Stopping conditions 
 
 If you examine the graph and all its properties, you may notice that there is no indication as to how long the simulation should run. This means that when we run it we should expect it to continue indefinitely. You may or may not want this. If your model contains an unconstrained exponential function, it may eventually crash unless your code takes measures to handle this. You can add a variety of simple or complicated stopping conditions to the `dynamics` node. These will be discussed in later tutorials.
 
-When we first ran this model it had no output. Now that we have a time series chart, displaying data of unlimited length will make the _ModelRunner_ fairly unresponsive. If you press the run button and then the stop or pause button it may take a while for the model to actually stop running. So for now, it's best to test the simulation with the `Step` button.
+When we first ran this model it had no output. Now that we have a time series chart, displaying data of unlimited length will make the _ModelRunner_ fairly unresponsive. If you press the run button and then the stop or pause button of the controller, it may take a while for the model to actually stop running. So for now, it's best to test the simulation with the `Step` button.
 [start =6]
 
 . Deploy _ModelRunner_ (saving first if prompted)
@@ -353,7 +353,7 @@ The display is still uninteresting because we haven't set an initial value for _
 
 . Collapse all sub-trees from the root node and expand just the `system:sys1` sub-tree.
 
-. Create an `initFunction` as a child of `system:sys1`.
+. Create an `initFunction` as a child of `system:sys1`. As `system:sys1` is the only component in the specifications, it is the node requiring initialisation of _x_ and _r_.
 
 . Create a `snippet` as a child of `initFunction:Init1`.
 
@@ -373,7 +373,6 @@ To complete this tutorial, add a simple stopping condition:
 
 . Save, re-deploy and run the simulation. You'll now see a time series of the chaos function of 100 time steps.
 
-
 ==== Graph layouts
 
 An aspect of _ModelMaker_ we have only touched on so far, is the graph layout system.
@@ -382,7 +381,7 @@ While using a graph to construct model specifications has many advantages, you c
 
 _ModelMaker_ has a number of features to help arrange the graph display. These fall into three categories: arranging, hiding and resizing.
 
-*Arranging*: There are five layout algorithms currently available in _ModelMaker_ of which three use the tree structure of the graph to arrange nodes and two are 'Spring' based algorithms. Tree methods are ideal for examining the parent-child structure while the last two are better suited to examining relations between nodes. Tree methods are deterministic while Spring methods are not. Thus, Tree methods are better for maintaining your orientation to the graph but have the disadvantage of not arranging cross-link edges clearly. Spring methods do a better job of this but the resulting arrangement can change with each application of the layout.
+*Arranging*: There are five layout algorithms currently available in _ModelMaker_ of which three make use of the tree structure of the graph to arrange nodes and two are 'Spring' based algorithms which treat all edges alike, be they _parent-child_ or cross-links edges. Tree methods are ideal for examining the parent-child structure while the last two are better suited to examining relations between nodes. Tree methods are deterministic while Spring methods are not. Thus, Tree methods are better for maintaining your orientation to the graph but have the disadvantage of not arranging cross-link edges clearly. Spring methods do a better job of this but the resulting arrangement can change with each application of the layout.
 
 Two of the Tree methods produce a radial layout. These are best suited to examining nodes that have many children such as a record with many fields.
 
@@ -411,9 +410,9 @@ Finally, you can of course move a node anywhere within the graph window.
 - *Node Size*
 - *Font size*
 
-You can also change font sizes, node sizes and, as noted, the node and edge names by hiding or showing either or both roles and names.
+You can also change the node and edge names by hiding or showing either or both roles and names.
  
-As an exercise if you wish, try displaying just the nodes with _cross links_ using the SpringGraph layout. This is a common way to look at just the _cross link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just _parent-child_ relationships make useful additions to the ODD appendix.
+As an exercise if you wish, try displaying just the nodes with _cross links_ using the SpringGraph layout. This is a common way to look at just the _cross link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant _parent-child_ relationships make useful additions to the ODD appendix.
 
 . Expand all sub-trees from the root node.
 
