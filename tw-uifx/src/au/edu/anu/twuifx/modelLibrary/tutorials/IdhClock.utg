@@ -4,7 +4,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 
 //distEffectsComm	
-//			for (int i = 0; i < other_x.size(); i++)
+//		for (int i = 0; i < other_x.size(); i++)
 //			if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)
 //				otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
 	
@@ -55,9 +55,9 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 
 
 // TREE
-3worlds Prj2
+3worlds Prj6
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(ian (21 Jul. 2020))
+	built-by = java.lang.String(gignoux (21 juil. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model for n species. Illustrates the use of a SystemComponent.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
@@ -82,11 +82,11 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nAdded
+			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nRemoved
+			field nAdded
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
@@ -159,7 +159,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 	system sys1
 		dynamics sim1
 			stoppingCondition stCd1
-				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(1000)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
@@ -171,7 +171,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
-					process procDistOccurance
+					process procDistOccurence
 						function DistOccurrence
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
 							userClassName = java.lang.String(code.sys1.DistOccurrence)
@@ -203,7 +203,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([17]"		double[] dxdt = new double[x.size(0)];","		for (int i = 0; i < x.size(0); i++) {","			double sum = 0;","			for (int j = 0; j < alpha.size(1); j++)","				sum += alpha.getByInt(i, j) * x.getByInt(j);","			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));","		}","		for (int i = 0; i < dxdt.length; i++)","			focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);","		// compute diversity","		double xtot = 0.0;","		for (int i = 0; i < focalDrv.x.size(0); i++)","			xtot += focalDrv.x.getByInt(i);","		focalDec.div = 0.0;","		for (int i = 0; i < focalDrv.x.size(0); i++)","			if (focalDrv.x.getByInt(i) > 0.0)","				focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);"))
 		structure struc1
 			relationType distEffectComm
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			componentType distType
 				constantClass = java.lang.String(code.sys1.DistCnt)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
@@ -267,14 +267,14 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 [dataTracker:trk2] trackComponent trks6 [component:comm]
 [dataTracker:trk2] trackField trks5 [field:div]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[process:procDistEffects] dependsOn depsOn1 [process:procDistOccurance]
+[process:procDistEffects] dependsOn depsOn1 [process:procDistOccurence]
 [process:procDistEffects] appliesTo aplyTo2 [relationType:distEffectComm]
+[process:procDistEffects] dependsOn depsOn2 [process:procCommGrowth]
 [widget:srsdiv] trackSeries trks7 [dataTracker:trk2]
 [componentType:distType] belongsTo bt7 [category:*permanent*]
 [componentType:distType] belongsTo bt6 [category:*component*]
 [componentType:distType] belongsTo bt5 [category:distCat]
 [componentType:distType] belongsTo bt8 [category:*atomic*]
-[process:procCommGrowth] dependsOn depsOn2 [process:procDistEffects]
 [process:procCommGrowth] appliesTo aplyTo1 [category:commCat]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*assemblage*]
@@ -283,7 +283,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 [table:K] sizedBy szBy1 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
 [widget:tblx] trackSeries trks4 [dataTracker:trk1]
-[process:procDistOccurance] appliesTo aplyTo3 [relationType:distEffectComm]
+[process:procDistOccurence] appliesTo aplyTo3 [relationType:distEffectComm]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [table:alpha] sizedBy szBy3 [dimensioner:nspp]
