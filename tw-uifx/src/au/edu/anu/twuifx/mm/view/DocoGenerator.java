@@ -75,18 +75,20 @@ import org.odftoolkit.simple.style.StyleTypeDefinitions;
  */
 public class DocoGenerator {
 	/**
-	 * Obtained from logistic 1
+	 * Obtained minimal config
 	 */
-	private static int baseNodes = 31;
-	private static int baseEdges = 8;
-	private static int baseDrvs = 1;
-	private static int baseCnts = 1;
-	private static int baseProps = 45;
+	private static int baseNodes = 26;
+	private static int baseEdges = 6;
+	private static int baseDrvs = 0;
+	private static int baseCnts = 0;
+	private static int baseDecs = 0;
+	private static int baseProps = 27;
 
 	private int nNodes;
 	private int nEdges;
 	private int nCnts;
 	private int nDrvs;
+	private int nDecs;
 	private int nProps;
 	private int nCT;
 	private int nGroups;
@@ -159,15 +161,19 @@ public class DocoGenerator {
 				nDrvs += getDimensions(n);
 			else if (get(n.edges(Direction.IN), selectZeroOrOne(hasTheLabel(E_CONSTANTS.label()))) != null)
 				nCnts += getDimensions(n);
+			else if (get(n.edges(Direction.IN), selectZeroOrOne(hasTheLabel(E_DECORATORS.label()))) != null)
+				nDecs += getDimensions(n);
 		}
 		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(cfg.root().getChildren(),
 				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
-		spaces = new ArrayList<>();
+
 		for (TreeGraphDataNode system : systems) {
-			TreeGraphDataNode space = (TreeGraphDataNode) get(system.getChildren(),
-					selectZeroOrOne(hasTheLabel(N_SPACE.label())));
-			if (space != null)
-				spaces.add(space);
+			TreeGraphDataNode struct = (TreeGraphDataNode) get(system.getChildren(),
+					selectZeroOrOne(hasTheLabel(N_STRUCTURE.label())));
+			if (struct != null)
+				spaces = (List<TreeGraphDataNode>) get(struct.getChildren(),
+						selectZeroOrMany(hasTheLabel(N_SPACE.label())));
+
 		}
 		timeline = (TreeGraphDataNode) get(systems.get(0).getChildren(), //
 				selectOne(hasTheLabel(N_DYNAMICS.label())), //
@@ -215,16 +221,16 @@ public class DocoGenerator {
 			// cf: https://odftoolkit.org/simple/document/cookbook/Text%20Document.html
 			TextDocument document = TextDocument.newTextDocument();
 			setHeading(document, level1);
-			
+
 			writePurpose(document, level2);
-			
+
 			writeEVS(document, level2);
 			writeAgentsIndividuals(document, level3);
 			writeSpatialUnits(document, level3);
 			writeEnvironment(document, level3);
 			writeCollectives(document, level3);
 			writeProcessScheduling(document, level2);
-			
+
 			writeDesignConcepts(document, level2);
 			writeEmergenceConcepts(document, level3);
 			writeAdaptationConcepts(document, level3);
@@ -236,13 +242,13 @@ public class DocoGenerator {
 			writeStochasticityConcepts(document, level3);
 			writeCollectivesConcepts(document, level3);
 			writeObservationConcepts(document, level3);
-			
+
 			writeInitialisation(document, level2);
-			
+
 			writeInputData(document, level2);
-			
+
 			writeSubmodels(document, level2);
-			
+
 			writeReferences(document, level2);
 
 			document.appendSection("end of ODD");
@@ -269,20 +275,25 @@ public class DocoGenerator {
 	}
 
 	private void writeMetrics(TextDocument doc) {
-		Table table = doc.addTable(5, 2);
+		Table table = doc.addTable(7, 2);
+		int configSize = (nNodes - baseNodes) + (nEdges - baseEdges) + (nProps - baseProps);
 		// cols, rows!
-		table.getCellByPosition(0, 0).setStringValue("#Nodes");
+		table.getCellByPosition(0, 0).setStringValue("1 #Nodes");
 		table.getCellByPosition(1, 0).setStringValue(Integer.toString(nNodes - baseNodes));
-		table.getCellByPosition(0, 1).setStringValue("#Edges");
+		table.getCellByPosition(0, 1).setStringValue("2 #Edges");
 		table.getCellByPosition(1, 1).setStringValue(Integer.toString(nEdges - baseEdges));
-		table.getCellByPosition(0, 2).setStringValue("#Constants");
+		table.getCellByPosition(0, 2).setStringValue("3 #Constants");
 		table.getCellByPosition(1, 2).setStringValue(Integer.toString(nCnts - baseCnts));
-		table.getCellByPosition(0, 3).setStringValue("#Drivers");
+		table.getCellByPosition(0, 3).setStringValue("4 #Drivers");
 		table.getCellByPosition(1, 3).setStringValue(Integer.toString(nDrvs - baseDrvs));
-		table.getCellByPosition(0, 4).setStringValue("#Properties");
-		table.getCellByPosition(1, 4).setStringValue(Integer.toString(nProps - baseProps));
+		table.getCellByPosition(0, 4).setStringValue("5 #Decorators");
+		table.getCellByPosition(1, 4).setStringValue(Integer.toString(nDecs - baseDecs));
+		table.getCellByPosition(0, 5).setStringValue("6 #Properties");
+		table.getCellByPosition(1, 5).setStringValue(Integer.toString(nProps - baseProps));
+		table.getCellByPosition(0, 6).setStringValue("7 configuration size (1+2+6)");
+		table.getCellByPosition(1, 6).setStringValue(Integer.toString(configSize));
 
-		doc.addParagraph("[Add all other graph analysis measures here.]");
+		// doc.addParagraph("[Add all other graph analysis measures here.]");
 
 	}
 
@@ -372,7 +383,7 @@ public class DocoGenerator {
 
 	@SuppressWarnings("unchecked")
 	private void writeProcessScheduling(TextDocument doc, int level) {
-		doc.addParagraph("3. Process overview and scheduling").applyHeading(true, level);
+		doc.addParagraph("Process overview and scheduling").applyHeading(true, level);
 		/**
 		 * 
 		 * flow chart, - insert drawing
@@ -456,7 +467,7 @@ public class DocoGenerator {
 	private void writeSpatialUnits(TextDocument doc, int level) {
 		doc.addParagraph("Spatial units").applyHeading(true, level);
 		// TODO: Only spatial units is being asked for here.
-		if (spaces.isEmpty())
+		if (spaces == null)
 			doc.addParagraph("Non-spatial model.");
 		else {
 			for (TreeGraphDataNode space : spaces) {
@@ -488,40 +499,40 @@ public class DocoGenerator {
 	private void writePurpose(TextDocument doc, int level) {
 		doc.addParagraph("Purpose").applyHeading(true, level);
 		doc.addParagraph((String) cfg.root().properties().getPropertyValue(P_MODEL_PRECIS.key()));
-		Paragraph para1 = doc.addParagraph("\n[Explanation: Every model has to start from a clear question, problem, or hypothesis. " + //
-				"Therefore, ODD starts with a concise summary of the overall objective(s) for which the model was developed. "
-				+ //
-				"Do not describe anything about how the model works here, only what it is to be used for. " + //
-				"We encourage authors to use this paragraph independently of any presentation of the purpose in the introduction of their article, "
-				+ //
-				"since the ODD protocol should be complete and understandable by itself and not only in connection with the whole publication "
-				+ //
-				"(as it is also the case for figures, tables and their legends). " + //
-				"If one of the purposes of a model is to expand from basic principles to richer representation of real-world scenarios, "
-				+ //
-				"this should be stated explicitly.]");
+		Paragraph para1 = doc.addParagraph(
+				"\n[Explanation: Every model has to start from a clear question, problem, or hypothesis. " + //
+						"Therefore, ODD starts with a concise summary of the overall objective(s) for which the model was developed. "
+						+ //
+						"Do not describe anything about how the model works here, only what it is to be used for. " + //
+						"We encourage authors to use this paragraph independently of any presentation of the purpose in the introduction of their article, "
+						+ //
+						"since the ODD protocol should be complete and understandable by itself and not only in connection with the whole publication "
+						+ //
+						"(as it is also the case for figures, tables and their legends). " + //
+						"If one of the purposes of a model is to expand from basic principles to richer representation of real-world scenarios, "
+						+ //
+						"this should be stated explicitly.]");
 		Font font = para1.getFont();
 
-        font.setFontStyle(StyleTypeDefinitions.FontStyle.ITALIC);
+		font.setFontStyle(StyleTypeDefinitions.FontStyle.ITALIC);
 
-        para1.setFont(font);
+		para1.setFont(font);
 	}
 
-	private void setHeading(TextDocument odd, int level) {
+	private void setHeading(TextDocument doc, int level) {
 		SimplePropertyList p = cfg.root().properties();
 		StringBuilder title1 = new StringBuilder();
 		title1.append("Overview, Design concepts and Details");
-		odd.addParagraph(title1.toString()).applyHeading(true, level);
+		doc.addParagraph(title1.toString()).applyHeading(true, level);
 
 		StringBuilder title2 = new StringBuilder();
 		title2.append(Project.getDisplayName())//
 				.append(" (Version: ")//
 				.append(p.getPropertyValue(P_MODEL_VERSION.key()))//
 				.append(")");
-		odd.addParagraph(title2.toString()).applyHeading(true, level);
+		doc.addParagraph(title2.toString()).applyHeading(true, level);
 
-		odd.addParagraph(authors);
-
+		doc.addParagraph(authors);
 	}
 
 	// this must have been done somewhere already!
