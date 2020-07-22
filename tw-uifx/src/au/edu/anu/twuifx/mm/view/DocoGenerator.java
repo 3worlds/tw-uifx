@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.odftoolkit.simple.TextDocument;
+import org.odftoolkit.simple.style.Font;
 import org.odftoolkit.simple.table.Table;
 import org.odftoolkit.simple.text.Paragraph;
 
@@ -60,6 +61,7 @@ import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import static au.edu.anu.twcore.archetype.TwArchetypeConstants.*;
+import org.odftoolkit.simple.style.StyleTypeDefinitions;
 
 /**
  * @author Ian Davies
@@ -75,7 +77,7 @@ public class DocoGenerator {
 	/**
 	 * Obtained from logistic 1
 	 */
-	private static int baseNodes =31;
+	private static int baseNodes = 31;
 	private static int baseEdges = 8;
 	private static int baseDrvs = 1;
 	private static int baseCnts = 1;
@@ -89,7 +91,7 @@ public class DocoGenerator {
 	private int nCT;
 	private int nGroups;
 	private List<TreeGraphDataNode> spaces;
-	private StringBuilder authors;
+	private String authors;
 
 	List<TreeGraphDataNode> timersClock;
 	List<TreeGraphDataNode> timersEvent;
@@ -99,7 +101,11 @@ public class DocoGenerator {
 
 	private TreeGraph<TreeGraphDataNode, ALEdge> cfg;
 
-	//NB: Ignore ui. experiment and snippets
+	private static final int level1 = 1;
+	private static final int level2 = 2;
+	private static final int level3 = 3;
+
+	// NB: Ignore ui. experiment and snippets
 	private static List<String> allowedNodes = new ArrayList<>();
 	static {
 		allowedNodes.add(N_DIMENSIONER.label());
@@ -190,15 +196,15 @@ public class DocoGenerator {
 			}
 		});
 		StringTable tblAuthors = (StringTable) cfg.root().properties().getPropertyValue(P_MODEL_AUTHORS.key());
-		authors = new StringBuilder();
+		StringBuilder authorssb = new StringBuilder();
 		LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 		String datetime = currentDate.format(DateTimeFormatter.ofPattern("d-MMM-uuuu"));
 
 		for (int i = 0; i < tblAuthors.size(); i++)
-			authors.append(tblAuthors.getWithFlatIndex(i)).append("\n");
+			authorssb.append(tblAuthors.getWithFlatIndex(i)).append("\n");
 
-		authors.append("Date: ").append(datetime).append("\n");
-
+		authorssb.append("Date: ").append(datetime).append("\n");
+		authors = authorssb.toString();
 
 	}
 
@@ -208,45 +214,48 @@ public class DocoGenerator {
 		try {
 			// cf: https://odftoolkit.org/simple/document/cookbook/Text%20Document.html
 			TextDocument document = TextDocument.newTextDocument();
+			setHeading(document, level1);
 			
-			setHeading(document);
-	
-			writePurpose(document);
+			writePurpose(document, level2);
 			
-			writeEVS(document);
+			writeEVS(document, level2);
+			writeAgentsIndividuals(document, level3);
+			writeSpatialUnits(document, level3);
+			writeEnvironment(document, level3);
+			writeCollectives(document, level3);
+			writeProcessScheduling(document, level2);
 			
-			writeAgentsIndividuals(document);
+			writeDesignConcepts(document, level2);
+			writeEmergenceConcepts(document, level3);
+			writeAdaptationConcepts(document, level3);
+			writeObjectivesConcepts(document, level3);
+			writeLearningConcepts(document, level3);
+			writePredictionConcepts(document, level3);
+			writeSensingConcepts(document, level3);
+			writeInteractionConcepts(document, level3);
+			writeStochasticityConcepts(document, level3);
+			writeCollectivesConcepts(document, level3);
+			writeObservationConcepts(document, level3);
 			
-			writeSpatialUnits(document);
+			writeInitialisation(document, level2);
 			
-			writeEnvironment(document);
+			writeInputData(document, level2);
 			
-			writeCollectives(document);
+			writeSubmodels(document, level2);
 			
-			writeProcessScheduling(document);
-			
-			writeDesignConcepts(document);
-
-			writeInitialisation(document,2);
-			
-			writeInputData(document,2);
-
-			writeSubmodels(document,2);	
-			
-			writeReferences(document,2);
+			writeReferences(document, level2);
 
 			document.appendSection("end of ODD");
 			document.addPageBreak();
-			
-			setAppendixTitle(document,"Appendix 1: Model specification metrics",1);
-			
-			writeMetrics(document);
 
+			setAppendixTitle(document, "Appendix 1: Model specification metrics", level1);
+
+			writeMetrics(document);
 
 			document.appendSection("end of Appendix 1");
 			document.addPageBreak();
-			
-			setAppendixTitle(document,"Appendix 2: Model specification graph",1);
+
+			setAppendixTitle(document, "Appendix 2: Model specification graph", level1);
 
 			document.addParagraph("[Add selected graph images here]");
 
@@ -259,8 +268,8 @@ public class DocoGenerator {
 
 	}
 
-	private void writeMetrics(TextDocument odd) {
-		Table table = odd.addTable(5, 2);
+	private void writeMetrics(TextDocument doc) {
+		Table table = doc.addTable(5, 2);
 		// cols, rows!
 		table.getCellByPosition(0, 0).setStringValue("#Nodes");
 		table.getCellByPosition(1, 0).setStringValue(Integer.toString(nNodes - baseNodes));
@@ -273,60 +282,97 @@ public class DocoGenerator {
 		table.getCellByPosition(0, 4).setStringValue("#Properties");
 		table.getCellByPosition(1, 4).setStringValue(Integer.toString(nProps - baseProps));
 
-		odd.addParagraph("[Add all other graph analysis measures here.]");
+		doc.addParagraph("[Add all other graph analysis measures here.]");
 
-		
 	}
 
-	private void setAppendixTitle(TextDocument odd, String string, int level) {
+	private void setAppendixTitle(TextDocument doc, String string, int level) {
 		StringBuilder title1 = new StringBuilder();
 		title1.append("Appendix 1: Model specification metrics");
-		odd.addParagraph(title1.toString()).applyHeading(true, level);
+		doc.addParagraph(title1.toString()).applyHeading(true, level);
 
 		StringBuilder title2 = new StringBuilder();
 		title2.append(Project.getDisplayName())//
 				.append(" (Version: ")//
 				.append(cfg.root().properties().getPropertyValue(P_MODEL_VERSION.key()))//
 				.append(")");
-		odd.addParagraph(title2.toString()).applyHeading(true, 1);
+		doc.addParagraph(title2.toString()).applyHeading(true, level);
 
-		odd.addParagraph(authors.toString());
+		doc.addParagraph(authors);
 		// rows, cols
 
-		
 	}
 
-	private void writeReferences(TextDocument odd, int level) {
-		odd.addParagraph("References").applyHeading(true, level);
+	private void writeReferences(TextDocument doc, int level) {
+		doc.addParagraph("References").applyHeading(true, level);
 
 		StringTable tblRefs = (StringTable) cfg.root().properties().getPropertyValue(P_MODEL_CITATIONS.key());
 		StringBuilder refs = new StringBuilder();
 		for (int i = 0; i < tblRefs.size(); i++)
 			refs.append(i + 1).append(". ").append(tblRefs.getWithFlatIndex(i)).append("\n");
-		odd.addParagraph(refs.toString());
+		doc.addParagraph(refs.toString());
 	}
 
-	private void writeSubmodels(TextDocument odd, int level) {
-		odd.addParagraph("Submodels").applyHeading(true, level);
-		
+	private void writeSubmodels(TextDocument doc, int level) {
+		doc.addParagraph("Submodels").applyHeading(true, level);
+
 	}
 
-	private void writeInputData(TextDocument odd, int level) {
-		odd.addParagraph("Input data").applyHeading(true, level);
+	private void writeInputData(TextDocument doc, int level) {
+		doc.addParagraph("Input data").applyHeading(true, level);
 	}
 
-	private void writeInitialisation(TextDocument odd, int level) {
-		odd.addParagraph("Initialisation").applyHeading(true, level);	
+	private void writeInitialisation(TextDocument doc, int level) {
+		doc.addParagraph("Initialisation").applyHeading(true, level);
 	}
 
-	private void writeDesignConcepts(TextDocument odd) {
-		odd.addParagraph("Design concepts").applyHeading(true, 2);
-		
+	private void writeDesignConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Design concepts").applyHeading(true, level);
+	}
+
+	private void writeEmergenceConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Emergence").applyHeading(true, level);
+	}
+
+	private void writeAdaptationConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Adaptation").applyHeading(true, level);
+	}
+
+	private void writeObjectivesConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Objectives").applyHeading(true, level);
+	}
+
+	private void writeLearningConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Learning").applyHeading(true, level);
+	}
+
+	private void writePredictionConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Prediction").applyHeading(true, level);
+	}
+
+	private void writeSensingConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Sensing").applyHeading(true, level);
+	}
+
+	private void writeInteractionConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Interaction").applyHeading(true, level);
+	}
+
+	private void writeStochasticityConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Stochasticity").applyHeading(true, level);
+	}
+
+	private void writeCollectivesConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Collectives").applyHeading(true, level);
+	}
+
+	private void writeObservationConcepts(TextDocument doc, int level) {
+		doc.addParagraph("Observation").applyHeading(true, level);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void writeProcessScheduling(TextDocument odd) {
-		odd.addParagraph("3. Process overview and scheduling").applyHeading(true, 2);
+	private void writeProcessScheduling(TextDocument doc, int level) {
+		doc.addParagraph("3. Process overview and scheduling").applyHeading(true, level);
 		/**
 		 * 
 		 * flow chart, - insert drawing
@@ -334,8 +380,7 @@ public class DocoGenerator {
 		 */
 		StringBuilder sb = new StringBuilder();
 		sb.append("Timeline\n")//
-				.append("\tScale: ").append(timeline.properties().getPropertyValue(P_TIMELINE_SCALE.key()))
-				.append("\n")//
+				.append("\tScale: ").append(timeline.properties().getPropertyValue(P_TIMELINE_SCALE.key())).append("\n")//
 				.append("\torigin: ").append(timeline.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key()))
 				.append("\n");
 
@@ -343,8 +388,7 @@ public class DocoGenerator {
 			sb.append("clock timers\n");
 			for (TreeGraphDataNode timer : timersClock) {
 				sb.append(timer.id()).append("\n");
-				sb.append("\tUnits: ").append(timer.properties().getPropertyValue(P_TIMEMODEL_TU.key()))
-						.append("\n");
+				sb.append("\tUnits: ").append(timer.properties().getPropertyValue(P_TIMEMODEL_TU.key())).append("\n");
 				sb.append("\tnumber of units: ").append(timer.properties().getPropertyValue(P_TIMEMODEL_NTU.key()))
 						.append("\n");
 			}
@@ -360,7 +404,7 @@ public class DocoGenerator {
 			}
 		}
 
-		odd.addParagraph(sb.toString());
+		doc.addParagraph(sb.toString());
 
 		String indent = "";
 		StringBuilder flowChart = new StringBuilder();
@@ -395,26 +439,25 @@ public class DocoGenerator {
 			}
 		}
 
-		odd.addParagraph(flowChart.toString());
+		doc.addParagraph(flowChart.toString());
 
-		
 	}
 
-	private void writeCollectives(TextDocument odd) {
-		odd.addParagraph("Collectives").applyHeading(true, 3);
-		
+	private void writeCollectives(TextDocument doc, int level) {
+		doc.addParagraph("Collectives").applyHeading(true, level);
+
 	}
 
-	private void writeEnvironment(TextDocument odd) {
-		odd.addParagraph("Environment").applyHeading(true, 3);
-		
+	private void writeEnvironment(TextDocument doc, int level) {
+		doc.addParagraph("Environment").applyHeading(true, level);
+
 	}
 
-	private void writeSpatialUnits(TextDocument odd) {
-		odd.addParagraph("Spatial units").applyHeading(true, 3);
+	private void writeSpatialUnits(TextDocument doc, int level) {
+		doc.addParagraph("Spatial units").applyHeading(true, level);
 		// TODO: Only spatial units is being asked for here.
 		if (spaces.isEmpty())
-			odd.addParagraph("Non-spatial model.");
+			doc.addParagraph("Non-spatial model.");
 		else {
 			for (TreeGraphDataNode space : spaces) {
 				StringBuilder sb = new StringBuilder();
@@ -427,41 +470,57 @@ public class DocoGenerator {
 							.append("\n");
 				}
 				// TODO: list processes using this space.
-				odd.addParagraph(sb.toString());
+				doc.addParagraph(sb.toString());
 			}
 		}
 
-		
 	}
 
-	private void writeAgentsIndividuals(TextDocument odd) {
-		odd.addParagraph("Agents/individuals").applyHeading(true, 3);
-		
+	private void writeAgentsIndividuals(TextDocument doc, int level) {
+		doc.addParagraph("Agents/individuals").applyHeading(true, level);
+
 	}
 
-	private void writeEVS(TextDocument odd) {
-		odd.addParagraph("Entities, state variables, and scales").applyHeading(true, 2);	
+	private void writeEVS(TextDocument doc, int level) {
+		doc.addParagraph("Entities, state variables, and scales").applyHeading(true, level);
 	}
 
-	private void writePurpose(TextDocument odd) {
-		odd.addParagraph("Purpose").applyHeading(true, 2);
-		odd.addParagraph((String)cfg.root().properties().getPropertyValue(P_MODEL_PRECIS.key()));
+	private void writePurpose(TextDocument doc, int level) {
+		doc.addParagraph("Purpose").applyHeading(true, level);
+		doc.addParagraph((String) cfg.root().properties().getPropertyValue(P_MODEL_PRECIS.key()));
+		Paragraph para1 = doc.addParagraph("\n[Explanation: Every model has to start from a clear question, problem, or hypothesis. " + //
+				"Therefore, ODD starts with a concise summary of the overall objective(s) for which the model was developed. "
+				+ //
+				"Do not describe anything about how the model works here, only what it is to be used for. " + //
+				"We encourage authors to use this paragraph independently of any presentation of the purpose in the introduction of their article, "
+				+ //
+				"since the ODD protocol should be complete and understandable by itself and not only in connection with the whole publication "
+				+ //
+				"(as it is also the case for figures, tables and their legends). " + //
+				"If one of the purposes of a model is to expand from basic principles to richer representation of real-world scenarios, "
+				+ //
+				"this should be stated explicitly.]");
+		Font font = para1.getFont();
+
+        font.setFontStyle(StyleTypeDefinitions.FontStyle.ITALIC);
+
+        para1.setFont(font);
 	}
 
-	private void setHeading(TextDocument odd) {
+	private void setHeading(TextDocument odd, int level) {
 		SimplePropertyList p = cfg.root().properties();
 		StringBuilder title1 = new StringBuilder();
 		title1.append("Overview, Design concepts and Details");
-		odd.addParagraph(title1.toString()).applyHeading(true, 1);
+		odd.addParagraph(title1.toString()).applyHeading(true, level);
 
 		StringBuilder title2 = new StringBuilder();
 		title2.append(Project.getDisplayName())//
 				.append(" (Version: ")//
 				.append(p.getPropertyValue(P_MODEL_VERSION.key()))//
 				.append(")");
-		odd.addParagraph(title2.toString()).applyHeading(true, 1);	
+		odd.addParagraph(title2.toString()).applyHeading(true, level);
 
-		odd.addParagraph(authors.toString());
+		odd.addParagraph(authors);
 
 	}
 
