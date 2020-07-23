@@ -64,7 +64,11 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -76,6 +80,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+
+import org.apache.tools.ant.filters.StringInputStream;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 
@@ -712,6 +718,35 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		initialisePropertySheets();
 	}
 
+	@Override
+	synchronized public void  redirectOutputToUI(InputStream errorStream) {
+		TextArea txt = textAreaErrorMsgs;
+		BufferedReader reader = null;
+		reader = new BufferedReader(new InputStreamReader(errorStream));
+		String line = null;
+		  try {
+			while ((line = reader.readLine()) != null) {
+				final String aLine = line;
+				Platform.runLater(()->{
+					txt.appendText(aLine);
+				});
+			  }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+	}
+
 	// -------------- IMMController End ---------------------
 
 	// -------------- Preferencable Start ---------------------
@@ -1259,5 +1294,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		else
 			trafficLight.fillProperty().set(Color.RED);
 	}
+
 
 }
