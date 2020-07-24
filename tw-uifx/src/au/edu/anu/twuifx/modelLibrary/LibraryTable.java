@@ -51,7 +51,7 @@ public enum LibraryTable {
 	Tut2(/*     */"2 LotkaVolterra", /**/"LotkaVolterra_1.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut3(/*     */"3 I.D.H.(clock)", /**/"IdhClock.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	//Tut6(/*     */"4 I.D.H.", /*	   */"Idh_2.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut4(/*     */"4 I.D.H.(event)", /**/"Idh_3.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut4(/*     */"4 I.D.H.(event)", /**/"IdhEvent.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut5(/*     */"5 Panmixy", /*	   */"Panmixy.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut6(/*     */"6 Spatial", /*	   */"Spatial.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	//
