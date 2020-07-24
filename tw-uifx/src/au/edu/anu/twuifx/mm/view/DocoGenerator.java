@@ -214,13 +214,13 @@ public class DocoGenerator {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public void generate() {
 
 		try {
 			// cf: https://odftoolkit.org/simple/document/cookbook/Text%20Document.html
 			TextDocument document = TextDocument.newTextDocument();
-			setHeading(document, level1);
+			writeTitle(document, "Overview, Design concepts and Details", level1);
+			//setHeading(document, level1);
 
 			writePurpose(document, level2);
 
@@ -250,20 +250,27 @@ public class DocoGenerator {
 			writeSubmodels(document, level2);
 
 			writeReferences(document, level2);
+			
+			//----- end ODD
 
 			document.appendSection("end of ODD");
 			document.addPageBreak();
 
-			setAppendixTitle(document, "Appendix 1: Model specification metrics", level1);
+			writeTitle(document, "Appendix 1: Model specification metrics", level1);
 
 			writeMetrics(document);
-
+			
+			//----- end Appendix 1
+			
 			document.appendSection("end of Appendix 1");
 			document.addPageBreak();
 
-			setAppendixTitle(document, "Appendix 2: Model specification graph", level1);
+			writeTitle(document, "Appendix 2: Model specification graph", level1);
 
 			document.addParagraph("[Add selected graph images here]");
+			
+			//----- end Appendix 2
+			
 
 			document.save(Project.makeFile(cfg.root().id() + ".odt"));
 
@@ -292,25 +299,21 @@ public class DocoGenerator {
 		table.getCellByPosition(1, 5).setStringValue(Integer.toString(nProps - baseProps));
 		table.getCellByPosition(0, 6).setStringValue("7 configuration size (1+2+6)");
 		table.getCellByPosition(1, 6).setStringValue(Integer.toString(configSize));
-
-		// doc.addParagraph("[Add all other graph analysis measures here.]");
-
 	}
 
-	private void setAppendixTitle(TextDocument doc, String string, int level) {
-		StringBuilder title1 = new StringBuilder();
-		title1.append("Appendix 1: Model specification metrics");
-		doc.addParagraph(title1.toString()).applyHeading(true, level);
+	private void writeTitle(TextDocument doc, String heading, int level) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(heading);
+		doc.addParagraph(sb.toString()).applyHeading(true, level);
 
-		StringBuilder title2 = new StringBuilder();
-		title2.append(Project.getDisplayName())//
+		sb = new StringBuilder();
+		sb.append(Project.getDisplayName())//
 				.append(" (Version: ")//
 				.append(cfg.root().properties().getPropertyValue(P_MODEL_VERSION.key()))//
 				.append(")");
-		doc.addParagraph(title2.toString()).applyHeading(true, level);
+		doc.addParagraph(sb.toString()).applyHeading(true, level);
 
 		doc.addParagraph(authors);
-		// rows, cols
 
 	}
 
@@ -519,21 +522,6 @@ public class DocoGenerator {
 		para1.setFont(font);
 	}
 
-	private void setHeading(TextDocument doc, int level) {
-		SimplePropertyList p = cfg.root().properties();
-		StringBuilder title1 = new StringBuilder();
-		title1.append("Overview, Design concepts and Details");
-		doc.addParagraph(title1.toString()).applyHeading(true, level);
-
-		StringBuilder title2 = new StringBuilder();
-		title2.append(Project.getDisplayName())//
-				.append(" (Version: ")//
-				.append(p.getPropertyValue(P_MODEL_VERSION.key()))//
-				.append(")");
-		doc.addParagraph(title2.toString()).applyHeading(true, level);
-
-		doc.addParagraph(authors);
-	}
 
 	// this must have been done somewhere already!
 	private static int getDimensions(TreeNode rec) {

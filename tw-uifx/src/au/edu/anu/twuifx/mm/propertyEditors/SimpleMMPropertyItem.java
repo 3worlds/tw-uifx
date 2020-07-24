@@ -38,7 +38,6 @@ import org.controlsfx.control.PropertySheet.Item;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twuifx.widgets.SimpleControlWidget1;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -58,7 +57,7 @@ public class SimpleMMPropertyItem implements Item {
 	protected String category;
 	private String description;
 	private IMMController controller;
-	private Logger log = Logging.getLogger(SimpleControlWidget1.class);
+	private static Logger log = Logging.getLogger(SimpleMMPropertyItem.class);
 
 	public SimpleMMPropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
 			String category, String description) {

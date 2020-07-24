@@ -1117,9 +1117,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		if (visualNode != null) {
 			TreeGraphNode cn = visualNode.getConfigNode();
 			boolean showNonEditables = true;
-			ObservableList<Item> list = null;
+			//ObservableList<Item> list = null;
 			if (cn instanceof DataHolder) {
-				list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables, visualNode.isPredefined());
+				ObservableList<Item> list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables, visualNode.isPredefined());
 				nodePropertySheet.getItems().setAll(list);
 			}
 		}
