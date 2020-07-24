@@ -718,34 +718,34 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		initialisePropertySheets();
 	}
 
-	@Override
-	synchronized public void  redirectOutputToUI(InputStream errorStream) {
-		TextArea txt = textAreaErrorMsgs;
-		BufferedReader reader = null;
-		reader = new BufferedReader(new InputStreamReader(errorStream));
-		String line = null;
-		  try {
-			while ((line = reader.readLine()) != null) {
-				final String aLine = line;
-				Platform.runLater(()->{
-					txt.appendText(aLine);
-				});
-			  }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		
-		
-	}
+//	@Override
+//	synchronized public void  redirectOutputToUI(InputStream errorStream) {
+//		TextArea txt = textAreaErrorMsgs;
+//		BufferedReader reader = null;
+//		reader = new BufferedReader(new InputStreamReader(errorStream));
+//		String line = null;
+//		  try {
+//			while ((line = reader.readLine()) != null) {
+//				final String aLine = line;
+//				Platform.runLater(()->{
+//					txt.appendText(aLine);
+//				});
+//			  }
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				reader.close();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		
+//		
+//	}
 
 	// -------------- IMMController End ---------------------
 

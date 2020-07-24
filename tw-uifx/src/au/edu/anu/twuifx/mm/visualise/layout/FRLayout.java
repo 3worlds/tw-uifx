@@ -39,6 +39,7 @@ import au.edu.anu.omhtk.rng.Pcg32;
 import au.edu.anu.twapps.mm.layout.ILayout;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -98,7 +99,7 @@ public class FRLayout implements ILayout {
 						FRVertex u = Node2Vertex(cn);
 						edges.add(new Duple<FRVertex, FRVertex>(v, u));
 						v.setHasEdge(true);
-						u.setHasEdge(true);
+						u.setHasEdge(true);// couldn't fine "u"
 					}
 
 			// add xlink edges
@@ -135,7 +136,7 @@ public class FRLayout implements ILayout {
 		for (FRVertex v : vertices)
 			if (v.getNode().id().equals(vn.id()))
 				return v;
-		return null;
+		throw new TwuifxException("Unable to find a vertex for "+vn.toShortString());
 	}
 
 	@Override
