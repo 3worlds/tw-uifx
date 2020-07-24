@@ -54,6 +54,7 @@ public enum LibraryTable {
 	Tut4(/*     */"4 I.D.H.(event)", /**/"IdhEvent.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut5(/*     */"5 Panmixy", /*	   */"Panmixy.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut6(/*     */"6 Spatial", /*	   */"Spatial.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut7(/*     */"7 Boids", /*	   		*/"Flock.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
 	//
 	//Model1(/*   */"Genetics", /*       */"Gddm_1.utg", /**/LibraryType.Model, ModelsDummy.class), //
 	;
