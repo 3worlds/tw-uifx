@@ -149,7 +149,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				// Maybe we could allow up to 4 axes - two on each side
 			} else {
 				String ylabel = dataSetMap.keySet().iterator().next();
-				chart.getYAxis().setLabel(ylabel);
+				chart.getYAxis().set(ylabel);
 			}
 
 			dataSetMap.entrySet().forEach(entry -> {
@@ -182,8 +182,12 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
 				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-					if (!ds.equals(dontTouch))
-						ds.setAutoNotifaction(false);
+					if (!ds.equals(dontTouch)) {
+						ds.autoNotification().getAndSet(false);
+						//ds.setAutoNotifaction(false);
+					}
+						
+						
 
 				final double x = data.time();
 				for (DataLabel dl : tsmeta.doubleNames()) {
@@ -201,7 +205,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
 					if (!ds.equals(dontTouch))
-						ds.setAutoNotifaction(true);
+						ds.autoNotification().getAndSet(true);
 
 			});
 		}

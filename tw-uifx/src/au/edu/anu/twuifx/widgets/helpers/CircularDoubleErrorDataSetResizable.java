@@ -24,14 +24,14 @@ public class CircularDoubleErrorDataSetResizable extends CircularDoubleErrorData
 			newyErrorsNeg.put(yErrorsNeg.get(i));
 		}
 		for (int i=0;i<Math.min(newSize, newdataTag.available());i++) {
-			newdataTag.put(dataTag.get(i));
+			newdataTag.put(dataLabels.get(i));
 			newdataStyles.put(dataStyles.get(i));
 		}
 		xValues = newxValues;
 		yValues = newyValues;
 		yErrorsPos = newyErrorsPos;
 		yErrorsNeg = newyErrorsNeg;
-		dataTag = newdataTag;
+		dataLabels = newdataTag;
 		dataStyles = newdataStyles;
 	}
 

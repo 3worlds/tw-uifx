@@ -24,8 +24,6 @@ import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.marker.DefaultMarker;
 import de.gsi.chart.plugins.DataPointTooltip;
-import de.gsi.chart.plugins.EditAxis;
-import de.gsi.chart.plugins.ParameterMeasurements;
 import de.gsi.chart.plugins.TableViewer;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
@@ -115,8 +113,10 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 			chart.getRenderers().setAll(rndr);
 			chart.getDatasets().addAll(ds);
-			chart.getXAxis().setLabel(dlx.toString());
-			chart.getYAxis().setLabel(dly.toString());
+			String axisUnit = "units";
+			chart.getXAxis().set(dlx.toString(), axisUnit);
+		
+			chart.getYAxis().set(dly.toString());
 			chart.getXAxis().setUnit((String) meta.properties().getPropertyValue("x.units"));
 			chart.getYAxis().setUnit((String) meta.properties().getPropertyValue("y.units"));
 			chart.setLegendVisible(false);
@@ -170,8 +170,8 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		xAxis1.setUnit("x unit?");
 		yAxis1.setUnit("y unit?");
 
-		xAxis1.setLabel("x label");
-		yAxis1.setLabel("y label");
+		xAxis1.set("x label");
+		yAxis1.set("y label");
 
 		chart = new XYChart(xAxis1, yAxis1);
 		chart.legendVisibleProperty().set(true);

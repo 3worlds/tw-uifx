@@ -72,11 +72,13 @@ public class VersionSettings {
 		{"org.controlsfx", "controlsfx", "[11,)", null},
 	    {"org.apache.commons","commons-math", "[2,)", null},
 //	    {"org.apache.commons","commons-math3","[3.6.1,)",null},
-	    {"de.gsi", "chartfx", "11.0.4", null},
-	    {"de.gsi", "chartfx-samples", "11.0.4", null},
-	    {"de.gsi.chart", "chartfx-chart", "11.0.4", null},
-	    {"de.gsi.dataset", "chartfx-dataset", "11.0.4", null},
-	    {"de.gsi.math", "chartfx-math", "11.0.4", null}
+	    
+	    {"de.gsi", "chartfx", "11.1.5", null},	   // pom 
+	    {"de.gsi", "chartfx-samples", "11.1.5", null},    
+	    {"de.gsi.chart", "chartfx-chart", "11.1.5", null},	    
+	    {"de.gsi.dataset", "chartfx-dataset", "11.1.5", null},    
+	    {"de.gsi.math", "chartfx-math", "11.1.5", null},	    
+	    {"de.gsi.acc","chartfx-acc","11.1.5",null}
 	};
 
 	/** The name of the main class to put in the jar manifest, if any. This enables users to
