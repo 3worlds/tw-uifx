@@ -6,6 +6,7 @@ import de.gsi.dataset.utils.DoubleCircularBuffer;
 
 public class CircularDoubleErrorDataSetResizable extends CircularDoubleErrorDataSet {
 
+	
 	public CircularDoubleErrorDataSetResizable(String name, int initalSize) {
 		super(name, initalSize);
 	}
