@@ -50,6 +50,7 @@
 		<dependency org="de.gsi.dataset" name="chartfx-dataset" rev="11.1.5"/>
 		<dependency org="de.gsi.math" name="chartfx-math" rev="11.1.5"/>
 		<dependency org="de.gsi.acc" name="chartfx-acc" rev="11.1.5"/>
+		<dependency org="org.slf4j" name="slf4j-nop" rev="2.0.0-alpha0"/>
 	</dependencies>
 
 </ivy-module>
