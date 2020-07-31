@@ -59,7 +59,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String(gignoux (21 juil. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
-	precis = java.lang.String(Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model for n species. Illustrates the use of a SystemComponent.)
+	precis = java.lang.String(Tutorial: Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model. Illustrates the use of a SystemComponent.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
 	version = java.lang.String(demo)
 	predefined *categories*

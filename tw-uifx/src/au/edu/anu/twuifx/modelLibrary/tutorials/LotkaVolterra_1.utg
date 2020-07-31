@@ -34,7 +34,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
-	precis = java.lang.String(The Lotka-Volterra competition model for n species. Illustrates the use of Tables.)
+	precis = java.lang.String(Tutorial: The Lotka-Volterra multi-species competition model. Illustrates the use of Tables.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
 	version = java.lang.String(demo)
 	predefined *categories*

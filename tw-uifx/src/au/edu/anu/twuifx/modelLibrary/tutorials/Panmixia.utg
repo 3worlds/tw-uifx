@@ -3,11 +3,11 @@ treegraph // saved by OmugiGraphExporter on Thu Jul 09 18:09:57 CEST 2020
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
-3worlds Panmixy1
+3worlds Panmixia1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String(gignoux (6 juil. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
-	precis = java.lang.String("An individual based model featuring the creation/deletion of indivduals in a completely random mating reproduction system.")
+	precis = java.lang.String("Tutorial: An individual based model with Panmixia. Illustrates the creation and deletion of individuals.")
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String(demo)
 	predefined *categories*

@@ -11,8 +11,8 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String()
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
-	precis = java.lang.String(The discrete logistic model: a minimal configuration file for 3Worlds. First steps with Process, Function, Widgets and DataTrackers)
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https:/en.wikipedia.org/wiki/Logistic_map","https:/en.wikipedia.org/wiki/Chaos_theory"))
+	precis = java.lang.String(Tutorial: Discrete logistic model. A minimal configuration file for 3Worlds introducing Process, Function, Widgets and DataTrackers.)
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https://en.wikipedia.org/wiki/Logistic_map","https://en.wikipedia.org/wiki/Chaos_theory"))
 	version = java.lang.String(demo)
 	predefined *categories*
 		record AVEphemeral

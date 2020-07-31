@@ -7,7 +7,7 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	built-by = java.lang.String(gignoux (16 juil. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String()
+	precis = java.lang.String(Tutorial: Simple illustration of the use of space.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	predefined *categories*

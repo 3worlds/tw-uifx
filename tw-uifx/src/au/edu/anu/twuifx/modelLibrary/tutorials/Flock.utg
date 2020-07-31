@@ -7,7 +7,7 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	built-by = java.lang.String(gignoux (23 juil. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String()
+	precis = java.lang.String(Tutorial: Flocking behaviour - a simple illustration of the movement of components in space.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	predefined *categories*

@@ -100,7 +100,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		edit();
 	}
 
-	private int[][] collectDims(TreeNode parent) {
+	public static int[][] collectDims(TreeNode parent) {
 		List<int[]> dimList = new ArrayList<>();
 		while (parent != null) {
 			if (parent instanceof TableNode) {
