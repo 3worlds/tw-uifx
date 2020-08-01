@@ -81,7 +81,7 @@ import org.odftoolkit.simple.style.StyleTypeDefinitions;
 /**
  * ODD generator
  * 
- * THis can go in tw-core when finished. Running from jar may crash if left in
+ * This can go in tw-core when finished. Running from jar may crash if left in
  * tw-uifx since its not included in this library.
  */
 public class DocoGenerator {
@@ -463,7 +463,7 @@ public class DocoGenerator {
 		writeTable(doc, entries, "Entity", "Timer", "Functions");
 
 		entries = getTimeTableEntries();
-		doc.addParagraph("Timeline and timer properties");
+		doc.addParagraph("Timeline and timer details");
 		writeTable(doc, entries, "Name", "Details");
 
 		entries = getStoppingConditionTableEntries();
