@@ -46,6 +46,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.odftoolkit.simple.TextDocument;
+import org.odftoolkit.simple.draw.FrameRectangle;
+import org.odftoolkit.simple.draw.Textbox;
+import org.odftoolkit.simple.form.TextBox;
 import org.odftoolkit.simple.style.Font;
 import org.odftoolkit.simple.table.Column;
 import org.odftoolkit.simple.table.Table;
@@ -76,6 +79,7 @@ import fr.ens.biologie.generic.utils.Interval;
 
 import static au.edu.anu.twcore.archetype.TwArchetypeConstants.*;
 import org.odftoolkit.simple.style.StyleTypeDefinitions;
+import org.odftoolkit.simple.style.StyleTypeDefinitions.SupportedLinearMeasure;
 
 /**
  * @author Ian Davies
@@ -141,6 +145,7 @@ public class DocoGenerator {
 	private static final int level3 = 3;
 
 	private static int tableNumber;
+	private static int figureNumber;
 
 	// NB: Ignore ui. experiment and snippets
 	private static List<String> allowedNodes = new ArrayList<>();
@@ -192,6 +197,7 @@ public class DocoGenerator {
 		driverTypes = new ArrayList<>();
 		trackerTypes = new ArrayList<>();
 		tableNumber = 0;
+		figureNumber = 0;
 		// basic metrics
 		for (TreeGraphDataNode n : cfg.nodes()) {
 			if (allowedNodes.contains(n.classId())) {
@@ -339,7 +345,7 @@ public class DocoGenerator {
 			// ----- end ODD
 
 			document.appendSection("Appendix1");
-			//document.addPageBreak();
+			// document.addPageBreak();
 
 			writeTitle(document, "Appendix 1: Specification graph metrics", level1);
 			writeAppendix1(document);
@@ -586,9 +592,14 @@ public class DocoGenerator {
 	private void writeProcessScheduling(TextDocument doc, int level) {
 
 		doc.addParagraph("Process overview and scheduling").applyHeading(true, level);
-		
+
+		//useless
+//		Paragraph paragraph = doc.addParagraph("");
+//		Textbox box = paragraph.addTextbox(new FrameRectangle(1, 1, 1, 2, SupportedLinearMeasure.CM));
+//		box.setTextContent("this is a text box");
+
 		doc.addParagraph(getFlowChart());
-		doc.addParagraph("Flow chart");
+		doc.addParagraph("Figure " + (++figureNumber) + ". Flow chart");
 		doc.addParagraph("");
 
 		List<String> entries;
@@ -1151,9 +1162,9 @@ public class DocoGenerator {
 		String indent = "";
 		StringBuilder flowChart = new StringBuilder();
 		// initialisation
-		for (TreeGraphDataNode init : initTypes) 
+		for (TreeGraphDataNode init : initTypes)
 			flowChart.append(init.id()).append("\n");
-		
+
 		// loop for all possible timer combinations.
 		flowChart.append("while have next time\n");
 
@@ -1222,11 +1233,11 @@ public class DocoGenerator {
 				sb.append(sc.id()).append(", ");
 			sb.replace(sb.length() - 2, sb.length(), ") == stop then\n");
 			sb.append(procIndent).append("\t").append("end simulation");
-					
+
 			flowChart.append(procIndent).append(sb.toString());
 		}
-		
-		//System.out.println(flowChart.toString());
+
+		// System.out.println(flowChart.toString());
 
 		return flowChart.toString();
 	}
