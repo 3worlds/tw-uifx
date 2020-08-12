@@ -100,30 +100,6 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		edit();
 	}
 
-	public static int[][] collectDims(TreeNode parent) {
-		List<int[]> dimList = new ArrayList<>();
-		while (parent != null) {
-			if (parent instanceof TableNode) {
-				// presumably, these are now sorted
-				Dimensioner[] dims = ((TableNode) parent).dimensioners();
-				int[] dd = new int[dims.length];
-				dimList.add(dd);
-				for (int j = 0; j < dd.length; j++)
-					dd[j] = dims[j].getLength();
-			}
-			parent = parent.getParent();
-		}
-
-		int[][] result = new int[dimList.size()][];
-		// reverse the order
-		for (int i = dimList.size() - 1; i >= 0; i--) {
-			int[] dd = dimList.get(i);
-			result[result.length - i - 1] = dd;
-		}
-		return result;
-	}
-
-
 
 	private List<Record> getRootRecords() {
 		List<Record> result = new ArrayList<>();
@@ -156,7 +132,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private void edit() {
-		int[][] sizes = collectDims((TreeNode) trackerEdge.endNode());
+		int[][] sizes = Record.collectDims((TreeNode) trackerEdge.endNode());
 		if (sizes.length <= 0) {
 			// nothing to do
 			return;
