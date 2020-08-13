@@ -33,7 +33,7 @@ public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, 
 	private String widgetId;
 
 	public SimpleGraphWidget1(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.RTTree);
+		super(statusSender, DataMessageTypes.RUNTIMEGRAPH);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 	}

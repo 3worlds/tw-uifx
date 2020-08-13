@@ -24,7 +24,7 @@ Data is divided into three classes in the _3Worlds archetype_:
 
 ... _decorators_ (dec). 
 
-Decorators are values derived from the current value of the drivers. They are set to zero at the begining of each time step. Here, the _decorator_  will be a species diversity index (Shannon's), derived from relative abundance of each species. 
+Decorators are values derived from the current value of the drivers. They are set to zero at the beginning of each time step. Here, the _decorator_  will be a species diversity index (Shannon's), derived from relative abundance of each species. 
 
 As noted previously, these names are just for clarity - they don't impose a _role_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. The _role_ is formally defined when these records are later collected together within a `category` that `belongsTo` a `component`.
 

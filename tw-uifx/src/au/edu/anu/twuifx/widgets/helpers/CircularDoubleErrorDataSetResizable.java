@@ -7,6 +7,11 @@ import de.gsi.dataset.utils.DoubleCircularBuffer;
 public class CircularDoubleErrorDataSetResizable extends CircularDoubleErrorDataSet {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3245592112380606133L;
+
 	public CircularDoubleErrorDataSetResizable(String name, int initalSize) {
 		super(name, initalSize);
 	}

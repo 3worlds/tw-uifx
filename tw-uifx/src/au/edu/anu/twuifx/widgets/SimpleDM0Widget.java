@@ -81,7 +81,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	private Label lblItemLabel;
 
 	public SimpleDM0Widget(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.TIME_SERIES);
+		super(statusSender, DataMessageTypes.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		log.info("Thread: " + Thread.currentThread().getId());

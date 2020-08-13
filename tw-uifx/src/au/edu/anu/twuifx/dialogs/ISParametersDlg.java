@@ -38,7 +38,6 @@ import au.edu.anu.twapps.dialogs.Dialogs;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -51,8 +50,8 @@ import javafx.stage.Window;
  * @date 22 Jan 2020
  */
 public class ISParametersDlg {
-	private Button btnSave;
-	private Button btnOpen;
+//	private Button btnSave;
+//	private Button btnOpen;
 	private PropertySheet propertySheet;
 	private Dialog<ButtonType> dlg;
 	private ButtonType ok;

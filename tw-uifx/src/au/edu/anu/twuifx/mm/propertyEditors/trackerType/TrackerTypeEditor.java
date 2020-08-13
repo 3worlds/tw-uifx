@@ -36,11 +36,9 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.IndexString;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.Record;
-import au.edu.anu.twcore.data.TableNode;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.graph.Direction;

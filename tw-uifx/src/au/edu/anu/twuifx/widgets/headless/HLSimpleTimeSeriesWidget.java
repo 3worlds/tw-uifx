@@ -50,7 +50,7 @@ public class HLSimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData
 	private static String sep = "\t";
 
 	public HLSimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.TIME_SERIES);
+		super(statusSender, DataMessageTypes.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		log.info(this.toString());

@@ -16,7 +16,7 @@ If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker
 
 ==== Creating a new 3Worlds project
 
-. Start `ModelMaker` at a terminal with this command: `java -jar ModelMaker.jar`.
+. Start `ModelMaker` at a terminal with this command: `java -jar modelMaker.jar`.
 . Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
 . When prompted enter `Tut1` (first letter uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _Graph display_.
 

@@ -107,7 +107,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget.class);
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.TIME_SERIES);
+		super(statusSender, DataMessageTypes.DIM0);
 		dataSetMap = new HashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();

@@ -31,7 +31,6 @@
 package au.edu.anu.twuifx.dialogs;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +51,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import javafx.util.Callback;
-import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * @author Ian Davies
