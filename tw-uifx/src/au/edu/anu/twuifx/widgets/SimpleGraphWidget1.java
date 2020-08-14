@@ -54,26 +54,46 @@ public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, 
 	public void onDataMessage(RuntimeGraphData data) {
 		System.out.println("onDataMessage: " + data);
 
-		if (policy.canProcessDataMessage(data)) {
-			Platform.runLater(() -> {
-				ArenaComponent arena = data.getEcosystem().arena();
-				// System.out.println(arena.toShortString());// TreeGraphDataNode
-				ComponentContainer content = arena.content();
-				//HierarchicalComponent hc = content.hierarchicalView(); // this is the arenaComponent
-				
+//		if (policy.canProcessDataMessage(data)) {
+//			Platform.runLater(() -> {
+		EcosystemGraph eg = data.getEcosystem();
+		ArenaComponent arena = eg.arena();
+		ComponentContainer cc = eg.community();
+
+		System.out.println("Arena: "+arena);
+		System.out.println("Arena content(): "+arena.content());
+		for (Category cat : arena.membership().categories()) {
+			System.out.println(cat.toShortString());
+		}
+		System.out.println("Community: "+cc);
 		
-				System.out.println("C: "+content);
-				for (SystemComponent sc: content.allItems()) {
-					System.out.println(sc.id());
-				};
-				for (Category cat: content.itemCategorized().categories()) {
-					System.out.println(cat.toShortString());
-				} 
+		if (arena.content()!=null) {
+			System.out.println("Arena content allItems");
+			for (SystemComponent sc: arena.content().allItems()) {
+				System.out.println(sc);
+				System.out.println(sc.container().id());
+			};
+		}
+		
+		
+//				ArenaComponent arena = data.getEcosystem().arena();
+//				// System.out.println(arena.toShortString());// TreeGraphDataNode
+//				ComponentContainer content = arena.content();
+//				//HierarchicalComponent hc = content.hierarchicalView(); // this is the arenaComponent
+//				
+//		
+//				System.out.println("C: "+content);
+//				for (SystemComponent sc: content.allItems()) {
+//					System.out.println(sc.id());
+//				};
+//				for (Category cat: content.itemCategorized().categories()) {
+//					System.out.println(cat.toShortString());
+//				} 
 
 
 				// drawTree(updateData(data));
-			});
-		}
+//			});
+//		}
 
 	}
 
