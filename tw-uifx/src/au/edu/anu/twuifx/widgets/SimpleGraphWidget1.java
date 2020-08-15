@@ -7,6 +7,7 @@ import au.edu.anu.twcore.data.runtime.RuntimeGraphData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.Categorized;
 import au.edu.anu.twcore.ecosystem.runtime.system.ArenaComponent;
+import au.edu.anu.twcore.ecosystem.runtime.system.CategorizedContainer;
 import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
 import au.edu.anu.twcore.ecosystem.runtime.system.EcosystemGraph;
 import au.edu.anu.twcore.ecosystem.runtime.system.HierarchicalComponent;
@@ -21,6 +22,7 @@ import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.graph.Edge;
+import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -53,48 +55,43 @@ public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, 
 	@Override
 	public void onDataMessage(RuntimeGraphData data) {
 		System.out.println("onDataMessage: " + data);
-
-//		if (policy.canProcessDataMessage(data)) {
-//			Platform.runLater(() -> {
+		// an hierarchical component: as is a group component
 		EcosystemGraph eg = data.getEcosystem();
+		System.out.println("EcosystemGraph");
+
+		int nNodes = 0;
+		if (eg.nodes() != null)
+			for (SystemComponent sc : eg.nodes()) 
+				nNodes++;
+			
+		System.out.println("\tnNodes: " + nNodes);
+		System.out.println("\tnEdges: " + eg.nEdges());
+
 		ArenaComponent arena = eg.arena();
-		ComponentContainer cc = eg.community();
 
-		System.out.println("Arena: "+arena);
-		System.out.println("Arena content(): "+arena.content());
-		for (Category cat : arena.membership().categories()) {
-			System.out.println(cat.toShortString());
-		}
-		System.out.println("Community: "+cc);
-		
-		if (arena.content()!=null) {
+		System.out.println("Arena: " + arena);
+		System.out.println("\t" + arena.membership().categoryId());
+
+		if (arena.content() != null) {
 			System.out.println("Arena content allItems");
-			for (SystemComponent sc: arena.content().allItems()) {
-				System.out.println(sc);
-				System.out.println(sc.container().id());
-			};
+			for (SystemComponent sc : arena.content().allItems()) {
+				ComponentContainer container = sc.container();// TODO organise recursively
+				if (container != null) {
+					// System.out.println("\t" + container.containerCategorized().categoryId()); //
+					// where can i find the ephemeral category that should be displayed here.
+					System.out.println("\t" + container.id() + "->" + sc);// etc
+					for (CategorizedContainer<SystemComponent> subc : container.subContainers()) {
+						for (SystemComponent ssc : subc.allItems()) {
+							System.out.println(
+									"\t\t" + container.parentContainer().id() + "->" + container.id() + "->" + sc);
+						}
+					}
+				} else
+					System.out.println(sc);
+			}
 		}
-		
-		
-//				ArenaComponent arena = data.getEcosystem().arena();
-//				// System.out.println(arena.toShortString());// TreeGraphDataNode
-//				ComponentContainer content = arena.content();
-//				//HierarchicalComponent hc = content.hierarchicalView(); // this is the arenaComponent
-//				
-//		
-//				System.out.println("C: "+content);
-//				for (SystemComponent sc: content.allItems()) {
-//					System.out.println(sc.id());
-//				};
-//				for (Category cat: content.itemCategorized().categories()) {
-//					System.out.println(cat.toShortString());
-//				} 
 
-
-				// drawTree(updateData(data));
-//			});
-//		}
-
+		// what now - where are groups
 	}
 
 	@Override

@@ -50,6 +50,9 @@
 		<dependency org="de.gsi.dataset" name="chartfx-dataset" rev="11.1.5"/>
 		<dependency org="de.gsi.math" name="chartfx-math" rev="11.1.5"/>
 		<dependency org="de.gsi.acc" name="chartfx-acc" rev="11.1.5"/>
+		<dependency org="org.apache.odftoolkit" name="simple-odf" rev="0.8.2-incubating"/>
+		<dependency org="com.hp.hpl.jena" name="jena" rev="2.6.4"/>
+		
 	</dependencies>
 
 </ivy-module>

@@ -66,12 +66,13 @@ public class VersionSettings {
 		{"org.openjfx", "javafx-controls", "[11,)", "_os"},
 		{"org.openjfx", "javafx-graphics", "[11,)", "_os"},
 		{"org.openjfx", "javafx-base", "[11,)", "_os"},
-//		{"org.openjfx", "javafx-web", "[11,)", "_os"},
-//		{"org.openjfx", "javafx-media", "[11,)", "_os"},
-//		{"org.openjfx", "javafx-swing", "[11,)", "_os"},
+
 		{"org.controlsfx", "controlsfx", "[11,)", null},
 	    {"org.apache.commons","commons-math", "[2,)", null},
-//	    {"org.apache.commons","commons-math3","[3.6.1,)",null},
+
+	    // here because TwSetup does not pull these in from TwCore
+		{"org.apache.odftoolkit","simple-odf","0.8.2-incubating", null},
+		{"com.hp.hpl.jena","jena","2.6.4", null},
 	    
 	    {"de.gsi", "chartfx", "11.1.5", null},	   // pom 
 	    {"de.gsi", "chartfx-samples", "11.1.5", null},    
