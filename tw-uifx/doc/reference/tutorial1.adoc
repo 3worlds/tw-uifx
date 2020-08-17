@@ -12,11 +12,11 @@ While this process greatly accelerates model development, a more important aim i
 
 The specification graph is both a tree and a directed graph. Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships.
 
-If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
 
 ==== Creating a new 3Worlds project
 
-. Start `ModelMaker` at a terminal with this command: `java -jar modelMaker.jar`.
+. Start `ModelMaker` at a terminal with this command: `java -jar modelMaker.jar`. If you  get a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system. If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
+ 
 . Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
 . When prompted enter `Tut1` (first letter uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _Graph display_.
 

@@ -2,6 +2,8 @@ package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 
+import org.assertj.core.util.Objects;
+
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.RuntimeGraphData;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -49,49 +51,56 @@ public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		timeFormatter.onMetaDataMessage(meta);
-		System.out.println("onMetaDataMessage: " + meta);
 	}
 
 	@Override
 	public void onDataMessage(RuntimeGraphData data) {
-		System.out.println("onDataMessage: " + data);
+//		System.out.println("onDataMessage: " + data);
 		// an hierarchical component: as is a group component
 		EcosystemGraph eg = data.getEcosystem();
+		eg.community();
 		System.out.println("EcosystemGraph");
 
 		int nNodes = 0;
 		if (eg.nodes() != null)
-			for (SystemComponent sc : eg.nodes()) 
+			for (SystemComponent sc : eg.nodes())
 				nNodes++;
-			
+
 		System.out.println("\tnNodes: " + nNodes);
 		System.out.println("\tnEdges: " + eg.nEdges());
 
 		ArenaComponent arena = eg.arena();
+		ComponentContainer comm = eg.community();
+
+		// Are Ecosystem.Community() and Ecosystem.arena().content() always the same?
 
 		System.out.println("Arena: " + arena);
 		System.out.println("\t" + arena.membership().categoryId());
 
 		if (arena.content() != null) {
-			System.out.println("Arena content allItems");
+			System.out.println("\tArena full id: " + String.join("->", arena.content().fullId()));
+			System.out.println("\tArena allItems-------------------");
 			for (SystemComponent sc : arena.content().allItems()) {
-				ComponentContainer container = sc.container();// TODO organise recursively
-				if (container != null) {
-					// System.out.println("\t" + container.containerCategorized().categoryId()); //
-					// where can i find the ephemeral category that should be displayed here.
-					System.out.println("\t" + container.id() + "->" + sc);// etc
-					for (CategorizedContainer<SystemComponent> subc : container.subContainers()) {
-						for (SystemComponent ssc : subc.allItems()) {
-							System.out.println(
-									"\t\t" + container.parentContainer().id() + "->" + container.id() + "->" + sc);
-						}
-					}
-				} else
-					System.out.println(sc);
+				printContainer("\t\t", sc);
 			}
 		}
 
-		// what now - where are groups
+		// what now? - where are the groups
+	}
+
+	private static void printContainer(String indent, SystemComponent sc) {
+		ComponentContainer container = sc.container();
+		if (container != null) {
+			container.fullId();
+			// where can i find the ephemeral category that should be displayed here.
+			System.out.println(indent + String.join("-.", container.fullId()) + "->" + sc.id()+sc);// etc
+			for (CategorizedContainer<SystemComponent> subc : container.subContainers()) {
+				for (SystemComponent ssc : subc.allItems()) {
+					printContainer(indent + "\t", ssc);
+				}
+			}
+		} else
+			System.out.println(sc);
 	}
 
 	@Override
