@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.3.11 (Tue Aug 18 09:46:41 AEST 2020)
+ ant and ivy scripts for project <tw-uifx> version 0.3.10 (Fri Jul 24 14:59:56 AEST 2020)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -13,7 +13,7 @@
 
 	<info	organisation="au.edu.anu.tw-uifx"
 			module="tw-uifx"
-			revision="0.3.11"
+			revision="0.3.10"
 			status="integration">
 		<license name="gpl3" url="https://www.gnu.org/licenses/gpl-3.0.txt"/>
 		<description>This module contains only fx code for the UI of ModelMaker and ModelRunner.</description>
@@ -50,6 +50,10 @@
 		<dependency org="de.gsi.dataset" name="chartfx-dataset" rev="11.1.5"/>
 		<dependency org="de.gsi.math" name="chartfx-math" rev="11.1.5"/>
 		<dependency org="de.gsi.acc" name="chartfx-acc" rev="11.1.5"/>
+        <!--===================================================================================
+		<dependency org="org.apache.odftoolkit" name="simple-odf" rev="0.8.2-incubating"/>
+		<dependency org="com.hp.hpl.jena" name="jena" rev="2.6.4"/>
+		===================================================================================-->
 	</dependencies>
 
 </ivy-module>
