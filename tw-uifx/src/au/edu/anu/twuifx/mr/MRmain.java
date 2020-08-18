@@ -82,16 +82,16 @@ public class MRmain {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws IOException {
 
-		// great trick - allows myProject.jar to be run without args
-		//System.out.println(new File(".").getCanonicalPath());
-		///home/ian/.3w/project_Logistic_2020-07-27-23-15-00-495
-		if (args.length==0){
-			args = new String[3];
-			args[0]="0";
-			args[1]=new File(".").getCanonicalFile().getName();
-			args[2] = "OFF";
+		// great trick - allows myProject.jar to be run without args if run from the prj
+		// dir.
+		if (args.length == 0) {
+			if (Project.isValidProjectFile(new File(".").getCanonicalFile())) {
+				args = new String[3];
+				args[0] = "0";
+				args[1] = new File(".").getCanonicalFile().getName();
+				args[2] = "OFF";
+			}
 		}
-
 
 		// must have an id and a project
 		if (args.length < 2) {
