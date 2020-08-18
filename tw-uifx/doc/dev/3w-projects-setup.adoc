@@ -4,7 +4,8 @@ Jacques Gignoux <jacques.gignoux@upmc.fr>; Ian D. Davies <ian.davies@anu.edu.au>
 //v1.1, 5 November 2018:
 //v1.2, 26 November 2018:
 //v1.3, 17 December 2018:
-v1.4, 19 September 2019:
+//v1.4, 19 September 2019:
+v1.5, 18 August 2020:
 :sectnums:
 :toc: left
 
@@ -37,7 +38,7 @@ rvgrid:: *rvgrid* stands for _Rendezvous Grid_. It contains a very basic impleme
 qgraph:: *qgraph* is a _Query system for Graphs_. It implements a Query system that can check all sorts
 of conditions applying to objects. It has been designed by *Shayne Flint* for navigating graphs, but it can also be used for many other object types.
 
-ymui:: *ymuit* stands for _Yet More User Interface tools_. It groups tools used to implement the user interface of 3Worlds, mainly color palettes and management of graphic output, which can be useful for any  https://wiki.openjdk.java.net/display/OpenJFX[javafx]-based interface.
+ymuit:: *ymuit* stands for _Yet More User Interface tools_. It groups tools used to implement the user interface of 3Worlds, mainly color palettes and management of graphic output, which can be useful for any  https://wiki.openjdk.java.net/display/OpenJFX[javafx]-based interface.
 
 tw-core:: *tw-core* is the core of the 3Worlds software. It contains the base classes to design ecosystems and the simulator.
 
@@ -45,7 +46,7 @@ tw-apps:: *tw-apps* contains the two applications needed to run 3Worlds, the _Mo
 
 tw-uifx:: *tw-uifx* contains the  https://wiki.openjdk.java.net/display/OpenJFX[javafx]-based interface classes for _ModelMaker_ and _ModelRunner_.
 
-tw-setup:: *tw-setup* is used soley to create a jar containing all dependencies used by _ModelMaker_ or _ModelRunner_. 
+tw-setup:: *tw-setup* is used solely to create a jar containing all dependencies used by _ModelMaker_ or _ModelRunner_. 
 
 [#fig-dependency-tree]
 .Dependencies of 3Worlds libraries.
@@ -140,19 +141,17 @@ To remove the errors, add the following libraries to **eclipse**:
 
 . *JUnit*:
 * Right-click on the project and select `Build Path > Configure Build Path...`
-* Select the `Libraries` tab
-* Select the `Classpath` line. This should activate the buttons on the right-hand side of the dialog box
-* Click on the `Add Library...` button
-* In the dialog box, select _JUnit_ and click `Next`
+* In the dialog box, select the `Libraries` tab
+* In the `Libraries` tab, select _Classpath_. This should enable the buttons on the right of the dialog box
+* Click the `Add Libraries...` button
+* In the dialog box, select _Junit_ and click `Next`
 * Select version 5 of JUnit and click `Finish`
 +
-This should remove the error icon on the _test_ folder.
+The JUnit library should now appear in the dialog box under the _Classpath_ entry.
 
 . *Ivy*:
-* Again, right-click on the project and select `Build Path > Configure Build Path...`
-* Select the `Libraries` tab
-* Select the `Classpath` line. This should activate the buttons on the right hand side of the dialog box
-* Click on the `Add Library...` button
+* Without closing the dialog box, select _Classpath_ again to enable the buttons on the right of the dialog box
+* Click the `Add Libraries...` button
 * In the dialog box, select _IvyDE Managed Dependencies_ and click `Next`
 * In the top field, replace `ivy.xml` by `scripts/ivy.xml` and click `Finish`
 * Click `Apply and Close`
