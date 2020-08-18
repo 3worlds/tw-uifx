@@ -30,10 +30,14 @@
 package au.edu.anu.twuifx.mr;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
 
 import au.edu.anu.omhtk.jars.Jars;
@@ -76,7 +80,19 @@ public class MRmain {
 	private static Logger log = Logging.getLogger(MRmain.class);
 
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+
+		// great trick - allows myProject.jar to be run without args
+		//System.out.println(new File(".").getCanonicalPath());
+		///home/ian/.3w/project_Logistic_2020-07-27-23-15-00-495
+		if (args.length==0){
+			args = new String[3];
+			args[0]="0";
+			args[1]=new File(".").getCanonicalFile().getName();
+			args[2] = "OFF";
+		}
+
+
 		// must have an id and a project
 		if (args.length < 2) {
 			System.out.println(Arrays.deepToString(args));
@@ -171,7 +187,7 @@ public class MRmain {
 					Logger log = Logging.getLogger(c);
 					log.setLevel(lvl);
 				} catch (ClassNotFoundException e) {
-					System.out.println("Unable to set logger: Class not found [" + klass+"]");
+					System.out.println("Unable to set logger: Class not found [" + klass + "]");
 					System.out.println(Arrays.deepToString(args));
 					System.out.println(usage);
 					System.exit(1);
@@ -184,7 +200,7 @@ public class MRmain {
 		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
 				.loadGraphFromFile(Project.makeConfigurationFile());
 
-		//initGraph(configGraph);
+		// initGraph(configGraph);
 
 		TreeNode uiNode = (TreeNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_UI.label())));
 		WidgetNode ctrlHl = getHeadlessController(uiNode);
@@ -273,7 +289,8 @@ public class MRmain {
 		}
 		return false;
 	}
-	protected static void initGraph(TreeGraph<TreeGraphDataNode, ALEdge>g) {
+
+	protected static void initGraph(TreeGraph<TreeGraphDataNode, ALEdge> g) {
 		List<Initialisable> initList = new LinkedList<>();
 		for (TreeNode n : g.nodes())
 			initList.add((Initialisable) n);

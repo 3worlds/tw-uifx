@@ -45,6 +45,8 @@ tw-apps:: *tw-apps* contains the two applications needed to run 3Worlds, the _Mo
 
 tw-uifx:: *tw-uifx* contains the  https://wiki.openjdk.java.net/display/OpenJFX[javafx]-based interface classes for _ModelMaker_ and _ModelRunner_.
 
+tw-setup:: *tw-setup* is used soley to create a jar containing all dependencies used by _ModelMaker_ or _ModelRunner_. 
+
 [#fig-dependency-tree]
 .Dependencies of 3Worlds libraries.
 image::3w-lib-dependencies.svg[align="center"]
@@ -99,13 +101,13 @@ The development tools required are:
 
 == Working on existing 3Worlds libraries
 
-To work on an existing library (_<library>_ from hereon):
+To work on an existing library (_<library>_):
 
-. Launch *eclipse*. Open a workspace or create a new workspace with a name of your choice (_<workspace>_ from hereon).
+. Launch *eclipse*. Create a new workspace.
 
 . If the Welcome window opens (the default), disable the `Always show Welcome at start up` checkbox and close the Welcome window (this option causes problems with the editor behaviour in some versions of eclipse).
 
-. Make sure eclipse is configured to use java *11* by default (check in the `Window > Preferences` dialog box the `Java > Compiler > Compiler Compliance level`).
+. Make sure eclipse is configured to use java *11* or greater by default (check in the `Window > Preferences` dialog box the `Java > Compiler > Compiler Compliance level`).
 
 . Shift to the Git perspective. You should now have a left window called `Git repositories`.
 
