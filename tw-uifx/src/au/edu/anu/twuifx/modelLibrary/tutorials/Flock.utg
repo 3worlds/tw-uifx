@@ -7,9 +7,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	built-by = java.lang.String(gignoux (23 juil. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String(Tutorial: Flocking behaviour - a simple illustration of the movement of components in space.)
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = java.lang.String()
 	predefined *categories*
 		categorySet *organisation*
 			category *assemblage*
@@ -52,40 +49,52 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(dec)
 			field avgY
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(Y location of barycentre of neighbours)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1000.0])
+				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m)
 			field avgX
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(X location of barycentre of neighbours)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1000.0])
+				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m)
 			field avgdX
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(sum of velocity in X of neighbours)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m/s)
 			field avgdY
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(sum of velocity in Y of neighbours)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m/s)
 			field avgHeading
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				description = java.lang.String(average direction of flight of neighbours)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,360.0[)
+				precision = java.lang.Double(0.01)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(°)
+			field nLocal
+				description = java.lang.String(number of boids within detection range)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field avoidY
+				description = java.lang.String(movement in Y to avoid collision with others)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field nLocal
-				description = java.lang.String()
-				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String()
+				units = java.lang.String(m)
+			field avoidX
+				description = java.lang.String(movement in X to avoid collision with others)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
 		record cnt
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(cnt)
@@ -111,17 +120,17 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(drv)
 			field dY
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(velocity in Y)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m/s)
 			field dX
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(velocity in X)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m/s)
 			field heading
 				description = java.lang.String(direction of flight)
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,360.0[)
@@ -148,24 +157,24 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys1.Move)
 							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([39]"		double x = focalLoc.x();","		double y = focalLoc.y();","		double incR = 0.0;","		double incT = 0.0;","		if (nLocal>0) {","			// rule 1: cohesion - flying towards the barycentre of the local group","			double barX = avgX/nLocal;","			double barY = avgY/nLocal;","			// move 1% towards the centre","			double moveX = (barX-x)/100;","			double moveY = (barY-y)/100;","			// rule 2: separation - avoid collision with other boids","			moveX += focalDrv.dX;","			moveY += focalDrv.dY;","			// rule 3: match movement to others","			moveX += (avgdX/nLocal-dX)/8;","			moveY += (avgdY/nLocal-dY)/8;","			// new location","			nextFocalLoc[0] = x+moveX;","			nextFocalLoc[1] = y+moveY;","			focalDrv.dX = moveX;","			focalDrv.dY = moveY;","			if (moveX!=0.0)","				focalDrv.heading = acos(moveX/squaredEuclidianDistance(0,moveX,0,moveY)); ","			else if (moveY!=0.0)","				focalDrv.heading = asin(moveY/squaredEuclidianDistance(0,moveX,0,moveY)); ","		}","		// no neighbours: random walk in the same direction ±22.5° at constant speed","		else {","			incR = speed;","			incT = random.nextDouble()*PI/4 - PI/8;","			nextFocalLoc[0] = focalLoc.x() + incR*cos(heading*PI/180 +incT);","			nextFocalLoc[1] = focalLoc.y() + incR*sin(heading*PI/180 +incT);","			focalDrv.heading = heading + incT*180/PI;","			if (focalDrv.heading<0.0) ","				focalDrv.heading += 360;","			else if (focalDrv.heading>360.0)","				focalDrv.heading -= 360;","		}"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([43]"		double x = focalLoc.x();","		double y = focalLoc.y();","		double incR = 0.0;","		double incT = 0.0;","		if (nLocal>0) {","			// rule 1: cohesion - flying towards the barycentre of the local group","			double barX = avgX/nLocal;","			double barY = avgY/nLocal;","			// move 1% towards the centre","			double moveX = (barX-x)/100;","			double moveY = (barY-y)/100;","			// rule 2: separation - avoid collision with other boids","			moveX += focalDec.avoidX/10;","			moveY += focalDec.avoidY/10;","			// rule 3: match movement to others","			moveX += (avgdX/nLocal-dX)/8;","			moveY += (avgdY/nLocal-dY)/8;","			// new location","			nextFocalLoc[0] = x+moveX*speed;","			nextFocalLoc[1] = y+moveY*speed;","			focalDrv.dX = moveX*speed;","			focalDrv.dY = moveY*speed;","			// new heading","			focalDrv.heading = acos(moveX/euclidianDistance(0,0,moveX,moveY));","			if (moveY<0.0)","				focalDrv.heading = 2*PI - focalDrv.heading;","//			else if (moveY!=0.0)","//				focalDrv.heading = asin(moveY/squaredEuclidianDistance(0,0,moveX,moveY)); ","		}","		// no neighbours: random walk in the same direction ±22.5° at constant speed","		else {","			incR = speed;","			incT = random.nextDouble()*PI/4 - PI/8;","			focalDrv.dX = incR*cos(heading*PI/180 +incT);","			focalDrv.dY = incR*sin(heading*PI/180 +incT);","			nextFocalLoc[0] = focalLoc.x() + focalDrv.dX;","			nextFocalLoc[1] = focalLoc.y() + focalDrv.dY;","			focalDrv.heading = heading + incT*180/PI;","			if (focalDrv.heading<0.0) ","				focalDrv.heading += 360;","			else if (focalDrv.heading>360.0)","				focalDrv.heading -= 360;","		}"))
 					process p2
 						function PrepareMove
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeRelationState)
 							userClassName = java.lang.String(code.sys1.PrepareMove)
 							snippet snpt2
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([11]"		focalDec.avgHeading += other_heading;","		focalDec.avgX += otherLoc.x();","		focalDec.avgY += otherLoc.y();","		focalDec.avgdX += other_dX;","		focalDec.avgdY += other_dY;","		focalDec.nLocal++;","		// rule 2: avoid collisions","		if (squaredEuclidianDistance(focalLoc,otherLoc)<sqr(safetyRange)) { ","			focalDrv.dX -= (otherLoc.x()-focalLoc.x());","			focalDrv.dY -= (otherLoc.y()-focalLoc.y());","		}"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([15]"		focalDec.avgHeading += other_heading;","		focalDec.avgX += otherLoc.x();","		focalDec.avgY += otherLoc.y();","		focalDec.avgdX += other_dX;","		focalDec.avgdY += other_dY;","		focalDec.nLocal++;","		// rule 2: avoid collisions","		if (squaredEuclidianDistance(focalLoc,otherLoc)<sqr(safetyRange)) { ","			focalDec.avoidX -= (otherLoc.x()-focalLoc.x());","			focalDec.avoidY -= (otherLoc.y()-focalLoc.y());","		}","		for (int i=0; i<nextFocalLoc.length; i++) {","			nextFocalLoc[i] = focalLoc.coordinate(i);","			nextOtherLoc[i] = otherLoc.coordinate(i); ","		}"))
 						function Follow
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(MaintainRelationDecision)
 							userClassName = java.lang.String(code.sys1.Follow)
 							snippet snpt3
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return (squaredEuclidianDistance(focalLoc,otherLoc)<sqr(range));"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([14]"		// only detect items that are in the front hemishpere","		if (squaredEuclidianDistance(focalLoc,otherLoc)<sqr(range)) { // points within range","			double xOther = otherLoc.x();","			double yOther = otherLoc.y();","			double rOther = euclidianDistance(0,0,xOther,yOther);","			double tetaOther = acos(xOther/rOther);","			if (yOther<0)","				tetaOther = 2*PI - tetaOther;","			// points within hemisphere determined by heading","			double test = tetaOther*180/PI-heading;","			return ((test>=0.0)&&(test<=180.0));","		}		","		return false;","//		return (squaredEuclidianDistance(focalLoc,otherLoc)<sqr(range));"))
 					process p1
 						function Detect
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
 							userClassName = java.lang.String(code.sys1.Detect)
 							snippet snpt4
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return (squaredEuclidianDistance(focalLoc,otherLoc)<sqr(range));"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([14]"		// only detect items that are in the front hemishpere","		if (squaredEuclidianDistance(focalLoc,otherLoc)<sqr(range)) { // points within range","			double xOther = otherLoc.x();","			double yOther = otherLoc.y();","			double rOther = euclidianDistance(0,0,xOther,yOther);","			double tetaOther = acos(xOther/rOther);","			if (yOther<0)","				tetaOther = 2*PI - tetaOther;","			// points within hemisphere determined by heading","			double test = tetaOther*180/PI-(heading-90);","			return ((test>=0.0)&&(test<=180.0));","		}		","		return false;","//		return (squaredEuclidianDistance(focalLoc,otherLoc)<sqr(range));"))
 		structure struc1
 			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
 			componentType bird
@@ -179,9 +188,9 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 					userClassName = java.lang.String(code.sys1.Init1)
 					snippet snpt5
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalCnt.speed = 5;","		focalCnt.range = 100;","		focalCnt.safetyRange = 20;"))
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalCnt.speed = 8;","		focalCnt.range = 100;","		focalCnt.safetyRange = 10;"))
 				component cmp1
-					nInstances = java.lang.Integer(100)
+					nInstances = java.lang.Integer(20)
 			space sky2D
 				edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(wrapAroundAllD)
 				precision = java.lang.Double(0.001)
@@ -224,15 +233,15 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 [widget:wgt1] trackSpace trks2 [space:sky2D]
 [process:p1] appliesTo aplyTo1 [relationType:sight]
 [process:p1] inSpace in1 [space:sky2D]
-	searchRadius = java.lang.Double(20.0)
+	searchRadius = java.lang.Double(500.0)
 [process:p2] appliesTo aplyTo2 [relationType:sight]
 [process:p2] dependsOn depsOn2 [process:p1]
 [process:p2] inSpace in2 [space:sky2D]
-	searchRadius = java.lang.Double(0.0)
+	searchRadius = java.lang.Double(500.0)
 [process:p3] inSpace in3 [space:sky2D]
 	searchRadius = java.lang.Double(100.0)
 [process:p3] dependsOn depsOn1 [process:p2]
 [process:p3] appliesTo aplyTo3 [category:*atomic*]
 [widget:timer] trackTime trks1 [dynamics:sim1]
-[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
