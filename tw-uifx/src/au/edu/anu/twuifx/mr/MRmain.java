@@ -80,16 +80,21 @@ public class MRmain {
 	private static Logger log = Logging.getLogger(MRmain.class);
 
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args)  {
 
 		// great trick - allows myProject.jar to be run without args if run from the prj
 		// dir.
 		if (args.length == 0) {
-			if (Project.isValidProjectFile(new File(".").getCanonicalFile())) {
-				args = new String[3];
-				args[0] = "0";
-				args[1] = new File(".").getCanonicalFile().getName();
-				args[2] = "OFF";
+			try {
+				if (Project.isValidProjectFile(new File(".").getCanonicalFile())) {
+					args = new String[3];
+					args[0] = "0";
+					args[1] = new File(".").getCanonicalFile().getName();
+					args[2] = "OFF";
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 

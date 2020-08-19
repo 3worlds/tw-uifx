@@ -82,6 +82,7 @@ import org.controlsfx.control.PropertySheet.Item;
 import javafx.scene.effect.DropShadow;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorList;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
@@ -128,7 +129,6 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
-import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
@@ -137,12 +137,16 @@ import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import fr.ens.biologie.generic.utils.Interval;
 
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_ROOT;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 	@FXML
+	private MenuItem miImportSnippets;
+
+	@FXML
 	private MenuItem miAbout;
+
 	@FXML
 	private MenuItem miUndo;
 
@@ -193,13 +197,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private Circle trafficLight;
-	
+
 	@FXML
 	private Button btnDocument;
 
 	@FXML
 	private SplitPane splitPane1;
-	
+
 	@FXML
 	private SplitPane splitPane2;
 
@@ -442,7 +446,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	void handleSaveAs(ActionEvent event) {
 		model.doSaveAs();
 		for (VisualNode root : visualGraph.roots())
-			if (root.cClassId().equals(ConfigurationNodeLabels.N_ROOT.label()))
+			if (root.cClassId().equals(N_ROOT.label()))
 				visualiser.onNodeRenamed(root);
 	}
 
@@ -505,7 +509,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser.onSelectAll();
 	}
 
-
 	@FXML
 	void onAbout(ActionEvent event) {
 		Dialog<ButtonType> dlg = new Dialog<>();
@@ -566,12 +569,54 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		textArea.deselect();
 		dlg.showAndWait();
 	}
-	
-    @FXML
-    void doDocumentation(ActionEvent event) {
-    	DocoGenerator gen = new DocoGenerator(ConfigGraph.getGraph());
-    	gen.generate();
-    }
+
+	@FXML
+	void doDocumentation(ActionEvent event) {
+		DocoGenerator gen = new DocoGenerator(ConfigGraph.getGraph());
+		gen.generate();
+	}
+
+	@FXML
+	void onImportSnippets(ActionEvent event) {
+		
+		Map<String,TreeGraphDataNode> snippetNodes = new HashMap<>();
+		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes()) {
+			if (n.classId().equals(N_SNIPPET.label())) {
+				snippetNodes.put(n.getParent().id().toLowerCase(),n);
+			}
+		}
+		Map<String, List<String>> successfulImports = new HashMap<>();
+		if (!snippetNodes.isEmpty()) {
+			Map<String, List<String>> snippets = UserProjectLink.getSnippets();
+			for (Map.Entry<String, List<String>> method : snippets.entrySet()) {
+				TreeGraphDataNode snippetNode = snippetNodes.get(method.getKey());
+				if (snippetNode!=null) {// may have no lines
+					List<String> lines = method.getValue();
+					StringTable newValue = new StringTable(new Dimensioner(lines.size()));
+					for (int i = 0;i<lines.size();i++) 
+						newValue.setByInt(lines.get(i), i);
+					snippetNode.properties().setProperty(P_SNIPPET_JAVACODE.key(), newValue);
+					successfulImports.put(snippetNode.getParent().id()+"->"+snippetNode.id(), lines);
+					GraphState.setChanged();
+				}
+			}
+		}
+		String title = "Snippet Import";
+		String header;
+		if (successfulImports.isEmpty())
+			header = "No method code found in "+ConfigGraph.getGraph().root().id()+".java";
+		else
+			header = "Code imported from "+ConfigGraph.getGraph().root().id()+".java";
+		String content = "";
+		for (Map.Entry<String, List<String>> entry:successfulImports.entrySet()) {
+			content+=entry.getKey()+"\n";
+			for (String line:entry.getValue()) {
+				content+=line+"\n";
+			}
+		}
+		Dialogs.infoAlert("Snippet Import", header, content);
+	}
+
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
@@ -712,7 +757,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		lastSelectedNode = null;
 		initialisePropertySheets();
 	}
-
 
 	// -------------- IMMController End ---------------------
 
@@ -1084,9 +1128,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		if (visualNode != null) {
 			TreeGraphNode cn = visualNode.getConfigNode();
 			boolean showNonEditables = true;
-			//ObservableList<Item> list = null;
+			// ObservableList<Item> list = null;
 			if (cn instanceof DataHolder) {
-				ObservableList<Item> list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables, visualNode.isPredefined());
+				ObservableList<Item> list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables,
+						visualNode.isPredefined());
 				nodePropertySheet.getItems().setAll(list);
 			}
 		}
@@ -1242,6 +1287,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		boolean cleanAndValid = isClean && isValid;
 		btnDeploy.setDisable(!cleanAndValid);
 		btnDocument.setDisable(!cleanAndValid);
+		boolean snp = !cleanAndValid || !UserProjectLink.haveUserProject();
+		miImportSnippets.setDisable(snp);
 		miRedo.setDisable(!Caretaker.hasSucc());
 		if (Caretaker.hasSucc()) {
 			miRedo.setText("Redo '" + Caretaker.getSuccDescription() + "'");
@@ -1261,6 +1308,5 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		else
 			trafficLight.fillProperty().set(Color.RED);
 	}
-
 
 }
