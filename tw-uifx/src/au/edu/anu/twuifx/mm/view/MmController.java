@@ -578,43 +578,57 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void onImportSnippets(ActionEvent event) {
+
+		List<String> errorList = new ArrayList<>();
+		Map<String, TreeGraphDataNode> snippetNodes = new HashMap<>();
+		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets();
+		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
+			if (n.classId().equals(N_SNIPPET.label()))
+				snippetNodes.put(n.getParent().id().toLowerCase(), n);
+
+		for (Map.Entry<String, TreeGraphDataNode> e:snippetNodes.entrySet())
+			if (!snippetCodes.containsKey(e.getKey()))
+				errorList.add("No '"+e.getKey()+"' code found for "+e.getValue().getParent().id()+"->"+e.getValue().id()+".");
 		
-		Map<String,TreeGraphDataNode> snippetNodes = new HashMap<>();
-		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes()) {
-			if (n.classId().equals(N_SNIPPET.label())) {
-				snippetNodes.put(n.getParent().id().toLowerCase(),n);
-			}
+		for (Map.Entry<String, List<String>> e: snippetCodes.entrySet()) {
+			if (!snippetNodes.containsKey(e.getKey()))
+				errorList.add("No snippet node present to receive '"+e.getKey()+"' code.");
 		}
+				
+				
+
 		Map<String, List<String>> successfulImports = new HashMap<>();
 		if (!snippetNodes.isEmpty()) {
-			Map<String, List<String>> snippets = UserProjectLink.getSnippets();
-			for (Map.Entry<String, List<String>> method : snippets.entrySet()) {
+
+			for (Map.Entry<String, List<String>> method : snippetCodes.entrySet()) {
 				TreeGraphDataNode snippetNode = snippetNodes.get(method.getKey());
-				if (snippetNode!=null) {// may have no lines
+				if (snippetNode != null) {// may have no lines
 					List<String> lines = method.getValue();
 					StringTable newValue = new StringTable(new Dimensioner(lines.size()));
-					for (int i = 0;i<lines.size();i++) 
+					for (int i = 0; i < lines.size(); i++)
 						newValue.setByInt(lines.get(i), i);
 					snippetNode.properties().setProperty(P_SNIPPET_JAVACODE.key(), newValue);
-					successfulImports.put(snippetNode.getParent().id()+"->"+snippetNode.id(), lines);
+					successfulImports.put(snippetNode.getParent().id() + "->" + snippetNode.id(), lines);
 					GraphState.setChanged();
 				}
 			}
 		}
 		String title = "Snippet Import";
 		String header;
-		if (successfulImports.isEmpty())
-			header = "No method code found in "+ConfigGraph.getGraph().root().id()+".java";
-		else
-			header = "Code imported from "+ConfigGraph.getGraph().root().id()+".java";
+		header = "Import code from " + ConfigGraph.getGraph().root().id() + ".java";
 		String content = "";
-		for (Map.Entry<String, List<String>> entry:successfulImports.entrySet()) {
-			content+=entry.getKey()+"\n";
-			for (String line:entry.getValue()) {
-				content+=line+"\n";
+		for (Map.Entry<String, List<String>> entry : successfulImports.entrySet()) {
+			content += entry.getKey() + "\n";
+			for (String line : entry.getValue()) {
+				content += line + "\n";
 			}
 		}
-		Dialogs.infoAlert("Snippet Import", header, content);
+
+		for (String error:errorList) {
+			content += error+"\n";
+		}
+		// Best if we have a list of paired and unpaied code-snippet node
+		Dialogs.infoAlert(title, header, content);
 	}
 
 	// ---------------FXML End -------------------------
