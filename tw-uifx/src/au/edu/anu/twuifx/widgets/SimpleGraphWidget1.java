@@ -80,12 +80,25 @@ public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, 
 		if (arena.content() != null) {
 			System.out.println("\tArena full id: " + String.join("->", arena.content().fullId()));
 			System.out.println("\tArena allItems-------------------");
+			
+			// JG 20/8/2020
+			// allItems() returns all SystemComponents contained in the container hierarchy
+			// as a flat list, so it's not the proper way to see the hierarchy - it's ok to display the graph
+			// If you want to display the arena/group/component hierarchy, you should loop recursively
+			// A Container has the following fields:
+			// 1) container.hierarchicalView() returns its variables and parameters (actually, it's 
+			//    either an ArenaComponent, GroupComponent or LifeCycleComponent (when it exists)
+			// 2) container.items() returns the list of the SystemComponents stored in this container
+			// 3) container.subContainers() returns the list of the containers one hierarchical level below
+			//    the current container.
+			// so to get the whole hierarchy information you have to loop recursively on subcontainers
 			for (SystemComponent sc : arena.content().allItems()) {
 				printContainer("\t\t", sc);
 			}
 		}
 
 		// what now? - where are the groups
+		// cf above - follow the container hierarchy 
 	}
 
 	private static void printContainer(String indent, SystemComponent sc) {
