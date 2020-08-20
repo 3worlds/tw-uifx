@@ -179,6 +179,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 	}
 
+	int step = 0;
+	String sep = "\t";
+
 	private boolean updateData(final SpaceData data) {
 		boolean updateLegend = false;
 		lblTime.setText(timeFormatter.getTimeText(data.time()));
@@ -194,8 +197,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 					updateLegend = true;
 				}
 				items.put(key, value);
-				if (value.containsKey(name))
-					log.warning("Overwriting existing entry: " + data);
 				value.put(name, data.coordinates());
 				// Assign a colour to new items?
 				if (!itemColours.containsKey(key)) {

@@ -4,9 +4,12 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds Flock
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(gignoux (23 juil. 2020))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
+	built-by = java.lang.String()
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
+	precis = java.lang.String("Tutorial: Testing flocking behaviour of mobile components")
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https://en.wikipedia.org/wiki/Boids"))
+	version = java.lang.String(demo)
 	predefined *categories*
 		categorySet *organisation*
 			category *assemblage*
