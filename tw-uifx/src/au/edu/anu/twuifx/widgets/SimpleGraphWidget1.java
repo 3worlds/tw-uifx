@@ -58,7 +58,6 @@ public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, 
 //		System.out.println("onDataMessage: " + data);
 		// an hierarchical component: as is a group component
 		EcosystemGraph eg = data.getEcosystem();
-		eg.community();
 		System.out.println("EcosystemGraph");
 
 		int nNodes = 0;
@@ -66,13 +65,12 @@ public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, 
 			for (SystemComponent sc : eg.nodes())
 				nNodes++;
 
+		// NB: eg.nNodes() is not implemented yet
 		System.out.println("\tnNodes: " + nNodes);
 		System.out.println("\tnEdges: " + eg.nEdges());
 
 		ArenaComponent arena = eg.arena();
 		ComponentContainer comm = eg.community();
-
-		// Are Ecosystem.Community() and Ecosystem.arena().content() always the same?
 
 		System.out.println("Arena: " + arena);
 		System.out.println("\t" + arena.membership().categoryId());

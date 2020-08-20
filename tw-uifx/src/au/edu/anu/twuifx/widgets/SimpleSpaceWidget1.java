@@ -169,12 +169,24 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 	}
 
+	private long lastTime = Long.MIN_VALUE;
+	private List<SpaceData> batchData = new ArrayList<>();
+
 	@Override
 	public void onDataMessage(SpaceData data) {
-		log.info(data.toString()); // something weird with the logging when run from MM??
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
-				drawSpace(updateData(data));
+				if (data.time() == lastTime) {
+					batchData.add(data);
+				} else {
+					boolean doDraw = false;
+					for (SpaceData d : batchData)
+						doDraw = doDraw || updateData(d);
+					drawSpace(doDraw);
+					batchData.clear();
+					batchData.add(data);
+					lastTime = data.time();
+				}
 			});
 		}
 	}
