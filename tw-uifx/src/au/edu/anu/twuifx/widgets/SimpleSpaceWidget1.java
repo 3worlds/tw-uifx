@@ -56,6 +56,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SpaceType;
+import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
@@ -113,6 +114,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private WidgetTrackingPolicy<TimeData> policy;
 	private WidgetTimeFormatter timeFormatter;
 	private Map<String, Map<String, double[]>> items;
+	private Map<String,List<Duple<double[],double[]>>> lines;
 	private List<Color> colours;
 	private final Map<String, Color> itemColours;
 	private GridPane legend;
@@ -131,6 +133,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		items = new HashMap<>();
+		lines = new HashMap<>();
 		colours = new ArrayList<>();
 		itemColours = new HashMap<>();
 		new HashMap<>();
@@ -214,7 +217,10 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				if (!itemColours.containsKey(key)) {
 					itemColours.put(key, getColour(items.size() - 1));
 				}
-			} else {// lines/relations
+			} else if (data.isLine()){
+				DataLabel dl = data.itemLabel();
+				//lines.put(dl.toString(), data.line());
+			} else {
 				log.warning("Adding relations not yet implemented.");
 				// wait and see
 			}
