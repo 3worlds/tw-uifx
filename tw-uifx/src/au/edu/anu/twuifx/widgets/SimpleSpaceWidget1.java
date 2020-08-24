@@ -121,7 +121,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
 	private Map<String, Duple<double[], double[]>> linesMap;
 	private List<Color> colours;
-	private final Map<String, Color> colourMap;
+	private final Map<String, Duple<Integer,Color>> colourMap;
 	private GridPane legend;
 
 	private int resolution;
@@ -217,16 +217,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			if (data.isPoint()) {
 				DataLabel dl = data.itemLabel();
 				String key = dl.toString();
-
-				// Duples are immutable!
 				Duple<DataLabel, double[]> value = new Duple<DataLabel, double[]>(dl, data.coordinates());
 				hPointsMap.put(key, value);
-				String cKey = getColourKey(dl);
-				// Assign a colour to new items?
-				if (!colourMap.containsKey(cKey)) {
-					updateLegend = true;
-					colourMap.put(cKey, getColour(colourMap.size()));
-				}
+				installColour(dl);
 
 			} else if (data.isLine()) {
 				linesMap.put(data.itemLabel().toString(), data.line());
@@ -240,6 +233,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				DataLabel dl = data.itemLabel();
 				String key = dl.toString();
 				hPointsMap.remove(key);
+				if (uninstallColour(dl))
+					updateLegend();
 			} else if (data.isLine()) {
 				linesMap.remove(data.itemLabel().toString());
 			}
@@ -250,6 +245,32 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 		return updateLegend;
 
+	}
+
+	private boolean uninstallColour(DataLabel dl) {
+		String cKey = getColourKey(dl);
+		Duple<Integer,Color> value =colourMap.get(cKey);
+		if (value!=null) {
+			if (value.getFirst()==1) {
+				colourMap.remove(cKey);
+				return true;
+			}else {
+				value = new Duple<Integer,Color>(value.getFirst()-1,value.getSecond());
+				colourMap.put(cKey,value);
+				return false;
+			}
+		}
+		return false;
+	}
+
+	private void installColour(DataLabel dl) {
+		String cKey = getColourKey(dl);
+		Duple<Integer,Color> value =colourMap.get(cKey);
+		if (value==null)
+			value = new Duple<Integer,Color>(1,getColour(colourMap.size()));
+		else
+			value = new Duple<Integer,Color>(value.getFirst()+1,value.getSecond());
+		colourMap.put(cKey,value);	
 	}
 
 	private String getColourKey(DataLabel dl) {
@@ -291,7 +312,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
 			Duple<DataLabel, double[]> value = entry.getValue();
 			String cKey = getColourKey(value.getFirst());
-			Color colour = colourMap.get(cKey);
+			Color colour = colourMap.get(cKey).getSecond();
 			gc.setStroke(colour);
 			gc.setFill(colour);
 			double[] coords = value.getSecond();
@@ -454,10 +475,10 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 		int count = 0;
 		int maxItems = 20;
-		for (Map.Entry<String, Color> entry : colourMap.entrySet()) {
+		for (Map.Entry<String, Duple<Integer,Color>> entry : colourMap.entrySet()) {
 			count++;
 			if (count < maxItems)
-				addLegendItem(entry.getKey(), entry.getValue());
+				addLegendItem(entry.getKey(), entry.getValue().getSecond());
 		}
 		if (count > maxItems) {
 			int idx = legend.getChildren().size();
@@ -588,12 +609,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			colourMap.clear();
 
 			hPointsMap.forEach((k, v) -> {
-				
-				String cKey = getColourKey(v.getFirst());
-				if (!colourMap.containsKey(cKey)) {
-					
-					colourMap.put(cKey, getColour(colourMap.size()));
-				}		
+				installColour(v.getFirst());
 				
 			});
 			drawSpace();
