@@ -113,18 +113,25 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private String widgetId;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private WidgetTimeFormatter timeFormatter;
-	private Map<String, Map<String, double[]>> items;
-	private Map<String,List<Duple<double[],double[]>>> lines;
+	/**
+	 * Hierarchically organised locations. Colours should be applied to any level in
+	 * the data label hierarchy from species to stages to individuals.
+	 */
+	private Map<String, Duple<DataLabel, double[]>> hPointsMap;
+	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
+	private Map<String, Duple<double[], double[]>> linesMap;
 	private List<Color> colours;
-	private final Map<String, Color> itemColours;
+	private final Map<String, Color> colourMap;
 	private GridPane legend;
 
 	private int resolution;
 	private int symbolRadius;
 	private boolean symbolFill;
-	private Color bkg;
+	private Color bkgColour;
+	private Color lineColour;
 	private double contrast;
 	private boolean colour64;
+	private int colourHLevel;
 
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
 
@@ -132,10 +139,10 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		super(statusSender, DataMessageTypes.SPACE);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
-		items = new HashMap<>();
-		lines = new HashMap<>();
+		hPointsMap = new HashMap<>();
+		linesMap = new HashMap<>();
 		colours = new ArrayList<>();
-		itemColours = new HashMap<>();
+		colourMap = new HashMap<>();
 		new HashMap<>();
 	}
 
@@ -172,24 +179,29 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 	}
 
-	private long lastTime = Long.MIN_VALUE;
-	private List<SpaceData> batchData = new ArrayList<>();
+//	private long lastTime = Long.MIN_VALUE;
+//	private List<SpaceData> batchData = new ArrayList<>();
 
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
-				if (data.time() == lastTime) {
-					batchData.add(data);
-				} else {
-					boolean doDraw = false;
-					for (SpaceData d : batchData)
-						doDraw = doDraw || updateData(d);
-					drawSpace(doDraw);
-					batchData.clear();
-					batchData.add(data);
-					lastTime = data.time();
-				}
+				boolean refreshLegend = updateData(data);
+				drawSpace();
+				if (refreshLegend)
+					updateLegend();
+
+//				if (data.time() == lastTime) {
+//					batchData.add(data);
+//				} else {
+//					boolean refreshLegend = false;
+//					for (SpaceData d : batchData)
+//						refreshLegend = refreshLegend || updateData(d);
+//					drawSpace(refreshLegend);
+//					batchData.clear();
+//					batchData.add(data);
+//					lastTime = data.time();
+//				}
 			});
 		}
 	}
@@ -204,82 +216,90 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		if (data.create()) {
 			if (data.isPoint()) {
 				DataLabel dl = data.itemLabel();
-				String name = dl.getEnd();
-				String key = dl.toString().replace(">" + name, "").replace(">", ".");
-				Map<String, double[]> value = items.get(key);
-				if (value == null) {
-					value = new HashMap<>();
-					updateLegend = true;
-				}
-				items.put(key, value);
-				value.put(name, data.coordinates());
+				String key = dl.toString();
+
+				// Duples are immutable!
+				Duple<DataLabel, double[]> value = new Duple<DataLabel, double[]>(dl, data.coordinates());
+				hPointsMap.put(key, value);
+				String cKey = getColourKey(dl);
 				// Assign a colour to new items?
-				if (!itemColours.containsKey(key)) {
-					itemColours.put(key, getColour(items.size() - 1));
+				if (!colourMap.containsKey(cKey)) {
+					updateLegend = true;
+					colourMap.put(cKey, getColour(colourMap.size()));
 				}
-			} else if (data.isLine()){
-				DataLabel dl = data.itemLabel();
-				//lines.put(dl.toString(), data.line());
+
+			} else if (data.isLine()) {
+				linesMap.put(data.itemLabel().toString(), data.line());
 			} else {
 				log.warning("Adding relations not yet implemented.");
 				// wait and see
 			}
 
 		} else if (data.delete()) {
-			DataLabel dl = data.itemLabel();
-			String name = dl.getEnd();
-			String key = dl.toString().replace(">" + name, "").replace(">", ".");
-			Map<String, double[]> value = items.get(key);
-			if (value != null) { // JG sometimes this happens, although it shouldnt...
-				if (value.containsKey(name))
-					value.remove(name);
-				else
-					log.warning("Request to delete non-existent name [" + name + "] in system [" + key + "] " + data);
-			} else
-				log.warning("Request to delete name [" + name + "] in non-existent system [" + key + "] " + data);
-			// Don't remove empty system entries as new entries will acquire the same name
+			if (data.isPoint()) {
+				DataLabel dl = data.itemLabel();
+				String key = dl.toString();
+				hPointsMap.remove(key);
+			} else if (data.isLine()) {
+				linesMap.remove(data.itemLabel().toString());
+			}
 		} else
 			log.warning("Request for unknown op: " + data);
-		// relocate i.e move something - wait and see
+		// relocate i.e move something - wait and see maybe move is a delete/create
+		// operation?
 
 		return updateLegend;
 
+	}
+
+	private String getColourKey(DataLabel dl) {
+		String result = "";
+		for (int i = 0; i < Math.min(colourHLevel + 1, dl.size()); i++)
+			result += "." + dl.get(i);
+		return result.replaceFirst(".", "");
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
 		log.info(state.toString());
 		if (isSimulatorState(state, waiting)) {
-			items.clear();
-			itemColours.clear();
-			drawSpace(true);
+			hPointsMap.clear();
+			linesMap.clear();
+			colourMap.clear();
+//			batchData.clear();
+			legend.getChildren().clear();
+			drawSpace();
 		}
 	}
 
 //-------------------------------------------- Drawing ---
 
-	private void drawSpace(boolean updateLegend) {
-		if (updateLegend)
-			legend.getChildren().clear();
+	private void drawSpace() {
 		int size = 2 * symbolRadius;
-		GraphicsContext gc = canvas.getGraphicsContext2D();
 		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
 		clearCanvas();
-		for (Map.Entry<String, Map<String, double[]>> entry : items.entrySet()) {
-			String key = entry.getKey();
-			Map<String, double[]> members = entry.getValue();
-			Color colour = itemColours.get(key);
-			if (updateLegend)
-				addLegendItem(key, colour);
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.setStroke(Color.BLACK);
+		for (Map.Entry<String, Duple<double[], double[]>> entry : linesMap.entrySet()) {
+			Duple<double[], double[]> value = entry.getValue();
+			double x1 = value.getFirst()[0];
+			double y1 = value.getFirst()[1];
+			double x2 = value.getSecond()[0];
+			double y2 = value.getSecond()[1];
+			gc.strokeLine(x1, y1, x2, y2);
+		}
+		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
+			Duple<DataLabel, double[]> value = entry.getValue();
+			String cKey = getColourKey(value.getFirst());
+			Color colour = colourMap.get(cKey);
 			gc.setStroke(colour);
 			gc.setFill(colour);
-			members.forEach((name, coords) -> {
-				Point2D point = getPoint(coords);
-				point = point.add(-symbolRadius, -symbolRadius);
-				gc.strokeOval(point.getX(), point.getY(), size, size);
-				if (symbolFill)
-					gc.fillOval(point.getX(), point.getY(), size, size);
-			});
+			double[] coords = value.getSecond();
+			Point2D point = getPoint(coords);
+			point = point.add(-symbolRadius, -symbolRadius);
+			gc.strokeOval(point.getX(), point.getY(), size, size);
+			if (symbolFill)
+				gc.fillOval(point.getX(), point.getY(), size, size);
 		}
 	}
 
@@ -294,7 +314,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	private void clearCanvas() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setFill(bkg);
+		gc.setFill(bkgColour);
 		gc.setStroke(Color.BLACK);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 	};
@@ -329,8 +349,10 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private static final String keySymbolRad = "radius";
 	private static final String keySymbolFill = "fill";
 	private static final String keyBKG = "bkg";
+	private static final String keyLineColour = "lineColour";
 	private static final String keyContrast = "contrast";
 	private static final String keyColour64 = "colour64";
+	private static final String keyColourHLevel = "colourHLevel";
 
 	@Override
 	public void putUserPreferences() {
@@ -339,9 +361,12 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
 		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
 		Preferences.putInt(widgetId + keyResolution, resolution);
+		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
 		Preferences.putInt(widgetId + keySymbolRad, symbolRadius);
 		Preferences.putBoolean(widgetId + keySymbolFill, symbolFill);
-		Preferences.putDoubles(widgetId + keyBKG, bkg.getRed(), bkg.getGreen(), bkg.getBlue());
+		Preferences.putDoubles(widgetId + keyBKG, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue());
+		Preferences.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
+				lineColour.getBlue());
 		Preferences.putDouble(widgetId + keyContrast, contrast);
 		Preferences.putBoolean(widgetId + keyColour64, colour64);
 	}
@@ -355,24 +380,31 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
 		resolution = Preferences.getInt(widgetId + keyResolution, 50);
+		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
 		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, firstUse);
 		if (symbolRadius == firstUse) {
-			// onMeatData has run therefore spaceBounds is valid
+			// onMetadata has run therefore spaceBounds is valid
 			double s = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
 			// assume a nominal canvas size of 200
 			resolution = Math.max(1, (int) (200.0 / s));
 			symbolRadius = 2;
 		}
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
-		double[] rgb = Preferences.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
+		double[] rgb;
+		rgb = Preferences.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
 				Color.WHITE.getBlue());
-		bkg = new Color(rgb[0], rgb[1], rgb[2], 1.0);
+		bkgColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
+
+		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),
+				Color.GREY.getBlue());
+		lineColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
+
 		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
 		colour64 = Preferences.getBoolean(widgetId + keyColour64, true);
 		if (colour64)
-			colours = ColourContrast.getContrastingColours64(bkg, contrast);
+			colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 		else
-			colours = ColourContrast.getContrastingColours(bkg, contrast);
+			colours = ColourContrast.getContrastingColours(bkgColour, contrast);
 
 	}
 
@@ -417,10 +449,26 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		return container;
 	}
 
+	private void updateLegend() {
+		legend.getChildren().clear();
+
+		int count = 0;
+		int maxItems = 20;
+		for (Map.Entry<String, Color> entry : colourMap.entrySet()) {
+			count++;
+			if (count < maxItems)
+				addLegendItem(entry.getKey(), entry.getValue());
+		}
+		if (count > maxItems) {
+			int idx = legend.getChildren().size();
+			legend.add(new Label("..."), 1, idx);
+		}
+	}
+
 	private void addLegendItem(String name, Color colour) {
 		Rectangle rect = new Rectangle();
-		rect.setStroke(bkg);
-		rect.setFill(bkg);
+		rect.setStroke(bkgColour);
+		rect.setFill(bkgColour);
 		rect.setX(0);
 		rect.setY(0);
 		rect.setWidth(14);
@@ -495,15 +543,31 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		content.add(chbxCS, 1, 3);
 		// ----
 		Label lbl3 = new Label("Background colour");
-		ColorPicker colorPicker = new ColorPicker(bkg);
+		ColorPicker cpBkg = new ColorPicker(bkgColour);
 		GridPane.setHalignment(lbl3, HPos.RIGHT);
 		content.add(lbl3, 0, 4);
-		content.add(colorPicker, 1, 4);
+		content.add(cpBkg, 1, 4);
 		// ----
 		Label lbl4 = new Label("Contrast (0.0-1.0");
 		TextField tfContrast = new TextField(Double.toString(contrast));
 		content.add(lbl4, 0, 5);
 		content.add(tfContrast, 1, 5);
+
+		Label lbl5 = new Label("Line colour");
+		ColorPicker cpLine = new ColorPicker(lineColour);
+		GridPane.setHalignment(lbl5, HPos.RIGHT);
+		content.add(lbl5, 0, 6);
+		content.add(cpLine, 1, 6);
+		// ----
+		// -----
+		Spinner<Integer> spHLevel = new Spinner<>();
+		spHLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, colourHLevel));
+		spHLevel.setMaxWidth(100);
+		spHLevel.setEditable(true);
+		Label lblHL = new Label("Hierarchical colour level");
+		GridPane.setHalignment(lblHL, HPos.RIGHT);
+		content.add(lblHL, 0, 7);
+		content.add(spHLevel, 1, 7);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
@@ -513,19 +577,27 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			symbolRadius = spRadius.getValue();
 			contrast = Double.parseDouble(tfContrast.getText());
 			colour64 = chbxCS.isSelected();
-			bkg = colorPicker.getValue();
+			bkgColour = cpBkg.getValue();
+			lineColour = cpLine.getValue();
+			colourHLevel=spHLevel.getValue();
 			if (colour64)
-				colours = ColourContrast.getContrastingColours64(bkg, contrast);
+				colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 			else
-				colours = ColourContrast.getContrastingColours(bkg, contrast);
+				colours = ColourContrast.getContrastingColours(bkgColour, contrast);
+			
+			colourMap.clear();
 
-			itemColours.clear();
-
-			items.forEach((k, v) -> {
-				int idx = itemColours.size();
-				itemColours.put(k, getColour(idx));
+			hPointsMap.forEach((k, v) -> {
+				
+				String cKey = getColourKey(v.getFirst());
+				if (!colourMap.containsKey(cKey)) {
+					
+					colourMap.put(cKey, getColour(colourMap.size()));
+				}		
+				
 			});
-			drawSpace(true);
+			drawSpace();
+			updateLegend();
 		}
 	}
 
@@ -541,15 +613,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		double clickX = (e.getX() * scale) + spaceBounds.getMinX();
 		double clickY = ((canvas.getHeight() - e.getY()) * scale) + spaceBounds.getMinY();
 		BoundingBox box = new BoundingBox(clickX - rad, clickY - rad, size, size);
-		for (Map.Entry<String, Map<String, double[]>> entry : items.entrySet()) {
+		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
 			String key = entry.getKey();
-			Map<String, double[]> members = entry.getValue();
-			for (Map.Entry<String, double[]> member : members.entrySet()) {
-				double x = member.getValue()[0];
-				double y = member.getValue()[1];
-				if (box.contains(x, y)) {
-					return key + "." + member.getKey() + "[" + x + "," + y + "]";
-				}
+			Duple<DataLabel, double[]> value = entry.getValue();
+			double x = value.getSecond()[0];
+			double y = value.getSecond()[1];
+			if (box.contains(x, y)) {
+				return key + " [" + x + "," + y + "]";
 			}
 		}
 		return "";
