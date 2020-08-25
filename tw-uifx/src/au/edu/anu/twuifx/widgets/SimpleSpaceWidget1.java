@@ -64,7 +64,10 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -515,6 +518,14 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		return mu;
 	}
 
+	private void addTableEntry(String name, int row, Node ctrl,GridPane grid) {
+		Label lbl = new Label(name);
+		grid.add(lbl,0,row);
+		grid.add(ctrl, 1, row);
+		GridPane.setHalignment(lbl, HPos.RIGHT);
+		GridPane.setHalignment(ctrl, HPos.LEFT);
+		GridPane.setValignment(ctrl, VPos.CENTER);		
+	}
 	private void edit() {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle(widgetId);
@@ -524,69 +535,46 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GridPane content = new GridPane();
 		content.setVgap(15);
 		content.setHgap(10);
+		content.setAlignment(Pos.BASELINE_RIGHT); // try removing this line
 		// -----
-		Label lbl1 = new Label("Fill symbols");
+		
 		CheckBox chbxFill = new CheckBox("");
+		addTableEntry("Fill symbols",0,chbxFill,content);
 		chbxFill.setSelected(symbolFill);
-		// col, row
-		GridPane.setHalignment(lbl1, HPos.RIGHT);
-		content.add(lbl1, 0, 0);
-		content.add(chbxFill, 1, 0);
-
+	
 		// -----
-		Label lbl2 = new Label("Resolution");
 		Spinner<Integer> spResolution = new Spinner<>();
+		addTableEntry("Resolution",1,spResolution,content);
 		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, resolution));
 		spResolution.setMaxWidth(100);
 		spResolution.setEditable(true);
-		GridPane.setHalignment(lbl2, HPos.RIGHT);
-		content.add(lbl2, 0, 1);
-		content.add(spResolution, 1, 1);
 
 		// -----
-		Label lbl3 = new Label("Symbol radius");
 		Spinner<Integer> spRadius = new Spinner<>();
+		addTableEntry("Symbol radius",2,spRadius,content);
 		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
 		spRadius.setMaxWidth(100);
 		spRadius.setEditable(true);
-		GridPane.setHalignment(lbl3, HPos.RIGHT);
-		content.add(lbl3, 0, 2);
-		content.add(spRadius, 1, 2);
-
+	
 		// -----
-		Label lbl4 = new Label("64 Colour system");
 		CheckBox chbxCS = new CheckBox("");
+		addTableEntry("64 Colour system",3,chbxCS,content);
 		chbxCS.setSelected(colour64);
-		GridPane.setHalignment(lbl4, HPos.RIGHT);
-		content.add(lbl4, 0, 3);
-		content.add(chbxCS, 1, 3);
 		// ----
-		Label lbl5 = new Label("Background colour");
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
-		GridPane.setHalignment(lbl5, HPos.RIGHT);
-		content.add(lbl5, 0, 4);
-		content.add(cpBkg, 1, 4);
+		addTableEntry("Background colour",4,cpBkg,content);
 		// ----
-		Label lbl6 = new Label("Contrast (0.0-1.0)");
 		TextField tfContrast = new TextField(Double.toString(contrast));
-		GridPane.setHalignment(lbl6, HPos.RIGHT);
-		content.add(lbl6, 0, 5);
-		content.add(tfContrast, 1, 5);
+		addTableEntry("Contrast (0.0-1.0)",5,tfContrast,content);
 		// -----
-		Label lbl7 = new Label("Line colour");
 		ColorPicker cpLine = new ColorPicker(lineColour);
-		GridPane.setHalignment(lbl7, HPos.RIGHT);
-		content.add(lbl7, 0, 6);
-		content.add(cpLine, 1, 6);
+		addTableEntry("Line colour",6,cpLine,content);
 		// ----
-		Label lbl8 = new Label("Hierarchical colour level");
 		Spinner<Integer> spHLevel = new Spinner<>();
+		addTableEntry("Hierarchical colour level",7,spHLevel,content);
 		spHLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, colourHLevel));
 		spHLevel.setMaxWidth(100);
 		spHLevel.setEditable(true);
-		GridPane.setHalignment(lbl8, HPos.RIGHT);
-		content.add(lbl8, 0, 7);
-		content.add(spHLevel, 1, 7);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
