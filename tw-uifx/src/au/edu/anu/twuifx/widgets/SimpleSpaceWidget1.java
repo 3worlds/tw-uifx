@@ -524,70 +524,70 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		dialog.initOwner((Window) Dialogs.owner());
 		GridPane content = new GridPane();
-		content.setVgap(5);
-		content.setHgap(3);
+		content.setVgap(15);
+		content.setHgap(10);
 		// -----
-		Label lbl = new Label("Fill symbols");
+		Label lbl1 = new Label("Fill symbols");
 		CheckBox chbxFill = new CheckBox("");
 		chbxFill.setSelected(symbolFill);
 		// col, row
-		GridPane.setHalignment(lbl, HPos.RIGHT);
-		content.add(lbl, 0, 0);
+		GridPane.setHalignment(lbl1, HPos.RIGHT);
+		content.add(lbl1, 0, 0);
 		content.add(chbxFill, 1, 0);
 
 		// -----
+		Label lbl2 = new Label("Resolution");
 		Spinner<Integer> spResolution = new Spinner<>();
 		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, resolution));
 		spResolution.setMaxWidth(100);
 		spResolution.setEditable(true);
-		lbl = new Label("Resolution");
-		GridPane.setHalignment(lbl, HPos.RIGHT);
-		content.add(lbl, 0, 1);
+		GridPane.setHalignment(lbl2, HPos.RIGHT);
+		content.add(lbl2, 0, 1);
 		content.add(spResolution, 1, 1);
 
 		// -----
+		Label lbl3 = new Label("Symbol radius");
 		Spinner<Integer> spRadius = new Spinner<>();
 		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
 		spRadius.setMaxWidth(100);
 		spRadius.setEditable(true);
-		lbl = new Label("Symbol radius");
-		GridPane.setHalignment(lbl, HPos.RIGHT);
-		content.add(lbl, 0, 2);
+		GridPane.setHalignment(lbl3, HPos.RIGHT);
+		content.add(lbl3, 0, 2);
 		content.add(spRadius, 1, 2);
 
 		// -----
-		Label lbl2 = new Label("64 Colour system");
+		Label lbl4 = new Label("64 Colour system");
 		CheckBox chbxCS = new CheckBox("");
 		chbxCS.setSelected(colour64);
-		GridPane.setHalignment(lbl2, HPos.RIGHT);
-		content.add(lbl2, 0, 3);
+		GridPane.setHalignment(lbl4, HPos.RIGHT);
+		content.add(lbl4, 0, 3);
 		content.add(chbxCS, 1, 3);
 		// ----
-		Label lbl3 = new Label("Background colour");
+		Label lbl5 = new Label("Background colour");
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
-		GridPane.setHalignment(lbl3, HPos.RIGHT);
-		content.add(lbl3, 0, 4);
+		GridPane.setHalignment(lbl5, HPos.RIGHT);
+		content.add(lbl5, 0, 4);
 		content.add(cpBkg, 1, 4);
 		// ----
-		Label lbl4 = new Label("Contrast (0.0-1.0");
+		Label lbl6 = new Label("Contrast (0.0-1.0)");
 		TextField tfContrast = new TextField(Double.toString(contrast));
-		content.add(lbl4, 0, 5);
+		GridPane.setHalignment(lbl6, HPos.RIGHT);
+		content.add(lbl6, 0, 5);
 		content.add(tfContrast, 1, 5);
-
-		Label lbl5 = new Label("Line colour");
+		// -----
+		Label lbl7 = new Label("Line colour");
 		ColorPicker cpLine = new ColorPicker(lineColour);
-		GridPane.setHalignment(lbl5, HPos.RIGHT);
-		content.add(lbl5, 0, 6);
+		GridPane.setHalignment(lbl7, HPos.RIGHT);
+		content.add(lbl7, 0, 6);
 		content.add(cpLine, 1, 6);
 		// ----
-		// -----
+		Label lbl8 = new Label("Hierarchical colour level");
 		Spinner<Integer> spHLevel = new Spinner<>();
 		spHLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, colourHLevel));
 		spHLevel.setMaxWidth(100);
 		spHLevel.setEditable(true);
-		Label lblHL = new Label("Hierarchical colour level");
-		GridPane.setHalignment(lblHL, HPos.RIGHT);
-		content.add(lblHL, 0, 7);
+		GridPane.setHalignment(lbl8, HPos.RIGHT);
+		content.add(lbl8, 0, 7);
 		content.add(spHLevel, 1, 7);
 
 		dialog.getDialogPane().setContent(content);
