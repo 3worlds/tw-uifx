@@ -300,7 +300,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
 		clearCanvas();
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setStroke(Color.BLACK);
+		gc.setStroke(lineColour);
 		for (Map.Entry<String, Duple<double[], double[]>> entry : linesMap.entrySet()) {
 			Duple<double[], double[]> value = entry.getValue();
 			Point2D start = scaleLocation(value.getFirst());
