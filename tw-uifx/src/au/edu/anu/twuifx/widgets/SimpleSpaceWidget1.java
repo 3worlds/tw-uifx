@@ -303,8 +303,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		gc.setStroke(lineColour);
 		for (Map.Entry<String, Duple<double[], double[]>> entry : linesMap.entrySet()) {
 			Duple<double[], double[]> value = entry.getValue();
-			Point2D start = scaleLocation(value.getFirst());
-			Point2D end = scaleLocation(value.getSecond());
+			Point2D start = scaleToCanvas(value.getFirst());
+			Point2D end = scaleToCanvas(value.getSecond());
 			gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
 		}
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
@@ -314,7 +314,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			gc.setStroke(colour);
 			gc.setFill(colour);
 			double[] coords = value.getSecond();
-			Point2D point = scaleLocation(coords);
+			Point2D point = scaleToCanvas(coords);
 			point = point.add(-symbolRadius, -symbolRadius);
 			gc.strokeOval(point.getX(), point.getY(), size, size);
 			if (symbolFill)
@@ -349,7 +349,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		return p * tr + tMin;
 	}
 
-	private Point2D scaleLocation(double[] coords) {
+	private Point2D scaleToCanvas(double[] coords) {
 		double sx = coords[0];
 		double sy = coords[1];
 		double dx = rescale(sx, spaceBounds.getMinX(), spaceBounds.getMaxX(), 0, canvas.getWidth());
