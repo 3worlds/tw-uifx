@@ -31,10 +31,14 @@
 package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -122,7 +126,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	 */
 	private Map<String, Duple<DataLabel, double[]>> hPointsMap;
 	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
-	private Map<String, Duple<double[], double[]>> linesMap;
+	private Map<String, Duple<double[], double[]>> linesMap;	
+	private Set<Duple<DataLabel,DataLabel>> lines;
+	
 	private List<Color> colours;
 	private final Map<String, Duple<Integer,Color>> colourMap;
 	private GridPane legend;
@@ -146,7 +152,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		linesMap = new HashMap<>();
 		colours = new ArrayList<>();
 		colourMap = new HashMap<>();
-		new HashMap<>();
+		lines = new HashSet<>();
+		new HashMap<>(); // ???
 	}
 
 	@Override
@@ -185,6 +192,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 //	private long lastTime = Long.MIN_VALUE;
 //	private List<SpaceData> batchData = new ArrayList<>();
 
+	// NB: as for now, there will be one message per time step per process, with all the changes
+	// in the message
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
@@ -211,44 +220,91 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	int step = 0;
 	String sep = "\t";
-
+	
 	private boolean updateData(final SpaceData data) {
 		boolean updateLegend = false;
-		lblTime.setText(timeFormatter.getTimeText(data.time()));
-		lblItem.setText("");
-		if (data.create()) {
-			if (data.isPoint()) {
-				DataLabel dl = data.itemLabel();
-				String key = dl.toString();
-				Duple<DataLabel, double[]> value = new Duple<DataLabel, double[]>(dl, data.coordinates());
-				hPointsMap.put(key, value);
-				installColour(dl);
-
-			} else if (data.isLine()) {
-				linesMap.put(data.itemLabel().toString(), data.line());
-			} else {
-				log.warning("Adding relations not yet implemented.");
-				// wait and see
-			}
-
-		} else if (data.delete()) {
-			if (data.isPoint()) {
-				DataLabel dl = data.itemLabel();
-				String key = dl.toString();
-				hPointsMap.remove(key);
-				if (uninstallColour(dl))
-					updateLegend();
-			} else if (data.isLine()) {
-				linesMap.remove(data.itemLabel().toString());
-			}
-		} else
-			log.warning("Request for unknown op: " + data);
-		// relocate i.e move something - wait and see maybe move is a delete/create
-		// operation?
-
+		// add new points in the point list
+		for (DataLabel lab:data.pointsToCreate().keySet()) {
+			Duple<DataLabel, double[]> value = new Duple<>(lab,data.pointsToCreate().get(lab));
+			// NB it would be an error if the lab was found in the list before
+			if (hPointsMap.put(lab.toString(), value)!=null)
+				log.warning("Point to create "+lab+" already present in space widget list");
+			installColour(lab);
+		}
+		// move points in the point list
+		for (DataLabel lab:data.pointsToMove().keySet()) {
+			Duple<DataLabel, double[]> value = new Duple<>(lab,data.pointsToMove().get(lab));
+			// replaces previous value of coordinates for this lab - OK
+			if (hPointsMap.put(lab.toString(), value)==null)
+				log.warning("Point to move "+lab+" absent from space widget list"); 
+			installColour(lab);
+		}
+		// delete points in the point list (including possibly new or moved ones of previous lists
+		for (DataLabel lab:data.pointsToDelete()) {
+			hPointsMap.remove(lab.toString());
+			if (uninstallColour(lab))
+				updateLegend();
+		}
+		// Here, all point coordinates have been updated
+		// add new lines
+		lines.addAll(data.linesToCreate());
+		// remove lines
+		lines.removeAll(data.linesToDelete());
+		Iterator<Duple<DataLabel,DataLabel>> it = lines.iterator();
+		Collection<DataLabel> deletedPoints = data.pointsToDelete();
+		while (it.hasNext()) {
+			Duple<DataLabel,DataLabel> line = it.next();
+			if (deletedPoints.contains(line.getFirst())||deletedPoints.contains(line.getSecond()))
+				it.remove();
+		}
+		// here normally all lines labels refer to points that exist in the point list
+		// update line coordinates
+		linesMap.clear();
+		for (Duple<DataLabel,DataLabel> line:lines) {
+			Duple<double[],double[]> xline = new Duple<>(
+				hPointsMap.get(line.getFirst().toString()).getSecond(),
+				hPointsMap.get(line.getSecond().toString()).getSecond()
+			);
+			linesMap.put(line.toString(),xline);
+		}
 		return updateLegend;
-
 	}
+
+//	private boolean updateData(final SpaceData data) {
+//		boolean updateLegend = false;
+//		lblTime.setText(timeFormatter.getTimeText(data.time()));
+//		lblItem.setText("");
+//		if (data.create()) {
+//			if (data.isPoint()) {
+//				DataLabel dl = data.itemLabel();
+//				String key = dl.toString();
+//				Duple<DataLabel, double[]> value = new Duple<DataLabel, double[]>(dl, data.coordinates());
+//				hPointsMap.put(key, value);
+//				installColour(dl);
+//
+//			} else if (data.isLine()) {
+//				linesMap.put(data.itemLabel().toString(), data.line());
+//			} else {
+//				log.warning("Adding relations not yet implemented.");
+//				// wait and see
+//			}
+//
+//		} else if (data.delete()) {
+//			if (data.isPoint()) {
+//				DataLabel dl = data.itemLabel();
+//				String key = dl.toString();
+//				hPointsMap.remove(key);
+//				if (uninstallColour(dl))
+//					updateLegend();
+//			} else if (data.isLine()) {
+//				linesMap.remove(data.itemLabel().toString());
+//			}
+//		} else
+//			log.warning("Request for unknown op: " + data);
+//		// relocate i.e move something - wait and see maybe move is a delete/create
+//		// operation?
+//		return updateLegend;
+//	}
 
 	private boolean uninstallColour(DataLabel dl) {
 		String cKey = getColourKey(dl);
