@@ -302,7 +302,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			gc.setStroke(lineColour);
 			for (Duple<DataLabel,DataLabel> lineReference:lineReferences){
 				Duple<double[], double[]> line = new Duple<>(hPointsMap.get(lineReference.getFirst().toString()).getSecond(),
-						hPointsMap.get(lineReference.getSecond().toString()).getSecond());
+					hPointsMap.get(lineReference.getSecond().toString()).getSecond());
 				Point2D start = scaleToCanvas(line.getFirst());
 				Point2D end = scaleToCanvas(line.getSecond());
 				gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
