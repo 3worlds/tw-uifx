@@ -126,11 +126,11 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	 */
 	private Map<String, Duple<DataLabel, double[]>> hPointsMap;
 	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
-	private Map<String, Duple<double[], double[]>> linesMap;	
-	private Set<Duple<DataLabel,DataLabel>> lines;
-	
+	//private Map<String, Duple<double[], double[]>> linesMap;
+	private Set<Duple<DataLabel, DataLabel>> lineReferences;
+
 	private List<Color> colours;
-	private final Map<String, Duple<Integer,Color>> colourMap;
+	private final Map<String, Duple<Integer, Color>> colourMap;
 	private GridPane legend;
 
 	private int resolution;
@@ -140,6 +140,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private Color lineColour;
 	private double contrast;
 	private boolean colour64;
+	private boolean showLines;
 	private int colourHLevel;
 
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
@@ -149,10 +150,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		hPointsMap = new HashMap<>();
-		linesMap = new HashMap<>();
 		colours = new ArrayList<>();
 		colourMap = new HashMap<>();
-		lines = new HashSet<>();
+		lineReferences = new HashSet<>();
 		new HashMap<>(); // ???
 	}
 
@@ -189,11 +189,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 	}
 
-//	private long lastTime = Long.MIN_VALUE;
-//	private List<SpaceData> batchData = new ArrayList<>();
-
-	// NB: as for now, there will be one message per time step per process, with all the changes
-	// in the message
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
@@ -202,120 +197,63 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				drawSpace();
 				if (refreshLegend)
 					updateLegend();
-
-//				if (data.time() == lastTime) {
-//					batchData.add(data);
-//				} else {
-//					boolean refreshLegend = false;
-//					for (SpaceData d : batchData)
-//						refreshLegend = refreshLegend || updateData(d);
-//					drawSpace(refreshLegend);
-//					batchData.clear();
-//					batchData.add(data);
-//					lastTime = data.time();
-//				}
 			});
 		}
 	}
 
 	int step = 0;
 	String sep = "\t";
-	
+
 	private boolean updateData(final SpaceData data) {
 		boolean updateLegend = false;
 		// add new points in the point list
-		for (DataLabel lab:data.pointsToCreate().keySet()) {
-			Duple<DataLabel, double[]> value = new Duple<>(lab,data.pointsToCreate().get(lab));
+		for (DataLabel lab : data.pointsToCreate().keySet()) {
+			Duple<DataLabel, double[]> value = new Duple<>(lab, data.pointsToCreate().get(lab));
 			// NB it would be an error if the lab was found in the list before
-			if (hPointsMap.put(lab.toString(), value)!=null)
-				log.warning("Point to create "+lab+" already present in space widget list");
+			if (hPointsMap.put(lab.toString(), value) != null)
+				log.warning("Point to create " + lab + " already present in space widget list");
 			installColour(lab);
 		}
 		// move points in the point list
-		for (DataLabel lab:data.pointsToMove().keySet()) {
-			Duple<DataLabel, double[]> value = new Duple<>(lab,data.pointsToMove().get(lab));
+		for (DataLabel lab : data.pointsToMove().keySet()) {
+			Duple<DataLabel, double[]> value = new Duple<>(lab, data.pointsToMove().get(lab));
 			// replaces previous value of coordinates for this lab - OK
-			if (hPointsMap.put(lab.toString(), value)==null)
-				log.warning("Point to move "+lab+" absent from space widget list"); 
+			if (hPointsMap.put(lab.toString(), value) == null)
+				log.warning("Point to move " + lab + " absent from space widget list");
 			installColour(lab);
 		}
-		// delete points in the point list (including possibly new or moved ones of previous lists
-		for (DataLabel lab:data.pointsToDelete()) {
+		// delete points in the point list (including possibly new or moved ones of
+		// previous lists
+		for (DataLabel lab : data.pointsToDelete()) {
 			hPointsMap.remove(lab.toString());
 			if (uninstallColour(lab))
 				updateLegend();
 		}
 		// Here, all point coordinates have been updated
 		// add new lines
-		lines.addAll(data.linesToCreate());
+		lineReferences.addAll(data.linesToCreate());
 		// remove lines
-		lines.removeAll(data.linesToDelete());
-		Iterator<Duple<DataLabel,DataLabel>> it = lines.iterator();
+		lineReferences.removeAll(data.linesToDelete());
+		Iterator<Duple<DataLabel, DataLabel>> it = lineReferences.iterator();
 		Collection<DataLabel> deletedPoints = data.pointsToDelete();
 		while (it.hasNext()) {
-			Duple<DataLabel,DataLabel> line = it.next();
-			if (deletedPoints.contains(line.getFirst())||deletedPoints.contains(line.getSecond()))
+			Duple<DataLabel, DataLabel> line = it.next();
+			if (deletedPoints.contains(line.getFirst()) || deletedPoints.contains(line.getSecond()))
 				it.remove();
-		}
-		// here normally all lines labels refer to points that exist in the point list
-		// update line coordinates
-		linesMap.clear();
-		for (Duple<DataLabel,DataLabel> line:lines) {
-			Duple<double[],double[]> xline = new Duple<>(
-				hPointsMap.get(line.getFirst().toString()).getSecond(),
-				hPointsMap.get(line.getSecond().toString()).getSecond()
-			);
-			linesMap.put(line.toString(),xline);
 		}
 		return updateLegend;
 	}
 
-//	private boolean updateData(final SpaceData data) {
-//		boolean updateLegend = false;
-//		lblTime.setText(timeFormatter.getTimeText(data.time()));
-//		lblItem.setText("");
-//		if (data.create()) {
-//			if (data.isPoint()) {
-//				DataLabel dl = data.itemLabel();
-//				String key = dl.toString();
-//				Duple<DataLabel, double[]> value = new Duple<DataLabel, double[]>(dl, data.coordinates());
-//				hPointsMap.put(key, value);
-//				installColour(dl);
-//
-//			} else if (data.isLine()) {
-//				linesMap.put(data.itemLabel().toString(), data.line());
-//			} else {
-//				log.warning("Adding relations not yet implemented.");
-//				// wait and see
-//			}
-//
-//		} else if (data.delete()) {
-//			if (data.isPoint()) {
-//				DataLabel dl = data.itemLabel();
-//				String key = dl.toString();
-//				hPointsMap.remove(key);
-//				if (uninstallColour(dl))
-//					updateLegend();
-//			} else if (data.isLine()) {
-//				linesMap.remove(data.itemLabel().toString());
-//			}
-//		} else
-//			log.warning("Request for unknown op: " + data);
-//		// relocate i.e move something - wait and see maybe move is a delete/create
-//		// operation?
-//		return updateLegend;
-//	}
-
 	private boolean uninstallColour(DataLabel dl) {
 		String cKey = getColourKey(dl);
-		Duple<Integer,Color> value =colourMap.get(cKey);
-		if (value!=null) {
-			if (value.getFirst()==1) {
+		Duple<Integer, Color> value = colourMap.get(cKey);
+		if (value != null) {
+			if (value.getFirst() == 1) {
 				colourMap.remove(cKey);
 				return true;
-			}else {
-				value = new Duple<Integer,Color>(value.getFirst()-1,value.getSecond());
-				colourMap.put(cKey,value);
+			} else {
+				value = new Duple<Integer, Color>(value.getFirst() - 1, value.getSecond());
+				colourMap.put(cKey, value);
 				return false;
 			}
 		}
@@ -324,12 +262,12 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	private void installColour(DataLabel dl) {
 		String cKey = getColourKey(dl);
-		Duple<Integer,Color> value =colourMap.get(cKey);
-		if (value==null)
-			value = new Duple<Integer,Color>(1,getColour(colourMap.size()));
+		Duple<Integer, Color> value = colourMap.get(cKey);
+		if (value == null)
+			value = new Duple<Integer, Color>(1, getColour(colourMap.size()));
 		else
-			value = new Duple<Integer,Color>(value.getFirst()+1,value.getSecond());
-		colourMap.put(cKey,value);	
+			value = new Duple<Integer, Color>(value.getFirst() + 1, value.getSecond());
+		colourMap.put(cKey, value);
 	}
 
 	private String getColourKey(DataLabel dl) {
@@ -344,9 +282,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		log.info(state.toString());
 		if (isSimulatorState(state, waiting)) {
 			hPointsMap.clear();
-			linesMap.clear();
+			lineReferences.clear();
 			colourMap.clear();
-//			batchData.clear();
 			legend.getChildren().clear();
 			drawSpace();
 		}
@@ -359,25 +296,29 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
 		clearCanvas();
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setStroke(lineColour);
-		for (Map.Entry<String, Duple<double[], double[]>> entry : linesMap.entrySet()) {
-			Duple<double[], double[]> value = entry.getValue();
-			Point2D start = scaleToCanvas(value.getFirst());
-			Point2D end = scaleToCanvas(value.getSecond());
-			gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
+		if (showLines) {
+			gc.setStroke(lineColour);
+			for (Duple<DataLabel,DataLabel> lineReference:lineReferences){
+				Duple<double[], double[]> line = new Duple<>(hPointsMap.get(lineReference.getFirst().toString()).getSecond(),
+						hPointsMap.get(lineReference.getSecond().toString()).getSecond());
+				Point2D start = scaleToCanvas(line.getFirst());
+				Point2D end = scaleToCanvas(line.getSecond());
+				gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
+			}
 		}
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
 			Duple<DataLabel, double[]> value = entry.getValue();
 			String cKey = getColourKey(value.getFirst());
 			Color colour = colourMap.get(cKey).getSecond();
 			gc.setStroke(colour);
-			gc.setFill(colour);
 			double[] coords = value.getSecond();
 			Point2D point = scaleToCanvas(coords);
 			point = point.add(-symbolRadius, -symbolRadius);
 			gc.strokeOval(point.getX(), point.getY(), size, size);
-			if (symbolFill)
+			if (symbolFill) {
+				gc.setFill(colour);
 				gc.fillOval(point.getX(), point.getY(), size, size);
+			}
 		}
 	}
 
@@ -431,6 +372,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private static final String keyContrast = "contrast";
 	private static final String keyColour64 = "colour64";
 	private static final String keyColourHLevel = "colourHLevel";
+	private static final String keyShowLines = "showLines";
 
 	@Override
 	public void putUserPreferences() {
@@ -447,6 +389,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				lineColour.getBlue());
 		Preferences.putDouble(widgetId + keyContrast, contrast);
 		Preferences.putBoolean(widgetId + keyColour64, colour64);
+		Preferences.putBoolean(widgetId + keyShowLines, showLines);
 	}
 
 	private static final int firstUse = -1;
@@ -479,6 +422,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
 		colour64 = Preferences.getBoolean(widgetId + keyColour64, true);
+		showLines = Preferences.getBoolean(widgetId + keyShowLines, true);
 		if (colour64)
 			colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 		else
@@ -532,7 +476,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 		int count = 0;
 		int maxItems = 20;
-		for (Map.Entry<String, Duple<Integer,Color>> entry : colourMap.entrySet()) {
+		for (Map.Entry<String, Duple<Integer, Color>> entry : colourMap.entrySet()) {
 			count++;
 			if (count < maxItems)
 				addLegendItem(entry.getKey(), entry.getValue().getSecond());
@@ -574,14 +518,15 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		return mu;
 	}
 
-	private void addTableEntry(String name, int row, Node ctrl,GridPane grid) {
+	private void addTableEntry(String name, int row, Node ctrl, GridPane grid) {
 		Label lbl = new Label(name);
-		grid.add(lbl,0,row);
+		grid.add(lbl, 0, row);
 		grid.add(ctrl, 1, row);
 		GridPane.setHalignment(lbl, HPos.RIGHT);
 		GridPane.setHalignment(ctrl, HPos.LEFT);
-		GridPane.setValignment(ctrl, VPos.CENTER);		
+		GridPane.setValignment(ctrl, VPos.CENTER);
 	}
+
 	private void edit() {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		dialog.setTitle(widgetId);
@@ -592,49 +537,57 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		content.setVgap(15);
 		content.setHgap(10);
 		content.setAlignment(Pos.BASELINE_RIGHT); // try removing this line
+
 		// -----
-		
 		CheckBox chbxFill = new CheckBox("");
-		addTableEntry("Fill symbols",0,chbxFill,content);
+		addTableEntry("Fill symbols", 0, chbxFill, content);
 		chbxFill.setSelected(symbolFill);
-	
+		// -----
+		CheckBox chbxShowLines = new CheckBox("");
+		addTableEntry("Show lines", 1, chbxShowLines, content);
+		chbxShowLines.setSelected(showLines);
+
 		// -----
 		Spinner<Integer> spResolution = new Spinner<>();
-		addTableEntry("Resolution",1,spResolution,content);
+		addTableEntry("Resolution", 2, spResolution, content);
 		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, resolution));
 		spResolution.setMaxWidth(100);
 		spResolution.setEditable(true);
 
 		// -----
 		Spinner<Integer> spRadius = new Spinner<>();
-		addTableEntry("Symbol radius",2,spRadius,content);
+		addTableEntry("Symbol radius", 3, spRadius, content);
 		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
 		spRadius.setMaxWidth(100);
 		spRadius.setEditable(true);
-	
-		// -----
-		CheckBox chbxCS = new CheckBox("");
-		addTableEntry("64 Colour system",3,chbxCS,content);
-		chbxCS.setSelected(colour64);
-		// ----
-		ColorPicker cpBkg = new ColorPicker(bkgColour);
-		addTableEntry("Background colour",4,cpBkg,content);
-		// ----
-		TextField tfContrast = new TextField(Double.toString(contrast));
-		addTableEntry("Contrast (0.0-1.0)",5,tfContrast,content);
-		// -----
-		ColorPicker cpLine = new ColorPicker(lineColour);
-		addTableEntry("Line colour",6,cpLine,content);
+
 		// ----
 		Spinner<Integer> spHLevel = new Spinner<>();
-		addTableEntry("Hierarchical colour level",7,spHLevel,content);
+		addTableEntry("Hierarchical colour level", 4, spHLevel, content);
 		spHLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, colourHLevel));
 		spHLevel.setMaxWidth(100);
 		spHLevel.setEditable(true);
+		// -----
+		CheckBox chbxCS = new CheckBox("");
+		addTableEntry("64 Colour system",5, chbxCS, content);
+		chbxCS.setSelected(colour64);
+		// ----
+		ColorPicker cpBkg = new ColorPicker(bkgColour);
+		addTableEntry("Background colour", 6, cpBkg, content);
+		GridPane.setValignment(cpBkg, VPos.TOP);
+		// -----
+		ColorPicker cpLine = new ColorPicker(lineColour);
+		addTableEntry("Line colour", 7, cpLine, content);
+		GridPane.setValignment(cpLine, VPos.TOP);
+		// ----
+		TextField tfContrast = new TextField(Double.toString(contrast));
+		addTableEntry("Contrast (0.0-1.0)", 8, tfContrast, content);
+
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
+			showLines = chbxShowLines.isSelected();
 			symbolFill = chbxFill.isSelected();
 			resolution = spResolution.getValue();
 			symbolRadius = spRadius.getValue();
@@ -642,17 +595,17 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			colour64 = chbxCS.isSelected();
 			bkgColour = cpBkg.getValue();
 			lineColour = cpLine.getValue();
-			colourHLevel=spHLevel.getValue();
+			colourHLevel = spHLevel.getValue();
 			if (colour64)
 				colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 			else
 				colours = ColourContrast.getContrastingColours(bkgColour, contrast);
-			
+
 			colourMap.clear();
 
 			hPointsMap.forEach((k, v) -> {
 				installColour(v.getFirst());
-				
+
 			});
 			drawSpace();
 			updateLegend();
