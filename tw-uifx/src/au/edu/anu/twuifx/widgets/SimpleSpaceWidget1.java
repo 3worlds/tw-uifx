@@ -212,7 +212,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			// NB it would be an error if the lab was found in the list before
 			if (hPointsMap.put(lab.toString(), value) != null)
 				log.warning("Point to create " + lab + " already present in space widget list");
-			installColour(lab);
+			updateLegend = updateLegend || installColour(lab);
 		}
 		// move points in the point list
 		for (DataLabel lab : data.pointsToMove().keySet()) {
@@ -220,14 +220,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			// replaces previous value of coordinates for this lab - OK
 			if (hPointsMap.put(lab.toString(), value) == null)
 				log.warning("Point to move " + lab + " absent from space widget list");
-			installColour(lab);
+			updateLegend = updateLegend || installColour(lab);
 		}
 		// delete points in the point list (including possibly new or moved ones of
 		// previous lists
 		for (DataLabel lab : data.pointsToDelete()) {
 			hPointsMap.remove(lab.toString());
-			if (uninstallColour(lab))
-				updateLegend();
+			updateLegend = updateLegend || uninstallColour(lab);
 		}
 		// Here, all point coordinates have been updated
 		// add new lines
@@ -260,14 +259,17 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		return false;
 	}
 
-	private void installColour(DataLabel dl) {
+	private boolean installColour(DataLabel dl) {
+		boolean update = false;
 		String cKey = getColourKey(dl);
 		Duple<Integer, Color> value = colourMap.get(cKey);
-		if (value == null)
+		if (value == null) {
 			value = new Duple<Integer, Color>(1, getColour(colourMap.size()));
-		else
+			update = true;
+		}else
 			value = new Duple<Integer, Color>(value.getFirst() + 1, value.getSecond());
 		colourMap.put(cKey, value);
+		return update;
 	}
 
 	private String getColourKey(DataLabel dl) {
@@ -473,7 +475,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	private void updateLegend() {
 		legend.getChildren().clear();
-
 		int count = 0;
 		int maxItems = 20;
 		for (Map.Entry<String, Duple<Integer, Color>> entry : colourMap.entrySet()) {
