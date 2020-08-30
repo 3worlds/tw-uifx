@@ -36,8 +36,6 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMOD
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
-
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -67,7 +65,6 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
-import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -104,14 +101,12 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	private Output0DMetadata tsmeta;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
-	private static Logger log = Logging.getLogger(SimpleTimeSeriesWidget.class);
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		dataSetMap = new HashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
-		log.info("Thread: " + Thread.currentThread().getId());
 	}
 
 	@Override
@@ -122,7 +117,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
 		Platform.runLater(() -> {
 			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 			for (DataLabel dl : tsmeta.doubleNames()) {
@@ -170,7 +164,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	}
 	@Override
 	public void onDataMessage(final Output0DData data) {
-		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
 		if (policy.canProcessDataMessage(data)) {
 
 			/*
@@ -210,9 +203,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			});
 		}
 	}
-
-	// private boolean initialMessage = false;
-
 
 	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
 		r.setErrorType(ErrorStyle.NONE);
