@@ -126,7 +126,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	 */
 	private Map<String, Duple<DataLabel, double[]>> hPointsMap;
 	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
-	//private Map<String, Duple<double[], double[]>> linesMap;
+	// private Map<String, Duple<double[], double[]>> linesMap;
 	private Set<Duple<DataLabel, DataLabel>> lineReferences;
 
 	private List<Color> colours;
@@ -136,6 +136,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private int resolution;
 	private int symbolRadius;
 	private boolean symbolFill;
+	//private boolean useModPath;
 	private Color bkgColour;
 	private Color lineColour;
 	private double contrast;
@@ -173,6 +174,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
 			spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
 					yLimits.sup() - yLimits.inf());
+//			edgeEffs = (EdgeEffects) meta.properties().getPropertyValue(P_SPACE_EDGEEFFECTS.key());
 			return;
 		}
 		case squareGrid: {
@@ -266,7 +268,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		if (value == null) {
 			value = new Duple<Integer, Color>(1, getColour(colourMap.size()));
 			update = true;
-		}else
+		} else
 			value = new Duple<Integer, Color>(value.getFirst() + 1, value.getSecond());
 		colourMap.put(cKey, value);
 		return update;
@@ -300,12 +302,39 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		if (showLines) {
 			gc.setStroke(lineColour);
-			for (Duple<DataLabel,DataLabel> lineReference:lineReferences){
-				Duple<double[], double[]> line = new Duple<>(hPointsMap.get(lineReference.getFirst().toString()).getSecond(),
-					hPointsMap.get(lineReference.getSecond().toString()).getSecond());
-				Point2D start = scaleToCanvas(line.getFirst());
-				Point2D end = scaleToCanvas(line.getSecond());
-				gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
+			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
+				boolean doDraw = true;
+				double[] startc = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
+				double[] endc = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
+//				if (useModPath) {
+//					doDraw = false;
+//					boolean xok=false;
+//					double x1 = Math.min(startc[0],endc[0]);
+//					double x2 = Math.max(startc[0],endc[0]);
+//					
+//					if ((x2-x1)<=(x1+spaceBounds.getMaxX()-x2)){
+//						xok=true;
+//					}
+//					boolean yok = false;
+//					double y1 = Math.min(startc[1],endc[1]);
+//					double y2 = Math.max(startc[1],endc[1]);
+//					if ((y2-y1)<=(y1+spaceBounds.getMaxY()-y2)){
+//						yok = true;
+//					}
+//					if (xok && yok)
+//						doDraw = true;// one line ok
+//					if (!doDraw) {
+//						special case - two lines required
+//						double m = (y2-y1)/(x2-x1);
+//						y = mx+b
+//					}
+//				
+//				}
+				Point2D start = scaleToCanvas(startc);
+				Point2D end = scaleToCanvas(endc);
+				if (doDraw)
+					gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
+
 			}
 		}
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
@@ -375,6 +404,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private static final String keyColour64 = "colour64";
 	private static final String keyColourHLevel = "colourHLevel";
 	private static final String keyShowLines = "showLines";
+//	private static final String keyUseModPath = "useModPath";
 
 	@Override
 	public void putUserPreferences() {
@@ -392,6 +422,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		Preferences.putDouble(widgetId + keyContrast, contrast);
 		Preferences.putBoolean(widgetId + keyColour64, colour64);
 		Preferences.putBoolean(widgetId + keyShowLines, showLines);
+//		Preferences.putBoolean(widgetId+keyUseModPath, useModPath);
 	}
 
 	private static final int firstUse = -1;
@@ -429,6 +460,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 		else
 			colours = ColourContrast.getContrastingColours(bkgColour, contrast);
+		
+//		useModPath = Preferences.getBoolean(widgetId+keyUseModPath, true);
 
 	}
 
@@ -538,58 +571,64 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		content.setVgap(15);
 		content.setHgap(10);
 		content.setAlignment(Pos.BASELINE_RIGHT); // try removing this line
+		
+		int row = 0;
 
 		// -----
 		CheckBox chbxFill = new CheckBox("");
-		addTableEntry("Fill symbols", 0, chbxFill, content);
+		addTableEntry("Fill symbols", row++, chbxFill, content);
 		chbxFill.setSelected(symbolFill);
 		// -----
 		CheckBox chbxShowLines = new CheckBox("");
-		addTableEntry("Show lines", 1, chbxShowLines, content);
+		addTableEntry("Show lines", row++, chbxShowLines, content);
 		chbxShowLines.setSelected(showLines);
+		// -----
+//		CheckBox chbxUseModPath = new CheckBox("");
+//		addTableEntry("Show lines", 2, chbxUseModPath, content);
+//		chbxUseModPath.setSelected(useModPath);
 
 		// -----
 		Spinner<Integer> spResolution = new Spinner<>();
-		addTableEntry("Resolution", 2, spResolution, content);
+		addTableEntry("Resolution", row++, spResolution, content);
 		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, resolution));
 		spResolution.setMaxWidth(100);
 		spResolution.setEditable(true);
 
 		// -----
 		Spinner<Integer> spRadius = new Spinner<>();
-		addTableEntry("Symbol radius", 3, spRadius, content);
+		addTableEntry("Symbol radius", row++, spRadius, content);
 		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
 		spRadius.setMaxWidth(100);
 		spRadius.setEditable(true);
 
 		// ----
 		Spinner<Integer> spHLevel = new Spinner<>();
-		addTableEntry("Hierarchical colour level", 4, spHLevel, content);
+		addTableEntry("Hierarchical colour level", row++, spHLevel, content);
 		spHLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, colourHLevel));
 		spHLevel.setMaxWidth(100);
 		spHLevel.setEditable(true);
 		// -----
 		CheckBox chbxCS = new CheckBox("");
-		addTableEntry("64 Colour system",5, chbxCS, content);
+		addTableEntry("64 Colour system", row++, chbxCS, content);
 		chbxCS.setSelected(colour64);
 		// ----
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
-		addTableEntry("Background colour", 6, cpBkg, content);
+		addTableEntry("Background colour", row++, cpBkg, content);
 		GridPane.setValignment(cpBkg, VPos.TOP);
 		// -----
 		ColorPicker cpLine = new ColorPicker(lineColour);
-		addTableEntry("Line colour", 7, cpLine, content);
+		addTableEntry("Line colour", row++, cpLine, content);
 		GridPane.setValignment(cpLine, VPos.TOP);
 		// ----
 		TextField tfContrast = new TextField(Double.toString(contrast));
-		addTableEntry("Contrast (0.0-1.0)", 8, tfContrast, content);
-
+		addTableEntry("Contrast (0.0-1.0)", row++, tfContrast, content);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
 			showLines = chbxShowLines.isSelected();
 			symbolFill = chbxFill.isSelected();
+//			useModPath = chbxUseModPath.isSelected();
 			resolution = spResolution.getValue();
 			symbolRadius = spRadius.getValue();
 			contrast = Double.parseDouble(tfContrast.getText());
