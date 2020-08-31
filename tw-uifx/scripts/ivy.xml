@@ -38,7 +38,7 @@
 		<dependency org="au.edu.anu.rscs.aot" name="qgraph" rev="[0.1.3,)"/>
 		<dependency org="au.edu.anu.ymuit" name="ymuit" rev="[0.1.6,)"/>
 		<dependency org="fr.cnrs.iees.rvgrid" name="rvgrid" rev="[0.0.3,)"/>
-		<dependency org="org.openjfx" name="javafx-fxml" rev="[11,)" m:classifier="linux"/>
+			<dependency org="org.openjfx" name="javafx-fxml" rev="[11,)" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-controls" rev="[11,)" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-graphics" rev="[11,)" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-base" rev="[11,)" m:classifier="linux"/>
