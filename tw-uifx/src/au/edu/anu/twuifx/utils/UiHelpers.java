@@ -32,8 +32,12 @@ import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import impl.org.controlsfx.skin.PropertySheetSkin;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -61,12 +65,12 @@ public class UiHelpers {
 		if (!sheet.getMode().equals(PropertySheet.Mode.CATEGORY))
 			return;
 		Accordion accordion = getAccordion(sheet);
-		if (accordion==null)
+		if (accordion == null)
 			return;
 		int size = accordion.getPanes().size();
-		if (size<1)
+		if (size < 1)
 			return;
-		if (idx<0)
+		if (idx < 0)
 			return;
 		if (idx < size)
 			accordion.setExpandedPane(accordion.getPanes().get(idx));
@@ -79,4 +83,50 @@ public class UiHelpers {
 		return (Accordion) sp.getContent();
 	}
 
+	/**
+	 * Allow to zoom/scale any node with pivot at scene (x,y) coordinates.
+	 * 
+	 * usage;
+	 * 
+	 * myView.setOnScroll(event -> UiHelpers.zoom(myView, event)); // mouse scroll
+	 * wheel zoom
+	 * 
+	 * myView.setOnZoom(event -> UiHelpers.zoom(myView, event)); // pinch to zoom
+	 * 
+	 * https://stackoverflow.com/questions/27356577/scale-at-pivot-point-in-an-already-scaled-node
+	 * 
+	 * @param node
+	 * @param delta
+	 * @param x
+	 * @param y
+	 */
+	private static void zoom(Node node, double factor, double x, double y) {
+		double oldScale = node.getScaleX();
+		double scale = oldScale * factor;
+		if (scale < 0.05)
+			scale = 0.05;
+		if (scale > 50)
+			scale = 50;
+		node.setScaleX(scale);
+		node.setScaleY(scale);
+
+		double f = (scale / oldScale) - 1;
+		Bounds bounds = node.localToScene(node.getBoundsInLocal());
+		double dx = (x - (bounds.getWidth() / 2 + bounds.getMinX()));
+		double dy = (y - (bounds.getHeight() / 2 + bounds.getMinY()));
+
+		node.setTranslateX(node.getTranslateX() - f * dx);
+		node.setTranslateY(node.getTranslateY() - f * dy);
+	}
+
+	public static void zoom(Node node, ScrollEvent event) {
+		if (event.isControlDown()) {
+			zoom(node, Math.pow(1.01, event.getDeltaY()), event.getSceneX(), event.getSceneY());
+			event.consume();
+		}
+	}
+
+	public static void zoom(Node node, ZoomEvent event) {
+		zoom(node, event.getZoomFactor(), event.getSceneX(), event.getSceneY());
+	}
 }

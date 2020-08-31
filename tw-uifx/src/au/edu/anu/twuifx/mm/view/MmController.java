@@ -368,6 +368,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		ErrorList.addListener(this);
 
 		// Setup zooming from the graph display pane (zoomTarget)
+		//zoomTarget.setOnScroll(event -> UiHelpers.zoom(zoomTarget, event));
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
 	}
@@ -586,16 +587,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			if (n.classId().equals(N_SNIPPET.label()))
 				snippetNodes.put(n.getParent().id().toLowerCase(), n);
 
-		for (Map.Entry<String, TreeGraphDataNode> e:snippetNodes.entrySet())
+		for (Map.Entry<String, TreeGraphDataNode> e : snippetNodes.entrySet())
 			if (!snippetCodes.containsKey(e.getKey()))
-				errorList.add("No '"+e.getKey()+"' code found for "+e.getValue().getParent().id()+"->"+e.getValue().id()+".");
-		
-		for (Map.Entry<String, List<String>> e: snippetCodes.entrySet()) {
+				errorList.add("No '" + e.getKey() + "' code found for " + e.getValue().getParent().id() + "->"
+						+ e.getValue().id() + ".");
+
+		for (Map.Entry<String, List<String>> e : snippetCodes.entrySet()) {
 			if (!snippetNodes.containsKey(e.getKey()))
-				errorList.add("No snippet node present to receive '"+e.getKey()+"' code.");
+				errorList.add("No snippet node present to receive '" + e.getKey() + "' code.");
 		}
-				
-				
 
 		Map<String, List<String>> successfulImports = new HashMap<>();
 		if (!snippetNodes.isEmpty()) {
@@ -624,8 +624,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			}
 		}
 
-		for (String error:errorList) {
-			content += error+"\n";
+		for (String error : errorList) {
+			content += error + "\n";
 		}
 		// Best if we have a list of paired and unpaied code-snippet node
 		Dialogs.infoAlert(title, header, content);
