@@ -303,36 +303,52 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		if (showLines) {
 			gc.setStroke(lineColour);
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
-				boolean doDraw = true;
+				boolean drawSingleLine = true;
 				double[] startc = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
 				double[] endc = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
-//				if (useModPath) {
-//					doDraw = false;
-//					boolean xok=false;
-//					double x1 = Math.min(startc[0],endc[0]);
-//					double x2 = Math.max(startc[0],endc[0]);
-//					
-//					if ((x2-x1)<=(x1+spaceBounds.getMaxX()-x2)){
-//						xok=true;
-//					}
-//					boolean yok = false;
-//					double y1 = Math.min(startc[1],endc[1]);
-//					double y2 = Math.max(startc[1],endc[1]);
-//					if ((y2-y1)<=(y1+spaceBounds.getMaxY()-y2)){
-//						yok = true;
-//					}
-//					if (xok && yok)
-//						doDraw = true;// one line ok
-//					if (!doDraw) {
-//						special case - two lines required
+				boolean useModPath = true;
+				if (useModPath) {
+					drawSingleLine = false;
+					boolean xok=false;
+					double x1 = Math.min(startc[0],endc[0]);
+					double x2 = Math.max(startc[0],endc[0]);
+					
+					if ((x2-x1)<=(x1+spaceBounds.getMaxX()-x2)){
+						xok=true;
+					}
+					boolean yok = false;
+					double y1 = Math.min(startc[1],endc[1]);
+					double y2 = Math.max(startc[1],endc[1]);
+					if ((y2-y1)<=(y1+spaceBounds.getMaxY()-y2)){
+						yok = true;
+					} 
+					if (xok && yok)
+						drawSingleLine = true;// one line ok
+//					if (!drawSingleLine) {
+////						special case - two lines required
+//						if (!xok) {// project x
+//							double tmp =spaceBounds.getMaxX()+x1;
+//							x2 = x1;
+//							x1=tmp;
+//							tmp = y1;
+//							y1 = y2;
+//							y2 = tmp;
+//						}
+//						if (!yok) {// project y
+//							double tmp =spaceBounds.getMaxY()+y1;
+//							y2 = y1;
+//							y1 = tmp;
+//						}
 //						double m = (y2-y1)/(x2-x1);
-//						y = mx+b
+//						
+//						
+////						y = mx+b
 //					}
-//				
-//				}
+				
+				}
 				Point2D start = scaleToCanvas(startc);
 				Point2D end = scaleToCanvas(endc);
-				if (doDraw)
+				if (drawSingleLine)
 					gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
 
 			}
