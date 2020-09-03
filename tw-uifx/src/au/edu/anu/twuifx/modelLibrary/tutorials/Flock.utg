@@ -194,8 +194,8 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		focalCnt.speed = 3;","		focalCnt.range = 80;","		focalCnt.safetyRange = 20;","		focalDrv.heading = random.nextDouble()*360;"))
 				component cmp1
 					nInstances = java.lang.Integer(50)
-			space sky2D
-				edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(wrapAroundAllD)
+			space space1
+				edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffectCorrection(periodic)
 				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 				units = java.lang.String(m)
@@ -220,7 +220,7 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
 
 // CROSS-LINKS
-[component:cmp1] location loc1 [space:sky2D]
+[component:cmp1] location loc1 [space:space1]
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]500.0,500.0))
 [componentType:bird] belongsTo bt6 [category:*permanent*]
 [componentType:bird] belongsTo bt5 [category:*component*]
@@ -233,16 +233,16 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
-[widget:wgt1] trackSpace trks2 [space:sky2D]
+[widget:wgt1] trackSpace trks2 [space:space1]
 [process:p1] appliesTo aplyTo1 [relationType:sight]
-[process:p1] inSpace in1 [space:sky2D]
-	searchRadius = java.lang.Double(500.0)
+[process:p1] inSpace in1 [space:space1]
+	searchRadius = java.lang.Double(0.0)
 [process:p2] appliesTo aplyTo2 [relationType:sight]
 [process:p2] dependsOn depsOn2 [process:p1]
-[process:p2] inSpace in2 [space:sky2D]
-	searchRadius = java.lang.Double(500.0)
-[process:p3] inSpace in3 [space:sky2D]
-	searchRadius = java.lang.Double(100.0)
+[process:p2] inSpace in2 [space:space1]
+	searchRadius = java.lang.Double(0.0)
+[process:p3] inSpace in3 [space:space1]
+	searchRadius = java.lang.Double(0.0)
 [process:p3] dependsOn depsOn1 [process:p2]
 [process:p3] appliesTo aplyTo3 [category:*atomic*]
 [widget:timer] trackTime trks1 [dynamics:sim1]
