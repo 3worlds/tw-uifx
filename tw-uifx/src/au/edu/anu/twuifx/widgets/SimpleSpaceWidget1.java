@@ -136,7 +136,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private int resolution;
 	private int symbolRadius;
 	private boolean symbolFill;
-	//private boolean useModPath;
+	// private boolean useModPath;
 	private Color bkgColour;
 	private Color lineColour;
 	private double contrast;
@@ -309,42 +309,43 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				boolean useModPath = true;
 				if (useModPath) {
 					drawSingleLine = false;
-					boolean xok=false;
-					double x1 = Math.min(startc[0],endc[0]);
-					double x2 = Math.max(startc[0],endc[0]);
-					
-					if ((x2-x1)<=(x1+spaceBounds.getMaxX()-x2)){
-						xok=true;
+					boolean xok = false;
+					double x1 = Math.min(startc[0], endc[0]);
+					double x2 = Math.max(startc[0], endc[0]);
+					if ((x2 - x1) <= (x1 + spaceBounds.getMaxX() - x2)) {
+						xok = true;
+					} else {// project point and swap
+						double tmp = x1 + spaceBounds.getMaxX();
+						x1 = x2;
+						x2 = tmp;
 					}
 					boolean yok = false;
-					double y1 = Math.min(startc[1],endc[1]);
-					double y2 = Math.max(startc[1],endc[1]);
-					if ((y2-y1)<=(y1+spaceBounds.getMaxY()-y2)){
+					double y1 = Math.min(startc[1], endc[1]);
+					double y2 = Math.max(startc[1], endc[1]);
+					if ((y2 - y1) <= (y1 + spaceBounds.getMaxY() - y2)) {
 						yok = true;
-					} 
+					} else {// project point and swap
+						double tmp = y1 + spaceBounds.getMaxY();
+						y1 = y2;
+						y2 = tmp;
+					}
+
 					if (xok && yok)
 						drawSingleLine = true;// one line ok
-//					if (!drawSingleLine) {
-////						special case - two lines required
-//						if (!xok) {// project x
-//							double tmp =spaceBounds.getMaxX()+x1;
-//							x2 = x1;
-//							x1=tmp;
-//							tmp = y1;
-//							y1 = y2;
-//							y2 = tmp;
-//						}
-//						if (!yok) {// project y
-//							double tmp =spaceBounds.getMaxY()+y1;
-//							y2 = y1;
-//							y1 = tmp;
-//						}
-//						double m = (y2-y1)/(x2-x1);
-//						
-//						
-////						y = mx+b
-//					}
-				
+					if (!drawSingleLine) {
+						// special case - two lines required
+						double m = (y2 - y1) / (x2 - x1); 
+						if (!Double.isInfinite(m)) {
+							double b = y1 - m*x1;
+							// determine which axis we exit from first
+							// y = mx + b
+							// b = y - mx
+							// x = (y-b)/m
+						} else {// vertical line
+							
+						}
+					}
+
 				}
 				Point2D start = scaleToCanvas(startc);
 				Point2D end = scaleToCanvas(endc);
@@ -476,7 +477,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 		else
 			colours = ColourContrast.getContrastingColours(bkgColour, contrast);
-		
+
 //		useModPath = Preferences.getBoolean(widgetId+keyUseModPath, true);
 
 	}
@@ -587,7 +588,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		content.setVgap(15);
 		content.setHgap(10);
 		content.setAlignment(Pos.BASELINE_RIGHT); // try removing this line
-		
+
 		int row = 0;
 
 		// -----
