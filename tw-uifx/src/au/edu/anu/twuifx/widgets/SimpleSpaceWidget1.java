@@ -59,6 +59,7 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
 import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
@@ -126,7 +127,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	 */
 	private Map<String, Duple<DataLabel, double[]>> hPointsMap;
 	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
-	// private Map<String, Duple<double[], double[]>> linesMap;
 	private Set<Duple<DataLabel, DataLabel>> lineReferences;
 
 	private List<Color> colours;
@@ -136,7 +136,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private int resolution;
 	private int symbolRadius;
 	private boolean symbolFill;
-	// private boolean useModPath;
+	private boolean wrapAll;
 	private Color bkgColour;
 	private Color lineColour;
 	private double contrast;
@@ -174,7 +174,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
 			spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
 					yLimits.sup() - yLimits.inf());
-//			edgeEffs = (EdgeEffects) meta.properties().getPropertyValue(P_SPACE_EDGEEFFECTS.key());
+			EdgeEffectCorrection ec = (EdgeEffectCorrection) meta.properties()
+					.getPropertyValue(P_SPACE_EDGEEFFECTS.key());
+			wrapAll = ec.equals(EdgeEffectCorrection.periodic);
 			return;
 		}
 		case squareGrid: {
@@ -303,55 +305,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		if (showLines) {
 			gc.setStroke(lineColour);
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
-				boolean drawSingleLine = true;
-				double[] startc = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
-				double[] endc = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
-				boolean useModPath = true;
-				if (useModPath) {
-					drawSingleLine = false;
-					boolean xok = false;
-					double x1 = Math.min(startc[0], endc[0]);
-					double x2 = Math.max(startc[0], endc[0]);
-					if ((x2 - x1) <= (x1 + spaceBounds.getMaxX() - x2)) {
-						xok = true;
-					} else {// project point and swap
-						double tmp = x1 + spaceBounds.getMaxX();
-						x1 = x2;
-						x2 = tmp;
-					}
-					boolean yok = false;
-					double y1 = Math.min(startc[1], endc[1]);
-					double y2 = Math.max(startc[1], endc[1]);
-					if ((y2 - y1) <= (y1 + spaceBounds.getMaxY() - y2)) {
-						yok = true;
-					} else {// project point and swap
-						double tmp = y1 + spaceBounds.getMaxY();
-						y1 = y2;
-						y2 = tmp;
-					}
-
-					if (xok && yok)
-						drawSingleLine = true;// one line ok
-					if (!drawSingleLine) {
-						// special case - two lines required
-						double m = (y2 - y1) / (x2 - x1); 
-						if (!Double.isInfinite(m)) {
-							double b = y1 - m*x1;
-							// determine which axis we exit from first
-							// y = mx + b
-							// b = y - mx
-							// x = (y-b)/m
-						} else {// vertical line
-							
-						}
-					}
-
-				}
-				Point2D start = scaleToCanvas(startc);
-				Point2D end = scaleToCanvas(endc);
-				if (drawSingleLine)
-					gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
-
+				double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
+				double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
+				drawLines(gc, start, end);
 			}
 		}
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
@@ -368,6 +324,78 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				gc.fillOval(point.getX(), point.getY(), size, size);
 			}
 		}
+	}
+
+	private void drawLines(GraphicsContext gc, double[] start, double[] end) {
+		if (wrapAll) {
+			boolean xok = false;
+			double x1 = Math.min(start[0], end[0]);
+			double x2 = Math.max(start[0], end[0]);
+			double y1 = Math.min(start[1], end[1]);
+			double y2 = Math.max(start[1], end[1]);
+			double newx = x1;
+			double newy = y1;
+			if ((x2 - x1) <= (x1 + spaceBounds.getMaxX() - x2)) {
+				xok = true;
+			} else {// project point and swap
+				newx = x1 + spaceBounds.getMaxX();
+			}
+			boolean yok = false;
+			if ((y2 - y1) <= (y1 + spaceBounds.getMaxY() - y2)) {
+				yok = true;
+			} else {// project point and swap
+				newy = y1 + spaceBounds.getMaxY();
+			}
+			if (!xok || !yok) {
+				x1 = x2;
+				y1 = y2;
+				x2 = newx;
+				y2 = newy;
+				double m = (y2 - y1) / (x2 - x1);
+				double b = y1 - (m * x1);
+				if (!xok && yok) {// exit right only
+					double yx = (m * spaceBounds.getMaxX()) + b;
+					drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
+					drawALine(gc, 0.0, start[1], start[0], start[1]);
+				} else if (xok && !yok) {// exit top only
+					double xx = (spaceBounds.getMaxY() - b) / m;
+					if (Double.isNaN(xx))// vertical line
+						xx = x1;
+					drawALine(gc, x1, y1, xx, spaceBounds.getMaxY());
+					drawALine(gc, xx, 0.0, start[0], start[1]);
+				} else if (!xok && !yok) {
+					double yx = (m * spaceBounds.getMaxX()) + b;
+					double xx = (spaceBounds.getMaxY() - b) / m;
+					if (xx == yx) {// out the corner
+						drawALine(gc, x1, y1, spaceBounds.getMaxX(), spaceBounds.getMaxY());
+						drawALine(gc, 0.0, 0.0, start[0], start[1]);
+					} else if (yx < xx) {// out the RH side
+						drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
+						drawALine(gc, 0.0, start[1], start[0], start[1]);
+					} else { // out the top
+						drawALine(gc,x1, y1,xx, spaceBounds.getMaxY());
+						drawALine(gc,xx, start[1],start[0], start[1]);
+					}
+				}
+
+			} else {// nothing to do
+				Point2D p1 = scaleToCanvas(start);
+				Point2D p2 = scaleToCanvas(end);
+				gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+			}
+
+		} else {
+			Point2D p1 = scaleToCanvas(start);
+			Point2D p2 = scaleToCanvas(end);
+			gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+		}
+
+	}
+
+	private void drawALine(GraphicsContext gc, double... c) {
+		Point2D start = scaleToCanvas(c[0], c[1]);
+		Point2D end = scaleToCanvas(c[2], c[3]);
+		gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
 	}
 
 	private void resizeCanvas(double sWidth, double sHeight) {
@@ -397,7 +425,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		return p * tr + tMin;
 	}
 
-	private Point2D scaleToCanvas(double[] coords) {
+	private Point2D scaleToCanvas(double... coords) {
 		double sx = coords[0];
 		double sy = coords[1];
 		double dx = rescale(sx, spaceBounds.getMinX(), spaceBounds.getMaxX(), 0, canvas.getWidth());
