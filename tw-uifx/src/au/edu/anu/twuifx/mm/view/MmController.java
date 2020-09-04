@@ -134,6 +134,7 @@ import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
+import fr.cnrs.iees.twcore.constants.TwFunctionTypes;
 import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import fr.ens.biologie.generic.utils.Interval;
 
@@ -143,6 +144,9 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 	@FXML
 	private MenuItem miImportSnippets;
+
+	@FXML
+	private MenuItem miClearSnippets;
 
 	@FXML
 	private MenuItem miAbout;
@@ -368,7 +372,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		ErrorList.addListener(this);
 
 		// Setup zooming from the graph display pane (zoomTarget)
-		//zoomTarget.setOnScroll(event -> UiHelpers.zoom(zoomTarget, event));
+		// zoomTarget.setOnScroll(event -> UiHelpers.zoom(zoomTarget, event));
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 		// are prefs saved regardless of graphState??
 	}
@@ -629,6 +633,29 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 		// Best if we have a list of paired and unpaied code-snippet node
 		Dialogs.infoAlert(title, header, content);
+	}
+
+	@FXML
+	void doClearSnippets(ActionEvent event) {
+		boolean changed = false;
+		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
+			if (n.classId().equals(N_SNIPPET.label())) {
+				if (n.getParent() != null) {
+					TreeGraphDataNode func = (TreeGraphDataNode) n.getParent();
+					TwFunctionTypes ft = (TwFunctionTypes) func.properties().getPropertyValue(P_FUNCTIONTYPE.key());
+					String entry = "";
+					if (ft.returnType().equals("boolean"))
+							entry = "\treturn false;";
+					StringTable newValue = new StringTable(new Dimensioner(1));
+					newValue.fillWith(entry);
+					n.properties().setProperty(P_SNIPPET_JAVACODE.key(), newValue);
+					changed = true;
+				} else {
+					Dialogs.warnAlert("Clear snippet", "Function undefined", "'"+n.id()+"' does not have a defining function\n and has not been cleared.");
+				}
+			}
+		initialisePropertySheets();
+		GraphState.setChanged();
 	}
 
 	// ---------------FXML End -------------------------
@@ -1248,7 +1275,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	private void initialisePropertySheets() {
-		lastSelectedNode = null;
+//		lastSelectedNode = null;
 		fillGraphPropertySheet();
 		fillNodePropertySheet(lastSelectedNode);
 	}
@@ -1303,6 +1330,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnDocument.setDisable(!cleanAndValid);
 		boolean snp = !cleanAndValid || !UserProjectLink.haveUserProject();
 		miImportSnippets.setDisable(snp);
+		miClearSnippets.setDisable(!isOpen);
 		miRedo.setDisable(!Caretaker.hasSucc());
 		if (Caretaker.hasSucc()) {
 			miRedo.setText("Redo '" + Caretaker.getSuccDescription() + "'");

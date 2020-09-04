@@ -339,6 +339,16 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		double x2 = Math.max(start[0], end[0]);
 		double y1 = Math.min(start[1], end[1]);
 		double y2 = Math.max(start[1], end[1]);
+		double[] left = {0.0,0.0};
+		if(start[0]<end[0]) {
+			left[0]=start[0];
+			left[1]=start[1];
+		}
+		else {
+			left[0]=end[0];
+			left[1]=end[1];			
+		}
+
 		double newx = x1;
 		double newy = y1;
 		if ((x2 - x1) <= (x1 + spaceBounds.getMaxX() - x2)) {
@@ -363,25 +373,25 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			if (!xok && yok) {// exit right only
 				double yx = (m * spaceBounds.getMaxX()) + b;
 				drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
-				drawALine(gc, 0.0, start[1], start[0], start[1]);
+				drawALine(gc, 0.0, left[1], left[0], left[1]);
 			} else if (xok && !yok) {// exit top only
 				double xx = (spaceBounds.getMaxY() - b) / m;// intercept
 				if (Double.isNaN(xx))// vertical line
 					xx = x1;
 				drawALine(gc, x1, y1, xx, spaceBounds.getMaxY());
-				drawALine(gc, xx, 0.0, start[0], start[1]);
+				drawALine(gc, xx, 0.0, left[0], left[1]);
 			} else if (!xok && !yok) {
 				double yx = (m * spaceBounds.getMaxX()) + b;// intercept
 				double xx = (spaceBounds.getMaxY() - b) / m;// intercept
 				if (xx == yx) {// out the corner
 					drawALine(gc, x1, y1, spaceBounds.getMaxX(), spaceBounds.getMaxY());
-					drawALine(gc, 0.0, 0.0, start[0], start[1]);
+					drawALine(gc, 0.0, 0.0, left[0], left[1]);
 				} else if (yx < xx) {// out the RH side - may be incorrect in case of rectangle
 					drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
-					drawALine(gc, 0.0, start[1], start[0], start[1]);
+					drawALine(gc, 0.0, left[1], left[0], left[1]);
 				} else { // out the top - may be incorrect in case of rectangle
 					drawALine(gc, x1, y1, xx, spaceBounds.getMaxY());
-					drawALine(gc, xx, start[1], start[0], start[1]);
+					drawALine(gc, xx, left[1], left[0], left[1]);
 				}
 			}
 
