@@ -645,17 +645,20 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					TwFunctionTypes ft = (TwFunctionTypes) func.properties().getPropertyValue(P_FUNCTIONTYPE.key());
 					String entry = "";
 					if (ft.returnType().equals("boolean"))
-							entry = "\treturn false;";
+						entry = "\treturn false;";
 					StringTable newValue = new StringTable(new Dimensioner(1));
 					newValue.fillWith(entry);
 					n.properties().setProperty(P_SNIPPET_JAVACODE.key(), newValue);
 					changed = true;
 				} else {
-					Dialogs.warnAlert("Clear snippet", "Function undefined", "'"+n.id()+"' does not have a defining function\n and has not been cleared.");
+					Dialogs.warnAlert("Clear snippet", "Function undefined",
+							"'" + n.id() + "' does not have a defining function\n and has not been cleared.");
 				}
 			}
-		initialisePropertySheets();
-		GraphState.setChanged();
+		if (changed) {
+			initialisePropertySheets();
+			GraphState.setChanged();
+		}
 	}
 
 	// ---------------FXML End -------------------------
