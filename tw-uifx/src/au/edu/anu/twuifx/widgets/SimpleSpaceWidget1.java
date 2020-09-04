@@ -168,6 +168,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		log.info(meta.properties().toString());
 		timeFormatter.onMetaDataMessage(meta);
 		SpaceType type = (SpaceType) meta.properties().getPropertyValue(P_SPACETYPE.key());
+		wrapAll = false;
 		switch (type) {
 		case continuousFlatSurface: {
 			Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
