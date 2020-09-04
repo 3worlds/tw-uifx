@@ -307,7 +307,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
 				double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
 				double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
-				drawLines(gc, start, end);
+				if (wrapAll)
+					drawLines(gc, start, end);
+				else {
+					Point2D p1 = scaleToCanvas(start);
+					Point2D p2 = scaleToCanvas(end);
+					gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+				}
 			}
 		}
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
@@ -327,74 +333,67 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 	private void drawLines(GraphicsContext gc, double[] start, double[] end) {
-		if (wrapAll) {
-			boolean xok = false;
-			double x1 = Math.min(start[0], end[0]);
-			double x2 = Math.max(start[0], end[0]);
-			double y1 = Math.min(start[1], end[1]);
-			double y2 = Math.max(start[1], end[1]);
-			double newx = x1;
-			double newy = y1;
-			if ((x2 - x1) <= (x1 + spaceBounds.getMaxX() - x2)) {
-				xok = true;
-			} else {// project point and swap
-				newx = x1 + spaceBounds.getMaxX();
-			}
-			boolean yok = false;
-			if ((y2 - y1) <= (y1 + spaceBounds.getMaxY() - y2)) {
-				yok = true;
-			} else {// project point and swap
-				newy = y1 + spaceBounds.getMaxY();
-			}
-			if (!xok || !yok) {
-				x1 = x2;
-				y1 = y2;
-				x2 = newx;
-				y2 = newy;
-				double m = (y2 - y1) / (x2 - x1);
-				double b = y1 - (m * x1);
-				if (!xok && yok) {// exit right only
-					double yx = (m * spaceBounds.getMaxX()) + b;
+		boolean xok = false;
+		double x1 = Math.min(start[0], end[0]);
+		double x2 = Math.max(start[0], end[0]);
+		double y1 = Math.min(start[1], end[1]);
+		double y2 = Math.max(start[1], end[1]);
+		double newx = x1;
+		double newy = y1;
+		if ((x2 - x1) <= (x1 + spaceBounds.getMaxX() - x2)) {
+			xok = true;
+		} else {// project point
+			newx = x1 + spaceBounds.getMaxX();
+		}
+		boolean yok = false;
+		if ((y2 - y1) <= (y1 + spaceBounds.getMaxY() - y2)) {
+			yok = true;
+		} else {// project point
+			newy = y1 + spaceBounds.getMaxY();
+		}
+		if (!xok || !yok) {
+			//swap
+			x1 = x2;
+			y1 = y2;
+			x2 = newx;
+			y2 = newy;
+			double m = (y2 - y1) / (x2 - x1);// NB: can be infinity
+			double b = y1 - (m * x1);
+			if (!xok && yok) {// exit right only
+				double yx = (m * spaceBounds.getMaxX()) + b;
+				drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
+				drawALine(gc, 0.0, start[1], start[0], start[1]);
+			} else if (xok && !yok) {// exit top only
+				double xx = (spaceBounds.getMaxY() - b) / m;// intercept
+				if (Double.isNaN(xx))// vertical line
+					xx = x1;
+				drawALine(gc, x1, y1, xx, spaceBounds.getMaxY());
+				drawALine(gc, xx, 0.0, start[0], start[1]);
+			} else if (!xok && !yok) {
+				double yx = (m * spaceBounds.getMaxX()) + b;// intercept
+				double xx = (spaceBounds.getMaxY() - b) / m;// intercept
+				if (xx == yx) {// out the corner
+					drawALine(gc, x1, y1, spaceBounds.getMaxX(), spaceBounds.getMaxY());
+					drawALine(gc, 0.0, 0.0, start[0], start[1]);
+				} else if (yx < xx) {// out the RH side - may be incorrect in case of rectangle
 					drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
 					drawALine(gc, 0.0, start[1], start[0], start[1]);
-				} else if (xok && !yok) {// exit top only
-					double xx = (spaceBounds.getMaxY() - b) / m;
-					if (Double.isNaN(xx))// vertical line
-						xx = x1;
+				} else { // out the top - may be incorrect in case of rectangle
 					drawALine(gc, x1, y1, xx, spaceBounds.getMaxY());
-					drawALine(gc, xx, 0.0, start[0], start[1]);
-				} else if (!xok && !yok) {
-					double yx = (m * spaceBounds.getMaxX()) + b;
-					double xx = (spaceBounds.getMaxY() - b) / m;
-					if (xx == yx) {// out the corner
-						drawALine(gc, x1, y1, spaceBounds.getMaxX(), spaceBounds.getMaxY());
-						drawALine(gc, 0.0, 0.0, start[0], start[1]);
-					} else if (yx < xx) {// out the RH side
-						drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
-						drawALine(gc, 0.0, start[1], start[0], start[1]);
-					} else { // out the top
-						drawALine(gc,x1, y1,xx, spaceBounds.getMaxY());
-						drawALine(gc,xx, start[1],start[0], start[1]);
-					}
+					drawALine(gc, xx, start[1], start[0], start[1]);
 				}
-
-			} else {// nothing to do
-				Point2D p1 = scaleToCanvas(start);
-				Point2D p2 = scaleToCanvas(end);
-				gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 			}
 
-		} else {
+		} else {// nothing to do - normal single line
 			Point2D p1 = scaleToCanvas(start);
 			Point2D p2 = scaleToCanvas(end);
 			gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 		}
-
 	}
 
-	private void drawALine(GraphicsContext gc, double... c) {
-		Point2D start = scaleToCanvas(c[0], c[1]);
-		Point2D end = scaleToCanvas(c[2], c[3]);
+	private void drawALine(GraphicsContext gc, double x1, double y1, double x2, double y2) {
+		Point2D start = scaleToCanvas(x1, y1);
+		Point2D end = scaleToCanvas(x2, y2);
 		gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
 	}
 
