@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for creating a simulation with _ModelMaker_, using a simple logistic equation as a test case. In the tutorials that follow, new capabilities are gradually introduced as we explore the full range of modelling features. 
+This tutorial explains the procedure for creating a simulation with _ModelMaker_, using a simple logistic equation as a test case. New capabilities are gradually introduced with each tutorial as we explore the full range of modelling features available. 
 
 In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as soon as the specifications are complete and Java code has been written to define the behaviour of the functions you have specified.
 
@@ -107,7 +107,7 @@ This is all the data required for this tutorial.  The task to add a `dataDefinit
 
 ===== Dynamics
 
-The `dynamics` sub-tree specifies how the modelled system will evolve over time. It determines the temporal order of function calls, their type, the conditions under which the simulation will stop and what and when data will be tracked for for output. 
+The `dynamics` sub-tree specifies how the modelled system will evolve over time. It determines the temporal order of function calls, their type, the conditions under which the simulation will stop and what and when data will be tracked for output. 
 
 In the present case, the first task is to call the logistic equation a set number of times and provide the result from the previous time step to the equation at the current time step. 
 
