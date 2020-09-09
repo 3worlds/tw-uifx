@@ -136,13 +136,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private int resolution;
 	private int symbolRadius;
 	private boolean symbolFill;
-	private boolean wrapAll;
 	private Color bkgColour;
 	private Color lineColour;
 	private double contrast;
 	private boolean colour64;
 	private boolean showLines;
 	private int colourHLevel;
+	private EdgeEffectCorrection eec;
 
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
 
@@ -168,16 +168,14 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		log.info(meta.properties().toString());
 		timeFormatter.onMetaDataMessage(meta);
 		SpaceType type = (SpaceType) meta.properties().getPropertyValue(P_SPACETYPE.key());
-		wrapAll = false;
+
 		switch (type) {
 		case continuousFlatSurface: {
 			Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
 			Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
 			spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
 					yLimits.sup() - yLimits.inf());
-			EdgeEffectCorrection ec = (EdgeEffectCorrection) meta.properties()
-					.getPropertyValue(P_SPACE_EDGEEFFECTS.key());
-			wrapAll = ec.equals(EdgeEffectCorrection.periodic);
+			eec = (EdgeEffectCorrection) meta.properties().getPropertyValue(P_SPACE_EDGEEFFECTS.key());
 			return;
 		}
 		case squareGrid: {
@@ -185,6 +183,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			int xnCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NX.key());
 			int ynCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NY.key());
 			spaceBounds = new BoundingBox(0, 0, cellSize * xnCells, cellSize * ynCells);
+			eec = (EdgeEffectCorrection) meta.properties().getPropertyValue(P_SPACE_EDGEEFFECTS.key());
+
 			return;
 		}
 		default: {
@@ -308,9 +308,12 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
 				double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
 				double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
-				if (wrapAll)
-					drawLines(gc, start, end);
-				else {
+				if (eec.equals(EdgeEffectCorrection.periodic))
+					drawPeriodicLines(gc, start, end);
+				else if (eec.equals(EdgeEffectCorrection.tubular)){
+					// assume first dim means 'x'
+					drawTubularLines(gc,start,end);
+				} else {
 					Point2D p1 = scaleToCanvas(start);
 					Point2D p2 = scaleToCanvas(end);
 					gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
@@ -333,73 +336,124 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 	}
 
-	private void drawLines(GraphicsContext gc, double[] start, double[] end) {
+	private void drawTubularLines(GraphicsContext gc, double[] p1, double[] p2) {
+		double[] left = p1;
+		double[] right = p2;
+		if (p1[0] > p2[0]) {
+			left = p2;
+			right = p1;
+		}
+		double newx = left[0];
 		boolean xok = false;
-		double x1 = Math.min(start[0], end[0]);
-		double x2 = Math.max(start[0], end[0]);
-		double y1 = Math.min(start[1], end[1]);
-		double y2 = Math.max(start[1], end[1]);
-		double[] left = {0.0,0.0};
-		if(start[0]<end[0]) {
-			left[0]=start[0];
-			left[1]=start[1];
+		if ((right[0] - left[0]) <= (left[0] + spaceBounds.getMaxX() - right[0])) {
+			xok = true;
+		} else
+			newx += spaceBounds.getMaxX();
+		
+		if (!xok) {
+			double m = (right[1]-left[1]) / (newx - right[0]);
+			double b = right[1] - (m * right[0]);
+			double yintercept = (m * spaceBounds.getMaxX()) + b;
+			drawALine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
+			drawALine(gc, 0.0, yintercept, left[0], left[1]);
+		} else {
+			drawALine(gc, p1[0], p1[1], p2[0], p2[1]);
 		}
-		else {
-			left[0]=end[0];
-			left[1]=end[1];			
-		}
+	}
 
-		double newx = x1;
-		double newy = y1;
-//		if ((x2 - x1) <= (x1 + spaceBounds.getMaxX() - x2)) {
-//			xok = true;
-//		} else {// project point
-//			newx = x1 + spaceBounds.getMaxX();
-//		}
-//		boolean yok = false;
-//		if ((y2 - y1) <= (y1 + spaceBounds.getMaxY() - y2)) {
-//			yok = true;
-//		} else {// project point
-//			newy = y1 + spaceBounds.getMaxY();
-//		}
-//		if (!xok || !yok) {
-//			//swap
-//			x1 = x2;
-//			y1 = y2;
-//			x2 = newx;
-//			y2 = newy;
-//			double m = (y2 - y1) / (x2 - x1);// NB: can be infinity
-//			double b = y1 - (m * x1);
-//			if (!xok && yok) {// exit right only
-//				double yx = (m * spaceBounds.getMaxX()) + b;
-//				drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
-//				drawALine(gc, 0.0, left[1], left[0], left[1]);
-//			} else if (xok && !yok) {// exit top only
-//				double xx = (spaceBounds.getMaxY() - b) / m;// intercept
-//				if (Double.isNaN(xx))// vertical line
-//					xx = x1;
-//				drawALine(gc, x1, y1, xx, spaceBounds.getMaxY());
-//				drawALine(gc, xx, 0.0, left[0], left[1]);
-//			} else if (!xok && !yok) {
-//				double yx = (m * spaceBounds.getMaxX()) + b;// intercept
-//				double xx = (spaceBounds.getMaxY() - b) / m;// intercept
-//				if (xx == yx) {// out the corner
-//					drawALine(gc, x1, y1, spaceBounds.getMaxX(), spaceBounds.getMaxY());
-//					drawALine(gc, 0.0, 0.0, left[0], left[1]);
-//				} else if (yx < xx) {// out the RH side - may be incorrect in case of rectangle
-//					drawALine(gc, x1, y1, spaceBounds.getMaxX(), yx);
-//					drawALine(gc, 0.0, left[1], left[0], left[1]);
-//				} else { // out the top - may be incorrect in case of rectangle
-//					drawALine(gc, x1, y1, xx, spaceBounds.getMaxY());
-//					drawALine(gc, xx, left[1], left[0], left[1]);
-//				}
-//			}
-//
-//		} else {// nothing to do - normal single line
-			Point2D p1 = scaleToCanvas(start);
-			Point2D p2 = scaleToCanvas(end);
-			gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-//		}
+	private void drawPeriodicLines(GraphicsContext gc, double[] p1, double[] p2) {
+		double[] left = p1;
+		double[] right = p2;
+		if (p1[0] > p2[0]) {
+			left = p2;
+			right = p1;
+		}
+		double newx = left[0];
+		boolean xok = false;
+		if ((right[0] - left[0]) <= (left[0] + spaceBounds.getMaxX() - right[0])) {
+			xok = true;
+		} else
+			newx += spaceBounds.getMaxX();
+		double newy = left[1];
+		boolean yok = false;
+		if (Math.abs(left[1] - right[1]) <= (spaceBounds.getMaxY() / 2.0)) {
+			yok = true;
+		} else if (left[1] <= right[1])
+			newy += spaceBounds.getMaxY();
+		else
+			newy -= spaceBounds.getMaxY();
+		if (!xok || !yok) {
+			System.out.println();
+			int quad = getQuad(newx, newy);
+			double m = (newy - right[1]) / (newx - right[0]);
+			double b = right[1] - (m * right[0]);
+
+			if (quad == 3) {// right
+				double yintercept = (m * spaceBounds.getMaxX()) + b;
+				drawALine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
+				drawALine(gc, 0.0, yintercept, left[0], left[1]);
+			} else if (quad == 1) {// top
+				double xintercept = (spaceBounds.getMaxY() - b) / m;
+				if (Double.isNaN(xintercept)) // vertical line
+					xintercept = left[0];
+				if (Double.isInfinite(m)) {// exactly vertical
+					drawALine(gc, left[0], Math.max(right[1], left[1]), left[0], spaceBounds.getMaxY());
+					drawALine(gc, left[0], 0.0, left[0], Math.min(right[1], left[1]));
+				} else if (m < 0) {// slope to the left
+					drawALine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY());
+					drawALine(gc, xintercept, 0.0, left[0], left[1]);
+				} else if (m > 0) {// slope to the right
+					drawALine(gc, left[0], left[1], xintercept, spaceBounds.getMaxY());
+					drawALine(gc, xintercept, 0.0, right[0], right[1]);
+				}
+
+			} else if (quad == 5) { // bottom
+				double xintercept = -b / m;
+				if (Double.isNaN(xintercept))
+					xintercept = left[0];
+				drawALine(gc, xintercept, Math.min(right[1], left[1]), xintercept, 0.0);
+				drawALine(gc, xintercept, spaceBounds.getMaxY(), xintercept, Math.max(right[1], left[1]));
+			} else if (quad == 2) { // top right
+				double yintercept = (m * spaceBounds.getMaxX()) + b;
+				double xintercept = (spaceBounds.getMaxY() - b) / m;
+				double xd2 = getD2(right[0], right[1], xintercept, spaceBounds.getMaxY());
+				double yd2 = getD2(right[0], right[1], spaceBounds.getMaxX(), yintercept);
+				if (xd2 < yd2) { // cross the x-axis first
+					drawALine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY());
+					drawALine(gc, xintercept, 0.0, spaceBounds.getMaxX(), (yintercept - spaceBounds.getMaxY()));
+					drawALine(gc, 0.0, (yintercept - spaceBounds.getMaxY()), left[0], left[1]);
+				} else { // cross at y-axis first
+					drawALine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY());
+					drawALine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY());
+					drawALine(gc, (xintercept - spaceBounds.getMaxX()), 0.0, left[0], left[1]);
+				}
+			}
+		} else {
+			drawALine(gc, p1[0], p1[1], p2[0], p2[1]);
+		}
+	}
+
+	private static double getD2(double x1, double y1, double x2, double y2) {
+		return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+	}
+
+	private int getQuad(double x, double y) {
+		if (x <= spaceBounds.getMaxX()) {// 1 or 5
+			if (y > spaceBounds.getMaxY())
+				return 1;
+			else if (y < 0.0)
+				return 5;
+
+		} else {// 2,3 or 4
+			if (y > spaceBounds.getMaxY())
+				return 2;
+			else if (y < 0.0)
+				return 4;
+			else
+				return 3;
+
+		}
+		return -1;
 	}
 
 	private void drawALine(GraphicsContext gc, double x1, double y1, double x2, double y2) {
