@@ -588,8 +588,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Map<String, TreeGraphDataNode> snippetNodes = new HashMap<>();
 		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets();
 		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
-			if (n.classId().equals(N_SNIPPET.label()))
-				snippetNodes.put(n.getParent().id().toLowerCase(), n);
+			if (n.classId().equals(N_SNIPPET.label())) {
+				char c[] = n.getParent().id().toCharArray();
+				c[0] = Character.toLowerCase(c[0]);
+				new String(c);
+				snippetNodes.put(new String(c), n);
+			}
 
 		for (Map.Entry<String, TreeGraphDataNode> e : snippetNodes.entrySet())
 			if (!snippetCodes.containsKey(e.getKey()))
@@ -631,7 +635,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		for (String error : errorList) {
 			content += error + "\n";
 		}
-		// Best if we have a list of paired and unpaied code-snippet node
+		// Best if we have a list of paired and unpaired code-snippet node
 		Dialogs.infoAlert(title, header, content);
 	}
 
