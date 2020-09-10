@@ -627,9 +627,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		String content = "";
 		for (Map.Entry<String, List<String>> entry : successfulImports.entrySet()) {
 			content += entry.getKey() + "\n";
-			for (String line : entry.getValue()) {
-				content += line + "\n";
-			}
+//			for (String line : entry.getValue()) {
+//				content += line + "\n";
+//			}
 		}
 
 		for (String error : errorList) {
