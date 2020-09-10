@@ -308,15 +308,15 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
 				double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
 				double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
-				if (eec.equals(EdgeEffectCorrection.periodic))
+				if (eec == null) {
+					drawALine(gc, start[0], start[1], end[0], end[1]);
+				} else if (eec.equals(EdgeEffectCorrection.periodic))
 					drawPeriodicLines(gc, start, end);
-				else if (eec.equals(EdgeEffectCorrection.tubular)){
+				else if (eec.equals(EdgeEffectCorrection.tubular)) {
 					// assume first dim means 'x'
-					drawTubularLines(gc,start,end);
+					drawTubularLines(gc, start, end);
 				} else {
-					Point2D p1 = scaleToCanvas(start);
-					Point2D p2 = scaleToCanvas(end);
-					gc.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+					drawALine(gc, start[0], start[1], end[0], end[1]);
 				}
 			}
 		}
@@ -349,9 +349,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			xok = true;
 		} else
 			newx += spaceBounds.getMaxX();
-		
+
 		if (!xok) {
-			double m = (right[1]-left[1]) / (newx - right[0]);
+			double m = (right[1] - left[1]) / (newx - right[0]);
 			double b = right[1] - (m * right[0]);
 			double yintercept = (m * spaceBounds.getMaxX()) + b;
 			drawALine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
@@ -411,8 +411,14 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				double xintercept = -b / m;
 				if (Double.isNaN(xintercept))
 					xintercept = left[0];
-				drawALine(gc, xintercept, Math.min(right[1], left[1]), xintercept, 0.0);
-				drawALine(gc, xintercept, spaceBounds.getMaxY(), xintercept, Math.max(right[1], left[1]));
+				double[] low = left;
+				double[] high = right;
+				if (low[1] > high[1]) {
+					low = right;
+					high = left;
+				}
+				drawALine(gc, low[0], low[1], xintercept, 0.0);
+				drawALine(gc, xintercept, spaceBounds.getMaxY(), high[0], high[1]);
 			} else if (quad == 2) { // top right
 				double yintercept = (m * spaceBounds.getMaxX()) + b;
 				double xintercept = (spaceBounds.getMaxY() - b) / m;
