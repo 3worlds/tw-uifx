@@ -2,9 +2,9 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for creating a simulation with _ModelMaker_, using a simple logistic equation as a test case. New capabilities are gradually introduced with each tutorial as we explore the full range of modelling features available. 
+This tutorial explains the procedure for developing and running a simulation with _ModelMaker_. We start by using a simple logistic equation as a test case and gradually introduce more capabilities over the course of the tutorials as we explore the full range of modelling features available.
 
-In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as soon as the specifications are complete and Java code has been written to define the behaviour of the functions you have specified.
+In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their respective properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as soon as the specifications are complete and Java code has been written to define the behaviour of the functions you have specified.
 
 As you construct the graph, _ModelMaker_ is constantly checking and providing feedback on how these specifications comply with an _archetype_. _ModelMaker_ guides you through this process by managing the available options at each stage in the graph construction and by providing an updated list of tasks requiring attention. 
 
@@ -12,13 +12,17 @@ While this process greatly accelerates model development, a more important aim i
 
 The specification graph is both a tree and a directed graph. Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships.
 
+==== Installation
+
+Installing _ModelMaker_ is very simple: create a directory called `.3w` in your home directory and copy `tw-dep.jar` to it. Then copy `modelMaker.jar` to your home directory. To start _modelMaker_, open a terminal and type: `java -jar modelMaker.jar`. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system. 
+
 
 ==== Creating a new 3Worlds project
 
-. Start `ModelMaker` at a terminal with this command: `java -jar modelMaker.jar`. If you  get a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system. If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
+. Start _ModelMaker_ as above. If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
  
 . Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
-. When prompted enter `Tut1` (first letter uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _Graph display_.
+. When prompted enter 'Tut1' (first letter uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _Graph display_.
 
 This node will be the _root_ of a graph that forms the model specifications. All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is a unique identifier. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
 
@@ -28,11 +32,11 @@ At this stage you can try out a few basic edit operations:
 
 - Zoom in and out in the graph display using the mouse wheel while holding down the `ctrl` key (or equivalent on your operating system). The focus of the zoom is set by the mouse position;
 
-- Pan the drawing surface by dragging with the left-mouse button anywhere outside a node;
+- Pan the drawing surface by dragging with the left-mouse button anywhere outside a node (assuming the drawing area is larger than the display);
 
 - Change the node and text size with the controls at the bottom of the display; and,
 
-- See a range of edit options for this particular node by right-clicking on it to display a local popup menu. The graph is constructed through these popup menus.
+- See a range of edit options for this particular node by right-clicking on it to display a local popup menu. It is via these popup menus that the graph is constructed.
 
 A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
@@ -57,9 +61,9 @@ Inside this directory are a number of text files:
 ... `MM.xml` contains the session's preference settings.
 ... `__StateA1` and sequences of similarly named files are temporary files to support the program's undo/redo editing operations. These files are created during a session and deleted when the session ends.  
 
-All these files are text files and you can open them with a simple text editor. However, _editing these files will likely to lead to problems for your project_. 
+All these files are text files and you can open and inspect them with a simple text editor. However, as they are written by _modelMaker_ you should _avoid editing them directly as this will cause problems for your project_. 
 
-On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by _ModelMaker_ apart from the _undo-redo_ data. However, if you delete the entire `.3w` directory you will have to restore `tw-dep.jar` from backup.
+On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by _ModelMaker_ (apart from the _undo-redo_ data). However, if you delete the entire `.3w` directory you will have to restore `tw-dep.jar` from backup.
 
 
 ==== Creating the specifications
@@ -70,9 +74,9 @@ Having created `Tut1`, the task list shows four nodes are required. This list ca
 ... *dynamics*: define how the modelled system evolves over time.
 ... *structure*: define the organisation of components - their roles and relationships. 
 
-For the most part, these tutorials will proceed in this order and leave defining the simulation's user interface and experimental design until last. 
+For the most part, these tutorials will proceed in this order and leave defining the simulation's *user interface* and *experiment* design until last. 
 
-These sections are organised as sub-trees of the graph, with the nodes of each sub-tree having a particular colour.
+AThese sections are organised as sub-trees of the graph, with the nodes of each sub-tree having a particular colour.
 
 ===== Data definition
 
@@ -89,7 +93,7 @@ The `dataDefinition:dDef` node appears (pale red) connected by a green line to t
 All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and selecting a child to create from the available options provided by the popup menu. The items in this menu vary according to the possibilities allowed by the _archetype_. This is one way _ModelMaker_ ensures the developing configuration conforms with the _archetype_, greatly simplifying an otherwise complex workflow.
 
 [start = 2]
-. Create a `record` node as a child of `dataDefinition:dDef` and name it 'cnt'.
+. Create a `record` node as a child of `dataDefinition:dDef` and name it 'cnsts'.
 
 . Create a `field` node as child of `record:cnt`, name it 'r' and when prompted, set its type as `Double`.
 
@@ -97,11 +101,11 @@ All `fields` (and later `tables`) must be children of some `record`.
 
 [start = 4]
 
-. Create another `record` as child of `dataDefinition:dDef` and name it 'drv'.
+. Create another `record` as child of `dataDefinition:dDef` and name it 'drvs'.
 
 . Create a `field` node as child of `record:drv`, name it 'x' and again set the type to `Double`.
 
-Note that the names 'drv' and 'cnt' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
+Note that the names 'drvs' and 'cnsts' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
 
 This is all the data required for this tutorial.  The task to add a `dataDefinition` node has now gone and three tasks remain.
 
@@ -164,7 +168,7 @@ Processes can be composed of any number of functions of various types (much more
 
 The function type can't be changed after creating node, so if you make a mistake, delete and recreate it (`Delete` from the popup menu or `Undo` from the main menu).
 
-_ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Eclipse_, to write code for these functions. In this tutorial the funcion is one line of code and we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
+_ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Eclipse_, to write code for these functions. However, in this tutorial the funcion is only one line of code and we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.
 
 [start = 8]
 
@@ -178,7 +182,7 @@ _ModelMaker_ can link to an Integrated Development Environment (IDE) such as _Ec
 
 The `structure` sub-tree describes how the modelled system is organised into separate `components` playing particular roles. In an elaborate model, there can be many `components` but in the present case, we need only one, and for convenience, the `system` node can act as this single `component` without the necessity of actually creating a `component` within a `structure` sub-tree. 
 
-Here, the component's _role_ is defined as:
+Here, the component's _role_ will be defined as:
 
 - lifetime: _permanent_; 
 
@@ -186,11 +190,11 @@ Here, the component's _role_ is defined as:
 
 - category: _arena_. 
 
-- It uses _r_ as a constant and _x_ as a driver; and,
+- Uses _r_ as a constant and _x_ as a driver; and,
 
 - `process:p1` applies to it. 
 
-The component is _permanent_ because it doesn't die; it's  _atomic_ simply because it is a single indivisable component and it belongs to the _arena_. No matter how many components a model has, exactly one of them must belong to the _arena_ category, a unique top level component - its more or less a global component accessible to all other components. 
+The component is _permanent_ because it doesn't die; it's  _atomic_ simply because it is a single indivisable component and it belongs to the _arena_. No matter how many components a model has, exactly one of them must belong to the _arena_ category, a unique top level component - it's more or less a global component accessible to all other components. 
 
 While this is complicated for such a simple function, later tutorials will show how this can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
 
@@ -234,6 +238,8 @@ Finally, we need to apply `process:p` to a category - in this case, the _arena_.
 
 . Right-click on `process:p1` and select `New edge -> appliesTo -> category:*arena*`.
 
+We have yet to relate `system:sys1` to '_x_' and '_r_'. We'll leave that for now until it's needed.  
+
 There are now two tasks remaining in the task list: the experimental design and the user interface.
 
 
@@ -257,7 +263,7 @@ Simulations can also run without any _graphical_ user interface - they still mus
 
 When the simulation is run, its graphical user interface has optionally, a toolbar at the top, a status bar at the bottom and any number of tabs containing any number of widgets. The controller must be placed either in the toolbar or status bar. Here we place it in the toolbar.
 
-. Collapse `experiment:expt` from the root node.
+. Collapse `experiment:expt` from the root node (we are finished with this sub-tree).
 
 . Create a `userInterface` as a child of the root.
 
@@ -275,7 +281,7 @@ NB: If you edit the file without making a copy, those edits will be lost wheneve
 
 . Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run-time application: _ModelRunner_. 
 
-At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. This is the `SimpleControlWidget1` we added above. The _run_ button becomes a _pause_ button while running and the _stop_ button resets the simulator to its starting state. 
+At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. This is the `SimpleControlWidget1` we added above in step 4. The _run_ button becomes a _pause_ button while running and the _stop_ button resets the simulator to its starting state. 
 
 However, as expected, there's nothing to see so the next step is to add a time series widget. This is an optional requirement so the task list didn't complain about this. 
 
@@ -297,7 +303,7 @@ For this widget to receive values of _x_, something must post values of _x_ to t
 
 [start = 5]
 
-. Create a `dataTracker` as a child of `process:p1` and choose `DataTrackerD0` as it class. This class of data tracker is suitable for scalar data as is the case with _x_.
+. Create a `dataTracker` as a child of `process:p1` and choose `DataTrackerD0` as it class. This class of data tracker is suitable for scalar data such as _x_.
 
 . Create an edge from the `dataTracker` to _x_ by selecting `New edge -> trackField - > field:x`. 
 
@@ -305,9 +311,9 @@ Visually, something different happened this time: the edge appeared and then fad
 
 . Create an edge from `widget:srsx` to the new data tracker.
 
-. Create an edge from `dataTracker:trk1` to a `component` i.e in this case `system.sys1`. A data tracker must not only track some data but also the `component` that uses this data. However, from the task list it can be seen that _x_ and _r_ are not part of the _role_ defined for `system.sys1`. To do this, we categorise _x_ as a _driver_ and _r_ as a _constant_. The appropriate category belonging to `system:sys1` is the `category:*arena*`. Before doing this we can tidy up the display and practice a little fiddling with the collapse/expand functions by showing just the nodes we're concerned with for defining the roles of _x_ and _r_:
+. Create an edge from `dataTracker:trk1` to a `component` i.e in this case `system.sys1`. A data tracker must not only track some data but also the `component` that uses this data. However, from the task list it can be seen that _x_ and _r_ are not part of the _role_ defined for `system.sys1`. To do this, we categorise _x_ as a _driver_ and _r_ as a _constant_. The appropriate category belonging to `system:sys1` is the `category:*arena*`. Before doing this we can tidy up the display and practice a little fiddling with the collapse/expand functions by showing just the nodes required to define the roles of _x_ and _r_:
 
-. Collapse the all sub-trees from the root node.
+. Collapse all sub-trees from the root node.
 
 . Expand the `predefined:*categories*` sub-tree.
 
@@ -325,7 +331,7 @@ To create the _roles_ for _x_ and _r_:
 
 . From `category:*arena*` select `New edge -> constants -> record:r`
 
-. Again from `category:*arena*` select `New edge ->drivers -> record:x`
+. Again from `category:*arena*` select `New edge -> drivers -> record:x`
 
 
 . Save the graph (`Ctrl+s`). 
@@ -381,7 +387,7 @@ While using a graph to construct model specifications has many advantages, you c
 
 _ModelMaker_ has a number of features to help arrange the graph display. These fall into three categories: arranging, hiding and resizing.
 
-*Arranging*: There are five layout algorithms currently available in _ModelMaker_ of which three make use of the tree structure of the graph to arrange nodes and two are 'Spring' based algorithms which treat all edges alike, be they _parent-child_ or cross-links edges. Tree methods are ideal for examining the parent-child structure while the last two are better suited to examining relations between nodes. Tree methods are deterministic while Spring methods are not. Thus, Tree methods are better for maintaining your orientation to the graph but have the disadvantage of not arranging cross-link edges clearly. Spring methods do a better job of this but the resulting arrangement can change with each application of the layout.
+*Arranging*: There are five layout algorithms currently available in _ModelMaker_ of which three make use of the tree structure of the graph to arrange nodes and two are 'Spring' based algorithms which treat all edges alike, be they _parent-child_ or _cross-link_ edges. Tree methods are ideal for examining the parent-child structure while the last two are better suited to examining relations between nodes. Tree methods are deterministic while Spring methods are not. Thus, Tree methods are better for maintaining your orientation to the graph but have the disadvantage of not arranging cross-link edges clearly. Spring methods do a better job of this but the resulting arrangement can change with each application of the layout.
 
 Two of the Tree methods produce a radial layout. These are best suited to examining nodes that have many children such as a record with many fields.
 
@@ -401,7 +407,7 @@ Finally, you can of course move a node anywhere within the graph window.
 - *>|* Move all isolated nodes to one side (after re-applying the layout)
 - *Show neighbourhood*:  With this feature, you can choose to show only nodes within a given path distance from a selected node.
 - *A*: Show all nodes. That is, undo the above operation.
-- change the node and edge text this is displayed with the `N-text` and `E-text` drop-down lists.
+- change the node and edge names by hiding or showing either or both roles and names with the `N-text` and `E-text` drop-down lists.
 
 *Resizing*:
 
@@ -409,8 +415,6 @@ Finally, you can of course move a node anywhere within the graph window.
 - *Pan*: If the drawing surface is larger than the window, you can drag the drawing surface of the graph window (left click outside a node)
 - *Node Size*
 - *Font size*
-
-You can also change the node and edge names by hiding or showing either or both roles and names.
  
 As an exercise if you wish, try displaying just the nodes with _cross links_ using the SpringGraph layout. This is a common way to look at just the _cross link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant _parent-child_ relationships make useful additions to the ODD appendix.
 
