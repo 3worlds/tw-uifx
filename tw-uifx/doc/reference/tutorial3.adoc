@@ -27,15 +27,15 @@ There is usually more than one way of defining the data for any model. For the C
 
 . Collapse all sub-trees from the root node and then expand `dataDefinition:dDef`.
 
-. Delete `record:dec`. This record was provided by the template is not needed here.
+. Delete `record:decs`. This record was provided by the template and is not needed here.
 
-. Create a `table` as a child of `record:cnt`, name it 'alpha', choose `dataElementType` and then set its type to `Double` (the default).
+. Create a `table` as a child of `record:cnsts`, name it 'alpha', choose `dataElementType` and then set its type to `Double` (the default).
 
-. Create a second `table` as child of `record:cnt`, name it 'r' and choose `dataElementType` and then set its type to `Double`.
+. Create a second `table` as child of `record:cnsts`, name it 'r' and choose `dataElementType` and then set its type to `Double`.
 
-. Create a second `table` as child of `record:cnt`, name it 'K' and choose `dataElementType` and then set its type to `Double`.
+. Create a second `table` as child of `record:cnsts`, name it 'K' and choose `dataElementType` and then set its type to `Double`.
 
-. Create a  `table` as child of `record:drv`, name it 'x', choose `dataElementType` and set its type to `Double`.
+. Create a  `table` as child of `record:drvs`, name it 'x', choose `dataElementType` and set its type to `Double`.
 
 To complete the definition, we must set the table dimensions and indexing order for the 2-dim table 'alpha'. 
 
@@ -43,7 +43,7 @@ Only one dimensioner is needed: the number of species. This is done by creating 
 
 [start = 8]
 
-. Create a `dimensioner` as a child of `dataDefinition:dtDef` and name it 'nspp'.
+. Create a `dimensioner` as a child of `dataDefinition:dtDef` and name it 'nspp' (number of species).
 
 A new task appears in the task list saying the 'size' property must be greater than zero.
 
@@ -53,7 +53,7 @@ A new task appears in the task list saying the 'size' property must be greater t
 
 Finally, locate the `description` property for each of these tables and add the text from the introduction above. This text, together with other property meta-data such as `range` and `units`, appears as part of the Java documentation when generating Java code from _ModelMaker_. These descriptions are also used when generating the ODD document.
 
-There are now four tasks in the task list indicating we have yet to associate the dimensioner the the four tables. _K_, _r_ and _x_ have one dimension and _alpha_ has two.
+There are now four tasks in the task list indicating we have yet to associate the dimensioner with the four tables. _K_, _r_ and _x_ have one dimension and _alpha_ has two.
 
 [start = 10]
 . Right-click on each table node in turn and select `New edge -> dimensioner:nspp`. Repeat this for `table:alpha` to get the second dimension.
@@ -85,7 +85,7 @@ There are now two tasks in the list, one about 'indexing' and the other asking w
 
 . Create the edge `trackComponent -> system:sys1` from the data tracker node.
 
-As we are using a scalar data tracker (`DataTrackerD0`) to follow a table, we must specify which element of `table:x` to track. Indexing is a property of the edge between data tracker and the table. Edge properties appear in the property list of nodes that are at the start of the edge (thin line) - in this case `dataTracker:trk1`.
+As we are using a scalar data tracker (`DataTrackerD0`) to follow a table, we must specify which elements of `table:x` to track. Indexing is a property of the edge between data tracker and the table. Edge properties appear in the property list of nodes that are at the start of the edge (thin line) - in this case `dataTracker:trk1`.
 
 [start = 5]
 

@@ -1,4 +1,4 @@
-=== Elaborating the model structure: Testing the Intermediate Disturbance Hypothesis
+=== Tutorial 4: Elaborating the model structure: Testing the Intermediate Disturbance Hypothesis
 
 ==== Introduction
 
@@ -14,15 +14,15 @@ Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials`
 
 . Collapse all nodes except for the `dataDefinition` sub-tree, hide the _cross-links_ ('*X*' button), and re-apply the layout ('*L*' button).
 
-. Add a new `record` as a child of `dataDefinition:dDef` and name it 'dec'.
+. Add a new `record` as a child of `dataDefinition:dDef` and name it 'decs'.
 
 Data is divided into three classes in the _3Worlds archetype_:
 
-... _constants_ (cnt), 
+... _constants_ (cnsts), 
 
-... _drivers_ (drv) and 
+... _drivers_ (drvs) and 
 
-... _decorators_ (dec). 
+... _decorators_ (decs). 
 
 Decorators are values derived from the current value of the drivers. They are set to zero at the beginning of each time step. Here, the _decorator_  will be a species diversity index (Shannon's), derived from relative abundance of each species. 
 
@@ -30,21 +30,21 @@ As noted previously, these names are just for clarity - they don't impose a _rol
 
 [start = 3]
 
-. Add a `field` as a child of `record:dec`, name it 'div' (diversity index) of type `Double`.
+. Add a `field` as a child of `record:decs`, name it 'div' (diversity index) of type `Double`.
 
 We now define some data for the simple disturbance model: frequency and intensity.
 
 [start = 4]
 
-. Add a new `record` to `dataDefinition:dDef` and name it 'distCnt' (disturbance constants).
+. Add a new `record` to `dataDefinition:dDef` and name it 'distCnsts' (disturbance constants).
 
 . Add two fields to this record, both of type `Double` called 'freq' and 'inten' respectively. 
 
-The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order the trees alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We could name all the data associated with the CLV with 'comm' (community).
+The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order the trees alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We should also prefix all the data associated with the CLV with 'comm' (community).
 
 [start = 6]
 
-. Rename `record:cnt` to `record:commCnt`, `record:drv` to `record:commDrv` and `record:dec` to `record:commDec`.
+. Rename `record:cnsts` to `record:commCnsts`, `record:drvs` to `record:commDrvs` and `record:decs` to `record:commDecs`.
 
 . Re-apply the layout. The data fields should now be in a more sensible order.
 
@@ -174,9 +174,9 @@ Remove the data associated with the _arena_.
 
 [start = 18]
 
-. Right-click on `category:*arena*` and select `Delete edge -> drivers -> record:commDrv`.
+. Right-click on `category:*arena*` and select `Delete edge -> drivers -> record:commDrvs`.
 
-. Right-click again on  `category:*arena*` and select `Delete edge -> constants -> record:commCnt`.
+. Right-click again on  `category:*arena*` and select `Delete edge -> constants -> record:commCnsts`.
 
 `system:sys` is now defined as simply a _permanent assemblage_ belonging to the _arena_.
 
@@ -196,16 +196,16 @@ Define the data for these new categories.
 
 . Right-click on `category:commCat` and create the following edges:
 
-... `drivers -> record:commDrv`.
+... `drivers -> record:commDrvs`.
 
-... `constants -> record:commCnt`.
+... `constants -> record:commCnsts`.
 
-... `decorators -> record:commDec`.
+... `decorators -> record:commDecs`.
 
-. Right-click on `category:commDist` and select `New edge -> constants -> record:distCnt`.
+. Right-click on `category:commDist` and select `New edge -> constants -> record:distCnsts`.
 
 
-Now define the _roles_ of the new component types for the community and disturbance. Both are _permanent_, atomic_, belong to the _component_ category and access data through their respective categories.
+Now define the _roles_ of the new component types for the community and disturbance. Both are _permanent_, _atomic_, belongs to the _component_ category and accesses data through their respective categories.
 
 [start = 25]
 
@@ -264,7 +264,7 @@ We have inherited a data tracker from the previous tutorial that tracks the popu
 
 ===== User interface
 
-The specifications have inherited a controller, time series and table for _x_ from the previous tutorial. We just need one more time series to view the species diversity index ('div'). W can take this opportunity to examine a bit more about defining the simulator's user interface.
+The specifications have inherited a controller, time series and table for _x_ from the previous tutorial. We just need one more time series to view the species diversity index ('div'). We can take this opportunity to learn more about defining the simulator's user interface.
 The `tab` node can contain upto two widgets or two containers that in turn can contain widgets (or a combination of both). What we need then is:
 
 .. tab

@@ -88,10 +88,7 @@ Running the simulation directly from _ModelMaker_ is a convenient way to speed u
 
 [start = 2]
 
-. Open a terminal, change to your project directory and enter the following text: `java -jar Tut1.jar 0 <project directory>`
-
-The first parameter (`0`) is an instance number. Because you can launch the simulation any number of times, this number prevents output files (if any) from overwriting each other. The second parameter is your project directory: not the full path, just the project relative to `.3w`.
-
+. Open a terminal, change to your project directory and enter the following text: `java -jar Tut1.jar`
 
 Finally we discuss how to debug your equations by running your model from the IDE.
 
