@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for developing and running a simulation with _ModelMaker_. We start by using a simple logistic equation as a test case and gradually introduce more capabilities over the course of the tutorials as we explore the full range of modelling features available.
+This tutorial explains the procedure for developing and running a simulation with _ModelMaker_. We start by using a simple logistic equation as a test case and gradually introduce more capabilities over the course of these tutorials as we explore the full range of modelling features available.
 
 In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their respective properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as soon as the specifications are complete and Java code has been written to define the behaviour of the functions you have specified.
 
