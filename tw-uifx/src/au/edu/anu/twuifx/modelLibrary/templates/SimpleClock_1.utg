@@ -5,12 +5,15 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 // TREE
 3worlds SimpleClock_1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String()
+	built-by = java.lang.String("")
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String()
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	predefined *categories*
+		categorySet *organisation*
+			category *assemblage*
+			category *atomic*
 		record AVEphemeral
 			field birthDate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -35,9 +38,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		categorySet *organisation*
-			category *assemblage*
-			category *atomic*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
@@ -48,12 +48,12 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record cnt
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String()
-		record dec
-		record drv
+		record decs
+		record drvs
 			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String()
+		record cnsts
+			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String()
 	experiment expt
 		design dsgn
@@ -90,10 +90,7 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 
 // CROSS-LINKS
 [process:p1] appliesTo aplyTo1 [category:*arena*]
-[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[category:*arena*] drivers drvs [record:drv]
-[category:*arena*] constants cnts [record:cnt]
-[system:sys1] belongsTo bt3 [category:*permanent*]
-[system:sys1] belongsTo bt2 [category:*atomic*]
-[system:sys1] belongsTo bt1 [category:*arena*]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*arena*] constants cnsts1 [record:cnsts]
+[category:*arena*] drivers drvs1 [record:drvs]
