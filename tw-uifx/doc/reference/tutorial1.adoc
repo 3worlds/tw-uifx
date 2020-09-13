@@ -61,7 +61,7 @@ Inside this directory are a number of text files:
 ... `MM.xml` contains the session's preference settings.
 ... `__StateA1` and sequences of similarly named files are temporary files to support the program's undo/redo editing operations. These files are created during a session and deleted when the session ends.  
 
-All these files are text files and you can open and inspect them with a simple text editor. However, as they are written by _modelMaker_ you should _avoid editing them directly as this will cause problems for your project_. 
+All these files are text files and you can open and inspect them with a simple text editor. However, as they are written by _modelMaker_ you should _avoid editing them directly as this will likely cause problems for your project_. 
 
 On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by _ModelMaker_ (apart from the _undo-redo_ data). However, if you delete the entire `.3w` directory you will have to restore `tw-dep.jar` from backup.
 
@@ -74,15 +74,13 @@ Having created `Tut1`, the task list shows four nodes are required. This list ca
 ... *dynamics*: define how the modelled system evolves over time.
 ... *structure*: define the organisation of components - their roles and relationships. 
 
-For the most part, these tutorials will proceed in this order and leave defining the simulation's *user interface* and *experiment* design until last. 
-
-AThese sections are organised as sub-trees of the graph, with the nodes of each sub-tree having a particular colour.
+For the most part, these tutorials will proceed in this order and leave defining the simulation's *user interface* and *experiment* design until last. Each of these sections are organised as colour-coded sub-trees of the graph.
 
 ===== Data definition
 
 The logistic equation we implement is: _x(t+1) = rx(t)(1-x(t)_. Though simple, it has interesting chaotic behaviour for values of _r_ between 3.7 and 4.0. All we need do for the data definition section is to define the parameter _r_ and the state variable _x_. 
 
-From here on and throughout these tutorials, parameters are called _constants_ (data that does not change over the course of a simulation) and state variables _drivers_ (data that drives the simulation from one time to the next).
+From here on and throughout these tutorials, parameters are called _constants_ (data that does not change over the course of a simulation) and state variables are called _drivers_ (data that drives the simulation from one time to the next).
 
 . Right-click on the root node (`3worlds:Tut1`) and select `New node -> dataDefinition` from the popup menu. You're then prompted for a name. The default name is `dDef`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: _ModelMaker_ is asking where to place this node. Move to some place within the graph display and left-click the mouse. 
 
@@ -95,7 +93,7 @@ All nodes in the configuration graph are children of some parent (apart from the
 [start = 2]
 . Create a `record` node as a child of `dataDefinition:dDef` and name it 'cnsts'.
 
-. Create a `field` node as child of `record:cnt`, name it 'r' and when prompted, set its type as `Double`.
+. Create a `field` node as child of `record:cnsts`, name it 'r' and when prompted, set its type as `Double`.
 
 All `fields` (and later `tables`) must be children of some `record`. 
 
@@ -103,7 +101,7 @@ All `fields` (and later `tables`) must be children of some `record`.
 
 . Create another `record` as child of `dataDefinition:dDef` and name it 'drvs'.
 
-. Create a `field` node as child of `record:drv`, name it 'x' and again set the type to `Double`.
+. Create a `field` node as child of `record:drvs`, name it 'x' and again set the type to `Double`.
 
 Note that the names 'drvs' and 'cnsts' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
 
@@ -113,7 +111,7 @@ This is all the data required for this tutorial.  The task to add a `dataDefinit
 
 The `dynamics` sub-tree specifies how the modelled system will evolve over time. It determines the temporal order of function calls, their type, the conditions under which the simulation will stop and what and when data will be tracked for output. 
 
-In the present case, the first task is to call the logistic equation a set number of times and provide the result from the previous time step to the equation at the current time step. 
+In the present case, the main task is to call the logistic equation a set number of times and present the result from each time step to the equation at the next time step. 
 
 The `dynamics` sub-tree is a child of the `system` node - the root of the modelled system that defines both its dynamics and its structure. To begin defining the system dynamics, create a `system` node and then a `dynamics` node as its child.
 
@@ -188,7 +186,7 @@ Here, the component's _role_ will be defined as:
 
 - organisation: _atomic_ 
 
-- category: _arena_. 
+- systemElements: _arena_. 
 
 - Uses _r_ as a constant and _x_ as a driver; and,
 
@@ -196,7 +194,7 @@ Here, the component's _role_ will be defined as:
 
 The component is _permanent_ because it doesn't die; it's  _atomic_ simply because it is a single indivisable component and it belongs to the _arena_. No matter how many components a model has, exactly one of them must belong to the _arena_ category, a unique top level component - it's more or less a global component accessible to all other components. 
 
-While this is complicated for such a simple function, later tutorials will show how this can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
+While this is complicated for such a simple function, later tutorials will show how this arrangement can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
 
 To create this role, we use nodes of the type `categorySet` and `category`. A `categorySet` is a set of mutually exclusive categories. By that we mean a `component` can only be associated with one category of a given categorySet. So for example _permanent_ and _ephemeral_  are two categories within a set called _lifespan_ and obviously, a component can only be one or the other. Categories and CategorySets are recursive: a CategerySet contains Categories and Categories can contain CategorySets without limit. 
 
@@ -230,7 +228,7 @@ We are now in a position to define the _role_ of the `system` node (a.k.a. `comp
 
 . Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*permanent*`.
 
-The above edits have created three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` at the bottom of the Graph display, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongs to category:*arena*`.
+The above edits have created three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` at the bottom of the Graph display, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongsTo category:*arena*`.
 
 Finally, we need to apply `process:p` to a category - in this case, the _arena_.
 
@@ -273,7 +271,7 @@ When the simulation is run, its graphical user interface has optionally, a toolb
 
 The model specifications now comply with the archetype and the code has compiled. Save your work (`Ctrl+s`) and the task list will be empty. The *Deploy* button is now enabled and the traffic light has changed from red to green (bottom left corner of _ModelMaker_).
 
-In addition, the *Document* button has been enabled. Clicking this button generates an ODD template (Overview, Design concepts and Details) (`Tut1.odt`), an established standard for documenting simulation models. This file can be generated anytime the specifications are valid. When you are statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model. 
+In addition, the *Document* button has been enabled. Clicking this button generates an ODD template (Overview, Design concepts and Details) (`Tut1.odt`), an established standard for documenting simulation models. This file can be generated anytime the specifications are valid. When you're statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model. 
 
 NB: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.  
 
@@ -391,7 +389,7 @@ _ModelMaker_ has a number of features to help arrange the graph display. These f
 
 Two of the Tree methods produce a radial layout. These are best suited to examining nodes that have many children such as a record with many fields.
 
-All Tree methods allow selecting any node as the root of the tree. This is achieved from the popup menu of each node. When the 're-apply layout' button is pressed ('*L*') while using a Tree method, the root of the tree becomes is the root of the graph (`3worlds:Tut1`).
+All Tree methods allow selecting any node as the root of the tree. This is achieved from the popup menu of each node. When the 're-apply layout' button is pressed ('*L*') while using a Tree method, the root of the tree becomes the root of the graph (`3worlds:Tut1`).
 
 When a project is first created, the default layout is an *orderedTree*. To change to other layouts, use the local popup menu for any node. This layout persists for repeated applications of the layout function until another is chosen.
 
@@ -416,7 +414,7 @@ Finally, you can of course move a node anywhere within the graph window.
 - *Node Size*
 - *Font size*
  
-As an exercise if you wish, try displaying just the nodes with _cross links_ using the SpringGraph layout. This is a common way to look at just the _cross link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant _parent-child_ relationships make useful additions to the ODD appendix.
+As an exercise if you wish, try displaying just the nodes with _cross-links_ using the SpringGraph layout. This is a common way to look at just the _cross-link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant _parent-child_ relationships make useful additions to the ODD appendix.
 
 . Expand all sub-trees from the root node.
 

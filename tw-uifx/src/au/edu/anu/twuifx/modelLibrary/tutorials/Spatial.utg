@@ -88,7 +88,7 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 				component cmp1
 					nInstances = java.lang.Integer(1)
 			space space
-				edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
+				edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffectCorrection(periodic)
 				precision = java.lang.Double(1.0E-4)
 				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 				units = java.lang.String(m)
@@ -113,7 +113,7 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 // CROSS-LINKS
 [process:p1] appliesTo aplyTo2 [category:*component*]
 [process:p1] inSpace in1 [space:space]
-	searchRadius = java.lang.Double(0.0)
+	searchRadius = java.lang.Double(10.0)
 [stoppingCondition:stCd1] stopSystem stpSys1 [system:sys1]
 [component:cmp1] location loc1 [space:space]
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]50.0,50.0))
