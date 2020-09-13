@@ -57,7 +57,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 // TREE
 3worlds Prj6
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(gignoux (21 juil. 2020))
+	built-by = java.lang.String(ian (13 Sep. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(Tutorial: Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model. Illustrates the use of a SystemComponent.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
@@ -100,9 +100,9 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record distCnt
+		record distCnsts
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(distCnt)
+			generatedClassName = java.lang.String(distCnsts)
 			field inten
 				description = java.lang.String()
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -115,9 +115,9 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-		record commCnt
+		record commCnsts
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(commCnt)
+			generatedClassName = java.lang.String(commCnsts)
 			table r
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				description = java.lang.String(growth rate)
@@ -136,18 +136,18 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
-		record commDrv
+		record commDrvs
 			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(commDrv)
+			generatedClassName = java.lang.String(commDrvs)
 			table x
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				description = java.lang.String(population size)
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
-		record commDec
+		record commDecs
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(commDec)
+			generatedClassName = java.lang.String(commDecs)
 			field div
 				description = java.lang.String()
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -205,7 +205,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 			relationType distEffectComm
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			componentType distType
-				constantClass = java.lang.String(code.sys1.DistCnt)
+				constantClass = java.lang.String(code.sys1.DistCnsts)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -219,9 +219,9 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				category distCat
 				category commCat
 			componentType commType
-				constantClass = java.lang.String(code.sys1.CommCnt)
-				decoratorClass = java.lang.String(code.sys1.CommDec)
-				driverClass = java.lang.String(code.sys1.CommDrv)
+				constantClass = java.lang.String(code.sys1.CommCnsts)
+				decoratorClass = java.lang.String(code.sys1.CommDecs)
+				driverClass = java.lang.String(code.sys1.CommDrvs)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -258,9 +258,9 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 
 // CROSS-LINKS
-[category:commCat] decorators decs1 [record:commDec]
-[category:commCat] drivers drvs1 [record:commDrv]
-[category:commCat] constants cnts1 [record:commCnt]
+[category:commCat] decorators decs1 [record:commDecs]
+[category:commCat] drivers drvs1 [record:commDrvs]
+[category:commCat] constants cnts1 [record:commCnsts]
 [dataTracker:trk1] trackComponent trks2 [component:comm]
 [dataTracker:trk1] trackTable trks1 [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:3]"))
@@ -294,7 +294,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 [relationType:distEffectComm] toCategory to1 [category:commCat]
 [table:r] sizedBy szBy4 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
-[category:distCat] constants cnts2 [record:distCnt]
+[category:distCat] constants cnts2 [record:distCnsts]
 [componentType:commType] belongsTo bt11 [category:*permanent*]
 [componentType:commType] belongsTo bt4 [category:commCat]
 [componentType:commType] belongsTo bt10 [category:*atomic*]
