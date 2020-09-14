@@ -100,16 +100,10 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record distCnsts
+		record commDecs
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(distCnsts)
-			field inten
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field freq
+			generatedClassName = java.lang.String(commDecs)
+			field div
 				description = java.lang.String()
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -136,6 +130,21 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
+		record distCnsts
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(distCnsts)
+			field inten
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field freq
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 		record commDrvs
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(commDrvs)
@@ -145,17 +154,8 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
-		record commDecs
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(commDecs)
-			field div
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
 		dimensioner nspp
-			size = java.lang.Integer(4)
+			size = java.lang.Integer(40)
 	system sys1
 		dynamics sim1
 			stoppingCondition stCd1
@@ -263,7 +263,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 [category:commCat] constants cnts1 [record:commCnsts]
 [dataTracker:trk1] trackComponent trks2 [component:comm]
 [dataTracker:trk1] trackTable trks1 [table:x]
-	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:3]"))
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:39]"))
 [dataTracker:trk2] trackComponent trks6 [component:comm]
 [dataTracker:trk2] trackField trks5 [field:div]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
