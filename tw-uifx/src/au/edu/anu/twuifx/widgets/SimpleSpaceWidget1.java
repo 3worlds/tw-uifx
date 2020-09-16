@@ -383,7 +383,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		else
 			newy -= spaceBounds.getMaxY();
 		if (!xok || !yok) {
-			System.out.println();
 			int quad = getQuad(newx, newy);
 			double m = (newy - right[1]) / (newx - right[0]);
 			double b = right[1] - (m * right[0]);
