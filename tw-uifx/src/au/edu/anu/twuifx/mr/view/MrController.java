@@ -44,6 +44,7 @@ import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twuifx.dialogs.ISParametersDlg;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -221,6 +222,12 @@ public class MrController implements IMRController {
 		dlg.showAndWait();
 
 	}
+    @FXML
+    void onODDGen(ActionEvent event) {
+		DocoGenerator gen = new DocoGenerator(model.getGraph());
+		gen.generate();
+
+    }
 
 	@FXML
 	void onCurrentConfiguration(ActionEvent event) {

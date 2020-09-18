@@ -135,7 +135,6 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.cnrs.iees.twcore.constants.TwFunctionTypes;
-import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import fr.ens.biologie.generic.utils.Interval;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
@@ -202,8 +201,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private Circle trafficLight;
 
-	@FXML
-	private Button btnDocument;
+//	@FXML
+//	private Button btnDocument;
 
 	@FXML
 	private SplitPane splitPane1;
@@ -575,11 +574,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		dlg.showAndWait();
 	}
 
-	@FXML
-	void doDocumentation(ActionEvent event) {
-		DocoGenerator gen = new DocoGenerator(ConfigGraph.getGraph());
-		gen.generate();
-	}
+//	@FXML
+//	void doDocumentation(ActionEvent event) {
+//		DocoGenerator gen = new DocoGenerator(ConfigGraph.getGraph());
+//		gen.generate();
+//	}
 
 	@FXML
 	void onImportSnippets(ActionEvent event) {
@@ -591,7 +590,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			if (n.classId().equals(N_SNIPPET.label())) {
 				char c[] = n.getParent().id().toCharArray();
 				c[0] = Character.toLowerCase(c[0]);
-				new String(c);
 				snippetNodes.put(new String(c), n);
 			}
 
@@ -950,7 +948,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onStartCheck() {
 		Platform.runLater(() -> {
 			btnDeploy.setDisable(true);
-			btnDocument.setDisable(true);
+//			btnDocument.setDisable(true);
 			btnCheck.setDisable(true);
 			lblChecking.setVisible(true);
 			trafficLight.fillProperty().set(Color.RED);
@@ -969,7 +967,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		isValid = valid;
 		Platform.runLater(() -> {
 			btnDeploy.setDisable(false);
-			btnDocument.setDisable(false);
+//			btnDocument.setDisable(false);
 			btnCheck.setDisable(false);
 			lblChecking.setVisible(false);
 			setButtonState();
@@ -1334,7 +1332,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;
 		btnDeploy.setDisable(!cleanAndValid);
-		btnDocument.setDisable(!cleanAndValid);
+//		btnDocument.setDisable(!cleanAndValid);
 		boolean snp = !cleanAndValid || !UserProjectLink.haveUserProject();
 		miImportSnippets.setDisable(snp);
 		miClearSnippets.setDisable(!isOpen);

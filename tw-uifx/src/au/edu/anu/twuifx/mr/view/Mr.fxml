@@ -34,7 +34,7 @@
                 <Menu fx:id="menuWidgets" mnemonicParsing="false" text="Widgets" />
                   <Menu mnemonicParsing="false" text="About">
                      <items>
-                        <MenuItem id="miCurrentConfiguration" mnemonicParsing="false" onAction="#onCurrentConfiguration" text="Current configuration" />
+                        <MenuItem id="miCurrentConfiguration" mnemonicParsing="false" onAction="#onODDGen" text="Create documentation" />
                         <MenuItem id="miAboutModelRunner" mnemonicParsing="false" onAction="#onAboutModelRunner" text="About ModelRunner" />
                      </items>
                   </Menu>

@@ -171,7 +171,6 @@
                               <Font size="12.0" />
                            </font>
                         </Label>
-                        <Button fx:id="btnDocument" disable="true" mnemonicParsing="false" onAction="#doDocumentation" text="Document" />
             			</items>
             		</ToolBar>
                </bottom>
