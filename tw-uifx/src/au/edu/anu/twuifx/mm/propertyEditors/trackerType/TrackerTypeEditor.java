@@ -70,7 +70,7 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
  */
 public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
-	private LabelButtonControl view;
+	//private LabelButtonControl view;
 	private List<Record> catRecords;
 	private ALDataEdge trackerEdge;
 	private TrackerType currentTT;
@@ -81,8 +81,8 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 	public TrackerTypeEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
-		view = this.getEditor();
-		view.setOnAction(e -> onAction());
+		//view = this.getEditor();
+		this.getEditor().setOnAction(e -> onAction());
 	}
 
 	private void onAction() {
@@ -138,7 +138,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
-		dlg.setTitle(trackerEdge.classId() + ":" + trackerEdge.id());
+		dlg.setTitle(trackerEdge.toShortString());
 		dlg.initOwner((Window) Dialogs.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
