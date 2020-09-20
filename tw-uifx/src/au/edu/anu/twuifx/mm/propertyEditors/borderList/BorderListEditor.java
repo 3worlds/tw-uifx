@@ -38,9 +38,12 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
+import fr.cnrs.iees.twcore.constants.BorderType;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -66,6 +69,10 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		BorderPane content = new BorderPane();
+		ComboBox<BorderType> bTop = new ComboBox<>();
+		bTop.getItems().addAll(BorderType.values());
+		content.setTop(bTop);
+		
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
 		}
