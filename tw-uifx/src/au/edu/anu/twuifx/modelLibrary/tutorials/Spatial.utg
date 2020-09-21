@@ -88,7 +88,8 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 				component cmp1
 					nInstances = java.lang.Integer(1)
 			space space
-				edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffectCorrection(periodic)
+				//edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffectCorrection(periodic)
+				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
 				precision = java.lang.Double(1.0E-4)
 				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 				units = java.lang.String(m)

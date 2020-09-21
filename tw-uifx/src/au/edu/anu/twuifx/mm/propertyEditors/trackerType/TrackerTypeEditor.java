@@ -81,7 +81,6 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 	public TrackerTypeEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
-		//view = this.getEditor();
 		this.getEditor().setOnAction(e -> onAction());
 	}
 
@@ -138,7 +137,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
-		dlg.setTitle(trackerEdge.toShortString());
+		dlg.setTitle(trackerEdge.toShortString()+"#"+P_TRACKEDGE_INDEX.key());
 		dlg.initOwner((Window) Dialogs.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);

@@ -110,6 +110,7 @@ import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.StringTable.StringTableItem;
+import au.edu.anu.twuifx.mm.propertyEditors.borderList.BorderListItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.integerRangeType.IntegerRangeItem;
@@ -129,6 +130,7 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.twcore.constants.BorderListType;
 import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.FileType;
 import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
@@ -1266,15 +1268,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			return new IntervalItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof IntegerRange) {
 			return new IntegerRangeItem(this, key, (ElementAdapter) element, editable, category, description);
+		} else if (value instanceof BorderListType) { // must come before StringTable
+			return new BorderListItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof StringTable) {
 			StringTable st = (StringTable) value;
 			if (st.getDimensioners().length == 1)
 				return new StringTableItem(this, key, (ElementAdapter) element, editable, category, description);
-		} // else if (value instanceof DoubleTable) {
-			// DoubleTable dt = (DoubleTable) value;
-			// if (dt.getDimensioners().length ==1)
-			// return new
-			// DoubleTableItem(this,key,(ElementAdapter)element,true,category,description);
+		}
+		// DoubleTable dt = (DoubleTable) value;
+		// if (dt.getDimensioners().length ==1)
+		// return new
+		// DoubleTableItem(this,key,(ElementAdapter)element,true,category,description);
 //		}
 		return new SimpleMMPropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}

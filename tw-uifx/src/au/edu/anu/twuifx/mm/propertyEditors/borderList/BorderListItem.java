@@ -37,6 +37,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
+import fr.cnrs.iees.twcore.constants.BorderListType;
 //import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 
@@ -56,8 +57,8 @@ public class BorderListItem extends SimpleMMPropertyItem {
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
 		if (!oldValue.toString().equals(newValue.toString())) {
-			TrackerType tt = TrackerType.valueOf((String) newValue);
-			onUpdateProperty(tt);
+			BorderListType blt = BorderListType.valueOf((String) newValue);
+			onUpdateProperty(blt);
 		}
 	}
 	public ElementAdapter getElement() {
@@ -66,8 +67,8 @@ public class BorderListItem extends SimpleMMPropertyItem {
 
 	@Override
 	public Object getValue() {
-		TrackerType tt = (TrackerType) getElementProperties().getPropertyValue(key);
-		return tt.toString();
+		BorderListType blt = (BorderListType) getElementProperties().getPropertyValue(key);
+		return blt.toString();
 	}
 
 	@Override

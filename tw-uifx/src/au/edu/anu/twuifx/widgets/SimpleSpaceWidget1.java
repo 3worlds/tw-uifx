@@ -59,6 +59,7 @@ import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.BorderListType;
 import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
 import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.ens.biologie.generic.utils.Duple;
@@ -175,7 +176,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
 			spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
 					yLimits.sup() - yLimits.inf());
-			eec = (EdgeEffectCorrection) meta.properties().getPropertyValue(P_SPACE_EDGEEFFECTS.key());
+			BorderListType blt = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+			eec = BorderListType.getEdgeEffectCorrection(blt);
 			return;
 		}
 		case squareGrid: {
@@ -183,7 +185,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			int xnCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NX.key());
 			int ynCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NY.key());
 			spaceBounds = new BoundingBox(0, 0, cellSize * xnCells, cellSize * ynCells);
-			eec = (EdgeEffectCorrection) meta.properties().getPropertyValue(P_SPACE_EDGEEFFECTS.key());
+			BorderListType blt = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+			eec = BorderListType.getEdgeEffectCorrection(blt);
 
 			return;
 		}

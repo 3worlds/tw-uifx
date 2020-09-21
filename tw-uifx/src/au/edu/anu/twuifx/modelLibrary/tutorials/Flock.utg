@@ -195,8 +195,9 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 				component cmp1
 					nInstances = java.lang.Integer(40)
 			space space1
-				edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffectCorrection(custom)
-				borderType = au.edu.anu.rscs.aot.collections.tables.StringTable(([2,2]"reflection","sticky","oblivion","infinite"))
+				//edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffectCorrection(custom)
+				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"reflection","sticky","oblivion","infinite"))
+				//orderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
 				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 				units = java.lang.String(m)
