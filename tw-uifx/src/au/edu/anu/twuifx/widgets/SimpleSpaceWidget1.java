@@ -51,6 +51,7 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
+import au.edu.anu.twuifx.mm.propertyEditors.borderList.BorderListEditor;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -60,6 +61,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.BorderListType;
+import fr.cnrs.iees.twcore.constants.BorderType;
 import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
 import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.ens.biologie.generic.utils.Duple;
@@ -144,6 +146,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private boolean showLines;
 	private int colourHLevel;
 	private EdgeEffectCorrection eec;
+	private double tickWidth;
+
+	private BorderListType borderList;
 
 	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
 
@@ -176,8 +181,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
 			spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
 					yLimits.sup() - yLimits.inf());
-			BorderListType blt = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
-			eec = BorderListType.getEdgeEffectCorrection(blt);
+			borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+			eec = BorderListType.getEdgeEffectCorrection(borderList);
+			tickWidth = getTickWidth();
 			return;
 		}
 		case squareGrid: {
@@ -185,9 +191,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			int xnCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NX.key());
 			int ynCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NY.key());
 			spaceBounds = new BoundingBox(0, 0, cellSize * xnCells, cellSize * ynCells);
-			BorderListType blt = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
-			eec = BorderListType.getEdgeEffectCorrection(blt);
-
+			borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+			eec = BorderListType.getEdgeEffectCorrection(borderList);
+			tickWidth = getTickWidth();
 			return;
 		}
 		default: {
@@ -195,6 +201,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			throw new TwuifxException(type + " not supported.");
 		}
 		}
+	}
+
+	private double getTickWidth() {
+		double mxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
+		double exp = Math.round(Math.log10(mxDim));
+		double mx = Math.pow(10, exp);
+		return mx / 10;
 	}
 
 	@Override
@@ -308,6 +321,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		if (showLines) {
 			gc.setStroke(lineColour);
+			gc.setLineWidth(1.0);
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
 				double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
 				double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
@@ -482,8 +496,28 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private void clearCanvas() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(bkgColour);
-		gc.setStroke(Color.BLACK);
+		gc.setStroke(bkgColour);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		double w = canvas.getWidth();
+		double h = canvas.getHeight();
+		double maxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
+		double maxSize = Math.max(w, h);
+		double scale = maxSize / maxDim;
+		double d = scale * tickWidth;
+		int nVLines = (int) (w / d);
+		int nHLines = (int) (h / d);
+		gc.setStroke(Color.GREY);
+		gc.setLineDashes(10);
+		gc.setLineWidth(1.0);
+		for (int i = 0; i < nHLines; i++)
+			gc.strokeLine(0, i * d, w, i * d);
+		for (int i = 0; i < nVLines; i++)
+			gc.strokeLine(i * d, 0, i * d, h);
+		double lws = 5;
+		BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h,lws);
+		BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w - 1, 0, w - 1, h,lws);
+		BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h - 1, w, h - 1,lws);
+		BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1,lws);
 	};
 
 	private Color getColour(int idx) {

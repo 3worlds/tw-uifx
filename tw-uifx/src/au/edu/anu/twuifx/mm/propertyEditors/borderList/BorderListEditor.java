@@ -56,7 +56,6 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
@@ -187,33 +186,33 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		canvas.setHeight(h);
 		gc.fillRect(0, 0, w, h);
 
-		drawBorder(gc, cmbTop.getSelectionModel().getSelectedItem(),    0,   1,   w,   1);
-		drawBorder(gc, cmbBottom.getSelectionModel().getSelectedItem(), 0,   h-1, w,   h-1);
-		drawBorder(gc, cmbLeft.getSelectionModel().getSelectedItem(),   1,   0,   1,   h);
-		drawBorder(gc, cmbRight.getSelectionModel().getSelectedItem(),  w-1, 0,   w-1, h);
+		drawBorder(gc, cmbTop.getSelectionModel().getSelectedItem(),    0,   1,   w,   1,1);
+		drawBorder(gc, cmbBottom.getSelectionModel().getSelectedItem(), 0,   h-1, w,   h-1,1);
+		drawBorder(gc, cmbLeft.getSelectionModel().getSelectedItem(),   1,   0,   1,   h,1);
+		drawBorder(gc, cmbRight.getSelectionModel().getSelectedItem(),  w-1, 0,   w-1, h,1);
 
 	}
 
-	private void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2) {
+	public static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,double lineWidthScale) {
 		switch (bt) {
 		case wrap: {
 			gc.setStroke(Color.BLACK);
 			gc.setLineDashes(5);
-			gc.setLineWidth(1.0);
+			gc.setLineWidth(1.0*lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
 		case reflection: {
 			gc.setStroke(Color.BLACK);
 			gc.setLineDashes(0);
-			gc.setLineWidth(4.0);
+			gc.setLineWidth(4.0*lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
 		case sticky: {
 			gc.setStroke(Color.GREY);
 			gc.setLineDashes(0);
-			gc.setLineWidth(4.0);
+			gc.setLineWidth(4.0*lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
@@ -228,7 +227,7 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 			// infinite
 			gc.setStroke(Color.BLACK);
 			gc.setLineDashes(0);
-			gc.setLineWidth(2.0);
+			gc.setLineWidth(2.0*lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
