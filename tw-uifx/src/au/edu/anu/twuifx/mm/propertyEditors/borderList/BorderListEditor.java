@@ -56,6 +56,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
@@ -194,6 +195,7 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 	}
 
 	public static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,double lineWidthScale) {
+		gc.setLineJoin(StrokeLineJoin.ROUND);
 		switch (bt) {
 		case wrap: {
 			gc.setStroke(Color.BLACK);
@@ -217,10 +219,10 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 			break;
 		}
 		case oblivion: {
-//			gc.setStroke(Color.WHITE);
-//			gc.setLineDashes(0);
-//			gc.setLineWidth(1.0);
-//			gc.strokeLine(x1, y1, x2, y2);
+			gc.setStroke(Color.WHITE);
+			gc.setLineDashes(0);
+			gc.setLineWidth(2.0);
+			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
 		default: {

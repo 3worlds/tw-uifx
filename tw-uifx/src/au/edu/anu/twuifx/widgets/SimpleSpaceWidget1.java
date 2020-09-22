@@ -144,6 +144,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private double contrast;
 	private boolean colour64;
 	private boolean showLines;
+	private boolean showGrid;
+	private boolean showEdgeEffect;
 	private int colourHLevel;
 	private EdgeEffectCorrection eec;
 	private double tickWidth;
@@ -506,18 +508,22 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		double d = scale * tickWidth;
 		int nVLines = (int) (w / d);
 		int nHLines = (int) (h / d);
-		gc.setStroke(Color.GREY);
-		gc.setLineDashes(10);
-		gc.setLineWidth(1.0);
-		for (int i = 0; i < nHLines; i++)
-			gc.strokeLine(0, i * d, w, i * d);
-		for (int i = 0; i < nVLines; i++)
-			gc.strokeLine(i * d, 0, i * d, h);
-		double lws = 5;
-		BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h,lws);
-		BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w - 1, 0, w - 1, h,lws);
-		BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h - 1, w, h - 1,lws);
-		BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1,lws);
+		if (showGrid) {
+			gc.setStroke(Color.GREY);
+			gc.setLineDashes(10);
+			gc.setLineWidth(1.0);
+			for (int i = 0; i < nHLines; i++)
+				gc.strokeLine(0, i * d, w, i * d);
+			for (int i = 0; i < nVLines; i++)
+				gc.strokeLine(i * d, 0, i * d, h);
+		}
+		if (showEdgeEffect) {
+			double lws = 5;
+			BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws);
+			BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws);
+			BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws);
+			BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws);
+		}
 	};
 
 	private Color getColour(int idx) {
@@ -555,6 +561,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private static final String keyColour64 = "colour64";
 	private static final String keyColourHLevel = "colourHLevel";
 	private static final String keyShowLines = "showLines";
+	private static final String keyShowGrid = "showGrid";
+	private static final String keyShowEdgeEffect = "showEdgeEffect";
 //	private static final String keyUseModPath = "useModPath";
 
 	@Override
@@ -567,6 +575,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
 		Preferences.putInt(widgetId + keySymbolRad, symbolRadius);
 		Preferences.putBoolean(widgetId + keySymbolFill, symbolFill);
+		Preferences.putBoolean(widgetId + keyShowGrid, showGrid);
+		Preferences.putBoolean(widgetId + keyShowEdgeEffect, showEdgeEffect);
 		Preferences.putDoubles(widgetId + keyBKG, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue());
 		Preferences.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
 				lineColour.getBlue());
@@ -595,6 +605,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			symbolRadius = 2;
 		}
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
+		showGrid = Preferences.getBoolean(widgetId + keyShowGrid, true);
+		showEdgeEffect = Preferences.getBoolean(widgetId + keyShowEdgeEffect, true);
 		double[] rgb;
 		rgb = Preferences.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
 				Color.WHITE.getBlue());
@@ -621,14 +633,15 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	@Override
 	public Object getUserInterfaceContainer() {
 		BorderPane container = new BorderPane();
-		DropShadow dropShadow = new DropShadow();
-		dropShadow.setOffsetX(2);
-		dropShadow.setOffsetY(2);
-		dropShadow.setHeight(1);
-		dropShadow.setRadius(12.0);
+//		DropShadow dropShadow = new DropShadow();
+//		dropShadow.setOffsetX(2);
+//		dropShadow.setOffsetY(2);
+//		dropShadow.setHeight(1);
+//		dropShadow.setRadius(12.0);
+//		dropShadow.setColor(Color.BLUE);
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
-		canvas.setEffect(dropShadow);
+//		canvas.setEffect(dropShadow);
 		canvas.setOnMouseClicked(e -> onMouseClicked(e));
 		zoomTarget.getChildren().add(canvas);
 		Group group = new Group(zoomTarget);
@@ -734,10 +747,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		addTableEntry("Show lines", row++, chbxShowLines, content);
 		chbxShowLines.setSelected(showLines);
 		// -----
-//		CheckBox chbxUseModPath = new CheckBox("");
-//		addTableEntry("Show lines", 2, chbxUseModPath, content);
-//		chbxUseModPath.setSelected(useModPath);
-
+		CheckBox chbxShowGrid = new CheckBox("");
+		addTableEntry("Show grid", row++, chbxShowGrid, content);
+		chbxShowGrid.setSelected(showGrid);
+		// -----
+		CheckBox chbxShowEdgeEffect = new CheckBox("");
+		addTableEntry("Show boundary type", row++, chbxShowEdgeEffect, content);
+		chbxShowEdgeEffect.setSelected(showEdgeEffect);
 		// -----
 		Spinner<Integer> spResolution = new Spinner<>();
 		addTableEntry("Resolution", row++, spResolution, content);
@@ -779,7 +795,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		if (result.get().equals(ok)) {
 			showLines = chbxShowLines.isSelected();
 			symbolFill = chbxFill.isSelected();
-//			useModPath = chbxUseModPath.isSelected();
+			showGrid = chbxShowGrid.isSelected();
+			showEdgeEffect = chbxShowEdgeEffect.isSelected();
 			resolution = spResolution.getValue();
 			symbolRadius = spRadius.getValue();
 			contrast = Double.parseDouble(tfContrast.getText());
