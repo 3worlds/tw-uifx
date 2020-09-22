@@ -41,11 +41,17 @@ import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.BorderListType;
 import fr.cnrs.iees.twcore.constants.BorderType;
+import fr.ens.biologie.generic.utils.Interval;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -55,6 +61,13 @@ import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 public class BorderListEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
+
+	private Canvas canvas;
+	private ComboBox<BorderType> cmbLeft;
+	private ComboBox<BorderType> cmbRight;
+	private ComboBox<BorderType> cmbBottom;
+	private ComboBox<BorderType> cmbTop;
+	private TreeGraphDataNode spaceNode;
 
 	public BorderListEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -73,33 +86,39 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		dlg.initOwner((Window) Dialogs.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		BorderPane content = new BorderPane();
-		Rectangle r = new Rectangle(0, 0, 150, 150);
-		r.setFill(Color.WHITE);
-		content.setCenter(r);
 
-		ComboBox<BorderType> cmbTop = new ComboBox<>();
+		BorderPane content = new BorderPane();
+		canvas = new Canvas();
+		canvas.setHeight(150);
+		canvas.setWidth(150);
+		content.setCenter(canvas);
+
+		cmbTop = new ComboBox<>();
 		BorderPane.setAlignment(cmbTop, Pos.CENTER);
+		BorderPane.setMargin(cmbTop, new Insets(2, 2, 2, 2));
 		cmbTop.getItems().addAll(BorderType.values());
 		content.setTop(cmbTop);
 
-		ComboBox<BorderType> cmbBottom = new ComboBox<>();
+		cmbBottom = new ComboBox<>();
 		BorderPane.setAlignment(cmbBottom, Pos.CENTER);
+		BorderPane.setMargin(cmbBottom, new Insets(2, 2, 2, 2));
 		cmbBottom.getItems().addAll(BorderType.values());
 		content.setBottom(cmbBottom);
 
-		ComboBox<BorderType> cmbLeft = new ComboBox<>();
+		cmbLeft = new ComboBox<>();
 		BorderPane.setAlignment(cmbLeft, Pos.CENTER);
+		BorderPane.setMargin(cmbLeft, new Insets(2, 2, 2, 2));
 		cmbLeft.getItems().addAll(BorderType.values());
 		content.setLeft(cmbLeft);
 
-		ComboBox<BorderType> cmbRight = new ComboBox<>();
+		cmbRight = new ComboBox<>();
 		BorderPane.setAlignment(cmbRight, Pos.CENTER);
+		BorderPane.setMargin(cmbRight, new Insets(2, 2, 2, 2));
 		cmbRight.getItems().addAll(BorderType.values());
 		content.setRight(cmbRight);
 
-		TreeGraphDataNode node = (TreeGraphDataNode) item.getElement();
-		BorderListType currentBLT = (BorderListType) node.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+		spaceNode = (TreeGraphDataNode) item.getElement();
+		BorderListType currentBLT = (BorderListType) spaceNode.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
 
 		// first dim is x : therefore LRBT
 		String sLeft = currentBLT.getWithFlatIndex(0);
@@ -113,6 +132,21 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		cmbLeft.getSelectionModel().select(BorderType.valueOf(sLeft));
 
 		dlg.getDialogPane().setContent(content);
+		
+		drawCanvas();
+		
+		cmbTop.getSelectionModel().selectedItemProperty().addListener((e) -> {
+			drawCanvas();
+		});
+		cmbBottom.getSelectionModel().selectedItemProperty().addListener((e) -> {
+			drawCanvas();
+		});
+		cmbLeft.getSelectionModel().selectedItemProperty().addListener((e) -> {
+			drawCanvas();
+		});
+		cmbRight.getSelectionModel().selectedItemProperty().addListener((e) -> {
+			drawCanvas();
+		});
 
 		Optional<ButtonType> result = dlg.showAndWait();
 		String entry = "";
@@ -132,6 +166,72 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 						"Wrap-around missmatch", "Wrap-around in dimension " + i + " is unpaired.");
 			else
 				setValue(value);
+		}
+
+	}
+
+	private void drawCanvas() {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.setFill(Color.WHITE);
+		gc.setStroke(Color.WHITE);
+		Interval xLimits = (Interval) spaceNode.properties().getPropertyValue(P_SPACE_XLIM.key());
+		Interval yLimits = (Interval) spaceNode.properties().getPropertyValue(P_SPACE_YLIM.key());
+		Bounds bounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
+				yLimits.sup() - yLimits.inf());
+		double maxDim = Math.max(bounds.getWidth(), bounds.getHeight());
+		double maxSize = 150;
+		double scale = maxSize / maxDim;
+		double w = scale * bounds.getWidth();
+		double h = scale * bounds.getHeight();
+		canvas.setWidth(w);
+		canvas.setHeight(h);
+		gc.fillRect(0, 0, w, h);
+
+		drawBorder(gc, cmbTop.getSelectionModel().getSelectedItem(),    0,   1,   w,   1);
+		drawBorder(gc, cmbBottom.getSelectionModel().getSelectedItem(), 0,   h-1, w,   h-1);
+		drawBorder(gc, cmbLeft.getSelectionModel().getSelectedItem(),   1,   0,   1,   h);
+		drawBorder(gc, cmbRight.getSelectionModel().getSelectedItem(),  w-1, 0,   w-1, h);
+
+	}
+
+	private void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2) {
+		switch (bt) {
+		case wrap: {
+			gc.setStroke(Color.BLACK);
+			gc.setLineDashes(5);
+			gc.setLineWidth(1.0);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		case reflection: {
+			gc.setStroke(Color.BLACK);
+			gc.setLineDashes(0);
+			gc.setLineWidth(4.0);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		case sticky: {
+			gc.setStroke(Color.GREY);
+			gc.setLineDashes(0);
+			gc.setLineWidth(4.0);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		case oblivion: {
+//			gc.setStroke(Color.WHITE);
+//			gc.setLineDashes(0);
+//			gc.setLineWidth(1.0);
+//			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		default: {
+			// infinite
+			gc.setStroke(Color.BLACK);
+			gc.setLineDashes(0);
+			gc.setLineWidth(2.0);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
 		}
 
 	}
