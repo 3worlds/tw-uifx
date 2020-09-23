@@ -1269,7 +1269,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		} else if (value instanceof IntegerRange) {
 			return new IntegerRangeItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof BorderListType) { // must come before StringTable
-			return new BorderListItem(this, key, (ElementAdapter) element, editable, category, description);
+			if (((BorderListType) value).size() == 4)
+				return new BorderListItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof StringTable) {
 			StringTable st = (StringTable) value;
 			if (st.getDimensioners().length == 1)
