@@ -137,6 +137,7 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.cnrs.iees.twcore.constants.TwFunctionTypes;
+import fr.cnrs.iees.uit.space.Box;
 import fr.ens.biologie.generic.utils.Interval;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
@@ -1269,18 +1270,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		} else if (value instanceof IntegerRange) {
 			return new IntegerRangeItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof BorderListType) { // must come before StringTable
-			if (((BorderListType) value).size() == 4)
-				return new BorderListItem(this, key, (ElementAdapter) element, editable, category, description);
+			return new BorderListItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof StringTable) {
 			StringTable st = (StringTable) value;
 			if (st.getDimensioners().length == 1)
 				return new StringTableItem(this, key, (ElementAdapter) element, editable, category, description);
+		} else if (value instanceof Box) {
+			//System.out.println("BOX TYPE");
 		}
-		// DoubleTable dt = (DoubleTable) value;
-		// if (dt.getDimensioners().length ==1)
-		// return new
-		// DoubleTableItem(this,key,(ElementAdapter)element,true,category,description);
-//		}
 		return new SimpleMMPropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}
 
