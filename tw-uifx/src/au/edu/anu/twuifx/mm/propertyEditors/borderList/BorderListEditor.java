@@ -45,15 +45,19 @@ import fr.ens.biologie.generic.utils.Interval;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineJoin;
@@ -62,12 +66,14 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 public class BorderListEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
-	private Canvas canvas;
-	private ComboBox<BorderType> cmbLeft;
-	private ComboBox<BorderType> cmbRight;
-	private ComboBox<BorderType> cmbBottom;
-	private ComboBox<BorderType> cmbTop;
-	private TreeGraphDataNode spaceNode;
+	// private Canvas canvas;
+//	private ComboBox<BorderType> cmbLeft;
+//	private ComboBox<BorderType> cmbRight;
+//	private ComboBox<BorderType> cmbBottom;
+//	private ComboBox<BorderType> cmbTop;
+//	private ComboBox<BorderType>[] cmbLower;
+//	private ComboBox<BorderType>[] cmbUpper;
+	// private TreeGraphDataNode spaceNode;
 
 	public BorderListEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
@@ -80,6 +86,9 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 
 	private void onAction() {
 		BorderListItem item = (BorderListItem) getProperty();
+		TreeGraphDataNode spaceNode = (TreeGraphDataNode) item.getElement();
+		BorderListType currentBLT = (BorderListType) spaceNode.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
 		dlg.setTitle(item.getElement().toShortString() + "#" + P_SPACE_BORDERTYPE.key());
@@ -87,152 +96,52 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 
-		BorderPane content = new BorderPane();
-		canvas = new Canvas();
-		canvas.setHeight(150);
-		canvas.setWidth(150);
-		content.setCenter(canvas);
+		GridPane content = new GridPane();
+		content.setVgap(2);
+		content.setHgap(2);
 
-		cmbTop = new ComboBox<>();
-		BorderPane.setAlignment(cmbTop, Pos.CENTER);
-		BorderPane.setMargin(cmbTop, new Insets(2, 2, 2, 2));
-		cmbTop.getItems().addAll(BorderType.values());
-		content.setTop(cmbTop);
-
-		cmbBottom = new ComboBox<>();
-		BorderPane.setAlignment(cmbBottom, Pos.CENTER);
-		BorderPane.setMargin(cmbBottom, new Insets(2, 2, 2, 2));
-		cmbBottom.getItems().addAll(BorderType.values());
-		content.setBottom(cmbBottom);
-
-		cmbLeft = new ComboBox<>();
-		BorderPane.setAlignment(cmbLeft, Pos.CENTER);
-		BorderPane.setMargin(cmbLeft, new Insets(2, 2, 2, 2));
-		cmbLeft.getItems().addAll(BorderType.values());
-		content.setLeft(cmbLeft);
-
-		cmbRight = new ComboBox<>();
-		BorderPane.setAlignment(cmbRight, Pos.CENTER);
-		BorderPane.setMargin(cmbRight, new Insets(2, 2, 2, 2));
-		cmbRight.getItems().addAll(BorderType.values());
-		content.setRight(cmbRight);
-
-		spaceNode = (TreeGraphDataNode) item.getElement();
-		BorderListType currentBLT = (BorderListType) spaceNode.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
-
-		// first dim is x : therefore LRBT
-		String sLeft = currentBLT.getWithFlatIndex(0);
-		String sRight = currentBLT.getWithFlatIndex(1);
-		// second dim is y
-		String sBottom = currentBLT.getWithFlatIndex(2);
-		String sTop = currentBLT.getWithFlatIndex(3);
-		cmbTop.getSelectionModel().select(BorderType.valueOf(sTop));
-		cmbBottom.getSelectionModel().select(BorderType.valueOf(sBottom));
-		cmbRight.getSelectionModel().select(BorderType.valueOf(sRight));
-		cmbLeft.getSelectionModel().select(BorderType.valueOf(sLeft));
+		content.add(new Label("lower bound"), 0, 0);
+		content.add(new Label("upper bound"), 2, 0);
+		int nDims = currentBLT.size() / 2;
+		char[] dname = { 'x', 'y', 'z' };
+		ComboBox<BorderType>[] cmbLower = new ComboBox[nDims];
+		ComboBox<BorderType>[] cmbUpper = new ComboBox[nDims];
+		for (int i = 0; i < nDims; i++) {
+			cmbLower[i] = new ComboBox<>();
+			cmbUpper[i] = new ComboBox<>();
+			content.add(cmbLower[i], 0, i + 1);
+			content.add(cmbUpper[i], 2, i + 1);
+			Label lbl = new Label("dimension(" + dname[i] + ")");
+			content.add(lbl, 1, i + 1);
+			GridPane.setHalignment(lbl, HPos.CENTER);
+			GridPane.setHalignment(cmbLower[i], HPos.RIGHT);
+			GridPane.setHalignment(cmbUpper[i], HPos.LEFT);
+			String lower = currentBLT.getWithFlatIndex(i * 2);
+			String upper = currentBLT.getWithFlatIndex(i * 2 + 1);
+			cmbLower[i].getItems().addAll(BorderType.values());
+			cmbUpper[i].getItems().addAll(BorderType.values());
+			cmbLower[i].getSelectionModel().select(BorderType.valueOf(lower));
+			cmbUpper[i].getSelectionModel().select(BorderType.valueOf(upper));
+		}
 
 		dlg.getDialogPane().setContent(content);
-		
-		drawCanvas();
-		
-		cmbTop.getSelectionModel().selectedItemProperty().addListener((e) -> {
-			drawCanvas();
-		});
-		cmbBottom.getSelectionModel().selectedItemProperty().addListener((e) -> {
-			drawCanvas();
-		});
-		cmbLeft.getSelectionModel().selectedItemProperty().addListener((e) -> {
-			drawCanvas();
-		});
-		cmbRight.getSelectionModel().selectedItemProperty().addListener((e) -> {
-			drawCanvas();
-		});
 
 		Optional<ButtonType> result = dlg.showAndWait();
 		String entry = "";
 		if (result.get().equals(ok)) {
-			BorderType left = cmbLeft.getSelectionModel().getSelectedItem();
-			entry += left.name() + ",";
-			BorderType right = cmbRight.getSelectionModel().getSelectedItem();
-			entry += right.name() + ",";
-			BorderType bottom = cmbBottom.getSelectionModel().getSelectedItem();
-			entry += bottom.name() + ",";
-			BorderType top = cmbTop.getSelectionModel().getSelectedItem();
-			entry += top.name();
-			String value = "([4]" + entry + ")";
+			for (int i = 0; i < nDims; i++) {
+				entry += "," + cmbLower[i].getSelectionModel().getSelectedItem().name();
+				entry += "," + cmbUpper[i].getSelectionModel().getSelectedItem().name();
+			}
+			entry = entry.replaceFirst(",", "");
+			String value = "([" + nDims * 2 + "]" + entry + ")";
 			int i = BorderListType.getUnpairedWrapIndex(BorderListType.valueOf(value));
 			if (i >= 0)
 				Dialogs.errorAlert(item.getElement().toShortString() + "#" + P_SPACE_BORDERTYPE.key(),
-						"Wrap-around missmatch", "Wrap-around in dimension " + i + " is unpaired.");
+						"Wrap-around missmatch", "Wrap-around in dimension " + (i + 1) + " is unpaired.");
 			else
 				setValue(value);
-		}
 
-	}
-
-	private void drawCanvas() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setFill(Color.WHITE);
-		gc.setStroke(Color.WHITE);
-		Interval xLimits = (Interval) spaceNode.properties().getPropertyValue(P_SPACE_XLIM.key());
-		Interval yLimits = (Interval) spaceNode.properties().getPropertyValue(P_SPACE_YLIM.key());
-		Bounds bounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
-				yLimits.sup() - yLimits.inf());
-		double maxDim = Math.max(bounds.getWidth(), bounds.getHeight());
-		double maxSize = 150;
-		double scale = maxSize / maxDim;
-		double w = scale * bounds.getWidth();
-		double h = scale * bounds.getHeight();
-		canvas.setWidth(w);
-		canvas.setHeight(h);
-		gc.fillRect(0, 0, w, h);
-
-		drawBorder(gc, cmbTop.getSelectionModel().getSelectedItem(),    0,   1,   w,   1,1);
-		drawBorder(gc, cmbBottom.getSelectionModel().getSelectedItem(), 0,   h-1, w,   h-1,1);
-		drawBorder(gc, cmbLeft.getSelectionModel().getSelectedItem(),   1,   0,   1,   h,1);
-		drawBorder(gc, cmbRight.getSelectionModel().getSelectedItem(),  w-1, 0,   w-1, h,1);
-
-	}
-
-	public static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,double lineWidthScale) {
-		gc.setLineJoin(StrokeLineJoin.ROUND);
-		switch (bt) {
-		case wrap: {
-			gc.setStroke(Color.BLACK);
-			gc.setLineDashes(5);
-			gc.setLineWidth(1.0*lineWidthScale);
-			gc.strokeLine(x1, y1, x2, y2);
-			break;
-		}
-		case reflection: {
-			gc.setStroke(Color.BLACK);
-			gc.setLineDashes(0);
-			gc.setLineWidth(4.0*lineWidthScale);
-			gc.strokeLine(x1, y1, x2, y2);
-			break;
-		}
-		case sticky: {
-			gc.setStroke(Color.GREY);
-			gc.setLineDashes(0);
-			gc.setLineWidth(4.0*lineWidthScale);
-			gc.strokeLine(x1, y1, x2, y2);
-			break;
-		}
-		case oblivion: {
-			gc.setStroke(Color.WHITE);
-			gc.setLineDashes(0);
-			gc.setLineWidth(2.0);
-			gc.strokeLine(x1, y1, x2, y2);
-			break;
-		}
-		default: {
-			// infinite
-			gc.setStroke(Color.BLACK);
-			gc.setLineDashes(0);
-			gc.setLineWidth(2.0*lineWidthScale);
-			gc.strokeLine(x1, y1, x2, y2);
-			break;
-		}
 		}
 
 	}

@@ -100,6 +100,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Window;
 import java.util.logging.Logger;
 
@@ -518,11 +519,11 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				gc.strokeLine(i * d, 0, i * d, h);
 		}
 		if (showEdgeEffect) {
-			double lws = 5;
-			BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws);
-			BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws);
-			BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws);
-			BorderListEditor.drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws);
+			double lws = 5;// line width scaling
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws);
 		}
 	};
 
@@ -842,6 +843,48 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			}
 		}
 		return "";
+	}
+	private static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,double lineWidthScale) {
+		gc.setLineJoin(StrokeLineJoin.ROUND);
+		switch (bt) {
+		case wrap: {
+			gc.setStroke(Color.BLACK);
+			gc.setLineDashes(5);
+			gc.setLineWidth(1.0*lineWidthScale);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		case reflection: {
+			gc.setStroke(Color.BLACK);
+			gc.setLineDashes(0);
+			gc.setLineWidth(4.0*lineWidthScale);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		case sticky: {
+			gc.setStroke(Color.GREY);
+			gc.setLineDashes(0);
+			gc.setLineWidth(4.0*lineWidthScale);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		case oblivion: {
+			gc.setStroke(Color.WHITE);
+			gc.setLineDashes(0);
+			gc.setLineWidth(2.0);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		default: {
+			// infinite
+			gc.setStroke(Color.BLACK);
+			gc.setLineDashes(0);
+			gc.setLineWidth(2.0*lineWidthScale);
+			gc.strokeLine(x1, y1, x2, y2);
+			break;
+		}
+		}
+
 	}
 
 }
