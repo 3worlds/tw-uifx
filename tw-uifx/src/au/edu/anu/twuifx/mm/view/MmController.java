@@ -111,6 +111,7 @@ import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.StringTable.StringTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.borderList.BorderListItem;
+import au.edu.anu.twuifx.mm.propertyEditors.boxType.BoxItem;
 import au.edu.anu.twuifx.mm.propertyEditors.dateTimeType.DateTimeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.fileType.FileTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.integerRangeType.IntegerRangeItem;
@@ -1276,7 +1277,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			if (st.getDimensioners().length == 1)
 				return new StringTableItem(this, key, (ElementAdapter) element, editable, category, description);
 		} else if (value instanceof Box) {
-			//System.out.println("BOX TYPE");
+			return new BoxItem(this, key, (ElementAdapter) element, editable, category, description);
 		}
 		return new SimpleMMPropertyItem(this, key, (ElementAdapter) element, editable, category, description);
 	}

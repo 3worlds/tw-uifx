@@ -28,7 +28,7 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.mm.propertyEditors.borderList;
+package au.edu.anu.twuifx.mm.propertyEditors.boxType;
 
 import java.util.Optional;
 
@@ -37,42 +37,39 @@ import org.controlsfx.property.editor.PropertyEditor;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
-import fr.cnrs.iees.twcore.constants.BorderListType;
-//import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.twcore.constants.TrackerType;
+import fr.cnrs.iees.uit.space.Box;
+import fr.cnrs.iees.uit.space.BoxImpl;
 
 /**
  * @author Ian Davies
  *
- * @date 12 Oct 2019
+ * @date 25 Sep 2020
  */
-public class BorderListItem extends SimpleMMPropertyItem {
+public class BoxItem extends SimpleMMPropertyItem{
 
-	public BorderListItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
+	public BoxItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
 			String description) {
 		super(controller, key, element, canEdit, category, description);
 	}
-
+	
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
 		if (!oldValue.toString().equals(newValue.toString())) {
-			BorderListType blt = BorderListType.valueOf((String) newValue);
-			onUpdateProperty(blt);
+			Box box = Box.valueOf(newValue.toString());
+			onUpdateProperty(box);
 		}
 	}
-	public ElementAdapter getElement() {
-		return element;
-	}
-
-	@Override
 	public Object getValue() {
 		return getElementProperties().getPropertyValue(key).toString();
 	}
-
+	
 	@Override
 	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
-		return Optional.of(BorderListEditor.class);
+		return Optional.of(BoxItemEditor.class);
+	}
+	public ElementAdapter getElement() {
+		return element;
 	}
 
 }
