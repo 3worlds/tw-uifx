@@ -40,12 +40,18 @@ import fr.cnrs.iees.uit.space.Box;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -63,19 +69,50 @@ public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonCon
 		this.getEditor().setOnAction(e -> onAction());
 	}
 
+	private List<TextField> origins;
+	private List<TextField> widths;
+
 	private void onAction() {
+		origins = new ArrayList<>();
+		widths = new ArrayList<>();
 		BoxItem item = (BoxItem) getProperty();
-		Box currentItem = (Box) item.getElementProperties().getPropertyValue(P_SPACE_OBSWINDOW.key());
+		Box currentBox = (Box) item.getElementProperties().getPropertyValue(P_SPACE_OBSWINDOW.key());
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
 		dlg.setTitle(item.getElement().toShortString() + "#" + P_SPACE_OBSWINDOW.key());
 		dlg.initOwner((Window) Dialogs.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		GridPane content = new GridPane();
+		dlg.getDialogPane().setContent(content);
+		content.setVgap(2);
+		content.setHgap(2);
+		content.add(new Label("origin"), 0, 0);
+		content.add(new Label("width"), 2, 0);
+		char[] dname = { 'x', 'y', 'z' };
+		for (int i = 0; i < currentBox.dim(); i++) {
+			Double origin = currentBox.lowerBound(i);
+			Double width = currentBox.upperBound(i) - origin;
+			TextField tf;
+
+			tf = new TextField(origin.toString());
+			tf.setTextFormatter(new TextFormatter<>(
+					change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+			origins.add(tf);
+			tf = new TextField(width.toString());
+			tf.setTextFormatter(new TextFormatter<>(
+					change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		
+			widths.add(tf);
+		
+			content.add(origins.get(i), 0, i + 1);
+			content.add(widths.get(i), 2, i + 1);
+			content.add(new Label("dimension(" + dname[i] + ")"), 1, i + 1);
+		}
+
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
-			
-			
+
 		}
 	}
 

@@ -241,7 +241,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						+ "'.";
 				String content = "Path length: ";
 				String defaultValue = "1";
-				String result = Dialogs.getText(title, header, content, defaultValue, Dialogs.vsNumeric);
+				String result = Dialogs.getText(title, header, content, defaultValue, Dialogs.vsInteger);
 				if (result != null) {
 					int depth = Integer.parseInt(result);
 					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
