@@ -102,9 +102,8 @@ public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonCon
 			tf = new TextField(width.toString());
 			tf.setTextFormatter(new TextFormatter<>(
 					change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
-		
 			widths.add(tf);
-		
+
 			content.add(origins.get(i), 0, i + 1);
 			content.add(widths.get(i), 2, i + 1);
 			content.add(new Label("dimension(" + dname[i] + ")"), 1, i + 1);
@@ -112,8 +111,20 @@ public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonCon
 
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
-
-		}
+			// [[0.0,0.0,etc...],[0.0,0.0,etc]]
+			String lower = "[";
+			String upper = "[";
+			for (int i = 0; i < currentBox.dim(); i++) {
+				double origin = Double.parseDouble(origins.get(i).getText());
+				double width = Double.parseDouble(widths.get(i).getText());
+				lower += origin + ",";
+				upper += (origin + width) + ",";
+			}
+			lower = lower.substring(0, lower.length()-1)+"]";
+			upper = upper.substring(0, upper.length()-1)+"]";
+			String value = "["+lower+","+upper+"]";
+			setValue(value);
+			}
 	}
 
 	@Override
