@@ -1,15 +1,15 @@
-treegraph // saved by OmugiGraphExporter on Fri Sep 25 15:43:26 CEST 2020
+treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds LittleForest
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String(gignoux (31 août 2020))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String()
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"jacques.gignoux@upmc.fr"))
+	precis = java.lang.String(A simplistic individual based forest model to test the use of groups)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = java.lang.String()
+	version = java.lang.String(demo)
 	predefined *categories*
 		categorySet *organisation*
 			category *assemblage*
@@ -52,50 +52,50 @@ treegraph // saved by OmugiGraphExporter on Fri Sep 25 15:43:26 CEST 2020
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(cnt)
 			field gmax
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(relative growth rate)
+				interval = fr.ens.biologie.generic.utils.Interval(]0.0,+∞[)
+				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(kg yr-1)
 			field pmor
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(death probability)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0[)
+				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field fec
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(per capita fecundity)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(# yr-1)
 		record drv
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(drv)
 			field biomass
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(tree biomass)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(kg)
 		record treedec
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(treedec)
 			field neighBm
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(total biomass in neighbourhood)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(kg)
 		record global
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(global)
 			field searchRadius
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(neighbourhood radius)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,10.0])
+				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m)
 	experiment expt
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
@@ -108,15 +108,15 @@ treegraph // saved by OmugiGraphExporter on Fri Sep 25 15:43:26 CEST 2020
 				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalCnt.searchRadius = 10.0;"))
 		dynamics sim1
 			timeline tmLn1
-				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
-				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
-				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
 				timer clock1
 					dt = java.lang.Long(1)
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
-					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 					process p4
 						dataTracker trk1
 							sampleSize = java.lang.String(ALL)
@@ -158,6 +158,12 @@ treegraph // saved by OmugiGraphExporter on Fri Sep 25 15:43:26 CEST 2020
 							userClassName = java.lang.String(code.sys1.Mortality)
 							snippet snpt2
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		// mortality is increased proportionally to low growth due to competition","		double coef = biomass/(biomass+neighBm);","		double proba = 1-(1-group_pmor)*coef;","		return decider.decide(proba);"))
+						dataTracker trk2
+							sampleSize = java.lang.String(10)
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 		structure struc1
 			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
 			space space1
@@ -182,7 +188,7 @@ treegraph // saved by OmugiGraphExporter on Fri Sep 25 15:43:26 CEST 2020
 					constantValues initCnts2
 						fec = java.lang.Double(1.8)
 						gmax = java.lang.Double(0.3)
-						pmor = java.lang.Double(0.1)
+						pmor = java.lang.Double(0.15)
 				componentType treeIndividual
 					decoratorClass = java.lang.String(code.sys1.Treedec)
 					driverClass = java.lang.String(code.sys1.Drv)
@@ -214,10 +220,17 @@ treegraph // saved by OmugiGraphExporter on Fri Sep 25 15:43:26 CEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget wgt2
+			container cont1
 				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				widget wgt2
+					order = java.lang.Integer(2)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				widget wgt4
+					order = java.lang.Integer(1)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 			widget wgt3
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
@@ -236,6 +249,10 @@ treegraph // saved by OmugiGraphExporter on Fri Sep 25 15:43:26 CEST 2020
 [dataTracker:trk1] trackField trks4 [field:count]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trk1] trackComponent trks3 [group:Carpinus]
+[dataTracker:trk2] trackComponent trks8 [component:cmp1]
+[dataTracker:trk2] trackField trks7 [field:neighBm]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[widget:wgt4] trackSeries trks6 [dataTracker:trk2]
 [category:tree] decorators decs1 [record:treedec]
 [category:tree] drivers drvs1 [record:drv]
 [system:sys1] belongsTo bt3 [category:*permanent*]
