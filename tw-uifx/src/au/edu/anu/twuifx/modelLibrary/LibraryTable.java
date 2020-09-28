@@ -35,7 +35,6 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.io.GraphImporter;
-import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
 
 /**
  * A lookup enum for entries in ModelMaker "New" menu. Display order is the
