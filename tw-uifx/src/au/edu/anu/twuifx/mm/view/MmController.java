@@ -765,6 +765,21 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onNodeSelected(VisualNode node) {
 		lastSelectedNode = node;
 		fillNodePropertySheet(lastSelectedNode);
+
+		// kludge to refresh the property editors with node is clicked for the first
+		// time!?
+		Platform.runLater(() -> {
+			double[] d = splitPane1.getDividerPositions();
+			for (int i = 0; i < d.length; i++)
+				d[i] += 0.0001;
+			splitPane1.setDividerPositions(d);
+		});
+		Platform.runLater(() -> {
+			double[] d = splitPane1.getDividerPositions();
+			for (int i = 0; i < d.length; i++)
+				d[i] -= 0.0001;
+			splitPane1.setDividerPositions(d);
+		});
 	}
 
 	@Override
@@ -1129,21 +1144,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private String getMessageText(ErrorMessagable msg) {
 
-		// Text t;
 		String t = "";
 		switch (verbosity) {
 		case brief: {
-//			t = new Text(msg.verbose1() + "\n\n");
 			t = msg.verbose1() + "\n\n";
 			break;
 		}
 		case medium: {
-//			t = new Text(msg.verbose2() + "\n\n");
 			t = msg.verbose2() + "\n\n";
 			break;
 		}
 		default: {
-//			t = new Text(msg.toString() + "\n\n");
 			t = msg.toString() + "\n\n";
 		}
 		}
