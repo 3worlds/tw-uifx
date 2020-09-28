@@ -139,6 +139,7 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.cnrs.iees.twcore.constants.TwFunctionTypes;
 import fr.cnrs.iees.uit.space.Box;
+import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
@@ -578,12 +579,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		dlg.showAndWait();
 	}
 
-//	@FXML
-//	void doDocumentation(ActionEvent event) {
-//		DocoGenerator gen = new DocoGenerator(ConfigGraph.getGraph());
-//		gen.generate();
-//	}
-
 	@FXML
 	void onImportSnippets(ActionEvent event) {
 
@@ -764,20 +759,24 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@Override
 	public void onNodeSelected(VisualNode node) {
 		lastSelectedNode = node;
-		fillNodePropertySheet(lastSelectedNode);
+		Duple<ObservableList<Item>, ObservableList<Item>> items = getObsItems();
+		// fillAllPropertySheet(items.getFirst());
+		fillSelPropertySheet(items.getSecond());
+//		fillNodePropertySheet(lastSelectedNode);
 
 		// kludge to refresh the property editors with node is clicked for the first
 		// time!?
 		Platform.runLater(() -> {
 			double[] d = splitPane1.getDividerPositions();
 			for (int i = 0; i < d.length; i++)
-				d[i] += 0.0001;
+				d[i] += 0.01;
 			splitPane1.setDividerPositions(d);
 		});
+
 		Platform.runLater(() -> {
 			double[] d = splitPane1.getDividerPositions();
 			for (int i = 0; i < d.length; i++)
-				d[i] -= 0.0001;
+				d[i] -= 0.01;
 			splitPane1.setDividerPositions(d);
 		});
 	}
@@ -789,11 +788,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@Override
 	public void onItemEdit(Object changedItem) {
+		// this relies of items begin different instances of the same data
 		Item item = (Item) changedItem;
+		Duple<ObservableList<Item>, ObservableList<Item>> items = getObsItems();
 		if (nodePropertySheet.getItems().contains(item))
-			fillGraphPropertySheet();
+			fillAllPropertySheet(items.getFirst());
 		else if (allElementsPropertySheet.getItems().contains(item)) {
-			fillNodePropertySheet(lastSelectedNode);
+			fillSelPropertySheet(items.getSecond());
 
 		}
 	}
@@ -1183,85 +1184,81 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		return result;
 	}
 
-	// TODO
-	private void fillNodePropertySheet(VisualNode visualNode) {
-		nodePropertySheet.getItems().clear();
-		if (visualNode != null) {
-			TreeGraphNode cn = visualNode.getConfigNode();
-			boolean showNonEditables = true;
-			// ObservableList<Item> list = null;
-			if (cn instanceof DataHolder) {
-				ObservableList<Item> list = getNodeItems((TreeGraphDataNode) cn, cn.id(), showNonEditables,
-						visualNode.isPredefined());
-				nodePropertySheet.getItems().setAll(list);
-			}
-		}
-	}
 
-	private ObservableList<Item> getNodeItems(TreeGraphDataNode node, String category, boolean showNonEditable,
-			boolean isPredef) {
-
-		ObservableList<Item> result = FXCollections.observableArrayList();
-		String propertyDesciption = null;
-		if (node.properties().hasProperty(P_FIELD_DESCRIPTION.key()))
-			propertyDesciption = (String) node.properties().getPropertyValue(P_FIELD_DESCRIPTION.key());
-		for (String key : node.properties().getKeysAsSet())
-
-			if (node.properties().getPropertyValue(key) != null) {
-				boolean editable = model.propertyEditable(node.classId(), key);
-				if (editable || showNonEditable) {
-					boolean canEdit = editable;
-					if (isPredef)
-						canEdit = false;
-					result.add(makeItemType(key, node, canEdit, category, propertyDesciption));
-				}
-			}
-
-		// get the out edges here
-		for (ALEdge edge : node.edges(Direction.OUT))
-			if (edge instanceof ALDataEdge) {
-				ALDataEdge dataEdge = (ALDataEdge) edge;
-				for (String key : dataEdge.properties().getKeysAsSet()) {
-					boolean editable = model.propertyEditable(edge.classId(), key);
-					if (editable || showNonEditable) {
-						boolean canEdit = editable;
-						if (isPredef)
-							canEdit = false;
-						result.add(makeItemType(key, dataEdge, canEdit, category, "Something"));
-					}
-				}
-			}
-
-		result.sort((first, second) -> {
-			return first.getName().compareTo(second.getName());
-		});
-		return result;
-	}
-
-	private void fillGraphPropertySheet() {
-		allElementsPropertySheet.getItems().clear();
-		// sort so order is consistent
-		List<VisualNode> nodeList = getNodeList();
-		nodeList.sort((first, second) -> {
+	private Duple<ObservableList<Item>, ObservableList<Item>> getObsItems() {
+		ObservableList<Item> allItems = FXCollections.observableArrayList();
+		ObservableList<Item> selItems = FXCollections.observableArrayList();
+		Duple<ObservableList<Item>, ObservableList<Item>> result = new Duple<>(allItems, selItems);
+		List<VisualNode> vNodes = getNodeList();
+		vNodes.sort((first, second) -> {
 			return first.id().compareTo(second.id());
 		});
-		ObservableList<Item> obsList = FXCollections.observableArrayList();
-		boolean showNonEditables = false;
-		for (VisualNode vn : nodeList) {
-			// Hide clutter by not showing collapsed trees;
+		for (VisualNode vn : vNodes) {
 			if (!vn.isCollapsed()) {
 				String cat = vn.getCategory();
 				if (cat == null)
 					cat = vn.id();
 				TreeGraphNode cn = vn.getConfigNode();
-				ObservableList<Item> obsSubList = null;
+				// TODO !!! EDGES
 				if (cn instanceof DataHolder) {
-					obsSubList = getNodeItems((TreeGraphDataNode) cn, cat, showNonEditables, vn.isPredefined());
-					obsList.addAll(obsSubList);
+					TreeGraphDataNode node = (TreeGraphDataNode) cn;
+					boolean selectedNode = false;
+					if (lastSelectedNode != null && lastSelectedNode == vn)
+						selectedNode = true;
+					for (String key : node.properties().getKeysAsSet()) {
+						if (node.properties().getPropertyValue(key) != null) {
+							boolean editable = model.propertyEditable(node.classId(), key);
+							editable = editable || vn.isPredefined();
+
+							if (selectedNode) {
+								Item item = makeItemType(key, node, editable, cat, "Something");
+								selItems.add(item);// must be different instances
+							}
+							if (editable) {
+								Item item = makeItemType(key, node, editable, cat, "Something");
+								allItems.add(item);// must be different instances
+							}
+						}
+					}
+					for (ALEdge edge : node.edges(Direction.OUT))
+						if (edge instanceof ALDataEdge) {
+							ALDataEdge dataEdge = (ALDataEdge) edge;
+							for (String key : dataEdge.properties().getKeysAsSet()) {
+								boolean editable = model.propertyEditable(edge.classId(), key);
+								editable = editable || vn.isPredefined();//
+								if (selectedNode) {
+									Item item = (makeItemType(key, dataEdge, editable, cat, "Something"));
+									selItems.add(item);
+								}
+								if (editable) {
+									Item item = (makeItemType(key, dataEdge, editable, cat, "Something"));
+									allItems.add(item);
+								}
+							}
+						}
 				}
+
 			}
 		}
-		allElementsPropertySheet.getItems().setAll(obsList);
+
+		allItems.sort((first, second) -> {
+			return first.getName().compareTo(second.getName());
+		});
+		selItems.sort((first, second) -> {
+			return first.getName().compareTo(second.getName());
+		});
+
+		return result;
+	}
+
+	private void fillAllPropertySheet(ObservableList<Item> items) {
+		allElementsPropertySheet.getItems().clear();
+		allElementsPropertySheet.getItems().setAll(items);
+	}
+
+	private void fillSelPropertySheet(ObservableList<Item> items) {
+		nodePropertySheet.getItems().clear();
+		nodePropertySheet.getItems().setAll(items);
 	}
 
 	private Item makeItemType(String key, DataHolder element, boolean editable, String category, String description) {
@@ -1294,9 +1291,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	private void initialisePropertySheets() {
-//		lastSelectedNode = null;
-		fillGraphPropertySheet();
-		fillNodePropertySheet(lastSelectedNode);
+		lastSelectedNode = null;
+		Duple<ObservableList<Item>, ObservableList<Item>> items = getObsItems();
+		fillAllPropertySheet(items.getFirst());
+		fillSelPropertySheet(items.getSecond());
+//		fillGraphPropertySheet();
+//		fillNodePropertySheet(lastSelectedNode);
 	}
 
 	private Cursor setCursor(Cursor cursor) {
