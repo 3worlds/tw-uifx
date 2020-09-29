@@ -507,23 +507,25 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		double maxSize = Math.max(w, h);
 		double scale = maxSize / maxDim;
 		double d = scale * tickWidth;
+		double lineWidth = d/100.0;
+		double dashes = d/10.0;
 		int nVLines = (int) (w / d);
 		int nHLines = (int) (h / d);
 		if (showGrid) {
 			gc.setStroke(Color.GREY);
-			gc.setLineDashes(10);
-			gc.setLineWidth(1.0);
+			gc.setLineDashes(dashes);
+			gc.setLineWidth(lineWidth);
 			for (int i = 0; i < nHLines; i++)
 				gc.strokeLine(0, i * d, w, i * d);
 			for (int i = 0; i < nVLines; i++)
 				gc.strokeLine(i * d, 0, i * d, h);
 		}
 		if (showEdgeEffect) {
-			double lws = 5;// line width scaling
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws);
+			double lws = lineWidth*10;// line width scaling
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws,dashes);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws,dashes);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws,dashes);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws,dashes);
 		}
 	};
 
@@ -844,12 +846,12 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 		return "";
 	}
-	private static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,double lineWidthScale) {
+	private static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,double lineWidthScale,double dashWidth) {
 		gc.setLineJoin(StrokeLineJoin.ROUND);
 		switch (bt) {
 		case wrap: {
 			gc.setStroke(Color.BLACK);
-			gc.setLineDashes(5);
+			gc.setLineDashes(dashWidth*4);
 			gc.setLineWidth(1.0*lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
