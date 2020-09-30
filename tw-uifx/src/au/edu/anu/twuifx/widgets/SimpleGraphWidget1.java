@@ -2,33 +2,24 @@ package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 
-import org.assertj.core.util.Objects;
-
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.RuntimeGraphData;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.Categorized;
 import au.edu.anu.twcore.ecosystem.runtime.system.ArenaComponent;
 import au.edu.anu.twcore.ecosystem.runtime.system.CategorizedContainer;
 import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
 import au.edu.anu.twcore.ecosystem.runtime.system.EcosystemGraph;
-import au.edu.anu.twcore.ecosystem.runtime.system.HierarchicalComponent;
 import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemRelation;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
-import au.edu.anu.twcore.ecosystem.structure.Category;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
-import fr.cnrs.iees.graph.Edge;
-import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import javafx.application.Platform;
 import javafx.scene.layout.BorderPane;
 
 public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metadata> implements WidgetGUI {
@@ -100,7 +91,7 @@ public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, 
 	}
 
 	private static void printContainer(String indent, SystemComponent sc) {
-		ComponentContainer container = sc.container();
+		ComponentContainer container = (ComponentContainer) sc.container();
 		if (container != null) {
 			container.fullId();
 			// where can i find the ephemeral category that should be displayed here.
