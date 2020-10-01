@@ -89,7 +89,8 @@ import javafx.stage.Window;
 public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
 
-	private int bufferCapacity;// pref mm/mr or both
+	private int bufferCapacity=1000;
+//	private int bufferCapacity;// pref mm/mr or both
 	// drop overlayed points
 	private int MIN_PIXEL_DISTANCE = 0;
 	// private int N_SAMPLES = 3000;// what is this?
