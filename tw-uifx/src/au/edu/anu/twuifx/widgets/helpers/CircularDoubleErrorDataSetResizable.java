@@ -12,6 +12,7 @@ public class CircularDoubleErrorDataSetResizable extends CircularDoubleErrorData
 	 */
 	private static final long serialVersionUID = 3245592112380606133L;
 
+	@Deprecated
 	public CircularDoubleErrorDataSetResizable(String name, int initalSize) {
 		super(name, initalSize);
 	}

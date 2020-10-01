@@ -36,6 +36,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMOD
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -48,7 +49,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
+//import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -107,6 +108,10 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		dataSetMap = new HashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
+//		 Glyph clipBoardIcon = new Glyph("FontAwesome", FontAwesome.Glyph.CLIPBOARD).size(20);
+//		 System.out.println(clipBoardIcon);
+//		 System.out.println(FontAwesome.Glyph.CLIPBOARD.getChar());
+
 	}
 
 	@Override
@@ -121,13 +126,15 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 			for (DataLabel dl : tsmeta.doubleNames()) {
 				String key = dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+//				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, bufferCapacity);
 				dataSetMap.put(key, ds);
 			}
 
 			for (DataLabel dl : tsmeta.intNames()) {
 				String key = dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+//				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, bufferCapacity);
 				dataSetMap.put(key, ds);
 			}
 			/*
@@ -294,8 +301,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			if (v != bufferCapacity) {
 				bufferCapacity=v;
 				for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
-					CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
-					ds.resizeBuffer(bufferCapacity);
+					CircularDoubleErrorDataSet ds = (CircularDoubleErrorDataSet) e.getValue();
+					//ds.resizeBuffer(bufferCapacity);
 				}
 			}
 		}
