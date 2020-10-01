@@ -243,19 +243,19 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			container cont1
 				order = java.lang.Integer(0)
-				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 				widget srsdiv
 					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-				widget srsx
-					order = java.lang.Integer(0)
+				widget tblx
+					order = java.lang.Integer(1)
 					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-			widget tblx
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+			widget srsx
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 
 // CROSS-LINKS
 [category:commCat] decorators decs1 [record:commDecs]
