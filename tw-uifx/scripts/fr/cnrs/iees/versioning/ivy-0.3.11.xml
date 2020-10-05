@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.3.12 (Tue Oct 06 10:15:51 AEDT 2020)
+ ant and ivy scripts for project <tw-uifx> version 0.3.11 (Tue Aug 18 09:46:41 AEST 2020)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -13,7 +13,7 @@
 
 	<info	organisation="au.edu.anu.tw-uifx"
 			module="tw-uifx"
-			revision="0.3.12"
+			revision="0.3.11"
 			status="integration">
 		<license name="gpl3" url="https://www.gnu.org/licenses/gpl-3.0.txt"/>
 		<description>This module contains only fx code for the UI of ModelMaker and ModelRunner.</description>
@@ -50,7 +50,9 @@
 		<dependency org="de.gsi.dataset" name="chartfx-dataset" rev="11.2.0"/>
 		<dependency org="de.gsi.math" name="chartfx-math" rev="11.2.0"/>
 		<dependency org="de.gsi.acc" name="chartfx-acc" rev="11.2.0"/>
-		<dependency org="de.gsi" name="microservice" rev="11.2.0"/>
+		<!-- https://mvnrepository.com/artifact/de.gsi/microservice -->
+        <dependency org="de.gsi" name="microservice" rev="11.2.0"/>
+		
 		<dependency org="org.slf4j" name="slf4j-api" rev="[1.7,)"/>
 	</dependencies>
 

@@ -90,17 +90,14 @@ public class VersionSettings {
 
 			{ "org.controlsfx", "controlsfx", "[11,)", null }, { "org.apache.commons", "commons-math", "[2,)", null },
 
-			// here because TwSetup does not pull these in from TwCore
-			// Now removed as this problem seems solved by putting twsetup in separate lib
-			// {"org.apache.odftoolkit","simple-odf","0.8.2-incubating", null},
-			// {"com.hp.hpl.jena","jena","2.6.4", null},
 
-			{ "de.gsi", "chartfx", "11.1.5", null }, // pom
-			{ "de.gsi", "chartfx-samples", "11.1.5", null }, 
-			{ "de.gsi.chart", "chartfx-chart", "11.1.5", null },
-			{ "de.gsi.dataset", "chartfx-dataset", "11.1.5", null }, 
-			{ "de.gsi.math", "chartfx-math", "11.1.5", null },
-			{ "de.gsi.acc", "chartfx-acc", "11.1.5", null },
+			{ "de.gsi", "chartfx", "11.2.0", null }, // pom?
+			{ "de.gsi", "chartfx-samples", "11.2.0", null }, 
+			{ "de.gsi.chart", "chartfx-chart", "11.2.0", null },
+			{ "de.gsi.dataset", "chartfx-dataset", "11.2.0", null }, 
+			{ "de.gsi.math", "chartfx-math", "11.2.0", null },
+			{ "de.gsi.acc", "chartfx-acc", "11.2.0", null },
+			{ "de.gsi", "microservice", "11.2.0", null },
 			
 			// This is required by chart-fx - tw-core loads this api, but as version 1.7.6
 			// but chartfx cannot use that version, it is set to use version 2.0.0
