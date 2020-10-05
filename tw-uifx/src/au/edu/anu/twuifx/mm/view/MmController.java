@@ -78,7 +78,6 @@ import java.util.Scanner;
 
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
-
 import javafx.scene.effect.DropShadow;
 
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -306,7 +305,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// --------------------------- FXML Start ----------------------
 	@FXML
 	public void initialize() {
-
 		cbNodeTextChoice.getItems().addAll(ElementDisplayText.values());
 		cbNodeTextChoice.getSelectionModel().select(ElementDisplayText.RoleName);
 		cbEdgeTextChoice.getItems().addAll(ElementDisplayText.values());
@@ -754,23 +752,24 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		currentLayout = layout;
 	}
 
-	// used only by Visualiser?? Passed by a node onClicked if not for local popup
-	// menu
+	// used only by Visualiser?? Passed by a node onClicked left button
 	@Override
 	public void onNodeSelected(VisualNode node) {
 		lastSelectedNode = node;
 		Duple<ObservableList<Item>, ObservableList<Item>> items = getObsItems();
-		// fillAllPropertySheet(items.getFirst());
 		fillSelPropertySheet(items.getSecond());
-//		fillNodePropertySheet(lastSelectedNode);
 
-		// kludge to refresh the property editors with node is clicked for the first
-		// time!?
+		/**
+		 * Kludge to refresh the property editors when a graph node is clicked for the
+		 * first time!
+		 */
 		Platform.runLater(() -> {
-			double[] d = splitPane1.getDividerPositions();
-			for (int i = 0; i < d.length; i++)
-				d[i] += 0.01;
-			splitPane1.setDividerPositions(d);
+			{
+				double[] d = splitPane1.getDividerPositions();
+				for (int i = 0; i < d.length; i++)
+					d[i] += 0.01;
+				splitPane1.setDividerPositions(d);
+			}
 		});
 
 		Platform.runLater(() -> {
@@ -1183,7 +1182,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			result.add(n);
 		return result;
 	}
-
 
 	private Duple<ObservableList<Item>, ObservableList<Item>> getObsItems() {
 		ObservableList<Item> allItems = FXCollections.observableArrayList();

@@ -32,7 +32,6 @@ package au.edu.anu.twuifx.mr.view;
 
 import java.io.File;
 import java.util.Scanner;
-
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -128,6 +127,16 @@ public class MrController implements IMRController {
 	}
 
 	@FXML
+	public void initialize() {
+		model = new MRModel();
+		statusBar.setSpacing(5);
+		statusBar.setPadding(new Insets(1, 1, 1, 1));
+		// statusBar.setStyle("-fx-background-color: lightgray");
+		toolBar.setSpacing(5);
+		// toolBar.setStyle("-fx-background-color: lightgray");
+	}
+
+	@FXML
 	void onAboutModelRunner(ActionEvent event) {
 		Dialog<ButtonType> dlg = new Dialog<>();
 		dlg.initOwner((Window) Dialogs.owner());
@@ -143,32 +152,30 @@ public class MrController implements IMRController {
 		attribution.setPrefWidth(330);
 		attribution.setEditable(false);
 		ScrollPane attrScroller = new ScrollPane(attribution);
-		
-		
+
 		SimplePropertyList rootProps = model.getGraph().root().properties();
 		StringTable t;
-		attribution.appendText(P_MODEL_PRECIS.key()+":\n"+rootProps.getPropertyValue(P_MODEL_PRECIS.key()) + "\n");
+		attribution.appendText(P_MODEL_PRECIS.key() + ":\n" + rootProps.getPropertyValue(P_MODEL_PRECIS.key()) + "\n");
 
-		attribution.appendText("\n"+P_MODEL_AUTHORS.key() + ":\n");
+		attribution.appendText("\n" + P_MODEL_AUTHORS.key() + ":\n");
 		t = (StringTable) rootProps.getPropertyValue(P_MODEL_AUTHORS.key());
 		for (int i = 0; i < t.size(); i++)
 			attribution.appendText("\t" + t.getWithFlatIndex(i) + "\n");
 
-		attribution.appendText("\n"+P_MODEL_CITATIONS.key() + ":\n");
+		attribution.appendText("\n" + P_MODEL_CITATIONS.key() + ":\n");
 		t = (StringTable) rootProps.getPropertyValue(P_MODEL_CITATIONS.key());
 		for (int i = 0; i < t.size(); i++)
 			attribution.appendText("\t" + t.getWithFlatIndex(i) + "\n");
-	
-		attribution.appendText("\n"+P_MODEL_CONTACTS.key() + ":\n");
+
+		attribution.appendText("\n" + P_MODEL_CONTACTS.key() + ":\n");
 		t = (StringTable) rootProps.getPropertyValue(P_MODEL_CONTACTS.key());
 		for (int i = 0; i < t.size(); i++)
 			attribution.appendText("\t" + t.getWithFlatIndex(i) + "\n");
-		
-		attribution.appendText("\n"+P_MODEL_VERSION.key()+": "+rootProps.getPropertyValue(P_MODEL_VERSION.key()) + "\n");
 
-		attribution.appendText("\n"+P_MODEL_BUILTBY.key()+": "+rootProps.getPropertyValue(P_MODEL_BUILTBY.key()));
-		
-		
+		attribution.appendText(
+				"\n" + P_MODEL_VERSION.key() + ": " + rootProps.getPropertyValue(P_MODEL_VERSION.key()) + "\n");
+
+		attribution.appendText("\n" + P_MODEL_BUILTBY.key() + ": " + rootProps.getPropertyValue(P_MODEL_BUILTBY.key()));
 
 		leftContent.getChildren().addAll(imageView, new Label("Three Worlds - M. C. Escher (1955)"), attrScroller);
 		TextFlow textFlow = new TextFlow();
@@ -222,12 +229,13 @@ public class MrController implements IMRController {
 		dlg.showAndWait();
 
 	}
-    @FXML
-    void onODDGen(ActionEvent event) {
+
+	@FXML
+	void onODDGen(ActionEvent event) {
 		DocoGenerator gen = new DocoGenerator(model.getGraph());
 		gen.generate();
 
-    }
+	}
 
 	@FXML
 	void onCurrentConfiguration(ActionEvent event) {
@@ -288,16 +296,6 @@ public class MrController implements IMRController {
 		exts[1] = ".mpf";
 		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save parameters", exts);
 		System.out.println(file);
-	}
-
-	@FXML
-	public void initialize() {
-		model = new MRModel();
-		statusBar.setSpacing(5);
-		statusBar.setPadding(new Insets(1, 1, 1, 1));
-		// statusBar.setStyle("-fx-background-color: lightgray");
-		toolBar.setSpacing(5);
-		// toolBar.setStyle("-fx-background-color: lightgray");
 	}
 
 	private Stage stage;
