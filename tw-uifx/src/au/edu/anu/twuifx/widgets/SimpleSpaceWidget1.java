@@ -51,7 +51,6 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
-import au.edu.anu.twuifx.mm.propertyEditors.borderList.BorderListEditor;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -79,7 +78,6 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
@@ -91,6 +89,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -137,7 +136,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private final Map<String, Duple<Integer, Color>> colourMap;
 	private GridPane legend;
 
-	private int resolution;
+	private double spaceCanvasRatio;
 	private int symbolRadius;
 	private boolean symbolFill;
 	private Color bkgColour;
@@ -488,8 +487,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 	private void resizeCanvas(double sWidth, double sHeight) {
-		int newWidth = (int) Math.round(resolution * sWidth);
-		int newHeight = (int) Math.round(resolution * sHeight);
+		int newWidth = (int) Math.round(spaceCanvasRatio * sWidth);
+		int newHeight = (int) Math.round(spaceCanvasRatio * sHeight);
 		if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
 			canvas.setWidth(newWidth);
 			canvas.setHeight(newHeight);
@@ -555,7 +554,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private static final String keyScaleY = "scaleY";
 	private static final String keyScrollH = "scrollH";
 	private static final String keyScrollV = "scrollV";
-	private static final String keyResolution = "resolution";
+	private static final String keySpaceCanvasRatio = "spaceCanvasRatio";
 	private static final String keySymbolRad = "radius";
 	private static final String keySymbolFill = "fill";
 	private static final String keyBKG = "bkg";
@@ -566,7 +565,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	private static final String keyShowLines = "showLines";
 	private static final String keyShowGrid = "showGrid";
 	private static final String keyShowEdgeEffect = "showEdgeEffect";
-//	private static final String keyUseModPath = "useModPath";
 
 	@Override
 	public void putUserPreferences() {
@@ -574,7 +572,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
 		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
-		Preferences.putInt(widgetId + keyResolution, resolution);
+		Preferences.putDouble(widgetId + keySpaceCanvasRatio, spaceCanvasRatio);
 		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
 		Preferences.putInt(widgetId + keySymbolRad, symbolRadius);
 		Preferences.putBoolean(widgetId + keySymbolFill, symbolFill);
@@ -597,14 +595,14 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
-		resolution = Preferences.getInt(widgetId + keyResolution, 50);
+		spaceCanvasRatio = Preferences.getDouble(widgetId + keySpaceCanvasRatio, 1.0);
 		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
 		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, firstUse);
 		if (symbolRadius == firstUse) {
 			// onMetadata has run therefore spaceBounds is valid
 			double s = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
-			// assume a nominal canvas size of 200
-			resolution = Math.max(1, (int) (200.0 / s));
+			// assume a nominal canvas size of 500
+			spaceCanvasRatio = 500.0 / s;
 			symbolRadius = 2;
 		}
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
@@ -626,8 +624,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 		else
 			colours = ColourContrast.getContrastingColours(bkgColour, contrast);
-
-//		useModPath = Preferences.getBoolean(widgetId+keyUseModPath, true);
 
 	}
 
@@ -758,12 +754,12 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		addTableEntry("Show boundary type", row++, chbxShowEdgeEffect, content);
 		chbxShowEdgeEffect.setSelected(showEdgeEffect);
 		// -----
-		Spinner<Integer> spResolution = new Spinner<>();
-		addTableEntry("Resolution", row++, spResolution, content);
-		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, resolution));
-		spResolution.setMaxWidth(100);
-		spResolution.setEditable(true);
-
+		TextField tfSpaceCanvasRatio = new TextField(Double.toString(spaceCanvasRatio));
+		tfSpaceCanvasRatio.setTextFormatter(new TextFormatter<>(
+				change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		tfSpaceCanvasRatio.setMaxWidth(50);
+		addTableEntry("Canvas:Space ratio", row++, tfSpaceCanvasRatio, content);
+		
 		// -----
 		Spinner<Integer> spRadius = new Spinner<>();
 		addTableEntry("Symbol radius", row++, spRadius, content);
@@ -791,6 +787,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GridPane.setValignment(cpLine, VPos.TOP);
 		// ----
 		TextField tfContrast = new TextField(Double.toString(contrast));
+		tfContrast.setTextFormatter(new TextFormatter<>(
+				change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		addTableEntry("Contrast (0.0-1.0)", row++, tfContrast, content);
 
 		dialog.getDialogPane().setContent(content);
@@ -800,7 +798,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			symbolFill = chbxFill.isSelected();
 			showGrid = chbxShowGrid.isSelected();
 			showEdgeEffect = chbxShowEdgeEffect.isSelected();
-			resolution = spResolution.getValue();
+			spaceCanvasRatio = Double.parseDouble(tfSpaceCanvasRatio.getText());
 			symbolRadius = spRadius.getValue();
 			contrast = Double.parseDouble(tfContrast.getText());
 			colour64 = chbxCS.isSelected();
@@ -829,7 +827,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 	}
 
 	private String findName(MouseEvent e) {
-		double scale = 1.0 / (double) resolution;
+		double scale = 1.0 / (double) spaceCanvasRatio;
 		double size = (symbolRadius * 2) * scale;
 		double rad = symbolRadius * scale;
 		double clickX = (e.getX() * scale) + spaceBounds.getMinX();
