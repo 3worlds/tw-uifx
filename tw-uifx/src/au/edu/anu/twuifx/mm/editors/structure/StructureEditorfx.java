@@ -456,9 +456,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			String name = (String) p.properties().getPropertyValue(aaHasName);
 			TreeGraphDataNode cn = (TreeGraphDataNode)editableNode.getConfigNode();
 			if (cn.properties().hasProperty(name))
-				System.out.println("Property '"+name+"' can be removed");
+				System.out.println(editableNode.getConfigNode().toShortString()+" Property '"+name+"' can be removed");
 			else
-				System.out.println("Property '"+name+"' can be added");
+				System.out.println(editableNode.getConfigNode().toShortString()+" Property '"+name+"' can be added");
 		}
 		return false;
 	}
