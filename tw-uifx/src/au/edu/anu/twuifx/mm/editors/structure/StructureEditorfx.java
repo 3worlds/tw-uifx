@@ -35,6 +35,7 @@ import java.util.List;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.Originator;
+import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
@@ -43,8 +44,10 @@ import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedEdgeLabels;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import javafx.scene.Node;
@@ -83,6 +86,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
 		List<Tuple<String, VisualNode, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
+		List<SimpleDataTreeNode> optionalPropertySpecs = specifications.getOptionalProperties(baseSpec, subClassSpec);
 		final double duration = GraphVisualiserfx.animateSlow;
 
 		{
@@ -123,7 +127,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (Tuple<String, VisualNode, SimpleDataTreeNode> p : filteredEdgeSpecs) {
 					boolean reserved = ConfigurationReservedEdgeLabels.isPredefined(p.getFirst());
 					if (!reserved) {
-						MenuItem mi = MenuLabels.addMenuItem(mu, p.getFirst() + "->" + p.getSecond().getDisplayText(ElementDisplayText.RoleName));
+						MenuItem mi = MenuLabels.addMenuItem(mu,
+								p.getFirst() + "->" + p.getSecond().getDisplayText(ElementDisplayText.RoleName));
 						if (ConfigurationReservedNodeId.isPredefined(p.getSecond().id())
 								&& ConfigurationReservedNodeId.isPredefined(editableNode.getConfigNode().id()))
 							mi.setDisable(true);
@@ -237,8 +242,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_SHOWLOCALGRAPH);
 			mi.setOnAction((e) -> {
 				String title = MenuLabels.ML_SHOWLOCALGRAPH.label();
-				String header = "Show graph surrounding '" + editableNode.getSelectedVisualNode().getDisplayText(ElementDisplayText.RoleName)
-						+ "'.";
+				String header = "Show graph surrounding '"
+						+ editableNode.getSelectedVisualNode().getDisplayText(ElementDisplayText.RoleName) + "'.";
 				String content = "Path length: ";
 				String defaultValue = "1";
 				String result = Dialogs.getText(title, header, content, defaultValue, Dialogs.vsInteger);
@@ -278,7 +283,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				for (VisualEdge edge : editableNode.getOutEdges()) {
 					VisualNode vn = (VisualNode) edge.endNode();
 
-					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->" + vn.getDisplayText(ElementDisplayText.RoleName));
+					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->"
+							+ vn.getDisplayText(ElementDisplayText.RoleName));
 					if (ConfigurationReservedNodeId.isPredefined(vn.id())
 							&& ConfigurationReservedNodeId.isPredefined(editableNode.getConfigNode().id()))
 						mi.setDisable(true);
@@ -336,6 +342,22 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			} else
 				mu.setDisable(true);
 		}
+		{
+			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_OPTIONAL_PROPS);
+			if (!editableNode.isPredefined()&& !optionalPropertySpecs.isEmpty()) {
+				mi.setOnAction((e) -> {
+
+					String desc = MenuLabels.ML_OPTIONAL_PROPS.label() + " ["
+							+ editableNode.getConfigNode().toShortString() + "]";
+
+					if (onOptionalProperties(optionalPropertySpecs))
+
+						recorder.addState(desc);
+				});
+			} else
+				mi.setDisable(true);
+
+		}
 		// ---------------------------------------------------------------
 		cm.getItems().add(new SeparatorMenuItem());
 		// ---------------------------------------------------------------
@@ -360,7 +382,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (editableNode.hasOutEdges()) {
 				for (VisualEdge edge : editableNode.getOutEdges()) {
 					VisualNode vn = (VisualNode) edge.endNode();
-					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->" + vn.getDisplayText(ElementDisplayText.RoleName));
+					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->"
+							+ vn.getDisplayText(ElementDisplayText.RoleName));
 					if (vn.isPredefined() && editableNode.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
@@ -418,6 +441,28 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	}
 
+	private boolean onOptionalProperties(List<SimpleDataTreeNode> propertySpecs) {
+		if (editOptionalProperties(this.editableNode,propertySpecs)) {
+			controller.onNodeDeleted();
+			GraphState.setChanged();
+			ConfigGraph.validateGraph();
+			return true;
+		}
+		return false;
+	}
+
+	private boolean editOptionalProperties(VisualNodeEditable editableNode, List<SimpleDataTreeNode> propertySpecs) {
+		for (SimpleDataTreeNode p:propertySpecs) {
+			String name = (String) p.properties().getPropertyValue(aaHasName);
+			TreeGraphDataNode cn = (TreeGraphDataNode)editableNode.getConfigNode();
+			if (cn.properties().hasProperty(name))
+				System.out.println("Property '"+name+"' can be removed");
+			else
+				System.out.println("Property '"+name+"' can be added");
+		}
+		return false;
+	}
+
 	private enum MenuLabels {
 		ML_NEW_NODE /*         */("New node"), // spec
 		ML_NEW_EDGE/*          */("New edge"), // spec
@@ -434,6 +479,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_DELETE_CHILD_EDGE/* */("Delete child edge"), // config
 		ML_DELETE_TREE/*-      */("Delete tree"), // config
 		ML_DELETE_NODE/*       */("Delete node"), // config
+		ML_OPTIONAL_PROPS/*    */("Optional properties..."),
 		// --------------------------------------------
 		ML_ALL/*               */("All"), //
 		ML_APPLYLAYOUT/*       */("Apply layout"), //
