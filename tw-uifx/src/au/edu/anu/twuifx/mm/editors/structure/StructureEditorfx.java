@@ -30,7 +30,14 @@
 
 package au.edu.anu.twuifx.mm.editors.structure;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
@@ -48,14 +55,23 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.properties.ExtendablePropertyList;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedEdgeLabels;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Window;
 import fr.ens.biologie.generic.utils.Tuple;
 
 /**
@@ -86,7 +102,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
 		List<Tuple<String, VisualNode, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
-		List<SimpleDataTreeNode> optionalPropertySpecs = specifications.getOptionalProperties(baseSpec, subClassSpec);
+		List<SimpleDataTreeNode> optionalPropertySpecs = filterOptionalPropertySpecs(
+				specifications.getOptionalProperties(baseSpec, subClassSpec));
 		final double duration = GraphVisualiserfx.animateSlow;
 
 		{
@@ -111,7 +128,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 							onNewChild(childLabel, chldId, child);
 
 							/*-
-							 * NB: Graph is not valid at until node is placed on screen in the controller!
+							 * NB: Graph is not valid until the new node is placed on screen in the controller!
 							 * Rollover is done then.
 							 */
 						});
@@ -344,7 +361,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_OPTIONAL_PROPS);
-			if (!editableNode.isPredefined()&& !optionalPropertySpecs.isEmpty()) {
+			if (!editableNode.isPredefined() && !optionalPropertySpecs.isEmpty()) {
 				mi.setOnAction((e) -> {
 
 					String desc = MenuLabels.ML_OPTIONAL_PROPS.label() + " ["
@@ -441,9 +458,59 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	}
 
+	// TODO Move to adaptor
+	private List<SimpleDataTreeNode> filterOptionalPropertySpecs(List<SimpleDataTreeNode> propSpecs) {
+		Collection<String> ne = controller.getUnEditablePropertyKeys(editableNode.cClassId());
+		Iterator<SimpleDataTreeNode> iter = propSpecs.iterator();
+		while (iter.hasNext()) {
+			String name = (String) iter.next().properties().getPropertyValue(aaHasName);
+			if (ne.contains(name))
+				iter.remove();
+		}
+		return propSpecs;
+	}
+
+	// TODO Move to adaptor
 	private boolean onOptionalProperties(List<SimpleDataTreeNode> propertySpecs) {
-		if (editOptionalProperties(this.editableNode,propertySpecs)) {
-			controller.onNodeDeleted();
+		List<String> items = new ArrayList<>();
+		List<Boolean> selected = new ArrayList<>();
+		TreeGraphDataNode cn = (TreeGraphDataNode) editableNode.getConfigNode();
+		for (SimpleDataTreeNode p : propertySpecs) {
+			String name = (String) p.properties().getPropertyValue(aaHasName);
+			items.add(name);
+			if (cn.properties().hasProperty(name))
+				selected.add(true);
+			else
+				selected.add(false);
+		}
+		List<String> selectedItems = getCBSelections(items, selected);
+		boolean change = false;
+		List<String> additions = new ArrayList<>();
+		List<String> deletions = new ArrayList<>();
+
+		Set<String> currentKeys = cn.properties().getKeysAsSet();
+		for (String key : currentKeys)
+			if (items.contains(key))
+				if (!selectedItems.contains(key))
+					deletions.add(key);
+		for (String key : selectedItems)
+			if (!currentKeys.contains(key))
+				additions.add(key);
+
+		ExtendablePropertyList props = (ExtendablePropertyList) cn.properties();
+		for (String key : deletions) {
+			props.removeProperty(key);
+		}
+		for (String key : additions) {
+			// find the spec
+			SimpleDataTreeNode pSpec = getPropertySpec(key, propertySpecs);
+			String type = (String) pSpec.properties().getPropertyValue(aaType);
+			Object defValue = ValidPropertyTypes.getDefaultValue(type);
+			props.addProperty(key, defValue);
+		}
+
+		if (!deletions.isEmpty() || !additions.isEmpty()) {
+			controller.onAddRemoveProperty(editableNode.getSelectedVisualNode());
 			GraphState.setChanged();
 			ConfigGraph.validateGraph();
 			return true;
@@ -451,16 +518,60 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		return false;
 	}
 
-	private boolean editOptionalProperties(VisualNodeEditable editableNode, List<SimpleDataTreeNode> propertySpecs) {
-		for (SimpleDataTreeNode p:propertySpecs) {
+	private SimpleDataTreeNode getPropertySpec(String key, List<SimpleDataTreeNode> propertySpecs) {
+		for (SimpleDataTreeNode p : propertySpecs) {
 			String name = (String) p.properties().getPropertyValue(aaHasName);
-			TreeGraphDataNode cn = (TreeGraphDataNode)editableNode.getConfigNode();
-			if (cn.properties().hasProperty(name))
-				System.out.println(editableNode.getConfigNode().toShortString()+" Property '"+name+"' can be removed");
-			else
-				System.out.println(editableNode.getConfigNode().toShortString()+" Property '"+name+"' can be added");
+			if (name.equals(key))
+				return p;
 		}
-		return false;
+		return null;
+	}
+
+	private List<String> getCBSelections(List<String> items, List<Boolean> selected) {
+		Dialog<ButtonType> dlg = new Dialog<>();
+		dlg.setTitle(editableNode.getConfigNode().toShortString());
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		dlg.initOwner((Window) Dialogs.owner());
+		GridPane content = new GridPane();
+		content.setVgap(15);
+		content.setHgap(10);
+		dlg.getDialogPane().setContent(content);
+		List<CheckBox> chkbxs = new ArrayList<>();
+		content.add(new Label("Optional properties"), 0, 0);
+		for (int i = 0; i < items.size(); i++) {
+			CheckBox cx = new CheckBox(items.get(i));
+			chkbxs.add(cx);
+			cx.setSelected(selected.get(i));
+		}
+
+		chkbxs.sort(new Comparator<CheckBox>() {
+
+			@Override
+			public int compare(CheckBox cb1, CheckBox cb2) {
+				return cb1.getText().compareTo(cb2.getText());
+			}
+		});
+
+		int row = 1;
+		for (CheckBox cx : chkbxs) {
+			content.add(cx, 0, row++);
+		}
+
+		Optional<ButtonType> btn = dlg.showAndWait();
+		List<String> result = new ArrayList<>();
+		if (btn.get().equals(ok)) {
+			for (CheckBox cx : chkbxs)
+				if (cx.isSelected())
+					result.add(cx.getText());
+			return result;
+		} else {
+			for (int i = 0; i < items.size(); i++)
+				if (selected.get(i))
+					result.add(items.get(i));
+
+			return result;
+		}
 	}
 
 	private enum MenuLabels {

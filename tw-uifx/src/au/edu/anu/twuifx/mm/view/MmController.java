@@ -68,6 +68,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -821,6 +822,20 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser.onRollback(layoutGraph);
 		lastSelectedNode = null;
 		initialisePropertySheets();
+	}
+
+	@Override
+	public Collection<String> getUnEditablePropertyKeys(String label) {
+		return model.unEditablePropertyKeys(label);
+	}
+
+	@Override
+	public void onAddRemoveProperty(VisualNode vn) {
+		Duple<ObservableList<Item>, ObservableList<Item>> items = getObsItems();
+		fillAllPropertySheet(items.getFirst());
+		if (lastSelectedNode != null)
+			if (lastSelectedNode.getConfigNode().toShortString().equals(vn.getConfigNode().toShortString()))
+				fillSelPropertySheet(items.getSecond());
 	}
 
 	// -------------- IMMController End ---------------------
