@@ -860,7 +860,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		traversal(root, 0, pathLength, visibleNodes);
 		visibleNodes.add(root);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-		GraphState.setChanged();
+//	GraphState.setChanged();
 //		recorder.addState("Show neighbourhood");
 	}
 

@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.dialogs;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,11 +46,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -317,6 +321,54 @@ public class Dialogsfx implements IDialogs {
 	public int editISFiles(List<File> files, int idx) {
 		ISSelectionDlg dlg = new ISSelectionDlg(files, idx);
 		return dlg.getResult();
+	}
+
+	@Override
+	public List<String> getCBSelections(String title,String header,List<String> items, List<Boolean> selected) {
+		Dialog<ButtonType> dlg = new Dialog<>();
+		dlg.setTitle(title);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		dlg.initOwner((Window) Dialogs.owner());
+		GridPane content = new GridPane();
+		content.setVgap(15);
+		content.setHgap(10);
+		dlg.getDialogPane().setContent(content);
+		List<CheckBox> chkbxs = new ArrayList<>();
+		content.add(new Label(header), 0, 0);
+		for (int i = 0; i < items.size(); i++) {
+			CheckBox cx = new CheckBox(items.get(i));
+			chkbxs.add(cx);
+			cx.setSelected(selected.get(i));
+		}
+
+		chkbxs.sort(new Comparator<CheckBox>() {
+
+			@Override
+			public int compare(CheckBox cb1, CheckBox cb2) {
+				return cb1.getText().compareTo(cb2.getText());
+			}
+		});
+
+		int row = 1;
+		for (CheckBox cx : chkbxs) {
+			content.add(cx, 0, row++);
+		}
+
+		Optional<ButtonType> btn = dlg.showAndWait();
+		List<String> result = new ArrayList<>();
+		if (btn.get().equals(ok)) {
+			for (CheckBox cx : chkbxs)
+				if (cx.isSelected())
+					result.add(cx.getText());
+			return result;
+		} else {
+			for (int i = 0; i < items.size(); i++)
+				if (selected.get(i))
+					result.add(items.get(i));
+
+			return result;
+		}
 	}
 
 }

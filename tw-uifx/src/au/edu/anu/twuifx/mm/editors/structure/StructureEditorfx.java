@@ -196,6 +196,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 						mi.setOnAction((e) -> {
 							onExpandTree(vn, duration);
+							// Either record state on transition.setOnFinished(...) or launch delayed thread
 						});
 					}
 				}
@@ -203,9 +204,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
 					mi.setOnAction((e) -> {
-//						Rollover.saveState(MenuLabels.ML_EXPAND.label() + " All ", ConfigGraph.getGraph(),
-//								gvisualiser.getVisualGraph());
 						onExpandTrees(duration);
+						// Either record state on transition.setOnFinished(...) or launch delayed thread
 					});
 				}
 			} else
@@ -221,14 +221,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 						mi.setOnAction(e -> onCollapseTree(vn, duration));
+						// Either record state on transition.setOnFinished(...) or launch delayed thread
 					}
 				}
 				if (count > 1) {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
 					mi.setOnAction(e -> onCollapseTrees(duration));
-//					Rollover.saveState(MenuLabels.ML_COLLAPSE.label() + " All ", ConfigGraph.getGraph(),
-//							gvisualiser.getVisualGraph());
+					// Either record state on transition.setOnFinished(...) or launch delayed thread
 				}
 			} else
 				mu.setDisable(true);
@@ -246,10 +246,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				mi.setOnAction((e) -> {
 					LayoutType layout = (LayoutType) ((MenuItem) e.getSource()).getUserData();
 					controller.doFocusedLayout(editableNode.getSelectedVisualNode(), layout, duration);
-
-//					String desc = MenuLabels.ML_APPLYLAYOUT.label + " [" + layout.name() + "]";
-//
-//					recorder.addState(desc);
+					// Either record state on transition.setOnFinished(...) or launch delayed thread
 
 				});
 			}
@@ -268,9 +265,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					int depth = Integer.parseInt(result);
 					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
 
-//					String desc = MenuLabels.ML_SHOWLOCALGRAPH.label() + " ["
-//							+ editableNode.getConfigNode().toShortString() + "(" + depth + ")]";
-//					recorder.addState(desc);
+					GraphState.setChanged();
+
+					String desc = MenuLabels.ML_SHOWLOCALGRAPH.label() + " ["
+							+ editableNode.getConfigNode().toShortString() + "(" + depth + ")]";
+
+					recorder.addState(desc);
 				}
 
 			});
@@ -367,9 +367,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					String desc = MenuLabels.ML_OPTIONAL_PROPS.label() + " ["
 							+ editableNode.getConfigNode().toShortString() + "]";
 
-					if (onOptionalProperties(optionalPropertySpecs))
+					if (onOptionalProperties(optionalPropertySpecs)) {
+
+						controller.onAddRemoveProperty(editableNode.getSelectedVisualNode());
+						GraphState.setChanged();
+						ConfigGraph.validateGraph();
 
 						recorder.addState(desc);
+					}
 				});
 			} else
 				mi.setDisable(true);
@@ -470,109 +475,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		return propSpecs;
 	}
 
-	// TODO Move to adaptor
-	private boolean onOptionalProperties(List<SimpleDataTreeNode> propertySpecs) {
-		List<String> items = new ArrayList<>();
-		List<Boolean> selected = new ArrayList<>();
-		TreeGraphDataNode cn = (TreeGraphDataNode) editableNode.getConfigNode();
-		for (SimpleDataTreeNode p : propertySpecs) {
-			String name = (String) p.properties().getPropertyValue(aaHasName);
-			items.add(name);
-			if (cn.properties().hasProperty(name))
-				selected.add(true);
-			else
-				selected.add(false);
-		}
-		List<String> selectedItems = getCBSelections(items, selected);
-		boolean change = false;
-		List<String> additions = new ArrayList<>();
-		List<String> deletions = new ArrayList<>();
-
-		Set<String> currentKeys = cn.properties().getKeysAsSet();
-		for (String key : currentKeys)
-			if (items.contains(key))
-				if (!selectedItems.contains(key))
-					deletions.add(key);
-		for (String key : selectedItems)
-			if (!currentKeys.contains(key))
-				additions.add(key);
-
-		ExtendablePropertyList props = (ExtendablePropertyList) cn.properties();
-		for (String key : deletions) {
-			props.removeProperty(key);
-		}
-		for (String key : additions) {
-			// find the spec
-			SimpleDataTreeNode pSpec = getPropertySpec(key, propertySpecs);
-			String type = (String) pSpec.properties().getPropertyValue(aaType);
-			Object defValue = ValidPropertyTypes.getDefaultValue(type);
-			props.addProperty(key, defValue);
-		}
-
-		if (!deletions.isEmpty() || !additions.isEmpty()) {
-			controller.onAddRemoveProperty(editableNode.getSelectedVisualNode());
-			GraphState.setChanged();
-			ConfigGraph.validateGraph();
-			return true;
-		}
-		return false;
-	}
-
-	private SimpleDataTreeNode getPropertySpec(String key, List<SimpleDataTreeNode> propertySpecs) {
-		for (SimpleDataTreeNode p : propertySpecs) {
-			String name = (String) p.properties().getPropertyValue(aaHasName);
-			if (name.equals(key))
-				return p;
-		}
-		return null;
-	}
-
-	private List<String> getCBSelections(List<String> items, List<Boolean> selected) {
-		Dialog<ButtonType> dlg = new Dialog<>();
-		dlg.setTitle(editableNode.getConfigNode().toShortString());
-		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
-		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dlg.initOwner((Window) Dialogs.owner());
-		GridPane content = new GridPane();
-		content.setVgap(15);
-		content.setHgap(10);
-		dlg.getDialogPane().setContent(content);
-		List<CheckBox> chkbxs = new ArrayList<>();
-		content.add(new Label("Optional properties"), 0, 0);
-		for (int i = 0; i < items.size(); i++) {
-			CheckBox cx = new CheckBox(items.get(i));
-			chkbxs.add(cx);
-			cx.setSelected(selected.get(i));
-		}
-
-		chkbxs.sort(new Comparator<CheckBox>() {
-
-			@Override
-			public int compare(CheckBox cb1, CheckBox cb2) {
-				return cb1.getText().compareTo(cb2.getText());
-			}
-		});
-
-		int row = 1;
-		for (CheckBox cx : chkbxs) {
-			content.add(cx, 0, row++);
-		}
-
-		Optional<ButtonType> btn = dlg.showAndWait();
-		List<String> result = new ArrayList<>();
-		if (btn.get().equals(ok)) {
-			for (CheckBox cx : chkbxs)
-				if (cx.isSelected())
-					result.add(cx.getText());
-			return result;
-		} else {
-			for (int i = 0; i < items.size(); i++)
-				if (selected.get(i))
-					result.add(items.get(i));
-
-			return result;
-		}
-	}
 
 	private enum MenuLabels {
 		ML_NEW_NODE /*         */("New node"), // spec
@@ -590,7 +492,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_DELETE_CHILD_EDGE/* */("Delete child edge"), // config
 		ML_DELETE_TREE/*-      */("Delete tree"), // config
 		ML_DELETE_NODE/*       */("Delete node"), // config
-		ML_OPTIONAL_PROPS/*    */("Optional properties..."),
+		ML_OPTIONAL_PROPS/*    */("Optional properties..."), // config & spec
 		// --------------------------------------------
 		ML_ALL/*               */("All"), //
 		ML_APPLYLAYOUT/*       */("Apply layout"), //
