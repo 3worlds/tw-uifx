@@ -94,6 +94,8 @@ public class SimpleControlWidget3 extends StateMachineController
 
 	private Label lblRealTime;
 	private Label lblDelta;
+	private String scText;
+
 	private long startTime;
 	private long idleTime;
 	private long idleStartTime;
@@ -164,7 +166,7 @@ public class SimpleControlWidget3 extends StateMachineController
 
 		topPane.setSpacing(5.0);
 		topPane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
-				lblRealTime, new Label("[ms]"));
+				lblRealTime, new Label("[ms]"), new Label(scText));
 
 		BorderPane content = new BorderPane();
 		content.setTop(topPane);
@@ -364,6 +366,8 @@ public class SimpleControlWidget3 extends StateMachineController
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
+		scText="Stop when: "+meta.properties().getPropertyValue("StoppingDesc");
+
 	}
 
 }

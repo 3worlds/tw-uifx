@@ -61,6 +61,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private Label lblTime;
+	private String scText;
 	private static Logger log = Logging.getLogger(SimpleTimeWidget.class);
 
 	public SimpleTimeWidget(StateMachineEngine<StatusWidget> statusSender) {
@@ -74,6 +75,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.onMetaDataMessage(meta);
+		scText="Stop when: "+meta.properties().getPropertyValue("StoppingDesc");
 	}
 
 	@Override
@@ -96,7 +98,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 		content.setAlignment(Pos.BASELINE_LEFT);
 		//content.setPadding(new Insets(4, 1, 1, 2));
 		lblTime = new Label(formatOutput(timeFormatter.getInitialTime()));
-		content.getChildren().addAll(new Label("Simulator time: "),lblTime);
+		content.getChildren().addAll(new Label("Simulator time: "),lblTime,new Label(scText));
 		
 		getUserPreferences();
 
