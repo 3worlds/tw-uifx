@@ -785,10 +785,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			layout = new FRLayout(visualGraph, pcShowing, xlShowing, sideline);
 			break;
 		}
-		case LombardiGraph: {
-			layout = new LmbLayout(visualGraph, pcShowing, xlShowing, sideline);
-			break;
-		}
+//		case LombardiGraph: {
+//			layout = new LmbLayout(visualGraph, pcShowing, xlShowing, sideline);
+//			break;
+//		}
 		default: {
 			throw new TwuifxException("Unknown layout type '" + layoutType + "',");
 		}
