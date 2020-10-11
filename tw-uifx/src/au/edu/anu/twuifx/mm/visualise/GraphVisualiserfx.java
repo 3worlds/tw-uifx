@@ -935,6 +935,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 					if (!nnNodes.contains(n)) {
 						nn.add(n);
 					}
+			List<VisualNode> inNodes = (List<VisualNode>) get(root.edges(Direction.IN), edgeListStartNodes());
+			for (VisualNode n: inNodes)
+				if (!n.isCollapsed())
+					if (!nnNodes.contains(n))
+						nn.add(n);
 
 			nnNodes.addAll(nn);
 
