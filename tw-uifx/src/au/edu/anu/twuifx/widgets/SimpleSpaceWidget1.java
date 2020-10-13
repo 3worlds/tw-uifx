@@ -325,6 +325,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		clearCanvas();
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setLineWidth(1.0);
+		gc.setLineDashes(0);
 		if (showLines) {
 			gc.setStroke(lineColour);
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
