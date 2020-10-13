@@ -321,18 +321,15 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 //-------------------------------------------- Drawing ---
 
 	private void drawSpace() {
-		int size = 2 * symbolRadius;
 		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
 		clearCanvas();
 		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.setLineWidth(1.0);
 		if (showLines) {
 			gc.setStroke(lineColour);
-			gc.setLineWidth(1.0);
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
 				double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
 				double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
-				if (start==null || end == null)
-					throw new TwuifxException("start or end point of line is missing");
 				if (eec == null) {
 					drawALine(gc, start[0], start[1], end[0], end[1]);
 				} else if (eec.equals(EdgeEffectCorrection.periodic))
@@ -345,6 +342,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				}
 			}
 		}
+		
+		int size = 2 * symbolRadius;
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
 			Duple<DataLabel, double[]> value = entry.getValue();
 			String cKey = getColourKey(value.getFirst());
@@ -353,7 +352,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			double[] coords = value.getSecond();
 			Point2D point = scaleToCanvas(coords);
 			point = point.add(-symbolRadius, -symbolRadius);
-			gc.strokeOval(point.getX(), point.getY(), size, size);
+			gc.strokeOval(point.getX(), point.getY(), size, size);		
 			if (symbolFill) {
 				gc.setFill(colour);
 				gc.fillOval(point.getX(), point.getY(), size, size);
