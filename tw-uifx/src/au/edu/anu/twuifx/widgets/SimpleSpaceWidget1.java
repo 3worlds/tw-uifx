@@ -162,7 +162,6 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		colours = new ArrayList<>();
 		colourMap = new HashMap<>();
 		lineReferences = new HashSet<>();
-		new HashMap<>(); // ???
 	}
 
 	@Override
@@ -253,16 +252,21 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 		// Here, all point coordinates have been updated
 		// add new lines
-		lineReferences.addAll(data.linesToCreate());
-		// remove lines
 		lineReferences.removeAll(data.linesToDelete());
-		Iterator<Duple<DataLabel, DataLabel>> it = lineReferences.iterator();
-		Collection<DataLabel> deletedPoints = data.pointsToDelete();
-		while (it.hasNext()) {
-			Duple<DataLabel, DataLabel> line = it.next();
-			if (deletedPoints.contains(line.getFirst()) || deletedPoints.contains(line.getSecond()))
-				it.remove();
-		}
+		
+		// remove lines
+		lineReferences.addAll(data.linesToCreate());
+//		if (!data.linesToDelete().isEmpty())
+//			System.out.println("Deleting lines");
+//		lineReferences.removeAll(data.linesToDelete());
+//		Iterator<Duple<DataLabel, DataLabel>> it = lineReferences.iterator();
+//		Collection<DataLabel> deletedPoints = data.pointsToDelete();
+//		while (it.hasNext()) {
+//			Duple<DataLabel, DataLabel> line = it.next();
+//			if (deletedPoints.contains(line.getFirst()) || deletedPoints.contains(line.getSecond()))
+//				it.remove();
+//		}
+		
 		return updateLegend;
 	}
 
@@ -327,6 +331,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
 				double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
 				double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
+				if (start==null || end == null)
+					throw new TwuifxException("start or end point of line is missing");
 				if (eec == null) {
 					drawALine(gc, start[0], start[1], end[0], end[1]);
 				} else if (eec.equals(EdgeEffectCorrection.periodic))

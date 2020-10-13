@@ -141,27 +141,27 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.font = font;
 		this.controller = controller;
 		this.recorder = recorder;
-		this.edgeSelect=edgeSelect;
-		this.nodeSelect=nodeSelect;
+		this.edgeSelect = edgeSelect;
+		this.nodeSelect = nodeSelect;
 		ds = new DropShadow();
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
-		
+
 		this.nodeSelect.addListener(e_ -> {
 			for (VisualNode n : visualGraph.nodes()) {
-				Text txt = (Text)n.getText();
+				Text txt = (Text) n.getText();
 				txt.setText(n.getDisplayText(nodeSelect.get()));
 			}
 		});
 		this.edgeSelect.addListener(e -> {
 			for (VisualNode n : visualGraph.nodes()) {
-			for (Edge edge : n.edges(Direction.OUT)) {
-				VisualEdge ve = (VisualEdge) edge;
-				Text txt = (Text) ve.getText();
-				txt.setText(ve.getDisplayText(edgeSelect.get()));
+				for (Edge edge : n.edges(Direction.OUT)) {
+					VisualEdge ve = (VisualEdge) edge;
+					Text txt = (Text) ve.getText();
+					txt.setText(ve.getDisplayText(edgeSelect.get()));
+				}
 			}
-		}
 		});
 
 	}
@@ -932,11 +932,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			List<VisualNode> outNodes = (List<VisualNode>) get(root.edges(Direction.OUT), edgeListEndNodes());
 			for (VisualNode n : outNodes)
 				if (!n.isCollapsed())
-					if (!nnNodes.contains(n)) {
+					if (!nnNodes.contains(n))
 						nn.add(n);
-					}
+
 			List<VisualNode> inNodes = (List<VisualNode>) get(root.edges(Direction.IN), edgeListStartNodes());
-			for (VisualNode n: inNodes)
+			for (VisualNode n : inNodes)
 				if (!n.isCollapsed())
 					if (!nnNodes.contains(n))
 						nn.add(n);
