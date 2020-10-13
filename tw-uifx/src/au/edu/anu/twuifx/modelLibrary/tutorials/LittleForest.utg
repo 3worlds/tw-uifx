@@ -234,7 +234,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 			widget wgt3
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpaceWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
 
 // CROSS-LINKS
 [component:cmp2] instanceOf instOf2 [group:Carpinus]

@@ -114,7 +114,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *       Widget to show spatial map of objects and their relations.
  * 
  */
-public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
+public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
 	private AnchorPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
@@ -152,9 +152,9 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 
 	private BorderListType borderList;
 
-	private static Logger log = Logging.getLogger(SimpleSpaceWidget1.class);
+	private static Logger log = Logging.getLogger(SimpleSpatial2DWidget1.class);
 
-	public SimpleSpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	public SimpleSpatial2DWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
@@ -252,21 +252,12 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 		// Here, all point coordinates have been updated
 		// add new lines
-		lineReferences.removeAll(data.linesToDelete());
-		
+		if (!data.linesToCreate().isEmpty())
+			lineReferences.addAll(data.linesToCreate());
 		// remove lines
-		lineReferences.addAll(data.linesToCreate());
-//		if (!data.linesToDelete().isEmpty())
-//			System.out.println("Deleting lines");
-//		lineReferences.removeAll(data.linesToDelete());
-//		Iterator<Duple<DataLabel, DataLabel>> it = lineReferences.iterator();
-//		Collection<DataLabel> deletedPoints = data.pointsToDelete();
-//		while (it.hasNext()) {
-//			Duple<DataLabel, DataLabel> line = it.next();
-//			if (deletedPoints.contains(line.getFirst()) || deletedPoints.contains(line.getSecond()))
-//				it.remove();
-//		}
-		
+		if (!data.linesToDelete().isEmpty())
+			lineReferences.removeAll(data.linesToDelete());
+
 		return updateLegend;
 	}
 
@@ -321,11 +312,13 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 //-------------------------------------------- Drawing ---
 
 	private void drawSpace() {
-		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
-		clearCanvas();
 		GraphicsContext gc = canvas.getGraphicsContext2D();
+		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
+		clearCanvas(gc);
+
 		gc.setLineWidth(1.0);
 		gc.setLineDashes(0);
+
 		if (showLines) {
 			gc.setStroke(lineColour);
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
@@ -343,7 +336,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				}
 			}
 		}
-		
+
 		int size = 2 * symbolRadius;
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
 			Duple<DataLabel, double[]> value = entry.getValue();
@@ -353,7 +346,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			double[] coords = value.getSecond();
 			Point2D point = scaleToCanvas(coords);
 			point = point.add(-symbolRadius, -symbolRadius);
-			gc.strokeOval(point.getX(), point.getY(), size, size);		
+			gc.strokeOval(point.getX(), point.getY(), size, size);
 			if (symbolFill) {
 				gc.setFill(colour);
 				gc.fillOval(point.getX(), point.getY(), size, size);
@@ -501,8 +494,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 	}
 
-	private void clearCanvas() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+	private void clearCanvas(GraphicsContext gc) {
 		gc.setFill(bkgColour);
 		gc.setStroke(bkgColour);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -512,8 +504,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		double maxSize = Math.max(w, h);
 		double scale = maxSize / maxDim;
 		double d = scale * tickWidth;
-		double lineWidth = d/100.0;
-		double dashes = d/10.0;
+		double lineWidth = d / 100.0;
+		double dashes = d / 10.0;
 		int nVLines = (int) (w / d);
 		int nHLines = (int) (h / d);
 		if (showGrid) {
@@ -526,11 +518,11 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 				gc.strokeLine(i * d, 0, i * d, h);
 		}
 		if (showEdgeEffect) {
-			double lws = lineWidth*10;// line width scaling
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws,dashes);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws,dashes);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws,dashes);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws,dashes);
+			double lws = lineWidth * 10;// line width scaling
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws, dashes);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws, dashes);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws, dashes);
+			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws, dashes);
 		}
 	};
 
@@ -761,11 +753,11 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		chbxShowEdgeEffect.setSelected(showEdgeEffect);
 		// -----
 		TextField tfSpaceCanvasRatio = new TextField(Double.toString(spaceCanvasRatio));
-		tfSpaceCanvasRatio.setTextFormatter(new TextFormatter<>(
-				change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		tfSpaceCanvasRatio.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		tfSpaceCanvasRatio.setMaxWidth(50);
 		addTableEntry("Canvas:Space ratio", row++, tfSpaceCanvasRatio, content);
-		
+
 		// -----
 		Spinner<Integer> spRadius = new Spinner<>();
 		addTableEntry("Symbol radius", row++, spRadius, content);
@@ -793,8 +785,8 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		GridPane.setValignment(cpLine, VPos.TOP);
 		// ----
 		TextField tfContrast = new TextField(Double.toString(contrast));
-		tfContrast.setTextFormatter(new TextFormatter<>(
-				change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		tfContrast.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		addTableEntry("Contrast (0.0-1.0)", row++, tfContrast, content);
 
 		dialog.getDialogPane().setContent(content);
@@ -850,27 +842,29 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 		}
 		return "";
 	}
-	private static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,double lineWidthScale,double dashWidth) {
+
+	private static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,
+			double lineWidthScale, double dashWidth) {
 		gc.setLineJoin(StrokeLineJoin.ROUND);
 		switch (bt) {
 		case wrap: {
 			gc.setStroke(Color.BLACK);
-			gc.setLineDashes(dashWidth*4);
-			gc.setLineWidth(1.0*lineWidthScale);
+			gc.setLineDashes(dashWidth * 4);
+			gc.setLineWidth(1.0 * lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
 		case reflection: {
 			gc.setStroke(Color.BLACK);
 			gc.setLineDashes(0);
-			gc.setLineWidth(4.0*lineWidthScale);
+			gc.setLineWidth(4.0 * lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
 		case sticky: {
 			gc.setStroke(Color.GREY);
 			gc.setLineDashes(0);
-			gc.setLineWidth(4.0*lineWidthScale);
+			gc.setLineWidth(4.0 * lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
@@ -885,7 +879,7 @@ public class SimpleSpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadat
 			// infinite
 			gc.setStroke(Color.BLACK);
 			gc.setLineDashes(0);
-			gc.setLineWidth(2.0*lineWidthScale);
+			gc.setLineWidth(2.0 * lineWidthScale);
 			gc.strokeLine(x1, y1, x2, y2);
 			break;
 		}
