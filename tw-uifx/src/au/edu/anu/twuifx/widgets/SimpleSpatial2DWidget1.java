@@ -31,7 +31,6 @@
 package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -228,6 +227,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private boolean updateData(final SpaceData data) {
 		boolean updateLegend = false;
+		// delete points in the point list 
+		for (DataLabel lab : data.pointsToDelete()) {
+			hPointsMap.remove(lab.toString());
+			updateLegend = updateLegend || uninstallColour(lab);
+			System.out.println("t="+data.time()+" deleting "+lab);
+		}
 		// add new points in the point list
 		for (DataLabel lab : data.pointsToCreate().keySet()) {
 			Duple<DataLabel, double[]> value = new Duple<>(lab, data.pointsToCreate().get(lab));
@@ -244,29 +249,26 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				log.warning("Point to move " + lab + " absent from space widget list");
 			updateLegend = updateLegend || installColour(lab);
 		}
-		// delete points in the point list (including possibly new or moved ones of
-		// previous lists
-		for (DataLabel lab : data.pointsToDelete()) {
-			hPointsMap.remove(lab.toString());
-//			System.out.println("Deleting point '"+lab+"'");
-			updateLegend = updateLegend || uninstallColour(lab);
+		// add new lines to create
+		if (!data.linesToCreate().isEmpty()) {
+				lineReferences.addAll(data.linesToCreate());
+			for (Duple<DataLabel,DataLabel> line:data.linesToCreate())
+				System.out.println("t="+data.time()+" creating "+line);
 		}
-		// Here, all point coordinates have been updated
-		// add new lines
-		if (!data.linesToCreate().isEmpty())
-			lineReferences.addAll(data.linesToCreate());
 		// remove lines
-		if (!data.linesToDelete().isEmpty()) 
+		if (!data.linesToDelete().isEmpty()) { 
 			lineReferences.removeAll(data.linesToDelete());
-		
-
-//		for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
-//			double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
-//			double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
-//			System.out.println(start[0]+","+start[1]+"\t"+end[0]+","+end[1]);
-//			
-//		}
-
+			for (Duple<DataLabel,DataLabel> line:data.linesToCreate())
+				System.out.println("t="+data.time()+" deleting "+line);
+		}
+		// remove old lines which end points were just removed
+		Iterator<Duple<DataLabel,DataLabel>> itline = lineReferences.iterator();
+		while (itline.hasNext()) {
+			Duple<DataLabel,DataLabel> line = itline.next();
+			if (!hPointsMap.containsKey(line.getFirst().toString()) || 
+				!hPointsMap.containsKey(line.getSecond().toString()))
+				itline.remove();			
+		}
 		return updateLegend;
 	}
 
