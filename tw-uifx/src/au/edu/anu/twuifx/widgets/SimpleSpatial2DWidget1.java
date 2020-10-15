@@ -248,6 +248,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// previous lists
 		for (DataLabel lab : data.pointsToDelete()) {
 			hPointsMap.remove(lab.toString());
+//			System.out.println("Deleting point '"+lab+"'");
 			updateLegend = updateLegend || uninstallColour(lab);
 		}
 		// Here, all point coordinates have been updated
@@ -255,8 +256,16 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		if (!data.linesToCreate().isEmpty())
 			lineReferences.addAll(data.linesToCreate());
 		// remove lines
-		if (!data.linesToDelete().isEmpty())
+		if (!data.linesToDelete().isEmpty()) 
 			lineReferences.removeAll(data.linesToDelete());
+		
+
+//		for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
+//			double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
+//			double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
+//			System.out.println(start[0]+","+start[1]+"\t"+end[0]+","+end[1]);
+//			
+//		}
 
 		return updateLegend;
 	}
@@ -322,8 +331,17 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		if (showLines) {
 			gc.setStroke(lineColour);
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
-				double[] start = hPointsMap.get(lineReference.getFirst().toString()).getSecond();
-				double[] end = hPointsMap.get(lineReference.getSecond().toString()).getSecond();
+				String sKey = lineReference.getFirst().toString();
+				String eKey = lineReference.getSecond().toString();
+				 Duple<DataLabel, double[]> sEntry = hPointsMap.get(sKey);
+				 Duple<DataLabel, double[]> eEntry = hPointsMap.get(eKey);
+				 if (sEntry==null)
+					 throw new TwuifxException("Line error. Start point not found "+sKey);
+				 if (eEntry==null)
+					 throw new TwuifxException("Line error. End point not found "+eKey);
+					 	
+				double[] start = sEntry.getSecond();
+				double[] end = eEntry.getSecond();
 				if (eec == null) {
 					drawALine(gc, start[0], start[1], end[0], end[1]);
 				} else if (eec.equals(EdgeEffectCorrection.periodic))
@@ -506,16 +524,20 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double d = scale * tickWidth;
 		double lineWidth = d / 100.0;
 		double dashes = d / 10.0;
-		int nVLines = (int) (w / d);
-		int nHLines = (int) (h / d);
+		int nVLines = (int) Math.round(w / d);
+		int nHLines = (int) Math.round(h / d);
 		if (showGrid) {
 			gc.setStroke(Color.GREY);
 			gc.setLineDashes(dashes);
 			gc.setLineWidth(lineWidth);
-			for (int i = 0; i < nHLines; i++)
-				gc.strokeLine(0, i * d, w, i * d);
-			for (int i = 0; i < nVLines; i++)
-				gc.strokeLine(i * d, 0, i * d, h);
+			for (int i = 0; i < nHLines; i++) {
+				double y = i * d;
+				gc.strokeLine(0, y, w, y);
+			}
+			for (int i = 0; i < nVLines; i++) {
+				double x = i * d;
+				gc.strokeLine(x, 0, x, h);
+			}
 		}
 		if (showEdgeEffect) {
 			double lws = lineWidth * 10;// line width scaling
