@@ -231,7 +231,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (DataLabel lab : data.pointsToDelete()) {
 			hPointsMap.remove(lab.toString());
 			updateLegend = updateLegend || uninstallColour(lab);
-			System.out.println("t="+data.time()+" deleting "+lab);
 		}
 		// add new points in the point list
 		for (DataLabel lab : data.pointsToCreate().keySet()) {
@@ -250,17 +249,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			updateLegend = updateLegend || installColour(lab);
 		}
 		// add new lines to create
-		if (!data.linesToCreate().isEmpty()) {
-				lineReferences.addAll(data.linesToCreate());
-			for (Duple<DataLabel,DataLabel> line:data.linesToCreate())
-				System.out.println("t="+data.time()+" creating "+line);
-		}
+		if (!data.linesToCreate().isEmpty())
+			lineReferences.addAll(data.linesToCreate());
 		// remove lines
-		if (!data.linesToDelete().isEmpty()) { 
+		if (!data.linesToDelete().isEmpty()) 
 			lineReferences.removeAll(data.linesToDelete());
-			for (Duple<DataLabel,DataLabel> line:data.linesToCreate())
-				System.out.println("t="+data.time()+" deleting "+line);
-		}
 		// remove old lines which end points were just removed
 		Iterator<Duple<DataLabel,DataLabel>> itline = lineReferences.iterator();
 		while (itline.hasNext()) {
