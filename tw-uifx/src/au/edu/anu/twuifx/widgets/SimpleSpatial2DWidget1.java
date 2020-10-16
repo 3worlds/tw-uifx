@@ -214,37 +214,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mx / 10;
 	}
 
-	//private long lastTime = -1;
 
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-			Timer tmr = new Timer();
-			TimerTask task = new TimerTask() {
-
-				@Override
-				public void run() {
-//					System.out.println(System.currentTimeMillis());
-					Platform.runLater(() -> {
-						boolean refreshLegend = updateData(data);
-						drawSpace();
-						if (refreshLegend)
-							updateLegend();
-					});
-				}
-			};
-			tmr.schedule(task,25L);
-//			Platform.runLater(() -> {
-//				boolean refreshLegend = updateData(data);
-//				drawSpace();
-//				if (refreshLegend)
-//					updateLegend();
-//			});
+			Platform.runLater(() -> {
+				boolean refreshLegend = updateData(data);
+				drawSpace();
+				if (refreshLegend)
+					updateLegend();
+			});
 		}
 	}
-
-	//int step = 0;
-	//String sep = "\t";
 
 	private boolean updateData(final SpaceData data) {
 		boolean updateLegend = false;
@@ -331,7 +312,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			colourMap.clear();
 			legend.getChildren().clear();
 			drawSpace();
-			//lastTime = -1;
 		}
 	}
 
