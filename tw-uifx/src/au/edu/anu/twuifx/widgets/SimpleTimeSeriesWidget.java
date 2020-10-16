@@ -151,7 +151,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				// Maybe we could allow up to 4 axes - two on each side
 			} else {
 				String ylabel = dataSetMap.keySet().iterator().next();
-				chart.getYAxis().set(ylabel);
+				chart.getYAxis().set(ylabel);// this requires the javafx application thread
 			}
 
 			dataSetMap.entrySet().forEach(entry -> {
@@ -179,7 +179,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			 *
 			 */
 
-			Platform.runLater(() -> {
+			//Platform.runLater(() -> {// chartfx does not require getting a ui thread - it must be buried in it somewhere
 				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
 				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
@@ -208,7 +208,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 					if (!ds.equals(dontTouch))
 						ds.autoNotification().getAndSet(true);
 
-			});
+			//});
 		}
 	}
 

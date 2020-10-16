@@ -130,9 +130,9 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	public void onDataMessage(OutputXYData data) {
 
 		if (policy.canProcessDataMessage(data)) {
-			Platform.runLater(() -> {
+//			Platform.runLater(() -> {
 				ds.add(data.getX(), data.getY());
-			});
+//			});
 		}
 	}
 

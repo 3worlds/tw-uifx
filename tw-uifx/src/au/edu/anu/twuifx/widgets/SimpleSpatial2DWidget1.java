@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TimerTask;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -102,6 +103,8 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Window;
 import java.util.logging.Logger;
 
+import java.util.Timer;
+
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
@@ -148,6 +151,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private int colourHLevel;
 	private EdgeEffectCorrection eec;
 	private double tickWidth;
+	private double relLineWidth;
 
 	private BorderListType borderList;
 
@@ -210,24 +214,41 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mx / 10;
 	}
 
+	//private long lastTime = -1;
+
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-			Platform.runLater(() -> {
-				boolean refreshLegend = updateData(data);
-				drawSpace();
-				if (refreshLegend)
-					updateLegend();
-			});
+			Timer tmr = new Timer();
+			TimerTask task = new TimerTask() {
+
+				@Override
+				public void run() {
+//					System.out.println(System.currentTimeMillis());
+					Platform.runLater(() -> {
+						boolean refreshLegend = updateData(data);
+						drawSpace();
+						if (refreshLegend)
+							updateLegend();
+					});
+				}
+			};
+			tmr.schedule(task,25L);
+//			Platform.runLater(() -> {
+//				boolean refreshLegend = updateData(data);
+//				drawSpace();
+//				if (refreshLegend)
+//					updateLegend();
+//			});
 		}
 	}
 
-	int step = 0;
-	String sep = "\t";
+	//int step = 0;
+	//String sep = "\t";
 
 	private boolean updateData(final SpaceData data) {
 		boolean updateLegend = false;
-		// delete points in the point list 
+		// delete points in the point list
 		for (DataLabel lab : data.pointsToDelete()) {
 			hPointsMap.remove(lab.toString());
 			updateLegend = updateLegend || uninstallColour(lab);
@@ -252,15 +273,15 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		if (!data.linesToCreate().isEmpty())
 			lineReferences.addAll(data.linesToCreate());
 		// remove lines
-		if (!data.linesToDelete().isEmpty()) 
+		if (!data.linesToDelete().isEmpty())
 			lineReferences.removeAll(data.linesToDelete());
 		// remove old lines which end points were just removed
-		Iterator<Duple<DataLabel,DataLabel>> itline = lineReferences.iterator();
+		Iterator<Duple<DataLabel, DataLabel>> itline = lineReferences.iterator();
 		while (itline.hasNext()) {
-			Duple<DataLabel,DataLabel> line = itline.next();
-			if (!hPointsMap.containsKey(line.getFirst().toString()) || 
-				!hPointsMap.containsKey(line.getSecond().toString()))
-				itline.remove();			
+			Duple<DataLabel, DataLabel> line = itline.next();
+			if (!hPointsMap.containsKey(line.getFirst().toString())
+					|| !hPointsMap.containsKey(line.getSecond().toString()))
+				itline.remove();
 		}
 		return updateLegend;
 	}
@@ -310,6 +331,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			colourMap.clear();
 			legend.getChildren().clear();
 			drawSpace();
+			//lastTime = -1;
 		}
 	}
 
@@ -320,7 +342,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
 		clearCanvas(gc);
 
-		gc.setLineWidth(1.0);
+		gc.setLineWidth(relLineWidth);
 		gc.setLineDashes(0);
 
 		if (showLines) {
@@ -328,13 +350,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			for (Duple<DataLabel, DataLabel> lineReference : lineReferences) {
 				String sKey = lineReference.getFirst().toString();
 				String eKey = lineReference.getSecond().toString();
-				 Duple<DataLabel, double[]> sEntry = hPointsMap.get(sKey);
-				 Duple<DataLabel, double[]> eEntry = hPointsMap.get(eKey);
-				 if (sEntry==null)
-					 throw new TwuifxException("Line error. Start point not found "+sKey);
-				 if (eEntry==null)
-					 throw new TwuifxException("Line error. End point not found "+eKey);
-					 	
+				Duple<DataLabel, double[]> sEntry = hPointsMap.get(sKey);
+				Duple<DataLabel, double[]> eEntry = hPointsMap.get(eKey);
+				if (sEntry == null)
+					throw new TwuifxException("Line error. Start point not found " + sKey);
+				if (eEntry == null)
+					throw new TwuifxException("Line error. End point not found " + eKey);
+
 				double[] start = sEntry.getSecond();
 				double[] end = eEntry.getSecond();
 				if (eec == null) {
@@ -580,9 +602,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyShowLines = "showLines";
 	private static final String keyShowGrid = "showGrid";
 	private static final String keyShowEdgeEffect = "showEdgeEffect";
+	private static final String keyRelLineWidth = "relationLineWidth";
 
 	@Override
 	public void putUserPreferences() {
+		Preferences.putDouble(widgetId + keyRelLineWidth, relLineWidth);
 		Preferences.putDouble(widgetId + keyScaleX, zoomTarget.getScaleX());
 		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
@@ -606,6 +630,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	@Override
 	public void getUserPreferences() {
+		relLineWidth = Preferences.getDouble(widgetId + keyRelLineWidth, 0.25);
 		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
@@ -774,6 +799,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		tfSpaceCanvasRatio.setMaxWidth(50);
 		addTableEntry("Canvas:Space ratio", row++, tfSpaceCanvasRatio, content);
+		// -----
+		TextField tfRelLineWidth = new TextField(Double.toString(relLineWidth));
+		tfRelLineWidth.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		tfRelLineWidth.setMaxWidth(50);
+		addTableEntry("Relation line width", row++, tfRelLineWidth, content);
 
 		// -----
 		Spinner<Integer> spRadius = new Spinner<>();
@@ -814,6 +845,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			showGrid = chbxShowGrid.isSelected();
 			showEdgeEffect = chbxShowEdgeEffect.isSelected();
 			spaceCanvasRatio = Double.parseDouble(tfSpaceCanvasRatio.getText());
+			relLineWidth = Double.parseDouble(tfRelLineWidth.getText());
 			symbolRadius = spRadius.getValue();
 			contrast = Double.parseDouble(tfContrast.getText());
 			colour64 = chbxCS.isSelected();
