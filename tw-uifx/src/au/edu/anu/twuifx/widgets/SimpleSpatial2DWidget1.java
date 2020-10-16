@@ -38,7 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TimerTask;
+//import java.util.TimerTask;
+//import java.util.concurrent.ArrayBlockingQueue;
+//import java.util.concurrent.BlockingQueue;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -62,6 +64,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.BorderListType;
 import fr.cnrs.iees.twcore.constants.BorderType;
 import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
+//import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
@@ -103,7 +106,7 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Window;
 import java.util.logging.Logger;
 
-import java.util.Timer;
+//import java.util.Timer;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
@@ -154,6 +157,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private double relLineWidth;
 
 	private BorderListType borderList;
+	
+//	private BlockingQueue<Timer> queue;
 
 	private static Logger log = Logging.getLogger(SimpleSpatial2DWidget1.class);
 
@@ -165,6 +170,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		colours = new ArrayList<>();
 		colourMap = new HashMap<>();
 		lineReferences = new HashSet<>();
+//		queue = new  ArrayBlockingQueue<>(32768);
 	}
 
 	@Override
@@ -214,16 +220,41 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mx / 10;
 	}
 
+	
 
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-			Platform.runLater(() -> {
-				boolean refreshLegend = updateData(data);
-				drawSpace();
-				if (refreshLegend)
-					updateLegend();
-			});
+			// queue this task then schedule each depending on current queue length. The
+			// queue has to be thread safe.
+//			if (data.status().equals(SimulatorStatus.Initial)) {
+				Platform.runLater(() -> {
+					boolean refreshLegend = updateData(data);
+					drawSpace();
+					if (refreshLegend)
+						updateLegend();
+				});
+//			} else {
+//				long qLength = queue.size();
+//				Timer timer = new Timer();
+//				TimerTask task = new TimerTask() {
+//					@Override
+//					public void run() {
+//						Platform.runLater(() -> {
+//							boolean refreshLegend = updateData(data);
+//							drawSpace();
+//							if (refreshLegend)
+//								updateLegend();
+//							queue.poll();
+//						});
+//
+//					}
+//					
+//				};
+//				timer.schedule(task, 2*(queue.size()+1));
+//				queue.add(timer);
+//				System.out.println(queue.size());
+//			}
 		}
 	}
 
