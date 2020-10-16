@@ -235,6 +235,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 						updateLegend();
 				});
 //			} else {
+				// SUGGESTION: Just use an atomic counter - add when starting and subtract when finishing
 //				long qLength = queue.size();
 //				Timer timer = new Timer();
 //				TimerTask task = new TimerTask() {
