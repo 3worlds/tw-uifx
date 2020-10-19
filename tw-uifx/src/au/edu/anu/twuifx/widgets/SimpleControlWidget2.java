@@ -271,7 +271,9 @@ public class SimpleControlWidget2 extends StateMachineController
 	}
 
 	private void nullButtons() {
+//		Platform.runLater(()->{
 		setButtons(true, true, true, null);
+//		});
 	}
 
 	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
