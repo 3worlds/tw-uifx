@@ -38,10 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-//import java.util.TimerTask;
-//import java.util.concurrent.ArrayBlockingQueue;
-//import java.util.concurrent.BlockingQueue;
-
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -64,7 +60,6 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.BorderListType;
 import fr.cnrs.iees.twcore.constants.BorderType;
 import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
-//import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
@@ -106,8 +101,6 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Window;
 import java.util.logging.Logger;
 
-//import java.util.Timer;
-
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
@@ -117,6 +110,11 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  * @date 12 Feb 2020
  * 
  *       Widget to show spatial map of objects and their relations.
+ * 
+ *       Tried to smooth output with blocking queues and schedule timer but
+ *       becomes uncoordinated when reset. We could clear() the queue on reset
+ *       but we loose data. I think the immediacy of output more closely
+ *       following the simulator gives a more intuitive feel.
  * 
  */
 public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
@@ -157,8 +155,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private double relLineWidth;
 
 	private BorderListType borderList;
-	
-//	private BlockingQueue<Timer> queue;
 
 	private static Logger log = Logging.getLogger(SimpleSpatial2DWidget1.class);
 
@@ -170,7 +166,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		colours = new ArrayList<>();
 		colourMap = new HashMap<>();
 		lineReferences = new HashSet<>();
-//		queue = new  ArrayBlockingQueue<>(32768);
 	}
 
 	@Override
@@ -220,42 +215,15 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mx / 10;
 	}
 
-	
-
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-			// queue this task then schedule each depending on current queue length. The
-			// queue has to be thread safe.
-//			if (data.status().equals(SimulatorStatus.Initial)) {
-				Platform.runLater(() -> {
-					boolean refreshLegend = updateData(data);
-					drawSpace();
-					if (refreshLegend)
-						updateLegend();
-				});
-//			} else {
-				// SUGGESTION: Just use an atomic counter - add when starting and subtract when finishing
-//				long qLength = queue.size();
-//				Timer timer = new Timer();
-//				TimerTask task = new TimerTask() {
-//					@Override
-//					public void run() {
-//						Platform.runLater(() -> {
-//							boolean refreshLegend = updateData(data);
-//							drawSpace();
-//							if (refreshLegend)
-//								updateLegend();
-//							queue.poll();
-//						});
-//
-//					}
-//					
-//				};
-//				timer.schedule(task, 2*(queue.size()+1));
-//				queue.add(timer);
-//				System.out.println(queue.size());
-//			}
+			Platform.runLater(() -> {
+				boolean refreshLegend = updateData(data);
+				drawSpace();
+				if (refreshLegend)
+					updateLegend();
+			});
 		}
 	}
 
@@ -339,6 +307,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	public void onStatusMessage(State state) {
 		log.info(state.toString());
 		if (isSimulatorState(state, waiting)) {
+			// could clear the queue here
 			hPointsMap.clear();
 			lineReferences.clear();
 			colourMap.clear();
@@ -635,13 +604,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putDouble(widgetId + keyContrast, contrast);
 		Preferences.putBoolean(widgetId + keyColour64, colour64);
 		Preferences.putBoolean(widgetId + keyShowLines, showLines);
-//		Preferences.putBoolean(widgetId+keyUseModPath, useModPath);
 	}
 
 	private static final int firstUse = -1;
 
 	@Override
 	public void getUserPreferences() {
+		// onMetaDataMessage runs before this method.
 		relLineWidth = Preferences.getDouble(widgetId + keyRelLineWidth, 0.25);
 		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
@@ -676,7 +645,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 		else
 			colours = ColourContrast.getContrastingColours(bkgColour, contrast);
-
 	}
 
 	// --------------- GUI
@@ -684,15 +652,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public Object getUserInterfaceContainer() {
 		BorderPane container = new BorderPane();
-//		DropShadow dropShadow = new DropShadow();
-//		dropShadow.setOffsetX(2);
-//		dropShadow.setOffsetY(2);
-//		dropShadow.setHeight(1);
-//		dropShadow.setRadius(12.0);
-//		dropShadow.setColor(Color.BLUE);
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
-//		canvas.setEffect(dropShadow);
 		canvas.setOnMouseClicked(e -> onMouseClicked(e));
 		zoomTarget.getChildren().add(canvas);
 		Group group = new Group(zoomTarget);
