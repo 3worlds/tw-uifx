@@ -49,6 +49,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
 //import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
@@ -56,6 +57,8 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.plugins.DataPointTooltip;
+import de.gsi.chart.plugins.EditAxis;
+import de.gsi.chart.plugins.Panner;
 import de.gsi.chart.plugins.TableViewer;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
@@ -111,10 +114,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		dataSetMap = new HashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
-//		 Glyph clipBoardIcon = new Glyph("FontAwesome", FontAwesome.Glyph.CLIPBOARD).size(20);
-//		 System.out.println(clipBoardIcon);
-//		 System.out.println(FontAwesome.Glyph.CLIPBOARD.getChar());
-
 	}
 
 	@Override
@@ -129,15 +128,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 			for (DataLabel dl : tsmeta.doubleNames()) {
 				String key = dl.toString();
-//				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, bufferCapacity);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
 				dataSetMap.put(key, ds);
 			}
 
 			for (DataLabel dl : tsmeta.intNames()) {
 				String key = dl.toString();
-//				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, bufferCapacity);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
 				dataSetMap.put(key, ds);
 			}
 			/*
@@ -187,10 +184,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
 			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-				if (!ds.equals(dontTouch)) {
+				if (!ds.equals(dontTouch)) 
 					ds.autoNotification().getAndSet(false);
-					// ds.setAutoNotifaction(false);
-				}
+				
 
 			final double x = data.time();
 			for (DataLabel dl : tsmeta.doubleNames()) {
@@ -210,7 +206,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				if (!ds.equals(dontTouch))
 					ds.autoNotification().getAndSet(true);
 
-			// });
+			
 		}
 	}
 
@@ -226,9 +222,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-				dataSetMap.entrySet().forEach(entry -> {
-					entry.getValue().reset();
-				});
+			for (DataSet d : chart.getAllDatasets()) {
+				CircularDoubleErrorDataSet cbds = (CircularDoubleErrorDataSet) d;
+				cbds.reset();
+			}
+		//	chart.getXAxis().setAutoRanging(value);
 		}
 	}
 
@@ -260,8 +258,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		chart.getPlugins().add(new Zoomer());
 		chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
-//		chart.getPlugins().add(new Panner());
-//		chart.getPlugins().add(new EditAxis());
+		//chart.getPlugins().add(new Panner());
+		//chart.getPlugins().add(new EditAxis());
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
 
@@ -303,8 +301,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			if (v != bufferCapacity) {
 				bufferCapacity = v;
 				for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
-					CircularDoubleErrorDataSet ds = (CircularDoubleErrorDataSet) e.getValue();
-					// ds.resizeBuffer(bufferCapacity);
+					CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
+					ds.resizeBuffer(bufferCapacity);
 				}
 			}
 		}
