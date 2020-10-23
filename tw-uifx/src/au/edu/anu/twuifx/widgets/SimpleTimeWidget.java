@@ -75,7 +75,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	public void onMetaDataMessage(Metadata meta) {
 		log.info("Thread id: " + Thread.currentThread().getId());
 		timeFormatter.onMetaDataMessage(meta);
-		scText="Stop when: "+meta.properties().getPropertyValue("StoppingDesc");
+		scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
 	}
 
 	@Override
@@ -96,10 +96,10 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 		log.info("Thread id: " + Thread.currentThread().getId());
 		HBox content = new HBox();
 		content.setAlignment(Pos.BASELINE_LEFT);
-		//content.setPadding(new Insets(4, 1, 1, 2));
+		// content.setPadding(new Insets(4, 1, 1, 2));
 		lblTime = new Label(formatOutput(timeFormatter.getInitialTime()));
-		content.getChildren().addAll(new Label("Simulator time: "),lblTime,new Label(scText));
-		
+		content.getChildren().addAll(new Label("Simulator time: "), lblTime, new Label(scText));
+
 		getUserPreferences();
 
 		return content;
@@ -119,8 +119,8 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 
 	@Override
 	public void putUserPreferences() {
-		//timeFormatter.putPreferences();
-		//policy.putPreferences();
+		// timeFormatter.putPreferences();
+		// policy.putPreferences();
 	}
 
 	@Override
@@ -133,7 +133,9 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	public void onStatusMessage(State state) {
 		log.info("Thread id: " + Thread.currentThread().getId() + " State: " + state);
 		if (isSimulatorState(state, waiting)) {
-			processResetUI();
+			Platform.runLater(() -> {
+				processResetUI();
+			});
 		}
 	}
 

@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
+import au.edu.anu.twuifx.widgets.helpers.ControllerAdapter;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -79,7 +80,7 @@ import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
  *       from and state.
  *
  */
-public class SimpleControlWidget1 extends StateMachineController implements WidgetGUI {
+public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI {
 	private Button btnRunPause;
 	private Button btnStep;
 	private Button btnReset;
@@ -126,15 +127,27 @@ public class SimpleControlWidget1 extends StateMachineController implements Widg
 		return pane;
 	}
 
+//	private void sendEventx(Event event) {
+//		
+//		Thread t = new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				sendEvent(event);
+//				
+//			}});
+//		t.start();
+//		
+//	}
 	private Object handleResetPressed() {
 		nullButtons();
-		sendEvent(reset.event());
+		sendEventThreaded(reset.event());
 		return null;
 	}
 
 	private Object handleStepPressed() {
 		nullButtons();
-		sendEvent(step.event());
+		sendEventThreaded(step.event());
 		return null;
 	}
 
@@ -149,7 +162,7 @@ public class SimpleControlWidget1 extends StateMachineController implements Widg
 		else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping))
 			event = goOn.event();
 		if (event != null)
-			sendEvent(event);
+			sendEventThreaded(event);
 		return null;
 	}
 

@@ -43,6 +43,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
+import au.edu.anu.twuifx.widgets.helpers.ControllerAdapter;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -68,7 +69,7 @@ import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
  *
  * @date 29 Jan 2020
  */
-public class SimpleControlWidget2 extends StateMachineController
+public class SimpleControlWidget2 extends ControllerAdapter
 		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 
 	private Button btnRunPause;
@@ -157,7 +158,7 @@ public class SimpleControlWidget2 extends StateMachineController
 
 	private void handleResetPressed() {
 		nullButtons();
-		sendEvent(reset.event());
+		sendEventThreaded(reset.event());
 		Platform.runLater(() -> {
 			lblRealTime.setText("0");
 		});
@@ -170,11 +171,11 @@ public class SimpleControlWidget2 extends StateMachineController
 		if (isSimulatorState(state, waiting)) {
 			startTime = now;
 			idleTime = 0;
-			sendEvent(step.event());
+			sendEventThreaded(step.event());
 		} else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping)) {
 			if (idleStartTime > 0)
 				idleTime += (now - idleStartTime);
-			sendEvent(step.event());
+			sendEventThreaded(step.event());
 		}
 	}
 
@@ -186,14 +187,14 @@ public class SimpleControlWidget2 extends StateMachineController
 		if (isSimulatorState(state, waiting)) {
 			startTime = now;
 			idleTime = 0;
-			sendEvent(run.event());
+			sendEventThreaded(run.event());
 		} else if (isSimulatorState(state, running)) {
-			sendEvent(pause.event());
+			sendEventThreaded(pause.event());
 		} else if (isSimulatorState(state, pausing) || isSimulatorState(state, stepping)) {
 			// total idleTime here
 			if (idleStartTime > 0)
 				idleTime += (now - idleStartTime);
-			sendEvent(goOn.event());
+			sendEventThreaded(goOn.event());
 		}
 	}
 

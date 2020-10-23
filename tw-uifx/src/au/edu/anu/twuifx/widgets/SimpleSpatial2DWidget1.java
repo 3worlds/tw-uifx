@@ -227,7 +227,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-	private boolean updateData(final SpaceData data) {
+	private synchronized boolean updateData(final SpaceData data) {
 		boolean updateLegend = false;
 		// delete points in the point list
 		for (DataLabel lab : data.pointsToDelete()) {
@@ -256,7 +256,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// remove lines
 		if (!data.linesToDelete().isEmpty())
 			lineReferences.removeAll(data.linesToDelete());
-		// remove old lines which end points were just removed
+		// remove old lines for which end points were just removed
 		Iterator<Duple<DataLabel, DataLabel>> itline = lineReferences.iterator();
 		while (itline.hasNext()) {
 			Duple<DataLabel, DataLabel> line = itline.next();
@@ -311,14 +311,16 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			hPointsMap.clear();
 			lineReferences.clear();
 			colourMap.clear();
-			legend.getChildren().clear();
+			Platform.runLater(() -> {
+				legend.getChildren().clear();
+			});
 			// drawSpace();
 		}
 	}
 
 //-------------------------------------------- Drawing ---
 
-	private void drawSpace() {
+	private synchronized void drawSpace() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
 		clearCanvas(gc);

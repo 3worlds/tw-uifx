@@ -59,8 +59,10 @@ import de.gsi.chart.plugins.DataPointTooltip;
 import de.gsi.chart.plugins.TableViewer;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
+import de.gsi.chart.renderer.Renderer;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
+import de.gsi.dataset.DataSet;
 import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -89,7 +91,7 @@ import javafx.stage.Window;
 public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
 
-	private int bufferCapacity=1000;
+	private int bufferCapacity = 1000;
 //	private int bufferCapacity;// pref mm/mr or both
 	// drop overlayed points
 	private int MIN_PIXEL_DISTANCE = 0;
@@ -170,6 +172,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		});
 		// }
 	}
+
 	@Override
 	public void onDataMessage(final Output0DData data) {
 		if (policy.canProcessDataMessage(data)) {
@@ -179,36 +182,35 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			 *
 			 */
 
-			//Platform.runLater(() -> {// chartfx does not require getting a ui thread - it must be buried in it somewhere
-				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
+			// Platform.runLater(() -> {// chartfx does not require getting a ui thread - it
+			// must be buried in it somewhere
+			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
-				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-					if (!ds.equals(dontTouch)) {
-						ds.autoNotification().getAndSet(false);
-						//ds.setAutoNotifaction(false);
-					}
-						
-						
-
-				final double x = data.time();
-				for (DataLabel dl : tsmeta.doubleNames()) {
-					CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
-					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
-					final double ey = 1;
-					ds.add(x, y, ey, ey);
-				}
-				for (DataLabel dl : tsmeta.intNames()) {
-					CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
-					final double y = data.getIntValues()[tsmeta.indexOf(dl)];
-					final double ey = 1;
-					ds.add(x, y, ey, ey);
+			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+				if (!ds.equals(dontTouch)) {
+					ds.autoNotification().getAndSet(false);
+					// ds.setAutoNotifaction(false);
 				}
 
-				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-					if (!ds.equals(dontTouch))
-						ds.autoNotification().getAndSet(true);
+			final double x = data.time();
+			for (DataLabel dl : tsmeta.doubleNames()) {
+				CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
+				final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
+				final double ey = 1;
+				ds.add(x, y, ey, ey);
+			}
+			for (DataLabel dl : tsmeta.intNames()) {
+				CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
+				final double y = data.getIntValues()[tsmeta.indexOf(dl)];
+				final double ey = 1;
+				ds.add(x, y, ey, ey);
+			}
 
-			//});
+			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+				if (!ds.equals(dontTouch))
+					ds.autoNotification().getAndSet(true);
+
+			// });
 		}
 	}
 
@@ -224,9 +226,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-			dataSetMap.entrySet().forEach(entry -> {
-				entry.getValue().reset();
-			});
+				dataSetMap.entrySet().forEach(entry -> {
+					entry.getValue().reset();
+				});
 		}
 	}
 
@@ -250,7 +252,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		xAxis1.setTickLabelRotation(45);
 		// for gregorian we may need something else here
 //		xAxis1.setTimeAxis(true);
-
 
 		// can't create a chart without axes
 		chart = new XYChart(xAxis1, yAxis1);
@@ -300,10 +301,10 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		if (result.get().equals(ok)) {
 			int v = spCapacity.getValue();
 			if (v != bufferCapacity) {
-				bufferCapacity=v;
+				bufferCapacity = v;
 				for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
 					CircularDoubleErrorDataSet ds = (CircularDoubleErrorDataSet) e.getValue();
-					//ds.resizeBuffer(bufferCapacity);
+					// ds.resizeBuffer(bufferCapacity);
 				}
 			}
 		}
