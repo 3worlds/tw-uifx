@@ -39,8 +39,8 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
 		categorySet *systemElements*
-			category *group*
 			category *life cycle*
+			category *group*
 			category *relation*
 			category *component*
 			category *arena*
@@ -161,7 +161,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 						dataTracker trk2
 							sampleSize = java.lang.String(10)
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN,SE,N})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 		structure struc1
@@ -243,11 +243,12 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trk1] trackComponent trks3 [group:Carpinus]
 [dataTracker:trk2] trackComponent trks8 [component:cmp1]
+[dataTracker:trk2] trackComponent trks9 [component:cmp2]
 [dataTracker:trk2] trackField trks7 [field:neighBm]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [widget:wgt4] trackSeries trks6 [dataTracker:trk2]
-[category:tree] drivers drvs1 [record:drv]
 [category:tree] decorators decs1 [record:treedec]
+[category:tree] drivers drvs1 [record:drv]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
@@ -269,8 +270,8 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [process:p4] appliesTo aplyTo5 [category:*group*]
 [relationType:neighbour] fromCategory from1 [category:tree]
 [relationType:neighbour] toCategory to1 [category:tree]
-[category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*arena*] constants cnsts1 [record:global]
 [componentType:treeIndividual] belongsTo bt7 [category:*ephemeral*]
 [componentType:treeIndividual] belongsTo bt6 [category:*component*]
