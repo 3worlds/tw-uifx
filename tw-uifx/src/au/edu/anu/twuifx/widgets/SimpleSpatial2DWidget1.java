@@ -312,7 +312,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			lineReferences.clear();
 			colourMap.clear();
 			legend.getChildren().clear();
-			drawSpace();
+			// drawSpace();
 		}
 	}
 
@@ -357,17 +357,21 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
 			Duple<DataLabel, double[]> value = entry.getValue();
 			String cKey = getColourKey(value.getFirst());
-			Color colour = colourMap.get(cKey).getSecond();
-			gc.setStroke(colour);
-			double[] coords = value.getSecond();
-			Point2D point = scaleToCanvas(coords);
-			point = point.add(-symbolRadius, -symbolRadius);
-			gc.strokeOval(point.getX(), point.getY(), size, size);
-			if (symbolFill) {
-				gc.setFill(colour);
-				gc.fillOval(point.getX(), point.getY(), size, size);
+			Duple<Integer, Color> colourEntry = colourMap.get(cKey);
+			if (colourEntry != null) {
+				Color colour = colourEntry.getSecond();
+				gc.setStroke(colour);
+				double[] coords = value.getSecond();
+				Point2D point = scaleToCanvas(coords);
+				point = point.add(-symbolRadius, -symbolRadius);
+				gc.strokeOval(point.getX(), point.getY(), size, size);
+				if (symbolFill) {
+					gc.setFill(colour);
+					gc.fillOval(point.getX(), point.getY(), size, size);
+				}
 			}
 		}
+
 	}
 
 	private void drawTubularLines(GraphicsContext gc, double[] p1, double[] p2) {
