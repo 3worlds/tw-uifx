@@ -30,8 +30,7 @@
 package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_NTU;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_TU;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +66,8 @@ import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
@@ -105,6 +106,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	private Output0DMetadata tsmeta;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
+	private StatisticalAggregatesSet sas;
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
@@ -122,17 +124,43 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		Platform.runLater(() -> {
+//			System.out.println(meta.properties());
 			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+			// well it seems always to be here no matter what. Must be added by the tracker
+			sas = null;
+			if (meta.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
+				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
+
 			for (DataLabel dl : tsmeta.doubleNames()) {
-				String key = dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-				dataSetMap.put(key, ds);
+				if (sas != null) {
+					for (StatisticalAggregates sa : sas.values()) {
+						String key = sa.name() + " " + dl.toString();
+						CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+						dataSetMap.put(key, ds);
+//						System.out.println(key);
+					}
+				} else {
+					String key = dl.toString();
+					System.out.println(key);
+					CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+//					dataSetMap.put(key, ds);
+				}
 			}
 
 			for (DataLabel dl : tsmeta.intNames()) {
-				String key = dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-				dataSetMap.put(key, ds);
+				if (sas != null) {
+					for (StatisticalAggregates sa : sas.values()) {
+						String key = sa.name() + " " + dl.toString();
+						CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+						dataSetMap.put(key, ds);
+//						System.out.println(key);
+					}
+				} else {
+					String key = dl.toString();
+//					System.out.println(key);
+					CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+					dataSetMap.put(key, ds);
+				}
 			}
 			/*
 			 * Renderers should be in the chart BEFORE dataSets are added to the renderer
@@ -170,40 +198,50 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	@Override
 	public void onDataMessage(final Output0DData data) {
 		if (policy.canProcessDataMessage(data)) {
+			synchronized (this) {
+				/*
+				 * TODO Still some problems with how we manage this.
+				 *
+				 */
 
-			/*
-			 * TODO Still some problems with how we manage this.
-			 *
-			 */
+				// Platform.runLater(() -> {// chartfx does not require getting a ui thread - it
+				// must be buried in it somewhere
+				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
-			// Platform.runLater(() -> {// chartfx does not require getting a ui thread - it
-			// must be buried in it somewhere
-			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
+				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+					if (!ds.equals(dontTouch))
+						ds.autoNotification().getAndSet(false);
 
-			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-				if (!ds.equals(dontTouch)) 
-					ds.autoNotification().getAndSet(false);
-				
+				final double x = data.time();// there are 3 calls to this - presumably 1 for data the rest for stats
 
-			final double x = data.time();
-			for (DataLabel dl : tsmeta.doubleNames()) {
-				CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
-				final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
-				final double ey = 1;
-				ds.add(x, y, ey, ey);
+				// Time: 1.0; dl: sys1>Quercus>MEAN etc
+//				System.out.println("Time: " + x + "; dl: " + data.itemLabel());
+				String statsType = data.itemLabel().getEnd();
+				for (DataLabel dl : tsmeta.doubleNames()) {
+					String key = statsType + " " + dl.toString();
+
+					CircularDoubleErrorDataSet ds = dataSetMap.get(key);
+					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
+					final double ey = 1;
+//					System.out.println(key + "[" + x + "," + y + "]");
+					ds.add(x, y, ey, ey);
+				}
+
+				for (DataLabel dl : tsmeta.intNames()) {
+					String key = statsType + " " + dl.toString();
+
+					CircularDoubleErrorDataSet ds = dataSetMap.get(key);
+					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
+					final double ey = 1;
+//					System.out.println(key + "[" + x + "," + y + "]");
+					ds.add(x, y, ey, ey);
+				}
+
+				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+					if (!ds.equals(dontTouch))
+						ds.autoNotification().getAndSet(true);
+
 			}
-			for (DataLabel dl : tsmeta.intNames()) {
-				CircularDoubleErrorDataSet ds = dataSetMap.get(dl.toString());
-				final double y = data.getIntValues()[tsmeta.indexOf(dl)];
-				final double ey = 1;
-				ds.add(x, y, ey, ey);
-			}
-
-			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-				if (!ds.equals(dontTouch))
-					ds.autoNotification().getAndSet(true);
-
-			
 		}
 	}
 
@@ -217,13 +255,14 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	}
 
 	@Override
-	public void onStatusMessage(State state) {
+	public synchronized void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-			for (DataSet d : chart.getAllDatasets()) {
-				CircularDoubleErrorDataSet cbds = (CircularDoubleErrorDataSet) d;
-				cbds.reset();
+			synchronized (this) {
+				for (DataSet d : chart.getAllDatasets()) {
+					CircularDoubleErrorDataSet cbds = (CircularDoubleErrorDataSet) d;
+					cbds.reset();
+				}
 			}
-		//	chart.getXAxis().setAutoRanging(value);
 		}
 	}
 
@@ -255,8 +294,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		chart.getPlugins().add(new Zoomer());
 		chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
-		//chart.getPlugins().add(new Panner());
-		//chart.getPlugins().add(new EditAxis());
+		// chart.getPlugins().add(new Panner());
+		// chart.getPlugins().add(new EditAxis());
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
 
