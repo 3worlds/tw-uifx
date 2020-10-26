@@ -32,11 +32,14 @@ package au.edu.anu.twuifx.widgets;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
@@ -107,6 +110,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
+	private Collection<String> sampledItems = null;
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
@@ -120,6 +124,31 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		policy.setProperties(id, properties);
 		this.widgetId = id;
 	}
+	
+	// helper for onMetaDataMessage, cf below.
+	private void makeChannels(DataLabel dl) {
+		if (sas != null) {
+			for (StatisticalAggregates sa : sas.values()) {
+				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
+//				String key = sa.name() + " " + dl.toString();
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				dataSetMap.put(key, ds);
+			}
+		} 
+		else if (sampledItems!=null) {
+			for (String si:sampledItems) {
+				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
+//				String key = si + " " + dl.toString();
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				dataSetMap.put(key, ds);
+			}
+		}
+		else {
+			String key = dl.toString();
+			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+			dataSetMap.put(key, ds);
+		}
+	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
@@ -130,38 +159,21 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			sas = null;
 			if (meta.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
 				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
-
-			for (DataLabel dl : tsmeta.doubleNames()) {
-				if (sas != null) {
-					for (StatisticalAggregates sa : sas.values()) {
-						String key = sa.name() + " " + dl.toString();
-						CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-						dataSetMap.put(key, ds);
-//						System.out.println(key);
-					}
-				} else {
-					String key = dl.toString();
-//					System.out.println(key);
-					CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-					dataSetMap.put(key, ds);
+			if (meta.properties().hasProperty("sample")) {
+				StringTable st = (StringTable) meta.properties().getPropertyValue("sample");
+				if (st!=null) {
+					sampledItems = new ArrayList<>(st.size());
+					for (int i=0; i<st.size(); i++)
+						sampledItems.add(st.getWithFlatIndex(i));
 				}
 			}
-
-			for (DataLabel dl : tsmeta.intNames()) {
-				if (sas != null) {
-					for (StatisticalAggregates sa : sas.values()) {
-						String key = sa.name() + " " + dl.toString();
-						CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-						dataSetMap.put(key, ds);
-//						System.out.println(key);
-					}
-				} else {
-					String key = dl.toString();
-//					System.out.println(key);
-					CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-					dataSetMap.put(key, ds);
-				}
-			}
+			
+			for (DataLabel dl : tsmeta.doubleNames()) 
+				makeChannels(dl);
+			// normally with statistics there are no int variables
+			for (DataLabel dl : tsmeta.intNames())
+				makeChannels(dl);
+			
 			/*
 			 * Renderers should be in the chart BEFORE dataSets are added to the renderer
 			 * otherwise when data is added to a dataset, invalidation events will not
@@ -216,10 +228,18 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 				// Time: 1.0; dl: sys1>Quercus>MEAN etc
 //				System.out.println("Time: " + x + "; dl: " + data.itemLabel());
-				String statsType = data.itemLabel().getEnd();
+				String itemId = null;
+				if (sas!=null)
+					itemId = data.itemLabel().getEnd();
+				else if (sampledItems!=null)
+					itemId = data.itemLabel().toString();
+					
 				for (DataLabel dl : tsmeta.doubleNames()) {
-					String key = statsType + " " + dl.toString();
-
+					String key;
+					if (itemId!=null)
+						key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+					else
+						key = dl.toString();
 					CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
 					final double ey = 1;
@@ -228,10 +248,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				}
 
 				for (DataLabel dl : tsmeta.intNames()) {
-					String key = statsType + " " + dl.toString();
-
+					String key;
+					if (itemId!=null)
+						key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+					else
+						key = dl.toString();
 					CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
+					final double y = data.getIntValues()[tsmeta.indexOf(dl)];
 					final double ey = 1;
 //					System.out.println(key + "[" + x + "," + y + "]");
 					ds.add(x, y, ey, ey);

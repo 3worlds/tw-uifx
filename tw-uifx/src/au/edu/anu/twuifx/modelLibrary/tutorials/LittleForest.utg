@@ -120,10 +120,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 					process p4
 						dataTracker trk1
 							sampleSize = java.lang.String(ALL)
-							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 					process p3
 						function FindNeighbours
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
@@ -241,9 +238,8 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [component:cmp1] instanceOf instOf1 [group:Quercus]
 [dataTracker:trk1] trackField trks4 [field:count]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[dataTracker:trk1] trackComponent trks3 [group:Carpinus]
-[dataTracker:trk2] trackComponent trks8 [component:cmp1]
-[dataTracker:trk2] trackComponent trks9 [component:cmp2]
+[dataTracker:trk1] trackComponent trks3 [groupType:species]
+[dataTracker:trk2] trackComponent trks8 [group:Quercus]
 [dataTracker:trk2] trackField trks7 [field:neighBm]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [widget:wgt4] trackSeries trks6 [dataTracker:trk2]
@@ -270,8 +266,8 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [process:p4] appliesTo aplyTo5 [category:*group*]
 [relationType:neighbour] fromCategory from1 [category:tree]
 [relationType:neighbour] toCategory to1 [category:tree]
-[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*arena*] constants cnsts1 [record:global]
 [componentType:treeIndividual] belongsTo bt7 [category:*ephemeral*]
 [componentType:treeIndividual] belongsTo bt6 [category:*component*]
