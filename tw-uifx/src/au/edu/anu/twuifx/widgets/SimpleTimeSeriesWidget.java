@@ -141,9 +141,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 					}
 				} else {
 					String key = dl.toString();
-					System.out.println(key);
+//					System.out.println(key);
 					CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-//					dataSetMap.put(key, ds);
+					dataSetMap.put(key, ds);
 				}
 			}
 
