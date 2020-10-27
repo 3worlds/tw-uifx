@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
@@ -110,11 +111,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
-	private Collection<String> sampledItems = null;
+	private Collection<String> sampledItems;
 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
-		dataSetMap = new HashMap<>();
+		// needs to be thread-safe because chartfx plugins may be looking at chart
+		// data?? No sure this makes sense but seems to work.
+		dataSetMap = new ConcurrentHashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 	}
@@ -124,7 +127,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		policy.setProperties(id, properties);
 		this.widgetId = id;
 	}
-	
+
 	// helper for onMetaDataMessage, cf below.
 	private void makeChannels(DataLabel dl) {
 		if (sas != null) {
@@ -134,16 +137,14 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
 				dataSetMap.put(key, ds);
 			}
-		} 
-		else if (sampledItems!=null) {
-			for (String si:sampledItems) {
+		} else if (sampledItems != null) {
+			for (String si : sampledItems) {
 				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
 //				String key = si + " " + dl.toString();
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
 				dataSetMap.put(key, ds);
 			}
-		}
-		else {
+		} else {
 			String key = dl.toString();
 			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
 			dataSetMap.put(key, ds);
@@ -161,19 +162,19 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
 			if (meta.properties().hasProperty("sample")) {
 				StringTable st = (StringTable) meta.properties().getPropertyValue("sample");
-				if (st!=null) {
+				if (st != null) {
 					sampledItems = new ArrayList<>(st.size());
-					for (int i=0; i<st.size(); i++)
+					for (int i = 0; i < st.size(); i++)
 						sampledItems.add(st.getWithFlatIndex(i));
 				}
 			}
-			
-			for (DataLabel dl : tsmeta.doubleNames()) 
+
+			for (DataLabel dl : tsmeta.doubleNames())
 				makeChannels(dl);
 			// normally with statistics there are no int variables
 			for (DataLabel dl : tsmeta.intNames())
 				makeChannels(dl);
-			
+
 			/*
 			 * Renderers should be in the chart BEFORE dataSets are added to the renderer
 			 * otherwise when data is added to a dataset, invalidation events will not
@@ -182,7 +183,12 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			// (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
 			// renderer before adding the renderer to the chart
 			// renderer_dipoleCurrent.getAxes().add(yAxis2);
+			DefaultNumericAxis[] yAxes = new DefaultNumericAxis[dataSetMap.size()];
+			yAxes[0] = (DefaultNumericAxis) chart.getYAxis();
 			if (dataSetMap.size() > 1) {
+//				for (int i=1;i<Math.min(dataSetMap.size(),4);i++) {
+//					yAxes[i] = new DefaultNumericAxis("", "");
+//				}
 				// TODO then lets at least add a second yaxis.
 				// Maybe we could allow up to 4 axes - two on each side
 			} else {
@@ -196,6 +202,10 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				chart.getRenderers().add(renderer);
 				renderer.getDatasets().add(entry.getValue());
 			});
+			ErrorDataSetRenderer yRend = (ErrorDataSetRenderer) chart.getRenderers().get(0);
+//			for (int i = 1; i < yAxes.length; i++) {
+//				yRend.getAxes().add(yAxes[i]);
+//			}
 			timeFormatter.onMetaDataMessage(meta);
 			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
 			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
@@ -210,33 +220,25 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	@Override
 	public void onDataMessage(final Output0DData data) {
 		if (policy.canProcessDataMessage(data)) {
+			// needs to be thread-safe because waiting state clears these data
 			synchronized (this) {
-				/*
-				 * TODO Still some problems with how we manage this.
-				 *
-				 */
-
-				// Platform.runLater(() -> {// chartfx does not require getting a ui thread - it
-				// must be buried in it somewhere
 				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
 				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
 					if (!ds.equals(dontTouch))
 						ds.autoNotification().getAndSet(false);
 
-				final double x = data.time();// there are 3 calls to this - presumably 1 for data the rest for stats
+				final double x = data.time();
 
-				// Time: 1.0; dl: sys1>Quercus>MEAN etc
-//				System.out.println("Time: " + x + "; dl: " + data.itemLabel());
 				String itemId = null;
-				if (sas!=null)
+				if (sas != null)
 					itemId = data.itemLabel().getEnd();
-				else if (sampledItems!=null)
+				else if (sampledItems != null)
 					itemId = data.itemLabel().toString();
-					
+
 				for (DataLabel dl : tsmeta.doubleNames()) {
 					String key;
-					if (itemId!=null)
+					if (itemId != null)
 						key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
 					else
 						key = dl.toString();
@@ -249,7 +251,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 				for (DataLabel dl : tsmeta.intNames()) {
 					String key;
-					if (itemId!=null)
+					if (itemId != null)
 						key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
 					else
 						key = dl.toString();
@@ -278,9 +280,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	}
 
 	@Override
-	public synchronized void onStatusMessage(State state) {
+	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-			synchronized (this) {
+			synchronized (this) {// thread-safe because a backlog of onDataMessage may be being processed
 				for (DataSet d : chart.getAllDatasets()) {
 					CircularDoubleErrorDataSet cbds = (CircularDoubleErrorDataSet) d;
 					cbds.reset();
@@ -294,17 +296,17 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		BorderPane content = new BorderPane();
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "");
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
-		xAxis1.setAutoRangeRounding(true);
-		yAxis1.setAutoRangeRounding(true);
+//		xAxis1.setAutoRangeRounding(true);
+//		yAxis1.setAutoRangeRounding(true);
 
 //		xAxis1.setForceZeroInRange(true);
 //		yAxis1.setForceZeroInRange(true);
 
-		xAxis1.invertAxis(false);
-		yAxis1.invertAxis(false);
-		// These numbers can be very large
-		xAxis1.setTimeAxis(false);
-		yAxis1.setTimeAxis(false);
+//		xAxis1.invertAxis(false);
+//		yAxis1.invertAxis(false);
+//		// These numbers can be very large
+//		xAxis1.setTimeAxis(false);
+//		yAxis1.setTimeAxis(false);
 
 		xAxis1.setTickLabelRotation(45);
 		// for gregorian we may need something else here
@@ -317,6 +319,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		chart.getPlugins().add(new Zoomer());
 		chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
+		chart.setTitle(widgetId);
 		// chart.getPlugins().add(new Panner());
 		// chart.getPlugins().add(new EditAxis());
 		content.setCenter(chart);
@@ -358,10 +361,12 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		if (result.get().equals(ok)) {
 			int v = spCapacity.getValue();
 			if (v != bufferCapacity) {
-				bufferCapacity = v;
-				for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
-					CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
-					ds.resizeBuffer(bufferCapacity);
+				synchronized (this) {
+					bufferCapacity = v;
+					for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
+						CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
+						ds.resizeBuffer(bufferCapacity);
+					}
 				}
 			}
 		}

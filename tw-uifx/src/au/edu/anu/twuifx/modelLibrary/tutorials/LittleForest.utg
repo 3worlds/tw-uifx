@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 // TREE
 3worlds LittleForest
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(gignoux (14 oct. 2020))
+	built-by = java.lang.String(ian (26 Oct. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"jacques.gignoux@upmc.fr"))
 	precis = java.lang.String(A simplistic individual based forest model to test the use of groups)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -204,8 +204,8 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	userInterface gui
 		top top
-			widget wgt1
-				order = java.lang.Integer(0)
+			widget timer
+				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
 			widget ctrl
@@ -215,16 +215,16 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			container cont1
 				order = java.lang.Integer(0)
-				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-				widget wgt2
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+				widget Spp count
 					order = java.lang.Integer(2)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-				widget wgt4
+				widget Neighbourhood biomass
 					order = java.lang.Integer(1)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-			widget wgt3
+			widget map
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
@@ -239,19 +239,16 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [dataTracker:trk1] trackField trks4 [field:count]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trk1] trackComponent trks3 [groupType:species]
+[widget:Neighbourhood biomass] trackSeries trks6 [dataTracker:trk2]
 [dataTracker:trk2] trackComponent trks8 [group:Quercus]
 [dataTracker:trk2] trackField trks7 [field:neighBm]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[widget:wgt4] trackSeries trks6 [dataTracker:trk2]
 [category:tree] decorators decs1 [record:treedec]
 [category:tree] drivers drvs1 [record:drv]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
 [category:*group*] constants cnts1 [record:cnt]
-[widget:wgt3] trackSpace trks2 [space:space1]
-[widget:wgt2] trackSeries trks5 [dataTracker:trk1]
-[widget:wgt1] trackTime trks1 [dynamics:sim1]
 [process:p1] appliesTo aplyTo2 [category:tree]
 [process:p1] appliesTo aplyTo1 [category:*component*]
 [process:p1] dependsOn depsOn2 [process:p2]
@@ -266,8 +263,11 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [process:p4] appliesTo aplyTo5 [category:*group*]
 [relationType:neighbour] fromCategory from1 [category:tree]
 [relationType:neighbour] toCategory to1 [category:tree]
+[widget:timer] trackTime trks1 [dynamics:sim1]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[widget:Spp count] trackSeries trks5 [dataTracker:trk1]
+[widget:map] trackSpace trks2 [space:space1]
 [category:*arena*] constants cnsts1 [record:global]
 [componentType:treeIndividual] belongsTo bt7 [category:*ephemeral*]
 [componentType:treeIndividual] belongsTo bt6 [category:*component*]
