@@ -29,8 +29,11 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Logger;
 
+import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -46,8 +49,10 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
+import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.ens.biologie.generic.utils.Logging;
-import fr.ens.biologie.generic.utils.Statistics;
+//import fr.ens.biologie.generic.utils.Statistics;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -61,6 +66,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRACKER_STATISTICS;
 
 /**
  * @author Ian Davies
@@ -79,6 +85,8 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	private TableView<TableData> table;
 	private Label lblTime;
 	private Label lblItemLabel;
+	private StatisticalAggregatesSet sas;
+	private Collection<String> sampledItems;
 
 	public SimpleDM0Widget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
@@ -96,16 +104,43 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 			tableDataList = FXCollections.observableArrayList();
 			d0Metadata = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 			timeFormatter.onMetaDataMessage(meta);
-			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));	
+			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+			if (meta.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
+				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
+			if (meta.properties().hasProperty("sample")) {
+				StringTable st = (StringTable) meta.properties().getPropertyValue("sample");
+				if (st != null) {
+					sampledItems = new ArrayList<>(st.size());
+					for (int i = 0; i < st.size(); i++)
+						sampledItems.add(st.getWithFlatIndex(i));
+				}
+			}
 
 			for (DataLabel dl : d0Metadata.doubleNames())
-				tableDataList.add(new TableData(dl.toString()));
+				makeChannels(dl);
+			// tableDataList.add(new TableData(dl.toString()));
 			for (DataLabel dl : d0Metadata.intNames())
-				tableDataList.add(new TableData(dl.toString()));
+				makeChannels(dl);
+//				tableDataList.add(new TableData(dl.toString()));
 
 			table.setItems(tableDataList);
 			table.refresh();
 		});
+
+	}
+
+	private void makeChannels(DataLabel dl) {
+		if (sas != null) {
+			for (StatisticalAggregates sa : sas.values()) {
+				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
+				tableDataList.add(new TableData(key));
+			}
+		} else if (sampledItems != null) {
+			for (String si : sampledItems) {
+				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
+				tableDataList.add(new TableData(key));
+			}
+		}
 
 	}
 
@@ -116,19 +151,32 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 			Platform.runLater(() -> {
 				lblItemLabel.setText(data.itemLabel().toString());
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
+				String itemId = null;
+				if (sas != null)
+					itemId = data.itemLabel().getEnd();
+				else if (sampledItems != null)
+					itemId = data.itemLabel().toString();
 				for (DataLabel dl : d0Metadata.doubleNames()) {
-					int idx = d0Metadata.indexOf(dl);
-					Double value = data.getDoubleValues()[idx];
-					TableData td = tableDataList.get(idx);
-					td.stats.add(value);
-					td.setValue(value);
+					String key;
+					if (itemId != null)
+						if (itemId != null)
+							key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+						else
+							key = dl.toString();
+//					TableData td = tableDataList.get(idx);
+
+//					int idx = d0Metadata.indexOf();
+//					Double value = data.getDoubleValues()[idx];
+//					TableData td = tableDataList.get(idx);
+////					td.stats.add(value);
+//					td.setValue(value);
 				}
 				for (DataLabel dl : d0Metadata.intNames()) {
-					int idx = d0Metadata.indexOf(dl);
-					TableData td = tableDataList.get(idx);
-					Long value = data.getIntValues()[idx];
-					td.stats.add(value);
-					td.setValue(value);
+//					int idx = d0Metadata.indexOf(dl);
+//					TableData td = tableDataList.get(idx);
+//					Long value = data.getIntValues()[idx];
+////					td.stats.add(value);
+//					td.setValue(value);
 				}
 				table.refresh();
 			});
@@ -143,7 +191,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 				// reset the statistics and the initialvalue (if we had one)
 				for (TableData td : tableDataList) {
-					td.stats.reset();
+//					td.stats.reset();
 					td.setValue(0);
 				}
 				table.refresh();
@@ -161,22 +209,22 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		TableColumn<TableData, String> col2Value = new TableColumn<>("Value");
 		col2Value.setCellValueFactory(new PropertyValueFactory<TableData, String>("value"));
 
-		TableColumn<TableData, String> col3Min = new TableColumn<>("Min");
-		col3Min.setCellValueFactory(new PropertyValueFactory<TableData, String>("min"));
+//		TableColumn<TableData, String> col3Min = new TableColumn<>("Min");
+//		col3Min.setCellValueFactory(new PropertyValueFactory<TableData, String>("min"));
+//
+//		TableColumn<TableData, String> col4Max = new TableColumn<>("Max");
+//		col4Max.setCellValueFactory(new PropertyValueFactory<TableData, String>("max"));
+//		// avg,var,sum
+//		TableColumn<TableData, String> col5Avg = new TableColumn<>("Avg");
+//		col5Avg.setCellValueFactory(new PropertyValueFactory<TableData, String>("avg"));
+//
+//		TableColumn<TableData, String> col6Var = new TableColumn<>("Var");
+//		col6Var.setCellValueFactory(new PropertyValueFactory<TableData, String>("var"));
+//
+//		TableColumn<TableData, String> col7Sum = new TableColumn<>("Sum");
+//		col7Sum.setCellValueFactory(new PropertyValueFactory<TableData, String>("sum"));
 
-		TableColumn<TableData, String> col4Max = new TableColumn<>("Max");
-		col4Max.setCellValueFactory(new PropertyValueFactory<TableData, String>("max"));
-		// avg,var,sum
-		TableColumn<TableData, String> col5Avg = new TableColumn<>("Avg");
-		col5Avg.setCellValueFactory(new PropertyValueFactory<TableData, String>("avg"));
-
-		TableColumn<TableData, String> col6Var = new TableColumn<>("Var");
-		col6Var.setCellValueFactory(new PropertyValueFactory<TableData, String>("var"));
-
-		TableColumn<TableData, String> col7Sum = new TableColumn<>("Sum");
-		col7Sum.setCellValueFactory(new PropertyValueFactory<TableData, String>("sum"));
-
-		table.getColumns().addAll(col1Label, col2Value, col3Min, col4Max, col5Avg, col6Var, col7Sum);
+		table.getColumns().addAll(col1Label, col2Value/* col3Min, col4Max, col5Avg, col6Var, col7Sum */);
 
 		VBox content = new VBox();
 		content.setSpacing(5);
@@ -184,7 +232,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		HBox hbox = new HBox();
 		lblTime = new Label("uninitialised");
 		lblItemLabel = new Label();
-		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime,lblItemLabel);
+		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime, lblItemLabel);
 		content.getChildren().addAll(table, hbox);
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
@@ -218,12 +266,12 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		// the list that is observed.
 		private final SimpleStringProperty labelProperty;
 		private final SimpleStringProperty valueProperty;
-		private final Statistics stats;
+//		private final Statistics stats;
 
 		public TableData(String label) {
 			this.labelProperty = new SimpleStringProperty(label);
 			this.valueProperty = new SimpleStringProperty();
-			this.stats = new Statistics();
+//			this.stats = new Statistics();
 		}
 
 		public String getLabel() {
@@ -242,29 +290,29 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 			this.valueProperty.set(value.toString());
 		}
 
-		public double getMin() {
-			return stats.min();
-		}
-
-		public double getMax() {
-			return stats.max();
-		}
-
-		public double getAvg() {
-			return stats.average();
-		}
-
-		public double getVar() {
-			return stats.variance();
-		}
-
-		public double getSum() {
-			return stats.sum();
-		}
-
-		public Statistics getStatistics() {
-			return stats;
-		}
+//		public double getMin() {
+//			return stats.min();
+//		}
+//
+//		public double getMax() {
+//			return stats.max();
+//		}
+//
+//		public double getAvg() {
+//			return stats.average();
+//		}
+//
+//		public double getVar() {
+//			return stats.variance();
+//		}
+//
+//		public double getSum() {
+//			return stats.sum();
+//		}
+//
+//		public Statistics getStatistics() {
+//			return stats;
+//		}
 	}
 
 }
