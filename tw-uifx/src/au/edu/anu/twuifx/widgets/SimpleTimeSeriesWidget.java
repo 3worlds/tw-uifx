@@ -185,16 +185,16 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			// renderer_dipoleCurrent.getAxes().add(yAxis2);
 			DefaultNumericAxis[] yAxes = new DefaultNumericAxis[dataSetMap.size()];
 			yAxes[0] = (DefaultNumericAxis) chart.getYAxis();
-			if (dataSetMap.size() > 1) {
+//			if (dataSetMap.size() > 1) {
 //				for (int i=1;i<Math.min(dataSetMap.size(),4);i++) {
 //					yAxes[i] = new DefaultNumericAxis("", "");
 //				}
 				// TODO then lets at least add a second yaxis.
 				// Maybe we could allow up to 4 axes - two on each side
-			} else {
+//			} else {
 				String ylabel = dataSetMap.keySet().iterator().next();
 				chart.getYAxis().set(ylabel);// this requires the javafx application thread
-			}
+//			}
 
 			dataSetMap.entrySet().forEach(entry -> {
 				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
@@ -296,15 +296,16 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		BorderPane content = new BorderPane();
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "");
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
-//		xAxis1.setAutoRangeRounding(true);
-//		yAxis1.setAutoRangeRounding(true);
+		xAxis1.setAutoRangeRounding(true);
+		yAxis1.setAutoRangeRounding(true);
 
 //		xAxis1.setForceZeroInRange(true);
 //		yAxis1.setForceZeroInRange(true);
 
 //		xAxis1.invertAxis(false);
 //		yAxis1.invertAxis(false);
-//		// These numbers can be very large
+
+		// These numbers can be very large
 //		xAxis1.setTimeAxis(false);
 //		yAxis1.setTimeAxis(false);
 
@@ -318,7 +319,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		chart.setAnimated(false);
 		chart.getPlugins().add(new Zoomer());
 		chart.getPlugins().add(new TableViewer());
-		chart.getPlugins().add(new DataPointTooltip());
+//		chart.getPlugins().add(new DataPointTooltip());// causing a concurrent modification error at times.
 		chart.setTitle(widgetId);
 		// chart.getPlugins().add(new Panner());
 		// chart.getPlugins().add(new EditAxis());
