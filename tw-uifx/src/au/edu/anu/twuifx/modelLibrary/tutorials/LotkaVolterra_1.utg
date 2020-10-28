@@ -75,6 +75,15 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
+		record drvs
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(drvs)
+			table x
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(population size)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
 		record cnsts
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(cnsts)
@@ -96,28 +105,19 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
-		record drvs
-			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(drvs)
-			table x
-				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(population size)
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				units = java.lang.String()
 		dimensioner nspp
 			size = java.lang.Integer(4)
 	experiment expt
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
-	system sys1
-		constantClass = java.lang.String(code.sys1.Cnsts)
-		driverClass = java.lang.String(code.sys1.Drvs)
+	system community
+		constantClass = java.lang.String(code.community.Cnsts)
+		driverClass = java.lang.String(code.community.Drvs)
 		initFunction Init1
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.sys1.Init1)
+			userClassName = java.lang.String(code.community.Init1)
 			snippet snpt2
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([12]"		double initfreq = 1.0 / x.size();","		focalDrv.x.fillWith(initfreq);","		for (int i = 0; i < r.size(0); i++) {","			focalCnt.r.setByInt(random.nextDouble(), i);","			focalCnt.K.setByInt(5.0 + initfreq + random.nextDouble(), i);","			for (int j = 0; j < alpha.size(1); j++) {","				if (i == j)","					focalCnt.alpha.setByInt(1.0, i, j);","				else","					focalCnt.alpha.setByInt(max(0.0001, random.nextDouble()), i, j);","			}","		}"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([12]"double initfreq = 1.0 / x.size();","focalDrv.x.fillWith(initfreq);","for (int i = 0; i < r.size(0); i++) {","focalCnt.r.setByInt(random.nextDouble(), i);","focalCnt.K.setByInt(5.0 + initfreq + random.nextDouble(), i);","for (int j = 0; j < alpha.size(1); j++) {","if (i == j)","focalCnt.alpha.setByInt(1.0, i, j);","else","focalCnt.alpha.setByInt(max(0.0001, random.nextDouble()), i, j);","}","}"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -135,15 +135,12 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 					process p1
 						function Growth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys1.Growth)
+							userClassName = java.lang.String(code.community.Growth)
 							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"		double[] dxdt = new double[x.size(0)];","		for (int i = 0; i < x.size(0); i++) {","			double sum = 0;","			for (int j = 0; j < alpha.size(1); j++)","				sum += alpha.getByInt(i, j) * x.getByInt(j);","			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));","		}","		for (int i = 0; i < dxdt.length; i++)","			focalDrv.x.setByInt(max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"double[] dxdt = new double[x.size(0)];","for (int i = 0; i < x.size(0); i++) {","double sum = 0;","for (int j = 0; j < alpha.size(1); j++)","sum += alpha.getByInt(i, j) * x.getByInt(j);","dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));","}","for (int i = 0; i < dxdt.length; i++)","focalDrv.x.setByInt(max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);"))
 						dataTracker trk1
 							sampleSize = java.lang.String()
-							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
 	userInterface gui
 		top top
 			widget ctrl
@@ -151,11 +148,11 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget tblx
+			widget population numbers
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
-			widget srsx
+			widget population sizes
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
@@ -164,12 +161,12 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 [process:p1] appliesTo aplyTo1 [category:*arena*]
 [table:K] sizedBy szBy1 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
-[widget:tblx] trackSeries trks4 [dataTracker:trk1]
-[dataTracker:trk1] trackComponent trks2 [system:sys1]
+[widget:population numbers] trackSeries trks4 [dataTracker:trk1]
+[dataTracker:trk1] trackComponent trks2 [system:community]
 [dataTracker:trk1] trackTable trks1 [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:3]"))
-[category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [table:alpha] sizedBy szBy3 [dimensioner:nspp]
 	rank = java.lang.Integer(1)
 [table:alpha] sizedBy szBy2 [dimensioner:nspp]
@@ -178,9 +175,9 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 [category:*arena*] drivers drvs1 [record:drvs]
 [table:r] sizedBy szBy4 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
-[system:sys1] belongsTo bt3 [category:*permanent*]
-[system:sys1] belongsTo bt2 [category:*atomic*]
-[system:sys1] belongsTo bt1 [category:*arena*]
-[widget:srsx] trackSeries trks3 [dataTracker:trk1]
+[widget:population sizes] trackSeries trks3 [dataTracker:trk1]
+[system:community] belongsTo bt3 [category:*permanent*]
+[system:community] belongsTo bt2 [category:*atomic*]
+[system:community] belongsTo bt1 [category:*arena*]
 [table:x] sizedBy szBy5 [dimensioner:nspp]
 	rank = java.lang.Integer(0)

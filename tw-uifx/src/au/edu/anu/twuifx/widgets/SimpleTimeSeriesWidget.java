@@ -34,7 +34,6 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,7 +58,6 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
-import de.gsi.chart.plugins.DataPointTooltip;
 import de.gsi.chart.plugins.TableViewer;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
@@ -202,7 +200,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				chart.getRenderers().add(renderer);
 				renderer.getDatasets().add(entry.getValue());
 			});
-			ErrorDataSetRenderer yRend = (ErrorDataSetRenderer) chart.getRenderers().get(0);
+//			ErrorDataSetRenderer yRend = (ErrorDataSetRenderer) chart.getRenderers().get(0);
 //			for (int i = 1; i < yAxes.length; i++) {
 //				yRend.getAxes().add(yAxes[i]);
 //			}
