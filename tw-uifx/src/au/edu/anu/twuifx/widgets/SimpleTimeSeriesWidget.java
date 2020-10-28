@@ -183,17 +183,17 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			// (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
 			// renderer before adding the renderer to the chart
 			// renderer_dipoleCurrent.getAxes().add(yAxis2);
-			DefaultNumericAxis[] yAxes = new DefaultNumericAxis[dataSetMap.size()];
-			yAxes[0] = (DefaultNumericAxis) chart.getYAxis();
+//			DefaultNumericAxis[] yAxes = new DefaultNumericAxis[dataSetMap.size()];
+//			yAxes[0] = (DefaultNumericAxis) chart.getYAxis();
 //			if (dataSetMap.size() > 1) {
 //				for (int i=1;i<Math.min(dataSetMap.size(),4);i++) {
 //					yAxes[i] = new DefaultNumericAxis("", "");
 //				}
-				// TODO then lets at least add a second yaxis.
-				// Maybe we could allow up to 4 axes - two on each side
+			// TODO then lets at least add a second yaxis.
+			// Maybe we could allow up to 4 axes - two on each side
 //			} else {
-				String ylabel = dataSetMap.keySet().iterator().next();
-				chart.getYAxis().set(ylabel);// this requires the javafx application thread
+			String ylabel = dataSetMap.keySet().iterator().next();
+			chart.getYAxis().setName(ylabel);// this requires the javafx application thread
 //			}
 
 			dataSetMap.entrySet().forEach(entry -> {
@@ -202,7 +202,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				chart.getRenderers().add(renderer);
 				renderer.getDatasets().add(entry.getValue());
 			});
-			ErrorDataSetRenderer yRend = (ErrorDataSetRenderer) chart.getRenderers().get(0);
+//			ErrorDataSetRenderer yRend = (ErrorDataSetRenderer) chart.getRenderers().get(0);
 //			for (int i = 1; i < yAxes.length; i++) {
 //				yRend.getAxes().add(yAxes[i]);
 //			}
@@ -283,10 +283,12 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
 			synchronized (this) {// thread-safe because a backlog of onDataMessage may be being processed
-				for (DataSet d : chart.getAllDatasets()) {
-					CircularDoubleErrorDataSet cbds = (CircularDoubleErrorDataSet) d;
-					cbds.reset();
-				}
+//				Platform.runLater(() -> {
+					for (Map.Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
+						entry.getValue().reset();
+					}
+//				});
+
 			}
 		}
 	}
@@ -296,18 +298,13 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		BorderPane content = new BorderPane();
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "");
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
-		xAxis1.setAutoRangeRounding(true);
-		yAxis1.setAutoRangeRounding(true);
-
+//		xAxis1.setAutoRangeRounding(true);
+		// causes y axis name to superimpose on scale markings
+//		yAxis1.setAutoRangeRounding(true);
+//		yAxis1.setAutoRanging(true);
+//
 //		xAxis1.setForceZeroInRange(true);
 //		yAxis1.setForceZeroInRange(true);
-
-//		xAxis1.invertAxis(false);
-//		yAxis1.invertAxis(false);
-
-		// These numbers can be very large
-//		xAxis1.setTimeAxis(false);
-//		yAxis1.setTimeAxis(false);
 
 		xAxis1.setTickLabelRotation(45);
 		// for gregorian we may need something else here
@@ -315,7 +312,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 		// can't create a chart without axes
 		chart = new XYChart(xAxis1, yAxis1);
-		chart.legendVisibleProperty().set(true);
+//		chart.legendVisibleProperty().set(true);
+		chart.setLegendVisible(true);
 		chart.setAnimated(false);
 		chart.getPlugins().add(new Zoomer());
 		chart.getPlugins().add(new TableViewer());
