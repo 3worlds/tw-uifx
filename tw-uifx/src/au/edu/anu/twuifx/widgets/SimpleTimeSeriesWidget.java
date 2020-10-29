@@ -105,7 +105,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 //	private Timer timer;// dont need this
 	private XYChart chart;
 	private Map<String, CircularDoubleErrorDataSet> dataSetMap;
-	private Output0DMetadata tsmeta;
+	private Output0DMetadata tsMeta;
+	private Metadata metadata;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
@@ -114,7 +115,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	public SimpleTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		// needs to be thread-safe because chartfx plugins may be looking at chart
-		// data?? No sure this makes sense but seems to work.
+		// data?? Not sure this makes sense but seems to work.
 		dataSetMap = new ConcurrentHashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
@@ -149,77 +150,141 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		}
 	}
 
+	/*-
+	 * 1) METADATA
+	 * 2) UI CONSTRUCTION
+	 * 3) WAITING*/
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		Platform.runLater(() -> {
-//			System.out.println(meta.properties());
-			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
-			// well it seems always to be here no matter what. Must be added by the tracker
-			sas = null;
-			if (meta.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
-				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
-			if (meta.properties().hasProperty("sample")) {
-				StringTable st = (StringTable) meta.properties().getPropertyValue("sample");
-				if (st != null) {
-					sampledItems = new ArrayList<>(st.size());
-					for (int i = 0; i < st.size(); i++)
-						sampledItems.add(st.getWithFlatIndex(i));
-				}
+		metadata = meta;
+		tsMeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+		timeFormatter.onMetaDataMessage(metadata);
+
+		sas = null;
+		if (metadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
+			sas = (StatisticalAggregatesSet) metadata.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
+		if (metadata.properties().hasProperty("sample")) {
+			StringTable st = (StringTable) metadata.properties().getPropertyValue("sample");
+			if (st != null) {
+				sampledItems = new ArrayList<>(st.size());
+				for (int i = 0; i < st.size(); i++)
+					sampledItems.add(st.getWithFlatIndex(i));
 			}
+		}
 
-			for (DataLabel dl : tsmeta.doubleNames())
-				makeChannels(dl);
-			// normally with statistics there are no int variables
-			for (DataLabel dl : tsmeta.intNames())
-				makeChannels(dl);
+		for (DataLabel dl : tsMeta.doubleNames()) {
+			makeChannels(dl);
+		}
+		// normally with statistics there are no int variables
+		for (DataLabel dl : tsMeta.intNames())
+			makeChannels(dl);
 
-			/*
-			 * Renderers should be in the chart BEFORE dataSets are added to the renderer
-			 * otherwise when data is added to a dataset, invalidation events will not
-			 * propagate to the chart to force a repaint.
-			 */
-			// (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
-			// renderer before adding the renderer to the chart
-			// renderer_dipoleCurrent.getAxes().add(yAxis2);
-//			DefaultNumericAxis[] yAxes = new DefaultNumericAxis[dataSetMap.size()];
-//			yAxes[0] = (DefaultNumericAxis) chart.getYAxis();
-//			if (dataSetMap.size() > 1) {
-//				for (int i=1;i<Math.min(dataSetMap.size(),4);i++) {
-//					yAxes[i] = new DefaultNumericAxis("", "");
-//				}
-			// TODO then lets at least add a second yaxis.
-			// Maybe we could allow up to 4 axes - two on each side
-//			} else {
-			String ylabel = dataSetMap.keySet().iterator().next();
-			chart.getYAxis().setName(ylabel);// this requires the javafx application thread
-//			}
+	}
+	/*-
+	 * Renderers should be in the chart BEFORE dataSets are added to the renderer
+	 * otherwise when data is added to a dataset, invalidation events will not
+	 * propagate to the chart to force a repaint.
+	 
+	 (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
+	 renderer before adding the renderer to the chart
+	 renderer_dipoleCurrent.getAxes().add(yAxis2);
+	//	*/
+	// TODO then lets at least add a second yaxis.
+	// Maybe we could allow up to 4 axes - two on each side
+//		} else {
 
-			dataSetMap.entrySet().forEach(entry -> {
-				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
-				initErrorDataSetRenderer(renderer);
-				chart.getRenderers().add(renderer);
-				renderer.getDatasets().add(entry.getValue());
-			});
-//			ErrorDataSetRenderer yRend = (ErrorDataSetRenderer) chart.getRenderers().get(0);
-//			for (int i = 1; i < yAxes.length; i++) {
-//				yRend.getAxes().add(yAxes[i]);
-//			}
-			timeFormatter.onMetaDataMessage(meta);
-			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-			chart.getXAxis().setUnit(TimeUtil.timeUnitName(tu, nTu));
-			// depending on the TU we could decide on xAxis.setMinorTickCount(some even
-			// division of the period)
-			// initialMessage = true;
+	/*-
+	 * 1) METADATA
+	 * 2) UI CONSTRUCTION
+	 * 3) WAITING*/
+
+	@Override
+	public Object getUserInterfaceContainer() {
+//		System.out.println("UI CONSTRUCTION");
+
+		BorderPane content = new BorderPane();
+
+		chart = new XYChart(new DefaultNumericAxis("time", "?"), new DefaultNumericAxis("", ""));
+		chart.setAnimated(false);
+		chart.getPlugins().add(new Zoomer());
+		chart.getPlugins().add(new TableViewer());
+//		DataPointTooltip() seems to cause concurrent modification error at times.
+//		chart.getPlugins().add(new DataPointTooltip());
+//		chart.getPlugins().add(new Panner());
+//		chart.getPlugins().add(new EditAxis());
+		chart.setTitle(widgetId);
+		content.setCenter(chart);
+		content.setRight(new Label(" "));
+		String ylabel = dataSetMap.keySet().iterator().next();
+		chart.getYAxis().setName(ylabel);// this requires the javafx application thread
+
+		dataSetMap.entrySet().forEach(entry -> {
+			ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+			initErrorDataSetRenderer(renderer);
+			chart.getRenderers().add(renderer);
+			renderer.getDatasets().add(entry.getValue());
 		});
-		// }
+
+		TimeUnits tu = (TimeUnits) metadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+		int nTu = (Integer) metadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+		chart.getXAxis().setUnit(TimeUtil.timeUnitName(tu, nTu));
+		if (dataSetMap.size() > 1)
+			chart.setLegendVisible(true);
+		else
+			chart.setLegendVisible(false);
+
+//		DefaultNumericAxis yAxis = (DefaultNumericAxis) chart.getYAxis();
+//		System.out.println("initial X [" + chart.getXAxis().getMin() + "," + chart.getXAxis().getMax() + "]");
+//		System.out.println("initial Y [" + chart.getYAxis().getMin() + "," + chart.getYAxis().getMax() + "]");
+
+		DefaultNumericAxis xAxis = (DefaultNumericAxis) chart.getXAxis();
+		xAxis.setTickLabelRotation(45);
+//		 Check if data has bounds??
+//		System.out.println(metadata.properties().getPropertyValue(dl.toString()+"."+P_FIELD_INTERVAL.key()));
+
+		getUserPreferences();
+
+		return content;
+	}
+
+	/*-
+	 * 1) METADATA
+	 * 2) UI CONSTRUCTION
+	 * 3) WAITING*/
+	@Override
+	public void onStatusMessage(State state) {
+		if (isSimulatorState(state, waiting)) {
+//			System.out.println("WAITING");
+			// synchronized (this) {// thread-safe because a backlog of onDataMessage may be
+			// being processed
+			// Platform.runLater(() -> {
+//			System.out.println("Before clear X [" + chart.getXAxis().getMin() + "," + chart.getXAxis().getMax() + "]");
+//			System.out.println("Before clear Y [" + chart.getYAxis().getMin() + "," + chart.getYAxis().getMax() + "]");
+
+			for (Map.Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
+				entry.getValue().reset();
+			}
+//			Platform.runLater(() -> {
+//				chart.getXAxis().set(Double.NaN, Double.NaN);
+//				chart.getYAxis().set(Double.NaN, Double.NaN);
+				
+//				chart.getXAxis().setMax(0.0);
+//				chart.getYAxis().setMin(0.0);
+//				chart.getYAxis().setMax(0.0);
+//				System.out.println("After clear X [" + chart.getXAxis().getMin() + "," + chart.getXAxis().getMax() + "]");
+//				System.out.println("After clear Y [" + chart.getYAxis().getMin() + "," + chart.getYAxis().getMax() + "]");
+//			});
+
+			// }
+		}
 	}
 
 	@Override
 	public void onDataMessage(final Output0DData data) {
 		if (policy.canProcessDataMessage(data)) {
 			// needs to be thread-safe because waiting state clears these data
-			synchronized (this) {
+			// synchronized (this) {
+//			Platform.runLater(() -> {
 				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
 				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
@@ -234,27 +299,27 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				else if (sampledItems != null)
 					itemId = data.itemLabel().toString();
 
-				for (DataLabel dl : tsmeta.doubleNames()) {
+				for (DataLabel dl : tsMeta.doubleNames()) {
 					String key;
 					if (itemId != null)
 						key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
 					else
 						key = dl.toString();
 					CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
+					final double y = data.getDoubleValues()[tsMeta.indexOf(dl)];
 					final double ey = 1;
 //					System.out.println(key + "[" + x + "," + y + "]");
 					ds.add(x, y, ey, ey);
 				}
 
-				for (DataLabel dl : tsmeta.intNames()) {
+				for (DataLabel dl : tsMeta.intNames()) {
 					String key;
 					if (itemId != null)
 						key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
 					else
 						key = dl.toString();
 					CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-					final double y = data.getIntValues()[tsmeta.indexOf(dl)];
+					final double y = data.getIntValues()[tsMeta.indexOf(dl)];
 					final double ey = 1;
 //					System.out.println(key + "[" + x + "," + y + "]");
 					ds.add(x, y, ey, ey);
@@ -264,7 +329,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 					if (!ds.equals(dontTouch))
 						ds.autoNotification().getAndSet(true);
 
-			}
+//			});
+			// }
+
 		}
 	}
 
@@ -275,56 +342,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		r.setDrawMarker(false);
 		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) r.getRendererDataReducer();
 		reductionAlgorithm.setMinPointPixelDistance(MIN_PIXEL_DISTANCE);
-	}
-
-	@Override
-	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {
-			synchronized (this) {// thread-safe because a backlog of onDataMessage may be being processed
-//				Platform.runLater(() -> {
-					for (Map.Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
-						entry.getValue().reset();
-					}
-//				});
-
-			}
-		}
-	}
-
-	@Override
-	public Object getUserInterfaceContainer() {
-		BorderPane content = new BorderPane();
-		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "");
-		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
-//		xAxis1.setAutoRangeRounding(true);
-		// causes y axis name to superimpose on scale markings
-//		yAxis1.setAutoRangeRounding(true);
-//		yAxis1.setAutoRanging(true);
-//
-//		xAxis1.setForceZeroInRange(true);
-//		yAxis1.setForceZeroInRange(true);
-
-		xAxis1.setTickLabelRotation(45);
-		// for gregorian we may need something else here
-//		xAxis1.setTimeAxis(true);
-
-		// can't create a chart without axes
-		chart = new XYChart(xAxis1, yAxis1);
-//		chart.legendVisibleProperty().set(true);
-		chart.setLegendVisible(true);
-		chart.setAnimated(false);
-		chart.getPlugins().add(new Zoomer());
-		chart.getPlugins().add(new TableViewer());
-//		chart.getPlugins().add(new DataPointTooltip());// causing a concurrent modification error at times.
-		chart.setTitle(widgetId);
-		// chart.getPlugins().add(new Panner());
-		// chart.getPlugins().add(new EditAxis());
-		content.setCenter(chart);
-		content.setRight(new Label(" "));
-
-		getUserPreferences();
-
-		return content;
 	}
 
 	@Override
