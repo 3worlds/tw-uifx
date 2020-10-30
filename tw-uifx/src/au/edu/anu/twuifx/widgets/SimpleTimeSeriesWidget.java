@@ -284,7 +284,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		if (policy.canProcessDataMessage(data)) {
 			// needs to be thread-safe because waiting state clears these data
 			// synchronized (this) {
-//			Platform.runLater(() -> {
+			Platform.runLater(() -> {
 				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
 				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
@@ -329,7 +329,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 					if (!ds.equals(dontTouch))
 						ds.autoNotification().getAndSet(true);
 
-//			});
+			});
 			// }
 
 		}
