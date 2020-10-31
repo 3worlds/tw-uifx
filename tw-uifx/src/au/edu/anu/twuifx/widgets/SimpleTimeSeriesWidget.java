@@ -29,7 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.util.ArrayList;
@@ -58,9 +58,12 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
+import de.gsi.chart.plugins.DataPointTooltip;
+import de.gsi.chart.plugins.EditAxis;
 import de.gsi.chart.plugins.TableViewer;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
+import de.gsi.chart.renderer.Renderer;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
 import de.gsi.dataset.DataSet;
@@ -105,7 +108,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 //	private Timer timer;// dont need this
 	private XYChart chart;
 	private Map<String, CircularDoubleErrorDataSet> dataSetMap;
-	private Output0DMetadata tsmeta;
+	private Output0DMetadata tsMeta;
+	private Metadata metadata;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
@@ -122,219 +126,165 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
+//		1) Called first immediately after construction
 		policy.setProperties(id, properties);
 		this.widgetId = id;
 	}
 
-	// helper for onMetaDataMessage, cf below.
-	private void makeChannels(DataLabel dl) {
-		if (sas != null) {
-			for (StatisticalAggregates sa : sas.values()) {
-				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
-//				String key = sa.name() + " " + dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-				dataSetMap.put(key, ds);
-			}
-		} else if (sampledItems != null) {
-			for (String si : sampledItems) {
-				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
-//				String key = si + " " + dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-				dataSetMap.put(key, ds);
-			}
-		} else {
-			String key = dl.toString();
-			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
-			dataSetMap.put(key, ds);
-		}
+	@Override
+	public void onMetaDataMessage(Metadata meta) {
+//		2) called second after construction
+		metadata = meta;
+		tsMeta = (Output0DMetadata) metadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
+		// do everything in getUserInterfaceContainer() below
 	}
 
 	@Override
-	public void onMetaDataMessage(Metadata meta) {
-		Platform.runLater(() -> {
-//			System.out.println(meta.properties());
-			tsmeta = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
-			// well it seems always to be here no matter what. Must be added by the tracker
-			sas = null;
-			if (meta.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
-				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
-			if (meta.properties().hasProperty("sample")) {
-				StringTable st = (StringTable) meta.properties().getPropertyValue("sample");
-				if (st != null) {
-					sampledItems = new ArrayList<>(st.size());
-					for (int i = 0; i < st.size(); i++)
-						sampledItems.add(st.getWithFlatIndex(i));
-				}
+	public Object getUserInterfaceContainer() {
+//		3) called third after metadata
+//		get the prefs before building the ui
+		getUserPreferences();
+
+		sas = null;
+		if (metadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
+			sas = (StatisticalAggregatesSet) metadata.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
+		if (metadata.properties().hasProperty("sample")) {
+			StringTable st = (StringTable) metadata.properties().getPropertyValue("sample");
+			if (st != null) {
+				sampledItems = new ArrayList<>(st.size());
+				for (int i = 0; i < st.size(); i++)
+					sampledItems.add(st.getWithFlatIndex(i));
+			}
+		}
+
+		for (DataLabel dl : tsMeta.doubleNames())
+			makeChannels(dl);
+		// normally with statistics there are no int variables
+		for (DataLabel dl : tsMeta.intNames())
+			makeChannels(dl);
+
+		BorderPane content = new BorderPane();
+		chart = new XYChart(new DefaultNumericAxis("time", "?"), new DefaultNumericAxis("", ""));
+		if (dataSetMap.size() != 1)
+			chart.setLegendVisible(true);
+		else
+			chart.setLegendVisible(false);
+		chart.setAnimated(false);// probably expensive if true
+		chart.getPlugins().add(new Zoomer());
+		chart.getPlugins().add(new TableViewer());
+//		causes  concurrent modification error at times.
+		chart.getPlugins().add(new DataPointTooltip());
+//		not sure how this works?
+//		chart.getPlugins().add(new Panner());
+//		using this is a very confusing and perhaps buggy ui
+//		chart.getPlugins().add(new EditAxis());
+		chart.setTitle(widgetId);
+		((DefaultNumericAxis) chart.getXAxis()).setTickLabelRotation(45);
+//		false by default. Best left alone can it be set differently for each secondary axis
+//		((DefaultNumericAxis) chart.getYAxis()).setAutoRangeRounding(true);
+		chart.getYAxis().set(dataSetMap.keySet().iterator().next());
+		// chart.getAxes();
+		/**
+		 * N.B. it's important to set secondary axis on the 2nd renderer before adding
+		 * the renderer to the chart. (cf RollingBufferSample)
+		 * renderer_dipoleCurrent.getAxes().add(yAxis2);
+		 */
+		/**
+		 * Renderers should be in the chart BEFORE dataSets are added to the renderer
+		 * otherwise when data is added to a dataset, invalidation events will not
+		 * propagate to the chart to force a repaint.
+		 */
+		dataSetMap.entrySet().forEach(entry -> {
+			ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
+			initErrorDataSetRenderer(renderer);
+			/** Add the Renderer */
+			chart.getRenderers().add(renderer);
+			/** Add the dataset to the Renderer */
+			renderer.getDatasets().add(entry.getValue());
+			
+			
+		});
+
+		timeFormatter.onMetaDataMessage(metadata);
+		TimeUnits tu = (TimeUnits) metadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+		int nTu = (Integer) metadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+		chart.getXAxis().setUnit(TimeUtil.timeUnitName(tu, nTu));
+		content.setCenter(chart);
+		content.setRight(new Label(" "));
+
+		return content;
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
+//		System.out.println("State: " + state + "\t" + Thread.currentThread().getId());
+//		4) Called 4th after UI construction - this is only in the UI thread the first time it's called
+		if (isSimulatorState(state, waiting)) {
+//			TODO may have problems with slow sims here - writes still occurring?
+			for (Map.Entry<String, CircularDoubleErrorDataSet> entry:dataSetMap.entrySet()) {			
+				CircularDoubleErrorDataSet cbds = (CircularDoubleErrorDataSet) entry.getValue();
+				cbds.reset();
 			}
 
-			for (DataLabel dl : tsmeta.doubleNames())
-				makeChannels(dl);
-			// normally with statistics there are no int variables
-			for (DataLabel dl : tsmeta.intNames())
-				makeChannels(dl);
-
-			/*
-			 * Renderers should be in the chart BEFORE dataSets are added to the renderer
-			 * otherwise when data is added to a dataset, invalidation events will not
-			 * propagate to the chart to force a repaint.
-			 */
-			// (cf RollingBufferSample) N.B. it's important to set secondary axis on the 2nd
-			// renderer before adding the renderer to the chart
-			// renderer_dipoleCurrent.getAxes().add(yAxis2);
-			DefaultNumericAxis[] yAxes = new DefaultNumericAxis[dataSetMap.size()];
-			yAxes[0] = (DefaultNumericAxis) chart.getYAxis();
-//			if (dataSetMap.size() > 1) {
-//				for (int i=1;i<Math.min(dataSetMap.size(),4);i++) {
-//					yAxes[i] = new DefaultNumericAxis("", "");
-//				}
-				// TODO then lets at least add a second yaxis.
-				// Maybe we could allow up to 4 axes - two on each side
-//			} else {
-				String ylabel = dataSetMap.keySet().iterator().next();
-				chart.getYAxis().set(ylabel);// this requires the javafx application thread
-//			}
-
-			dataSetMap.entrySet().forEach(entry -> {
-				ErrorDataSetRenderer renderer = new ErrorDataSetRenderer();
-				initErrorDataSetRenderer(renderer);
-				chart.getRenderers().add(renderer);
-				renderer.getDatasets().add(entry.getValue());
+		} else if (isSimulatorState(state, finished)) {
+			// It seems this is the critical thing to do to see the yaxis correctly.
+			Platform.runLater(() -> {
+				chart.getYAxis().forceRedraw();
 			});
-//			ErrorDataSetRenderer yRend = (ErrorDataSetRenderer) chart.getRenderers().get(0);
-//			for (int i = 1; i < yAxes.length; i++) {
-//				yRend.getAxes().add(yAxes[i]);
-//			}
-			timeFormatter.onMetaDataMessage(meta);
-			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-			chart.getXAxis().setUnit(TimeUtil.timeUnitName(tu, nTu));
-			// depending on the TU we could decide on xAxis.setMinorTickCount(some even
-			// division of the period)
-			// initialMessage = true;
-		});
-		// }
+		}
 	}
 
 	@Override
 	public void onDataMessage(final Output0DData data) {
 		if (policy.canProcessDataMessage(data)) {
-			// needs to be thread-safe because waiting state clears these data
+			// not in ui thread.
+			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
-			// synchronized (this) {
-//			Platform.runLater(() -> {
+			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+				if (!ds.equals(dontTouch))
+					ds.autoNotification().getAndSet(false);
 
-//			synchronized (this) {
+			final double x = data.time();
 
-				CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
+			String itemId = null;
+			if (sas != null)
+				itemId = data.itemLabel().getEnd();
+			else if (sampledItems != null)
+				itemId = data.itemLabel().toString();
 
-				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-					if (!ds.equals(dontTouch))
-						ds.autoNotification().getAndSet(false);
-
-				final double x = data.time();
-
-				String itemId = null;
-				if (sas != null)
-					itemId = data.itemLabel().getEnd();
-				else if (sampledItems != null)
-					itemId = data.itemLabel().toString();
-
-				for (DataLabel dl : tsmeta.doubleNames()) {
-					String key;
-					if (itemId != null)
-						key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
-					else
-						key = dl.toString();
-					CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-					final double y = data.getDoubleValues()[tsmeta.indexOf(dl)];
-					final double ey = 1;
-//					System.out.println(key + "[" + x + "," + y + "]");
-					ds.add(x, y, ey, ey);
-				}
-
-				for (DataLabel dl : tsmeta.intNames()) {
-					String key;
-					if (itemId != null)
-						key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
-					else
-						key = dl.toString();
-					CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-					final double y = data.getIntValues()[tsmeta.indexOf(dl)];
-					final double ey = 1;
-//					System.out.println(key + "[" + x + "," + y + "]");
-					ds.add(x, y, ey, ey);
-				}
-
-				for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-					if (!ds.equals(dontTouch))
-						ds.autoNotification().getAndSet(true);
-
-//			});
-			// }
-
-
-		}
-	}
-
-	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
-		r.setErrorType(ErrorStyle.NONE);
-		r.setDashSize(0);
-		r.setPointReduction(true);
-		r.setDrawMarker(false);
-		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) r.getRendererDataReducer();
-		reductionAlgorithm.setMinPointPixelDistance(MIN_PIXEL_DISTANCE);
-	}
-
-	@Override
-	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {
-			synchronized (this) {// thread-safe because a backlog of onDataMessage may be being processed
-				for (DataSet d : chart.getAllDatasets()) {
-					CircularDoubleErrorDataSet cbds = (CircularDoubleErrorDataSet) d;
-					cbds.reset();
-				}
+			for (DataLabel dl : tsMeta.doubleNames()) {
+				String key;
+				if (itemId != null)
+					key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+				else
+					key = dl.toString();
+				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
+				final double y = data.getDoubleValues()[tsMeta.indexOf(dl)];
+				final double ey = 1;
+				ds.add(x, y, ey, ey);
 			}
+
+			for (DataLabel dl : tsMeta.intNames()) {
+				String key;
+				if (itemId != null)
+					key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+				else
+					key = dl.toString();
+				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
+				final double y = data.getIntValues()[tsMeta.indexOf(dl)];
+				final double ey = 1;
+				ds.add(x, y, ey, ey);
+			}
+
+			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+				if (!ds.equals(dontTouch))
+					ds.autoNotification().getAndSet(true);
+			if (((DefaultNumericAxis) chart.getYAxis()).isAutoRangeRounding())
+				Platform.runLater(() -> {
+					chart.getYAxis().forceRedraw();
+				});
+
 		}
-	}
-
-	@Override
-	public Object getUserInterfaceContainer() {
-		BorderPane content = new BorderPane();
-		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "");
-		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("time", "?");
-		xAxis1.setAutoRangeRounding(true);
-		yAxis1.setAutoRangeRounding(true);
-
-//		xAxis1.setForceZeroInRange(true);
-//		yAxis1.setForceZeroInRange(true);
-
-//		xAxis1.invertAxis(false);
-//		yAxis1.invertAxis(false);
-
-		// These numbers can be very large
-//		xAxis1.setTimeAxis(false);
-//		yAxis1.setTimeAxis(false);
-
-		xAxis1.setTickLabelRotation(45);
-		// for gregorian we may need something else here
-//		xAxis1.setTimeAxis(true);
-
-		// can't create a chart without axes
-		chart = new XYChart(xAxis1, yAxis1);
-		chart.legendVisibleProperty().set(true);
-		chart.setAnimated(false);
-		chart.getPlugins().add(new Zoomer());
-		chart.getPlugins().add(new TableViewer());
-//		chart.getPlugins().add(new DataPointTooltip());// causing a concurrent modification error at times.
-		chart.setTitle(widgetId);
-		// chart.getPlugins().add(new Panner());
-		// chart.getPlugins().add(new EditAxis());
-		content.setCenter(chart);
-		content.setRight(new Label(" "));
-
-		getUserPreferences();
-
-		return content;
 	}
 
 	@Override
@@ -373,7 +323,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 					for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
 						CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
 						ds.resizeBuffer(bufferCapacity);
+						ds.reset();
 					}
+					
 				}
 			}
 		}
@@ -389,6 +341,39 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	@Override
 	public void getUserPreferences() {
 		bufferCapacity = Preferences.getInt(widgetId + keyBuffer, 1000);
+	}
+
+	// helper to initialise a Renderer
+	private void initErrorDataSetRenderer(final ErrorDataSetRenderer r) {
+		r.setErrorType(ErrorStyle.NONE);
+		r.setDashSize(0);
+		r.setPointReduction(true);
+		r.setDrawMarker(false);
+		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) r.getRendererDataReducer();
+		reductionAlgorithm.setMinPointPixelDistance(MIN_PIXEL_DISTANCE);
+	}
+
+	// helper for onMetaDataMessage, cf below.
+	private void makeChannels(DataLabel dl) {
+		if (sas != null) {
+			for (StatisticalAggregates sa : sas.values()) {
+				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
+//				String key = sa.name() + " " + dl.toString();
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				dataSetMap.put(key, ds);
+			}
+		} else if (sampledItems != null) {
+			for (String si : sampledItems) {
+				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
+//				String key = si + " " + dl.toString();
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				dataSetMap.put(key, ds);
+			}
+		} else {
+			String key = dl.toString();
+			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+			dataSetMap.put(key, ds);
+		}
 	}
 
 }

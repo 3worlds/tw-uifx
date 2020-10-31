@@ -87,7 +87,7 @@ public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
-	private static Logger log = Logging.getLogger(SimpleControlWidget1.class);
+	//private static Logger log = Logging.getLogger(SimpleControlWidget1.class);
 
 	public SimpleControlWidget1(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
@@ -127,18 +127,6 @@ public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI
 		return pane;
 	}
 
-//	private void sendEventx(Event event) {
-//		
-//		Thread t = new Thread(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				sendEvent(event);
-//				
-//			}});
-//		t.start();
-//		
-//	}
 	private Object handleResetPressed() {
 		nullButtons();
 		sendEventThreaded(reset.event());
@@ -168,7 +156,7 @@ public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI
 
 	@Override
 	public void onStatusMessage(State state) {
-		log.info(state.toString());
+//		log.info(state.toString());
 		setButtonLogic(state);
 	}
 

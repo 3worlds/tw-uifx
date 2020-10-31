@@ -24,16 +24,16 @@ public class CircularDoubleErrorDataSetResizable extends CircularDoubleErrorData
 		DoubleCircularBuffer newyErrorsNeg = new DoubleCircularBuffer(newSize);
 		CircularBuffer<String> newdataTag = new CircularBuffer<>(newSize);
 		CircularBuffer<String> newdataStyles = new CircularBuffer<>(newSize);
-		for (int i=0;i<Math.min(newSize, xValues.available());i++) {
-			newxValues.put(xValues.get(i));
-			newyValues.put(yValues.get(i));
-			newyErrorsPos.put(yErrorsPos.get(i));
-			newyErrorsNeg.put(yErrorsNeg.get(i));
-		}
-		for (int i=0;i<Math.min(newSize, newdataTag.available());i++) {
-			newdataTag.put(dataLabels.get(i));
-			newdataStyles.put(dataStyles.get(i));
-		}
+//		for (int i=0;i<Math.min(newSize, xValues.available());i++) {
+//			newxValues.put(xValues.get(i));
+//			newyValues.put(yValues.get(i));
+//			newyErrorsPos.put(yErrorsPos.get(i));
+//			newyErrorsNeg.put(yErrorsNeg.get(i));
+//		}
+//		for (int i=0;i<Math.min(newSize, newdataTag.available());i++) {
+//			newdataTag.put(dataLabels.get(i));
+//			newdataStyles.put(dataStyles.get(i));
+//		}
 		xValues = newxValues;
 		yValues = newyValues;
 		yErrorsPos = newyErrorsPos;
