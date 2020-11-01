@@ -33,6 +33,7 @@ import java.util.Collection;
 
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 // not sure about this wip
 /**
  * @author Ian Davies
@@ -56,7 +57,7 @@ public  class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeDat
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		sender = (Integer) properties.getPropertyValue("sender");		
+		sender = (Integer) properties.getPropertyValue(P_WIDGET_SENDER.key());		
 	}
 
 
