@@ -96,7 +96,7 @@ import javafx.stage.Window;
 public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
 
-	private int bufferCapacity;
+	private int bufferSize;
 	private int maxAxes;
 	// drop overlayed points
 	private int MIN_PIXEL_DISTANCE = 1;// check this in case it causes data to be lost
@@ -128,6 +128,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		this.maxAxes = 1;
 		if (properties.hasProperty(P_WIDGET_MAXAXES.key()))
 			this.maxAxes = (Integer) properties.getPropertyValue(P_WIDGET_MAXAXES.key());
+		this.bufferSize=1000;
+		if (properties.hasProperty(P_WIDGET_BUFFERSIZE.key()))
+			this.bufferSize = (Integer)properties.getPropertyValue(P_WIDGET_BUFFERSIZE.key());
 	}
 
 	@Override
@@ -271,7 +274,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				itemId = data.itemLabel().getEnd();
 			else if (sampledItems != null)
 				itemId = data.itemLabel().toString();
-			System.out.println("Widget '"+widgetId+"' itemId "+itemId);
+//			System.out.println("Widget '"+widgetId+"' itemId "+itemId);
 
 			for (DataLabel dl : tsMeta.doubleNames()) {
 				String key;
@@ -310,58 +313,59 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public Object getMenuContainer() {
-		Menu mu = new Menu(widgetId);
-		MenuItem miEdit = new MenuItem("Edit...");
-		mu.getItems().add(miEdit);
-		miEdit.setOnAction(e -> edit());
-		return mu;
+//		Menu mu = new Menu(widgetId);
+//		MenuItem miEdit = new MenuItem("Edit...");
+//		mu.getItems().add(miEdit);
+//		miEdit.setOnAction(e -> edit());
+//		return mu;
+		return null;
 	}
 
-	private void edit() {
-		Dialog<ButtonType> dialog = new Dialog<>();
-		dialog.setTitle(widgetId);
-		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
-		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dialog.initOwner((Window) Dialogs.owner());
-		GridPane content = new GridPane();
-		content.setVgap(5);
-		content.setHgap(3);
-		Label lbl = new Label("Buffer capacity");
-		Spinner<Integer> spCapacity = new Spinner<>();
-		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 10000, bufferCapacity));
-		spCapacity.setMaxWidth(100);
-		spCapacity.setEditable(true);
-		content.add(lbl, 0, 0);
-		content.add(spCapacity, 1, 0);
-		dialog.getDialogPane().setContent(content);
-		Optional<ButtonType> result = dialog.showAndWait();
-		// Map<String, CircularDoubleErrorDataSet>
-		if (result.get().equals(ok)) {
-			int v = spCapacity.getValue();
-			if (v != bufferCapacity) {
-				synchronized (this) {
-					bufferCapacity = v;
-					for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
-						CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
-						ds.resizeBuffer(bufferCapacity);
-						ds.reset();
-					}
+//	private void edit() {
+//		Dialog<ButtonType> dialog = new Dialog<>();
+//		dialog.setTitle(widgetId);
+//		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+//		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+//		dialog.initOwner((Window) Dialogs.owner());
+//		GridPane content = new GridPane();
+//		content.setVgap(5);
+//		content.setHgap(3);
+//		Label lbl = new Label("Buffer capacity");
+//		Spinner<Integer> spCapacity = new Spinner<>();
+//		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 10000, bufferCapacity));
+//		spCapacity.setMaxWidth(100);
+//		spCapacity.setEditable(true);
+//		content.add(lbl, 0, 0);
+//		content.add(spCapacity, 1, 0);
+//		dialog.getDialogPane().setContent(content);
+//		Optional<ButtonType> result = dialog.showAndWait();
+//		// Map<String, CircularDoubleErrorDataSet>
+//		if (result.get().equals(ok)) {
+//			int v = spCapacity.getValue();
+//			if (v != bufferCapacity) {
+//				synchronized (this) {
+//					bufferCapacity = v;
+//					for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
+//						CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
+//						ds.resizeBuffer(bufferCapacity);
+//						ds.reset();
+//					}
+//
+//				}
+//			}
+//		}
+//	}
 
-				}
-			}
-		}
-	}
-
-	private static final String keyBuffer = "bufferCapacity";
+//	private static final String keyBuffer = "bufferCapacity";
 
 	@Override
 	public void putUserPreferences() {
-		Preferences.putInt(widgetId + keyBuffer, bufferCapacity);
+//		Preferences.putInt(widgetId + keyBuffer, bufferCapacity);
 	}
 
 	@Override
 	public void getUserPreferences() {
-		bufferCapacity = Preferences.getInt(widgetId + keyBuffer, 1000);
+//		bufferCapacity = Preferences.getInt(widgetId + keyBuffer, 1000);
 	}
 
 	// helper to initialise a Renderer
@@ -379,18 +383,18 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		if (sas != null) {
 			for (StatisticalAggregates sa : sas.values()) {
 				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
 				dataSetMap.put(key, ds);
 			}
 		} else if (sampledItems != null) {
 			for (String si : sampledItems) {
 				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
 				dataSetMap.put(key, ds);
 			}
 		} else {
 			String key = dl.toString();
-			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferCapacity);
+			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
 			dataSetMap.put(key, ds);
 		}
 	}

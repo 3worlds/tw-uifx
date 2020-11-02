@@ -220,14 +220,13 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	public void onDataMessage(final Output0DData data) {
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
-				//lblItemLabel.setText(data.itemLabel().toString());
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
 				String itemId = null;
 				if (sas != null)
 					itemId = data.itemLabel().getEnd();
 				else if (sampledItems != null)
 					itemId = data.itemLabel().toString();
-				System.out.println("Widget '"+widgetId+"' itemId "+itemId);
+//				System.out.println("Widget '"+widgetId+"' itemId "+itemId);
 				for (DataLabel dl : tsMeta.doubleNames()) {
 					String key= getKey(dl,itemId);
 					WidgetTableData td = dataSetMap.get(key);
