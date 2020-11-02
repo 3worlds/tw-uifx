@@ -92,7 +92,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	private Metadata metadata;
 	private String widgetId;
 	private final ObservableList<WidgetTableData> tableDataList;
-	private final Map<String,WidgetTableData> dataSetMap;
+	private final Map<String, WidgetTableData> dataSetMap;
 
 	public SimpleDM0Widget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
@@ -187,7 +187,8 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		HBox hbox = new HBox();
 		lblTime = new Label("uninitialised");
 //		lblItemLabel = new Label("What is this");
-		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime/**, lblItemLabel*/);
+		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime/** , lblItemLabel */
+		);
 		content.getChildren().addAll(table, hbox);
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
@@ -217,41 +218,43 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	}
 
 	@Override
-	public void onDataMessage(final Output0DData data) {
+	public void onDataMessage( Output0DData data) {
 		if (policy.canProcessDataMessage(data)) {
+			String itemId = null;
+			if (sas != null)
+				itemId = data.itemLabel().getEnd();
+			else if (sampledItems != null)
+				itemId = data.itemLabel().toString();
+			for (DataLabel dl : tsMeta.doubleNames()) {
+				String key = getKey(dl, itemId);
+				WidgetTableData td = dataSetMap.get(key);
+				final double value = data.getDoubleValues()[tsMeta.indexOf(dl)];
+				td.setValue(value);
+			}
+			for (DataLabel dl : tsMeta.intNames()) {
+				String key = getKey(dl, itemId);
+				WidgetTableData td = dataSetMap.get(key);
+				final long value = data.getIntValues()[tsMeta.indexOf(dl)];
+				td.setValue(value);
+			}
+			table.refresh();
+			final String timeStr = timeFormatter.getTimeText(data.time());
 			Platform.runLater(() -> {
-				lblTime.setText(timeFormatter.getTimeText(data.time()));
-				String itemId = null;
-				if (sas != null)
-					itemId = data.itemLabel().getEnd();
-				else if (sampledItems != null)
-					itemId = data.itemLabel().toString();
-//				System.out.println("Widget '"+widgetId+"' itemId "+itemId);
-				for (DataLabel dl : tsMeta.doubleNames()) {
-					String key= getKey(dl,itemId);
-					WidgetTableData td = dataSetMap.get(key);
-					final double value = data.getDoubleValues()[tsMeta.indexOf(dl)];
-					td.setValue(value);
-				}
-				for (DataLabel dl : tsMeta.intNames()) {
-					String key= getKey(dl,itemId);
-					WidgetTableData td = dataSetMap.get(key);
-					final long value = data.getIntValues()[tsMeta.indexOf(dl)];
-					td.setValue(value);
-				}
-				table.refresh();
+				lblTime.setText(timeStr);
 			});
 		}
 	}
 
+	// TODO move to a helper class
 	private String getKey(DataLabel dl, String itemId) {
 		String result;
-		if (itemId !=null)
+		if (itemId != null)
 			result = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
 		else
 			result = dl.toString();
-	return result;
+		return result;
 	}
+
 	@Override
 	public Object getMenuContainer() {
 		return null;
