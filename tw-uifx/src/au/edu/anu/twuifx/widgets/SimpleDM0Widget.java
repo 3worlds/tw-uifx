@@ -31,6 +31,8 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
@@ -78,151 +80,104 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRA
  * pair widget
  */
 public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
-	private Output0DMetadata d0Metadata;
-	private WidgetTimeFormatter timeFormatter;
-	private WidgetTrackingPolicy<TimeData> policy;
+	private final WidgetTimeFormatter timeFormatter;
+	private final WidgetTrackingPolicy<TimeData> policy;
 	private static Logger log = Logging.getLogger(SimpleDM0Widget.class);
-	private TableView<TableData> table;
+	private TableView<WidgetTableData> table;
 	private Label lblTime;
-	private Label lblItemLabel;
+//	private Label lblItemLabel;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
+	private Output0DMetadata tsMeta;
+	private Metadata metadata;
+	private String widgetId;
+	private final ObservableList<WidgetTableData> tableDataList;
+	private final Map<String,WidgetTableData> dataSetMap;
 
 	public SimpleDM0Widget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		log.info("Thread: " + Thread.currentThread().getId());
+		tableDataList = FXCollections.observableArrayList();
+		dataSetMap = new HashMap<>();
 	}
 
-	private ObservableList<TableData> tableDataList;
+	@Override
+	public void setProperties(String id, SimplePropertyList properties) {
+//		1) Called first immediately after construction
+		policy.setProperties(id, properties);
+		this.widgetId = id;
+	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		log.info("Thread: " + Thread.currentThread().getId() + " Meta-data: " + meta);
-		Platform.runLater(() -> {
-			tableDataList = FXCollections.observableArrayList();
-			d0Metadata = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
-			timeFormatter.onMetaDataMessage(meta);
-			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
-			if (meta.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
-				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
-			if (meta.properties().hasProperty("sample")) {
-				StringTable st = (StringTable) meta.properties().getPropertyValue("sample");
-				if (st != null) {
-					sampledItems = new ArrayList<>(st.size());
-					for (int i = 0; i < st.size(); i++)
-						sampledItems.add(st.getWithFlatIndex(i));
-				}
-			}
+//		2) called second after construction
+		metadata = meta;
+		tsMeta = (Output0DMetadata) metadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
 
-			for (DataLabel dl : d0Metadata.doubleNames())
-				makeChannels(dl);
-			// tableDataList.add(new TableData(dl.toString()));
-			for (DataLabel dl : d0Metadata.intNames())
-				makeChannels(dl);
-//				tableDataList.add(new TableData(dl.toString()));
+//		Platform.runLater(() -> {
+//			tableDataList = FXCollections.observableArrayList();
+//			d0Metadata = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+//			timeFormatter.onMetaDataMessage(meta);
+//			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+//			if (meta.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
+//				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
+//			if (meta.properties().hasProperty("sample")) {
+//				StringTable st = (StringTable) meta.properties().getPropertyValue("sample");
+//				if (st != null) {
+//					sampledItems = new ArrayList<>(st.size());
+//					for (int i = 0; i < st.size(); i++)
+//						sampledItems.add(st.getWithFlatIndex(i));
+//				}
+//			}
+//
+//			for (DataLabel dl : d0Metadata.doubleNames())
+//				makeChannels(dl);
+//			// tableDataList.add(new TableData(dl.toString()));
+//			for (DataLabel dl : d0Metadata.intNames())
+//				makeChannels(dl);
+////				tableDataList.add(new TableData(dl.toString()));
+//
+//			table.setItems(tableDataList);
+//			table.refresh();
+//		});
 
-			table.setItems(tableDataList);
-			table.refresh();
-		});
-
-	}
-
-	private void makeChannels(DataLabel dl) {
-		if (sas != null) {
-			for (StatisticalAggregates sa : sas.values()) {
-				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
-				tableDataList.add(new TableData(key));
-			}
-		} else if (sampledItems != null) {
-			for (String si : sampledItems) {
-				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
-				tableDataList.add(new TableData(key));
-			}
-		}
-
-	}
-
-	@Override
-	public void onDataMessage(Output0DData data) {
-		log.info("Thread: " + Thread.currentThread().getId() + " data: " + data);
-		if (policy.canProcessDataMessage(data)) {
-			Platform.runLater(() -> {
-				lblItemLabel.setText(data.itemLabel().toString());
-				lblTime.setText(timeFormatter.getTimeText(data.time()));
-				String itemId = null;
-				if (sas != null)
-					itemId = data.itemLabel().getEnd();
-				else if (sampledItems != null)
-					itemId = data.itemLabel().toString();
-				for (DataLabel dl : d0Metadata.doubleNames()) {
-					String key;
-					if (itemId != null)
-						if (itemId != null)
-							key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
-						else
-							key = dl.toString();
-//					TableData td = tableDataList.get(idx);
-
-//					int idx = d0Metadata.indexOf();
-//					Double value = data.getDoubleValues()[idx];
-//					TableData td = tableDataList.get(idx);
-////					td.stats.add(value);
-//					td.setValue(value);
-				}
-				for (DataLabel dl : d0Metadata.intNames()) {
-//					int idx = d0Metadata.indexOf(dl);
-//					TableData td = tableDataList.get(idx);
-//					Long value = data.getIntValues()[idx];
-////					td.stats.add(value);
-//					td.setValue(value);
-				}
-				table.refresh();
-			});
-		}
-	}
-
-	@Override
-	public void onStatusMessage(State state) {
-		log.info("Thread: " + Thread.currentThread().getId() + " State: " + state);
-		if (isSimulatorState(state, waiting))
-			Platform.runLater(() -> {
-				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
-				// reset the statistics and the initialvalue (if we had one)
-				for (TableData td : tableDataList) {
-//					td.stats.reset();
-					td.setValue(0);
-				}
-				table.refresh();
-
-			});
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getUserInterfaceContainer() {
-		table = new TableView<TableData>();
-		TableColumn<TableData, String> col1Label = new TableColumn<>("Label");
-		col1Label.setCellValueFactory(new PropertyValueFactory<TableData, String>("label"));
+//		3) called third after metadata
+//		get the prefs, if any, before building the ui
+		getUserPreferences();
 
-		TableColumn<TableData, String> col2Value = new TableColumn<>("Value");
-		col2Value.setCellValueFactory(new PropertyValueFactory<TableData, String>("value"));
+		sas = null;
+		if (metadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
+			sas = (StatisticalAggregatesSet) metadata.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
+		if (metadata.properties().hasProperty("sample")) {
+			StringTable st = (StringTable) metadata.properties().getPropertyValue("sample");
+			if (st != null) {
+				sampledItems = new ArrayList<>(st.size());
+				for (int i = 0; i < st.size(); i++)
+					sampledItems.add(st.getWithFlatIndex(i));
+			}
+		}
 
-//		TableColumn<TableData, String> col3Min = new TableColumn<>("Min");
-//		col3Min.setCellValueFactory(new PropertyValueFactory<TableData, String>("min"));
-//
-//		TableColumn<TableData, String> col4Max = new TableColumn<>("Max");
-//		col4Max.setCellValueFactory(new PropertyValueFactory<TableData, String>("max"));
-//		// avg,var,sum
-//		TableColumn<TableData, String> col5Avg = new TableColumn<>("Avg");
-//		col5Avg.setCellValueFactory(new PropertyValueFactory<TableData, String>("avg"));
-//
-//		TableColumn<TableData, String> col6Var = new TableColumn<>("Var");
-//		col6Var.setCellValueFactory(new PropertyValueFactory<TableData, String>("var"));
-//
-//		TableColumn<TableData, String> col7Sum = new TableColumn<>("Sum");
-//		col7Sum.setCellValueFactory(new PropertyValueFactory<TableData, String>("sum"));
+		for (DataLabel dl : tsMeta.doubleNames())
+			makeChannels(dl);
+		// normally with statistics there are no int variables
+		for (DataLabel dl : tsMeta.intNames())
+			makeChannels(dl);
+
+		timeFormatter.onMetaDataMessage(metadata);
+
+		table = new TableView<WidgetTableData>();
+		TableColumn<WidgetTableData, String> col1Label = new TableColumn<>("Label");
+		col1Label.setCellValueFactory(new PropertyValueFactory<WidgetTableData, String>("label"));
+
+		TableColumn<WidgetTableData, String> col2Value = new TableColumn<>("Value");
+		col2Value.setCellValueFactory(new PropertyValueFactory<WidgetTableData, String>("value"));
 
 		table.getColumns().addAll(col1Label, col2Value/* col3Min, col4Max, col5Avg, col6Var, col7Sum */);
 
@@ -231,26 +186,76 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		content.setPadding(new Insets(10, 0, 0, 10));
 		HBox hbox = new HBox();
 		lblTime = new Label("uninitialised");
-		lblItemLabel = new Label();
-		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime, lblItemLabel);
+//		lblItemLabel = new Label("What is this");
+		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime/**, lblItemLabel*/);
 		content.getChildren().addAll(table, hbox);
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);
 		sp.setContent(content);
 
-		getUserPreferences();
+		lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+		table.setItems(tableDataList);
+		table.refresh();
 
 		return sp;
 	}
 
 	@Override
-	public Object getMenuContainer() {
-		return null;
+	public void onStatusMessage(State state) {
+//		4) Called 4th after UI construction - this is only in the UI thread the first time it's called
+		if (isSimulatorState(state, waiting))
+			Platform.runLater(() -> {
+				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+				// initialvalue (if we had one)
+				for (WidgetTableData td : tableDataList)
+					td.setValue(0);
+
+				table.refresh();
+
+			});
 	}
 
 	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
+	public void onDataMessage(final Output0DData data) {
+		if (policy.canProcessDataMessage(data)) {
+			Platform.runLater(() -> {
+				//lblItemLabel.setText(data.itemLabel().toString());
+				lblTime.setText(timeFormatter.getTimeText(data.time()));
+				String itemId = null;
+				if (sas != null)
+					itemId = data.itemLabel().getEnd();
+				else if (sampledItems != null)
+					itemId = data.itemLabel().toString();
+				System.out.println("Widget '"+widgetId+"' itemId "+itemId);
+				for (DataLabel dl : tsMeta.doubleNames()) {
+					String key= getKey(dl,itemId);
+					WidgetTableData td = dataSetMap.get(key);
+					final double value = data.getDoubleValues()[tsMeta.indexOf(dl)];
+					td.setValue(value);
+				}
+				for (DataLabel dl : tsMeta.intNames()) {
+					String key= getKey(dl,itemId);
+					WidgetTableData td = dataSetMap.get(key);
+					final long value = data.getIntValues()[tsMeta.indexOf(dl)];
+					td.setValue(value);
+				}
+				table.refresh();
+			});
+		}
+	}
+
+	private String getKey(DataLabel dl, String itemId) {
+		String result;
+		if (itemId !=null)
+			result = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+		else
+			result = dl.toString();
+	return result;
+	}
+	@Override
+	public Object getMenuContainer() {
+		return null;
 	}
 
 	@Override
@@ -261,14 +266,14 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	public void getUserPreferences() {
 	}
 
-	protected static class TableData {
+	protected static class WidgetTableData {
 		// These don't really need to be properties as they are not 'listened' to. It's
 		// the list that is observed.
 		private final SimpleStringProperty labelProperty;
 		private final SimpleStringProperty valueProperty;
 //		private final Statistics stats;
 
-		public TableData(String label) {
+		public WidgetTableData(String label) {
 			this.labelProperty = new SimpleStringProperty(label);
 			this.valueProperty = new SimpleStringProperty();
 //			this.stats = new Statistics();
@@ -313,6 +318,25 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 //		public Statistics getStatistics() {
 //			return stats;
 //		}
+	}
+
+	private void makeChannels(DataLabel dl) {
+		if (sas != null) {
+			for (StatisticalAggregates sa : sas.values()) {
+				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
+				WidgetTableData wtd = new WidgetTableData(key);
+				tableDataList.add(wtd);
+				dataSetMap.put(key, wtd);
+			}
+		} else if (sampledItems != null) {
+			for (String si : sampledItems) {
+				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
+				WidgetTableData wtd = new WidgetTableData(key);
+				tableDataList.add(wtd);
+				dataSetMap.put(key, wtd);
+			}
+		}
+
 	}
 
 }

@@ -271,6 +271,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				itemId = data.itemLabel().getEnd();
 			else if (sampledItems != null)
 				itemId = data.itemLabel().toString();
+			System.out.println("Widget '"+widgetId+"' itemId "+itemId);
 
 			for (DataLabel dl : tsMeta.doubleNames()) {
 				String key;
