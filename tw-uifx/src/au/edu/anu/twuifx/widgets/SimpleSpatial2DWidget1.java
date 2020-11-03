@@ -141,24 +141,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private List<Color> colours;
 	private final Map<String, Duple<Integer, Color>> colourMap;
-	
-	private GridPane legend;
-	
 
-	private double spaceCanvasRatio;
-	private int symbolRadius;
-	private boolean symbolFill;
-	private Color bkgColour;
-	private Color lineColour;
-	private double contrast;
-	private boolean colour64;
-	private boolean showLines;
-	private boolean showGrid;
-	private boolean showEdgeEffect;
-	private int colourHLevel;
+	private GridPane legend;
+
 	private EdgeEffectCorrection eec;
 	private double tickWidth;
-	private double relLineWidth;
 
 	private BorderListType borderList;
 
@@ -213,6 +200,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 		}
 	}
+
 
 	private double getTickWidth() {
 		double mxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
@@ -593,6 +581,19 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyShowEdgeEffect = "showEdgeEffect";
 	private static final String keyRelLineWidth = "relationLineWidth";
 
+	private double relLineWidth;
+	private double spaceCanvasRatio;
+	private int colourHLevel;
+	private int symbolRadius;
+	private boolean symbolFill;
+	private boolean showGrid;
+	private boolean showEdgeEffect;
+	private Color bkgColour;
+	private Color lineColour;
+	private double contrast;
+	private boolean colour64;
+	private boolean showLines;
+
 	@Override
 	public void putUserPreferences() {
 		Preferences.putDouble(widgetId + keyRelLineWidth, relLineWidth);
@@ -615,10 +616,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	}
 
 	private static final int firstUse = -1;
-
+	// called at END of UI construction because this depends on UI components.
 	@Override
 	public void getUserPreferences() {
-		// onMetaDataMessage runs before this method.
 		relLineWidth = Preferences.getDouble(widgetId + keyRelLineWidth, 0.25);
 		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
@@ -663,8 +663,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 //		l.setText("");
 //		l.setAlignment(Pos.CENTER_LEFT);
 //		l.setContentDisplay(ContentDisplay.LEFT);
-	
-	
 
 		BorderPane container = new BorderPane();
 		zoomTarget = new AnchorPane();
