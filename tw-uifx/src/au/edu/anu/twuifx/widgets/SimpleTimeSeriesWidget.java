@@ -63,6 +63,7 @@ import de.gsi.chart.plugins.DataPointTooltip;
 import de.gsi.chart.plugins.TableViewer;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
+import de.gsi.chart.renderer.Renderer;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
 import de.gsi.chart.ui.geometry.Side;
@@ -74,7 +75,12 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -128,9 +134,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		this.maxAxes = 1;
 		if (properties.hasProperty(P_WIDGET_MAXAXES.key()))
 			this.maxAxes = (Integer) properties.getPropertyValue(P_WIDGET_MAXAXES.key());
-		this.bufferSize=1000;
+		this.bufferSize = 1000;
 		if (properties.hasProperty(P_WIDGET_BUFFERSIZE.key()))
-			this.bufferSize = (Integer)properties.getPropertyValue(P_WIDGET_BUFFERSIZE.key());
+			this.bufferSize = (Integer) properties.getPropertyValue(P_WIDGET_BUFFERSIZE.key());
 	}
 
 	@Override
@@ -184,9 +190,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			if (yAxes.size() < maxAxes) {
 				String yAxisUnits = "";// where do we get these - they don't apply to statistics
 				DefaultNumericAxis newAxis = new DefaultNumericAxis(entry.getKey(), yAxisUnits);
-				//newAxis.setAutoRangeRounding(true);
+				// newAxis.setAutoRangeRounding(true);
 				newAxis.setAnimated(false);
-				//assign axis side BEFORE adding renderer to the chart
+				// assign axis side BEFORE adding renderer to the chart
 				if (yAxes.size() % 2 == 0)
 					newAxis.setSide(Side.LEFT);
 				else
@@ -198,6 +204,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				newRenderer.getAxes().add(newAxis);
 				newRenderer.getDatasets().add(entry.getValue());
 				renderers.add(newRenderer);
+				if (renderers.size()>maxLegendItems)
+					newRenderer.setShowInLegend(false);
 
 			} else { // add remaining data sets to the last axis
 				ErrorDataSetRenderer renderer = renderers.get(maxAxes - 1);
@@ -214,10 +222,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		}
 
 		chart = new XYChart(xAxis, yAxes.get(0));
-		if (dataSetMap.size() != 1)
-			chart.setLegendVisible(true);
-		else
-			chart.setLegendVisible(false);
+		chart.setLegendSide(legendSide);
+		chart.setLegendVisible(legendVisible);
 
 		chart.setAnimated(false);// probably expensive if true
 		chart.getRenderers().addAll(renderers);
@@ -313,59 +319,86 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public Object getMenuContainer() {
-//		Menu mu = new Menu(widgetId);
-//		MenuItem miEdit = new MenuItem("Edit...");
-//		mu.getItems().add(miEdit);
-//		miEdit.setOnAction(e -> edit());
-//		return mu;
-		return null;
+		Menu mu = new Menu(widgetId);
+		MenuItem miEdit = new MenuItem("Edit...");
+		mu.getItems().add(miEdit);
+		miEdit.setOnAction(e -> edit());
+		return mu;
 	}
 
-//	private void edit() {
-//		Dialog<ButtonType> dialog = new Dialog<>();
-//		dialog.setTitle(widgetId);
-//		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
-//		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-//		dialog.initOwner((Window) Dialogs.owner());
-//		GridPane content = new GridPane();
-//		content.setVgap(5);
-//		content.setHgap(3);
-//		Label lbl = new Label("Buffer capacity");
-//		Spinner<Integer> spCapacity = new Spinner<>();
-//		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 10000, bufferCapacity));
-//		spCapacity.setMaxWidth(100);
-//		spCapacity.setEditable(true);
-//		content.add(lbl, 0, 0);
-//		content.add(spCapacity, 1, 0);
-//		dialog.getDialogPane().setContent(content);
-//		Optional<ButtonType> result = dialog.showAndWait();
-//		// Map<String, CircularDoubleErrorDataSet>
-//		if (result.get().equals(ok)) {
-//			int v = spCapacity.getValue();
-//			if (v != bufferCapacity) {
-//				synchronized (this) {
-//					bufferCapacity = v;
-//					for (Map.Entry<String, CircularDoubleErrorDataSet> e : dataSetMap.entrySet()) {
-//						CircularDoubleErrorDataSetResizable ds = (CircularDoubleErrorDataSetResizable) e.getValue();
-//						ds.resizeBuffer(bufferCapacity);
-//						ds.reset();
-//					}
-//
-//				}
-//			}
-//		}
-//	}
+	private void edit() {
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle(widgetId);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		dialog.initOwner((Window) Dialogs.owner());
+		GridPane content = new GridPane();
+		content.setVgap(5);
+		content.setHgap(3);
+		int row = 0;
+		CheckBox chbxLegendVisible = new CheckBox("");
+		addGridControl("Legend visible", row++, chbxLegendVisible, content);
+		chbxLegendVisible.setSelected(legendVisible);
 
-//	private static final String keyBuffer = "bufferCapacity";
+		ComboBox<Side> cmbSide = new ComboBox<>();
+		cmbSide.getItems().addAll(Side.values());
+		cmbSide.getSelectionModel().select(chart.getLegendSide());
+		addGridControl("Legend side", row++, cmbSide, content);
+
+		Spinner<Integer> spMaxLegendItems = new Spinner<>();
+		spMaxLegendItems.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, maxLegendItems));
+		spMaxLegendItems.setMaxWidth(100);
+		spMaxLegendItems.setEditable(true);
+		addGridControl("Max legend items",row++,spMaxLegendItems,content);
+		
+		dialog.getDialogPane().setContent(content);
+		Optional<ButtonType> result = dialog.showAndWait();
+		if (result.get().equals(ok)) {
+			maxLegendItems = spMaxLegendItems.getValue();
+			for (int i = 0; i<chart.getRenderers().size();i++) {
+				Renderer r = chart.getRenderers().get(i);
+				if (i>maxLegendItems)
+					r.setShowInLegend(false);
+				else
+					r.setShowInLegend(true);
+			}
+			legendSide = cmbSide.getValue();
+			chart.setLegendSide(legendSide);
+			legendVisible = chbxLegendVisible.isSelected();
+			chart.setLegendVisible(legendVisible);
+		}
+	}
+
+	// move to helper
+	private static void addGridControl(String name, int row, Node ctrl, GridPane grid) {
+		Label lbl = new Label(name);
+		grid.add(lbl, 0, row);
+		grid.add(ctrl, 1, row);
+		GridPane.setHalignment(lbl, HPos.RIGHT);
+		GridPane.setHalignment(ctrl, HPos.LEFT);
+		GridPane.setValignment(ctrl, VPos.CENTER);
+	}
+
+	private static final String keyLegendSide = "legendSide";
+	private static final String keyLegendVisible = "legendVisible";
+	private static final String keyMaxLegendItems = "maxLegendItems";
+
+	private boolean legendVisible;
+	private Side legendSide;
+	private int maxLegendItems;
 
 	@Override
 	public void putUserPreferences() {
-//		Preferences.putInt(widgetId + keyBuffer, bufferCapacity);
+		Preferences.putBoolean(widgetId + keyLegendVisible, legendVisible);
+		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
+		Preferences.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
 	}
 
 	@Override
 	public void getUserPreferences() {
-//		bufferCapacity = Preferences.getInt(widgetId + keyBuffer, 1000);
+		legendVisible = Preferences.getBoolean(widgetId + keyLegendVisible, false);
+		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
+		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 8);
 	}
 
 	// helper to initialise a Renderer

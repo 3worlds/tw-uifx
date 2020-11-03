@@ -85,7 +85,6 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	private static Logger log = Logging.getLogger(SimpleDM0Widget.class);
 	private TableView<WidgetTableData> table;
 	private Label lblTime;
-//	private Label lblItemLabel;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
 	private Output0DMetadata tsMeta;
@@ -115,34 +114,6 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 //		2) called second after construction
 		metadata = meta;
 		tsMeta = (Output0DMetadata) metadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
-
-//		Platform.runLater(() -> {
-//			tableDataList = FXCollections.observableArrayList();
-//			d0Metadata = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
-//			timeFormatter.onMetaDataMessage(meta);
-//			lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
-//			if (meta.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
-//				sas = (StatisticalAggregatesSet) meta.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
-//			if (meta.properties().hasProperty("sample")) {
-//				StringTable st = (StringTable) meta.properties().getPropertyValue("sample");
-//				if (st != null) {
-//					sampledItems = new ArrayList<>(st.size());
-//					for (int i = 0; i < st.size(); i++)
-//						sampledItems.add(st.getWithFlatIndex(i));
-//				}
-//			}
-//
-//			for (DataLabel dl : d0Metadata.doubleNames())
-//				makeChannels(dl);
-//			// tableDataList.add(new TableData(dl.toString()));
-//			for (DataLabel dl : d0Metadata.intNames())
-//				makeChannels(dl);
-////				tableDataList.add(new TableData(dl.toString()));
-//
-//			table.setItems(tableDataList);
-//			table.refresh();
-//		});
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -152,6 +123,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 //		get the prefs, if any, before building the ui
 		getUserPreferences();
 
+		// use a helper
 		sas = null;
 		if (metadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
 			sas = (StatisticalAggregatesSet) metadata.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
@@ -173,7 +145,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		timeFormatter.onMetaDataMessage(metadata);
 
 		table = new TableView<WidgetTableData>();
-		TableColumn<WidgetTableData, String> col1Label = new TableColumn<>("Label");
+		TableColumn<WidgetTableData, String> col1Label = new TableColumn<>(widgetId);
 		col1Label.setCellValueFactory(new PropertyValueFactory<WidgetTableData, String>("label"));
 
 		TableColumn<WidgetTableData, String> col2Value = new TableColumn<>("Value");
@@ -186,7 +158,6 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		content.setPadding(new Insets(10, 0, 0, 10));
 		HBox hbox = new HBox();
 		lblTime = new Label("uninitialised");
-//		lblItemLabel = new Label("What is this");
 		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime/** , lblItemLabel */
 		);
 		content.getChildren().addAll(table, hbox);
@@ -199,7 +170,7 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		table.setItems(tableDataList);
 		table.refresh();
 
-		return sp;
+		return content;
 	}
 
 	@Override

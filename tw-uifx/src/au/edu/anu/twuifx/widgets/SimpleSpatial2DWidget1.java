@@ -79,6 +79,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -91,6 +92,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -311,10 +313,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			hPointsMap.clear();
 			lineReferences.clear();
 			colourMap.clear();
-			Platform.runLater(() -> {
-				legend.getChildren().clear();
-			});
-			// drawSpace();
 		}
 	}
 
@@ -657,6 +655,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	@Override
 	public Object getUserInterfaceContainer() {
+		Label l = new Label("");
+		l.setText("");
+		l.setAlignment(Pos.CENTER_LEFT);
+		l.setContentDisplay(ContentDisplay.LEFT);
+	
+
 		BorderPane container = new BorderPane();
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
@@ -699,6 +703,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 		if (count > maxItems) {
 			int idx = legend.getChildren().size();
+//			legend.getChildren().add(new Label("..."));
 			legend.add(new Label("..."), 1, idx);
 		}
 	}
@@ -719,10 +724,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		else
 			circle = new Circle(0, 0, 4, colour);
 		circle.setStroke(colour);
+//		legend.getChildren().add(rect);
 		legend.add(rect, 0, idx);
+//		legend.getChildren().add(circle);
 		legend.add(circle, 0, idx);
 		GridPane.setHalignment(circle, HPos.CENTER);
 		legend.add(new Label(name), 1, idx);
+//		legend.getChildren().add(new Label(name));
 	}
 
 	@Override
@@ -734,7 +742,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mu;
 	}
 
-	private void addTableEntry(String name, int row, Node ctrl, GridPane grid) {
+	private static void addGridControl(String name, int row, Node ctrl, GridPane grid) {
 		Label lbl = new Label(name);
 		grid.add(lbl, 0, row);
 		grid.add(ctrl, 1, row);
@@ -758,63 +766,63 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		// -----
 		CheckBox chbxFill = new CheckBox("");
-		addTableEntry("Fill symbols", row++, chbxFill, content);
+		addGridControl("Fill symbols", row++, chbxFill, content);
 		chbxFill.setSelected(symbolFill);
 		// -----
 		CheckBox chbxShowLines = new CheckBox("");
-		addTableEntry("Show lines", row++, chbxShowLines, content);
+		addGridControl("Show lines", row++, chbxShowLines, content);
 		chbxShowLines.setSelected(showLines);
 		// -----
 		CheckBox chbxShowGrid = new CheckBox("");
-		addTableEntry("Show grid", row++, chbxShowGrid, content);
+		addGridControl("Show grid", row++, chbxShowGrid, content);
 		chbxShowGrid.setSelected(showGrid);
 		// -----
 		CheckBox chbxShowEdgeEffect = new CheckBox("");
-		addTableEntry("Show boundary type", row++, chbxShowEdgeEffect, content);
+		addGridControl("Show boundary type", row++, chbxShowEdgeEffect, content);
 		chbxShowEdgeEffect.setSelected(showEdgeEffect);
 		// -----
 		TextField tfSpaceCanvasRatio = new TextField(Double.toString(spaceCanvasRatio));
 		tfSpaceCanvasRatio.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		tfSpaceCanvasRatio.setMaxWidth(50);
-		addTableEntry("Canvas:Space ratio", row++, tfSpaceCanvasRatio, content);
+		addGridControl("Canvas:Space ratio", row++, tfSpaceCanvasRatio, content);
 		// -----
 		TextField tfRelLineWidth = new TextField(Double.toString(relLineWidth));
 		tfRelLineWidth.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		tfRelLineWidth.setMaxWidth(50);
-		addTableEntry("Relation line width", row++, tfRelLineWidth, content);
+		addGridControl("Relation line width", row++, tfRelLineWidth, content);
 
 		// -----
 		Spinner<Integer> spRadius = new Spinner<>();
-		addTableEntry("Symbol radius", row++, spRadius, content);
+		addGridControl("Symbol radius", row++, spRadius, content);
 		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
 		spRadius.setMaxWidth(100);
 		spRadius.setEditable(true);
 
 		// ----
 		Spinner<Integer> spHLevel = new Spinner<>();
-		addTableEntry("Hierarchical colour level", row++, spHLevel, content);
+		addGridControl("Hierarchical colour level", row++, spHLevel, content);
 		spHLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, colourHLevel));
 		spHLevel.setMaxWidth(100);
 		spHLevel.setEditable(true);
 		// -----
 		CheckBox chbxCS = new CheckBox("");
-		addTableEntry("64 Colour system", row++, chbxCS, content);
+		addGridControl("64 Colour system", row++, chbxCS, content);
 		chbxCS.setSelected(colour64);
 		// ----
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
-		addTableEntry("Background colour", row++, cpBkg, content);
+		addGridControl("Background colour", row++, cpBkg, content);
 		GridPane.setValignment(cpBkg, VPos.TOP);
 		// -----
 		ColorPicker cpLine = new ColorPicker(lineColour);
-		addTableEntry("Line colour", row++, cpLine, content);
+		addGridControl("Line colour", row++, cpLine, content);
 		GridPane.setValignment(cpLine, VPos.TOP);
 		// ----
 		TextField tfContrast = new TextField(Double.toString(contrast));
 		tfContrast.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
-		addTableEntry("Contrast (0.0-1.0)", row++, tfContrast, content);
+		addGridControl("Contrast (0.0-1.0)", row++, tfContrast, content);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
