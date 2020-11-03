@@ -54,6 +54,8 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import au.edu.anu.ymuit.util.CenteredZooming;
+import de.gsi.chart.legend.Legend;
+import de.gsi.chart.legend.spi.DefaultLegend;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -139,7 +141,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private List<Color> colours;
 	private final Map<String, Duple<Integer, Color>> colourMap;
+	
 	private GridPane legend;
+	
 
 	private double spaceCanvasRatio;
 	private int symbolRadius;
@@ -655,10 +659,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		Label l = new Label("");
-		l.setText("");
-		l.setAlignment(Pos.CENTER_LEFT);
-		l.setContentDisplay(ContentDisplay.LEFT);
+//		Label l = new Label("");
+//		l.setText("");
+//		l.setAlignment(Pos.CENTER_LEFT);
+//		l.setContentDisplay(ContentDisplay.LEFT);
+	
 	
 
 		BorderPane container = new BorderPane();
