@@ -35,12 +35,15 @@ import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.data.runtime.Output2DData;
+import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
+import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import au.edu.anu.ymuit.util.CenteredZooming;
@@ -104,13 +107,15 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 	private Number[][] numbers;
 	private int sender;
 	private String widgetId;
-	private WidgetTimeFormatter timeFormatter;
+	private final WidgetTimeFormatter timeFormatter;
+	private final WidgetTrackingPolicy<TimeData> policy;
 
 	private static Logger log = Logging.getLogger(SimpleDM2Widget.class);
 
 	public SimpleDM2Widget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM2);
 		timeFormatter = new WidgetTimeFormatter();
+		policy = new SimpleWidgetTrackingPolicy();
 		log.info("Creation thread id: " + Thread.currentThread().getId());
 	}
 
@@ -127,8 +132,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 
 	@Override
 	public void onDataMessage(Output2DData data) {
-		// TODO use a policy not this
-		if (sender == data.sender())
+		if (policy.canProcessDataMessage(data))
 			Platform.runLater(() -> {
 				processOnDataMessage(data);
 			});
@@ -213,7 +217,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 		content.setTop(buildNamePane());
 		content.setLeft(buildPalettePane());
 		content.setCenter(buildScrollPane());
-		
+
 		getUserPreferences();
 
 		return content;
@@ -335,9 +339,9 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 		int x = (int) (e.getX() / resolution);
 		int y = (int) (e.getY() / resolution);
 		lblXY.setText("[" + x + "," + y + "]");
-		if (x < mx & y < my & x >= 0 & y >= 0) 
-			 lblValue.setText(formatter.format(numbers[x][y]));
-		
+		if (x < mx & y < my & x >= 0 & y >= 0)
+			lblValue.setText(formatter.format(numbers[x][y]));
+
 	}
 
 	@Override
