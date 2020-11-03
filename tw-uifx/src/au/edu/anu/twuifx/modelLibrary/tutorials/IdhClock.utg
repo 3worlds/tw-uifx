@@ -3,57 +3,6 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 
-//distEffectsComm	
-//		for (int i = 0; i < other_x.size(); i++)
-//			if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)
-//				otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
-	
-//distOccurrence
-//		double proba = 1.0 / freq;
-//		if (random.nextDouble() < proba)
-//			return true;
-//		else
-//			return false;
-
-// initDist
-//		focalCnt.freq = 5 + random.nextInt(50);
-//		focalCnt.inten = random.nextDouble() * 100;
-
-
-// commGrowth
-//		double[] dxdt = new double[x.size(0)];
-//		for (int i = 0; i < x.size(0); i++) {
-//			double sum = 0;
-//			for (int j = 0; j < alpha.size(1); j++)
-//				sum += alpha.getByInt(i, j) * x.getByInt(j);
-//			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));
-//		}
-//		for (int i = 0; i < dxdt.length; i++)
-//			focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);
-//		// compute diversity
-//		double xtot = 0.0;
-//		for (int i = 0; i < focalDrv.x.size(0); i++)
-//			xtot += focalDrv.x.getByInt(i);
-//		focalDec.div = 0.0;
-//		for (int i = 0; i < focalDrv.x.size(0); i++)
-//			if (focalDrv.x.getByInt(i) > 0.0)
-//				focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);
-
-// initComm
-//		double initFreq = 1.0 / x.size();
-//		focalDrv.x.fillWith(initFreq);
-//		for (int i = 0; i < r.size(0); i++) {
-//			focalCnt.r.setByInt(random.nextDouble(), i);
-//			focalCnt.K.setByInt(5.0 + initFreq + random.nextDouble(), i);
-//			for (int j = 0; j < alpha.size(1); j++) {
-//				if (i == j)
-//					focalCnt.alpha.setByInt(1.0, i, j);
-//				else
-//					focalCnt.alpha.setByInt(max(0.0001, random.nextDouble()), i, j);
-//			}
-//		}
-
-
 // TREE
 3worlds Prj6
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
@@ -156,6 +105,9 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				units = java.lang.String()
 		dimensioner nspp
 			size = java.lang.Integer(40)
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
 		dynamics sim1
 			stoppingCondition stCd1
@@ -176,31 +128,31 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
 							userClassName = java.lang.String(code.sys1.DistOccurrence)
 							snippet snpDistOcc
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"		double proba = 1.0 / freq;","		if (random.nextDouble() < proba)","			return true;","		else","			return false;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"double proba = 1.0 / freq;","if (random.nextDouble() < proba)","return true;","else","return false;"))
 					process procDistEffects
 						function DistEffectsComm
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
 							userClassName = java.lang.String(code.sys1.DistEffectsComm)
 							snippet snpDistEffects
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		for (int i = 0; i < other_x.size(); i++)","			if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)","				otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"for (int i = 0; i < other_x.size(); i++)","if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)","otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);"))
 					process procCommGrowth
 						dataTracker trk2
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 						dataTracker trk1
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({MEAN})
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 						function CommGrowth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys1.CommGrowth)
 							snippet snpGrowth
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([17]"		double[] dxdt = new double[x.size(0)];","		for (int i = 0; i < x.size(0); i++) {","			double sum = 0;","			for (int j = 0; j < alpha.size(1); j++)","				sum += alpha.getByInt(i, j) * x.getByInt(j);","			dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));","		}","		for (int i = 0; i < dxdt.length; i++)","			focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);","		// compute diversity","		double xtot = 0.0;","		for (int i = 0; i < focalDrv.x.size(0); i++)","			xtot += focalDrv.x.getByInt(i);","		focalDec.div = 0.0;","		for (int i = 0; i < focalDrv.x.size(0); i++)","			if (focalDrv.x.getByInt(i) > 0.0)","				focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([17]"double[] dxdt = new double[x.size(0)];","for (int i = 0; i < x.size(0); i++) {","double sum = 0;","for (int j = 0; j < alpha.size(1); j++)","sum += alpha.getByInt(i, j) * x.getByInt(j);","dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));","}","for (int i = 0; i < dxdt.length; i++)","focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);","// compute diversity","double xtot = 0.0;","for (int i = 0; i < focalDrv.x.size(0); i++)","xtot += focalDrv.x.getByInt(i);","focalDec.div = 0.0;","for (int i = 0; i < focalDrv.x.size(0); i++)","if (focalDrv.x.getByInt(i) > 0.0)","focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);"))
 		structure struc1
 			relationType distEffectComm
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
@@ -213,7 +165,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 					userClassName = java.lang.String(code.sys1.InitDist)
 					snippet snpInitDist
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.freq = 5 + random.nextInt(50);","		focalCnt.inten = random.nextDouble() * 100;"))
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"focalCnt.freq = 5 + random.nextInt(50);","focalCnt.inten = random.nextDouble() * 100;"))
 				component dist
 			categorySet world
 				category distCat
@@ -229,11 +181,8 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 					userClassName = java.lang.String(code.sys1.InitComm)
 					snippet snpInitComm
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([12]"		double initFreq = 1.0 / x.size();","		focalDrv.x.fillWith(initFreq);","		for (int i = 0; i < r.size(0); i++) {","			focalCnt.r.setByInt(random.nextDouble(), i);","			focalCnt.K.setByInt(5.0 + initFreq + random.nextDouble(), i);","			for (int j = 0; j < alpha.size(1); j++) {","				if (i == j)","					focalCnt.alpha.setByInt(1.0, i, j);","				else","					focalCnt.alpha.setByInt(max(0.0001, random.nextDouble()), i, j);","			}","		}"))
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([12]"double initFreq = 1.0 / x.size();","focalDrv.x.fillWith(initFreq);","for (int i = 0; i < r.size(0); i++) {","focalCnt.r.setByInt(random.nextDouble(), i);","focalCnt.K.setByInt(5.0 + initFreq + random.nextDouble(), i);","for (int j = 0; j < alpha.size(1); j++) {","if (i == j)","focalCnt.alpha.setByInt(1.0, i, j);","else","focalCnt.alpha.setByInt(max(0.0001, random.nextDouble()), i, j);","}","}"))
 				component comm
-	experiment expt
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	userInterface gui
 		top top
 			widget ctrl
@@ -244,18 +193,18 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 			container cont1
 				order = java.lang.Integer(0)
 				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
-				widget srsdiv
+				widget diversity
+					order = java.lang.Integer(1)
+					sender = java.lang.Integer(0)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				widget community
 					order = java.lang.Integer(0)
 					sender = java.lang.Integer(0)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-				widget tblx
-					order = java.lang.Integer(1)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
-			widget srsx
-				order = java.lang.Integer(0)
+			widget populations
+				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 
 // CROSS-LINKS
 [category:commCat] decorators decs1 [record:commDecs]
@@ -270,20 +219,20 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 [process:procDistEffects] dependsOn depsOn1 [process:procDistOccurence]
 [process:procDistEffects] appliesTo aplyTo2 [relationType:distEffectComm]
 [process:procDistEffects] dependsOn depsOn2 [process:procCommGrowth]
-[widget:srsdiv] trackSeries trks7 [dataTracker:trk2]
 [componentType:distType] belongsTo bt7 [category:*permanent*]
 [componentType:distType] belongsTo bt6 [category:*component*]
 [componentType:distType] belongsTo bt5 [category:distCat]
 [componentType:distType] belongsTo bt8 [category:*atomic*]
+[widget:community] trackSeries trks3 [dataTracker:trk1]
 [process:procCommGrowth] appliesTo aplyTo1 [category:commCat]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
-[widget:srsx] trackSeries trks3 [dataTracker:trk1]
+[widget:populations] trackSeries trks4 [dataTracker:trk1]
 [table:K] sizedBy szBy1 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
-[widget:tblx] trackSeries trks4 [dataTracker:trk1]
 [process:procDistOccurence] appliesTo aplyTo3 [relationType:distEffectComm]
+[widget:diversity] trackSeries trks7 [dataTracker:trk2]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [table:alpha] sizedBy szBy3 [dimensioner:nspp]

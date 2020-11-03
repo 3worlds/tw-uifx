@@ -10,10 +10,26 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 	precis = java.lang.String(Tutorial: Simple illustration of the use of space.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
+	dataDefinition dDef
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	userInterface gui
+		top top
+			widget time
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget playground
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
 	predefined *categories*
-		categorySet *organisation*
-			category *assemblage*
-			category *atomic*
 		record AVEphemeral
 			field birthDate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -26,7 +42,7 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 		record AVPopulation
-			field count
+			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
@@ -34,27 +50,26 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nRemoved
+			field count
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		categorySet *systemElements*
-			category *life cycle*
-			category *group*
-			category *relation*
-			category *component*
-			category *arena*
+		categorySet *organisation*
+			category *atomic*
+			category *assemblage*
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
-	dataDefinition dDef
-	experiment expt
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+		categorySet *systemElements*
+			category *group*
+			category *arena*
+			category *life cycle*
+			category *component*
+			category *relation*
 	system sys1
 		dynamics sim1
 			stoppingCondition stCd1
-				range = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
+				range = fr.ens.biologie.generic.utils.Interval([0.0,1000.0])
 				stopVariable = java.lang.String(count)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.OutRangeStoppingCondition)
 			timeline tmLn1
@@ -72,44 +87,28 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 							relateToProduct = java.lang.Boolean(false)
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys1.Reproduce)
-							snippet snpt2
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return 1.0;"))
 							function Dispersal
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
 								userClassName = java.lang.String(code.sys1.Dispersal)
 								snippet snpt1
-									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		nextOtherLoc[0] = random.nextDouble()*limits.sideLength(0) + limits.lowerBound(0);","		nextOtherLoc[1] = random.nextDouble()*limits.sideLength(1) + limits.lowerBound(1);"))
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"nextOtherLoc[0] = random.nextDouble()*limits.sideLength(0) + limits.lowerBound(0);","nextOtherLoc[1] = random.nextDouble()*limits.sideLength(1) + limits.lowerBound(1);"))
+							snippet snpt2
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"return 1.0;"))
 		structure struc1
 			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
-			componentType compTyp1
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
-				mobile = java.lang.Boolean(false)
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-				component cmp1
-					nInstances = java.lang.Integer(1)
 			space space
-				//edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffectCorrection(periodic)
 				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
 				precision = java.lang.Double(1.0E-4)
 				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 				units = java.lang.String(m)
 				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
 				y-limits = fr.ens.biologie.generic.utils.Interval([22.0,78.0])
-	userInterface gui
-		top top
-			widget time
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
-			widget ctrl
-				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
-		tab tab1
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget playground
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+			componentType compTyp1
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				component cmp1
+					nInstances = java.lang.Integer(1)
 
 // CROSS-LINKS
 [process:p1] appliesTo aplyTo2 [category:*component*]
@@ -121,8 +120,8 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 [componentType:compTyp1] belongsTo bt6 [category:*component*]
 [componentType:compTyp1] belongsTo bt5 [category:*ephemeral*]
 [componentType:compTyp1] belongsTo bt4 [category:*atomic*]
-[category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [widget:playground] trackSpace trks1 [space:space]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*assemblage*]
