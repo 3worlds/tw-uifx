@@ -33,6 +33,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -205,7 +206,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				newRenderer.getAxes().add(newAxis);
 				newRenderer.getDatasets().add(entry.getValue());
 				renderers.add(newRenderer);
-				if (renderers.size()>maxLegendItems)
+				if (renderers.size() > maxLegendItems)
 					newRenderer.setShowInLegend(false);
 
 			} else { // add remaining data sets to the last axis
@@ -266,6 +267,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void onDataMessage(final Output0DData data) {
+//		for (int i = 0; i < data.getDoubleValues().length; i++)
+//			System.out.println("Sender: "+data.sender()+"->"+data.getDoubleValues()[i]);
 		if (policy.canProcessDataMessage(data)) {
 			// not in ui thread.
 			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
@@ -350,15 +353,15 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		spMaxLegendItems.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, maxLegendItems));
 		spMaxLegendItems.setMaxWidth(100);
 		spMaxLegendItems.setEditable(true);
-		addGridControl("Max legend items",row++,spMaxLegendItems,content);
-		
+		addGridControl("Max legend items", row++, spMaxLegendItems, content);
+
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
 			maxLegendItems = spMaxLegendItems.getValue();
-			for (int i = 0; i<chart.getRenderers().size();i++) {
+			for (int i = 0; i < chart.getRenderers().size(); i++) {
 				Renderer r = chart.getRenderers().get(i);
-				if (i>maxLegendItems)
+				if (i > maxLegendItems)
 					r.setShowInLegend(false);
 				else
 					r.setShowInLegend(true);
