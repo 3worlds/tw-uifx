@@ -66,7 +66,8 @@ import de.gsi.chart.renderer.ErrorStyle;
 import de.gsi.chart.renderer.Renderer;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
-import de.gsi.chart.ui.geometry.Side;
+import de.gsi.chart.ui.geometry.Side;// This is a flaw since two of these values don't apply - messy
+// Nicer would be to use a converter routine
 import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -341,7 +342,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		chbxLegendVisible.setSelected(legendVisible);
 
 		ComboBox<Side> cmbSide = new ComboBox<>();
-		cmbSide.getItems().addAll(Side.values());
+		cmbSide.getItems().addAll(Side.values());// better to convert to javafx.geometry.Side.
 		cmbSide.getSelectionModel().select(chart.getLegendSide());
 		addGridControl("Legend side", row++, cmbSide, content);
 

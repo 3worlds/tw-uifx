@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -54,8 +56,7 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import au.edu.anu.ymuit.util.CenteredZooming;
-import de.gsi.chart.legend.Legend;
-import de.gsi.chart.legend.spi.DefaultLegend;
+import javafx.geometry.Side;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -70,6 +71,7 @@ import javafx.application.Platform;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -81,7 +83,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -142,7 +144,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private List<Color> colours;
 	private final Map<String, Duple<Integer, Color>> colourMap;
 
-	private GridPane legend;
+	private FlowPane legend;
 
 	private EdgeEffectCorrection eec;
 	private double tickWidth;
@@ -157,7 +159,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		policy = new SimpleWidgetTrackingPolicy();
 		hPointsMap = new HashMap<>();
 		colours = new ArrayList<>();
-		colourMap = new HashMap<>();
+		colourMap = new ConcurrentHashMap<>();
 		lineReferences = new HashSet<>();
 	}
 
@@ -201,7 +203,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-
 	private double getTickWidth() {
 		double mxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
 		double exp = Math.round(Math.log10(mxDim));
@@ -214,6 +215,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
 				boolean refreshLegend = updateData(data);
+				lblTime.setText(timeFormatter.getTimeText(data.time()));
 				drawSpace();
 				if (refreshLegend)
 					updateLegend();
@@ -580,6 +582,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyShowGrid = "showGrid";
 	private static final String keyShowEdgeEffect = "showEdgeEffect";
 	private static final String keyRelLineWidth = "relationLineWidth";
+	private static final String keyLegendVisible = "legendVisible";
+	private static final String keyMaxLegendItems = "maxLegendItems";
+	private static final String keyLegendSide = "legendSide";
 
 	private double relLineWidth;
 	private double spaceCanvasRatio;
@@ -593,6 +598,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private double contrast;
 	private boolean colour64;
 	private boolean showLines;
+	private boolean legendVisible;
+	private int maxLegendItems;
+	private Side legendSide;
 
 	@Override
 	public void putUserPreferences() {
@@ -613,9 +621,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putDouble(widgetId + keyContrast, contrast);
 		Preferences.putBoolean(widgetId + keyColour64, colour64);
 		Preferences.putBoolean(widgetId + keyShowLines, showLines);
+		Preferences.putBoolean(widgetId + keyLegendVisible, legendVisible);
+		Preferences.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
+		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
 	}
 
 	private static final int firstUse = -1;
+
 	// called at END of UI construction because this depends on UI components.
 	@Override
 	public void getUserPreferences() {
@@ -653,18 +665,20 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			colours = ColourContrast.getContrastingColours64(bkgColour, contrast);
 		else
 			colours = ColourContrast.getContrastingColours(bkgColour, contrast);
+		legendVisible = Preferences.getBoolean(widgetId + keyLegendVisible, true);
+		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 10);
+		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
 	}
 
 	// --------------- GUI
+	//private BorderPane ptop, pbottom, pleft, pright;
+	private BorderPane centerContainer;
 
 	@Override
 	public Object getUserInterfaceContainer() {
-//		Label l = new Label("");
-//		l.setText("");
-//		l.setAlignment(Pos.CENTER_LEFT);
-//		l.setContentDisplay(ContentDisplay.LEFT);
-
 		BorderPane container = new BorderPane();
+		centerContainer = new BorderPane();
+		container.setCenter(centerContainer);
 		zoomTarget = new AnchorPane();
 		canvas = new Canvas();
 		canvas.setOnMouseClicked(e -> onMouseClicked(e));
@@ -676,64 +690,98 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		scrollPane.setContent(content);
 		scrollPane.setMinSize(170, 170);
 		CenteredZooming.center(scrollPane, content, group, zoomTarget);
-		container.setCenter(scrollPane);
-		HBox bottom = new HBox();
-		bottom.setSpacing(5);
+		centerContainer.setCenter(scrollPane);
+//		VBox bottom = new VBox();
+//		ptop = new BorderPane();
+//		pbottom = new BorderPane();
+//		pleft = new BorderPane();
+//		pright = new BorderPane();
+
+		HBox statusBar = new HBox();
+		statusBar.setSpacing(5);
 		lblItem = new Label("");
 		lblTime = new Label("");
 
-		bottom.getChildren().addAll(lblTime, new Label("System: "), lblItem);
-		container.setBottom(bottom);
+		statusBar.getChildren().addAll(lblTime, new Label("	"), lblItem);
+//		bottom.getChildren().addAll(statusBar);
+		container.setBottom(statusBar);
 
-		legend = new GridPane();
+		legend = new FlowPane();
 		legend.setHgap(3);
+		legend.setVgap(3);
 
-		container.setRight(legend);
+//		container.setRight(pright);
+//		container.setLeft(pleft);
+//		container.setTop(ptop);
+//		bottom.getChildren().add(pbottom);
 
 		getUserPreferences();
 
+		legend.setVisible(legendVisible);
+		placeLegend();
 		return container;
+	}
+
+	private void placeLegend() {
+		centerContainer.setLeft(null);
+		centerContainer.setRight(null);
+		centerContainer.setTop(null);
+		centerContainer.setBottom(null);
+		if (legendVisible)
+			switch (legendSide) {
+			case TOP: {
+				legend.setOrientation(Orientation.HORIZONTAL);
+				centerContainer.setTop(legend);
+				break;
+			}
+			case BOTTOM: {
+				legend.setOrientation(Orientation.HORIZONTAL);
+				centerContainer.setBottom(legend);
+				break;
+			}
+			case LEFT:{
+				legend.setOrientation(Orientation.VERTICAL);
+				centerContainer.setLeft(legend);
+				break;
+			}
+			default :{
+				legend.setOrientation(Orientation.VERTICAL);
+				centerContainer.setRight(legend);
+			}
+			}
+
 	}
 
 	private void updateLegend() {
 		legend.getChildren().clear();
 		int count = 0;
-		int maxItems = 20;
+
 		for (Map.Entry<String, Duple<Integer, Color>> entry : colourMap.entrySet()) {
 			count++;
-			if (count < maxItems)
+			if (count <= maxLegendItems)
 				addLegendItem(entry.getKey(), entry.getValue().getSecond());
 		}
-		if (count > maxItems) {
+		if (count > maxLegendItems) {
 			int idx = legend.getChildren().size();
-//			legend.getChildren().add(new Label("..."));
-			legend.add(new Label("..."), 1, idx);
+			legend.getChildren().add(new Label("more ..."));
 		}
 	}
 
 	private void addLegendItem(String name, Color colour) {
-		Rectangle rect = new Rectangle();
-		rect.setStroke(bkgColour);
-		rect.setFill(bkgColour);
-		rect.setX(0);
-		rect.setY(0);
-		rect.setWidth(14);
-		rect.setHeight(14);
-
-		int idx = legend.getChildren().size();
-		Circle circle = null;
-		if (!symbolFill)
-			circle = new Circle(0, 0, 4, Color.TRANSPARENT);
-		else
-			circle = new Circle(0, 0, 4, colour);
-		circle.setStroke(colour);
-//		legend.getChildren().add(rect);
-		legend.add(rect, 0, idx);
-//		legend.getChildren().add(circle);
-		legend.add(circle, 0, idx);
-		GridPane.setHalignment(circle, HPos.CENTER);
-		legend.add(new Label(name), 1, idx);
-//		legend.getChildren().add(new Label(name));
+		StackPane stackPane = new StackPane();
+		Rectangle r = new Rectangle(12, 12);
+		r.setStroke(bkgColour);
+		r.setFill(bkgColour);
+		Circle c = null;
+		if (!symbolFill) {
+			c = new Circle(4, Color.TRANSPARENT);
+		} else
+			c = new Circle(4, colour);
+		c.setStroke(colour);
+		stackPane.getChildren().addAll(r, c);
+		StackPane.setAlignment(c, Pos.CENTER);
+		StackPane.setAlignment(r, Pos.CENTER);
+		legend.getChildren().add(new Label(name, stackPane));
 	}
 
 	@Override
@@ -826,6 +874,22 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		tfContrast.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		addGridControl("Contrast (0.0-1.0)", row++, tfContrast, content);
+		// ----
+		CheckBox chbxLegendVisible = new CheckBox("");
+		addGridControl("Legend visible", row++, chbxLegendVisible, content);
+		chbxLegendVisible.setSelected(legendVisible);
+		// ----
+
+		ComboBox<Side> cmbSide = new ComboBox<>();
+		cmbSide.getItems().addAll(Side.values());
+		cmbSide.getSelectionModel().select(legendSide);
+		addGridControl("Legend side", row++, cmbSide, content);
+		
+		Spinner<Integer> spMaxLegendItems = new Spinner<>();
+		spMaxLegendItems.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, maxLegendItems));
+		spMaxLegendItems.setMaxWidth(100);
+		spMaxLegendItems.setEditable(true);
+		addGridControl("Max legend items", row++, spMaxLegendItems, content);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
@@ -851,8 +915,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 			hPointsMap.forEach((k, v) -> {
 				installColour(v.getFirst());
-
 			});
+			legendSide = cmbSide.getValue();
+			legendVisible = chbxLegendVisible.isSelected();
+			maxLegendItems = spMaxLegendItems.getValue();
+			legend.setVisible(legendVisible);
+			placeLegend();
 			drawSpace();
 			updateLegend();
 		}
