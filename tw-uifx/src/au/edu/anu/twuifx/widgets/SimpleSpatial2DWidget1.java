@@ -3,13 +3,13 @@
  *                                                                        *
  *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
- *       ian.davies@anu.edu.au                                            * 
+ *       ian.davies@anu.edu.au                                            *
  *                                                                        *
  *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
  *  This is to separate concerns of UI implementation and the code for    *
  *  these java programs.                                                  *
  *                                                                        *
- **************************************************************************                                       
+ **************************************************************************
  *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
  *                                                                        *
  *  TW-UIFX is free software: you can redistribute it and/or modify       *
@@ -20,7 +20,7 @@
  *  TW-UIFX is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *  GNU General Public License for more details.                          *                         
+ *  GNU General Public License for more details.                          *
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
  *  along with TW-UIFX.                                                   *
@@ -115,14 +115,14 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  * @author Ian Davies
  *
  * @date 12 Feb 2020
- * 
+ *
  *       Widget to show spatial map of objects and their relations.
- * 
+ *
  *       Tried to smooth output with blocking queues and schedule timer but
  *       becomes uncoordinated when reset. We could clear() the queue on reset
  *       but we loose data. I think the immediacy of output more closely
  *       following the simulator gives a more intuitive feel.
- * 
+ *
  */
 public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
 	private AnchorPane zoomTarget;
@@ -230,7 +230,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private boolean updateData(SpaceData data) {
 		boolean updateLegend = false;
-		
+
 		int cp = hPointsMap.size();
 		int dp = data.pointsToDelete().size();
 		int ap = data.pointsToCreate().size();
@@ -270,9 +270,19 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 //		System.out.print("Lines: " + cl + "-" + dl + "+" + al + "=");
 		int tl = cl - dl + al;
 		// add lines
-		lineReferences.addAll(data.linesToCreate());
+		lineReferences.addAll(data.linesToCreate()); // ConcurrentModificationException here ????
 		// remove lines
 		lineReferences.removeAll(data.linesToDelete());
+		// IMPORTANT: remove line entries which end or start nodes have been removed just above
+		Iterator<Duple<DataLabel,DataLabel>> itline = lineReferences.iterator();
+		while (itline.hasNext()) {
+			Duple<DataLabel,DataLabel> line = itline.next();
+			if (!hPointsMap.containsKey(line.getFirst().toString()) ||
+				!hPointsMap.containsKey(line.getSecond().toString())) {
+				itline.remove();
+				tl--;
+			}
+		}
 		if (lineReferences.size() != tl) {
 			System.out.println("Line accounting does not add up. Some lines listed for deletion were not found!");
 			System.out.println("Lines: " + cl + "-" + dl + "+" + al + "=" + lineReferences.size());
