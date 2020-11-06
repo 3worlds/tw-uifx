@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -210,32 +211,43 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mx / 10;
 	}
 
+	private void callDrawSpace(boolean refreshLegend) {
+		drawSpace();
+		if (refreshLegend)
+			updateLegend();
+	}
+
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
 			Platform.runLater(() -> {
 				boolean refreshLegend = updateData(data);
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
-				drawSpace();
-				if (refreshLegend)
-					updateLegend();
+				callDrawSpace(refreshLegend);
 			});
 		}
 	}
 
-	private synchronized boolean updateData(final SpaceData data) {
+	private boolean updateData(SpaceData data) {
 		boolean updateLegend = false;
+		
+		int cp = hPointsMap.size();
+		int dp = data.pointsToDelete().size();
+		int ap = data.pointsToCreate().size();
+		int mp = data.pointsToMove().size();
+		int tp = cp - dp + ap;
 		// delete points in the point list
 		for (DataLabel lab : data.pointsToDelete()) {
 			hPointsMap.remove(lab.toString());
 			updateLegend = updateLegend || uninstallColour(lab);
 		}
-		// add new points in the point list
+
+		// add points
 		for (DataLabel lab : data.pointsToCreate().keySet()) {
 			Duple<DataLabel, double[]> value = new Duple<>(lab, data.pointsToCreate().get(lab));
 			// NB it would be an error if the lab was found in the list before
 			if (hPointsMap.put(lab.toString(), value) != null)
-				log.warning("Point to create " + lab + " already present in space widget list");
+				System.out.println("Point to create " + lab + " already present in hPointMap");
 			updateLegend = updateLegend || installColour(lab);
 		}
 		// move points in the point list
@@ -246,20 +258,26 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				log.warning("Point to move " + lab + " absent from space widget list");
 			updateLegend = updateLegend || installColour(lab);
 		}
-		// add new lines to create
-		if (!data.linesToCreate().isEmpty())
-			lineReferences.addAll(data.linesToCreate());
-		// remove lines
-		if (!data.linesToDelete().isEmpty())
-			lineReferences.removeAll(data.linesToDelete());
-		// remove old lines for which end points were just removed
-		Iterator<Duple<DataLabel, DataLabel>> itline = lineReferences.iterator();
-		while (itline.hasNext()) {
-			Duple<DataLabel, DataLabel> line = itline.next();
-			if (!hPointsMap.containsKey(line.getFirst().toString())
-					|| !hPointsMap.containsKey(line.getSecond().toString()))
-				itline.remove();
+		if (tp != hPointsMap.size()) {
+			System.out.println("Points accounting does not add up.");
+			System.out.println("Point: " + cp + "-" + dp + "+" + ap + "=" + hPointsMap.size());
+			System.out.println("Moved points: "+mp);
 		}
+
+		int cl = lineReferences.size();
+		int dl = data.linesToDelete().size();
+		int al = data.linesToCreate().size();
+//		System.out.print("Lines: " + cl + "-" + dl + "+" + al + "=");
+		int tl = cl - dl + al;
+		// add lines
+		lineReferences.addAll(data.linesToCreate());
+		// remove lines
+		lineReferences.removeAll(data.linesToDelete());
+		if (lineReferences.size() != tl) {
+			System.out.println("Line accounting does not add up. Some lines listed for deletion were not found!");
+			System.out.println("Lines: " + cl + "-" + dl + "+" + al + "=" + lineReferences.size());
+		}
+
 		return updateLegend;
 	}
 
@@ -303,7 +321,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	public void onStatusMessage(State state) {
 		log.info(state.toString());
 		if (isSimulatorState(state, waiting)) {
-			// could clear the queue here
+//			System.out.println("Clearing the buffer of current points and lines");
+			/**
+			 * Watch out! if reading of dataMsg is not posted to the UI thread (i.e.
+			 * Platform.runLater(...)), this proc will be called AFTER initial data is
+			 * received and therefore the initial data will be cleared.
+			 */
 			hPointsMap.clear();
 			lineReferences.clear();
 			colourMap.clear();
@@ -328,21 +351,24 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				Duple<DataLabel, double[]> sEntry = hPointsMap.get(sKey);
 				Duple<DataLabel, double[]> eEntry = hPointsMap.get(eKey);
 				if (sEntry == null)
-					throw new TwuifxException("Line error. Start point not found " + sKey);
+					System.out.println("Line error. Start point not found " + sKey);
+//					throw new TwuifxException("Line error. Start point not found " + sKey);
 				if (eEntry == null)
-					throw new TwuifxException("Line error. End point not found " + eKey);
-
-				double[] start = sEntry.getSecond();
-				double[] end = eEntry.getSecond();
-				if (eec == null) {
-					drawALine(gc, start[0], start[1], end[0], end[1]);
-				} else if (eec.equals(EdgeEffectCorrection.periodic))
-					drawPeriodicLines(gc, start, end);
-				else if (eec.equals(EdgeEffectCorrection.tubular)) {
-					// assume first dim means 'x'
-					drawTubularLines(gc, start, end);
-				} else {
-					drawALine(gc, start[0], start[1], end[0], end[1]);
+					System.out.println("Line error. End point not found " + eKey);
+//					throw new TwuifxException("Line error. End point not found " + eKey);
+				if (!(sEntry == null || eEntry == null)) {
+					double[] start = sEntry.getSecond();
+					double[] end = eEntry.getSecond();
+					if (eec == null) {
+						drawALine(gc, start[0], start[1], end[0], end[1]);
+					} else if (eec.equals(EdgeEffectCorrection.periodic))
+						drawPeriodicLines(gc, start, end);
+					else if (eec.equals(EdgeEffectCorrection.tubular)) {
+						// assume first dim means 'x'
+						drawTubularLines(gc, start, end);
+					} else {
+						drawALine(gc, start[0], start[1], end[0], end[1]);
+					}
 				}
 			}
 		}
@@ -671,7 +697,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	}
 
 	// --------------- GUI
-	//private BorderPane ptop, pbottom, pleft, pright;
+	// private BorderPane ptop, pbottom, pleft, pright;
 	private BorderPane centerContainer;
 
 	@Override
@@ -739,12 +765,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				centerContainer.setBottom(legend);
 				break;
 			}
-			case LEFT:{
+			case LEFT: {
 				legend.setOrientation(Orientation.VERTICAL);
 				centerContainer.setLeft(legend);
 				break;
 			}
-			default :{
+			default: {
 				legend.setOrientation(Orientation.VERTICAL);
 				centerContainer.setRight(legend);
 			}
@@ -884,7 +910,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		cmbSide.getItems().addAll(Side.values());
 		cmbSide.getSelectionModel().select(legendSide);
 		addGridControl("Legend side", row++, cmbSide, content);
-		
+
 		Spinner<Integer> spMaxLegendItems = new Spinner<>();
 		spMaxLegendItems.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, maxLegendItems));
 		spMaxLegendItems.setMaxWidth(100);
