@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -158,9 +159,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		super(statusSender, DataMessageTypes.SPACE);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
-		hPointsMap = new HashMap<>();
+		hPointsMap = new ConcurrentHashMap<>();
 		colours = new ArrayList<>();
 		colourMap = new ConcurrentHashMap<>();
+//		lineReferences = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>,Boolean>());
 		lineReferences = new HashSet<>();
 	}
 
@@ -211,7 +213,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mx / 10;
 	}
 
-	private void callDrawSpace(boolean refreshLegend) {
+	private synchronized void callDrawSpace(boolean refreshLegend) {
 		drawSpace();
 		if (refreshLegend)
 			updateLegend();
@@ -220,9 +222,21 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
+			SpaceData spaceData = data.clone();
+
 			Platform.runLater(() -> {
-				boolean refreshLegend = updateData(data);
-				lblTime.setText(timeFormatter.getTimeText(data.time()));
+				/**
+				 * Here updateData() MUST be called within the UI thread. This is because,
+				 * although the proc does not call ui controls, when instantiating the
+				 * simulator, initailisation msgs are sent before entering the WAIT state and
+				 * the WAIT state is the only place where the stored data can be cleared. So
+				 * it's a pre/post process problem. The only way to avoid this is to place
+				 * updateData() in the ui thread so it is run, as it turns out, AFTER entering
+				 * the WAIT state so the initial state is not lost.
+				 */
+//				System.out.println("Time: " + data.time());
+				boolean refreshLegend = updateData(spaceData);
+				lblTime.setText(timeFormatter.getTimeText(spaceData.time()));
 				callDrawSpace(refreshLegend);
 			});
 		}
@@ -230,7 +244,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private boolean updateData(SpaceData data) {
 		boolean updateLegend = false;
-
+		// Update points
 		int cp = hPointsMap.size();
 		int dp = data.pointsToDelete().size();
 		int ap = data.pointsToCreate().size();
@@ -244,49 +258,73 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		// add points
 		for (DataLabel lab : data.pointsToCreate().keySet()) {
-			Duple<DataLabel, double[]> value = new Duple<>(lab, data.pointsToCreate().get(lab));
-			// NB it would be an error if the lab was found in the list before
-			if (hPointsMap.put(lab.toString(), value) != null)
-				System.out.println("Point to create " + lab + " already present in hPointMap");
+			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToCreate().get(lab));
+			// It's an error if the lab IS found in the list before
+			if (hPointsMap.put(lab.toString(), newValue) != null)
+				throw new TwuifxException("Attempt to add an already existing point. [" + lab + "]");
 			updateLegend = updateLegend || installColour(lab);
 		}
 		// move points in the point list
 		for (DataLabel lab : data.pointsToMove().keySet()) {
-			Duple<DataLabel, double[]> value = new Duple<>(lab, data.pointsToMove().get(lab));
-			// replaces previous value of coordinates for this lab - OK
-			if (hPointsMap.put(lab.toString(), value) == null)
-				log.warning("Point to move " + lab + " absent from space widget list");
+			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToMove().get(lab));
+			// It's an error if the lab is NOT in the list
+			if (hPointsMap.put(lab.toString(), newValue) == null)
+				throw new TwuifxException("Attempt to move a non-existing point. [" + lab + "]");
 			updateLegend = updateLegend || installColour(lab);
 		}
-		if (tp != hPointsMap.size()) {
-			System.out.println("Points accounting does not add up.");
-			System.out.println("Point: " + cp + "-" + dp + "+" + ap + "=" + hPointsMap.size());
-			System.out.println("Moved points: "+mp);
+//		if (tp != hPointsMap.size())
+//			throw new TwuifxException(
+//					"Points accounting does not add up. [" + cp + "-" + dp + "+" + ap + "=" + hPointsMap.size() + "]");
+
+		// update lines
+		int cl = lineReferences.size();
+		int dl = 0;
+		int al = 0;
+
+//		java.util.ConcurrentModificationException:  occurs on the second message of the same time step 
+//		You can't ask the hashcode because this call entails a loop through all entries which will cause a concurrent error.
+		for (Duple<DataLabel, DataLabel> line : data.linesToCreate()) {
+			boolean added = lineReferences.add(line);
+			if (!added) {
+				throw new TwuifxException("Attempt to add already existing line. [" + line + "]");
+			} else
+				al++;
 		}
 
-		int cl = lineReferences.size();
-		int dl = data.linesToDelete().size();
-		int al = data.linesToCreate().size();
-//		System.out.print("Lines: " + cl + "-" + dl + "+" + al + "=");
-		int tl = cl - dl + al;
-		// add lines
-		lineReferences.addAll(data.linesToCreate()); // ConcurrentModificationException here ????
 		// remove lines
-		lineReferences.removeAll(data.linesToDelete());
-		// IMPORTANT: remove line entries which end or start nodes have been removed just above
-		Iterator<Duple<DataLabel,DataLabel>> itline = lineReferences.iterator();
+		for (Duple<DataLabel, DataLabel> line : data.linesToDelete()) {
+			boolean removed = lineReferences.remove(line);
+			if (!removed) {
+//				throw new TwuifxException("Attempt to delete a non-existing line. [" + line+"]");
+//				System.out.println("Attempt to delete a non-existing line. [" + line+"]");
+			} else
+				dl++;
+		}
+
+		// IMPORTANT (JG): remove line entries which end or start nodes have been
+		// removed just above.
+		int nDeleted = 0;
+		Iterator<Duple<DataLabel, DataLabel>> itline = lineReferences.iterator();
 		while (itline.hasNext()) {
-			Duple<DataLabel,DataLabel> line = itline.next();
-			if (!hPointsMap.containsKey(line.getFirst().toString()) ||
-				!hPointsMap.containsKey(line.getSecond().toString())) {
+			Duple<DataLabel, DataLabel> line = itline.next();
+			if (!hPointsMap.containsKey(line.getFirst().toString())
+					|| !hPointsMap.containsKey(line.getSecond().toString())) {
 				itline.remove();
-				tl--;
+				dl++;
+				nDeleted++;
 			}
 		}
-		if (lineReferences.size() != tl) {
-			System.out.println("Line accounting does not add up. Some lines listed for deletion were not found!");
-			System.out.println("Lines: " + cl + "-" + dl + "+" + al + "=" + lineReferences.size());
-		}
+		//if (nDeleted>0)
+//		System.out.println("-----Time: "+data.time()+" ----");
+//		System.out.println("Lines Add: "+al);
+//		System.out.println("Lines Del: "+dl);
+//		System.out.println("Lines Del "+nDeleted+" (no ref)");
+		
+			
+//		int tl = cl - dl + al;
+//		if (lineReferences.size() != tl)
+//			throw new TwuifxException("Line accounting does not add up. [" + cl + "-" + dl + "+" + al + "="
+//					+ lineReferences.size() + "]");
 
 		return updateLegend;
 	}
@@ -331,15 +369,23 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	public void onStatusMessage(State state) {
 		log.info(state.toString());
 		if (isSimulatorState(state, waiting)) {
-//			System.out.println("Clearing the buffer of current points and lines");
 			/**
 			 * Watch out! if reading of dataMsg is not posted to the UI thread (i.e.
 			 * Platform.runLater(...)), this proc will be called AFTER initial data is
 			 * received and therefore the initial data will be cleared.
+			 * 
+			 * This will happen only when the simulator sends onDataMessages after
+			 * initialisation but before starting the simulation. It would be better if this
+			 * practice was not allowed. (ID)
+			 * 
+			 * 
 			 */
-			hPointsMap.clear();
+
+//			System.out.println("CLEARING Stored data in widget");
+			hPointsMap.clear();// This is a concurrentHashMap so it will block while still being written to 
 			lineReferences.clear();
 			colourMap.clear();
+
 		}
 	}
 
@@ -361,24 +407,20 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				Duple<DataLabel, double[]> sEntry = hPointsMap.get(sKey);
 				Duple<DataLabel, double[]> eEntry = hPointsMap.get(eKey);
 				if (sEntry == null)
-					System.out.println("Line error. Start point not found " + sKey);
-//					throw new TwuifxException("Line error. Start point not found " + sKey);
+					throw new TwuifxException("Line error. Start point not found " + sKey);
 				if (eEntry == null)
-					System.out.println("Line error. End point not found " + eKey);
-//					throw new TwuifxException("Line error. End point not found " + eKey);
-				if (!(sEntry == null || eEntry == null)) {
-					double[] start = sEntry.getSecond();
-					double[] end = eEntry.getSecond();
-					if (eec == null) {
-						drawALine(gc, start[0], start[1], end[0], end[1]);
-					} else if (eec.equals(EdgeEffectCorrection.periodic))
-						drawPeriodicLines(gc, start, end);
-					else if (eec.equals(EdgeEffectCorrection.tubular)) {
-						// assume first dim means 'x'
-						drawTubularLines(gc, start, end);
-					} else {
-						drawALine(gc, start[0], start[1], end[0], end[1]);
-					}
+					throw new TwuifxException("Line error. End point not found " + eKey);
+				double[] start = sEntry.getSecond();
+				double[] end = eEntry.getSecond();
+				if (eec == null) {
+					drawLine(gc, start[0], start[1], end[0], end[1]);
+				} else if (eec.equals(EdgeEffectCorrection.periodic))
+					drawPeriodicLines(gc, start, end);
+				else if (eec.equals(EdgeEffectCorrection.tubular)) {
+					// assume first dim means 'x'
+					drawTubularLines(gc, start, end);
+				} else {
+					drawLine(gc, start[0], start[1], end[0], end[1]);
 				}
 			}
 		}
@@ -422,10 +464,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double m = (right[1] - left[1]) / (newx - right[0]);
 			double b = right[1] - (m * right[0]);
 			double yintercept = (m * spaceBounds.getMaxX()) + b;
-			drawALine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
-			drawALine(gc, 0.0, yintercept, left[0], left[1]);
+			drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
+			drawLine(gc, 0.0, yintercept, left[0], left[1]);
 		} else {
-			drawALine(gc, p1[0], p1[1], p2[0], p2[1]);
+			drawLine(gc, p1[0], p1[1], p2[0], p2[1]);
 		}
 	}
 
@@ -457,21 +499,21 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 			if (quad == 3) {// right
 				double yintercept = (m * spaceBounds.getMaxX()) + b;
-				drawALine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
-				drawALine(gc, 0.0, yintercept, left[0], left[1]);
+				drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
+				drawLine(gc, 0.0, yintercept, left[0], left[1]);
 			} else if (quad == 1) {// top
 				double xintercept = (spaceBounds.getMaxY() - b) / m;
 				if (Double.isNaN(xintercept)) // vertical line
 					xintercept = left[0];
 				if (Double.isInfinite(m)) {// exactly vertical
-					drawALine(gc, left[0], Math.max(right[1], left[1]), left[0], spaceBounds.getMaxY());
-					drawALine(gc, left[0], 0.0, left[0], Math.min(right[1], left[1]));
+					drawLine(gc, left[0], Math.max(right[1], left[1]), left[0], spaceBounds.getMaxY());
+					drawLine(gc, left[0], 0.0, left[0], Math.min(right[1], left[1]));
 				} else if (m < 0) {// slope to the left
-					drawALine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY());
-					drawALine(gc, xintercept, 0.0, left[0], left[1]);
+					drawLine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY());
+					drawLine(gc, xintercept, 0.0, left[0], left[1]);
 				} else if (m > 0) {// slope to the right
-					drawALine(gc, left[0], left[1], xintercept, spaceBounds.getMaxY());
-					drawALine(gc, xintercept, 0.0, right[0], right[1]);
+					drawLine(gc, left[0], left[1], xintercept, spaceBounds.getMaxY());
+					drawLine(gc, xintercept, 0.0, right[0], right[1]);
 				}
 
 			} else if (quad == 5) { // bottom
@@ -484,25 +526,25 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 					low = right;
 					high = left;
 				}
-				drawALine(gc, low[0], low[1], xintercept, 0.0);
-				drawALine(gc, xintercept, spaceBounds.getMaxY(), high[0], high[1]);
+				drawLine(gc, low[0], low[1], xintercept, 0.0);
+				drawLine(gc, xintercept, spaceBounds.getMaxY(), high[0], high[1]);
 			} else if (quad == 2) { // top right
 				double yintercept = (m * spaceBounds.getMaxX()) + b;
 				double xintercept = (spaceBounds.getMaxY() - b) / m;
 				double xd2 = getD2(right[0], right[1], xintercept, spaceBounds.getMaxY());
 				double yd2 = getD2(right[0], right[1], spaceBounds.getMaxX(), yintercept);
 				if (xd2 < yd2) { // cross the x-axis first
-					drawALine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY());
-					drawALine(gc, xintercept, 0.0, spaceBounds.getMaxX(), (yintercept - spaceBounds.getMaxY()));
-					drawALine(gc, 0.0, (yintercept - spaceBounds.getMaxY()), left[0], left[1]);
+					drawLine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY());
+					drawLine(gc, xintercept, 0.0, spaceBounds.getMaxX(), (yintercept - spaceBounds.getMaxY()));
+					drawLine(gc, 0.0, (yintercept - spaceBounds.getMaxY()), left[0], left[1]);
 				} else { // cross at y-axis first
-					drawALine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY());
-					drawALine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY());
-					drawALine(gc, (xintercept - spaceBounds.getMaxX()), 0.0, left[0], left[1]);
+					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY());
+					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY());
+					drawLine(gc, (xintercept - spaceBounds.getMaxX()), 0.0, left[0], left[1]);
 				}
 			}
 		} else {
-			drawALine(gc, p1[0], p1[1], p2[0], p2[1]);
+			drawLine(gc, p1[0], p1[1], p2[0], p2[1]);
 		}
 	}
 
@@ -529,7 +571,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return -1;
 	}
 
-	private void drawALine(GraphicsContext gc, double x1, double y1, double x2, double y2) {
+	private void drawLine(GraphicsContext gc, double x1, double y1, double x2, double y2) {
 		Point2D start = scaleToCanvas(x1, y1);
 		Point2D end = scaleToCanvas(x2, y2);
 		gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
