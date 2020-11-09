@@ -222,7 +222,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-			SpaceData spaceData = data.clone();
+//			SpaceData spaceData = data.clone();
+			SpaceData spaceData = data;
 
 			Platform.runLater(() -> {
 				/**
@@ -281,7 +282,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		int dl = 0;
 		int al = 0;
 
-//		java.util.ConcurrentModificationException:  occurs on the second message of the same time step 
+//		java.util.ConcurrentModificationException:  occurs on the second message of the same time step
 //		You can't ask the hashcode because this call entails a loop through all entries which will cause a concurrent error.
 		for (Duple<DataLabel, DataLabel> line : data.linesToCreate()) {
 			boolean added = lineReferences.add(line);
@@ -303,7 +304,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		// IMPORTANT (JG): remove line entries which end or start nodes have been
 		// removed just above.
-		int nDeleted = 0;
+//		int nDeleted = 0;
 		Iterator<Duple<DataLabel, DataLabel>> itline = lineReferences.iterator();
 		while (itline.hasNext()) {
 			Duple<DataLabel, DataLabel> line = itline.next();
@@ -311,7 +312,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 					|| !hPointsMap.containsKey(line.getSecond().toString())) {
 				itline.remove();
 				dl++;
-				nDeleted++;
+//				nDeleted++;
 			}
 		}
 		//if (nDeleted>0)
@@ -319,8 +320,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 //		System.out.println("Lines Add: "+al);
 //		System.out.println("Lines Del: "+dl);
 //		System.out.println("Lines Del "+nDeleted+" (no ref)");
-		
-			
+
+
 //		int tl = cl - dl + al;
 //		if (lineReferences.size() != tl)
 //			throw new TwuifxException("Line accounting does not add up. [" + cl + "-" + dl + "+" + al + "="
@@ -373,16 +374,16 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			 * Watch out! if reading of dataMsg is not posted to the UI thread (i.e.
 			 * Platform.runLater(...)), this proc will be called AFTER initial data is
 			 * received and therefore the initial data will be cleared.
-			 * 
+			 *
 			 * This will happen only when the simulator sends onDataMessages after
 			 * initialisation but before starting the simulation. It would be better if this
 			 * practice was not allowed. (ID)
-			 * 
-			 * 
+			 *
+			 *
 			 */
 
 //			System.out.println("CLEARING Stored data in widget");
-			hPointsMap.clear();// This is a concurrentHashMap so it will block while still being written to 
+			hPointsMap.clear();// This is a concurrentHashMap so it will block while still being written to
 			lineReferences.clear();
 			colourMap.clear();
 
