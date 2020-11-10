@@ -1,0 +1,214 @@
+treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
+
+	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+// TREE
+3worlds TestRelations
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	built-by = java.lang.String(gignoux (10 nov. 2020))
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	precis = java.lang.String()
+	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	version = java.lang.String()
+	predefined *categories*
+		categorySet *organisation*
+			category *assemblage*
+			category *atomic*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *systemElements*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
+	dataDefinition dDef
+		record loc
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(loc)
+			field y
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field x
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record recA
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(recA)
+			field xA
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record recB
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(recB)
+			field xB
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	system sys1
+		dynamics sim1
+			timeline tmLn1
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timer clock1
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
+					process procA
+						function FuncA
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.FuncA)
+							snippet snpt3
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.xA = sqrt(t);"))
+					process procB
+						function RepB
+							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.sys1.RepB)
+						function MorB
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.sys1.MorB)
+					process procAA
+						function RelAA
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.RelAA)
+							snippet snpt2
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return true;"))
+					process procAB
+						function RelAB
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.RelAB)
+							snippet snpt1
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if (round(t)==2) {","			return true;","		}","		return false;"))
+			stoppingCondition stop
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(10)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+		structure struc1
+			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
+			categorySet set1
+				category A
+				category B
+			space space1
+				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
+				guardAreaWidth = java.lang.Double(0.0)
+				observationWindow = fr.cnrs.iees.uit.space.BoxImpl([[0.0,0.0],[0.0,0.0]])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+				units = java.lang.String(lightyears)
+				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,3.0])
+				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,3.0])
+			componentType cpB
+				constantClass = java.lang.String(code.sys1.Loc)
+				driverClass = java.lang.String(code.sys1.RecB)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+				mobile = java.lang.Boolean(false)
+				component B2
+					nInstances = java.lang.Integer(0)
+				component B1
+					nInstances = java.lang.Integer(0)
+			componentType cpA
+				constantClass = java.lang.String(code.sys1.Loc)
+				driverClass = java.lang.String(code.sys1.RecA)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+				mobile = java.lang.Boolean(false)
+				component A2
+					nInstances = java.lang.Integer(0)
+				component A1
+					nInstances = java.lang.Integer(0)
+			relationType AB
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+			relationType AA
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+	userInterface gui
+		top top
+			widget wgt1
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget map
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+
+// CROSS-LINKS
+[component:A1] location loc1 [space:space1]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,1.0))
+[component:A2] location loc2 [space:space1]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,2.0))
+[relationType:AA] fromCategory from1 [category:A]
+[relationType:AA] toCategory to1 [category:A]
+[relationType:AB] toCategory to2 [category:B]
+[relationType:AB] fromCategory from2 [category:A]
+[component:B1] location loc3 [space:space1]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.0,1.0))
+[component:B2] location loc4 [space:space1]
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.0,2.0))
+[system:sys1] belongsTo bt11 [category:*permanent*]
+[system:sys1] belongsTo bt10 [category:*assemblage*]
+[system:sys1] belongsTo bt9 [category:*arena*]
+[widget:wgt1] trackTime trks2 [dynamics:sim1]
+[category:A] constants cnsts2 [record:loc]
+[category:A] drivers drvs1 [record:recA]
+[category:B] constants cnsts1 [record:loc]
+[category:B] drivers drvs2 [record:recB]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[widget:map] trackSpace trks1 [space:space1]
+[process:procAB] appliesTo aplyTo5 [relationType:AB]
+[process:procAB] inSpace in1 [space:space1]
+	searchRadius = java.lang.Double(10.0)
+[process:procAA] appliesTo aplyTo4 [relationType:AA]
+[process:procB] appliesTo aplyTo3 [category:B]
+[process:procA] appliesTo aplyTo1 [category:A]
+[componentType:cpB] belongsTo bt3 [category:B]
+[componentType:cpB] belongsTo bt7 [category:*component*]
+[componentType:cpB] belongsTo bt6 [category:*atomic*]
+[componentType:cpB] belongsTo bt8 [category:*permanent*]
+[componentType:cpA] belongsTo bt2 [category:*component*]
+[componentType:cpA] belongsTo bt1 [category:A]
+[componentType:cpA] belongsTo bt5 [category:*atomic*]
+[componentType:cpA] belongsTo bt4 [category:*ephemeral*]
