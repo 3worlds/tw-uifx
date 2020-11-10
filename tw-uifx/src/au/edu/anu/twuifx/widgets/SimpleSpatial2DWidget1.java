@@ -162,7 +162,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		hPointsMap = new ConcurrentHashMap<>();
 		colours = new ArrayList<>();
 		colourMap = new ConcurrentHashMap<>();
-		lineReferences = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>,Boolean>());
+		lineReferences = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>, Boolean>());
 //		lineReferences = new HashSet<>();
 	}
 
@@ -241,90 +241,90 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-	private boolean updateData(SpaceData data) {
+	// This may be inconsistent if not synchronized - at least on reset
+	private synchronized boolean updateData(SpaceData data) {
 		boolean updateLegend = false;
 		// Update points
-		int cp = hPointsMap.size();
-		int dp = data.pointsToDelete().size();
-		int ap = data.pointsToCreate().size();
-		int mp = data.pointsToMove().size();
-		int tp = cp - dp + ap;
 		// delete points in the point list
+		int pc = hPointsMap.size();
+		int pd = 0;
 		for (DataLabel lab : data.pointsToDelete()) {
-			hPointsMap.remove(lab.toString());
-			updateLegend = updateLegend || uninstallColour(lab);
+			// It's an error if the lab is NOT found in the list before
+			if (hPointsMap.remove(lab.toString()) == null)
+				;// throw new TwuifxException("Attempt to delete non-existing point. [" + lab +
+					// "]"); - happens often.
+			else {
+				pd++;
+				updateLegend = updateLegend || uninstallColour(lab);
+			}
 		}
 
 		// add points
+		int pa = 0;
 		for (DataLabel lab : data.pointsToCreate().keySet()) {
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToCreate().get(lab));
 			// It's an error if the lab IS found in the list before
 			if (hPointsMap.put(lab.toString(), newValue) != null)
 				throw new TwuifxException("Attempt to add an already existing point. [" + lab + "]");
+			pa++;
 			updateLegend = updateLegend || installColour(lab);
 		}
 		// move points in the point list
+		int pm = 0;
 		for (DataLabel lab : data.pointsToMove().keySet()) {
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToMove().get(lab));
 			// It's an error if the lab is NOT in the list
 			if (hPointsMap.put(lab.toString(), newValue) == null)
 				throw new TwuifxException("Attempt to move a non-existing point. [" + lab + "]");
+			pm++;
 			updateLegend = updateLegend || installColour(lab);
 		}
-//		if (tp != hPointsMap.size())
-//			throw new TwuifxException(
-//					"Points accounting does not add up. [" + cp + "-" + dp + "+" + ap + "=" + hPointsMap.size() + "]");
 
+		int pu = hPointsMap.size();
+		if (pu!=(pc-pd+pa))
+			System.out.println("Points don't add up");
 		// update lines
-		int cl = lineReferences.size();
-		int dl = 0;
-		int al = 0;
-
-//		java.util.ConcurrentModificationException:  occurs on the second message of the same time step
-//		You can't ask the hashcode because this call entails a loop through all entries which will cause a concurrent error.
+		//synchronized(this){
+		int lc = lineReferences.size();
+		int la = 0;
 		for (Duple<DataLabel, DataLabel> line : data.linesToCreate()) {
 			boolean added = lineReferences.add(line);
 			if (!added) {
 				throw new TwuifxException("Attempt to add already existing line. [" + line + "]");
 			} else
-				al++;
+				la++;
 		}
 
 		// remove lines
+		int ld = 0;
 		for (Duple<DataLabel, DataLabel> line : data.linesToDelete()) {
 			boolean removed = lineReferences.remove(line);
 			if (!removed) {
 //				throw new TwuifxException("Attempt to delete a non-existing line. [" + line+"]");
 //				System.out.println("Attempt to delete a non-existing line. [" + line+"]");
 			} else
-				dl++;
+				ld++;
 		}
 
 		// IMPORTANT (JG): remove line entries which end or start nodes have been
 		// removed just above.
-//		int nDeleted = 0;
+		
+		int ldnr = 0;
 		Iterator<Duple<DataLabel, DataLabel>> itline = lineReferences.iterator();
 		while (itline.hasNext()) {
 			Duple<DataLabel, DataLabel> line = itline.next();
 			if (!hPointsMap.containsKey(line.getFirst().toString())
 					|| !hPointsMap.containsKey(line.getSecond().toString())) {
 				itline.remove();
-				dl++;
-//				nDeleted++;
+				ldnr++;
 			}
 		}
-		//if (nDeleted>0)
-//		System.out.println("-----Time: "+data.time()+" ----");
-//		System.out.println("Lines Add: "+al);
-//		System.out.println("Lines Del: "+dl);
-//		System.out.println("Lines Del "+nDeleted+" (no ref)");
 
-
-//		int tl = cl - dl + al;
-//		if (lineReferences.size() != tl)
-//			throw new TwuifxException("Line accounting does not add up. [" + cl + "-" + dl + "+" + al + "="
-//					+ lineReferences.size() + "]");
-
+		// This will fail on reset unless synchronized
+		int lu = lineReferences.size();
+		if (lu!=(lc-(ld+ldnr)+la))
+			System.out.println("Lines don't add up");
+		
 		return updateLegend;
 	}
 
