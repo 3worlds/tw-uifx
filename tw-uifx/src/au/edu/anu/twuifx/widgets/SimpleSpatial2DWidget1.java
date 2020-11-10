@@ -162,8 +162,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		hPointsMap = new ConcurrentHashMap<>();
 		colours = new ArrayList<>();
 		colourMap = new ConcurrentHashMap<>();
-//		lineReferences = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>,Boolean>());
-		lineReferences = new HashSet<>();
+		lineReferences = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>,Boolean>());
+//		lineReferences = new HashSet<>();
 	}
 
 	@Override
@@ -222,8 +222,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-//			SpaceData spaceData = data.clone();
-			SpaceData spaceData = data;
 
 			Platform.runLater(() -> {
 				/**
@@ -235,9 +233,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				 * updateData() in the ui thread so it is run, as it turns out, AFTER entering
 				 * the WAIT state so the initial state is not lost.
 				 */
-//				System.out.println("Time: " + data.time());
-				boolean refreshLegend = updateData(spaceData);
-				lblTime.setText(timeFormatter.getTimeText(spaceData.time()));
+				System.out.println("Time: " + data.time());
+				boolean refreshLegend = updateData(data);
+				lblTime.setText(timeFormatter.getTimeText(data.time()));
 				callDrawSpace(refreshLegend);
 			});
 		}
