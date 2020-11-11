@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.modelLibrary;
 
 import au.edu.anu.twuifx.modelLibrary.templates.TemplatesDummy;
 import au.edu.anu.twuifx.modelLibrary.tutorials.TutorialsDummy;
+//import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -40,23 +41,35 @@ import fr.cnrs.iees.graph.io.GraphImporter;
  * A lookup enum for entries in ModelMaker "New" menu. Display order is the
  * declaration order in this enum. Entries are grouped as either a Template,
  * Tutorial or Model with utg files placed in the appropriate package.
+ * 
+ * This whole system can be moved to TW-APPS.
+ */
+/**
+ * @author Ian Davies
+ *
+ * @date 11 Nov. 2020
  */
 public enum LibraryTable {
-	/*-			   Menu name,		|     File name,	|         category,          |  package file assocation */
-	Template1(/**/"1 Blank", /*          */"Blank.utg", /*        */LibraryType.Template, TemplatesDummy.class), //
-	Template2(/**/"2 SimpleClock", /*    */"SimpleClock_1.utg", /**/LibraryType.Template, TemplatesDummy.class), //
+	/*-				Menu name,	|			File name,	|				category,	|		package file association */
+	Template1(/**/"1 Blank", /*			*/"Blank.utg", /*			*/LibraryType.Template, TemplatesDummy.class), //
+	Template2(/**/"2 SimpleClock", /*	*/"SimpleClock_1.utg", /*	*/LibraryType.Template, TemplatesDummy.class), //
 	//
-	Tut1(/*     */"1 Logistic", /*     */"Logistic_1.utg", /*     */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut2(/*     */"2 LotkaVolterra", /**/"LotkaVolterra_1.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut3(/*     */"3 I.D.H.(clock)", /**/"IdhClock.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	//Tut6(/*     */"4 I.D.H.", /*	   */"Idh_2.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut4(/*     */"4 I.D.H.(event)", /**/"IdhEvent.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut5(/*     */"5 Panmixia", /*	   */"Panmixia.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut6(/*     */"6 Spatial", /*	   */"Spatial.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut7(/*     */"7 Boids", /*	   		*/"Flock.utg", /*		  */LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut8(/*     */"8 LittleForest", /*	*/"LittleForest.utg", /*  */LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut1(/*     */"1 Logistic", /*		*/"Logistic_1.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut2(/*     */"2 LotkaVolterra", /*	*/"LotkaVolterra_1.utg", /*	*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut3(/*     */"3 I.D.H.(clock)", /*	*/"IdhClock.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut4(/*     */"4 I.D.H.(event)", /*	*/"IdhEvent.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut5(/*     */"5 Panmixia", /*		*/"Panmixia.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut6(/*     */"6 Spatial", /*		*/"Spatial.utg", /*			*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut7(/*     */"7 Boids", /*			*/"Flock.utg", /*			*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut8(/*     */"8 LittleForest", /*	*/"LittleForest.utg", /*	*/LibraryType.Tutorial, TutorialsDummy.class), //
 	//
-	//Model1(/*   */"Genetics", /*       */"Gddm_1.utg", /**/LibraryType.Model, ModelsDummy.class), //
+//	Model1(/*	*/"1 Some model", /*	*/"someModelFile.utg", /*	*/LibraryType.Model, ModelsDummy.class), //
+
+	/**
+	 * Could also have "Tests" package - maybe in tw-core to avoid rebuilding this
+	 * slow tw-uifx library. Not sure if this is useful. You still have to run MR
+	 * from eclipse to avoid rerunning twSetup again.
+	 */
 	;
 
 	private final String displayName;
@@ -74,10 +87,6 @@ public enum LibraryTable {
 	public String displayName() {
 		return displayName;
 	}
-
-//	public String fileName() {
-//		return fileName;
-//	}
 
 	public LibraryType libraryType() {
 		return libraryType;
