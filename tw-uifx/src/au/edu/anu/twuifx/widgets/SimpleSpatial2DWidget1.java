@@ -31,10 +31,7 @@
 package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +65,7 @@ import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
 import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
-import fr.ens.biologie.generic.utils.Logging;
+//import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -107,7 +104,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.stage.Window;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
@@ -153,7 +150,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private BorderListType borderList;
 
-	private static Logger log = Logging.getLogger(SimpleSpatial2DWidget1.class);
+//	private static Logger log = Logging.getLogger(SimpleSpatial2DWidget1.class);
 
 	public SimpleSpatial2DWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
@@ -163,7 +160,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		colours = new ArrayList<>();
 		colourMap = new ConcurrentHashMap<>();
 		lineReferences = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>, Boolean>());
-//		lineReferences = new HashSet<>();
 	}
 
 	@Override
@@ -174,7 +170,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		log.info(meta.properties().toString());
+//		log.info(meta.properties().toString());
 		timeFormatter.onMetaDataMessage(meta);
 		SpaceType type = (SpaceType) meta.properties().getPropertyValue(P_SPACETYPE.key());
 
@@ -251,8 +247,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (DataLabel lab : data.pointsToDelete()) {
 			// It's an error if the lab is NOT found in the list before
 			if (hPointsMap.remove(lab.toString()) == null)
-				;// throw new TwuifxException("Attempt to delete non-existing point. [" + lab +
-					// "]"); - happens often.
+				System.out.println("Warning: Attempt to delete non-existing point. [" + lab +"]");
 			else {
 				pd++;
 				updateLegend = updateLegend || uninstallColour(lab);
@@ -270,21 +265,21 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			updateLegend = updateLegend || installColour(lab);
 		}
 		// move points in the point list
-		int pm = 0;
+//		int pm = 0;
 		for (DataLabel lab : data.pointsToMove().keySet()) {
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToMove().get(lab));
 			// It's an error if the lab is NOT in the list
 			if (hPointsMap.put(lab.toString(), newValue) == null)
 				throw new TwuifxException("Attempt to move a non-existing point. [" + lab + "]");
-			pm++;
+//			pm++;
 			updateLegend = updateLegend || installColour(lab);
 		}
 
 		int pu = hPointsMap.size();
-		if (pu!=(pc-pd+pa))
-			System.out.println("Points don't add up");
+		if (pu != (pc - pd + pa))
+			System.out.println("Points don't add up. ["+pc+"-"+pd+"+"+pa+"="+pu+"]");
+		
 		// update lines
-		//synchronized(this){
 		int lc = lineReferences.size();
 		int la = 0;
 		for (Duple<DataLabel, DataLabel> line : data.linesToCreate()) {
@@ -301,14 +296,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			boolean removed = lineReferences.remove(line);
 			if (!removed) {
 //				throw new TwuifxException("Attempt to delete a non-existing line. [" + line+"]");
-//				System.out.println("Attempt to delete a non-existing line. [" + line+"]");
+				System.out.println("Warning: Attempt to delete a non-existing line. [" + line+"]");
 			} else
 				ld++;
 		}
 
 		// IMPORTANT (JG): remove line entries which end or start nodes have been
 		// removed just above.
-		
+
 		int ldnr = 0;
 		Iterator<Duple<DataLabel, DataLabel>> itline = lineReferences.iterator();
 		while (itline.hasNext()) {
@@ -322,9 +317,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		// This will fail on reset unless synchronized
 		int lu = lineReferences.size();
-		if (lu!=(lc-(ld+ldnr)+la))
-			System.out.println("Lines don't add up");
-		
+		if (lu != (lc - (ld + ldnr) + la))
+			System.out.println("Lines don't add up. ["+lc+"-("+(ld+ldnr)+"+"+la+"="+lu+"]");
+//		System.out.println("Stored points: "+hPointsMap.size());
+//		System.out.println("Stored lines: "+lineReferences.size());
+
 		return updateLegend;
 	}
 
@@ -366,7 +363,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	@Override
 	public void onStatusMessage(State state) {
-		log.info(state.toString());
 		if (isSimulatorState(state, waiting)) {
 			/**
 			 * Watch out! if reading of dataMsg is not posted to the UI thread (i.e.
@@ -375,16 +371,17 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			 *
 			 * This will happen only when the simulator sends onDataMessages after
 			 * initialisation but before starting the simulation. It would be better if this
-			 * practice was not allowed. (ID)
-			 *
-			 *
+			 * practice was not allowed. (ID).
+			 * 
+			 * hPointsMap and lineReferences are thread-safe so they will block while still
+			 * being written to. Can this lead to problems? Not sure.
 			 */
 
-//			System.out.println("CLEARING Stored data in widget");
-			hPointsMap.clear();// This is a concurrentHashMap so it will block while still being written to
+			hPointsMap.clear();
 			lineReferences.clear();
 			colourMap.clear();
-
+//			System.out.println("Stored points: "+hPointsMap.size());
+//			System.out.println("Stored lines: "+lineReferences.size());
 		}
 	}
 
@@ -428,13 +425,19 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : hPointsMap.entrySet()) {
 			Duple<DataLabel, double[]> value = entry.getValue();
 			String cKey = getColourKey(value.getFirst());
+
 			Duple<Integer, Color> colourEntry = colourMap.get(cKey);
 			if (colourEntry != null) {
+
 				Color colour = colourEntry.getSecond();
 				gc.setStroke(colour);
 				double[] coords = value.getSecond();
 				Point2D point = scaleToCanvas(coords);
 				point = point.add(-symbolRadius, -symbolRadius);
+				if (showPointLabels) {
+					gc.setFill(Color.BLACK);
+					gc.fillText(value.getFirst().getEnd(), point.getX(), point.getY());
+				}
 				gc.strokeOval(point.getX(), point.getY(), size, size);
 				if (symbolFill) {
 					gc.setFill(colour);
@@ -662,6 +665,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyLegendVisible = "legendVisible";
 	private static final String keyMaxLegendItems = "maxLegendItems";
 	private static final String keyLegendSide = "legendSide";
+	private static final String keyShowPointLabels = "showPointLabels";
 
 	private double relLineWidth;
 	private double spaceCanvasRatio;
@@ -678,6 +682,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private boolean legendVisible;
 	private int maxLegendItems;
 	private Side legendSide;
+	private boolean showPointLabels;
 
 	@Override
 	public void putUserPreferences() {
@@ -701,6 +706,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putBoolean(widgetId + keyLegendVisible, legendVisible);
 		Preferences.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
 		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
+		Preferences.putBoolean(widgetId + keyShowPointLabels, showPointLabels);
 	}
 
 	private static final int firstUse = -1;
@@ -745,10 +751,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		legendVisible = Preferences.getBoolean(widgetId + keyLegendVisible, true);
 		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 10);
 		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
+		showPointLabels = Preferences.getBoolean(widgetId + keyShowPointLabels, false);
 	}
 
 	// --------------- GUI
-	// private BorderPane ptop, pbottom, pleft, pright;
 	private BorderPane centerContainer;
 
 	@Override
@@ -968,6 +974,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		spMaxLegendItems.setEditable(true);
 		addGridControl("Max legend items", row++, spMaxLegendItems, content);
 
+		// -----
+		CheckBox chbxShowPointLabels = new CheckBox("");
+		addGridControl("Show point labels", row++, chbxShowPointLabels, content);
+		chbxShowPointLabels.setSelected(showPointLabels);
+
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
@@ -997,6 +1008,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			legendVisible = chbxLegendVisible.isSelected();
 			maxLegendItems = spMaxLegendItems.getValue();
 			legend.setVisible(legendVisible);
+			showPointLabels = chbxShowPointLabels.isSelected();
+
 			placeLegend();
 			drawSpace();
 			updateLegend();
