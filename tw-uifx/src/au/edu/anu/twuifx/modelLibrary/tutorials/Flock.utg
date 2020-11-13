@@ -184,7 +184,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 				constantClass = java.lang.String(code.sys1.Cnt)
 				decoratorClass = java.lang.String(code.sys1.Dec)
 				driverClass = java.lang.String(code.sys1.Drv)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 				initFunction Init1

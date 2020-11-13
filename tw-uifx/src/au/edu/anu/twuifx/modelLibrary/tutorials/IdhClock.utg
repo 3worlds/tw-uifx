@@ -158,7 +158,6 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			componentType distType
 				constantClass = java.lang.String(code.sys1.DistCnsts)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 				initFunction InitDist
@@ -174,7 +173,6 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 				constantClass = java.lang.String(code.sys1.CommCnsts)
 				decoratorClass = java.lang.String(code.sys1.CommDecs)
 				driverClass = java.lang.String(code.sys1.CommDrvs)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 				initFunction InitComm
