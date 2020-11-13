@@ -63,6 +63,7 @@ import fr.cnrs.iees.twcore.constants.BorderListType;
 import fr.cnrs.iees.twcore.constants.BorderType;
 import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
 import fr.cnrs.iees.twcore.constants.SpaceType;
+import fr.cnrs.iees.uit.space.Distance;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 //import fr.ens.biologie.generic.utils.Logging;
@@ -247,7 +248,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (DataLabel lab : data.pointsToDelete()) {
 			// It's an error if the lab is NOT found in the list before
 			if (hPointsMap.remove(lab.toString()) == null)
-				System.out.println("Warning: Attempt to delete non-existing point. [" + lab +"]");
+				System.out.println("Warning: Attempt to delete non-existing point. [" + lab + "]");
 			else {
 				pd++;
 				updateLegend = updateLegend || uninstallColour(lab);
@@ -277,8 +278,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		int pu = hPointsMap.size();
 		if (pu != (pc - pd + pa))
-			System.out.println("Points don't add up. ["+pc+"-"+pd+"+"+pa+"="+pu+"]");
-		
+			System.out.println("Points don't add up. [" + pc + "-" + pd + "+" + pa + "=" + pu + "]");
+
 		// update lines
 		int lc = lineReferences.size();
 		int la = 0;
@@ -296,7 +297,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			boolean removed = lineReferences.remove(line);
 			if (!removed) {
 //				throw new TwuifxException("Attempt to delete a non-existing line. [" + line+"]");
-				System.out.println("Warning: Attempt to delete a non-existing line. [" + line+"]");
+				System.out.println("Warning: Attempt to delete a non-existing line. [" + line + "]");
 			} else
 				ld++;
 		}
@@ -318,7 +319,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// This will fail on reset unless synchronized
 		int lu = lineReferences.size();
 		if (lu != (lc - (ld + ldnr) + la))
-			System.out.println("Lines don't add up. ["+lc+"-("+(ld+ldnr)+"+"+la+"="+lu+"]");
+			System.out.println("Lines don't add up. [" + lc + "-(" + (ld + ldnr) + "+" + la + "=" + lu + "]");
 //		System.out.println("Stored points: "+hPointsMap.size());
 //		System.out.println("Stored lines: "+lineReferences.size());
 
@@ -409,14 +410,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				double[] start = sEntry.getSecond();
 				double[] end = eEntry.getSecond();
 				if (eec == null) {
-					drawLine(gc, start[0], start[1], end[0], end[1]);
+					drawLine(gc, start[0], start[1], end[0], end[1], true);
 				} else if (eec.equals(EdgeEffectCorrection.periodic))
 					drawPeriodicLines(gc, start, end);
 				else if (eec.equals(EdgeEffectCorrection.tubular)) {
 					// assume first dim means 'x'
 					drawTubularLines(gc, start, end);
 				} else {
-					drawLine(gc, start[0], start[1], end[0], end[1]);
+					drawLine(gc, start[0], start[1], end[0], end[1], true);
 				}
 			}
 		}
@@ -466,10 +467,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double m = (right[1] - left[1]) / (newx - right[0]);
 			double b = right[1] - (m * right[0]);
 			double yintercept = (m * spaceBounds.getMaxX()) + b;
-			drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
-			drawLine(gc, 0.0, yintercept, left[0], left[1]);
+			drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept, false);
+			drawLine(gc, 0.0, yintercept, left[0], left[1], true);
 		} else {
-			drawLine(gc, p1[0], p1[1], p2[0], p2[1]);
+			drawLine(gc, p1[0], p1[1], p2[0], p2[1], true);
 		}
 	}
 
@@ -501,21 +502,21 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 			if (quad == 3) {// right
 				double yintercept = (m * spaceBounds.getMaxX()) + b;
-				drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept);
-				drawLine(gc, 0.0, yintercept, left[0], left[1]);
+				drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept, false);
+				drawLine(gc, 0.0, yintercept, left[0], left[1], true);
 			} else if (quad == 1) {// top
 				double xintercept = (spaceBounds.getMaxY() - b) / m;
 				if (Double.isNaN(xintercept)) // vertical line
 					xintercept = left[0];
 				if (Double.isInfinite(m)) {// exactly vertical
-					drawLine(gc, left[0], Math.max(right[1], left[1]), left[0], spaceBounds.getMaxY());
-					drawLine(gc, left[0], 0.0, left[0], Math.min(right[1], left[1]));
+					drawLine(gc, left[0], Math.max(right[1], left[1]), left[0], spaceBounds.getMaxY(), false);
+					drawLine(gc, left[0], 0.0, left[0], Math.min(right[1], left[1]), true);
 				} else if (m < 0) {// slope to the left
-					drawLine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY());
-					drawLine(gc, xintercept, 0.0, left[0], left[1]);
+					drawLine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY(), false);
+					drawLine(gc, xintercept, 0.0, left[0], left[1], true);
 				} else if (m > 0) {// slope to the right
-					drawLine(gc, left[0], left[1], xintercept, spaceBounds.getMaxY());
-					drawLine(gc, xintercept, 0.0, right[0], right[1]);
+					drawLine(gc, left[0], left[1], xintercept, spaceBounds.getMaxY(), false);
+					drawLine(gc, xintercept, 0.0, right[0], right[1], true);
 				}
 
 			} else if (quad == 5) { // bottom
@@ -528,25 +529,25 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 					low = right;
 					high = left;
 				}
-				drawLine(gc, low[0], low[1], xintercept, 0.0);
-				drawLine(gc, xintercept, spaceBounds.getMaxY(), high[0], high[1]);
+				drawLine(gc, low[0], low[1], xintercept, 0.0, false);
+				drawLine(gc, xintercept, spaceBounds.getMaxY(), high[0], high[1], true);
 			} else if (quad == 2) { // top right
 				double yintercept = (m * spaceBounds.getMaxX()) + b;
 				double xintercept = (spaceBounds.getMaxY() - b) / m;
 				double xd2 = getD2(right[0], right[1], xintercept, spaceBounds.getMaxY());
 				double yd2 = getD2(right[0], right[1], spaceBounds.getMaxX(), yintercept);
 				if (xd2 < yd2) { // cross the x-axis first
-					drawLine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY());
-					drawLine(gc, xintercept, 0.0, spaceBounds.getMaxX(), (yintercept - spaceBounds.getMaxY()));
-					drawLine(gc, 0.0, (yintercept - spaceBounds.getMaxY()), left[0], left[1]);
+					drawLine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY(), false);
+					drawLine(gc, xintercept, 0.0, spaceBounds.getMaxX(), (yintercept - spaceBounds.getMaxY()), false);
+					drawLine(gc, 0.0, (yintercept - spaceBounds.getMaxY()), left[0], left[1], true);
 				} else { // cross at y-axis first
-					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY());
-					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY());
-					drawLine(gc, (xintercept - spaceBounds.getMaxX()), 0.0, left[0], left[1]);
+					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
+					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
+					drawLine(gc, (xintercept - spaceBounds.getMaxX()), 0.0, left[0], left[1], true);
 				}
 			}
 		} else {
-			drawLine(gc, p1[0], p1[1], p2[0], p2[1]);
+			drawLine(gc, p1[0], p1[1], p2[0], p2[1], true);
 		}
 	}
 
@@ -573,10 +574,50 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return -1;
 	}
 
-	private void drawLine(GraphicsContext gc, double x1, double y1, double x2, double y2) {
+	private void drawLine(GraphicsContext gc, double x1, double y1, double x2, double y2, boolean endNode) {
 		Point2D start = scaleToCanvas(x1, y1);
 		Point2D end = scaleToCanvas(x2, y2);
 		gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
+		if (endNode && showArrows)
+			drawArrow(gc, start, end);
+
+	}
+
+	private void drawArrow(GraphicsContext gc, Point2D start, Point2D end) {
+		// coordinates of the segment end - funny we end before we start
+		double x0 = end.getX();
+		double y0 = end.getY();
+		//# coordinates of the segment start
+		double x1 = start.getX();
+		double y1 = start.getY();
+		//# length of the arrowhead in absolute units (constant)
+		double f = symbolRadius;// why not
+		//# sine and cosine of the arrowhead 1/2 angle (constant)
+		double sin30 = 0.5;// prep
+		double cos30 = Math.sqrt(3.0)/2.0;// prep
+		//#circle radius
+		double rad = symbolRadius;//repl
+		//# compute length of the segment
+		double r = Distance.euclidianDistance(x0,y0,x1,y1);
+		if (r<rad)// don't bother?
+			return;
+		
+		//# compute sine and cosine of the segment angle relative to x axis
+		double cost = (x1-x0)/r;
+		double sint = (y1-y0)/r;
+		//# coordinates of the left-hand end of the arrow line
+		double xA = x0+f*(cos30*cost+sin30*sint);
+		double yA = y0+f*(cos30*sint-sin30*cost);
+		//# coordinates of the right-hand end of the arrow line
+		double xB = x0+f*(cos30*cost-sin30*sint);
+		double yB = y0+f*(cos30*sint+sin30*cost);
+		//# get arrow off-set to circle radius
+		double phi = Math.atan2(y1-y0,x1-x0);// expensive?
+		double dx = rad*Math.cos(phi);
+		double dy = rad*Math.sin(phi);
+		//# drawing the arrow - offset by radius
+		gc.strokeLine(x0+dx, y0+dy, xB+dx, yB+dy);
+		gc.strokeLine(x0+dx, y0+dy, xA+dx, yA+dy);
 	}
 
 	private void resizeCanvas(double sWidth, double sHeight) {
@@ -666,6 +707,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyMaxLegendItems = "maxLegendItems";
 	private static final String keyLegendSide = "legendSide";
 	private static final String keyShowPointLabels = "showPointLabels";
+	private static final String keyShowArrows = "showArrows";
 
 	private double relLineWidth;
 	private double spaceCanvasRatio;
@@ -683,6 +725,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private int maxLegendItems;
 	private Side legendSide;
 	private boolean showPointLabels;
+	private boolean showArrows;
 
 	@Override
 	public void putUserPreferences() {
@@ -707,6 +750,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
 		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
 		Preferences.putBoolean(widgetId + keyShowPointLabels, showPointLabels);
+		Preferences.putBoolean(widgetId + keyShowArrows, showArrows);
 	}
 
 	private static final int firstUse = -1;
@@ -752,6 +796,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 10);
 		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
 		showPointLabels = Preferences.getBoolean(widgetId + keyShowPointLabels, false);
+		showArrows = Preferences.getBoolean(widgetId + keyShowArrows, false);
 	}
 
 	// --------------- GUI
@@ -774,11 +819,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		scrollPane.setMinSize(170, 170);
 		CenteredZooming.center(scrollPane, content, group, zoomTarget);
 		centerContainer.setCenter(scrollPane);
-//		VBox bottom = new VBox();
-//		ptop = new BorderPane();
-//		pbottom = new BorderPane();
-//		pleft = new BorderPane();
-//		pright = new BorderPane();
 
 		HBox statusBar = new HBox();
 		statusBar.setSpacing(5);
@@ -786,17 +826,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		lblTime = new Label("");
 
 		statusBar.getChildren().addAll(lblTime, new Label("	"), lblItem);
-//		bottom.getChildren().addAll(statusBar);
 		container.setBottom(statusBar);
 
 		legend = new FlowPane();
 		legend.setHgap(3);
 		legend.setVgap(3);
-
-//		container.setRight(pright);
-//		container.setLeft(pleft);
-//		container.setTop(ptop);
-//		bottom.getChildren().add(pbottom);
 
 		getUserPreferences();
 
@@ -837,17 +871,17 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private void updateLegend() {
 		legend.getChildren().clear();
-		int count = 0;
 
+		int count = 0;
 		for (Map.Entry<String, Duple<Integer, Color>> entry : colourMap.entrySet()) {
 			count++;
 			if (count <= maxLegendItems)
 				addLegendItem(entry.getKey(), entry.getValue().getSecond());
 		}
-		if (count > maxLegendItems) {
-			int idx = legend.getChildren().size();
+
+		if (count > maxLegendItems)
 			legend.getChildren().add(new Label("more ..."));
-		}
+
 	}
 
 	private void addLegendItem(String name, Color colour) {
@@ -978,6 +1012,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		CheckBox chbxShowPointLabels = new CheckBox("");
 		addGridControl("Show point labels", row++, chbxShowPointLabels, content);
 		chbxShowPointLabels.setSelected(showPointLabels);
+		// -----
+		CheckBox chbxShowArrows = new CheckBox("");
+		addGridControl("Show arrowheads", row++, chbxShowArrows, content);
+		chbxShowArrows.setSelected(showArrows);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
@@ -1009,6 +1047,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			maxLegendItems = spMaxLegendItems.getValue();
 			legend.setVisible(legendVisible);
 			showPointLabels = chbxShowPointLabels.isSelected();
+			showArrows = chbxShowArrows.isSelected();
 
 			placeLegend();
 			drawSpace();
