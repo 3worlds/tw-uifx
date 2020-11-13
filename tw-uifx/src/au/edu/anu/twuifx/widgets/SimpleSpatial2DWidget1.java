@@ -219,6 +219,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
+			if (data.pointsToCreate().size() > 0)
+				System.out.println("Points received by widget\tTime: " + data.time() + "\t#"
+						+ data.pointsToCreate().size() + "\tThread: " + Thread.currentThread().getId());
 
 			Platform.runLater(() -> {
 				/**
@@ -230,11 +233,40 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				 * updateData() in the ui thread so it is run, as it turns out, AFTER entering
 				 * the WAIT state so the initial state is not lost.
 				 */
-				System.out.println("Time: " + data.time());
+				if (data.pointsToCreate().size() > 0)
+					System.out.println("Points stored and drawn by widget\tTime: " + data.time() + "\t#"
+							+ data.pointsToCreate().size() + "\tThread: " + Thread.currentThread().getId());
 				boolean refreshLegend = updateData(data);
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
 				callDrawSpace(refreshLegend);
 			});
+		}
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
+		if (isSimulatorState(state, waiting)) {
+			/**
+			 * Watch out! if reading of dataMsg is not posted to the UI thread (i.e.
+			 * Platform.runLater(...)), this proc will be called AFTER initial data is
+			 * received and therefore the initial data will be cleared.
+			 *
+			 * This will happen only when the simulator sends onDataMessages after
+			 * initialisation but before starting the simulation. It would be better if this
+			 * practice was not allowed. (ID).
+			 * 
+			 * hPointsMap and lineReferences are thread-safe so they will block while still
+			 * being written to. Can this lead to problems? Not sure.
+			 */
+
+			System.out.println("--RESET: Widget will clear these points\tBefore: " + hPointsMap.size() + "\tThread: "
+					+ Thread.currentThread().getId());
+			hPointsMap.clear();
+			System.out.println("--RESET Widget has cleared these points\tAfter: " + hPointsMap.size() + "\tThread: "
+					+ Thread.currentThread().getId());
+			lineReferences.clear();
+			colourMap.clear();
+
 		}
 	}
 
@@ -360,30 +392,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (int i = 0; i < Math.min(colourHLevel + 1, dl.size()); i++)
 			result += "." + dl.get(i);
 		return result.replaceFirst(".", "");
-	}
-
-	@Override
-	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {
-			/**
-			 * Watch out! if reading of dataMsg is not posted to the UI thread (i.e.
-			 * Platform.runLater(...)), this proc will be called AFTER initial data is
-			 * received and therefore the initial data will be cleared.
-			 *
-			 * This will happen only when the simulator sends onDataMessages after
-			 * initialisation but before starting the simulation. It would be better if this
-			 * practice was not allowed. (ID).
-			 * 
-			 * hPointsMap and lineReferences are thread-safe so they will block while still
-			 * being written to. Can this lead to problems? Not sure.
-			 */
-
-			hPointsMap.clear();
-			lineReferences.clear();
-			colourMap.clear();
-//			System.out.println("Stored points: "+hPointsMap.size());
-//			System.out.println("Stored lines: "+lineReferences.size());
-		}
 	}
 
 //-------------------------------------------- Drawing ---
@@ -587,37 +595,37 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// coordinates of the segment end - funny we end before we start
 		double x0 = end.getX();
 		double y0 = end.getY();
-		//# coordinates of the segment start
+		// # coordinates of the segment start
 		double x1 = start.getX();
 		double y1 = start.getY();
-		//# length of the arrowhead in absolute units (constant)
+		// # length of the arrowhead in absolute units (constant)
 		double f = symbolRadius;// why not
-		//# sine and cosine of the arrowhead 1/2 angle (constant)
+		// # sine and cosine of the arrowhead 1/2 angle (constant)
 		double sin30 = 0.5;// prep
-		double cos30 = Math.sqrt(3.0)/2.0;// prep
-		//#circle radius
-		double rad = symbolRadius;//repl
-		//# compute length of the segment
-		double r = Distance.euclidianDistance(x0,y0,x1,y1);
-		if (r<rad)// don't bother?
+		double cos30 = Math.sqrt(3.0) / 2.0;// prep
+		// #circle radius
+		double rad = symbolRadius;// repl
+		// # compute length of the segment
+		double r = Distance.euclidianDistance(x0, y0, x1, y1);
+		if (r < rad)// don't bother?
 			return;
-		
-		//# compute sine and cosine of the segment angle relative to x axis
-		double cost = (x1-x0)/r;
-		double sint = (y1-y0)/r;
-		//# coordinates of the left-hand end of the arrow line
-		double xA = x0+f*(cos30*cost+sin30*sint);
-		double yA = y0+f*(cos30*sint-sin30*cost);
-		//# coordinates of the right-hand end of the arrow line
-		double xB = x0+f*(cos30*cost-sin30*sint);
-		double yB = y0+f*(cos30*sint+sin30*cost);
-		//# get arrow off-set to circle radius
-		double phi = Math.atan2(y1-y0,x1-x0);// expensive?
-		double dx = rad*Math.cos(phi);
-		double dy = rad*Math.sin(phi);
-		//# drawing the arrow - offset by radius
-		gc.strokeLine(x0+dx, y0+dy, xB+dx, yB+dy);
-		gc.strokeLine(x0+dx, y0+dy, xA+dx, yA+dy);
+
+		// # compute sine and cosine of the segment angle relative to x axis
+		double cost = (x1 - x0) / r;
+		double sint = (y1 - y0) / r;
+		// # coordinates of the left-hand end of the arrow line
+		double xA = x0 + f * (cos30 * cost + sin30 * sint);
+		double yA = y0 + f * (cos30 * sint - sin30 * cost);
+		// # coordinates of the right-hand end of the arrow line
+		double xB = x0 + f * (cos30 * cost - sin30 * sint);
+		double yB = y0 + f * (cos30 * sint + sin30 * cost);
+		// # get arrow off-set to circle radius
+		double phi = Math.atan2(y1 - y0, x1 - x0);// expensive?
+		double dx = rad * Math.cos(phi);
+		double dy = rad * Math.sin(phi);
+		// # drawing the arrow - offset by radius
+		gc.strokeLine(x0 + dx, y0 + dy, xB + dx, yB + dy);
+		gc.strokeLine(x0 + dx, y0 + dy, xA + dx, yA + dy);
 	}
 
 	private void resizeCanvas(double sWidth, double sHeight) {
