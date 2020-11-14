@@ -76,7 +76,6 @@ treegraph // saved by OmugiGraphExporter on Thu Jul 09 18:09:57 CEST 2020
 			componentType fish
 				constantClass = java.lang.String(code.sys1.Cnt)
 				driverClass = java.lang.String(code.sys1.Drv)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 				component fishes

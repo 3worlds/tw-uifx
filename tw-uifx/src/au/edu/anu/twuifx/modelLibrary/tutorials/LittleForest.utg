@@ -189,7 +189,6 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 				componentType treeIndividual
 					decoratorClass = java.lang.String(code.sys1.Treedec)
 					driverClass = java.lang.String(code.sys1.Drv)
-					lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 					mobile = java.lang.Boolean(false)
 					relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 					component cmp2

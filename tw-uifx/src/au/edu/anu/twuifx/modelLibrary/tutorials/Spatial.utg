@@ -104,7 +104,6 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
 				y-limits = fr.ens.biologie.generic.utils.Interval([22.0,78.0])
 			componentType compTyp1
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 				component cmp1
