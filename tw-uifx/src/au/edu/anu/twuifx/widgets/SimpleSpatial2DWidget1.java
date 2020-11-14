@@ -219,10 +219,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-			if (data.pointsToCreate().size() > 0)
+			System.out.println(data.status());
+			if (data.pointsToCreate().size() > 0) {
+				
 				System.out.println("Points received by widget\tTime: " + data.time() + "\t#"
 						+ data.pointsToCreate().size() + "\tThread: " + Thread.currentThread().getId());
-
+			}
 			Platform.runLater(() -> {
 				/**
 				 * Here updateData() MUST be called within the UI thread. This is because,
@@ -233,9 +235,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				 * updateData() in the ui thread so it is run, as it turns out, AFTER entering
 				 * the WAIT state so the initial state is not lost.
 				 */
-				if (data.pointsToCreate().size() > 0)
-					System.out.println("Points stored and drawn by widget\tTime: " + data.time() + "\t#"
-							+ data.pointsToCreate().size() + "\tThread: " + Thread.currentThread().getId());
+//				if (data.pointsToCreate().size() > 0)
+//					System.out.println("Points stored and drawn by widget\tTime: " + data.time() + "\t#"
+//							+ data.pointsToCreate().size() + "\tThread: " + Thread.currentThread().getId());
 				boolean refreshLegend = updateData(data);
 				lblTime.setText(timeFormatter.getTimeText(data.time()));
 				callDrawSpace(refreshLegend);
@@ -259,11 +261,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			 * being written to. Can this lead to problems? Not sure.
 			 */
 
-			System.out.println("--RESET: Widget will clear these points\tBefore: " + hPointsMap.size() + "\tThread: "
-					+ Thread.currentThread().getId());
+//			System.out.println("--RESET: Widget will clear these points\tBefore: " + hPointsMap.size() + "\tThread: "
+//					+ Thread.currentThread().getId());
 			hPointsMap.clear();
-			System.out.println("--RESET Widget has cleared these points\tAfter: " + hPointsMap.size() + "\tThread: "
-					+ Thread.currentThread().getId());
+			System.out.println("WAITING: widget data cleared" + "\tThread: " + Thread.currentThread().getId());
 			lineReferences.clear();
 			colourMap.clear();
 
