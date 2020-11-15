@@ -45,12 +45,14 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.ens.biologie.generic.utils.Logging;
@@ -188,9 +190,8 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 			});
 	}
 
-	@Override
-	public void onDataMessage( Output0DData data) {
-		if (policy.canProcessDataMessage(data)) {
+	private void processDataMessage(Output0DData data) {
+		Platform.runLater(() -> {
 			String itemId = null;
 			if (sas != null)
 				itemId = data.itemLabel().getEnd();
@@ -209,10 +210,17 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 				td.setValue(value);
 			}
 			table.refresh();
-			final String timeStr = timeFormatter.getTimeText(data.time());
-			Platform.runLater(() -> {
-				lblTime.setText(timeStr);
-			});
+			lblTime.setText(timeFormatter.getTimeText(data.time()));
+		});
+	}
+
+	@Override
+	public void onDataMessage(Output0DData data) {
+		if (policy.canProcessDataMessage(data)) {
+			if (data.status().equals(SimulatorStatus.Initial))
+				throw new TwuifxException("Handling initial data not implemented for this widget.");
+			else
+				processDataMessage(data);
 		}
 	}
 

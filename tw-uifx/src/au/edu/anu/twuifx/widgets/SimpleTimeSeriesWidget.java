@@ -54,6 +54,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
@@ -73,6 +74,7 @@ import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
@@ -265,12 +267,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		}
 	}
 
-	@Override
-	public void onDataMessage(final Output0DData data) {
-//		for (int i = 0; i < data.getDoubleValues().length; i++)
-//			System.out.println("Sender: "+data.sender()+"->"+data.getDoubleValues()[i]);
-		if (policy.canProcessDataMessage(data)) {
-			// not in ui thread.
+	private void processDataMessage(Output0DData data) {
+		Platform.runLater(() -> {
+
 			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
 			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
@@ -284,7 +283,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				itemId = data.itemLabel().getEnd();
 			else if (sampledItems != null)
 				itemId = data.itemLabel().toString();
-//			System.out.println("Widget '"+widgetId+"' itemId "+itemId);
 
 			for (DataLabel dl : tsMeta.doubleNames()) {
 				String key;
@@ -313,11 +311,19 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
 				if (!ds.equals(dontTouch))
 					ds.autoNotification().getAndSet(true);
+			
 			if (((DefaultNumericAxis) chart.getYAxis()).isAutoRangeRounding())
-				Platform.runLater(() -> {
-					chart.getYAxis().forceRedraw();
-				});
+				chart.getYAxis().forceRedraw();
+		});
+	}
 
+	@Override
+	public void onDataMessage(Output0DData data) {
+		if (policy.canProcessDataMessage(data)) {
+			if (data.status().equals(SimulatorStatus.Initial))
+				throw new TwuifxException("Handling initial data not implemented for this widget.");
+			else
+				processDataMessage(data);
 		}
 	}
 

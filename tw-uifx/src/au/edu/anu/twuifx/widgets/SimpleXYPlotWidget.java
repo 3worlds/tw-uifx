@@ -15,6 +15,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -33,6 +34,7 @@ import de.gsi.dataset.spi.DoubleDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
@@ -51,7 +53,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	private String widgetId;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
-	//private static Logger log = Logging.getLogger(SimpleXYPlotWidget.class);
+	// private static Logger log = Logging.getLogger(SimpleXYPlotWidget.class);
 	private XYChart chart;
 	private DoubleDataSet ds;
 //	private static final DefaultMarker[] symbols = { //
@@ -112,12 +114,12 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 			chart.getDatasets().addAll(ds);
 			String axisUnit = "units";
 			chart.getXAxis().set(dlx.toString(), axisUnit);
-		
+
 			chart.getYAxis().set(dly.toString());
 			chart.getXAxis().setUnit((String) meta.properties().getPropertyValue("x.units"));
 			chart.getYAxis().setUnit((String) meta.properties().getPropertyValue("y.units"));
 			chart.setLegendVisible(false);
-			
+
 			timeFormatter.onMetaDataMessage(meta);
 			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
 			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
@@ -126,13 +128,21 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	}
 
+	private void processDataMessage(OutputXYData data) {
+		Platform.runLater(() -> {
+			ds.add(data.getX(), data.getY());
+		});
+
+	}
+
 	@Override
 	public void onDataMessage(OutputXYData data) {
 
 		if (policy.canProcessDataMessage(data)) {
-//			Platform.runLater(() -> {
-				ds.add(data.getX(), data.getY());
-//			});
+			if (data.status().equals(SimulatorStatus.Initial))
+				throw new TwuifxException("Handling initial data not implemented for this widget.");
+			else
+				processDataMessage(data);
 		}
 	}
 
@@ -180,7 +190,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 //		chart.getPlugins().add(new EditAxis());// crashes
 		chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
-		//chart.getPlugins().add(new ParameterMeasurements());// crashes
+		// chart.getPlugins().add(new ParameterMeasurements());// crashes
 		getUserPreferences();
 
 		return content;

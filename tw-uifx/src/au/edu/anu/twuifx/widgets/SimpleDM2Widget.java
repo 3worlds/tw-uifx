@@ -41,6 +41,7 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -51,6 +52,7 @@ import au.edu.anu.ymuit.util.Decimals;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -132,16 +134,19 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 
 	@Override
 	public void onDataMessage(Output2DData data) {
-		if (policy.canProcessDataMessage(data))
-			Platform.runLater(() -> {
-				processOnDataMessage(data);
-			});
+		if (policy.canProcessDataMessage(data)) {
+			if (data.status().equals(SimulatorStatus.Initial))
+				throw new TwuifxException("Handling initial data not implemented for this widget.");
+			else
+				processDataMessage(data);
+		}
 	}
 
-	private void processOnDataMessage(Output2DData data) {
-		numbers = data.map();
-		dataToCanvas();
-
+	private void processDataMessage(Output2DData data) {
+		Platform.runLater(() -> {
+			numbers = data.map();
+			dataToCanvas();
+		});
 	}
 
 	private void dataToCanvas() {

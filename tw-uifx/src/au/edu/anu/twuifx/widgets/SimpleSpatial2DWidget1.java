@@ -62,6 +62,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.BorderListType;
 import fr.cnrs.iees.twcore.constants.BorderType;
 import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
+import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.cnrs.iees.uit.space.Distance;
 import fr.ens.biologie.generic.utils.Duple;
@@ -151,6 +152,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private BorderListType borderList;
 
+	private final List<SpaceData> initialData;
+
 //	private static Logger log = Logging.getLogger(SimpleSpatial2DWidget1.class);
 
 	public SimpleSpatial2DWidget1(StateMachineEngine<StatusWidget> statusSender) {
@@ -161,6 +164,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		colours = new ArrayList<>();
 		colourMap = new ConcurrentHashMap<>();
 		lineReferences = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>, Boolean>());
+		initialData = new ArrayList<>();
 	}
 
 	@Override
@@ -171,7 +175,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-//		log.info(meta.properties().toString());
 		timeFormatter.onMetaDataMessage(meta);
 		SpaceType type = (SpaceType) meta.properties().getPropertyValue(P_SPACETYPE.key());
 
@@ -210,64 +213,35 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mx / 10;
 	}
 
-	private synchronized void callDrawSpace(boolean refreshLegend) {
-		drawSpace();
-		if (refreshLegend)
-			updateLegend();
+	private void processDataMessage(SpaceData data) {
+		Platform.runLater(() -> {
+			lblTime.setText(timeFormatter.getTimeText(data.time()));
+			boolean refreshLegend = updateData(data);
+			drawSpace();
+			if (refreshLegend)
+				updateLegend();
+		});
 	}
 
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-			System.out.println(data.status());
-			if (data.pointsToCreate().size() > 0) {
-				
-				System.out.println("Points received by widget\tTime: " + data.time() + "\t#"
-						+ data.pointsToCreate().size() + "\tThread: " + Thread.currentThread().getId());
-			}
-			Platform.runLater(() -> {
-				/**
-				 * Here updateData() MUST be called within the UI thread. This is because,
-				 * although the proc does not call ui controls, when instantiating the
-				 * simulator, initailisation msgs are sent before entering the WAIT state and
-				 * the WAIT state is the only place where the stored data can be cleared. So
-				 * it's a pre/post process problem. The only way to avoid this is to place
-				 * updateData() in the ui thread so it is run, as it turns out, AFTER entering
-				 * the WAIT state so the initial state is not lost.
-				 */
-//				if (data.pointsToCreate().size() > 0)
-//					System.out.println("Points stored and drawn by widget\tTime: " + data.time() + "\t#"
-//							+ data.pointsToCreate().size() + "\tThread: " + Thread.currentThread().getId());
-				boolean refreshLegend = updateData(data);
-				lblTime.setText(timeFormatter.getTimeText(data.time()));
-				callDrawSpace(refreshLegend);
-			});
+			if (data.status().equals(SimulatorStatus.Initial))
+				initialData.add(data);
+			else
+				processDataMessage(data);
 		}
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-			/**
-			 * Watch out! if reading of dataMsg is not posted to the UI thread (i.e.
-			 * Platform.runLater(...)), this proc will be called AFTER initial data is
-			 * received and therefore the initial data will be cleared.
-			 *
-			 * This will happen only when the simulator sends onDataMessages after
-			 * initialisation but before starting the simulation. It would be better if this
-			 * practice was not allowed. (ID).
-			 * 
-			 * hPointsMap and lineReferences are thread-safe so they will block while still
-			 * being written to. Can this lead to problems? Not sure.
-			 */
-
-//			System.out.println("--RESET: Widget will clear these points\tBefore: " + hPointsMap.size() + "\tThread: "
-//					+ Thread.currentThread().getId());
 			hPointsMap.clear();
-			System.out.println("WAITING: widget data cleared" + "\tThread: " + Thread.currentThread().getId());
 			lineReferences.clear();
 			colourMap.clear();
-
+			for (SpaceData data : initialData)
+				processDataMessage(data);
+			initialData.clear();
 		}
 	}
 
