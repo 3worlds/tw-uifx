@@ -93,6 +93,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -911,6 +912,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		GridPane.setHalignment(ctrl, HPos.LEFT);
 		GridPane.setValignment(ctrl, VPos.CENTER);
 	}
+	
 
 	private void edit() {
 		Dialog<ButtonType> dialog = new Dialog<>();
@@ -918,113 +920,150 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		dialog.initOwner((Window) Dialogs.owner());
+		//TODO: Better - use a TitledPane containing Gridpane with titledPane.setCollapsible(false);
 		GridPane content = new GridPane();
 		content.setVgap(15);
 		content.setHgap(10);
-		content.setAlignment(Pos.BASELINE_RIGHT); // try removing this line
+//		content.setGridLinesVisible(true);
+//		content.setAlignment(Pos.TOP_LEFT);
+		GridPane pointsGrid = new GridPane();		
+		GridPane linesGrid = new GridPane();
+		GridPane paperGrid = new GridPane();
+		GridPane legendGrid = new GridPane();
+		pointsGrid.setVgap(15);
+		pointsGrid.setHgap(10);
 
-		int row = 0;
+		linesGrid.setVgap(15);
+		linesGrid.setHgap(10);
+
+		paperGrid.setVgap(15);
+		paperGrid.setHgap(10);
+
+		legendGrid.setVgap(15);
+		legendGrid.setHgap(10);
+
+		TitledPane tp;
+		tp = new TitledPane("Points",pointsGrid);
+		tp.setCollapsible(false);
+		content.add(tp, 0, 0);
+		GridPane.setValignment(tp, VPos.TOP);
+		
+		tp = new TitledPane("Lines",linesGrid);
+		tp.setCollapsible(false);
+		content.add(tp, 0, 1);
+		GridPane.setValignment(tp, VPos.TOP);
+		
+		tp = new TitledPane("Paper",paperGrid);
+		tp.setCollapsible(false);
+		content.add(tp, 1, 0);
+		GridPane.setValignment(tp, VPos.TOP);
+
+		tp = new TitledPane("Legend",legendGrid);
+		tp.setCollapsible(false);
+		content.add(tp, 1, 1);
+		GridPane.setValignment(tp, VPos.TOP);
+
+//
 		int col = 0;
+
 		//---------------------------------Points
-		content.add(new Label("Points:"),col, row++);
+		int row = 0;
 		// -----
 		CheckBox chbxFill = new CheckBox("");
-		addGridControl("Fill", row++, col,chbxFill, content);
+		addGridControl("Fill", row++, col,chbxFill, pointsGrid);
 		chbxFill.setSelected(symbolFill);
 		// -----
 		Spinner<Integer> spRadius = new Spinner<>();
-		addGridControl("Radius", row++,  col,spRadius, content);
+		addGridControl("Radius", row++,  col,spRadius, pointsGrid);
 		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
 		spRadius.setMaxWidth(100);
 		spRadius.setEditable(true);
 		// ----
 		Spinner<Integer> spHLevel = new Spinner<>();
-		addGridControl("Hierarchical colour level", row++,  col,spHLevel, content);
+		addGridControl("Hierarchical colour level", row++,  col,spHLevel, pointsGrid);
 		spHLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, colourHLevel));
 		spHLevel.setMaxWidth(100);
 		spHLevel.setEditable(true);
 		// -----
 		CheckBox chbxCS = new CheckBox("");
-		addGridControl("64 Colour system", row++,  col,chbxCS, content);
+		addGridControl("64 Colour system", row++,  col,chbxCS, pointsGrid);
 		chbxCS.setSelected(colour64);	
 		// -----
 		CheckBox chbxShowPointLabels = new CheckBox("");
-		addGridControl("Labels", row++,  col,chbxShowPointLabels, content);
+		addGridControl("Labels", row++,  col,chbxShowPointLabels, pointsGrid);
 		chbxShowPointLabels.setSelected(showPointLabels);
 		// ----
 		Spinner<Integer> spFontSize = new Spinner<>();
 		spFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 48, fontSize));
 		spFontSize.setMaxWidth(100);
 		spFontSize.setEditable(true);
-		addGridControl("Font size", row++,  col,spFontSize, content);
+		addGridControl("Font size", row++,  col,spFontSize, pointsGrid);
 		
 		//  --------------------------------------- Lines
-		content.add(new Label("Lines:"), col, row++);
+		row = 0;
 		// -----
 		CheckBox chbxShowLines = new CheckBox("");
-		addGridControl("Visible", row++,  col,chbxShowLines, content);
+		addGridControl("Visible", row++,  col,chbxShowLines, linesGrid);
 		chbxShowLines.setSelected(showLines);
 		// -----
 		TextField tfRelLineWidth = new TextField(Double.toString(relLineWidth));
 		tfRelLineWidth.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		tfRelLineWidth.setMaxWidth(50);
-		addGridControl("Width", row++,  col,tfRelLineWidth, content);
+		addGridControl("Width", row++,  col,tfRelLineWidth, linesGrid);
 		// -----
 		ColorPicker cpLine = new ColorPicker(lineColour);
-		addGridControl("Colour", row++,  col,cpLine, content);
+		addGridControl("Colour", row++,  col,cpLine, linesGrid);
 		GridPane.setValignment(cpLine, VPos.TOP);
 		// -----
 		CheckBox chbxShowArrows = new CheckBox("");
-		addGridControl("Arrowheads", row++, col, chbxShowArrows, content);
+		addGridControl("Arrowheads", row++, col, chbxShowArrows, linesGrid);
 		chbxShowArrows.setSelected(showArrows);
 
 		// --------------------------------------- Paper
-		row = 0;
-		col =2;
-		content.add(new Label("Paper:"),col, row++);
 		// -----
+		row = 0;
 		CheckBox chbxShowGrid = new CheckBox("");
-		addGridControl("Grid", row++,  col,chbxShowGrid, content);
+		addGridControl("Grid", row++,  col,chbxShowGrid, paperGrid);
 		chbxShowGrid.setSelected(showGrid);
 		// -----
 		CheckBox chbxShowEdgeEffect = new CheckBox("");
-		addGridControl("Boundaries", row++, col, chbxShowEdgeEffect, content);
+		addGridControl("Boundaries", row++, col, chbxShowEdgeEffect, paperGrid);
 		chbxShowEdgeEffect.setSelected(showEdgeEffect);
 		// -----
 		TextField tfSpaceCanvasRatio = new TextField(Double.toString(spaceCanvasRatio));
 		tfSpaceCanvasRatio.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		tfSpaceCanvasRatio.setMaxWidth(60);
-		addGridControl("Canvas:Space ratio", row++, col, tfSpaceCanvasRatio, content);
+		addGridControl("Canvas:Space ratio", row++, col, tfSpaceCanvasRatio, paperGrid);
 		// ----
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
-		addGridControl("Colour", row++, col, cpBkg, content);
+		addGridControl("Colour", row++, col, cpBkg, paperGrid);
 		GridPane.setValignment(cpBkg, VPos.TOP);
 		// ----
 		TextField tfContrast = new TextField(Double.toString(contrast));
 		tfContrast.setMaxWidth(50);
 		tfContrast.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
-		addGridControl("Contrast (0.0-1.0)", row++, col, tfContrast, content);
+		addGridControl("Contrast (0.0-1.0)", row++, col, tfContrast, paperGrid);
 		
 		// ---------------------------- Legend
-		content.add(new Label("Legend:"),col, row++);
+		row = 0;
 		// ----
 		CheckBox chbxLegendVisible = new CheckBox("");
-		addGridControl("Visible", row++,  col,chbxLegendVisible, content);
+		addGridControl("Visible", row++,  col,chbxLegendVisible, legendGrid);
 		chbxLegendVisible.setSelected(legendVisible);
 		// ----
 		ComboBox<Side> cmbSide = new ComboBox<>();
 		cmbSide.getItems().addAll(Side.values());
 		cmbSide.getSelectionModel().select(legendSide);
-		addGridControl("Side", row++,  col,cmbSide, content);
+		addGridControl("Side", row++,  col,cmbSide, legendGrid);
 		// ----
 		Spinner<Integer> spMaxLegendItems = new Spinner<>();
 		spMaxLegendItems.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, maxLegendItems));
 		spMaxLegendItems.setMaxWidth(100);
 		spMaxLegendItems.setEditable(true);
-		addGridControl("Max items", row++, col, spMaxLegendItems, content);
+		addGridControl("Max items", row++, col, spMaxLegendItems, legendGrid);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
