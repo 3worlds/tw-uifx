@@ -1,15 +1,45 @@
-treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
+treegraph // saved by OmugiGraphExporter on Mon Nov 16 15:48:43 CET 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+
+// TEST SETUP FOR RELATIONS
+//
+// main characteristics:
+//
+//	2 categories, A & B
+//	componentTypes 	A permanent
+//			B ephemeral
+//	2 instances of each, usually numbered 9 & 10 for A, 7 & 8 for B
+//	4 relationTypes	AA permanent
+//			AB ephemeral 1 time step (no maintainRelation function)
+//			BA ephemeral n time steps (with a maintainRelation function)
+//			BB permanent
+//
+// what the test should show:
+//
+//	10 time steps
+//	t=0 A9 <A9A10> A10 <A10A9> B7 B8 <B8B7> [Q: why is there only one relation between Bs and two between As since both relations are permanent?]
+//
+//	t=1 nothing happens
+//	t=2 all possible AB relations are established
+//	t=3 all AB relations disappear because they are ephemeral with no maintainRelation function
+//	t=4 (1) B8 is deleted due to its deleteDecision function (2) all possible BA relations are established
+//	t=5 a new B individual is created, with its automatic permanent BB relation to B7 set
+//	t=6 AB relations are set between A10 and B7 and B8
+//	t=7 previous AB relations disappear
+//	t=8 BA relations disappear due to a call to maintainRelation
+//	t=9 new AB relations are established between A9 and B7 and B8
+//	t=10 previous AB relations disappear
+
 // TREE
 3worlds TestRelations
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String(gignoux (10 nov. 2020))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String()
+	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
+	precis = java.lang.String(A test model for relations)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	version = java.lang.String()
+	version = java.lang.String(demo)
 	predefined *categories*
 		categorySet *organisation*
 			category *assemblage*
@@ -30,11 +60,11 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nAdded
+			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nRemoved
+			field nAdded
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
@@ -48,6 +78,15 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
+		record recA
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(recA)
+			field xA
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 		record loc
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(loc)
@@ -58,15 +97,6 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field x
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record recA
-			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(recA)
-			field xA
 				description = java.lang.String()
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -102,26 +132,53 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 							userClassName = java.lang.String(code.sys1.FuncA)
 							snippet snpt3
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.xA = sqrt(t);"))
+					process procBA2
+						function KeepBA
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(MaintainRelationDecision)
+							userClassName = java.lang.String(code.sys1.KeepBA)
+							snippet snpt7
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if (round(t)==8)","			return false;","		return true;"))
 					process procB
 						function RepB
 							relateToProduct = java.lang.Boolean(false)
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys1.RepB)
+							function InitB
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
+								userClassName = java.lang.String(code.sys1.InitB)
+								snippet snpt6
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if (round(t)==5) {","			nextOtherLoc[0] = 2.5;","			nextOtherLoc[1] = 0.5;","		}"))
+							snippet snpt5
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if (round(t)==5)","			return 1.0;","		return 0.0;"))
 						function MorB
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.sys1.MorB)
+							snippet snpt4
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if ((round(t)==4)&&(focalLoc.y()<1.5))","			return true;","		return false;"))
 					process procAA
 						function RelAA
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
 							userClassName = java.lang.String(code.sys1.RelAA)
 							snippet snpt2
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return true;"))
+					process procBB
+						function RelBB
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.RelBB)
+							snippet snpt8
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if (focalLoc.y()<1.5)","			return true;","		return false;"))
 					process procAB
 						function RelAB
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
 							userClassName = java.lang.String(code.sys1.RelAB)
 							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if (round(t)==2) {","			return true;","		}","		return false;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"		if (round(t)==2)","			return true;","		if (round(t)==6)","			if (focalLoc.y()<1.5)","				return true;","		if (round(t)==9)","			if (focalLoc.y()>1.5)","				return true;","		return false;"))
+					process procBA
+						function RelBA
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.RelBA)
+							snippet snpt9
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if (round(t)==4)","			if (focalLoc.y()>1.5)","				return true;","		return false;"))
 			stoppingCondition stop
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(10)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
@@ -142,7 +199,6 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 			componentType cpB
 				constantClass = java.lang.String(code.sys1.Loc)
 				driverClass = java.lang.String(code.sys1.RecB)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 				mobile = java.lang.Boolean(false)
 				component B2
 					nInstances = java.lang.Integer(0)
@@ -151,7 +207,6 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 			componentType cpA
 				constantClass = java.lang.String(code.sys1.Loc)
 				driverClass = java.lang.String(code.sys1.RecA)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				component A2
 					nInstances = java.lang.Integer(0)
@@ -161,6 +216,10 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			relationType AA
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			relationType BB
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			relationType BA
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 	userInterface gui
 		top top
 			widget wgt1
@@ -175,6 +234,12 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
 
 // CROSS-LINKS
+[process:procBA] inSpace in6 [space:space1]
+	searchRadius = java.lang.Double(10.0)
+[process:procBA] appliesTo aplyTo7 [relationType:BA]
+[process:procBB] inSpace in4 [space:space1]
+	searchRadius = java.lang.Double(10.0)
+[process:procBB] appliesTo aplyTo2 [relationType:BB]
 [component:A1] location loc1 [space:space1]
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,1.0))
 [component:A2] location loc2 [space:space1]
@@ -191,24 +256,36 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 10 17:58:20 CET 2020
 [system:sys1] belongsTo bt10 [category:*assemblage*]
 [system:sys1] belongsTo bt9 [category:*arena*]
 [widget:wgt1] trackTime trks2 [dynamics:sim1]
+[relationType:BA] toCategory to4 [category:A]
+[relationType:BA] fromCategory from4 [category:B]
+[relationType:BB] toCategory to3 [category:B]
+[relationType:BB] fromCategory from3 [category:B]
 [category:A] constants cnsts2 [record:loc]
 [category:A] drivers drvs1 [record:recA]
 [category:B] constants cnsts1 [record:loc]
 [category:B] drivers drvs2 [record:recB]
+[process:procBA2] inSpace in5 [space:space1]
+	searchRadius = java.lang.Double(10.0)
+[process:procBA2] appliesTo aplyTo6 [relationType:BA]
+[process:procBA2] dependsOn depsOn1 [process:procBB]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [widget:map] trackSpace trks1 [space:space1]
 [process:procAB] appliesTo aplyTo5 [relationType:AB]
 [process:procAB] inSpace in1 [space:space1]
 	searchRadius = java.lang.Double(10.0)
+[process:procAA] inSpace in3 [space:space1]
+	searchRadius = java.lang.Double(10.0)
 [process:procAA] appliesTo aplyTo4 [relationType:AA]
 [process:procB] appliesTo aplyTo3 [category:B]
+[process:procB] inSpace in2 [space:space1]
+	searchRadius = java.lang.Double(10.0)
 [process:procA] appliesTo aplyTo1 [category:A]
 [componentType:cpB] belongsTo bt3 [category:B]
 [componentType:cpB] belongsTo bt7 [category:*component*]
 [componentType:cpB] belongsTo bt6 [category:*atomic*]
-[componentType:cpB] belongsTo bt8 [category:*permanent*]
+[componentType:cpB] belongsTo bt8 [category:*ephemeral*]
 [componentType:cpA] belongsTo bt2 [category:*component*]
 [componentType:cpA] belongsTo bt1 [category:A]
 [componentType:cpA] belongsTo bt5 [category:*atomic*]
-[componentType:cpA] belongsTo bt4 [category:*ephemeral*]
+[componentType:cpA] belongsTo bt4 [category:*permanent*]
