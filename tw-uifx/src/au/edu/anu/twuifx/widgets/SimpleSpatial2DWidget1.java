@@ -461,12 +461,110 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-	private void drawPeriodicLines(GraphicsContext gc, double[] p1, double[] p2) {
-		double[] left = p1;
-		double[] right = p2;
-		if (p1[0] > p2[0]) {
-			left = p2;
-			right = p1;
+	private static double translate(double s, double e, double max) {
+		double result = Double.POSITIVE_INFINITY;
+		double dx = Math.abs(e - s);
+		double mn = Math.min(s, e);
+		double mx = Math.max(s, e);
+		double dxw = mn + max - mx;
+		if (dxw < dx) {
+			// translate e 
+			if (e > s)
+				result = e - max;
+			else
+				result = e + max;
+		}
+		return result;
+
+	}
+
+	private static int[][] q= {{6,5,4},{7,0,3},{8,1,2}};
+	private static int shift (double v , double r) {
+		if (v<0)
+			return 0;
+		else if (v>r)
+			return 2;
+		else return 1;
+	}
+	private int getQuad2(double[] p) {
+		int xshift = shift(p[0],spaceBounds.getMaxX());
+		int yshift = shift(p[1],spaceBounds.getMaxY());
+		return q[xshift][yshift];
+	}
+	private void drawPeriodicLines2(GraphicsContext gc, double[] startPoint, double[] endPoint) {
+		double[] transPoint = new double[2];
+		transPoint[0]=endPoint[0];
+		transPoint[1] = endPoint[1];
+		double tx = translate(startPoint[0], endPoint[0], spaceBounds.getMaxX());
+		double ty = translate(startPoint[1], endPoint[1], spaceBounds.getMaxY());
+		if (Double.isFinite(tx))
+			transPoint[0]=tx;
+		if (Double.isFinite(ty))
+			transPoint[1]=ty;
+		
+		int quad = getQuad2(transPoint);
+		System.out.println(quad);
+		double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
+		double b = startPoint[1] - (m * startPoint[0]);
+		switch(quad) {
+		// right
+		case 1:{
+			break;
+		}
+		// top right
+		case 2:{
+			break;
+		}
+		// top
+		case 3:{
+			break;
+		}
+		// top left
+		case 4:{
+			double yintercept =  b;
+			double xintercept = b / m;
+			double xd2 = getD2(startPoint[0], startPoint[1], xintercept, 0);
+			double yd2 = getD2(startPoint[0], startPoint[1], 0, yintercept);
+			if (xd2 < yd2) { // cross the x-axis first
+				drawLine(gc, startPoint[0], startPoint[1], xintercept, 0, false);
+				drawLine(gc, xintercept, 0.0, 0, yintercept, false);
+				drawLine(gc, 0.0, (yintercept), endPoint[0], endPoint[1], true);
+			} else { // cross at y-axis first
+				drawLine(gc, 0.0, yintercept, xintercept, 0, false);
+				drawLine(gc, 0.0, yintercept, xintercept, 0, false);
+				drawLine(gc, xintercept, 0.0, endPoint[0], endPoint[1], true);
+			}
+			break;
+		}
+		// left
+		case 5:{
+			break;
+		}
+		// bottom left
+		case 6:{
+			break;
+		}
+		// bottom
+		case 7:{
+			break;
+		}
+		// bottom right
+		case 8:{
+			break;
+		}
+		default: {// no wrap
+			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
+		}
+		}
+
+	}
+
+	private void drawPeriodicLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
+		double[] left = startPoint;
+		double[] right = endPoint;
+		if (startPoint[0] > endPoint[0]) {
+			left = endPoint;
+			right = startPoint;
 		}
 		double newx = left[0];
 		boolean xok = false;
@@ -486,12 +584,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			int quad = getQuad(newx, newy);
 			double m = (newy - right[1]) / (newx - right[0]);
 			double b = right[1] - (m * right[0]);
-
-			if (quad == 3) {// right
-				double yintercept = (m * spaceBounds.getMaxX()) + b;
-				drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept, false);
-				drawLine(gc, 0.0, yintercept, left[0], left[1], true);
-			} else if (quad == 1) {// top
+			if (quad == 1) { // top
 				double xintercept = (spaceBounds.getMaxY() - b) / m;
 				if (Double.isNaN(xintercept)) // vertical line
 					xintercept = left[0];
@@ -505,20 +598,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 					drawLine(gc, left[0], left[1], xintercept, spaceBounds.getMaxY(), false);
 					drawLine(gc, xintercept, 0.0, right[0], right[1], true);
 				}
-
-			} else if (quad == 5) { // bottom
-				double xintercept = -b / m;
-				if (Double.isNaN(xintercept))
-					xintercept = left[0];
-				double[] low = left;
-				double[] high = right;
-				if (low[1] > high[1]) {
-					low = right;
-					high = left;
-				}
-				drawLine(gc, low[0], low[1], xintercept, 0.0, false);
-				drawLine(gc, xintercept, spaceBounds.getMaxY(), high[0], high[1], true);
-			} else if (quad == 2) { // top right
+			} else if (quad == 2) { // top-right
 				double yintercept = (m * spaceBounds.getMaxX()) + b;
 				double xintercept = (spaceBounds.getMaxY() - b) / m;
 				double xd2 = getD2(right[0], right[1], xintercept, spaceBounds.getMaxY());
@@ -532,9 +612,29 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
 					drawLine(gc, (xintercept - spaceBounds.getMaxX()), 0.0, left[0], left[1], true);
 				}
+
+			} else if (quad == 3) {// right
+				double yintercept = (m * spaceBounds.getMaxX()) + b;
+				drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept, false);
+				drawLine(gc, 0.0, yintercept, left[0], left[1], true);
+
+			} else if (quad == 4) { // bottom right
+
+			} else if (quad == 5) { // bottom
+				double xintercept = -b / m;
+				if (Double.isNaN(xintercept))
+					xintercept = left[0];
+				double[] low = left;
+				double[] high = right;
+				if (low[1] > high[1]) {
+					low = right;
+					high = left;
+				}
+				drawLine(gc, low[0], low[1], xintercept, 0.0, false);
+				drawLine(gc, xintercept, spaceBounds.getMaxY(), high[0], high[1], true);
 			}
 		} else {
-			drawLine(gc, p1[0], p1[1], p2[0], p2[1], true);
+			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
 		}
 	}
 
@@ -904,15 +1004,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return mu;
 	}
 
-	private static void addGridControl(String name, int row, int col,Node ctrl, GridPane grid) {
+	private static void addGridControl(String name, int row, int col, Node ctrl, GridPane grid) {
 		Label lbl = new Label(name);
 		grid.add(lbl, col, row);
-		grid.add(ctrl, col+1, row);
+		grid.add(ctrl, col + 1, row);
 		GridPane.setHalignment(lbl, HPos.RIGHT);
 		GridPane.setHalignment(ctrl, HPos.LEFT);
 		GridPane.setValignment(ctrl, VPos.CENTER);
 	}
-	
 
 	private void edit() {
 		Dialog<ButtonType> dialog = new Dialog<>();
@@ -920,13 +1019,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		dialog.initOwner((Window) Dialogs.owner());
-		//TODO: Better - use a TitledPane containing Gridpane with titledPane.setCollapsible(false);
+		// TODO: Better - use a TitledPane containing Gridpane with
+		// titledPane.setCollapsible(false);
 		GridPane content = new GridPane();
 		content.setVgap(15);
 		content.setHgap(10);
 //		content.setGridLinesVisible(true);
 //		content.setAlignment(Pos.TOP_LEFT);
-		GridPane pointsGrid = new GridPane();		
+		GridPane pointsGrid = new GridPane();
 		GridPane linesGrid = new GridPane();
 		GridPane paperGrid = new GridPane();
 		GridPane legendGrid = new GridPane();
@@ -943,22 +1043,22 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		legendGrid.setHgap(10);
 
 		TitledPane tp;
-		tp = new TitledPane("Points",pointsGrid);
+		tp = new TitledPane("Points", pointsGrid);
 		tp.setCollapsible(false);
 		content.add(tp, 0, 0);
 		GridPane.setValignment(tp, VPos.TOP);
-		
-		tp = new TitledPane("Lines",linesGrid);
+
+		tp = new TitledPane("Lines", linesGrid);
 		tp.setCollapsible(false);
 		content.add(tp, 0, 1);
 		GridPane.setValignment(tp, VPos.TOP);
-		
-		tp = new TitledPane("Paper",paperGrid);
+
+		tp = new TitledPane("Paper", paperGrid);
 		tp.setCollapsible(false);
 		content.add(tp, 1, 0);
 		GridPane.setValignment(tp, VPos.TOP);
 
-		tp = new TitledPane("Legend",legendGrid);
+		tp = new TitledPane("Legend", legendGrid);
 		tp.setCollapsible(false);
 		content.add(tp, 1, 1);
 		GridPane.setValignment(tp, VPos.TOP);
@@ -966,54 +1066,54 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 //
 		int col = 0;
 
-		//---------------------------------Points
+		// ---------------------------------Points
 		int row = 0;
 		// -----
 		CheckBox chbxFill = new CheckBox("");
-		addGridControl("Fill", row++, col,chbxFill, pointsGrid);
+		addGridControl("Fill", row++, col, chbxFill, pointsGrid);
 		chbxFill.setSelected(symbolFill);
 		// -----
 		Spinner<Integer> spRadius = new Spinner<>();
-		addGridControl("Radius", row++,  col,spRadius, pointsGrid);
+		addGridControl("Radius", row++, col, spRadius, pointsGrid);
 		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
 		spRadius.setMaxWidth(100);
 		spRadius.setEditable(true);
 		// ----
 		Spinner<Integer> spHLevel = new Spinner<>();
-		addGridControl("Hierarchical colour level", row++,  col,spHLevel, pointsGrid);
+		addGridControl("Hierarchical colour level", row++, col, spHLevel, pointsGrid);
 		spHLevel.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, colourHLevel));
 		spHLevel.setMaxWidth(100);
 		spHLevel.setEditable(true);
 		// -----
 		CheckBox chbxCS = new CheckBox("");
-		addGridControl("64 Colour system", row++,  col,chbxCS, pointsGrid);
-		chbxCS.setSelected(colour64);	
+		addGridControl("64 Colour system", row++, col, chbxCS, pointsGrid);
+		chbxCS.setSelected(colour64);
 		// -----
 		CheckBox chbxShowPointLabels = new CheckBox("");
-		addGridControl("Labels", row++,  col,chbxShowPointLabels, pointsGrid);
+		addGridControl("Labels", row++, col, chbxShowPointLabels, pointsGrid);
 		chbxShowPointLabels.setSelected(showPointLabels);
 		// ----
 		Spinner<Integer> spFontSize = new Spinner<>();
 		spFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 48, fontSize));
 		spFontSize.setMaxWidth(100);
 		spFontSize.setEditable(true);
-		addGridControl("Font size", row++,  col,spFontSize, pointsGrid);
-		
-		//  --------------------------------------- Lines
+		addGridControl("Font size", row++, col, spFontSize, pointsGrid);
+
+		// --------------------------------------- Lines
 		row = 0;
 		// -----
 		CheckBox chbxShowLines = new CheckBox("");
-		addGridControl("Visible", row++,  col,chbxShowLines, linesGrid);
+		addGridControl("Visible", row++, col, chbxShowLines, linesGrid);
 		chbxShowLines.setSelected(showLines);
 		// -----
 		TextField tfRelLineWidth = new TextField(Double.toString(relLineWidth));
 		tfRelLineWidth.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		tfRelLineWidth.setMaxWidth(50);
-		addGridControl("Width", row++,  col,tfRelLineWidth, linesGrid);
+		addGridControl("Width", row++, col, tfRelLineWidth, linesGrid);
 		// -----
 		ColorPicker cpLine = new ColorPicker(lineColour);
-		addGridControl("Colour", row++,  col,cpLine, linesGrid);
+		addGridControl("Colour", row++, col, cpLine, linesGrid);
 		GridPane.setValignment(cpLine, VPos.TOP);
 		// -----
 		CheckBox chbxShowArrows = new CheckBox("");
@@ -1024,7 +1124,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// -----
 		row = 0;
 		CheckBox chbxShowGrid = new CheckBox("");
-		addGridControl("Grid", row++,  col,chbxShowGrid, paperGrid);
+		addGridControl("Grid", row++, col, chbxShowGrid, paperGrid);
 		chbxShowGrid.setSelected(showGrid);
 		// -----
 		CheckBox chbxShowEdgeEffect = new CheckBox("");
@@ -1046,18 +1146,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		tfContrast.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		addGridControl("Contrast (0.0-1.0)", row++, col, tfContrast, paperGrid);
-		
+
 		// ---------------------------- Legend
 		row = 0;
 		// ----
 		CheckBox chbxLegendVisible = new CheckBox("");
-		addGridControl("Visible", row++,  col,chbxLegendVisible, legendGrid);
+		addGridControl("Visible", row++, col, chbxLegendVisible, legendGrid);
 		chbxLegendVisible.setSelected(legendVisible);
 		// ----
 		ComboBox<Side> cmbSide = new ComboBox<>();
 		cmbSide.getItems().addAll(Side.values());
 		cmbSide.getSelectionModel().select(legendSide);
-		addGridControl("Side", row++,  col,cmbSide, legendGrid);
+		addGridControl("Side", row++, col, cmbSide, legendGrid);
 		// ----
 		Spinner<Integer> spMaxLegendItems = new Spinner<>();
 		spMaxLegendItems.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, maxLegendItems));
