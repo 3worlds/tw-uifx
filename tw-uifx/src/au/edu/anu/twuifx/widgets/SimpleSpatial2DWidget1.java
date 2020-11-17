@@ -397,7 +397,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				if (eec == null) {
 					drawLine(gc, start[0], start[1], end[0], end[1], true);
 				} else if (eec.equals(EdgeEffectCorrection.periodic))
-					drawPeriodicLines(gc, start, end);
+					drawPeriodicLines2(gc, start, end);
 				else if (eec.equals(EdgeEffectCorrection.tubular)) {
 					// assume first dim means 'x'
 					drawTubularLines(gc, start, end);
@@ -468,7 +468,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double mx = Math.max(s, e);
 		double dxw = mn + max - mx;
 		if (dxw < dx) {
-			// translate e 
+			// translate e
 			if (e > s)
 				result = e - max;
 			else
@@ -478,78 +478,88 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	}
 
-	private static int[][] q= {{6,5,4},{7,0,3},{8,1,2}};
-	private static int shift (double v , double r) {
-		if (v<0)
+	private static int[][] q = { { 6, 5, 4 }, { 7, 0, 3 }, { 8, 1, 2 } };
+
+	private static int shift(double v, double r) {
+		if (v < 0)
 			return 0;
-		else if (v>r)
+		else if (v > r)
 			return 2;
-		else return 1;
+		else
+			return 1;
 	}
+
 	private int getQuad2(double[] p) {
-		int xshift = shift(p[0],spaceBounds.getMaxX());
-		int yshift = shift(p[1],spaceBounds.getMaxY());
+		int xshift = shift(p[0], spaceBounds.getMaxX());
+		int yshift = shift(p[1], spaceBounds.getMaxY());
 		return q[xshift][yshift];
 	}
+
 	private void drawPeriodicLines2(GraphicsContext gc, double[] startPoint, double[] endPoint) {
 		double[] transPoint = new double[2];
-		transPoint[0]=endPoint[0];
+		transPoint[0] = endPoint[0];
 		transPoint[1] = endPoint[1];
 		double tx = translate(startPoint[0], endPoint[0], spaceBounds.getMaxX());
 		double ty = translate(startPoint[1], endPoint[1], spaceBounds.getMaxY());
 		if (Double.isFinite(tx))
-			transPoint[0]=tx;
+			transPoint[0] = tx;
 		if (Double.isFinite(ty))
-			transPoint[1]=ty;
-		
+			transPoint[1] = ty;
+
 		int quad = getQuad2(transPoint);
 		System.out.println(quad);
 		double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
 		double b = startPoint[1] - (m * startPoint[0]);
-		switch(quad) {
+		switch (quad) {
 		// right
-		case 1:{
+		case 1: {
 			break;
 		}
 		// top right
-		case 2:{
+		case 2: {
 			break;
 		}
 		// top
-		case 3:{
+		case 3: {
 			break;
 		}
 		// top left
-		case 4:{
-			double yintercept =  b;
-			double xintercept = b / m;
+		case 4: {
+			double yintercept = b;
+			double xintercept = (spaceBounds.getMaxY() - b) / m;
 			double xd2 = getD2(startPoint[0], startPoint[1], xintercept, 0);
 			double yd2 = getD2(startPoint[0], startPoint[1], 0, yintercept);
 			if (xd2 < yd2) { // cross the x-axis first
-				drawLine(gc, startPoint[0], startPoint[1], xintercept, 0, false);
-				drawLine(gc, xintercept, 0.0, 0, yintercept, false);
-				drawLine(gc, 0.0, (yintercept), endPoint[0], endPoint[1], true);
+//				double[] exit1 = {xintercept,spaceBounds.getMaxY()};
+//				double[] exit2 = {0.0,yintercept-spaceBounds.getMaxY()};
+//				drawLine(gc, startPoint[0], startPoint[1], exit1[0], exit1[1], false);
+//				drawLine(gc, exit1[0], 0.0, exit2[0], exit2[0], false);
+//				drawLine(gc, spaceBounds.getMaxX(),exit2[0], endPoint[0], endPoint[1], true);
+				drawLine(gc, startPoint[0], startPoint[1], xintercept, spaceBounds.getMaxY(), false);
+				drawLine(gc, xintercept, 0.0, 0, yintercept-spaceBounds.getMaxY(), false);
+				drawLine(gc, spaceBounds.getMaxX(),yintercept-spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
 			} else { // cross at y-axis first
-				drawLine(gc, 0.0, yintercept, xintercept, 0, false);
-				drawLine(gc, 0.0, yintercept, xintercept, 0, false);
-				drawLine(gc, xintercept, 0.0, endPoint[0], endPoint[1], true);
+				drawLine(gc, startPoint[0], startPoint[1], 0,yintercept, true);
+				drawLine(gc, spaceBounds.getMaxX(), yintercept, spaceBounds.getMaxX()+xintercept, spaceBounds.getMaxY(), true);
+				drawLine(gc, spaceBounds.getMaxX()+xintercept, 0.0, endPoint[0], endPoint[1], true);
 			}
 			break;
 		}
 		// left
-		case 5:{
+		case 5: {
 			break;
 		}
 		// bottom left
-		case 6:{
+		case 6: {
 			break;
 		}
 		// bottom
-		case 7:{
+		case 7: {
 			break;
 		}
 		// bottom right
-		case 8:{
+		case 8: {
+			
 			break;
 		}
 		default: {// no wrap
