@@ -392,8 +392,15 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 					throw new TwuifxException("Line error. Start point not found " + sKey);
 				if (eEntry == null)
 					throw new TwuifxException("Line error. End point not found " + eKey);
-				double[] start = sEntry.getSecond();
-				double[] end = eEntry.getSecond();
+				double[] s = sEntry.getSecond();
+				double[] e = eEntry.getSecond();
+				// Clone as data is read only
+				double[] start = { s[0], s[1] };
+				double[] end = { e[0], e[1] };
+				start[0] = Math.min(Math.max(0.0, start[0]), spaceBounds.getMaxX());
+				start[1] = Math.min(Math.max(0.0, start[1]), spaceBounds.getMaxY());
+				end[0] = Math.min(Math.max(0.0, end[0]), spaceBounds.getMaxX());
+				end[1] = Math.min(Math.max(0.0, end[1]), spaceBounds.getMaxY());
 				if (eec == null) {
 					drawLine(gc, start[0], start[1], end[0], end[1], true);
 				} else if (eec.equals(EdgeEffectCorrection.periodic))
@@ -495,6 +502,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return q[xshift][yshift];
 	}
 
+	private static double getXiAt(double y, double m, double b) {
+		return (y - b) / m;
+	}
+
+	private static double getYiAt(double x, double m, double b) {
+		return m * x + b;
+	}
+
 	private void drawPeriodicLines2(GraphicsContext gc, double[] startPoint, double[] endPoint) {
 		double[] transPoint = new double[2];
 		transPoint[0] = endPoint[0];
@@ -511,6 +526,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
 		double b = startPoint[1] - (m * startPoint[0]);
 		switch (quad) {
+		case 0: {// no wrap:  nothing to do
+			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
+			break;
+		}
 		// right
 		case 1: {
 			break;
@@ -525,23 +544,24 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 		// top left
 		case 4: {
-			double yintercept = b;
-			double xintercept = (spaceBounds.getMaxY() - b) / m;
-			double xd2 = getD2(startPoint[0], startPoint[1], xintercept, 0);
-			double yd2 = getD2(startPoint[0], startPoint[1], 0, yintercept);
+//			System.out.println("b: " + b);
+//			System.out.println("m: " + m);
+//			System.out.println(tx + "," + ty);
+//			System.out.println("S: " + startPoint[0] + "," + startPoint[1]);
+//			System.out.println("E: " + endPoint[0] + "," + endPoint[1]);
+
+			double yi = getYiAt(0.0, m, b);
+			double xi = getXiAt(spaceBounds.getMaxY(), m, b);
+			double xd2 = getD2(startPoint[0], startPoint[1], xi, spaceBounds.getMaxY());
+			double yd2 = getD2(startPoint[0], startPoint[1], 0, yi);
 			if (xd2 < yd2) { // cross the x-axis first
-//				double[] exit1 = {xintercept,spaceBounds.getMaxY()};
-//				double[] exit2 = {0.0,yintercept-spaceBounds.getMaxY()};
-//				drawLine(gc, startPoint[0], startPoint[1], exit1[0], exit1[1], false);
-//				drawLine(gc, exit1[0], 0.0, exit2[0], exit2[0], false);
-//				drawLine(gc, spaceBounds.getMaxX(),exit2[0], endPoint[0], endPoint[1], true);
-				drawLine(gc, startPoint[0], startPoint[1], xintercept, spaceBounds.getMaxY(), false);
-				drawLine(gc, xintercept, 0.0, 0, yintercept-spaceBounds.getMaxY(), false);
-				drawLine(gc, spaceBounds.getMaxX(),yintercept-spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+				drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), true);
+				drawLine(gc, xi, 0.0, 0, yi - spaceBounds.getMaxY(), true);
+				drawLine(gc, spaceBounds.getMaxX(), yi - spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
 			} else { // cross at y-axis first
-				drawLine(gc, startPoint[0], startPoint[1], 0,yintercept, true);
-				drawLine(gc, spaceBounds.getMaxX(), yintercept, spaceBounds.getMaxX()+xintercept, spaceBounds.getMaxY(), true);
-				drawLine(gc, spaceBounds.getMaxX()+xintercept, 0.0, endPoint[0], endPoint[1], true);
+				drawLine(gc, startPoint[0], startPoint[1], 0, yi, true);
+				drawLine(gc, spaceBounds.getMaxX(), yi, spaceBounds.getMaxX() + xi, spaceBounds.getMaxY(), true);
+				drawLine(gc, spaceBounds.getMaxX() + xi, 0.0, endPoint[0], endPoint[1], true);
 			}
 			break;
 		}
@@ -551,7 +571,25 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 		// bottom left
 		case 6: {
-			break;
+//			System.out.println(b);
+//			System.out.println(m);
+//			System.out.println(tx+","+ty);
+//			System.out.println("S: "+startPoint[0]+","+startPoint[1]);
+//			System.out.println("E: "+endPoint[0]+","+endPoint[1]);
+			double xi= getXiAt(0.0,m,b);
+			double yi = getYiAt(0.0,m,b);
+			double xd2 = getD2(startPoint[0], startPoint[1], xi, 0.0);
+			double yd2 = getD2(startPoint[0], startPoint[1], 0.0, yi);
+			if (xd2 < yd2) { // cross the x-axis first
+				drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, true);
+				drawLine(gc,xi,spaceBounds.getMaxY(),0.0,spaceBounds.getMaxY()+yi,true);
+				drawLine(gc,spaceBounds.getMaxX(),spaceBounds.getMaxY()+yi,endPoint[0],endPoint[1],true);	
+			}else {
+				drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, true);
+				drawLine(gc, spaceBounds.getMaxX(), yi, spaceBounds.getMaxX()+xi,0.0, true);
+				drawLine(gc,spaceBounds.getMaxX()+xi,spaceBounds.getMaxY(),endPoint[0],endPoint[1],true);				
+			}
+		break;
 		}
 		// bottom
 		case 7: {
@@ -559,11 +597,30 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 		// bottom right
 		case 8: {
-			
+//			System.out.println("b: "+b);
+//			System.out.println("m: "+m);
+//			System.out.println(tx+","+ty);
+//			System.out.println("S: "+startPoint[0]+","+startPoint[1]);
+//			System.out.println("E: "+endPoint[0]+","+endPoint[1]);
+			double yi = getYiAt(spaceBounds.getMaxX(),m,b);
+			double xi = getXiAt(0.0,m,b);
+			double xd2 = getD2(startPoint[0], startPoint[1], xi, 0);
+			double yd2 = getD2(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
+			if (xd2 < yd2) { // cross the x-axis first
+				drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, true);
+				drawLine(gc, xi, spaceBounds.getMaxY(), spaceBounds.getMaxX(),
+						spaceBounds.getMaxY() + yi, true);
+				drawLine(gc, 0.0, spaceBounds.getMaxY() + yi, endPoint[0], endPoint[1], true);
+			} else { // cross at y-axis first
+				drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, true);
+				drawLine(gc, 0.0, yi, xi-spaceBounds.getMaxX(), 0.0, true);
+				drawLine(gc,xi- spaceBounds.getMaxX(), spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+			}
 			break;
 		}
-		default: {// no wrap
-			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
+		default: {
+			throw new TwuifxException("Line to unhandled quadrant [" + quad + ": (" + startPoint[0] + ","
+					+ startPoint[1] + ") > (" + endPoint[0] + "," + endPoint[1] + ")]");
 		}
 		}
 

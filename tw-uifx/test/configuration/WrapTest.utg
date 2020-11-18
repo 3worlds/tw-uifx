@@ -211,15 +211,15 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 17 11:07:01 AEDT 2020
 	searchRadius = java.lang.Double(10.0)
 [process:procBB] appliesTo aplyTo2 [relationType:BB]
 [component:A1] location loc1 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.4,0.5))
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.25,0.25))
 [component:A2] location loc2 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]0.5,2.4))
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]0.25,2.25))
 [relationType:AA] fromCategory from1 [category:A]
 [relationType:AA] toCategory to1 [category:A]
 [relationType:AB] toCategory to2 [category:B]
 [relationType:AB] fromCategory from2 [category:A]
 [component:B1] location loc3 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.4,2.4))
+	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.25,2.75))
 [component:B2] location loc4 [space:space1]
 	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]0.5,0.5))
 [process:procBA2] inSpace in5 [space:space1]
