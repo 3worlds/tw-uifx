@@ -455,6 +455,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
 		double b = startPoint[1] - (m * startPoint[0]);
 		switch (quad) {
+		case 0: {// no wrap: nothing to do
+			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
+			break;
+		}
 		case 1: {// right
 			double yi = getYAt(spaceBounds.getMaxX(), m, b);
 			drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, true);

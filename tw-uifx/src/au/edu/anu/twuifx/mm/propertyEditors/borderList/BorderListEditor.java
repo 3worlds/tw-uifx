@@ -120,12 +120,9 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 			}
 			entry = entry.replaceFirst(",", "");
 			String value = "([" + nDims * 2 + "]" + entry + ")";
-			int i = BorderListType.getUnpairedWrapIndex(BorderListType.valueOf(value));
-			if (i >= 0)
-				Dialogs.errorAlert(item.getElement().toShortString() + "#" + P_SPACE_BORDERTYPE.key(),
-						"Wrap-around missmatch", "Wrap-around in dimension " + (i + 1) + " is unpaired.");
-			else
-				setValue(value);
+
+			//NB Leave it to the queries to validate these settings.
+			setValue(value);
 
 		}
 
