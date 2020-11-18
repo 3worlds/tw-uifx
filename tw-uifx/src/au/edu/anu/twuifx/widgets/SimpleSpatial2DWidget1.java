@@ -404,7 +404,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				if (eec == null) {
 					drawLine(gc, start[0], start[1], end[0], end[1], true);
 				} else if (eec.equals(EdgeEffectCorrection.periodic))
-					drawPeriodicLines2(gc, start, end);
+					drawPeriodicLines(gc, start, end);
 				else if (eec.equals(EdgeEffectCorrection.tubular)) {
 					// assume first dim means 'x'
 					drawTubularLines(gc, start, end);
@@ -440,32 +440,39 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				}
 			}
 		}
-
 	}
 
-	private void drawTubularLines(GraphicsContext gc, double[] p1, double[] p2) {
-		double[] left = p1;
-		double[] right = p2;
-		if (p1[0] > p2[0]) {
-			left = p2;
-			right = p1;
-		}
-		double newx = left[0];
-		boolean xok = false;
-		if ((right[0] - left[0]) <= (left[0] + spaceBounds.getMaxX() - right[0])) {
-			xok = true;
-		} else
-			newx += spaceBounds.getMaxX();
+	private void drawTubularLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
+		//TODO: Check this!
+		double[] transPoint = new double[2];
+		transPoint[0] = endPoint[0];
+		transPoint[1] = endPoint[1];
+		double tx = translate(startPoint[0], endPoint[0], spaceBounds.getMaxX());		
+		if (Double.isFinite(tx))
+			transPoint[0] = tx;
+		int quad = getQuad(transPoint);
 
-		if (!xok) {
-			double m = (right[1] - left[1]) / (newx - right[0]);
-			double b = right[1] - (m * right[0]);
-			double yintercept = (m * spaceBounds.getMaxX()) + b;
-			drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept, false);
-			drawLine(gc, 0.0, yintercept, left[0], left[1], true);
-		} else {
-			drawLine(gc, p1[0], p1[1], p2[0], p2[1], true);
+		double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
+		double b = startPoint[1] - (m * startPoint[0]);
+		switch (quad) {
+		case 1: {// right
+			double yi = getYAt(spaceBounds.getMaxX(), m, b);
+			drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, true);
+			drawLine(gc, 0.0, yi, endPoint[0], endPoint[1], true);
+			break;
 		}
+		case 5: {// left
+			double yi = getYAt(0.0, m, b);
+			drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, true);
+			drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
+			break;
+		}
+		default: {
+			throw new TwuifxException("Line to unhandled quadrant [" + quad + ": (" + startPoint[0] + ","
+					+ startPoint[1] + ") > (" + endPoint[0] + "," + endPoint[1] + ")]");
+		}
+		}
+
 	}
 
 	private static double translate(double s, double e, double max) {
@@ -496,21 +503,26 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			return 1;
 	}
 
-	private int getQuad2(double[] p) {
+	private int getQuad(double[] p) {
 		int xshift = shift(p[0], spaceBounds.getMaxX());
 		int yshift = shift(p[1], spaceBounds.getMaxY());
 		return q[xshift][yshift];
 	}
 
-	private static double getXiAt(double y, double m, double b) {
+	private static double getXAt(double y, double m, double b) {
 		return (y - b) / m;
 	}
 
-	private static double getYiAt(double x, double m, double b) {
+	private static double getYAt(double x, double m, double b) {
 		return m * x + b;
 	}
+//	System.out.println("b: " + b);
+//	System.out.println("m: " + m);
+//	System.out.println(tx + "," + ty);
+//	System.out.println("S: " + startPoint[0] + "," + startPoint[1]);
+//	System.out.println("E: " + endPoint[0] + "," + endPoint[1]);
 
-	private void drawPeriodicLines2(GraphicsContext gc, double[] startPoint, double[] endPoint) {
+	private void drawPeriodicLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
 		double[] transPoint = new double[2];
 		transPoint[0] = endPoint[0];
 		transPoint[1] = endPoint[1];
@@ -521,39 +533,58 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		if (Double.isFinite(ty))
 			transPoint[1] = ty;
 
-		int quad = getQuad2(transPoint);
-		System.out.println(quad);
+		int quad = getQuad(transPoint);
+
 		double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
 		double b = startPoint[1] - (m * startPoint[0]);
 		switch (quad) {
-		case 0: {// no wrap:  nothing to do
+		case 0: {// no wrap: nothing to do
 			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
 			break;
 		}
 		// right
 		case 1: {
+			double yi = getYAt(spaceBounds.getMaxX(), m, b);
+			drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, true);
+			drawLine(gc, 0.0, yi, endPoint[0], endPoint[1], true);
 			break;
 		}
 		// top right
 		case 2: {
+			double yi = getYAt(spaceBounds.getMaxX(), m, b);
+			double xi = getXAt(spaceBounds.getMaxY(), m, b);
+			double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, spaceBounds.getMaxY());
+			double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
+			if (xd2 < yd2) { // cross the x-axis first
+				drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), true);
+				drawLine(gc, xi, 0.0, spaceBounds.getMaxX(), (yi - spaceBounds.getMaxY()), true);
+				drawLine(gc, 0.0, (yi - spaceBounds.getMaxY()), endPoint[0], endPoint[1], true);
+			} else { // cross at y-axis first
+				drawLine(gc, 0.0, yi, (xi - spaceBounds.getMaxX()), spaceBounds.getMaxY(), true);
+				drawLine(gc, 0.0, yi, (xi - spaceBounds.getMaxX()), spaceBounds.getMaxY(), true);
+				drawLine(gc, (xi - spaceBounds.getMaxX()), 0.0, endPoint[0], endPoint[1], true);
+			}
 			break;
 		}
 		// top
 		case 3: {
+			double xi = getXAt(spaceBounds.getMaxY(), m, b);
+			if (Double.isNaN(xi)) {// vertical line
+				xi = startPoint[0];
+				drawLine(gc, xi, startPoint[2], xi, spaceBounds.getMaxY(), false);
+				drawLine(gc, xi, 0.0, xi, endPoint[1], true);
+			} else {
+				drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), false);
+				drawLine(gc, xi, 0.0, endPoint[0], endPoint[1], true);
+			}
 			break;
 		}
 		// top left
 		case 4: {
-//			System.out.println("b: " + b);
-//			System.out.println("m: " + m);
-//			System.out.println(tx + "," + ty);
-//			System.out.println("S: " + startPoint[0] + "," + startPoint[1]);
-//			System.out.println("E: " + endPoint[0] + "," + endPoint[1]);
-
-			double yi = getYiAt(0.0, m, b);
-			double xi = getXiAt(spaceBounds.getMaxY(), m, b);
-			double xd2 = getD2(startPoint[0], startPoint[1], xi, spaceBounds.getMaxY());
-			double yd2 = getD2(startPoint[0], startPoint[1], 0, yi);
+			double yi = getYAt(0.0, m, b);
+			double xi = getXAt(spaceBounds.getMaxY(), m, b);
+			double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, spaceBounds.getMaxY());
+			double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], 0, yi);
 			if (xd2 < yd2) { // cross the x-axis first
 				drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), true);
 				drawLine(gc, xi, 0.0, 0, yi - spaceBounds.getMaxY(), true);
@@ -567,54 +598,55 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 		// left
 		case 5: {
+			double yi = getYAt(0.0, m, b);
+			drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, true);
+			drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
 			break;
 		}
 		// bottom left
 		case 6: {
-//			System.out.println(b);
-//			System.out.println(m);
-//			System.out.println(tx+","+ty);
-//			System.out.println("S: "+startPoint[0]+","+startPoint[1]);
-//			System.out.println("E: "+endPoint[0]+","+endPoint[1]);
-			double xi= getXiAt(0.0,m,b);
-			double yi = getYiAt(0.0,m,b);
-			double xd2 = getD2(startPoint[0], startPoint[1], xi, 0.0);
-			double yd2 = getD2(startPoint[0], startPoint[1], 0.0, yi);
+			double xi = getXAt(0.0, m, b);
+			double yi = getYAt(0.0, m, b);
+			double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0.0);
+			double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], 0.0, yi);
 			if (xd2 < yd2) { // cross the x-axis first
 				drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, true);
-				drawLine(gc,xi,spaceBounds.getMaxY(),0.0,spaceBounds.getMaxY()+yi,true);
-				drawLine(gc,spaceBounds.getMaxX(),spaceBounds.getMaxY()+yi,endPoint[0],endPoint[1],true);	
-			}else {
+				drawLine(gc, xi, spaceBounds.getMaxY(), 0.0, spaceBounds.getMaxY() + yi, true);
+				drawLine(gc, spaceBounds.getMaxX(), spaceBounds.getMaxY() + yi, endPoint[0], endPoint[1], true);
+			} else {
 				drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, true);
-				drawLine(gc, spaceBounds.getMaxX(), yi, spaceBounds.getMaxX()+xi,0.0, true);
-				drawLine(gc,spaceBounds.getMaxX()+xi,spaceBounds.getMaxY(),endPoint[0],endPoint[1],true);				
+				drawLine(gc, spaceBounds.getMaxX(), yi, spaceBounds.getMaxX() + xi, 0.0, true);
+				drawLine(gc, spaceBounds.getMaxX() + xi, spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
 			}
-		break;
+			break;
 		}
 		// bottom
 		case 7: {
+			double xi = getXAt(0.0, m, b);
+			if (Double.isNaN(xi)) {// vertical line
+				xi = startPoint[0];
+				drawLine(gc, xi, startPoint[2], xi, 0.0, true);
+				drawLine(gc, xi, spaceBounds.getMaxY(), xi, endPoint[1], true);
+			} else {
+				drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, false);
+				drawLine(gc, xi, spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+			}
 			break;
 		}
 		// bottom right
 		case 8: {
-//			System.out.println("b: "+b);
-//			System.out.println("m: "+m);
-//			System.out.println(tx+","+ty);
-//			System.out.println("S: "+startPoint[0]+","+startPoint[1]);
-//			System.out.println("E: "+endPoint[0]+","+endPoint[1]);
-			double yi = getYiAt(spaceBounds.getMaxX(),m,b);
-			double xi = getXiAt(0.0,m,b);
-			double xd2 = getD2(startPoint[0], startPoint[1], xi, 0);
-			double yd2 = getD2(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
-			if (xd2 < yd2) { // cross the x-axis first
+			double yi = getYAt(spaceBounds.getMaxX(), m, b);
+			double xi = getXAt(0.0, m, b);
+			double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0);
+			double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
+			if (xd2 < yd2) { // cross at x-axis first
 				drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, true);
-				drawLine(gc, xi, spaceBounds.getMaxY(), spaceBounds.getMaxX(),
-						spaceBounds.getMaxY() + yi, true);
+				drawLine(gc, xi, spaceBounds.getMaxY(), spaceBounds.getMaxX(), spaceBounds.getMaxY() + yi, true);
 				drawLine(gc, 0.0, spaceBounds.getMaxY() + yi, endPoint[0], endPoint[1], true);
 			} else { // cross at y-axis first
 				drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, true);
-				drawLine(gc, 0.0, yi, xi-spaceBounds.getMaxX(), 0.0, true);
-				drawLine(gc,xi- spaceBounds.getMaxX(), spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+				drawLine(gc, 0.0, yi, xi - spaceBounds.getMaxX(), 0.0, true);
+				drawLine(gc, xi - spaceBounds.getMaxX(), spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
 			}
 			break;
 		}
@@ -624,108 +656,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 		}
 
-	}
-
-	private void drawPeriodicLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
-		double[] left = startPoint;
-		double[] right = endPoint;
-		if (startPoint[0] > endPoint[0]) {
-			left = endPoint;
-			right = startPoint;
-		}
-		double newx = left[0];
-		boolean xok = false;
-		if ((right[0] - left[0]) <= (left[0] + spaceBounds.getMaxX() - right[0])) {
-			xok = true;
-		} else
-			newx += spaceBounds.getMaxX();
-		double newy = left[1];
-		boolean yok = false;
-		if (Math.abs(left[1] - right[1]) <= (spaceBounds.getMaxY() / 2.0)) {
-			yok = true;
-		} else if (left[1] <= right[1])
-			newy += spaceBounds.getMaxY();
-		else
-			newy -= spaceBounds.getMaxY();
-		if (!xok || !yok) {
-			int quad = getQuad(newx, newy);
-			double m = (newy - right[1]) / (newx - right[0]);
-			double b = right[1] - (m * right[0]);
-			if (quad == 1) { // top
-				double xintercept = (spaceBounds.getMaxY() - b) / m;
-				if (Double.isNaN(xintercept)) // vertical line
-					xintercept = left[0];
-				if (Double.isInfinite(m)) {// exactly vertical
-					drawLine(gc, left[0], Math.max(right[1], left[1]), left[0], spaceBounds.getMaxY(), false);
-					drawLine(gc, left[0], 0.0, left[0], Math.min(right[1], left[1]), true);
-				} else if (m < 0) {// slope to the left
-					drawLine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY(), false);
-					drawLine(gc, xintercept, 0.0, left[0], left[1], true);
-				} else if (m > 0) {// slope to the right
-					drawLine(gc, left[0], left[1], xintercept, spaceBounds.getMaxY(), false);
-					drawLine(gc, xintercept, 0.0, right[0], right[1], true);
-				}
-			} else if (quad == 2) { // top-right
-				double yintercept = (m * spaceBounds.getMaxX()) + b;
-				double xintercept = (spaceBounds.getMaxY() - b) / m;
-				double xd2 = getD2(right[0], right[1], xintercept, spaceBounds.getMaxY());
-				double yd2 = getD2(right[0], right[1], spaceBounds.getMaxX(), yintercept);
-				if (xd2 < yd2) { // cross the x-axis first
-					drawLine(gc, right[0], right[1], xintercept, spaceBounds.getMaxY(), false);
-					drawLine(gc, xintercept, 0.0, spaceBounds.getMaxX(), (yintercept - spaceBounds.getMaxY()), false);
-					drawLine(gc, 0.0, (yintercept - spaceBounds.getMaxY()), left[0], left[1], true);
-				} else { // cross at y-axis first
-					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
-					drawLine(gc, 0.0, yintercept, (xintercept - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
-					drawLine(gc, (xintercept - spaceBounds.getMaxX()), 0.0, left[0], left[1], true);
-				}
-
-			} else if (quad == 3) {// right
-				double yintercept = (m * spaceBounds.getMaxX()) + b;
-				drawLine(gc, right[0], right[1], spaceBounds.getMaxX(), yintercept, false);
-				drawLine(gc, 0.0, yintercept, left[0], left[1], true);
-
-			} else if (quad == 4) { // bottom right
-
-			} else if (quad == 5) { // bottom
-				double xintercept = -b / m;
-				if (Double.isNaN(xintercept))
-					xintercept = left[0];
-				double[] low = left;
-				double[] high = right;
-				if (low[1] > high[1]) {
-					low = right;
-					high = left;
-				}
-				drawLine(gc, low[0], low[1], xintercept, 0.0, false);
-				drawLine(gc, xintercept, spaceBounds.getMaxY(), high[0], high[1], true);
-			}
-		} else {
-			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
-		}
-	}
-
-	private static double getD2(double x1, double y1, double x2, double y2) {
-		return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-	}
-
-	private int getQuad(double x, double y) {
-		if (x <= spaceBounds.getMaxX()) {// 1 or 5
-			if (y > spaceBounds.getMaxY())
-				return 1;
-			else if (y < 0.0)
-				return 5;
-
-		} else {// 2,3 or 4
-			if (y > spaceBounds.getMaxY())
-				return 2;
-			else if (y < 0.0)
-				return 4;
-			else
-				return 3;
-
-		}
-		return -1;
 	}
 
 	private void drawLine(GraphicsContext gc, double x1, double y1, double x2, double y2, boolean endNode) {
