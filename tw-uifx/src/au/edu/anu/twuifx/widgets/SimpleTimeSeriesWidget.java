@@ -421,8 +421,18 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		reductionAlgorithm.setMinPointPixelDistance(MIN_PIXEL_DISTANCE);
 	}
 
+	private static String getAbbrev (String s, int l) {
+		if (s.length()<=l)
+			return s;
+		return s.substring(0,l)+"\u2026";
+	}
 	// helper for onMetaDataMessage, cf below.
 	private void makeChannels(DataLabel dl) {
+		// shorten dl here
+//		String abbrevKey = "";
+//		for (int i = 0;i<dl.size();i++) 
+//			abbrevKey+= "."+getAbbrev(dl.get(i),2);
+//		abbrevKey = abbrevKey.replaceFirst(".", "");
 		if (sas != null) {
 			for (StatisticalAggregates sa : sas.values()) {
 				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
@@ -436,9 +446,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				dataSetMap.put(key, ds);
 			}
 		} else {
-			String key = dl.toString();
-			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
-			dataSetMap.put(key, ds);
+			//String key = dl.toString();
+			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(dl.toString(), bufferSize);
+			dataSetMap.put(dl.toString(), ds);
 		}
 	}
 
