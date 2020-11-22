@@ -107,7 +107,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 	private int my;
 
 	private Number[][] numbers;
-	private int sender;
+//	private int sender;
 	private String widgetId;
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
@@ -124,7 +124,7 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
-		sender = (Integer) properties.getPropertyValue("sender");
+		policy.setProperties(id, properties);
 	}
 
 	@Override
