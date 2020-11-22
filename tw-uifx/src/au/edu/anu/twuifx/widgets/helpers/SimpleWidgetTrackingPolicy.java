@@ -29,8 +29,11 @@
 
 package au.edu.anu.twuifx.widgets.helpers;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
@@ -53,7 +56,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  */
 
 public  class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>{
-	private int sender;
+	private Integer sender;
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
@@ -65,17 +68,17 @@ public  class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeDat
 	public boolean canProcessDataMessage(TimeData data) {
 		return sender==data.sender();
 	}
-
 	@Override
-	public int sender() {
-		return sender;
+	public boolean canProcessMetadataMessage(Metadata meta) {
+		return sender==meta.sender();
 	}
 
+
 	@Override
-	public Collection<Integer> senders() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Integer> senders() {
+		return Collections.unmodifiableList(new ArrayList<Integer>(sender));
 	}
+
 
 
 }

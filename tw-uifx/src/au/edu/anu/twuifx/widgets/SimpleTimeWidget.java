@@ -150,7 +150,8 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 
 
 	private String formatOutput(long time) {
-		return "[" + policy.sender() + "] " + timeFormatter.getTimeText(time);
+		return "[" + policy.senders().get(0) + "] " + timeFormatter.getTimeText(time);
+//		return timeFormatter.getTimeText(time);
 	}
 
 }

@@ -147,9 +147,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 //		2) called second after construction
-		metadata = meta;
-		tsMeta = (Output0DMetadata) metadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
-		// do everything in getUserInterfaceContainer() below
+		if (policy.canProcessMetadataMessage(meta)) {
+			metadata = meta;
+			tsMeta = (Output0DMetadata) metadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
+			// do everything in getUserInterfaceContainer() below
+		}
 	}
 
 	@Override
@@ -312,7 +314,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
 				if (!ds.equals(dontTouch))
 					ds.autoNotification().getAndSet(true);
-			
+
 			if (((DefaultNumericAxis) chart.getYAxis()).isAutoRangeRounding())
 				chart.getYAxis().forceRedraw();
 		});
@@ -447,7 +449,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				dataSetMap.put(key, ds);
 			}
 		} else {
-			//String key = dl.toString();
+			// String key = dl.toString();
 			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(dl.toString(), bufferSize);
 			dataSetMap.put(dl.toString(), ds);
 		}

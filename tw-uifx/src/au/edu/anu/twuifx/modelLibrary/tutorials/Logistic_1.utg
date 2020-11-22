@@ -6,10 +6,14 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 // CODE snippet for method Logistic.chaos(...)
 //		focalDrv.x = r*x*(1-x);
 
+// CODE snippet for method Logistic.init1(...)
+//		focalCnt.r = 3.7;
+//		focalDrv.x = 0.01;
+
 // TREE
 3worlds Logistic1
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String("")
+	built-by = java.lang.String(ian (22 Nov. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(Tutorial: Discrete logistic model. A minimal configuration file for 3Worlds introducing Process, Function, Widgets and DataTrackers.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https://en.wikipedia.org/wiki/Logistic_map","https://en.wikipedia.org/wiki/Chaos_theory"))
@@ -77,7 +81,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.population.Init1)
 			snippet snpt2
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"focalCnt.r = 3.7;","focalDrv.x = 0.01;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.r = 3.7;","		focalDrv.x = 0.01;"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -97,7 +101,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.population.Chaos)
 							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"focalDrv.x = r*x*(1-x);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.x = r * x * (1 - x);"))
 						dataTracker trk1
 							sampleSize = java.lang.String(1)
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)

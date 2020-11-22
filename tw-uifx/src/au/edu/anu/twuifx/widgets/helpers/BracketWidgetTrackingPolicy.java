@@ -31,8 +31,10 @@ package au.edu.anu.twuifx.widgets.helpers;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
 // not sure about this wip
@@ -42,16 +44,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
  * @date 23 Sep 2019
  */
 /*
- * The policy of simple widgets is:
- * 
- * 1) to follow just one sender. That's it! The chosen sender is
- * a sub-archetype property. These widgets will therefore ignore data from
- * other senders.
- * 
- * Each widget should indicate the sender int on the ui.
- * 
- * 
- */
+  */
 
 public  class BracketWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>{
 	private Map<Integer, Long> simTimes = new HashMap<>();
@@ -68,14 +61,16 @@ public  class BracketWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeDa
 	}
 
 	@Override
-	public int sender() {
-		return 1;
-		// stupid flaw
+	public List<Integer> senders() {
+//		return simTimes.keySet();
+		return null;
 	}
 
+
 	@Override
-	public Collection<Integer> senders() {
-		return simTimes.keySet();
+	public boolean canProcessMetadataMessage(Metadata meta) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

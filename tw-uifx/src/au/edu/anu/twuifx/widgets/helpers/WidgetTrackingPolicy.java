@@ -29,16 +29,17 @@
 
 package au.edu.anu.twuifx.widgets.helpers;
 
-import java.util.Collection;
+import java.util.List;
 
+import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.Widget;
 
 public interface WidgetTrackingPolicy<T> extends Widget{
 	
 	public boolean canProcessDataMessage(T data);
 	
-	public int sender();
+	public boolean canProcessMetadataMessage(Metadata meta);
 	
-	public Collection<Integer> senders();
+	public List<Integer> senders();
 	
 }
