@@ -122,7 +122,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 			widget population sizes
-				order = java.lang.Integer(0)
+				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 	system community
