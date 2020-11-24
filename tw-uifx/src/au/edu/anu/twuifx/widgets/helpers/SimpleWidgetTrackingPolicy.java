@@ -27,58 +27,49 @@
  *                                                                        *
  **************************************************************************/
 
+// 
 package au.edu.anu.twuifx.widgets.helpers;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
-// not sure about this wip
+
 /**
  * @author Ian Davies
  *
  * @date 23 Sep 2019
  */
+
 /*
  * The policy of simple widgets is:
  * 
- * 1) to follow just one sender. That's it! The chosen sender is
- * a sub-archetype property. These widgets will therefore ignore data from
- * other senders.
+ * 1) to follow just one sender. That's it! The chosen sender is a sub-archetype
+ * property. These widgets will therefore ignore data from other senders.
  * 
  * Each widget should indicate the sender int on the ui.
  * 
+ * WIP
  * 
+ * This class can be moved to twapp (or twcore?)
  */
 
-public  class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>{
-	private Integer sender;
+public class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData> {
+	private int sender;
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		sender = (Integer) properties.getPropertyValue(P_WIDGET_SENDER.key());		
+		sender = (Integer) properties.getPropertyValue(P_WIDGET_SENDER.key());
 	}
-
 
 	@Override
 	public boolean canProcessDataMessage(TimeData data) {
-		return sender==data.sender();
+		return sender == data.sender();
 	}
+
 	@Override
 	public boolean canProcessMetadataMessage(Metadata meta) {
-		return sender==meta.sender();
+		return sender == meta.sender();
 	}
-
-
-	@Override
-	public List<Integer> senders() {
-		return Collections.unmodifiableList(new ArrayList<Integer>(sender));
-	}
-
-
 
 }

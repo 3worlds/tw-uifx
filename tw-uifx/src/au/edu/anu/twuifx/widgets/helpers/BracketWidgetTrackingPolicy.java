@@ -49,8 +49,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 public  class BracketWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>{
 	private Map<Integer, Long> simTimes = new HashMap<>();
 	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
-				
+	public void setProperties(String id, SimplePropertyList properties) {				
 	}
 
 
@@ -58,12 +57,6 @@ public  class BracketWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeDa
 	public boolean canProcessDataMessage(TimeData data) {
 		simTimes.put(data.sender(), data.time());
 		return true;
-	}
-
-	@Override
-	public List<Integer> senders() {
-//		return simTimes.keySet();
-		return null;
 	}
 
 

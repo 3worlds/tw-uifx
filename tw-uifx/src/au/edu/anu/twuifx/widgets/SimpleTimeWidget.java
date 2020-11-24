@@ -97,7 +97,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	private void processDataMessage(TimeData data) {
 		Platform.runLater(() -> {
 			log.info("Thread id: " + Thread.currentThread().getId());
-			lblTime.setText(formatOutput(data.time()));
+			lblTime.setText(formatOutput(data.sender(),data.time()));
 		});
 	}
 
@@ -149,9 +149,8 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	}
 
 
-	private String formatOutput(long time) {
-		return "[" + policy.senders().get(0) + "] " + timeFormatter.getTimeText(time);
-//		return timeFormatter.getTimeText(time);
+	private String formatOutput(int sender, long time) {
+		return "[#" + sender + "] " + timeFormatter.getTimeText(time);
 	}
 
 }
