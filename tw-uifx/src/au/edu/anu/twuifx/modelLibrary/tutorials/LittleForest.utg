@@ -48,9 +48,9 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 			category *ephemeral*
 			category *permanent*
 	dataDefinition dDef
-		record cnt
+		record par
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(cnt)
+			generatedClassName = java.lang.String(par)
 			field gmax
 				description = java.lang.String(relative growth rate)
 				interval = fr.ens.biologie.generic.utils.Interval(]0.0,+∞[)
@@ -69,6 +69,21 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(# yr-1)
+		record treeCst
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(treeCst)
+			field y
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field x
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 		record drv
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(drv)
@@ -105,7 +120,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.Init1)
 			snippet snpt7
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"focalCnt.searchRadius = 10.0;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalCnt.searchRadius = 10.0;"))
 		dynamics sim1
 			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
@@ -126,35 +141,35 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
 							userClassName = java.lang.String(code.sys1.FindNeighbours)
 							snippet snpt6
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"return squaredEuclidianDistance(focalLoc,otherLoc)<searchRadius*searchRadius;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return squaredEuclidianDistance(x,y,other_x,other_y)<searchRadius*searchRadius;"))
 					process p2
 						function ResourceDemand
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
 							userClassName = java.lang.String(code.sys1.ResourceDemand)
 							snippet snpt5
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"otherDec.neighBm += biomass;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		otherDec.neighBm += biomass;"))
 					process p1
 						function Growth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys1.Growth)
 							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"double g = group_gmax*biomass*biomass/(biomass+neighBm);","focalDrv.biomass = biomass+g;","nextFocalLoc[0] = focalLoc.x();","nextFocalLoc[1] = focalLoc.y();"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		double g = group_gmax*biomass*biomass/(biomass+neighBm);","		focalDrv.biomass = biomass+g;"))
 						function Reproduction
 							relateToProduct = java.lang.Boolean(false)
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys1.Reproduction)
 							snippet snpt4
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"// number of seedlings proportional to biomass/100","return group_fec*biomass/100;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		// number of seedlings proportional to biomass/100","		return group_fec*biomass/100;"))
 							function Dispersal
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
 								userClassName = java.lang.String(code.sys1.Dispersal)
 								snippet snpt3
-									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([7]"// drivers","otherDrv.biomass = 1;","// location","double dist = searchRadius*random.nextGaussian()+searchRadius;","double angle = random.nextDouble()*2*PI;","nextOtherLoc[0] = focalLoc.x()+dist*cos(angle);","nextOtherLoc[1] = focalLoc.y()+dist*sin(angle);"))
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([7]"		// drivers","		otherDrv.biomass = 1;","		// location","		double dist = searchRadius*random.nextGaussian()+searchRadius;","		double angle = random.nextDouble()*2*PI;","		otherCnt.x = x+dist*cos(angle);","		otherCnt.y = y+dist*sin(angle);"))
 						function Mortality
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.sys1.Mortality)
 							snippet snpt2
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"// mortality is increased proportionally to low growth due to competition","double coef = biomass/(biomass+neighBm);","double proba = group_pmor*coef;","return decider.decide(proba);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		// mortality is increased proportionally to low growth due to competition","		double coef = biomass/(biomass+neighBm);","		double proba = group_pmor*coef;","		return decider.decide(proba);"))
 						dataTracker trk2
 							sampleSize = java.lang.String(10)
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
@@ -175,7 +190,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 			categorySet plants
 				category tree
 			groupType species
-				constantClass = java.lang.String(code.sys1.Cnt)
+				constantClass = java.lang.String(code.sys1.Par)
 				group Carpinus
 					constantValues initCnts1
 						fec = java.lang.Double(0.4)
@@ -187,8 +202,10 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 						gmax = java.lang.Double(0.2)
 						pmor = java.lang.Double(0.05)
 				componentType treeIndividual
+					constantClass = java.lang.String(code.sys1.TreeCst)
 					decoratorClass = java.lang.String(code.sys1.Treedec)
 					driverClass = java.lang.String(code.sys1.Drv)
+					lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 					mobile = java.lang.Boolean(false)
 					relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 					component cmp2
@@ -240,7 +257,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 						sender = java.lang.Integer(0)
 						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 			widget map
-				order = java.lang.Integer(0)
+				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
 
@@ -258,12 +275,13 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [dataTracker:trk2] trackComponent trks8 [group:Quercus]
 [dataTracker:trk2] trackField trks7 [field:neighBm]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[category:tree] constants cnsts2 [record:treeCst]
 [category:tree] decorators decs1 [record:treedec]
 [category:tree] drivers drvs1 [record:drv]
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
-[category:*group*] constants cnts1 [record:cnt]
+[category:*group*] constants cnts1 [record:par]
 [process:p1] appliesTo aplyTo2 [category:tree]
 [process:p1] appliesTo aplyTo1 [category:*component*]
 [process:p1] dependsOn depsOn2 [process:p2]
@@ -293,3 +311,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [groupType:species] belongsTo bt9 [category:*group*]
 [groupType:species] belongsTo bt8 [category:*assemblage*]
 [widget:tbl biomass] trackSeries trks10 [dataTracker:trk2]
+[space:space1] coordinate x1 [field:x]
+	rank = java.lang.Integer(0)
+[space:space1] coordinate y1 [field:y]
+	rank = java.lang.Integer(3)
