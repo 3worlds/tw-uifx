@@ -240,18 +240,10 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 16 15:48:43 CET 2020
 [process:procBB] appliesTo aplyTo2 [relationType:BB]
 [process:procBB] inSpace in4 [space:space1]
 	searchRadius = java.lang.Double(10.0)
-[component:A1] location loc1 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,1.0))
-[component:A2] location loc2 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,2.0))
 [relationType:AA] toCategory to1 [category:A]
 [relationType:AA] fromCategory from1 [category:A]
 [relationType:AB] toCategory to2 [category:B]
 [relationType:AB] fromCategory from2 [category:A]
-[component:B1] location loc3 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.0,1.0))
-[component:B2] location loc4 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.0,2.0))
 [process:procBA2] appliesTo aplyTo6 [relationType:BA]
 [process:procBA2] dependsOn depsOn1 [process:procBB]
 [process:procBA2] inSpace in5 [space:space1]

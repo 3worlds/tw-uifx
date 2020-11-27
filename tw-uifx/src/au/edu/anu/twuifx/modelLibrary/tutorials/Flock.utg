@@ -232,8 +232,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 
 // CROSS-LINKS
-[component:cmp1] location loc1 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]500.0,500.0))
 [componentType:bird] belongsTo bt6 [category:*permanent*]
 [componentType:bird] belongsTo bt4 [category:*atomic*]
 [componentType:bird] belongsTo bt5 [category:*component*]

@@ -263,10 +263,6 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 
 // CROSS-LINKS
 [component:cmp2] instanceOf instOf2 [group:Carpinus]
-[component:cmp2] location loc2 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]10.0,10.0))
-[component:cmp1] location loc3 [space:space1]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]10.0,99.0))
 [component:cmp1] instanceOf instOf1 [group:Quercus]
 [dataTracker:trk1] trackField trks4 [field:count]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))

@@ -131,8 +131,6 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 [process:p1] inSpace in1 [space:space]
 	searchRadius = java.lang.Double(10.0)
 [stoppingCondition:stCd1] stopSystem stpSys1 [system:sys1]
-[component:cmp1] location loc1 [space:space]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]50.0,50.0))
 [space:space] coordinate crdmp [field:x]
 	rank = java.lang.Integer(0)
 [space:space] coordinate crdmp1 [field:y]
