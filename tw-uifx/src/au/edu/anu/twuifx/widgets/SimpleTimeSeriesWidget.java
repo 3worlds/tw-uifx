@@ -266,6 +266,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			// It seems this is the critical thing to do to see the yaxis correctly.
 			Platform.runLater(() -> {
 				chart.getYAxis().forceRedraw();
+				chart.getXAxis().forceRedraw();
 			});
 		}
 	}
