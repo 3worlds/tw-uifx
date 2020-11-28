@@ -106,6 +106,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Window;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
@@ -395,8 +396,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				double[] start = sEntry.getSecond();
 				double[] end = eEntry.getSecond();
 				// Clone if altering: may need to limit lines to intersection with he map edge
-//				double[] start = { s[0], s[1] };
-//				double[] end = { e[0], e[1] };
 				if (eec == null) {
 					drawLine(gc, start[0], start[1], end[0], end[1], true);
 				} else if (eec.equals(EdgeEffectCorrection.periodic))
@@ -410,29 +409,34 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			}
 		}
 
-		int size = 2 * symbolRadius;
+//		testing coord flipping around y
+//		double[] cxxx = {0,spaceBounds.getMaxY()};// left-top corner in Cartesian
+//		Point2D ppp = scaleToCanvas(cxxx);
+//		gc.strokeOval(ppp.getX(), ppp.getY(), 100, 100);// draws top-left corner of canvas
 
-//		System.out.println(gc.getFont().getName());
+		int size = 2 * symbolRadius;
+		gc.setTextAlign(TextAlignment.CENTER);
+		gc.setTextBaseline(VPos.CENTER);
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : mpPoints.entrySet()) {
 			Duple<DataLabel, double[]> value = entry.getValue();
 			String cKey = getColourKey(value.getFirst());
 
 			Duple<Integer, Color> colourEntry = mpColours.get(cKey);
 			if (colourEntry != null) {
-
 				Color colour = colourEntry.getSecond();
 				gc.setStroke(colour);
 				double[] coords = value.getSecond();
 				Point2D point = scaleToCanvas(coords);
 				point = point.add(-symbolRadius, -symbolRadius);
-				if (showPointLabels) {
-					gc.setFill(Color.BLACK);
-					gc.fillText(value.getFirst().getEnd(), point.getX(), point.getY());
-				}
 				gc.strokeOval(point.getX(), point.getY(), size, size);
 				if (symbolFill) {
 					gc.setFill(colour);
 					gc.fillOval(point.getX(), point.getY(), size, size);
+				}
+				if (showPointLabels) {
+					gc.setFill(fontColour);
+					String label = value.getFirst().getEnd();
+					gc.fillText(label, point.getX()+symbolRadius, point.getY() + symbolRadius);
 				}
 			}
 		}
@@ -516,11 +520,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static double getYAt(double x, double m, double b) {
 		return m * x + b;
 	}
-//	System.out.println("b: " + b);
-//	System.out.println("m: " + m);
-//	System.out.println(tx + "," + ty);
-//	System.out.println("S: " + startPoint[0] + "," + startPoint[1]);
-//	System.out.println("E: " + endPoint[0] + "," + endPoint[1]);
 
 	private void drawPeriodicLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
 		double[] transPoint = new double[2];
@@ -801,6 +800,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyShowArrows = "showArrows";
 	private static final String keyShowIntermediateArrows = "showIntermediateArrows";
 	private static final String keyFontSize = "fontSize";
+	private static final String keyFontColour = "fontColour";
 
 	private double relLineWidth;
 	private double spaceCanvasRatio;
@@ -811,6 +811,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private boolean showEdgeEffect;
 	private Color bkgColour;
 	private Color lineColour;
+	private Color fontColour;
 	private double contrast;
 	private boolean colour64;
 	private boolean showLines;
@@ -839,6 +840,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putDoubles(widgetId + keyBKG, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue());
 		Preferences.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
 				lineColour.getBlue());
+		Preferences.putDoubles(widgetId + keyFontColour, fontColour.getRed(), fontColour.getGreen(),
+				fontColour.getBlue());
 		Preferences.putDouble(widgetId + keyContrast, contrast);
 		Preferences.putBoolean(widgetId + keyColour64, colour64);
 		Preferences.putBoolean(widgetId + keyShowLines, showLines);
@@ -882,6 +885,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),
 				Color.GREY.getBlue());
 		lineColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
+
+		rgb = Preferences.getDoubles(widgetId + keyFontColour, Color.BLACK.getRed(), Color.BLACK.getGreen(),
+				Color.BLACK.getBlue());
+		fontColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
 		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
 		colour64 = Preferences.getBoolean(widgetId + keyColour64, true);
@@ -1031,7 +1038,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		content.setVgap(15);
 		content.setHgap(10);
 
-		GridPane pointsGrid = new GridPane();		
+		GridPane pointsGrid = new GridPane();
 		GridPane linesGrid = new GridPane();
 		GridPane paperGrid = new GridPane();
 		GridPane legendGrid = new GridPane();
@@ -1103,6 +1110,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		CheckBox chbxShowPointLabels = new CheckBox("");
 		addGridControl("Labels", row++, col, chbxShowPointLabels, pointsGrid);
 		chbxShowPointLabels.setSelected(showPointLabels);
+		// -----
+		ColorPicker cpFont = new ColorPicker(fontColour);
+		addGridControl("Font colour", row++, col, cpFont, pointsGrid);
+		GridPane.setValignment(cpFont, VPos.TOP);
 		// ----
 		Spinner<Integer> spFontSize = new Spinner<>();
 		spFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 48, fontSize));
@@ -1199,6 +1210,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			colour64 = chbxCS.isSelected();
 			bkgColour = cpBkg.getValue();
 			lineColour = cpLine.getValue();
+			fontColour = cpFont.getValue();
 			colourHLevel = spHLevel.getValue();
 			if (colour64)
 				lstColoursAvailable = ColourContrast.getContrastingColours64(bkgColour, contrast);
