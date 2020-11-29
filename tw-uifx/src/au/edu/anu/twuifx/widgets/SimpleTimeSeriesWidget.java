@@ -43,6 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.rscs.aot.util.StringUtils;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
@@ -105,7 +106,6 @@ import javafx.stage.Window;
  */
 public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
-	private static String ellipsis = "\u2026";
 
 	private int bufferSize;
 	private int maxAxes;
@@ -221,9 +221,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 				DefaultNumericAxis yAxis = yAxes.get(maxAxes - 1);
 				// Concatenate first and last names
 				String currentName = yAxis.getName();
-				if (currentName.contains(ellipsis))
-					currentName = currentName.substring(0, currentName.indexOf(ellipsis));
-				String newName = currentName + ellipsis + entry.getKey();
+				if (currentName.contains(StringUtils.ELLIPSIS))
+					currentName = currentName.substring(0, currentName.indexOf(StringUtils.ELLIPSIS));
+				String newName = currentName + StringUtils.ELLIPSIS + entry.getKey();
 				yAxis.setName(newName);
 			}
 		}

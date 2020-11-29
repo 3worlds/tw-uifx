@@ -1174,7 +1174,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		addGridControl("Contrast (0.0-1.0)", row++, col, tfContrast, paperGrid);
 
 		// spacer
-		addGridControl(" ", row++, col, new Label(" "), paperGrid);
+//		addGridControl(" ", row++, col, new Label(" "), paperGrid);
+//		addGridControl(" ", row++, col, new Label(" "), paperGrid);
 		// ---------------------------- Legend
 		row = 0;
 		// ----
@@ -1193,8 +1194,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		spMaxLegendItems.setEditable(true);
 		addGridControl("Max items", row++, col, spMaxLegendItems, legendGrid);
 		// spacer
-		addGridControl(" ", row++, col, new Label(" "), legendGrid);
-		addGridControl(" ", row++, col, new Label(" "), legendGrid);
+//		addGridControl(" ", row++, col, new Label(" "), legendGrid);
+//		addGridControl(" ", row++, col, new Label(" "), legendGrid);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
