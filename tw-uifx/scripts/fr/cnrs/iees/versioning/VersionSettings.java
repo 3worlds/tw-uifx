@@ -64,7 +64,7 @@ public class VersionSettings {
 	 * </dl>
 	 * The field can be empty (just needs the external braces).<br/>
 	 * Example value:
-	 * 
+	 *
 	 * <pre>
 	 * { { "org.galaxy.jupiter", "crap", "1.0.+" }, { "org.ocean.lostIsland", "strungk", "3.12.254" } }
 	 * </pre>
@@ -77,14 +77,14 @@ public class VersionSettings {
 	 */
 	protected static String[][] DEPS = { { "fr.ens.biologie", "generics", "[0.2.2,)", null },
 			{ "au.edu.anu.rscs.aot", "omugi", "[0.4.0,)", null },
-			{ "fr.cnrs.iees.tw-core", "tw-core", "[0.3.26,)", null },
-			{ "au.edu.anu.rscs.aot", "aot", "[0.1.8,)", null }, 
+			{ "fr.cnrs.iees.tw-core", "tw-core", "[0.3.27,)", null },
+			{ "au.edu.anu.rscs.aot", "aot", "[0.1.8,)", null },
 			{ "au.edu.anu.tw-apps", "tw-apps", "[0.2.2,)", null },
-			{ "au.edu.anu.rscs.aot", "qgraph", "[0.1.3,)", null }, 
+			{ "au.edu.anu.rscs.aot", "qgraph", "[0.1.3,)", null },
 			{ "au.edu.anu.ymuit", "ymuit", "[0.1.6,)", null },
 			{ "fr.cnrs.iees.rvgrid", "rvgrid", "[0.0.4,)", null },
 			{ "org.openjfx", "javafx-fxml", "[11,)", "_os" },
-			{ "org.openjfx", "javafx-controls", "[11,)", "_os" }, 
+			{ "org.openjfx", "javafx-controls", "[11,)", "_os" },
 			{ "org.openjfx", "javafx-graphics", "[11,)", "_os" },
 			{ "org.openjfx", "javafx-base", "[11,)", "_os" },
 
@@ -92,13 +92,13 @@ public class VersionSettings {
 
 
 			{ "de.gsi", "chartfx", "11.2.2", null }, // pom?
-			{ "de.gsi", "chartfx-samples", "11.2.2", null }, 
+			{ "de.gsi", "chartfx-samples", "11.2.2", null },
 			{ "de.gsi.chart", "chartfx-chart", "11.2.2", null },
-			{ "de.gsi.dataset", "chartfx-dataset", "11.2.2", null }, 
+			{ "de.gsi.dataset", "chartfx-dataset", "11.2.2", null },
 			{ "de.gsi.math", "chartfx-math", "11.2.2", null },
 			{ "de.gsi.acc", "chartfx-acc", "11.2.2", null },
 			{ "de.gsi", "microservice", "11.2.2", null },
-			
+
 			// This is required by chart-fx - tw-core loads this api, but as version 1.7.6
 			// but chartfx cannot use that version, it is set to use version 2.0.0
 			{ "org.slf4j", "slf4j-api", "[1.7,)", null}
