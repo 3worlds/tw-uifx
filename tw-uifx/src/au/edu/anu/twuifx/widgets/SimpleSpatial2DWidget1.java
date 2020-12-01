@@ -175,34 +175,36 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		timeFormatter.onMetaDataMessage(meta);
-		SpaceType type = (SpaceType) meta.properties().getPropertyValue(P_SPACETYPE.key());
+		if (policy.canProcessMetadataMessage(meta)) {
+			timeFormatter.onMetaDataMessage(meta);
+			SpaceType type = (SpaceType) meta.properties().getPropertyValue(P_SPACETYPE.key());
 
-		switch (type) {
-		case continuousFlatSurface: {
-			Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
-			Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
-			spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
-					yLimits.sup() - yLimits.inf());
-			borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
-			eec = BorderListType.getEdgeEffectCorrection(borderList);
-			tickWidth = getTickWidth();
-			return;
-		}
-		case squareGrid: {
-			Double cellSize = (Double) meta.properties().getPropertyValue(P_SPACE_CELLSIZE.key());
-			int xnCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NX.key());
-			int ynCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NY.key());
-			spaceBounds = new BoundingBox(0, 0, cellSize * xnCells, cellSize * ynCells);
-			borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
-			eec = BorderListType.getEdgeEffectCorrection(borderList);
-			tickWidth = getTickWidth();
-			return;
-		}
-		default: {
-			// Eventually, the archetype should prevent this situation
-			throw new TwuifxException(type + " not supported.");
-		}
+			switch (type) {
+			case continuousFlatSurface: {
+				Interval xLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_XLIM.key());
+				Interval yLimits = (Interval) meta.properties().getPropertyValue(P_SPACE_YLIM.key());
+				spaceBounds = new BoundingBox(xLimits.inf(), yLimits.inf(), xLimits.sup() - xLimits.inf(),
+						yLimits.sup() - yLimits.inf());
+				borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+				eec = BorderListType.getEdgeEffectCorrection(borderList);
+				tickWidth = getTickWidth();
+				return;
+			}
+			case squareGrid: {
+				Double cellSize = (Double) meta.properties().getPropertyValue(P_SPACE_CELLSIZE.key());
+				int xnCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NX.key());
+				int ynCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NY.key());
+				spaceBounds = new BoundingBox(0, 0, cellSize * xnCells, cellSize * ynCells);
+				borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+				eec = BorderListType.getEdgeEffectCorrection(borderList);
+				tickWidth = getTickWidth();
+				return;
+			}
+			default: {
+				// Eventually, the archetype should prevent this situation
+				throw new TwuifxException(type + " not supported.");
+			}
+			}
 		}
 	}
 
@@ -436,7 +438,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				if (showPointLabels) {
 					gc.setFill(fontColour);
 					String label = value.getFirst().getEnd();
-					gc.fillText(label, point.getX()+symbolRadius, point.getY() + symbolRadius);
+					gc.fillText(label, point.getX() + symbolRadius, point.getY() + symbolRadius);
 				}
 			}
 		}
@@ -882,8 +884,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				Color.WHITE.getBlue());
 		bkgColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
-		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),
-				Color.GREY.getBlue());
+		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.LIGHTGREY.getRed(), Color.LIGHTGREY.getGreen(),
+				Color.LIGHTGREY.getBlue());
 		lineColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
 		rgb = Preferences.getDoubles(widgetId + keyFontColour, Color.BLACK.getRed(), Color.BLACK.getGreen(),
@@ -891,7 +893,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		fontColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
 		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
-		colour64 = Preferences.getBoolean(widgetId + keyColour64, true);
+		colour64 = Preferences.getBoolean(widgetId + keyColour64, false);
 		showLines = Preferences.getBoolean(widgetId + keyShowLines, true);
 		if (colour64)
 			lstColoursAvailable = ColourContrast.getContrastingColours64(bkgColour, contrast);

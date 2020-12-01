@@ -366,7 +366,8 @@ public class SimpleControlWidget3 extends StateMachineController
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		scText="Stop when: "+meta.properties().getPropertyValue("StoppingDesc");
+		if (policy.canProcessMetadataMessage(meta))
+			scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
 
 	}
 

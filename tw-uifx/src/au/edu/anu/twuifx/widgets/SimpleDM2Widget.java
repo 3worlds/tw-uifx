@@ -129,7 +129,8 @@ public class SimpleDM2Widget extends AbstractDisplayWidget<Output2DData, Metadat
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		timeFormatter.onMetaDataMessage(meta);
+		if (policy.canProcessMetadataMessage(meta))
+			timeFormatter.onMetaDataMessage(meta);
 	}
 
 	@Override

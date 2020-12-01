@@ -114,8 +114,10 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 //		2) called second after construction
-		metadata = meta;
-		tsMeta = (Output0DMetadata) metadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
+		if (policy.canProcessMetadataMessage(meta)) {
+			metadata = meta;
+			tsMeta = (Output0DMetadata) metadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

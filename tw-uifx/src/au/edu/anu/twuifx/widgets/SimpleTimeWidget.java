@@ -79,9 +79,11 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		log.info("Thread id: " + Thread.currentThread().getId());
-		timeFormatter.onMetaDataMessage(meta);
-		scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
+		if (policy.canProcessMetadataMessage(meta)) {
+			log.info("Thread id: " + Thread.currentThread().getId());
+			timeFormatter.onMetaDataMessage(meta);
+			scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
+		}
 	}
 
 	@Override
@@ -97,7 +99,7 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	private void processDataMessage(TimeData data) {
 		Platform.runLater(() -> {
 			log.info("Thread id: " + Thread.currentThread().getId());
-			lblTime.setText(formatOutput(data.sender(),data.time()));
+			lblTime.setText(formatOutput(data.sender(), data.time()));
 		});
 	}
 
@@ -143,11 +145,10 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	public void onStatusMessage(State state) {
 		log.info("Thread id: " + Thread.currentThread().getId() + " State: " + state);
 		if (isSimulatorState(state, waiting)) {
-			for (TimeData data:initialData)
+			for (TimeData data : initialData)
 				processDataMessage(data);
 		}
 	}
-
 
 	private String formatOutput(int sender, long time) {
 		return "[#" + sender + "] " + timeFormatter.getTimeText(time);

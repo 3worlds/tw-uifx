@@ -84,7 +84,7 @@ public class SimpleControlWidget2 extends ControllerAdapter
 	private Label lblRealTime;
 	private Label lblDelta;
 	private String scText;
-	
+
 	private long startTime;
 	private long prevDuration;
 	private long idleTime;
@@ -147,12 +147,12 @@ public class SimpleControlWidget2 extends ControllerAdapter
 
 		pane.setSpacing(5.0);
 		pane.getChildren().addAll(new Label("CPU:"), new Label("\u0394t:"), lblDelta, new Label("\u03A3t:"),
-				lblRealTime, new Label("[ms]"),new Label(scText));
+				lblRealTime, new Label("[ms]"), new Label(scText));
 
 		nullButtons();
 
 		getUserPreferences();
-		
+
 		return pane;
 	}
 
@@ -287,7 +287,7 @@ public class SimpleControlWidget2 extends ControllerAdapter
 
 	@Override
 	public Object getMenuContainer() {
-	return null;
+		return null;
 	}
 
 	@Override
@@ -307,7 +307,8 @@ public class SimpleControlWidget2 extends ControllerAdapter
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		scText="Stop when: "+meta.properties().getPropertyValue("StoppingDesc");
+		if (policy.canProcessMetadataMessage(meta))
+			scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
 	}
 
 }

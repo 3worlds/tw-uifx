@@ -92,40 +92,41 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		Platform.runLater(() -> {
+		if (policy.canProcessMetadataMessage(meta)) {
+			Platform.runLater(() -> {
 //			for (String key : meta.properties().getKeysAsSet()) {
 //				System.out.println(key+"\t"+meta.properties().getProperty(key));
 //			}
-			DataLabel dlx = (DataLabel) meta.properties().getPropertyValue("x.hlabel");
-			DataLabel dly = (DataLabel) meta.properties().getPropertyValue("xnew.hlabel");
-			ds = new DoubleDataSet(dlx.toString() + "|" + dly.toString());
-			ds.getStyle();
-			ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
-			rndr.setErrorType(ErrorStyle.NONE);
-			rndr.setPolyLineStyle(LineStyle.NONE);
-			rndr.setMarkerSize(symbolSize);
-			rndr.setMarker(symbol);
-			rndr.setPointReduction(true);
-			rndr.setDrawMarker(true);
-			DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) rndr.getRendererDataReducer();
-			reductionAlgorithm.setMinPointPixelDistance(0);
+				DataLabel dlx = (DataLabel) meta.properties().getPropertyValue("x.hlabel");
+				DataLabel dly = (DataLabel) meta.properties().getPropertyValue("xnew.hlabel");
+				ds = new DoubleDataSet(dlx.toString() + "|" + dly.toString());
+				ds.getStyle();
+				ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
+				rndr.setErrorType(ErrorStyle.NONE);
+				rndr.setPolyLineStyle(LineStyle.NONE);
+				rndr.setMarkerSize(symbolSize);
+				rndr.setMarker(symbol);
+				rndr.setPointReduction(true);
+				rndr.setDrawMarker(true);
+				DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) rndr.getRendererDataReducer();
+				reductionAlgorithm.setMinPointPixelDistance(0);
 
-			chart.getRenderers().setAll(rndr);
-			chart.getDatasets().addAll(ds);
-			String axisUnit = "units";
-			chart.getXAxis().set(dlx.toString(), axisUnit);
+				chart.getRenderers().setAll(rndr);
+				chart.getDatasets().addAll(ds);
+				String axisUnit = "units";
+				chart.getXAxis().set(dlx.toString(), axisUnit);
 
-			chart.getYAxis().set(dly.toString());
-			chart.getXAxis().setUnit((String) meta.properties().getPropertyValue("x.units"));
-			chart.getYAxis().setUnit((String) meta.properties().getPropertyValue("y.units"));
-			chart.setLegendVisible(false);
+				chart.getYAxis().set(dly.toString());
+				chart.getXAxis().setUnit((String) meta.properties().getPropertyValue("x.units"));
+				chart.getYAxis().setUnit((String) meta.properties().getPropertyValue("y.units"));
+				chart.setLegendVisible(false);
 
-			timeFormatter.onMetaDataMessage(meta);
-			TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-			int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-			// show this somewhere
-		});
-
+				timeFormatter.onMetaDataMessage(meta);
+				TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+				int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+				// show this somewhere
+			});
+		}
 	}
 
 	private void processDataMessage(OutputXYData data) {
