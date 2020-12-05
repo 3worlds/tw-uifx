@@ -54,14 +54,15 @@ public enum LibraryTable {
 	Template1(/**/"1 Blank", /*			*/"Blank.utg", /*			*/LibraryType.Template, TemplatesDummy.class), //
 	Template2(/**/"2 SimpleClock", /*	*/"SimpleClock_1.utg", /*	*/LibraryType.Template, TemplatesDummy.class), //
 	//
-	Tut1(/*     */"1 Logistic", /*		*/"Logistic_1.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut2(/*     */"2 LotkaVolterra", /*	*/"LotkaVolterra_1.utg", /*	*/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut3(/*     */"3 I.D.H.(clock)", /*	*/"IdhClock.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut4(/*     */"4 I.D.H.(event)", /*	*/"IdhEvent.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut5(/*     */"5 Panmixia", /*		*/"Panmixia.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut6(/*     */"6 Spatial", /*		*/"Spatial.utg", /*			*/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut7(/*     */"7 Boids", /*			*/"Flock.utg", /*			*/LibraryType.Tutorial, TutorialsDummy.class), //
-	Tut8(/*     */"8 LittleForest", /*	*/"LittleForest.utg", /*	*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut1(/*     */"1 Logistic", /*			*/"Logistic_1.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut2(/*     */"2 LotkaVolterra", /*		*/"LotkaVolterra_1.utg", /*	*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut3(/*     */"3 I.D.H.(clock)", /*		*/"IdhClock.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut4(/*     */"4 I.D.H.(event)", /*		*/"IdhEvent.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut5(/*     */"5 Panmixia", /*			*/"Panmixia.utg", /*		*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut6(/*     */"6 Spatial", /*			*/"Spatial.utg", /*			*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut7(/*     */"7 Boids", /*				*/"Flock.utg", /*			*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut8(/*     */"8 LittleForest", /*		*/"LittleForest.utg", /*	*/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut9(/*     */"9 Headless(Logistic)", /**/"LogisticHeadless.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
 	//
 //	Model1(/*	*/"1 Some model", /*	*/"someModelFile.utg", /*	*/LibraryType.Model, ModelsDummy.class), //
 

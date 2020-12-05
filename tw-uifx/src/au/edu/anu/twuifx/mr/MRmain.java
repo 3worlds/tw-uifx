@@ -77,7 +77,7 @@ public class MRmain {
 	private static Logger log = Logging.getLogger(MRmain.class);
 
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args)  {
+	public static void main(String[] args) {
 
 		// great trick - allows myProject.jar to be run without args if run from the prj
 		// dir.
@@ -233,17 +233,6 @@ public class MRmain {
 			 * by the GUIBuilder. Perhaps that should be removed and added above so its
 			 * clearer?
 			 */
-//			List<Initialisable> initList = new LinkedList<>();
-//			TreeNode headless = (TreeNode) get(uiNode.getChildren(), selectOne(hasTheLabel(N_UIHEADLESS.label())));
-//			for (TreeNode n : headless.getChildren())
-//				initList.add((Initialisable) n);
-//			Initialiser initer = new Initialiser(initList);
-//			initer.initialise();
-//			if (initer.errorList() != null) {
-//				for (InitialiseMessage msg : initer.errorList())
-//					System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
-//				System.exit(1);
-//			}
 
 			/**
 			 * If ctrlHl were cast to a StateMachineController we could instead just do
@@ -255,6 +244,9 @@ public class MRmain {
 			 */
 			Kicker ctrl = (Kicker) ctrlHl.getInstance();
 			ctrl.start();
+			// Loop the main thread until contoller receives finished msg
+			while (!ctrl.ended());
+			System.out.println("--- Main thread exit ---");
 		}
 	}
 

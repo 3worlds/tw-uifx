@@ -54,8 +54,9 @@ import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
  */
 public class HLSimpleControlWidget extends StateMachineController implements Widget, Kicker {
 
-	private static Logger log = Logging.getLogger(HLSimpleControlWidget.class);
+//	private static Logger log = Logging.getLogger(HLSimpleControlWidget.class);
 	private long startTime;
+	private boolean ended;
 
 	public HLSimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
@@ -63,10 +64,17 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 
 	@Override
 	public boolean start() {
+		ended = false;
+		sendEvent(initialise.event());
 		startTime = System.currentTimeMillis();
-		log.info("Start at "+startTime);
+//		log.info("Start at "+startTime);
 		sendEvent(run.event());
 		return true;
+	}
+
+	@Override
+	public synchronized boolean ended() {
+		return ended;
 	}
 
 	@Override
@@ -76,6 +84,7 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 			long endTime = System.currentTimeMillis();
 			System.out.println("Simulation finished. [Instance: " + RunTimeId.runTimeId() + "; Duration: "
 					+ (endTime - startTime) + " ms]");
+			ended = true;
 		}
 	}
 
