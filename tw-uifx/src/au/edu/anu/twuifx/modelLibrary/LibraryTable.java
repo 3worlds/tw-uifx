@@ -63,6 +63,7 @@ public enum LibraryTable {
 	Tut7(/*     */"7 Boids", /*				*/"Flock.utg", /*			*/LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut8(/*     */"8 LittleForest", /*		*/"LittleForest.utg", /*	*/LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut9(/*     */"9 Headless(Logistic)", /**/"LogisticHeadless.utg", /**/LibraryType.Tutorial, TutorialsDummy.class), //
+	Tut10(/*    */"10 RNG", /*				*/"Rng_1.utg", /*			*/LibraryType.Tutorial, TutorialsDummy.class), //
 	//
 //	Model1(/*	*/"1 Some model", /*	*/"someModelFile.utg", /*	*/LibraryType.Model, ModelsDummy.class), //
 
