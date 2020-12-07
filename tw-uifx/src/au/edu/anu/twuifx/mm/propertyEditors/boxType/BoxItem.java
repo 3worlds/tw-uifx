@@ -38,7 +38,6 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.uit.space.Box;
-import fr.cnrs.iees.uit.space.BoxImpl;
 
 /**
  * @author Ian Davies

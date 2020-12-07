@@ -38,8 +38,6 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.BorderListType;
-//import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.twcore.constants.TrackerType;
 
 /**
  * @author Ian Davies

@@ -238,11 +238,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
+			
 			mpPoints.clear();
 			stLines.clear();
 			mpColours.clear();
+			
 			for (SpaceData data : lstInitialData)
 				processDataMessage(data);
+			
 			lstInitialData.clear();
 		}
 	}

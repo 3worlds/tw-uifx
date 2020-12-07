@@ -33,7 +33,6 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -115,8 +114,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 	// rate
 	private XYChart chart;
 	private Map<String, CircularDoubleErrorDataSet> dataSetMap;
-	private Output0DMetadata tsMeta;
-	private Metadata metadata;
+	private Output0DMetadata metadataTS;
+	private Metadata msgMetadata;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
@@ -146,25 +145,26 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
+		System.out.println("Metadata sender:\t"+meta.sender());
 //		2) called second after construction
 		if (policy.canProcessMetadataMessage(meta)) {
-			metadata = meta;
-			tsMeta = (Output0DMetadata) metadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
-			// do everything in getUserInterfaceContainer() below
+			msgMetadata = meta;
+			metadataTS = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 		}
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
+		System.out.println("UI building");
 //		3) called third after metadata
 //		get the prefs before building the ui
 		getUserPreferences();
 
 		sas = null;
-		if (metadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
-			sas = (StatisticalAggregatesSet) metadata.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
-		if (metadata.properties().hasProperty("sample")) {
-			StringTable st = (StringTable) metadata.properties().getPropertyValue("sample");
+		if (msgMetadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
+			sas = (StatisticalAggregatesSet) msgMetadata.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
+		if (msgMetadata.properties().hasProperty("sample")) {
+			StringTable st = (StringTable) msgMetadata.properties().getPropertyValue("sample");
 			if (st != null) {
 				sampledItems = new ArrayList<>(st.size());
 				for (int i = 0; i < st.size(); i++)
@@ -172,18 +172,18 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			}
 		}
 
-		for (DataLabel dl : tsMeta.doubleNames())
+		for (DataLabel dl : metadataTS.doubleNames())
 			makeChannels(dl);
 		// normally with statistics there are no int variables
-		for (DataLabel dl : tsMeta.intNames())
+		for (DataLabel dl : metadataTS.intNames())
 			makeChannels(dl);
-		timeFormatter.onMetaDataMessage(metadata);
-		final TimeUnits timeUnit = (TimeUnits) metadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-		final int nTimeUnits = (Integer) metadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+		timeFormatter.onMetaDataMessage(msgMetadata);
+		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 		final String timeUnitName = TimeUtil.timeUnitName(timeUnit, nTimeUnits);
 
 		final BorderPane content = new BorderPane();
-		final DefaultNumericAxis xAxis = new DefaultNumericAxis("time", timeUnitName);
+		final DefaultNumericAxis xAxis = new DefaultNumericAxis("time", "" /* timeUnitName */);
 		xAxis.setAutoRangeRounding(false);
 		xAxis.setTickLabelRotation(45);
 		xAxis.invertAxis(false);
@@ -243,7 +243,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 //		chart.getPlugins().add(new Panner());
 //		using this is a very confusing and perhaps buggy ui
 //		chart.getPlugins().add(new EditAxis());
-		chart.setTitle(widgetId);
+		chart.setTitle(widgetId+"[#"+msgMetadata.sender()+"]");
 
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
@@ -288,26 +288,26 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 			else if (sampledItems != null)
 				itemId = data.itemLabel().toString();
 
-			for (DataLabel dl : tsMeta.doubleNames()) {
+			for (DataLabel dl : metadataTS.doubleNames()) {
 				String key;
 				if (itemId != null)
 					key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
 				else
 					key = dl.toString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-				final double y = data.getDoubleValues()[tsMeta.indexOf(dl)];
+				final double y = data.getDoubleValues()[metadataTS.indexOf(dl)];
 				final double ey = 1;
 				ds.add(x, y, ey, ey);
 			}
 
-			for (DataLabel dl : tsMeta.intNames()) {
+			for (DataLabel dl : metadataTS.intNames()) {
 				String key;
 				if (itemId != null)
 					key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
 				else
 					key = dl.toString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-				final double y = data.getIntValues()[tsMeta.indexOf(dl)];
+				final double y = data.getIntValues()[metadataTS.indexOf(dl)];
 				final double ey = 1;
 				ds.add(x, y, ey, ey);
 			}
@@ -425,18 +425,8 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		reductionAlgorithm.setMinPointPixelDistance(MIN_PIXEL_DISTANCE);
 	}
 
-//	private static String getAbbrev (String s, int l) {
-//		if (s.length()<=l)
-//			return s;
-//		return s.substring(0,l)+ellipsis;
-//	}
 	// helper for UI construction, cf below.
 	private void makeChannels(DataLabel dl) {
-		// shorten dl here
-//		String abbrevKey = "";
-//		for (int i = 0;i<dl.size();i++) 
-//			abbrevKey+= "."+getAbbrev(dl.get(i),2);
-//		abbrevKey = abbrevKey.replaceFirst(".", "");
 		if (sas != null) {
 			for (StatisticalAggregates sa : sas.values()) {
 				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();

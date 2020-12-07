@@ -69,6 +69,7 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		this.getEditor().setOnAction(e -> onAction());
 	}
 
+	@SuppressWarnings("unchecked")
 	private void onAction() {
 		BorderListItem item = (BorderListItem) getProperty();
 		TreeGraphDataNode spaceNode = (TreeGraphDataNode) item.getElement();

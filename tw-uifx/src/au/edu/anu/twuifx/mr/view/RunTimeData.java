@@ -1,16 +1,12 @@
 package au.edu.anu.twuifx.mr.view;
 
-import au.edu.anu.twcore.data.runtime.TwData;
 import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
-import au.edu.anu.twcore.ecosystem.runtime.system.CategorizedContainer;
 import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.properties.SimplePropertyList;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 import java.util.ArrayList;
@@ -164,7 +160,7 @@ public class RunTimeData {
 	small projects, p & v can be kept together.
 	 * */
 
-	@SuppressWarnings("unchecked")
+//	@SuppressWarnings("unchecked")
 	public static void dumpGraphState(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
 //		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(configGraph.root().getChildren(),
 //				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
@@ -204,27 +200,27 @@ public class RunTimeData {
 //		System.out.println("----------------- END --------------------------");
 	}
 
-	private static void printContainer(ComponentContainer container) {
-		System.out.println("ID: " + container.id());
-//		System.out.println("VARS:" + container.variables());
-		System.out.println("PARS:" + container.parameters());
-		if (container.parameters()!=null) {
-			TwData pars = container.parameters().clone();
-			for (String key:pars.getKeysAsSet())
-				System.out.println(key+":"+pars.getPropertyValue(key));
-		}
-
-		for (SystemComponent component : container.getInitialItems()) {
-			System.out.println("INIT: " + component);
-			SimplePropertyList props =  component.properties().clone();
-			for (String key:props.getKeysAsSet())
-				System.out.println(key+":"+props.getPropertyValue(key));
-
-		}
-		for (CategorizedContainer<SystemComponent> childContainer : container.subContainers()) {
-			printContainer((ComponentContainer) childContainer);
-		}
-
-	}
+//	private static void printContainer(ComponentContainer container) {
+//		System.out.println("ID: " + container.id());
+////		System.out.println("VARS:" + container.variables());
+//		System.out.println("PARS:" + container.parameters());
+//		if (container.parameters()!=null) {
+//			TwData pars = container.parameters().clone();
+//			for (String key:pars.getKeysAsSet())
+//				System.out.println(key+":"+pars.getPropertyValue(key));
+//		}
+//
+//		for (SystemComponent component : container.getInitialItems()) {
+//			System.out.println("INIT: " + component);
+//			SimplePropertyList props =  component.properties().clone();
+//			for (String key:props.getKeysAsSet())
+//				System.out.println(key+":"+props.getPropertyValue(key));
+//
+//		}
+//		for (CategorizedContainer<SystemComponent> childContainer : container.subContainers()) {
+//			printContainer((ComponentContainer) childContainer);
+//		}
+//
+//	}
 
 }

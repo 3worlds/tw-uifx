@@ -31,8 +31,6 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.widgets.helpers.ControllerAdapter;
@@ -41,7 +39,6 @@ import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

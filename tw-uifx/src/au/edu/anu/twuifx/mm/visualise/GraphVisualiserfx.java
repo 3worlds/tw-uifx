@@ -52,7 +52,6 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import au.edu.anu.twuifx.mm.visualise.layout.FRLayout;
-import au.edu.anu.twuifx.mm.visualise.layout.LmbLayout;
 import au.edu.anu.twuifx.mm.visualise.layout.OTLayout;
 import au.edu.anu.twuifx.mm.visualise.layout.RT1Layout;
 import au.edu.anu.twuifx.mm.visualise.layout.RT2Layout;

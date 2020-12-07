@@ -79,7 +79,7 @@ public class SimpleControlWidget2 extends ControllerAdapter
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
 
-	private WidgetTrackingPolicy<TimeData> policy;
+	private final WidgetTrackingPolicy<TimeData> policy;
 
 	private Label lblRealTime;
 	private Label lblDelta;

@@ -1,8 +1,6 @@
 package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_NTU;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_TU;
 
 import java.util.Optional;
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -35,7 +33,6 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
-import fr.cnrs.iees.twcore.constants.TimeUnits;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -51,8 +48,8 @@ import javafx.stage.Window;
 
 public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
 	private String widgetId;
-	private WidgetTimeFormatter timeFormatter;
-	private WidgetTrackingPolicy<TimeData> policy;
+	private final WidgetTimeFormatter timeFormatter;
+	private final WidgetTrackingPolicy<TimeData> policy;
 	// private static Logger log = Logging.getLogger(SimpleXYPlotWidget.class);
 	private XYChart chart;
 	private DoubleDataSet ds;
@@ -88,7 +85,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	 * currentChart.getYAxis().setSide(Side.RIGHT);
 	 * currentChart.getDatasets().addAll(createSeries());
 	*/
-	private static int bufferSize = 1000;
+//	private static int bufferSize = 1000;
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
@@ -122,8 +119,8 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 				chart.setLegendVisible(false);
 
 				timeFormatter.onMetaDataMessage(meta);
-				TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-				int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+//				TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+//				int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 				// show this somewhere
 			});
 		}

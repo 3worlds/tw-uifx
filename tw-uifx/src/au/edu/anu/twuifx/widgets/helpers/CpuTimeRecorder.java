@@ -39,7 +39,7 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 	private Label lblRealTime;
 	public CpuTimeRecorder(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
-		new SimpleWidgetTrackingPolicy();
+//		new SimpleWidgetTrackingPolicy();
 
 		// Data messages
 		addRendezvous(new RendezvousProcess() {

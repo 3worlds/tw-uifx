@@ -31,7 +31,11 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -39,49 +43,74 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
-import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
  * @author Ian Davies
  *
- * @date 2 Sep 2019
+ * @date 5 Dec. 2020
  */
 
-public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
+/**
+ * Displays the average sim time for a collection of simulators.
+ * 
+ * Every simulator msg is recorded in a collection. A java timer determines how
+ * often an average value from this collection is calculated (controlled by the
+ * 'refreshRate'). If the average time has change the ui is updated.
+ * 
+ * NB: The currentSenderTimes will become as large as the number of unique
+ * simulator ids.
+ * 
+ * Tested to 1,000,000 simulators.
+ * 
+ * Important: The SimCloneWIdgetTrackingPolicy assumes all simulators are
+ * instances of the same SimulatorNode!
+ */
+public class MeanTimeWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private Label lblTime;
 	private String scText;
-	private static Logger log = Logging.getLogger(SimpleTimeWidget.class);
 	private final List<TimeData> initialData;
+	private final Map<Integer, Long> currentSenderTimes;
+	private long refreshRate;// ms
 
-	public SimpleTimeWidget(StateMachineEngine<StatusWidget> statusSender) {
+	public MeanTimeWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
-		policy = new SimpleWidgetTrackingPolicy();
-		log.info("Thread id: " + Thread.currentThread().getId());
+		policy = new SimCloneWidgetTrackingPolicy();
 		initialData = new ArrayList<>();
+		currentSenderTimes = new ConcurrentHashMap<>();
+	}
+
+	@Override
+	public void setProperties(String id, SimplePropertyList properties) {
+		timeFormatter.setProperties(id, properties);
+		policy.setProperties(id, properties);
+		refreshRate = 250;
+		if (properties.hasProperty(P_WIDGET_REFRESHRATE.key()))
+			refreshRate = (Long) properties.getPropertyValue(P_WIDGET_REFRESHRATE.key());
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		if (policy.canProcessMetadataMessage(meta)) {
-			log.info("Thread id: " + Thread.currentThread().getId());
 			timeFormatter.onMetaDataMessage(meta);
 			scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
+			timeFormatter.getInitialTime();
 		}
 	}
 
@@ -96,31 +125,49 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 	}
 
 	private void processDataMessage(TimeData data) {
-		Platform.runLater(() -> {
-			log.info("Thread id: " + Thread.currentThread().getId());
-			lblTime.setText(formatOutput(data.sender(), data.time()));
-		});
+		currentSenderTimes.put(data.sender(), data.time());
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
+		if (isSimulatorState(state, waiting)) {
+
+			currentSenderTimes.clear();
+
+			for (TimeData data : initialData)
+				processDataMessage(data);
+
+			initialData.clear();
+		}
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		log.info("Thread id: " + Thread.currentThread().getId());
-		HBox content = new HBox();
+		HBox content = new HBox(5);
 		content.setAlignment(Pos.BASELINE_LEFT);
-		// content.setPadding(new Insets(4, 1, 1, 2));
 		lblTime = new Label("");
-		content.getChildren().addAll(new Label("Simulator time: "), lblTime, new Label(scText));
+		content.getChildren().addAll(new Label("Simulator average time: "), lblTime, new Label(scText));
 
 		getUserPreferences();
 
-		return content;
-	}
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			private long lastTime = Long.MAX_VALUE;
 
-	@Override
-	public void setProperties(String id, SimplePropertyList properties) {
-		log.info("Thread id: " + Thread.currentThread().getId());
-		timeFormatter.setProperties(id, properties);
-		policy.setProperties(id, properties);
+			@Override
+			public void run() {
+				long time = Math.round(getMeanTime());
+				if (time != lastTime) {
+					lastTime = time;
+					String text = formatOutput(currentSenderTimes.size(), time);
+					Platform.runLater(() -> {
+						lblTime.setText(text);
+					});
+				}
+			}
+		}, 0, refreshRate);
+
+		return content;
 	}
 
 	@Override
@@ -130,27 +177,24 @@ public class SimpleTimeWidget extends AbstractDisplayWidget<TimeData, Metadata> 
 
 	@Override
 	public void putUserPreferences() {
-		// timeFormatter.putPreferences();
-		// policy.putPreferences();
 	}
 
 	@Override
 	public void getUserPreferences() {
-//		timeFormatter.getPreferences();
-//		policy.getPreferences();
 	}
 
-	@Override
-	public void onStatusMessage(State state) {
-		log.info("Thread id: " + Thread.currentThread().getId() + " State: " + state);
-		if (isSimulatorState(state, waiting)) {
-			for (TimeData data : initialData)
-				processDataMessage(data);
-		}
+	private double getMeanTime() {
+		double sum = 0;
+		double n = currentSenderTimes.size();
+		for (Entry<Integer, Long> entry : currentSenderTimes.entrySet())
+			sum += entry.getValue();
+		if (n > 0)
+			return sum / n;
+		return timeFormatter.getInitialTime();
 	}
 
-	private String formatOutput(int sender, long time) {
-		return "[#" + sender + "] " + timeFormatter.getTimeText(time);
+	private String formatOutput(int n, long time) {
+		return "[#" + n + "] " + timeFormatter.getTimeText(time);
 	}
 
 }
