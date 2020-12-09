@@ -27,44 +27,45 @@
  *                                                                        *
  **************************************************************************/
 
+// 
 package au.edu.anu.twuifx.widgets.helpers;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
-// not sure about this wip
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
+
 /**
  * @author Ian Davies
  *
- * @date 23 Sep 2019
+ * @date 9 Dec. 2020
  */
-/*
-  */
+public class RangeWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData> {
 
-public  class BracketWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>{
-	private Map<Integer, Long> simTimes = new HashMap<>();
+	private IntegerRange range;
+
 	@Override
-	public void setProperties(String id, SimplePropertyList properties) {				
+	public void setProperties(String id, SimplePropertyList properties) {
+		// must be a +ve range
+		int l = (int) properties.getPropertyValue("lowerSender");
+		int r = (int) properties.getPropertyValue("rangeSender");
+		range = new IntegerRange(l, l + r);
 	}
-
 
 	@Override
 	public boolean canProcessDataMessage(TimeData data) {
-		simTimes.put(data.sender(), data.time());
-		return true;
+		return range.inRange(data.sender());
 	}
-
 
 	@Override
 	public boolean canProcessMetadataMessage(Metadata meta) {
-		// TODO Auto-generated method stub
-		return false;
+		return range.getFirst() == meta.sender();
 	}
 
+	@Override
+	public String toString() {
+		return Integer.toString(range.getFirst()) + "-" + Integer.toString(range.getLast());
+	}
 
 }

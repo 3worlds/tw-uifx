@@ -71,5 +71,10 @@ public class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData
 	public boolean canProcessMetadataMessage(Metadata meta) {
 		return sender == meta.sender();
 	}
+	
+	@Override 
+	public String toString() {
+		return Integer.toString(sender);
+	}
 
 }

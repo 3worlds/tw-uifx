@@ -51,7 +51,13 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 		record drvs
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(drvs)
-			field r
+			field fld1
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field fld2
 				description = java.lang.String()
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -59,19 +65,20 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 				units = java.lang.String()
 		rng gen1
 			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(java)
-			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(onExperimentStart)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(onRunStart)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(secure)
+			tableIndex = java.lang.Integer(0)
+		rng gen2
+			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(Pcg32)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(onRunStart)
 			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(table)
 			tableIndex = java.lang.Integer(0)
 	experiment expt
+		nReplicates = java.lang.Integer(1)
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
 		driverClass = java.lang.String(code.sys1.Drvs)
-		initFunction Init1
-			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.sys1.Init1)
-			snippet snpt2
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.r = random.nextDouble();"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -87,11 +94,16 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 					process p1
+						function F2
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.F2)
+							snippet snpt2
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"focalDrv.fld2 = random.nextDouble();"))
 						function F1
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys1.F1)
 							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.r = random.nextDouble();"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.fld1 = random.nextDouble();"))
 						dataTracker trk1
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
@@ -117,13 +129,16 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 [process:p1] appliesTo aplyTo1 [category:*arena*]
 [widget:random series] trackSeries trks4 [dataTracker:trk1]
 [widget:timer] trackTime trks3 [dynamics:sim1]
-[dataTracker:trk1] trackComponent trks2 [system:sys1]
-[dataTracker:trk1] trackField trks1 [field:r]
+[dataTracker:trk1] trackField trks5 [field:fld2]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[category:*assemblage*] autoVar auto [record:AVPopulation]
+[dataTracker:trk1] trackComponent trks2 [system:sys1]
+[dataTracker:trk1] trackField trks1 [field:fld1]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [function:F1] useRNG uses1 [rng:gen1]
 [category:*arena*] drivers drvs1 [record:drvs]
+[function:F2] useRNG uses2 [rng:gen2]
 [system:sys1] belongsTo bt3 [category:*atomic*]
 [system:sys1] belongsTo bt2 [category:*permanent*]
 [system:sys1] belongsTo bt1 [category:*arena*]
