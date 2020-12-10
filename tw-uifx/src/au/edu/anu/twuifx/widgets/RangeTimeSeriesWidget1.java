@@ -69,6 +69,7 @@ import de.gsi.chart.renderer.Renderer;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
 import de.gsi.chart.ui.geometry.Side;// This is a flaw since two of these values don't apply - messy
+import de.gsi.dataset.DataSet;
 // Nicer would be to use a converter routine
 import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -99,21 +100,19 @@ import javafx.stage.Window;
 /**
  * @author Ian Davies
  *
- * @date 29 Oct 2019
- *
- *       Trial of chart-fx based on the "RollingBufferSample"
+ * @date 10 Dec. 2020
+ * 
+ *       Show data from all simulator.id() from [lower.. lower+range]
  */
-public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
+public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
 
 	private int bufferSize;
 	private int maxAxes;
 	// drop overlayed points
 	private int MIN_PIXEL_DISTANCE = 1;// check this in case it causes data to be lost
-	// private int UPDATE_PERIOD = 40; // check on this - this is their max drawing
-	// rate
 	private XYChart chart;
-	//private Map<String, CircularDoubleErrorDataSet> dataSetMap;
+	private final List<DefaultNumericAxis> yAxes;
 	private Map<Integer, Map<String, CircularDoubleErrorDataSet>> senderDataSetMap;
 	private Output0DMetadata metadataTS;
 	private Metadata msgMetadata;
@@ -122,18 +121,19 @@ public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, M
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
 
-	public RangeTimeSeriesWidget(StateMachineEngine<StatusWidget> statusSender) {
+	public RangeTimeSeriesWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		// needs to be thread-safe because chartfx plugins may be looking at chart
 		// data?? No sure this makes sense but seems to work.
 		senderDataSetMap = new ConcurrentHashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new RangeWidgetTrackingPolicy();
+		yAxes = new ArrayList<>();
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-//		1) Called first immediately after construction
+		/* 1) Called first immediately after construction */
 		policy.setProperties(id, properties);
 		this.widgetId = id;
 		this.maxAxes = 1;
@@ -146,8 +146,7 @@ public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, M
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-//		System.out.println("Metadata sender:\t"+meta.sender());
-//		2) called second after construction
+		/* 2) called second after construction */
 		if (policy.canProcessMetadataMessage(meta)) {
 			msgMetadata = meta;
 			metadataTS = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
@@ -156,8 +155,9 @@ public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, M
 
 	@Override
 	public Object getUserInterfaceContainer() {
-//		3) called third after metadata
-//		get the prefs before building the ui
+		/*
+		 * 3) called third after metadata get the prefs before building the ui
+		 */
 		getUserPreferences();
 
 		sas = null;
@@ -172,62 +172,39 @@ public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, M
 			}
 		}
 
-		for (DataLabel dl : metadataTS.doubleNames())
-			makeChannels(dl);
-		// normally with statistics there are no int variables
-		for (DataLabel dl : metadataTS.intNames())
-			makeChannels(dl);
+		addSenderPlots(msgMetadata.sender());
+
 		timeFormatter.onMetaDataMessage(msgMetadata);
 		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
 		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 		final String timeUnitName = TimeUtil.timeUnitName(timeUnit, nTimeUnits);
 
 		final BorderPane content = new BorderPane();
-		final DefaultNumericAxis xAxis = new DefaultNumericAxis("time", "" /* timeUnitName */);
+		final DefaultNumericAxis xAxis = new DefaultNumericAxis("time", timeUnitName);
 		xAxis.setAutoRangeRounding(false);
 		xAxis.setTickLabelRotation(45);
 		xAxis.invertAxis(false);
 		xAxis.setTimeAxis(false);
 
-		final List<DefaultNumericAxis> yAxes = new ArrayList<>();
-		final List<ErrorDataSetRenderer> renderers = new ArrayList<>();
-
-//		System.out.println(metadata.properties());
-//		for (Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
-//			if (yAxes.size() < maxAxes) {
-//				String yAxisUnits = "";// where do we get these - they don't apply to statistics
-//				DefaultNumericAxis newAxis = new DefaultNumericAxis(entry.getKey(), yAxisUnits);
-//				// newAxis.setAutoRangeRounding(true);
-//				newAxis.setAnimated(false);
-//				// assign axis side BEFORE adding renderer to the chart
-//				if (yAxes.size() % 2 == 0)
-//					newAxis.setSide(Side.LEFT);
-//				else
-//					newAxis.setSide(Side.RIGHT);
-//				yAxes.add(newAxis);
-//				ErrorDataSetRenderer newRenderer = new ErrorDataSetRenderer();
-//				initErrorDataSetRenderer(newRenderer);
-//				// add axis before adding dataset
-//				newRenderer.getAxes().add(newAxis);
-//				newRenderer.getDatasets().add(entry.getValue());
-//				renderers.add(newRenderer);
-//				if (renderers.size() > maxLegendItems)
-//					newRenderer.setShowInLegend(false);
-//
-//			} else { // add remaining data sets to the last axis
-//				ErrorDataSetRenderer renderer = renderers.get(maxAxes - 1);
-//				renderer.getDatasets().add(entry.getValue());
-//				// update the axis name
-//				DefaultNumericAxis yAxis = yAxes.get(maxAxes - 1);
-//				// Concatenate first and last names
-//				String currentName = yAxis.getName();
-//				if (currentName.contains(StringUtils.ELLIPSIS))
-//					currentName = currentName.substring(0, currentName.indexOf(StringUtils.ELLIPSIS));
-//				String newName = currentName + StringUtils.ELLIPSIS + entry.getKey();
-//				yAxis.setName(newName);
-//			}
-//		}
-
+		List<ErrorDataSetRenderer> renderers = new ArrayList<>();
+		Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(msgMetadata.sender());
+		for (Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
+			String yAxisUnits = "";// where do we get these - they don't apply to statistics
+			DefaultNumericAxis newAxis = new DefaultNumericAxis(entry.getKey(), yAxisUnits);
+			// newAxis.setAutoRangeRounding(true);
+			newAxis.setAnimated(false);
+			// assign axis side BEFORE adding renderer to the chart
+			newAxis.setSide(Side.LEFT);
+			yAxes.add(newAxis);
+			ErrorDataSetRenderer newRenderer = new ErrorDataSetRenderer();
+			initErrorDataSetRenderer(newRenderer);
+			// add axis before adding dataset
+			newRenderer.getAxes().add(newAxis);
+			newRenderer.getDatasets().add(entry.getValue());
+			renderers.add(newRenderer);
+			if (renderers.size() > maxLegendItems)
+				newRenderer.setShowInLegend(false);
+		}
 		chart = new XYChart(xAxis, yAxes.get(0));
 		chart.setLegendSide(legendSide);
 		chart.setLegendVisible(legendVisible);
@@ -243,7 +220,7 @@ public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, M
 //		chart.getPlugins().add(new Panner());
 //		using this is a very confusing and perhaps buggy ui
 //		chart.getPlugins().add(new EditAxis());
-		chart.setTitle(widgetId+"[#"+policy.toString()+"]");
+		chart.setTitle(widgetId + "[#" + policy.toString() + "]");
 
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
@@ -251,16 +228,62 @@ public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, M
 		return content;
 	}
 
+	private void installSenderRenderers(int sender) {
+
+		Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(sender);
+		for (Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
+			if (yAxes.size() < maxAxes) {
+				String yAxisUnits = "";// where do we get these - they don't apply to statistics
+				DefaultNumericAxis newAxis = new DefaultNumericAxis(entry.getKey(), yAxisUnits);
+				// newAxis.setAutoRangeRounding(true);
+				newAxis.setAnimated(false);
+				// assign axis side BEFORE adding renderer to the chart
+				if (yAxes.size() % 2 == 0)
+					newAxis.setSide(Side.LEFT);
+				else
+					newAxis.setSide(Side.RIGHT);
+				yAxes.add(newAxis);
+				ErrorDataSetRenderer newRenderer = new ErrorDataSetRenderer();
+				initErrorDataSetRenderer(newRenderer);
+				// add axis before adding dataset
+				newRenderer.getAxes().add(newAxis);
+				newRenderer.getDatasets().add(entry.getValue());
+//				renderers.add(newRenderer);
+				Platform.runLater(() -> {
+					chart.getRenderers().add(newRenderer);
+					if (chart.getRenderers().size() > maxLegendItems)
+						newRenderer.setShowInLegend(false);
+				});
+
+			} else { // add remaining data sets to the last axis
+				Platform.runLater(() -> {
+					ErrorDataSetRenderer renderer = (ErrorDataSetRenderer) chart.getRenderers().get(maxAxes - 1);
+					renderer.getDatasets().add(entry.getValue());
+					// update the axis name
+					DefaultNumericAxis yAxis = yAxes.get(maxAxes - 1);
+					// Concatenate first and last names
+					String currentName = yAxis.getName();
+					if (currentName.contains(StringUtils.ELLIPSIS))
+						currentName = currentName.substring(0, currentName.indexOf(StringUtils.ELLIPSIS));
+					String newName = currentName + StringUtils.ELLIPSIS + entry.getKey();
+
+					yAxis.setName(newName);
+				});
+			}
+		}
+
+	}
+
 	@Override
 	public void onStatusMessage(State state) {
 //		System.out.println("State: " + state + "\t" + Thread.currentThread().getId());
 //		4) Called 4th after UI construction - this is only in the UI thread the first time it's called
 		if (isSimulatorState(state, waiting)) {
-//			TODO may have problems with slow sims here - writes still occurring?
-//			for (Map.Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
-//				CircularDoubleErrorDataSet cbds = (CircularDoubleErrorDataSet) entry.getValue();
-//				cbds.reset();
-//			}
+			for (Renderer r : chart.getRenderers())
+				for (DataSet d : r.getDatasets()) {
+					CircularDoubleErrorDataSet cdds = (CircularDoubleErrorDataSet) d;
+					cdds.reset();
+				}
 
 		} else if (isSimulatorState(state, finished)) {
 			// It seems this is the critical thing to do to see the axes correctly.
@@ -272,53 +295,61 @@ public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, M
 	}
 
 	private void processDataMessage(Output0DData data) {
-		
+		Map<String, CircularDoubleErrorDataSet> dsm = senderDataSetMap.get(data.sender());
+		if (dsm == null) {
+			addSenderPlots(data.sender());
+			installSenderRenderers(data.sender());
+		}
+
+		final Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(data.sender());
+		final int sender = data.sender();
+
 		Platform.runLater(() -> {
 
-//			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
-//
-//			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-//				if (!ds.equals(dontTouch))
-//					ds.autoNotification().getAndSet(false);
-//
-//			final double x = data.time();
-//
-//			String itemId = null;
-//			if (sas != null)
-//				itemId = data.itemLabel().getEnd();
-//			else if (sampledItems != null)
-//				itemId = data.itemLabel().toString();
-//
-//			for (DataLabel dl : metadataTS.doubleNames()) {
-//				String key;
-//				if (itemId != null)
-//					key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
-//				else
-//					key = dl.toString();
-//				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-//				final double y = data.getDoubleValues()[metadataTS.indexOf(dl)];
-//				final double ey = 1;
-//				ds.add(x, y, ey, ey);
-//			}
-//
-//			for (DataLabel dl : metadataTS.intNames()) {
-//				String key;
-//				if (itemId != null)
-//					key = itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
-//				else
-//					key = dl.toString();
-//				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-//				final double y = data.getIntValues()[metadataTS.indexOf(dl)];
-//				final double ey = 1;
-//				ds.add(x, y, ey, ey);
-//			}
-//
-//			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
-//				if (!ds.equals(dontTouch))
-//					ds.autoNotification().getAndSet(true);
-//
-//			if (((DefaultNumericAxis) chart.getYAxis()).isAutoRangeRounding())
-//				chart.getYAxis().forceRedraw();
+			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
+
+			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+				if (!ds.equals(dontTouch))
+					ds.autoNotification().getAndSet(false);
+
+			final double x = data.time();
+
+			String itemId = null;
+			if (sas != null)
+				itemId = data.itemLabel().getEnd();
+			else if (sampledItems != null)
+				itemId = data.itemLabel().toString();
+
+			for (DataLabel dl : metadataTS.doubleNames()) {
+				String key;
+				if (itemId != null)
+					key = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+				else
+					key = sender + ":" + dl.toString();
+				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
+				final double y = data.getDoubleValues()[metadataTS.indexOf(dl)];
+				final double ey = 1;
+				ds.add(x, y, ey, ey);
+			}
+
+			for (DataLabel dl : metadataTS.intNames()) {
+				String key;
+				if (itemId != null)
+					key = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+				else
+					key = sender + ":" + dl.toString();
+				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
+				final double y = data.getIntValues()[metadataTS.indexOf(dl)];
+				final double ey = 1;
+				ds.add(x, y, ey, ey);
+			}
+
+			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
+				if (!ds.equals(dontTouch))
+					ds.autoNotification().getAndSet(true);
+
+			if (((DefaultNumericAxis) chart.getYAxis()).isAutoRangeRounding())
+				chart.getYAxis().forceRedraw();
 		});
 	}
 
@@ -422,28 +453,43 @@ public class RangeTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, M
 		r.setDashSize(0);
 		r.setPointReduction(true);
 		r.setDrawMarker(false);
+		r.setDrawBars(false);
 		final DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) r.getRendererDataReducer();
 		reductionAlgorithm.setMinPointPixelDistance(MIN_PIXEL_DISTANCE);
 	}
 
-	// helper for UI construction, cf below.
-	private void makeChannels(DataLabel dl) {
+	private void addSenderPlots(int sender) {
+		for (DataLabel dl : metadataTS.doubleNames())
+			makeChannels(dl, sender);
+		// normally with statistics there are no int variables
+		for (DataLabel dl : metadataTS.intNames())
+			makeChannels(dl, sender);
+	}
+
+	// helper new sender
+	private void makeChannels(DataLabel dl, int sender) {
+		Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(sender);
+		if (dataSetMap == null) {
+			dataSetMap = new ConcurrentHashMap<>();
+			senderDataSetMap.put(sender, dataSetMap);
+		}
+
 		if (sas != null) {
 			for (StatisticalAggregates sa : sas.values()) {
-				String key = sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
+				String key = sender + ":" + sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
-//				dataSetMap.put(key, ds);
+				dataSetMap.put(key, ds);
 			}
 		} else if (sampledItems != null) {
 			for (String si : sampledItems) {
-				String key = si + DataLabel.HIERARCHY_DOWN + dl.toString();
+				String key = sender + ":" + si + DataLabel.HIERARCHY_DOWN + dl.toString();
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
-//				dataSetMap.put(key, ds);
+				dataSetMap.put(key, ds);
 			}
 		} else {
-			// String key = dl.toString();
-			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(dl.toString(), bufferSize);
-//			dataSetMap.put(dl.toString(), ds);
+			String key = sender + ":" + dl.toString();
+			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
+			dataSetMap.put(key, ds);
 		}
 	}
 

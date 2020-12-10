@@ -48,8 +48,8 @@ public class RangeWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		// must be a +ve range
-		int l = (int) properties.getPropertyValue("lowerSender");
-		int r = (int) properties.getPropertyValue("rangeSender");
+		int l = (int) properties.getPropertyValue(P_WIDGET_SENDERLOWER.key());
+		int r = (int) properties.getPropertyValue(P_WIDGET_SENDERRANGE.key());
 		range = new IntegerRange(l, l + r);
 	}
 
