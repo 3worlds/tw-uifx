@@ -246,7 +246,7 @@ public class MRmain {
 			ctrl.start();
 			// Loop the main thread until contoller receives finished msg
 			while (!ctrl.ended());
-			System.out.println("--- Main thread exit ---");
+//			System.out.println("--- Main thread exit ---");
 		}
 	}
 
