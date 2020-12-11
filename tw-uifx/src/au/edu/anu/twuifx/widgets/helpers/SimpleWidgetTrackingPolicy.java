@@ -59,7 +59,9 @@ public class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		sender = (Integer) properties.getPropertyValue(P_WIDGET_SENDER.key());
+		sender = 0;
+		if (properties.hasProperty(P_WIDGET_SENDER.key()))
+			sender = (Integer) properties.getPropertyValue(P_WIDGET_SENDER.key());
 	}
 
 	@Override
@@ -71,8 +73,8 @@ public class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData
 	public boolean canProcessMetadataMessage(Metadata meta) {
 		return sender == meta.sender();
 	}
-	
-	@Override 
+
+	@Override
 	public String toString() {
 		return Integer.toString(sender);
 	}
