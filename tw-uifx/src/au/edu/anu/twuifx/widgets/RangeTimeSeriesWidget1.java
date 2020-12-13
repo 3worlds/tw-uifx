@@ -36,8 +36,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -113,13 +113,15 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 	private int MIN_PIXEL_DISTANCE = 1;// check this in case it causes data to be lost
 	private XYChart chart;
 	private final List<DefaultNumericAxis> yAxes;
-	private Map<Integer, Map<String, CircularDoubleErrorDataSet>> senderDataSetMap;
+	private Map<Integer, TreeMap<String, CircularDoubleErrorDataSet>> senderDataSetMap;
 	private Output0DMetadata metadataTS;
 	private Metadata msgMetadata;
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
+	private int firstSender;
+	private int lastSender;
 
 	public RangeTimeSeriesWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
@@ -142,6 +144,13 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		this.bufferSize = 1000;
 		if (properties.hasProperty(P_WIDGET_BUFFERSIZE.key()))
 			this.bufferSize = (Integer) properties.getPropertyValue(P_WIDGET_BUFFERSIZE.key());
+		if (properties.hasProperty(P_WIDGET_SENDERLOWER.key()))
+			firstSender = (int) properties.getPropertyValue(P_WIDGET_SENDERLOWER.key());
+		int r = 0;
+		if (properties.hasProperty(P_WIDGET_SENDERRANGE.key()))
+			r = (int) properties.getPropertyValue(P_WIDGET_SENDERRANGE.key());
+		lastSender = firstSender + r;
+
 	}
 
 	@Override
@@ -155,24 +164,10 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		/*
-		 * 3) called third after metadata get the prefs before building the ui
-		 */
+		/* 3) called third after metadata */
+
+		// get the prefs before building the ui
 		getUserPreferences();
-
-		sas = null;
-		if (msgMetadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
-			sas = (StatisticalAggregatesSet) msgMetadata.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
-		if (msgMetadata.properties().hasProperty("sample")) {
-			StringTable st = (StringTable) msgMetadata.properties().getPropertyValue("sample");
-			if (st != null) {
-				sampledItems = new ArrayList<>(st.size());
-				for (int i = 0; i < st.size(); i++)
-					sampledItems.add(st.getWithFlatIndex(i));
-			}
-		}
-
-		addSenderPlots(msgMetadata.sender());
 
 		timeFormatter.onMetaDataMessage(msgMetadata);
 		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
@@ -186,25 +181,70 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		xAxis.invertAxis(false);
 		xAxis.setTimeAxis(false);
 
-		List<ErrorDataSetRenderer> renderers = new ArrayList<>();
-		Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(msgMetadata.sender());
-		for (Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
-			String yAxisUnits = "";// where do we get these - they don't apply to statistics
-			DefaultNumericAxis newAxis = new DefaultNumericAxis(entry.getKey(), yAxisUnits);
-			// newAxis.setAutoRangeRounding(true);
-			newAxis.setAnimated(false);
-			// assign axis side BEFORE adding renderer to the chart
-			newAxis.setSide(Side.LEFT);
-			yAxes.add(newAxis);
-			ErrorDataSetRenderer newRenderer = new ErrorDataSetRenderer();
-			initErrorDataSetRenderer(newRenderer);
-			// add axis before adding dataset
-			newRenderer.getAxes().add(newAxis);
-			newRenderer.getDatasets().add(entry.getValue());
-			renderers.add(newRenderer);
-			if (renderers.size() > maxLegendItems)
-				newRenderer.setShowInLegend(false);
+		sas = null;
+		if (msgMetadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
+			sas = (StatisticalAggregatesSet) msgMetadata.properties().getPropertyValue(P_DATATRACKER_STATISTICS.key());
+		if (msgMetadata.properties().hasProperty("sample")) {
+			StringTable st = (StringTable) msgMetadata.properties().getPropertyValue("sample");
+			if (st != null) {
+				sampledItems = new ArrayList<>(st.size());
+				for (int i = 0; i < st.size(); i++)
+					sampledItems.add(st.getWithFlatIndex(i));
+			}
 		}
+		int nChannels = metadataTS.doubleNames().size() + metadataTS.intNames().size();
+		if (sas != null)
+			nChannels += sas.values().size();
+		if (sampledItems != null)
+			nChannels += sampledItems.size();
+		int nAxes = Math.min(nChannels, maxAxes);
+
+		for (int sender = firstSender; sender <= lastSender; sender++) {
+			senderDataSetMap.put(sender, new TreeMap<String, CircularDoubleErrorDataSet>());
+			for (DataLabel dl : metadataTS.doubleNames())
+				makeChannels(dl, sender);
+			// normally with statistics there are no int variables
+			for (DataLabel dl : metadataTS.intNames())
+				makeChannels(dl, msgMetadata.sender());
+		}
+
+		// for adding to the chart later.
+		final List<ErrorDataSetRenderer> renderers = new ArrayList<>();
+
+		for (int i = 0; i < nAxes; i++) {
+			DefaultNumericAxis newAxis = new DefaultNumericAxis("", "");
+			newAxis.setAnimated(false);
+			if (yAxes.size() % 2 == 0)
+				newAxis.setSide(Side.LEFT);
+			else
+				newAxis.setSide(Side.RIGHT);
+			yAxes.add(newAxis);
+		}
+		senderDataSetMap.forEach((i, dsm) -> {
+			int count = 0;
+			for (String key : dsm.navigableKeySet()) {
+				int index = count % nAxes;
+				DefaultNumericAxis axis = yAxes.get(index);
+				ErrorDataSetRenderer newRenderer = new ErrorDataSetRenderer();
+				initErrorDataSetRenderer(newRenderer);
+				newRenderer.getAxes().add(axis);
+				newRenderer.getDatasets().add(dsm.get(key));
+				renderers.add(newRenderer);
+				if (count > maxLegendItems)
+					newRenderer.setShowInLegend(false);
+				count++;
+
+				if (axis.getName().isBlank())
+					axis.setName(key);
+
+				String currentName = axis.getName();
+				if (currentName.contains(StringUtils.ELLIPSIS))
+					currentName = currentName.substring(0, currentName.indexOf(StringUtils.ELLIPSIS));
+				String newName = currentName + StringUtils.ELLIPSIS + key;
+				axis.setName(newName);
+			}
+		});
+
 		chart = new XYChart(xAxis, yAxes.get(0));
 		chart.setLegendSide(legendSide);
 		chart.setLegendVisible(legendVisible);
@@ -228,55 +268,8 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		return content;
 	}
 
-	private void installSenderRenderers(int sender) {
-
-		Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(sender);
-		for (Entry<String, CircularDoubleErrorDataSet> entry : dataSetMap.entrySet()) {
-			if (yAxes.size() < maxAxes) {
-				String yAxisUnits = "";// where do we get these - they don't apply to statistics
-				DefaultNumericAxis newAxis = new DefaultNumericAxis(entry.getKey(), yAxisUnits);
-				// newAxis.setAutoRangeRounding(true);
-				newAxis.setAnimated(false);
-				// assign axis side BEFORE adding renderer to the chart
-				if (yAxes.size() % 2 == 0)
-					newAxis.setSide(Side.LEFT);
-				else
-					newAxis.setSide(Side.RIGHT);
-				yAxes.add(newAxis);
-				ErrorDataSetRenderer newRenderer = new ErrorDataSetRenderer();
-				initErrorDataSetRenderer(newRenderer);
-				// add axis before adding dataset
-				newRenderer.getAxes().add(newAxis);
-				newRenderer.getDatasets().add(entry.getValue());
-//				renderers.add(newRenderer);
-				Platform.runLater(() -> {
-					chart.getRenderers().add(newRenderer);
-					if (chart.getRenderers().size() > maxLegendItems)
-						newRenderer.setShowInLegend(false);
-				});
-
-			} else { // add remaining data sets to the last axis
-				Platform.runLater(() -> {
-					ErrorDataSetRenderer renderer = (ErrorDataSetRenderer) chart.getRenderers().get(maxAxes - 1);
-					renderer.getDatasets().add(entry.getValue());
-					// update the axis name
-					DefaultNumericAxis yAxis = yAxes.get(maxAxes - 1);
-					// Concatenate first and last names
-					String currentName = yAxis.getName();
-					if (currentName.contains(StringUtils.ELLIPSIS))
-						currentName = currentName.substring(0, currentName.indexOf(StringUtils.ELLIPSIS));
-					String newName = currentName + StringUtils.ELLIPSIS + entry.getKey();
-
-					yAxis.setName(newName);
-				});
-			}
-		}
-
-	}
-
 	@Override
 	public void onStatusMessage(State state) {
-//		System.out.println("State: " + state + "\t" + Thread.currentThread().getId());
 //		4) Called 4th after UI construction - this is only in the UI thread the first time it's called
 		if (isSimulatorState(state, waiting)) {
 			for (Renderer r : chart.getRenderers())
@@ -288,19 +281,14 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		} else if (isSimulatorState(state, finished)) {
 			// It seems this is the critical thing to do to see the axes correctly.
 			Platform.runLater(() -> {
-				chart.getYAxis().forceRedraw();
-				chart.getXAxis().forceRedraw();
+				chart.getAxes().forEach((x) -> {
+					x.forceRedraw();
+				});
 			});
 		}
 	}
 
 	private void processDataMessage(Output0DData data) {
-		Map<String, CircularDoubleErrorDataSet> dsm = senderDataSetMap.get(data.sender());
-		if (dsm == null) {
-			addSenderPlots(data.sender());
-			installSenderRenderers(data.sender());
-		}
-
 		final Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(data.sender());
 		final int sender = data.sender();
 
@@ -458,21 +446,9 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		reductionAlgorithm.setMinPointPixelDistance(MIN_PIXEL_DISTANCE);
 	}
 
-	private void addSenderPlots(int sender) {
-		for (DataLabel dl : metadataTS.doubleNames())
-			makeChannels(dl, sender);
-		// normally with statistics there are no int variables
-		for (DataLabel dl : metadataTS.intNames())
-			makeChannels(dl, sender);
-	}
-
 	// helper new sender
 	private void makeChannels(DataLabel dl, int sender) {
 		Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(sender);
-		if (dataSetMap == null) {
-			dataSetMap = new ConcurrentHashMap<>();
-			senderDataSetMap.put(sender, dataSetMap);
-		}
 
 		if (sas != null) {
 			for (StatisticalAggregates sa : sas.values()) {
