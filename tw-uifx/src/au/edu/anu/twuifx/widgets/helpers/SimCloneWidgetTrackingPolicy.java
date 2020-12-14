@@ -30,6 +30,7 @@
 // 
 package au.edu.anu.twuifx.widgets.helpers;
 
+import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -68,6 +69,11 @@ public class SimCloneWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeDa
 	@Override
 	public boolean canProcessMetadataMessage(Metadata meta) {
 		return meta.sender()==0;
+	}
+
+	@Override
+	public IntegerRange getDataMessageRange() {
+		return new IntegerRange(0,Integer.MAX_VALUE);
 	}
 
 }

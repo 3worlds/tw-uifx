@@ -29,6 +29,7 @@
 
 package au.edu.anu.twuifx.widgets.helpers;
 
+import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.Widget;
 
@@ -43,5 +44,7 @@ public interface WidgetTrackingPolicy<T> extends Widget{
 	public boolean canProcessDataMessage(T data);
 	
 	public boolean canProcessMetadataMessage(Metadata meta);
+	
+	public IntegerRange getDataMessageRange();
 	
 }

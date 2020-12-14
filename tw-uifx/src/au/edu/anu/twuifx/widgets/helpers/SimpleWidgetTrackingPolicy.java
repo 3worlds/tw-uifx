@@ -30,6 +30,7 @@
 // 
 package au.edu.anu.twuifx.widgets.helpers;
 
+import au.edu.anu.rscs.aot.util.IntegerRange;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -77,6 +78,11 @@ public class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData
 	@Override
 	public String toString() {
 		return Integer.toString(sender);
+	}
+
+	@Override
+	public IntegerRange getDataMessageRange() {
+		return new IntegerRange(sender,sender);
 	}
 
 }

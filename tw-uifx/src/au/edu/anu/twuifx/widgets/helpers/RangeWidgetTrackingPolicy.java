@@ -72,4 +72,10 @@ public class RangeWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>
 		return Integer.toString(range.getFirst()) + "-" + Integer.toString(range.getLast());
 	}
 
+	@Override
+	public IntegerRange getDataMessageRange() {
+		return range;
+	}
+	
+
 }

@@ -120,8 +120,6 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 	private WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
-	private int firstSender;
-	private int lastSender;
 
 	public RangeTimeSeriesWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
@@ -144,13 +142,6 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		this.bufferSize = 1000;
 		if (properties.hasProperty(P_WIDGET_BUFFERSIZE.key()))
 			this.bufferSize = (Integer) properties.getPropertyValue(P_WIDGET_BUFFERSIZE.key());
-		if (properties.hasProperty(P_WIDGET_SENDERLOWER.key()))
-			firstSender = (int) properties.getPropertyValue(P_WIDGET_SENDERLOWER.key());
-		int r = 0;
-		if (properties.hasProperty(P_WIDGET_SENDERRANGE.key()))
-			r = (int) properties.getPropertyValue(P_WIDGET_SENDERRANGE.key());
-		lastSender = firstSender + r;
-
 	}
 
 	@Override
@@ -199,7 +190,8 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 			nChannels += sampledItems.size();
 		int nAxes = Math.min(nChannels, maxAxes);
 
-		for (int sender = firstSender; sender <= lastSender; sender++) {
+		for (int sender = policy.getDataMessageRange().getFirst(); sender <= policy.getDataMessageRange()
+				.getLast(); sender++) {
 			senderDataSetMap.put(sender, new TreeMap<String, CircularDoubleErrorDataSet>());
 			for (DataLabel dl : metadataTS.doubleNames())
 				makeChannels(dl, sender);
