@@ -183,12 +183,13 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 					sampledItems.add(st.getWithFlatIndex(i));
 			}
 		}
-		int nChannels = metadataTS.doubleNames().size() + metadataTS.intNames().size();
+		int nItems = metadataTS.doubleNames().size() + metadataTS.intNames().size();
+		int nModifiers = 0;
 		if (sas != null)
-			nChannels += sas.values().size();
+			nModifiers += sas.values().size();
 		if (sampledItems != null)
-			nChannels += sampledItems.size();
-		int nAxes = Math.min(nChannels, maxAxes);
+			nModifiers += sampledItems.size();
+		int nAxes = Math.min(nItems*nModifiers, maxAxes);
 
 		for (int sender = policy.getDataMessageRange().getFirst(); sender <= policy.getDataMessageRange()
 				.getLast(); sender++) {
@@ -197,7 +198,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				makeChannels(dl, sender);
 			// normally with statistics there are no int variables
 			for (DataLabel dl : metadataTS.intNames())
-				makeChannels(dl, msgMetadata.sender());
+				makeChannels(dl, sender);
 		}
 
 		// for adding to the chart later.
@@ -283,6 +284,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 	private void processDataMessage(Output0DData data) {
 		final Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(data.sender());
 		final int sender = data.sender();
+		System.out.println("Sender: "+sender+" dataLabel: "+data.itemLabel());
 
 		Platform.runLater(() -> {
 
@@ -319,9 +321,12 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				else
 					key = sender + ":" + dl.toString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
+//				if (ds==null)
+//					System.out.println(key);
 				final double y = data.getIntValues()[metadataTS.indexOf(dl)];
 				final double ey = 1;
-				ds.add(x, y, ey, ey);
+				if (ds!=null)
+					ds.add(x, y, ey, ey);
 			}
 
 			for (CircularDoubleErrorDataSet ds : dataSetMap.values())

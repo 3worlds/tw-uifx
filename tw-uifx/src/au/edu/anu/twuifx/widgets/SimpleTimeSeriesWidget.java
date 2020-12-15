@@ -323,6 +323,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void onDataMessage(Output0DData data) {
+//		System.out.println("sender: "+data.sender()+": "+data);
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial))
 				throw new TwuifxException("Handling initial data not implemented for this widget.");
