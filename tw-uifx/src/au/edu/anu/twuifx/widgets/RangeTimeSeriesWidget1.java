@@ -274,8 +274,8 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		} else if (isSimulatorState(state, finished)) {
 			// It seems this is the critical thing to do to see the axes correctly.
 			Platform.runLater(() -> {
-				chart.getAxes().forEach((x) -> {
-					x.forceRedraw();
+				chart.getAxes().forEach((axis) -> {
+					axis.forceRedraw();
 				});
 			});
 		}

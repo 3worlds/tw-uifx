@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 // TREE
 3worlds LittleForest
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(ian (15 Dec. 2020))
+	built-by = java.lang.String(ian (17 Dec. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"jacques.gignoux@upmc.fr"))
 	precis = java.lang.String(A simplistic individual based forest model to test the use of groups)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -112,7 +112,6 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(m)
 	experiment expt
-		nReplicates = java.lang.Integer(2)
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
@@ -239,29 +238,22 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 					widget neigh biomass
 						maxAxes = java.lang.Integer(4)
 						order = java.lang.Integer(1)
-						senderLower = java.lang.Integer(0)
-						senderRange = java.lang.Integer(1)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.RangeTimeSeriesWidget1)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 					widget spp count
 						maxAxes = java.lang.Integer(2)
 						order = java.lang.Integer(0)
-						senderLower = java.lang.Integer(0)
-						senderRange = java.lang.Integer(1)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.RangeTimeSeriesWidget1)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 				container cont2
 					order = java.lang.Integer(0)
 					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 					widget tbl biomass
 						order = java.lang.Integer(0)
-						sender = java.lang.Integer(0)
 						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 					widget tbl spp count
 						order = java.lang.Integer(1)
-						sender = java.lang.Integer(0)
 						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
 			widget map
 				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
 
 // CROSS-LINKS
@@ -281,7 +273,6 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
 [category:*group*] constants cnts1 [record:par]
-[widget:spp count] trackSeries trks5 [dataTracker:trk1]
 [process:p1] appliesTo aplyTo2 [category:tree]
 [process:p1] appliesTo aplyTo1 [category:*component*]
 [process:p1] dependsOn depsOn2 [process:p2]
@@ -301,6 +292,7 @@ treegraph // saved by OmugiGraphExporter on Mon Sep 28 14:15:18 CEST 2020
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [widget:map] trackSpace trks2 [space:space1]
+[widget:spp count] trackSeries trks5 [dataTracker:trk1]
 [category:*arena*] constants cnsts1 [record:global]
 [componentType:treeIndividual] belongsTo bt7 [category:*ephemeral*]
 [componentType:treeIndividual] belongsTo bt6 [category:*component*]

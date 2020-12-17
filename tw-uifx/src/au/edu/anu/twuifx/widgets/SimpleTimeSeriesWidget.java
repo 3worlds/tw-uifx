@@ -265,8 +265,9 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		} else if (isSimulatorState(state, finished)) {
 			// It seems this is the critical thing to do to see the axes correctly.
 			Platform.runLater(() -> {
-				chart.getYAxis().forceRedraw();
-				chart.getXAxis().forceRedraw();
+				chart.getAxes().forEach((axis) -> {
+					axis.forceRedraw();
+				});
 			});
 		}
 	}
