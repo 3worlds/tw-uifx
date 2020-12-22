@@ -54,7 +54,7 @@ public class RangeWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>
 		int n = 1;
 		if (properties.hasProperty(P_WIDGET_NSENDERS.key()))
 			n = (int) properties.getPropertyValue(P_WIDGET_NSENDERS.key());
-		range = new IntegerRange(l, l + (n-1));
+		range = new IntegerRange(l, l + (n - 1));
 	}
 
 	@Override
@@ -69,13 +69,15 @@ public class RangeWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>
 
 	@Override
 	public String toString() {
-		return Integer.toString(range.getFirst()) + "-" + Integer.toString(range.getLast());
+		if (range.getLast() - range.getFirst() == 0)
+			return Integer.toString(range.getFirst());
+		else
+			return Integer.toString(range.getFirst()) + "-" + Integer.toString(range.getLast());
 	}
 
 	@Override
 	public IntegerRange getDataMessageRange() {
 		return range;
 	}
-	
 
 }

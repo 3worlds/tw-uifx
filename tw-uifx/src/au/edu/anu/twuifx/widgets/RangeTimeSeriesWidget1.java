@@ -153,6 +153,19 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		}
 	}
 
+	/*-*
+	 * Sender: 0 dataLabel: community>mean
+	Sender: 0 dataLabel: community>sum
+	0:mean>x[0][1.0, 0.25]
+	0:mean>x[1][1.0, 0.25]
+	0:mean>x[2][1.0, 0.25]
+	0:mean>x[3][1.0, 0.25]
+	0:sum>x[0][1.0, 0.25]
+	0:sum>x[1][1.0, 0.25]
+	0:sum>x[2][1.0, 0.25]
+	0:sum>x[3][1.0, 0.25]
+	
+	 */
 	@Override
 	public Object getUserInterfaceContainer() {
 		/* 3) called third after metadata */
@@ -183,6 +196,8 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 					sampledItems.add(st.getWithFlatIndex(i));
 			}
 		}
+//		int nSims = policy.getDataMessageRange().getLast()-policy.getDataMessageRange().getFirst()+1;
+
 		int nItems = metadataTS.doubleNames().size() + metadataTS.intNames().size();
 		int nModifiers = 0;
 		if (sas != null)
@@ -213,6 +228,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				newAxis.setSide(Side.RIGHT);
 			yAxes.add(newAxis);
 		}
+
 		senderDataSetMap.forEach((i, dsm) -> {
 			int count = 0;
 			for (String key : dsm.navigableKeySet()) {
@@ -229,12 +245,13 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 
 				if (axis.getName().isBlank())
 					axis.setName(key);
-
-				String currentName = axis.getName();
-				if (currentName.contains(StringUtils.ELLIPSIS))
-					currentName = currentName.substring(0, currentName.indexOf(StringUtils.ELLIPSIS));
-				String newName = currentName + StringUtils.ELLIPSIS + key;
-				axis.setName(newName);
+				else {
+					String currentName = axis.getName();
+					if (currentName.contains(StringUtils.ELLIPSIS))
+						currentName = currentName.substring(0, currentName.indexOf(StringUtils.ELLIPSIS));
+					String newName = currentName + StringUtils.ELLIPSIS + key;
+					axis.setName(newName);
+				}
 			}
 		});
 
@@ -253,7 +270,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 //		chart.getPlugins().add(new Panner());
 //		using this is a very confusing and perhaps buggy ui
 //		chart.getPlugins().add(new EditAxis());
-		chart.setTitle(widgetId + "[#" + policy.toString() + "]");
+		chart.setTitle("[#" + policy.toString() + "]" + widgetId);
 
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
@@ -311,6 +328,9 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 				final double y = data.getDoubleValues()[metadataTS.indexOf(dl)];
 				final double ey = 1;
+				System.out.println(key + "[" + x + ", " + y + "]");
+				if (ds==null)
+					System.out.println(key+" not found");
 				ds.add(x, y, ey, ey);
 			}
 
@@ -458,8 +478,10 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 			}
 		} else {
 			String key = sender + ":" + dl.toString();
-			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
-			dataSetMap.put(key, ds);
+			throw new TwuifxException("Don't know how to handle '" + key + "'");
+//			System.out.println(key+"???");
+//			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
+//			dataSetMap.put(key, ds);
 		}
 	}
 
