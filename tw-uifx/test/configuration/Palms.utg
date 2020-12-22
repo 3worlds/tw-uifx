@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Mon Dec 21 17:17:32 CET 2020
+treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -164,10 +164,13 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 21 17:17:32 CET 2020
 						constantClass = java.lang.String(code.sys1.Palmcst)
 						driverClass = java.lang.String(code.sys1.Palmdrv_sdldrv_drivers)
 						mobile = java.lang.Boolean(false)
+					group sdBOR
 				groupType palmAd
 					constantClass = java.lang.String(code.sys1.Grpcst)
 					group adBOR
 						constantValues initCnts2
+							dist = java.lang.Double(5.2)
+							fec = java.lang.Double(0.8)
 					componentType palmTree
 						constantClass = java.lang.String(code.sys1.Palmcst)
 						driverClass = java.lang.String(code.sys1.Adjuvdrv_palmdrv_drivers)
@@ -184,6 +187,7 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 21 17:17:32 CET 2020
 						constantClass = java.lang.String(code.sys1.Palmcst)
 						driverClass = java.lang.String(code.sys1.Adjuvdrv_palmdrv_drivers)
 						mobile = java.lang.Boolean(false)
+					group juvBOR
 			categorySet groupCats
 				category adultPar
 	userInterface gui
@@ -232,14 +236,18 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 21 17:17:32 CET 2020
 [system:sys1] belongsTo bt7 [category:*permanent*]
 [system:sys1] belongsTo bt6 [category:*arena*]
 [system:sys1] belongsTo bt8 [category:*assemblage*]
+[group:juvBOR] groupOf grpOf2 [componentType:palmJuvenile]
+[group:juvBOR] cycle cycl3 [lifeCycle:Borassus aethiopum]
+[group:sdBOR] groupOf grpOf1 [componentType:palmSeedling]
+[group:sdBOR] cycle cycl2 [lifeCycle:Borassus aethiopum]
 [category:juvenile] drivers drvs3 [record:adjuvdrv]
 [category:adult] drivers drvs2 [record:adjuvdrv]
+[process:proc2] appliesTo aplyTo4 [category:*assemblage*]
 [componentType:palmTree] belongsTo bt3 [category:*atomic*]
 [componentType:palmTree] belongsTo bt2 [category:*ephemeral*]
 [componentType:palmTree] belongsTo bt1 [category:*component*]
 [componentType:palmTree] belongsTo bt5 [category:palm]
 [componentType:palmTree] belongsTo bt4 [category:adult]
-[process:proc2] appliesTo aplyTo4 [category:*assemblage*]
 [process:proc1] appliesTo aplyTo2 [category:adult]
 [process:proc1] appliesTo aplyTo3 [category:palm]
 [process:proc1] inSpace in1 [space:plot]
