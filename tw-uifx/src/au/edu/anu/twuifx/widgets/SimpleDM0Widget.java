@@ -204,13 +204,15 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 				String key = getKey(dl, itemId);
 				WidgetTableData td = dataSetMap.get(key);
 				final double value = data.getDoubleValues()[tsMeta.indexOf(dl)];
-				td.setValue(value);
+				if (td != null)
+					td.setValue(value);
 			}
 			for (DataLabel dl : tsMeta.intNames()) {
 				String key = getKey(dl, itemId);
 				WidgetTableData td = dataSetMap.get(key);
 				final long value = data.getIntValues()[tsMeta.indexOf(dl)];
-				td.setValue(value);
+				if (td != null)
+					td.setValue(value);
 			}
 			table.refresh();
 			lblTime.setText(timeFormatter.getTimeText(data.time()));

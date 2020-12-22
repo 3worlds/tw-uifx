@@ -328,10 +328,9 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 				final double y = data.getDoubleValues()[metadataTS.indexOf(dl)];
 				final double ey = 1;
-				System.out.println(key + "[" + x + ", " + y + "]");
-				if (ds==null)
-					System.out.println(key+" not found");
-				ds.add(x, y, ey, ey);
+//				System.out.println(key + "[" + x + ", " + y + "]");
+				if (ds != null)
+					ds.add(x, y, ey, ey);
 			}
 
 			for (DataLabel dl : metadataTS.intNames()) {
@@ -343,7 +342,8 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 				final double y = data.getIntValues()[metadataTS.indexOf(dl)];
 				final double ey = 1;
-				ds.add(x, y, ey, ey);
+				if (ds != null)
+					ds.add(x, y, ey, ey);
 			}
 
 			for (CircularDoubleErrorDataSet ds : dataSetMap.values())
