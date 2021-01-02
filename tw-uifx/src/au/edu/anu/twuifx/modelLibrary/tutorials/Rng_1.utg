@@ -64,14 +64,14 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 		rng gen1
-			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(java)
-			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(onRunStart)
-			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(secure)
+			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(JAVA)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(ONRUNSTART)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(PSUEDO)
 			tableIndex = java.lang.Integer(0)
 		rng gen2
-			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(Pcg32)
-			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(onRunStart)
-			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(table)
+			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(PCG32)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(ONRUNSTART)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(NATURAL)
 			tableIndex = java.lang.Integer(0)
 	experiment expt
 		nReplicates = java.lang.Integer(1)
