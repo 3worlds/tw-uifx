@@ -66,11 +66,12 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private void onAction() {
-		Table newTable = editTable((StringTable) dtItem.getValue());
+		StringTable newTable = editTable((String) dtItem.getValue());
 		setValue(newTable.toSaveableString());
 	}
 
-	private StringTable editTable(StringTable currentValue) {
+	private StringTable editTable(String currentStringValue) {
+		StringTable currentValue = StringTable.valueOf(currentStringValue);
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
 		dlg.initOwner((Window) Dialogs.owner());
@@ -82,6 +83,7 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		dlg.getDialogPane().setContent(pane);
 		dlg.setResizable(true);
 		String s = "";
+		
 		for (int i = 0; i < currentValue.size(); i++) {
 			s += currentValue.getWithFlatIndex(i);
 			if (i < currentValue.size() - 1)
