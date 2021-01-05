@@ -38,6 +38,7 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
+import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
@@ -61,14 +62,12 @@ public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButto
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		dtItem = (DoubleTableItem) this.getProperty();
-
-		// we need to find the timeline to create the meta-data for time editing
 		view.setOnAction(e -> onAction());
 	}
 
 	private void onAction() {
-		DoubleTable newTable = editTable((DoubleTable)dtItem.getValue());
-		setValue(newTable.toSaveableString(dtItem.bdel, dtItem.isep));
+		Table newTable = editTable((DoubleTable)dtItem.getValue());
+		setValue(newTable.toSaveableString());
 	}
 
 	private DoubleTable editTable(DoubleTable currentValue) {
@@ -84,7 +83,7 @@ public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButto
 		dlg.setResizable(true);
 		String s = "";
 		for (int i = 0; i < currentValue.size(); i++) {
-			s += currentValue.getWithFlatIndex(i);
+			s += Double.toString(currentValue.getWithFlatIndex(i));
 			if (i < currentValue.size() - 1)
 				s += "\n";
 		}
@@ -102,8 +101,9 @@ public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButto
 			if (entries.isEmpty())
 				entries.add("");
 			DoubleTable newValue = new DoubleTable(new Dimensioner(entries.size()));
+			//NB 1 dim editor only
 			for (int i = 0; i < entries.size(); i++)
-				newValue.setByInt(entries.get(i), i);
+				newValue.setWithFlatIndex(Double.parseDouble(entries.get(i)), i);
 			return newValue;
 		}
 		return currentValue;

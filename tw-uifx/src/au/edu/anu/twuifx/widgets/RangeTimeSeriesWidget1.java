@@ -192,11 +192,15 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 			StringTable st = (StringTable) msgMetadata.properties().getPropertyValue("sample");
 			if (st != null) {
 				sampledItems = new ArrayList<>(st.size());
-				for (int i = 0; i < st.size(); i++)
+				for (int i = 0; i < st.size(); i++) {
+//					String[] parts = st.getWithFlatIndex(i).split( DataLabel.HIERARCHY_DOWN);
+//					String name=parts[0];
+//					for (int j=1;j<parts.length-1;j++) 
+//						name+=DataLabel.HIERARCHY_DOWN+parts[j];
 					sampledItems.add(st.getWithFlatIndex(i));
+				}
 			}
 		}
-//		int nSims = policy.getDataMessageRange().getLast()-policy.getDataMessageRange().getFirst()+1;
 
 		int nItems = metadataTS.doubleNames().size() + metadataTS.intNames().size();
 		int nModifiers = 0;
@@ -211,7 +215,6 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 			senderDataSetMap.put(sender, new TreeMap<String, CircularDoubleErrorDataSet>());
 			for (DataLabel dl : metadataTS.doubleNames())
 				makeChannels(dl, sender);
-			// normally with statistics there are no int variables
 			for (DataLabel dl : metadataTS.intNames())
 				makeChannels(dl, sender);
 		}
@@ -315,7 +318,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 
 			String itemId = null;
 			if (sas != null)
-				itemId = data.itemLabel().getEnd();
+				itemId = data.itemLabel().toString();
 			else if (sampledItems != null)
 				itemId = data.itemLabel().toString();
 
@@ -476,8 +479,8 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
 				dataSetMap.put(key, ds);
 			}
-		} else {
-			String key = sender + ":" + dl.toString();
+		}else {
+			String key = sender + ":" + dl.getEnd();
 			throw new TwuifxException("Don't know how to handle '" + key + "'");
 //			System.out.println(key+"???");
 //			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);

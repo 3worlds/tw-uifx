@@ -38,6 +38,7 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
@@ -61,16 +62,16 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
 		view = this.getEditor();
 		dtItem = (StringTableItem) this.getProperty();
-
 		view.setOnAction(e -> onAction());
 	}
 
 	private void onAction() {
-		StringTable newTable = editTable(StringTable.valueOf((String) dtItem.getValue(),dtItem.bdel, dtItem.isep));
-		setValue(newTable.toSaveableString(dtItem.bdel, dtItem.isep));
+		StringTable newTable = editTable((String) dtItem.getValue());
+		setValue(newTable.toSaveableString());
 	}
 
-	private StringTable editTable(StringTable currentValue) {
+	private StringTable editTable(String currentStringValue) {
+		StringTable currentValue = StringTable.valueOf(currentStringValue);
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
 		dlg.initOwner((Window) Dialogs.owner());
@@ -82,6 +83,7 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		dlg.getDialogPane().setContent(pane);
 		dlg.setResizable(true);
 		String s = "";
+		
 		for (int i = 0; i < currentValue.size(); i++) {
 			s += currentValue.getWithFlatIndex(i);
 			if (i < currentValue.size() - 1)
@@ -101,8 +103,9 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 			if (entries.isEmpty())
 				entries.add("");
 			StringTable newValue = new StringTable(new Dimensioner(entries.size()));
+			//NB 1 dim editor only
 			for (int i = 0; i < entries.size(); i++)
-				newValue.setByInt(entries.get(i), i);
+				newValue.setWithFlatIndex(entries.get(i), i);
 			return newValue;
 		}
 		return currentValue;

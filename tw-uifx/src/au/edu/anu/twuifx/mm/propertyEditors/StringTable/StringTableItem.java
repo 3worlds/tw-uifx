@@ -30,11 +30,6 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.StringTable;
 
-import static fr.cnrs.iees.io.parsing.TextGrammar.DIM_BLOCK_DELIMITERS;
-import static fr.cnrs.iees.io.parsing.TextGrammar.DIM_ITEM_SEPARATOR;
-import static fr.cnrs.iees.io.parsing.TextGrammar.TABLE_BLOCK_DELIMITERS;
-import static fr.cnrs.iees.io.parsing.TextGrammar.TABLE_ITEM_SEPARATOR;
-
 import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
@@ -51,32 +46,26 @@ import fr.cnrs.iees.graph.ElementAdapter;
  * @date 15 Dec 2019
  */
 public class StringTableItem extends SimpleMMPropertyItem {
-	protected char[][] bdel = new char[2][2];
-	protected char[] isep = new char[2];
 
-	public StringTableItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
-		super(controller,key, element, canEdit, category, description);
-		bdel[Table.DIMix] = DIM_BLOCK_DELIMITERS;
-		bdel[Table.TABLEix] = TABLE_BLOCK_DELIMITERS;
-		isep[Table.DIMix] = DIM_ITEM_SEPARATOR;
-		isep[Table.TABLEix] = TABLE_ITEM_SEPARATOR;
+	public StringTableItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
+			String category, String description) {
+		super(controller, key, element, canEdit, category, description);
 	}
 
 	@Override
 	public Object getValue() {
-		StringTable table  = (StringTable) super.getValue();
-		Object s = table.toSaveableString(bdel, isep);
-		return s;
+		Table table = (Table) super.getValue();
+		return table.toSaveableString();
 	}
 
 	@Override
 	public void setValue(Object value) {
-		StringTable newTable = StringTable.valueOf((String)value, bdel, isep);
-		StringTable oldTable = (StringTable) getElementProperties().getPropertyValue(key);
-		String oldValue = oldTable.toSaveableString(bdel, isep);
-		String newValue = newTable.toSaveableString(bdel, isep);
+		Table oldTable = (Table) getElementProperties().getPropertyValue(key);
+		String oldValue = oldTable.toSaveableString();
+		String newValue = (String) value;
 		// NB Tables do not have an equals() function!
-		if (!oldValue.equals(newValue)){
+		if (!oldValue.equals(newValue)) {
+			StringTable newTable = StringTable.valueOf((String) value);
 			onUpdateProperty(newTable);
 		}
 	}
