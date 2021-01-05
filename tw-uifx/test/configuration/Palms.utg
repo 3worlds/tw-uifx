@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
+treegraph // saved by OmugiGraphExporter on Tue Jan 05 15:08:22 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -67,6 +67,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 				description = java.lang.String()
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		record adjuvdrv
+			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(adjuvdrv)
 			field budHt
 				description = java.lang.String()
@@ -74,14 +75,13 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-		record palmdrv
-			generatedClassName = java.lang.String(palmdrv)
 			field nleaves
-				description = java.lang.String()
-				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 		record sdldrv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(sdldrv)
 			field neophyll
 				description = java.lang.String()
 				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
@@ -128,7 +128,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
 								userClassName = java.lang.String(code.sys1.Dispersal)
 								snippet snpt2
-									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([8]"		// TODO: the currently generated code is wrong as the categories do not match the seedling cats.","		// they should be generated from the produce links","		double teta = random.nextDouble()*2*PI;","		double r = group_dist*random.nextGaussian();","		otherCnt.x = x+r*cos(teta);","		otherCnt.y = y+r*sin(teta);","		otherCnt.sex = random.nextBoolean();",""))
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([8]"		// TODO: the currently generated code is wrong as the categories do not match the seedling cats.","		// they should be generated from the produce links","		double teta = random.nextDouble()*2*PI;","		double r = group_dist*random.nextGaussian();","		otherCnt.x = x+r*cos(teta);","		otherCnt.y = y+r*sin(teta);","		otherDrv.neophyll = 1;","		otherCnt.sex = random.nextBoolean();"))
 					process proc2
 						dataTracker trk1
 							sampleSize = java.lang.String()
@@ -138,10 +138,6 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 		structure structure
 			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
-			categorySet stages
-				category adult
-				category seedling
-				category juvenile
 			space plot
 				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
 				guardAreaWidth = java.lang.Double(0.0)
@@ -153,6 +149,10 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
 			categorySet plant
 				category palm
+					categorySet stages
+						category adult
+						category seedling
+						category juvenile
 			lifeCycleType palmLC
 				constantClass = java.lang.String()
 				decoratorClass = java.lang.String()
@@ -162,7 +162,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 				groupType palmSd
 					componentType palmSeedling
 						constantClass = java.lang.String(code.sys1.Palmcst)
-						driverClass = java.lang.String(code.sys1.Palmdrv_sdldrv_drivers)
+						driverClass = java.lang.String(code.sys1.Sdldrv)
 						mobile = java.lang.Boolean(false)
 					group sdBOR
 				groupType palmAd
@@ -173,7 +173,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 							fec = java.lang.Double(0.8)
 					componentType palmTree
 						constantClass = java.lang.String(code.sys1.Palmcst)
-						driverClass = java.lang.String(code.sys1.Adjuvdrv_palmdrv_drivers)
+						driverClass = java.lang.String(code.sys1.Adjuvdrv)
 						mobile = java.lang.Boolean(false)
 						initFunction InitAdult
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
@@ -185,7 +185,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 				groupType palmJuv
 					componentType palmJuvenile
 						constantClass = java.lang.String(code.sys1.Palmcst)
-						driverClass = java.lang.String(code.sys1.Adjuvdrv_palmdrv_drivers)
+						driverClass = java.lang.String(code.sys1.Adjuvdrv)
 						mobile = java.lang.Boolean(false)
 					group juvBOR
 			categorySet groupCats
@@ -219,7 +219,6 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 22 14:55:53 CET 2020
 [lifeCycleType:palmLC] appliesTo aplyTo1 [categorySet:stages]
 [lifeCycleType:palmLC] belongsTo bt9 [category:*life cycle*]
 [category:palm] constants cnsts1 [record:palmcst]
-[category:palm] drivers drvs1 [record:palmdrv]
 [widget:numbers] trackSeries trks6 [dataTracker:trk1]
 [groupType:palmSd] belongsTo bt25 [category:*assemblage*]
 [groupType:palmSd] belongsTo bt24 [category:*permanent*]
