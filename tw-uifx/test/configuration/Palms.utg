@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Tue Jan 05 15:08:22 CET 2021
+treegraph // saved by OmugiGraphExporter on Wed Jan 06 16:19:26 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -119,7 +119,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 05 15:08:22 CET 2021
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 					process proc1
 						function Reproduction
-							relateToProduct = java.lang.Boolean(false)
+							relateToProduct = java.lang.Boolean(true)
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys1.Reproduction)
 							snippet snpt1
@@ -129,6 +129,15 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 05 15:08:22 CET 2021
 								userClassName = java.lang.String(code.sys1.Dispersal)
 								snippet snpt2
 									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([8]"		// TODO: the currently generated code is wrong as the categories do not match the seedling cats.","		// they should be generated from the produce links","		double teta = random.nextDouble()*2*PI;","		double r = group_dist*random.nextGaussian();","		otherCnt.x = x+r*cos(teta);","		otherCnt.y = y+r*sin(teta);","		otherDrv.neophyll = 1;","		otherCnt.sex = random.nextBoolean();"))
+					process proc3
+						function RecruitSeedling
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
+							userClassName = java.lang.String(code.sys1.RecruitSeedling)
+							function SeedlingToJuvenile
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
+								userClassName = java.lang.String(code.sys1.SeedlingToJuvenile)
+								snippet snpt5
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"		otherCnt.sex = sex;","		otherCnt.x = x;","		otherCnt.y = y;","		otherDrv.budHt = 0.0;","		otherDrv.nleaves = neophyll;"))
 					process proc2
 						dataTracker trk1
 							sampleSize = java.lang.String()
@@ -158,6 +167,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 05 15:08:22 CET 2021
 				decoratorClass = java.lang.String()
 				driverClass = java.lang.String()
 				lifeCycle Borassus aethiopum
+				recruit recruitmentSJ
 				produce reproduction
 				groupType palmSd
 					componentType palmSeedling
@@ -241,6 +251,14 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 05 15:08:22 CET 2021
 [group:sdBOR] cycle cycl2 [lifeCycle:Borassus aethiopum]
 [category:juvenile] drivers drvs3 [record:adjuvdrv]
 [category:adult] drivers drvs2 [record:adjuvdrv]
+[recruit:recruitmentSJ] effectedBy effdBy2 [function:RecruitSeedling]
+[recruit:recruitmentSJ] fromCategory from2 [category:seedling]
+[recruit:recruitmentSJ] toCategory to2 [category:juvenile]
+[process:proc3] appliesTo aplyTo6 [category:seedling]
+[process:proc3] appliesTo aplyTo5 [category:palm]
+[process:proc3] appliesTo aplyTo7 [category:*ephemeral*]
+[process:proc3] inSpace in2 [space:plot]
+	searchRadius = java.lang.Double(30.0)
 [process:proc2] appliesTo aplyTo4 [category:*assemblage*]
 [componentType:palmTree] belongsTo bt3 [category:*atomic*]
 [componentType:palmTree] belongsTo bt2 [category:*ephemeral*]
