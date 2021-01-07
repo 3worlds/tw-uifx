@@ -30,7 +30,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 //			focalDrv.x.setByInt(x.getByInt(i)+dxdt[i]*dt*integrationStep, i);
 
 // TREE
-3worlds LotkaVolterra1
+3worlds LotkaVolterra
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
 	built-by = java.lang.String(ian (22 Nov. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))

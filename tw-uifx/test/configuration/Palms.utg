@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Wed Jan 06 16:19:26 CET 2021
+treegraph // saved by OmugiGraphExporter on Thu Jan 07 16:41:22 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -30,11 +30,11 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 06 16:19:26 CET 2021
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nAdded
+			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nRemoved
+			field nAdded
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
@@ -133,6 +133,8 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 06 16:19:26 CET 2021
 						function RecruitSeedling
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
 							userClassName = java.lang.String(code.sys1.RecruitSeedling)
+							snippet snpt4
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return recruit.transition(age>2);"))
 							function SeedlingToJuvenile
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
 								userClassName = java.lang.String(code.sys1.SeedlingToJuvenile)
@@ -252,8 +254,8 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 06 16:19:26 CET 2021
 [category:juvenile] drivers drvs3 [record:adjuvdrv]
 [category:adult] drivers drvs2 [record:adjuvdrv]
 [recruit:recruitmentSJ] effectedBy effdBy2 [function:RecruitSeedling]
-[recruit:recruitmentSJ] fromCategory from2 [category:seedling]
 [recruit:recruitmentSJ] toCategory to2 [category:juvenile]
+[recruit:recruitmentSJ] fromCategory from2 [category:seedling]
 [process:proc3] appliesTo aplyTo6 [category:seedling]
 [process:proc3] appliesTo aplyTo5 [category:palm]
 [process:proc3] appliesTo aplyTo7 [category:*ephemeral*]
