@@ -3,7 +3,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
-3worlds Rng
+3worlds Rng_x
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	built-by = java.lang.String(ian (7 Dec. 2020))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -66,7 +66,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 		rng gen1
 			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(JAVA)
 			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(ONRUNSTART)
-			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(PSUEDO)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(PSEUDO)
 			tableIndex = java.lang.Integer(0)
 		rng gen2
 			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(PCG32)
