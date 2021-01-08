@@ -62,14 +62,14 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRACKER_STATISTICS;
 
@@ -150,22 +150,26 @@ public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadat
 		timeFormatter.onMetaDataMessage(metadata);
 
 		table = new TableView<WidgetTableData>();
-		TableColumn<WidgetTableData, String> col1Label = new TableColumn<>(widgetId);
+		TableColumn<WidgetTableData, String> col1Label = new TableColumn<>("Name");
 		col1Label.setCellValueFactory(new PropertyValueFactory<WidgetTableData, String>("label"));
 
 		TableColumn<WidgetTableData, String> col2Value = new TableColumn<>("Value");
 		col2Value.setCellValueFactory(new PropertyValueFactory<WidgetTableData, String>("value"));
+		col2Value.prefWidthProperty().bind(table.widthProperty().subtract(col1Label.prefWidthProperty()));
+		table.getColumns().addAll(col1Label, col2Value);
 
-		table.getColumns().addAll(col1Label, col2Value/* col3Min, col4Max, col5Avg, col6Var, col7Sum */);
-
-		VBox content = new VBox();
-		content.setSpacing(5);
-		content.setPadding(new Insets(10, 0, 0, 10));
+		
+		BorderPane content = new BorderPane();
 		HBox hbox = new HBox();
+		hbox.setAlignment(Pos.CENTER);
 		lblTime = new Label("uninitialised");
-		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime/** , lblItemLabel */
-		);
-		content.getChildren().addAll(table, hbox);
+		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime);
+		Label lname = new Label(widgetId);
+		content.setTop(lname);
+		content.setCenter(table);
+		content.setBottom(hbox);
+		BorderPane.setAlignment(lname, Pos.CENTER);
+
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);

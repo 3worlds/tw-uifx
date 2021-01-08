@@ -1058,6 +1058,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				LibraryTable lt = map.get(e.getSource());
 				TreeGraph<TreeGraphDataNode, ALEdge> libGraph = lt.getGraph();
 				TreeGraphDataNode root = libGraph.root();
+				String proposedName = lt.proposedName();
 				if (root == null || !root.classId().equals(N_ROOT.label())) {
 					String rnames = lt.displayName() + " roots:\n";
 					int i = 0;
@@ -1076,7 +1077,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name") + date);
 				}
 
-				model.doNewProject(libGraph);
+				model.doNewProject(proposedName,libGraph);
 			});
 		}
 
