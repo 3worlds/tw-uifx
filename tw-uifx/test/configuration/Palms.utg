@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Thu Jan 07 16:41:22 CET 2021
+treegraph // saved by OmugiGraphExporter on Fri Jan 08 11:36:11 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -147,6 +147,17 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 07 16:41:22 CET 2021
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
+					process proc4
+						function RecruitJuvenile
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
+							userClassName = java.lang.String(code.sys1.RecruitJuvenile)
+							function JuvenileToAdult
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
+								userClassName = java.lang.String(code.sys1.JuvenileToAdult)
+								snippet snpt6
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"		otherCnt.sex = sex;","		otherCnt.x = x;","		otherCnt.y = y;","		otherDrv.budHt = 0.0;","		otherDrv.nleaves = nleaves;"))
+							snippet snpt7
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return recruit.transition(age>50);"))
 		structure structure
 			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
 			space plot
@@ -170,6 +181,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 07 16:41:22 CET 2021
 				driverClass = java.lang.String()
 				lifeCycle Borassus aethiopum
 				recruit recruitmentSJ
+				recruit recruitmentJA
 				produce reproduction
 				groupType palmSd
 					componentType palmSeedling
@@ -243,6 +255,9 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 07 16:41:22 CET 2021
 [groupType:palmJuv] belongsTo bt22 [category:*permanent*]
 [groupType:palmJuv] belongsTo bt21 [category:*assemblage*]
 [groupType:palmJuv] belongsTo bt20 [category:*group*]
+[recruit:recruitmentJA] effectedBy effdBy3 [function:RecruitJuvenile]
+[recruit:recruitmentJA] toCategory to3 [category:adult]
+[recruit:recruitmentJA] fromCategory from3 [category:juvenile]
 [group:adBOR] cycle cycl1 [lifeCycle:Borassus aethiopum]
 [system:sys1] belongsTo bt7 [category:*permanent*]
 [system:sys1] belongsTo bt6 [category:*arena*]
@@ -256,12 +271,20 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 07 16:41:22 CET 2021
 [recruit:recruitmentSJ] effectedBy effdBy2 [function:RecruitSeedling]
 [recruit:recruitmentSJ] toCategory to2 [category:juvenile]
 [recruit:recruitmentSJ] fromCategory from2 [category:seedling]
+[process:proc4] appliesTo aplyTo9 [category:juvenile]
+[process:proc4] appliesTo aplyTo10 [category:palm]
+[process:proc4] inSpace in3 [space:plot]
+	searchRadius = java.lang.Double(30.0)
+[process:proc4] appliesTo aplyTo8 [category:*ephemeral*]
 [process:proc3] appliesTo aplyTo6 [category:seedling]
 [process:proc3] appliesTo aplyTo5 [category:palm]
 [process:proc3] appliesTo aplyTo7 [category:*ephemeral*]
 [process:proc3] inSpace in2 [space:plot]
 	searchRadius = java.lang.Double(30.0)
+[process:proc2] dependsOn depsOn1 [process:proc1]
+[process:proc2] dependsOn depsOn2 [process:proc3]
 [process:proc2] appliesTo aplyTo4 [category:*assemblage*]
+[process:proc2] dependsOn depsOn3 [process:proc4]
 [componentType:palmTree] belongsTo bt3 [category:*atomic*]
 [componentType:palmTree] belongsTo bt2 [category:*ephemeral*]
 [componentType:palmTree] belongsTo bt1 [category:*component*]
