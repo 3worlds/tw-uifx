@@ -30,6 +30,7 @@
 
 package au.edu.anu.twuifx.widgets;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import au.edu.anu.ymuit.ui.colour.ColourContrast;
 import au.edu.anu.ymuit.util.CenteredZooming;
+import au.edu.anu.ymuit.util.Decimals;
 import javafx.geometry.Side;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -148,6 +150,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private BorderListType borderList;
 	private List<Color> lstColoursAvailable;
 
+	private String units;
+	private DecimalFormat df;
+
 //	private static Logger log = Logging.getLogger(SimpleSpatial2DWidget1.class);
 
 	public SimpleSpatial2DWidget1(StateMachineEngine<StatusWidget> statusSender) {
@@ -164,6 +169,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 //		setLines = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>, Boolean>());
 		stLines = new HashSet<>();
 		lstInitialData = new ArrayList<>();
+		units = "";
 
 	}
 
@@ -188,6 +194,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
 				eec = BorderListType.getEdgeEffectCorrection(borderList);
 				tickWidth = getTickWidth();
+				units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
+				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
+				int ndp = 0;
+				while (prec < 1.0) {
+					prec = prec * 10;
+					ndp++;
+				}
+				df = Decimals.getDecimalFormat(ndp);
 				return;
 			}
 			case squareGrid: {
@@ -198,6 +212,15 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
 				eec = BorderListType.getEdgeEffectCorrection(borderList);
 				tickWidth = getTickWidth();
+				units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
+				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
+				int ndp = 0;
+				while (prec < 1.0) {
+					prec = prec * 10;
+					ndp++;
+				}
+				df = Decimals.getDecimalFormat(ndp);
+
 				return;
 			}
 			default: {
@@ -208,18 +231,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-	private double getTickWidth() {
-		double mxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
-		double exp = Math.round(Math.log10(mxDim));
-		double mx = Math.pow(10, exp);
-		return mx / 10;
-	}
-
 	private void processDataMessage(SpaceData data) {
 		Platform.runLater(() -> {
 			lblTime.setText(timeFormatter.getTimeText(data.time()));
 			boolean refreshLegend = updateData(data);
-			drawSpace();
+			drawScene();
 			if (refreshLegend)
 				updateLegend();
 		});
@@ -238,14 +254,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-			
+
 			mpPoints.clear();
 			stLines.clear();
 			mpColours.clear();
-			
+
 			for (SpaceData data : lstInitialData)
 				processDataMessage(data);
-			
+
 			lstInitialData.clear();
 		}
 	}
@@ -378,11 +394,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 //-------------------------------------------- Drawing ---
 
-	private synchronized void drawSpace() {
+	private synchronized void drawScene() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFont(font);
 		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
-		clearCanvas(gc);
+		drawPaper(gc);
 
 		gc.setLineWidth(relLineWidth);
 		gc.setLineDashes(0);
@@ -414,10 +430,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			}
 		}
 
-//		testing coord flipping around y
-//		double[] cxxx = {0,spaceBounds.getMaxY()};// left-top corner in Cartesian
-//		Point2D ppp = scaleToCanvas(cxxx);
-//		gc.strokeOval(ppp.getX(), ppp.getY(), 100, 100);// draws top-left corner of canvas
 
 		int size = 2 * symbolRadius;
 		gc.setTextAlign(TextAlignment.CENTER);
@@ -724,7 +736,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-	private void clearCanvas(GraphicsContext gc) {
+	private void drawPaper(GraphicsContext gc) {
 		gc.setFill(bkgColour);
 		gc.setStroke(bkgColour);
 		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -757,6 +769,33 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws, dashes);
 			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws, dashes);
 			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws, dashes);
+		}
+
+		if (showAxes) {
+			gc.setStroke(Color.BLACK);
+			gc.setLineDashes(0.0);
+			gc.setLineWidth(lineWidth);
+			gc.strokeLine(w / 2.0, 0.0, w / 2.0, h);
+			gc.strokeLine(0.0, h / 2.0, w, h / 2.0);
+//			gc.setTextAlign(TextAlignment.LEFT);
+//			gc.setTextBaseline(VPos.BOTTOM);
+//			gc.strokeText(units, 0, h / 2.0);
+//			gc.strokeText(units, w/2.0, h);
+//
+			gc.setTextBaseline(VPos.CENTER);
+			gc.setTextAlign(TextAlignment.CENTER);
+			for (int i = 1; i < nVLines; i++) {
+				double v = (i / (double) nVLines * spaceBounds.getWidth() + spaceBounds.getMinX());
+				double x = i * d;
+				gc.strokeText(df.format(v), x, h / 2.0 + 10);
+			}
+			gc.setTextAlign(TextAlignment.CENTER);
+			gc.setTextBaseline(VPos.CENTER);
+			for (int i = 1; i < nHLines; i++) {
+				double v = ((nHLines - i) / (double) nHLines * spaceBounds.getHeight() + spaceBounds.getMinY());
+				double y = i * d;
+				gc.strokeText(df.format(v), w / 2.0, y);
+			}
 		}
 	};
 
@@ -803,6 +842,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyLegendSide = "legendSide";
 	private static final String keyShowPointLabels = "showPointLabels";
 	private static final String keyShowArrows = "showArrows";
+	private static final String keyShowAxes = "showAxes";
 	private static final String keyShowIntermediateArrows = "showIntermediateArrows";
 	private static final String keyFontSize = "fontSize";
 	private static final String keyFontColour = "fontColour";
@@ -825,6 +865,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private Side legendSide;
 	private boolean showPointLabels;
 	private boolean showArrows;
+	private boolean showAxes;
 	private boolean showIntermediateArrows;
 	private int fontSize;
 	private Font font;
@@ -855,6 +896,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
 		Preferences.putBoolean(widgetId + keyShowPointLabels, showPointLabels);
 		Preferences.putBoolean(widgetId + keyShowArrows, showArrows);
+		Preferences.putBoolean(widgetId + keyShowAxes, showAxes);
 		Preferences.putBoolean(widgetId + keyShowIntermediateArrows, showIntermediateArrows);
 		Preferences.putInt(widgetId + keyFontSize, fontSize);
 	}
@@ -864,7 +906,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	// called at END of UI construction because this depends on UI components.
 	@Override
 	public void getUserPreferences() {
-		relLineWidth = Preferences.getDouble(widgetId + keyRelLineWidth, 0.25);
+		relLineWidth = Preferences.getDouble(widgetId + keyRelLineWidth, 0.5);
 		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
@@ -887,8 +929,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				Color.WHITE.getBlue());
 		bkgColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
-		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.LIGHTGREY.getRed(), Color.LIGHTGREY.getGreen(),
-				Color.LIGHTGREY.getBlue());
+		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),
+				Color.GREY.getBlue());
 		lineColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
 		rgb = Preferences.getDoubles(widgetId + keyFontColour, Color.BLACK.getRed(), Color.BLACK.getGreen(),
@@ -907,6 +949,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
 		showPointLabels = Preferences.getBoolean(widgetId + keyShowPointLabels, false);
 		showArrows = Preferences.getBoolean(widgetId + keyShowArrows, false);
+		showAxes = Preferences.getBoolean(widgetId + keyShowAxes, true);
 		showIntermediateArrows = Preferences.getBoolean(widgetId + keyShowIntermediateArrows, true);
 		fontSize = Preferences.getInt(widgetId + keyFontSize, 13);
 	}
@@ -918,6 +961,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	public Object getUserInterfaceContainer() {
 
 		BorderPane container = new BorderPane();
+		Label lbl = new Label(widgetId+" ["+units+"]");
+		container.setTop(lbl);
+		BorderPane.setAlignment(lbl, Pos.CENTER);
 		centerContainer = new BorderPane();
 		container.setCenter(centerContainer);
 		zoomTarget = new AnchorPane();
@@ -934,11 +980,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		centerContainer.setCenter(scrollPane);
 
 		HBox statusBar = new HBox();
+		//statusBar.setAlignment(Pos.CENTER);
 		statusBar.setSpacing(5);
 		lblItem = new Label("");
 		lblTime = new Label("");
 
-		statusBar.getChildren().addAll(lblTime, new Label("	"), lblItem);
+		statusBar.getChildren().addAll(new Label("Tracker time"), lblTime, new Label("	"), lblItem);
 		container.setBottom(statusBar);
 
 		legend = new FlowPane();
@@ -1162,6 +1209,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		addGridControl("Boundaries", row++, col, chbxShowEdgeEffect, paperGrid);
 		chbxShowEdgeEffect.setSelected(showEdgeEffect);
 		// -----
+		CheckBox chbxShowAxes = new CheckBox("");
+		addGridControl("Axes", row++, col, chbxShowAxes, paperGrid);
+		chbxShowAxes.setSelected(showAxes);
+		// -----
 		TextField tfSpaceCanvasRatio = new TextField(Double.toString(spaceCanvasRatio));
 		tfSpaceCanvasRatio.setTextFormatter(
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
@@ -1208,6 +1259,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			showLines = chbxShowLines.isSelected();
 			symbolFill = chbxFill.isSelected();
 			showGrid = chbxShowGrid.isSelected();
+			showAxes= chbxShowAxes.isSelected();
 			showEdgeEffect = chbxShowEdgeEffect.isSelected();
 			spaceCanvasRatio = Double.parseDouble(tfSpaceCanvasRatio.getText());
 			relLineWidth = Double.parseDouble(tfRelLineWidth.getText());
@@ -1238,7 +1290,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			fontSize = spFontSize.getValue();
 			font = new Font(fontSize);
 			placeLegend();
-			drawSpace();
+			drawScene();
 			updateLegend();
 		}
 	}
@@ -1261,7 +1313,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double x = value.getSecond()[0];
 			double y = value.getSecond()[1];
 			if (box.contains(x, y)) {
-				return key + " [" + x + "," + y + "]";
+				return key + " [" + df.format(x) + "," + df.format(y) + "]";
 			}
 		}
 		return "";
@@ -1309,6 +1361,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 		}
 
+	}
+
+	private double getTickWidth() {
+		double mxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
+		double exp = Math.round(Math.log10(mxDim));
+		double mx = Math.pow(10, exp);
+		return mx / 10;
 	}
 
 }

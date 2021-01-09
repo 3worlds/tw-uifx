@@ -180,10 +180,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		timeFormatter.onMetaDataMessage(msgMetadata);
 		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
 		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-		final String timeUnitName = TimeUtil.timeUnitName(timeUnit, nTimeUnits);
+		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
+		
 
 		final BorderPane content = new BorderPane();
-		final DefaultNumericAxis xAxis = new DefaultNumericAxis("time", timeUnitName);
+		final DefaultNumericAxis xAxis = new DefaultNumericAxis("Tracker time: ", timeUnitName);
 		xAxis.setAutoRangeRounding(false);
 		xAxis.setTickLabelRotation(45);
 		xAxis.invertAxis(false);
