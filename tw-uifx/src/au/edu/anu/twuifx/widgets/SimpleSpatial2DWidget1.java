@@ -231,6 +231,49 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
+	@Override
+	public Object getUserInterfaceContainer() {
+
+		BorderPane container = new BorderPane();
+		Label lbl = new Label(widgetId + " [" + units + "]");
+		container.setTop(lbl);
+		BorderPane.setAlignment(lbl, Pos.CENTER);
+		centerContainer = new BorderPane();
+		container.setCenter(centerContainer);
+		zoomTarget = new AnchorPane();
+		canvas = new Canvas();
+		canvas.setOnMouseClicked(e -> onMouseClicked(e));
+		zoomTarget.getChildren().add(canvas);
+		Group group = new Group(zoomTarget);
+		StackPane content = new StackPane(group);
+		scrollPane = new ScrollPane(content);
+		scrollPane.setPannable(true);
+		scrollPane.setContent(content);
+		scrollPane.setMinSize(170, 170);
+		CenteredZooming.center(scrollPane, content, group, zoomTarget);
+		centerContainer.setCenter(scrollPane);
+
+		HBox statusBar = new HBox();
+		// statusBar.setAlignment(Pos.CENTER);
+		statusBar.setSpacing(5);
+		lblItem = new Label("");
+		lblTime = new Label("");
+
+		statusBar.getChildren().addAll(new Label("Tracker time"), lblTime, new Label("	"), lblItem);
+		container.setBottom(statusBar);
+
+		legend = new FlowPane();
+		legend.setHgap(3);
+		legend.setVgap(3);
+
+		getUserPreferences();
+		font = new Font(fontSize);
+
+		legend.setVisible(legendVisible);
+		placeLegend();
+		return container;
+	}
+
 	private void processDataMessage(SpaceData data) {
 		Platform.runLater(() -> {
 			lblTime.setText(timeFormatter.getTimeText(data.time()));
@@ -824,7 +867,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyScaleY = "scaleY";
 	private static final String keyScrollH = "scrollH";
 	private static final String keyScrollV = "scrollV";
-	private static final String keySpaceCanvasRatio = "spaceCanvasRatio";
 	private static final String keyPaperWidth = "paperWidth";
 	private static final String keySymbolRad = "radius";
 	private static final String keySymbolFill = "fill";
@@ -878,7 +920,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
 		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
-		Preferences.putDouble(widgetId + keySpaceCanvasRatio, spaceCanvasRatio);
 		Preferences.putInt(widgetId + keyPaperWidth, paperWidth);
 		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
 		Preferences.putInt(widgetId + keySymbolRad, symbolRadius);
@@ -903,7 +944,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putInt(widgetId + keyFontSize, fontSize);
 	}
 
-
 	// called at END of UI construction because this depends on UI components.
 	@Override
 	public void getUserPreferences() {
@@ -912,7 +952,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
-		spaceCanvasRatio = Preferences.getDouble(widgetId + keySpaceCanvasRatio, 1.0);
 		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
 		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, 2);
 		paperWidth = Preferences.getInt(widgetId + keyPaperWidth, 500);
@@ -952,49 +991,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	// --------------- GUI
 	private BorderPane centerContainer;
-
-	@Override
-	public Object getUserInterfaceContainer() {
-
-		BorderPane container = new BorderPane();
-		Label lbl = new Label(widgetId + " [" + units + "]");
-		container.setTop(lbl);
-		BorderPane.setAlignment(lbl, Pos.CENTER);
-		centerContainer = new BorderPane();
-		container.setCenter(centerContainer);
-		zoomTarget = new AnchorPane();
-		canvas = new Canvas();
-		canvas.setOnMouseClicked(e -> onMouseClicked(e));
-		zoomTarget.getChildren().add(canvas);
-		Group group = new Group(zoomTarget);
-		StackPane content = new StackPane(group);
-		scrollPane = new ScrollPane(content);
-		scrollPane.setPannable(true);
-		scrollPane.setContent(content);
-		scrollPane.setMinSize(170, 170);
-		CenteredZooming.center(scrollPane, content, group, zoomTarget);
-		centerContainer.setCenter(scrollPane);
-
-		HBox statusBar = new HBox();
-		// statusBar.setAlignment(Pos.CENTER);
-		statusBar.setSpacing(5);
-		lblItem = new Label("");
-		lblTime = new Label("");
-
-		statusBar.getChildren().addAll(new Label("Tracker time"), lblTime, new Label("	"), lblItem);
-		container.setBottom(statusBar);
-
-		legend = new FlowPane();
-		legend.setHgap(3);
-		legend.setVgap(3);
-
-		getUserPreferences();
-		font = new Font(fontSize);
-
-		legend.setVisible(legendVisible);
-		placeLegend();
-		return container;
-	}
 
 	private void placeLegend() {
 		centerContainer.setLeft(null);
@@ -1246,34 +1242,46 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// spacer
 
 		dialog.getDialogPane().setContent(content);
+		boolean newLegend = false;
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
 			showLines = chbxShowLines.isSelected();
-			symbolFill = chbxFill.isSelected();
+			if (symbolFill != chbxFill.isSelected()) {
+				symbolFill = chbxFill.isSelected();
+				newLegend = true;
+			}
 			showGrid = chbxShowGrid.isSelected();
 			showAxes = chbxShowAxes.isSelected();
 			showEdgeEffect = chbxShowEdgeEffect.isSelected();
-			
-			//spaceCanvasRatio = Double.parseDouble(tfSpaceCanvasRatio.getText());
+
 			relLineWidth = Double.parseDouble(tfRelLineWidth.getText());
 			symbolRadius = spRadius.getValue();
 			paperWidth = spPaperWidth.getValue();
-			contrast = Double.parseDouble(tfContrast.getText());
-			colour64 = chbxCS.isSelected();
-			bkgColour = cpBkg.getValue();
+
+			if (contrast != Double.parseDouble(tfContrast.getText())) {
+				contrast = Double.parseDouble(tfContrast.getText());
+				newLegend = true;
+			}
+			if (colour64 != chbxCS.isSelected()) {
+				colour64 = chbxCS.isSelected();
+				newLegend = true;
+			}
+			if (bkgColour != cpBkg.getValue()) {
+				bkgColour = cpBkg.getValue();
+				newLegend = true;
+			}
+			if (colourHLevel != spHLevel.getValue()) {
+				colourHLevel = spHLevel.getValue();
+				newLegend = true;
+			}
+
 			lineColour = cpLine.getValue();
 			fontColour = cpFont.getValue();
-			colourHLevel = spHLevel.getValue();
 			if (colour64)
 				lstColoursAvailable = ColourContrast.getContrastingColours64(bkgColour, contrast);
 			else
 				lstColoursAvailable = ColourContrast.getContrastingColours(bkgColour, contrast);
 
-			mpColours.clear();
-			mpPoints.forEach((k, v) -> {
-				installColour(v.getFirst());
-			});
-			
 			legendSide = cmbSide.getValue();
 			legendVisible = chbxLegendVisible.isSelected();
 			maxLegendItems = spMaxLegendItems.getValue();
@@ -1283,12 +1291,19 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			showIntermediateArrows = chbxShowIntermediateArrows.isSelected();
 			fontSize = spFontSize.getValue();
 			font = new Font(fontSize);
-			
+
 			spaceCanvasRatio = paperWidth / spaceBounds.getWidth();
-			
+
+			if (newLegend) {
+				mpColours.clear();
+				mpPoints.forEach((k, v) -> {
+					installColour(v.getFirst());
+				});
+				updateLegend();
+			}
+
 			placeLegend();
 			drawScene();
-			updateLegend();
 		}
 	}
 
