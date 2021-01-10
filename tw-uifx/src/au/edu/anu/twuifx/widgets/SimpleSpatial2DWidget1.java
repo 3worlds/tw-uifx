@@ -430,7 +430,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			}
 		}
 
-
 		int size = 2 * symbolRadius;
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
@@ -826,6 +825,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyScrollH = "scrollH";
 	private static final String keyScrollV = "scrollV";
 	private static final String keySpaceCanvasRatio = "spaceCanvasRatio";
+	private static final String keyPaperWidth = "paperWidth";
 	private static final String keySymbolRad = "radius";
 	private static final String keySymbolFill = "fill";
 	private static final String keyBKG = "bkg";
@@ -849,6 +849,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private double relLineWidth;
 	private double spaceCanvasRatio;
+	private int paperWidth;
 	private int colourHLevel;
 	private int symbolRadius;
 	private boolean symbolFill;
@@ -878,6 +879,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
 		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
 		Preferences.putDouble(widgetId + keySpaceCanvasRatio, spaceCanvasRatio);
+		Preferences.putInt(widgetId + keyPaperWidth, paperWidth);
 		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
 		Preferences.putInt(widgetId + keySymbolRad, symbolRadius);
 		Preferences.putBoolean(widgetId + keySymbolFill, symbolFill);
@@ -901,7 +903,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putInt(widgetId + keyFontSize, fontSize);
 	}
 
-	private static final int firstUse = -1;
 
 	// called at END of UI construction because this depends on UI components.
 	@Override
@@ -913,14 +914,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
 		spaceCanvasRatio = Preferences.getDouble(widgetId + keySpaceCanvasRatio, 1.0);
 		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
-		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, firstUse);
-		if (symbolRadius == firstUse) {
-			symbolRadius = 2;
-			// onMetadata has run therefore spaceBounds is valid
-			double s = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
-			// assume a nominal canvas size of 500
-			spaceCanvasRatio = 500.0 / s;
-		}
+		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, 2);
+		paperWidth = Preferences.getInt(widgetId + keyPaperWidth, 500);
+		spaceCanvasRatio = paperWidth / spaceBounds.getWidth();
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
 		showGrid = Preferences.getBoolean(widgetId + keyShowGrid, true);
 		showEdgeEffect = Preferences.getBoolean(widgetId + keyShowEdgeEffect, true);
@@ -961,7 +957,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	public Object getUserInterfaceContainer() {
 
 		BorderPane container = new BorderPane();
-		Label lbl = new Label(widgetId+" ["+units+"]");
+		Label lbl = new Label(widgetId + " [" + units + "]");
 		container.setTop(lbl);
 		BorderPane.setAlignment(lbl, Pos.CENTER);
 		centerContainer = new BorderPane();
@@ -980,7 +976,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		centerContainer.setCenter(scrollPane);
 
 		HBox statusBar = new HBox();
-		//statusBar.setAlignment(Pos.CENTER);
+		// statusBar.setAlignment(Pos.CENTER);
 		statusBar.setSpacing(5);
 		lblItem = new Label("");
 		lblTime = new Label("");
@@ -1213,11 +1209,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		addGridControl("Axes", row++, col, chbxShowAxes, paperGrid);
 		chbxShowAxes.setSelected(showAxes);
 		// -----
-		TextField tfSpaceCanvasRatio = new TextField(Double.toString(spaceCanvasRatio));
-		tfSpaceCanvasRatio.setTextFormatter(
-				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
-		tfSpaceCanvasRatio.setMaxWidth(60);
-		addGridControl("Canvas:Space ratio", row++, col, tfSpaceCanvasRatio, paperGrid);
+		Spinner<Integer> spPaperWidth = new Spinner<>();
+		spPaperWidth.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5000, paperWidth));
+		spPaperWidth.setMaxWidth(100);
+		spPaperWidth.setEditable(true);
+		addGridControl("Width", row++, col, spPaperWidth, paperGrid);
+
 		// ----
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
 		addGridControl("Colour", row++, col, cpBkg, paperGrid);
@@ -1229,9 +1226,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		addGridControl("Contrast (0.0-1.0)", row++, col, tfContrast, paperGrid);
 
-		// spacer
-//		addGridControl(" ", row++, col, new Label(" "), paperGrid);
-//		addGridControl(" ", row++, col, new Label(" "), paperGrid);
 		// ---------------------------- Legend
 		row = 0;
 		// ----
@@ -1250,8 +1244,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		spMaxLegendItems.setEditable(true);
 		addGridControl("Max items", row++, col, spMaxLegendItems, legendGrid);
 		// spacer
-//		addGridControl(" ", row++, col, new Label(" "), legendGrid);
-//		addGridControl(" ", row++, col, new Label(" "), legendGrid);
 
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
@@ -1259,11 +1251,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			showLines = chbxShowLines.isSelected();
 			symbolFill = chbxFill.isSelected();
 			showGrid = chbxShowGrid.isSelected();
-			showAxes= chbxShowAxes.isSelected();
+			showAxes = chbxShowAxes.isSelected();
 			showEdgeEffect = chbxShowEdgeEffect.isSelected();
-			spaceCanvasRatio = Double.parseDouble(tfSpaceCanvasRatio.getText());
+			
+			//spaceCanvasRatio = Double.parseDouble(tfSpaceCanvasRatio.getText());
 			relLineWidth = Double.parseDouble(tfRelLineWidth.getText());
 			symbolRadius = spRadius.getValue();
+			paperWidth = spPaperWidth.getValue();
 			contrast = Double.parseDouble(tfContrast.getText());
 			colour64 = chbxCS.isSelected();
 			bkgColour = cpBkg.getValue();
@@ -1276,10 +1270,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				lstColoursAvailable = ColourContrast.getContrastingColours(bkgColour, contrast);
 
 			mpColours.clear();
-
 			mpPoints.forEach((k, v) -> {
 				installColour(v.getFirst());
 			});
+			
 			legendSide = cmbSide.getValue();
 			legendVisible = chbxLegendVisible.isSelected();
 			maxLegendItems = spMaxLegendItems.getValue();
@@ -1289,6 +1283,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			showIntermediateArrows = chbxShowIntermediateArrows.isSelected();
 			fontSize = spFontSize.getValue();
 			font = new Font(fontSize);
+			
+			spaceCanvasRatio = paperWidth / spaceBounds.getWidth();
+			
 			placeLegend();
 			drawScene();
 			updateLegend();
