@@ -53,6 +53,7 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.io.FileImporter;
+import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import fr.ens.biologie.generic.Initialisable;
 import fr.ens.biologie.generic.utils.Logging;
 import java.util.logging.Logger;
@@ -146,10 +147,6 @@ public class MRmain {
 
 		}
 
-//		if (args.length < 1) {
-//			System.out.println(usage);
-//			System.exit(1);
-//		}
 
 		File prjDir = new File(TwPaths.TW_ROOT + File.separator + args[1]);
 		if (!prjDir.exists()) {
@@ -244,11 +241,16 @@ public class MRmain {
 			 */
 			Kicker ctrl = (Kicker) ctrlHl.getInstance();
 			ctrl.start();
-			// Loop the main thread until contoller receives finished msg
+			// Loop the main thread until controller receives finished msg
 			while (!ctrl.ended());
+			
+			// Generate doco - there is no other opportunity so it's done here without asking.
+			DocoGenerator gen = new DocoGenerator(configGraph);
+			gen.generate();
+
 //			System.out.println("--- Main thread exit ---");
 		}
-	}
+	} // end main()
 
 	/* Find a headless controller if it exists. */
 	private static WidgetNode getHeadlessController(TreeNode uiNode) {
