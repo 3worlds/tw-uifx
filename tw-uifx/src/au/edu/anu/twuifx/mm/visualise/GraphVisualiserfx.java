@@ -834,9 +834,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void collapsePredef() {
 		for (VisualNode root : visualGraph.roots()) {
 			if (root.cClassId().equals(N_ROOT.label())) {
-				VisualNode predef = (VisualNode) get(root.getChildren(),
-						selectOne(hasTheName(ConfigurationReservedNodeId.categories.id())));
-				collapseTree(predef, false, 1.0);
+//				VisualNode predef = (VisualNode) get(root.getChildren(),
+//						selectOne(hasTheName(ConfigurationReservedNodeId.categories.id())));
+//				collapseTree(predef, false, 1.0);
 			}
 		}
 	}

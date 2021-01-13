@@ -687,6 +687,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onProjectOpened(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
 		this.visualGraph = layoutGraph;
 		Cursor oldCursor = setWaitCursor();
+		getPreferences();
 		visualiser = new GraphVisualiserfx(visualGraph, //
 				zoomTarget, //
 				nodeRadiusProperty, //
@@ -702,7 +703,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		initialisePropertySheets();
 
-		getPreferences();
+//		getPreferences();
 
 		setCursor(oldCursor);
 		stage.setTitle(Project.getDisplayName());
