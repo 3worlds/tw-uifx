@@ -30,7 +30,7 @@ public class Arrowhead extends Line {
 		startYProperty().bind(y2);
 
 		// bind arrow tail to distance between nodes less 1.5 node radius
-
+//		https://docs.oracle.com/javafx/2/binding/jfxpub-binding.htm
 		DoubleBinding xbnd = new DoubleBinding() {
 			{
 				super.bind(x1, y1, x2, y2, r);
