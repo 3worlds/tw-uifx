@@ -68,6 +68,7 @@ import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.cnrs.iees.uit.space.Distance;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
+import fr.ens.biologie.generic.utils.Tuple;
 //import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.BoundingBox;
@@ -138,7 +139,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	 */
 	private final Map<String, Duple<DataLabel, double[]>> mpPoints;
 	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
-	private final Set<Duple<DataLabel, DataLabel>> stLines;
+	private final Set<Tuple<DataLabel, DataLabel, String>> stLines;
 
 	private final Map<String, Duple<Integer, Color>> mpColours;
 	/** Temporary store for initialising data */
@@ -356,8 +357,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// update lines
 		int lc = stLines.size();
 		int la = 0;
-		for (Duple<DataLabel, DataLabel> line : data.linesToCreate()) {
+		for (Tuple<DataLabel, DataLabel, String> line : data.linesToCreate()) {
 			boolean added = stLines.add(line);
+			// PROBLEM HERE: there may be two relations OF DIFFERENT TYPES relating the
+			// same two points....
+			// so we must allow for identical ends but different types.
 			if (!added) {
 				throw new TwuifxException("Attempt to add already existing line. [" + line + "]");
 			} else
@@ -366,7 +370,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		// remove lines
 		int ld = 0;
-		for (Duple<DataLabel, DataLabel> line : data.linesToDelete()) {
+		for (Tuple<DataLabel, DataLabel, String> line : data.linesToDelete()) {
 			boolean removed = stLines.remove(line);
 			if (!removed) {
 //				throw new TwuifxException("Attempt to delete a non-existing line. [" + line+"]");
@@ -379,9 +383,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// removed just above.
 
 		int ldnr = 0;
-		Iterator<Duple<DataLabel, DataLabel>> itline = stLines.iterator();
+		Iterator<Tuple<DataLabel, DataLabel, String>> itline = stLines.iterator();
 		while (itline.hasNext()) {
-			Duple<DataLabel, DataLabel> line = itline.next();
+			Tuple<DataLabel, DataLabel, String> line = itline.next();
 			if (!mpPoints.containsKey(line.getFirst().toString())
 					|| !mpPoints.containsKey(line.getSecond().toString())) {
 				itline.remove();
@@ -448,7 +452,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		if (showLines) {
 			gc.setStroke(lineColour);
-			for (Duple<DataLabel, DataLabel> lineReference : stLines) {
+			for (Tuple<DataLabel, DataLabel, String> lineReference : stLines) {
 				String sKey = lineReference.getFirst().toString();
 				String eKey = lineReference.getSecond().toString();
 				Duple<DataLabel, double[]> sEntry = mpPoints.get(sKey);
