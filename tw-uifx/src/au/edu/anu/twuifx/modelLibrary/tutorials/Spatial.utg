@@ -105,7 +105,7 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 					nInstances = java.lang.Integer(1)
 			space space
 				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
-				precision = java.lang.Double(1.0E-4)
+				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 				units = java.lang.String(m)
 				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])

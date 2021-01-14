@@ -197,6 +197,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				tickWidth = getTickWidth();
 				units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
 				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
+				if (prec <Double.MIN_VALUE)
+					prec = 1;
 				int ndp = 0;
 				while (prec < 1.0) {
 					prec = prec * 10;
@@ -215,6 +217,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				tickWidth = getTickWidth();
 				units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
 				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
+				if (prec <Double.MIN_VALUE)
+					prec = 1;
 				int ndp = 0;
 				while (prec < 1.0) {
 					prec = prec * 10;
@@ -821,26 +825,36 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			gc.setStroke(Color.BLACK);
 			gc.setLineDashes(0.0);
 			gc.setLineWidth(lineWidth);
-			gc.strokeLine(w / 2.0, 0.0, w / 2.0, h);
-			gc.strokeLine(0.0, h / 2.0, w, h / 2.0);
-//			gc.setTextAlign(TextAlignment.LEFT);
-//			gc.setTextBaseline(VPos.BOTTOM);
-//			gc.strokeText(units, 0, h / 2.0);
-//			gc.strokeText(units, w/2.0, h);
-//
-			gc.setTextBaseline(VPos.CENTER);
+
+			// Bottom x axis
+			gc.setTextBaseline(VPos.BOTTOM);
 			gc.setTextAlign(TextAlignment.CENTER);
 			for (int i = 1; i < nVLines; i++) {
 				double v = (i / (double) nVLines * spaceBounds.getWidth() + spaceBounds.getMinX());
 				double x = i * d;
-				gc.strokeText(df.format(v), x, h / 2.0 + 10);
+				gc.strokeText(df.format(v), x, h);
 			}
+			// Top x axis
+			gc.setTextBaseline(VPos.TOP);
 			gc.setTextAlign(TextAlignment.CENTER);
+			for (int i = 1; i < nVLines; i++) {
+				double v = (i / (double) nVLines * spaceBounds.getWidth() + spaceBounds.getMinX());
+				double x = i * d;
+				gc.strokeText(df.format(v), x, 0);
+			}
+			// Left y axis
+			gc.setTextAlign(TextAlignment.LEFT);
 			gc.setTextBaseline(VPos.CENTER);
 			for (int i = 1; i < nHLines; i++) {
 				double v = ((nHLines - i) / (double) nHLines * spaceBounds.getHeight() + spaceBounds.getMinY());
 				double y = i * d;
-				gc.strokeText(df.format(v), w / 2.0, y);
+				gc.strokeText(df.format(v), 0, y);
+			}
+			gc.setTextAlign(TextAlignment.RIGHT);
+			for (int i = 1; i < nHLines; i++) {
+				double v = ((nHLines - i) / (double) nHLines * spaceBounds.getHeight() + spaceBounds.getMinY());
+				double y = i * d;
+				gc.strokeText(df.format(v), w, y);
 			}
 		}
 	};
@@ -1162,12 +1176,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		ColorPicker cpFont = new ColorPicker(fontColour);
 		addGridControl("Font colour", row++, col, cpFont, pointsGrid);
 		GridPane.setValignment(cpFont, VPos.TOP);
-		// ----
-		Spinner<Integer> spFontSize = new Spinner<>();
-		spFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 48, fontSize));
-		spFontSize.setMaxWidth(100);
-		spFontSize.setEditable(true);
-		addGridControl("Font size", row++, col, spFontSize, pointsGrid);
 
 		// --------------------------------------- Lines
 		row = 0;
@@ -1214,6 +1222,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		spPaperWidth.setMaxWidth(100);
 		spPaperWidth.setEditable(true);
 		addGridControl("Width", row++, col, spPaperWidth, paperGrid);
+		// ----
+		Spinner<Integer> spFontSize = new Spinner<>();
+		spFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 48, fontSize));
+		spFontSize.setMaxWidth(100);
+		spFontSize.setEditable(true);
+		addGridControl("Font size", row++, col, spFontSize, paperGrid);
 
 		// ----
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
