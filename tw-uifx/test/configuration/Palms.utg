@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
+treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -10,6 +10,43 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
 	precis = java.lang.String()
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
+	predefined *categories*
+		categorySet *organisation*
+			category *assemblage*
+			category *atomic*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		categorySet *systemElements*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+			category *arena*
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
 	dataDefinition dDef
 		record palmcst
 			dynamic = java.lang.Boolean(false)
@@ -42,6 +79,106 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
+		record juvGrpPar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(juvGrpPar)
+			field aj0PdNneg
+				description = java.lang.String(P(dN=-1|H=0): intercept)
+				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field j1BudHt
+				description = java.lang.String(P(dN|H>0): Height slope)
+				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field aj1PdNneg
+				description = java.lang.String(P(dN=-1|H>0): intercept)
+				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field aj1PdN0
+				description = java.lang.String(P(dN=0|H>0): intercept)
+				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field aj1PdN1
+				description = java.lang.String(P(dN=1|H>0): intercept)
+				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field j0NLeaves
+				description = java.lang.String(P(dN|H=0): nleaves slope)
+				interval = fr.ens.biologie.generic.utils.Interval(]-50.0,50.0[)
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field aj0PdN0
+				description = java.lang.String(P(dN=0|H=0): intercept)
+				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field aj0PdN1
+				description = java.lang.String(P(dN=1|H=0): intercept)
+				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field j0Mound
+				description = java.lang.String(P(dN|H=0): mounds slope)
+				interval = fr.ens.biologie.generic.utils.Interval([-2000.0,2000.0])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field jpdhMound
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field j1Adult
+				description = java.lang.String(P(dN|H>0): Adults slope)
+				interval = fr.ens.biologie.generic.utils.Interval([-2000.0,2000.0])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field jpdh0
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field jpdhSNLeaves
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field jpdhAdult
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field jpdh1
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field j1Tree
+				description = java.lang.String(P(dN|H>0): Trees slope)
+				interval = fr.ens.biologie.generic.utils.Interval([-2000.0,2000.0])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field j1Juvenile
+				description = java.lang.String(P(dN|H>0): Juvenile slope)
+				interval = fr.ens.biologie.generic.utils.Interval([-2000.0,2000.0])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 		record sdldrv
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(sdldrv)
@@ -65,153 +202,6 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-		record juvGrpPar
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(juvGrpPar)
-			field aj1PdN1
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field j0NLeaves
-				interval = fr.ens.biologie.generic.utils.Interval(]-50.0,50.0[)
-				precision = java.lang.Double(0.001)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field aj1PdN0
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field jpdhSNLeaves
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field aj0PdNneg
-				interval = fr.ens.biologie.generic.utils.Interval(]-50.0,50.0[)
-				precision = java.lang.Double(0.001)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field j1Tree
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field j1Juvenile
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field jpdhAdult
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field j0Mound
-				interval = fr.ens.biologie.generic.utils.Interval(]-2000.0,2000.0[)
-				precision = java.lang.Double(0.1)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field aj0PdN0
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field jpdhMound
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field aj0PdN1
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field j1Adult
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field jpdh0
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field jpdh1
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field aj1PdNneg
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field j1BudHt
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-	userInterface gui
-		top top
-			widget timer
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
-			widget control
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
-		tab outputs
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget numbers
-				bufferSize = java.lang.Integer(1000)
-				maxAxes = java.lang.Integer(3)
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-			widget plot map
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
-	predefined *categories*
-		categorySet *organisation*
-			category *atomic*
-			category *assemblage*
-		categorySet *systemElements*
-			category *component*
-			category *life cycle*
-			category *group*
-			category *arena*
-			category *relation*
-		categorySet *lifespan*
-			category *permanent*
-			category *ephemeral*
-		record AVEphemeral
-			field birthDate
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field age
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record AVPopulation
-			field nRemoved
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nAdded
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field count
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
 	experiment expt
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
@@ -227,6 +217,42 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
+					process procA
+						function Reproduction
+							relateToProduct = java.lang.Boolean(true)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.sys1.Reproduction)
+							snippet snpt1
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if (!sex) 	// male","			return 0.0d;","		else		// female","			return group_fec;"))
+							function Dispersal
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
+								userClassName = java.lang.String(code.sys1.Dispersal)
+								snippet snpt2
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([8]"		// TODO: the currently generated code is wrong as the categories do not match the seedling cats.","		// they should be generated from the produce links","		double teta = random.nextDouble()*2*PI;","		double r = group_dist*random.nextGaussian();","		otherCnt.x = x+r*cos(teta);","		otherCnt.y = y+r*sin(teta);","		otherDrv.neophyll = 1;","		otherCnt.sex = random.nextBoolean();"))
+					process proc3
+						function RecruitSeedling
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
+							userClassName = java.lang.String(code.sys1.RecruitSeedling)
+							snippet snpt4
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return recruit.transition(age>2);"))
+							function SeedlingToJuvenile
+								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
+								userClassName = java.lang.String(code.sys1.SeedlingToJuvenile)
+								snippet snpt5
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"		otherCnt.sex = sex;","		otherCnt.x = x;","		otherCnt.y = y;","		otherDrv.budHt = 0.0;","		otherDrv.nleaves = neophyll;"))
+					process proc2
+						dataTracker trk1
+							sampleSize = java.lang.String()
+							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
+							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
+					process procAA
+						function CompetitionAA
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.CompetitionAA)
+							snippet snpt9
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return true;"))
 					process procJ
 						function RecruitJuvenile
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
@@ -243,51 +269,34 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
 							userClassName = java.lang.String(code.sys1.GrowJuvenile)
 							snippet snpt8
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([51]"		double niMound = 0.0; // TODO: replace by neighbourhood index","		double niTree=0; double niAdult = 0.0; double niJuv = 0.0; // TODO: replace by neighbourhood index","		// increment in number of leaves","		double[] proba = new double[3];","		if (budHt>0.0) {","			double neighb = group_j0Mound*niMound + group_j0NLeaves*nleaves;","			double logit = neighb + group_aj0PdNneg;","			proba[0] = 1/(1+exp(-logit));","			logit = neighb + group_aj0PdN0;","			proba[1] = 1/(1+exp(-logit));","			logit = neighb + group_aj0PdN1;","			proba[2] = 1/(1+exp(-logit));","		}","		else {","			double neighb = group_j1Tree*niTree + group_j1Adult*niAdult + group_j1Juvenile*niJuv + group_j1BudHt*budHt;","			double logit = neighb + group_aj1PdNneg;","			proba[0] = 1/(1+exp(-logit));","			logit = neighb + group_aj1PdN0;","			proba[1] = 1/(1+exp(-logit));","			logit = neighb + group_aj1PdN1;","			proba[2] = 1/(1+exp(-logit));			","		}","		double real = random.nextDouble();","		int result = 3;","		for (int i=0; i<3; i++)","			if (real<proba[i]) {","				result = i;","				break;","		}","		int dN = result-1; // possible outcomes: -1,0,1,2","		// increment in bud height","		double neighb = group_jpdhMound*niMound+ group_jpdhAdult* niAdult+ group_jpdhSNLeaves*sqr(nleaves);","		double logit = neighb + group_jpdh0;","		proba[0] = 1/(1+exp(-logit));","		logit = neighb + group_jpdh1;","		proba[1] = 1/(1+exp(-logit));","		proba[2] = 1.0;","		real = random.nextDouble();","		result = 2;","		for (int i=0; i<2; i++)","			if (real<proba[i]) {","				result = i;","				break;","		}","		double dH=0.0;","		if (result==1)","			dH = 0.05;","		else if (result>=2)","			dH = 0.2;","		focalDrv.budHt = budHt+dH;","		focalDrv.nleaves = nleaves+dN;"))
-					process proc3
-						function RecruitSeedling
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
-							userClassName = java.lang.String(code.sys1.RecruitSeedling)
-							function SeedlingToJuvenile
-								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
-								userClassName = java.lang.String(code.sys1.SeedlingToJuvenile)
-								snippet snpt5
-									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"		otherCnt.sex = sex;","		otherCnt.x = x;","		otherCnt.y = y;","		otherDrv.budHt = 0.0;","		otherDrv.nleaves = neophyll;"))
-							snippet snpt4
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return recruit.transition(age>2);"))
-					process procAA
-						function CompetitionAA
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
-							userClassName = java.lang.String(code.sys1.CompetitionAA)
-							snippet snpt9
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return true;"))
-					process proc2
-						dataTracker trk1
-							sampleSize = java.lang.String()
-							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
-							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
-					process procA
-						function Reproduction
-							relateToProduct = java.lang.Boolean(true)
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
-							userClassName = java.lang.String(code.sys1.Reproduction)
-							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if (!sex) 	// male","			return 0.0d;","		else		// female","			return group_fec;"))
-							function Dispersal
-								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
-								userClassName = java.lang.String(code.sys1.Dispersal)
-								snippet snpt2
-									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([8]"		// TODO: the currently generated code is wrong as the categories do not match the seedling cats.","		// they should be generated from the produce links","		double teta = random.nextDouble()*2*PI;","		double r = group_dist*random.nextGaussian();","		otherCnt.x = x+r*cos(teta);","		otherCnt.y = y+r*sin(teta);","		otherDrv.neophyll = 1;","		otherCnt.sex = random.nextBoolean();"))
 		structure structure
 			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
+			space plot
+				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
+				guardAreaWidth = java.lang.Double(0.0)
+				observationWindow = fr.cnrs.iees.uit.space.BoxImpl([[0.0,0.0],[0.0,0.0]])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+				units = java.lang.String(m)
+				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
+				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
+			relationType neighbourhoodAA
+				directional = java.lang.Boolean(false)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+			categorySet plant
+				category palm
+					categorySet stages
+						category adult
+						category seedling
+						category juvenile
 			lifeCycleType palmLC
 				constantClass = java.lang.String()
 				decoratorClass = java.lang.String()
 				driverClass = java.lang.String()
+				lifeCycle Borassus aethiopum
 				recruit recruitmentSJ
 				recruit recruitmentJA
-				lifeCycle Borassus aethiopum
+				produce reproduction
 				groupType palmSd
 					componentType palmSeedling
 						constantClass = java.lang.String(code.sys1.Palmcst)
@@ -311,7 +320,6 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([6]"		focalCnt.sex = random.nextBoolean();","		// TODO: missing space limits !!!","		focalCnt.x = random.nextDouble()*300;","		focalCnt.y = random.nextDouble()*300;","		focalDrv.nleaves = 15;","		focalDrv.budHt = 10.0;"))
 						component adBORinit
 							nInstances = java.lang.Integer(10)
-				produce reproduction
 				groupType palmJuv
 					constantClass = java.lang.String(code.sys1.JuvGrpPar)
 					componentType palmJuvenile
@@ -340,92 +348,97 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
 			categorySet groupCats
 				category juvPar
 				category adultPar
-			space plot
-				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
-				guardAreaWidth = java.lang.Double(0.0)
-				observationWindow = fr.cnrs.iees.uit.space.BoxImpl([[0.0,0.0],[0.0,0.0]])
-				precision = java.lang.Double(0.1)
-				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
-				units = java.lang.String(m)
-				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
-				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
-			relationType neighbourhoodAA
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
-			categorySet plant
-				category palm
-					categorySet stages
-						category adult
-						category juvenile
-						category seedling
+	userInterface gui
+		top top
+			widget timer
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+			widget control
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
+		tab outputs
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget plot map
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+			widget numbers
+				bufferSize = java.lang.Integer(1000)
+				maxAxes = java.lang.Integer(3)
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 
 // CROSS-LINKS
 [category:palm] constants cnsts1 [record:palmcst]
+[dataTracker:trk1] trackComponent trks4 [group:adBOR]
 [dataTracker:trk1] trackField trks5 [field:count]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[dataTracker:trk1] trackComponent trks4 [group:adBOR]
 [widget:plot map] trackSpace trks1 [space:plot]
 [group:adBOR] cycle cycl1 [lifeCycle:Borassus aethiopum]
 [system:sys1] belongsTo bt7 [category:*permanent*]
-[system:sys1] belongsTo bt8 [category:*assemblage*]
 [system:sys1] belongsTo bt6 [category:*arena*]
-[group:sdBOR] cycle cycl2 [lifeCycle:Borassus aethiopum]
+[system:sys1] belongsTo bt8 [category:*assemblage*]
 [group:sdBOR] groupOf grpOf1 [componentType:palmSeedling]
+[group:sdBOR] cycle cycl2 [lifeCycle:Borassus aethiopum]
 [category:juvenile] drivers drvs3 [record:adjuvdrv]
 [category:adult] drivers drvs2 [record:adjuvdrv]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
-[componentType:palmSeedling] belongsTo bt30 [category:palm]
 [componentType:palmSeedling] belongsTo bt29 [category:seedling]
-[componentType:palmSeedling] belongsTo bt27 [category:*atomic*]
 [componentType:palmSeedling] belongsTo bt28 [category:*ephemeral*]
+[componentType:palmSeedling] belongsTo bt27 [category:*atomic*]
 [componentType:palmSeedling] belongsTo bt26 [category:*component*]
+[componentType:palmSeedling] belongsTo bt30 [category:palm]
+[groupType:palmAd] belongsTo bt13 [category:*permanent*]
+[groupType:palmAd] belongsTo bt12 [category:*assemblage*]
 [groupType:palmAd] belongsTo bt11 [category:*group*]
 [groupType:palmAd] belongsTo bt31 [category:adultPar]
-[groupType:palmAd] belongsTo bt12 [category:*assemblage*]
-[groupType:palmAd] belongsTo bt13 [category:*permanent*]
 [process:procAA] appliesTo aplyTo11 [relationType:neighbourhoodAA]
 [process:procAA] inSpace in4 [space:plot]
 	searchRadius = java.lang.Double(15.0)
-[relationType:neighbourhoodAA] toCategory to5 [category:palm]
 [relationType:neighbourhoodAA] toCategory to4 [category:adult]
 [relationType:neighbourhoodAA] fromCategory from4 [category:adult]
 [relationType:neighbourhoodAA] fromCategory from5 [category:palm]
+[relationType:neighbourhoodAA] toCategory to5 [category:palm]
 [component:adBORinit] instanceOf instOf1 [group:adBOR]
-[lifeCycleType:palmLC] belongsTo bt10 [category:*permanent*]
-[lifeCycleType:palmLC] belongsTo bt9 [category:*life cycle*]
 [lifeCycleType:palmLC] belongsTo bt14 [category:*assemblage*]
+[lifeCycleType:palmLC] belongsTo bt10 [category:*permanent*]
 [lifeCycleType:palmLC] appliesTo aplyTo1 [categorySet:stages]
+[lifeCycleType:palmLC] belongsTo bt9 [category:*life cycle*]
 [widget:numbers] trackSeries trks6 [dataTracker:trk1]
 [groupType:palmSd] belongsTo bt25 [category:*assemblage*]
-[groupType:palmSd] belongsTo bt23 [category:*group*]
 [groupType:palmSd] belongsTo bt24 [category:*permanent*]
+[groupType:palmSd] belongsTo bt23 [category:*group*]
 [category:adultPar] constants cnsts2 [record:adultGrpPar]
+[groupType:palmJuv] belongsTo bt22 [category:*permanent*]
 [groupType:palmJuv] belongsTo bt21 [category:*assemblage*]
 [groupType:palmJuv] belongsTo bt32 [category:juvPar]
-[groupType:palmJuv] belongsTo bt22 [category:*permanent*]
 [groupType:palmJuv] belongsTo bt20 [category:*group*]
+[recruit:recruitmentJA] effectedBy effdBy3 [function:RecruitJuvenile]
 [recruit:recruitmentJA] toCategory to3 [category:adult]
 [recruit:recruitmentJA] fromCategory from3 [category:juvenile]
-[recruit:recruitmentJA] effectedBy effdBy3 [function:RecruitJuvenile]
 [category:juvPar] constants cnsts3 [record:juvGrpPar]
-[group:juvBOR] cycle cycl3 [lifeCycle:Borassus aethiopum]
 [group:juvBOR] groupOf grpOf2 [componentType:palmJuvenile]
-[recruit:recruitmentSJ] fromCategory from2 [category:seedling]
+[group:juvBOR] cycle cycl3 [lifeCycle:Borassus aethiopum]
 [recruit:recruitmentSJ] effectedBy effdBy2 [function:RecruitSeedling]
+[recruit:recruitmentSJ] fromCategory from2 [category:seedling]
 [recruit:recruitmentSJ] toCategory to2 [category:juvenile]
+[process:proc3] appliesTo aplyTo6 [category:seedling]
 [process:proc3] appliesTo aplyTo5 [category:palm]
 [process:proc3] appliesTo aplyTo7 [category:*ephemeral*]
-[process:proc3] appliesTo aplyTo6 [category:seedling]
 [process:proc3] inSpace in2 [space:plot]
 	searchRadius = java.lang.Double(15.0)
-[process:proc2] appliesTo aplyTo4 [category:*assemblage*]
 [process:proc2] dependsOn depsOn1 [process:procA]
 [process:proc2] dependsOn depsOn2 [process:proc3]
+[process:proc2] appliesTo aplyTo4 [category:*assemblage*]
 [process:proc2] dependsOn depsOn3 [process:procJ]
-[componentType:palmTree] belongsTo bt5 [category:palm]
 [componentType:palmTree] belongsTo bt3 [category:*atomic*]
-[componentType:palmTree] belongsTo bt4 [category:adult]
-[componentType:palmTree] belongsTo bt1 [category:*component*]
 [componentType:palmTree] belongsTo bt2 [category:*ephemeral*]
+[componentType:palmTree] belongsTo bt1 [category:*component*]
+[componentType:palmTree] belongsTo bt5 [category:palm]
+[componentType:palmTree] belongsTo bt4 [category:adult]
 [widget:timer] trackTime trks3 [dynamics:sim1]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [space:plot] coordinate crdmp [field:x]
@@ -435,19 +448,19 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 12 16:42:18 CET 2021
 [widget:control] trackTime trks2 [dynamics:sim1]
 [process:procJ] appliesTo aplyTo9 [category:juvenile]
 [process:procJ] appliesTo aplyTo10 [category:palm]
-[process:procJ] appliesTo aplyTo8 [category:*ephemeral*]
 [process:procJ] inSpace in3 [space:plot]
 	searchRadius = java.lang.Double(15.0)
+[process:procJ] appliesTo aplyTo8 [category:*ephemeral*]
 [componentType:palmJuvenile] belongsTo bt18 [category:juvenile]
-[componentType:palmJuvenile] belongsTo bt19 [category:palm]
-[componentType:palmJuvenile] belongsTo bt16 [category:*ephemeral*]
 [componentType:palmJuvenile] belongsTo bt17 [category:*atomic*]
+[componentType:palmJuvenile] belongsTo bt16 [category:*ephemeral*]
 [componentType:palmJuvenile] belongsTo bt15 [category:*component*]
+[componentType:palmJuvenile] belongsTo bt19 [category:palm]
 [category:seedling] drivers drvs4 [record:sdldrv]
+[process:procA] appliesTo aplyTo2 [category:adult]
+[process:procA] appliesTo aplyTo3 [category:palm]
 [process:procA] inSpace in1 [space:plot]
 	searchRadius = java.lang.Double(15.0)
-[process:procA] appliesTo aplyTo3 [category:palm]
-[process:procA] appliesTo aplyTo2 [category:adult]
-[produce:reproduction] fromCategory from1 [category:adult]
 [produce:reproduction] effectedBy effdBy1 [function:Reproduction]
+[produce:reproduction] fromCategory from1 [category:adult]
 [produce:reproduction] toCategory to1 [category:seedling]
