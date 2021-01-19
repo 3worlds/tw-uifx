@@ -147,7 +147,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private FlowPane legend;
 	private EdgeEffectCorrection eec;
-	private double tickWidth;
+	private double tickSize;
+	private int nXAxisTicks;
+	private int nYAxisTicks;
+	private double offsetX;
+	private double offsetY;
 	private BorderListType borderList;
 	private List<Color> lstColoursAvailable;
 
@@ -194,10 +198,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 						yLimits.sup() - yLimits.inf());
 				borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
 				eec = BorderListType.getEdgeEffectCorrection(borderList);
-				tickWidth = getTickWidth();
+				tickSize = getTickSize();
+				offsetX = getTickOffset(spaceBounds.getMinX(), tickSize);
+				offsetY = getTickOffset(spaceBounds.getMinY(), tickSize);
 				units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
 				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
-				if (prec <Double.MIN_VALUE)
+				if (prec < Double.MIN_VALUE)
 					prec = 1;
 				int ndp = 0;
 				while (prec < 1.0) {
@@ -205,6 +211,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 					ndp++;
 				}
 				df = Decimals.getDecimalFormat(ndp);
+				nXAxisTicks = getNTicks(spaceBounds.getWidth(), tickSize);
+				nYAxisTicks = getNTicks(spaceBounds.getHeight(), tickSize);
+
 				return;
 			}
 			case squareGrid: {
@@ -214,10 +223,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				spaceBounds = new BoundingBox(0, 0, cellSize * xnCells, cellSize * ynCells);
 				borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
 				eec = BorderListType.getEdgeEffectCorrection(borderList);
-				tickWidth = getTickWidth();
+				tickSize = getTickSize();
 				units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
 				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
-				if (prec <Double.MIN_VALUE)
+				if (prec < Double.MIN_VALUE)
 					prec = 1;
 				int ndp = 0;
 				while (prec < 1.0) {
@@ -493,7 +502,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				Color colour = colourEntry.getSecond();
 				gc.setStroke(colour);
 				double[] coords = value.getSecond();
-				Point2D point = scaleToCanvas(coords);
+				Point2D point = spaceToCanvas(coords);
 				point = point.add(-symbolRadius, -symbolRadius);
 				gc.strokeOval(point.getX(), point.getY(), size, size);
 				if (symbolFill) {
@@ -725,8 +734,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	}
 
 	private void drawLine(GraphicsContext gc, double x1, double y1, double x2, double y2, boolean endNode) {
-		Point2D start = scaleToCanvas(x1, y1);
-		Point2D end = scaleToCanvas(x2, y2);
+		Point2D start = spaceToCanvas(x1, y1);
+		Point2D end = spaceToCanvas(x2, y2);
 		gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
 		if (showArrows)
 			drawArrow(gc, start, end, endNode);
@@ -795,22 +804,24 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double maxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
 		double maxSize = Math.max(w, h);
 		double scale = maxSize / maxDim;
-		double d = scale * tickWidth;
-		double lineWidth = d / 100.0;
-		double dashes = d / 10.0;
-		int nVLines = (int) Math.round(w / d);
-		int nHLines = (int) Math.round(h / d);
+		double scaledTickSize = scale * tickSize;
+		double lineWidth = scaledTickSize / 100.0;
+		double dashes = scaledTickSize / 10.0;
 		if (showGrid) {
 			gc.setStroke(Color.GREY);
 			gc.setLineDashes(dashes);
 			gc.setLineWidth(lineWidth);
-			for (int i = 0; i < nHLines; i++) {
-				double y = i * d;
-				gc.strokeLine(0, y, w, y);
-			}
-			for (int i = 0; i < nVLines; i++) {
-				double x = i * d;
+
+			for (int i = 0; i < nXAxisTicks; i++) {
+				double x = i * tickSize - offsetX;
+				x = x * scale;
 				gc.strokeLine(x, 0, x, h);
+			}
+
+			for (int i = 0; i < nYAxisTicks; i++) {
+				double y = i * tickSize - offsetY;
+				y = h - (scale * y);
+				gc.strokeLine(0, y, w, y);
 			}
 		}
 		if (showEdgeEffect) {
@@ -829,32 +840,43 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			// Bottom x axis
 			gc.setTextBaseline(VPos.BOTTOM);
 			gc.setTextAlign(TextAlignment.CENTER);
-			for (int i = 1; i < nVLines; i++) {
-				double v = (i / (double) nVLines * spaceBounds.getWidth() + spaceBounds.getMinX());
-				double x = i * d;
-				gc.strokeText(df.format(v), x, h);
+			double startX = spaceBounds.getMinX() - offsetX;
+			for (int i = 0; i <= nXAxisTicks; i++) {
+				double value = i * tickSize + startX;
+				double x = i * tickSize - offsetX;
+				x = x * scale;
+	
+				if (x > fontSize && x < (w-fontSize))
+					gc.strokeText(df.format(value), x, h);
 			}
 			// Top x axis
 			gc.setTextBaseline(VPos.TOP);
-			gc.setTextAlign(TextAlignment.CENTER);
-			for (int i = 1; i < nVLines; i++) {
-				double v = (i / (double) nVLines * spaceBounds.getWidth() + spaceBounds.getMinX());
-				double x = i * d;
-				gc.strokeText(df.format(v), x, 0);
+			for (int i = 0; i <= nXAxisTicks; i++) {
+				double value = i * tickSize + startX;
+				double x = i * tickSize - offsetX;
+				x = x * scale;
+				if (x > fontSize && x < (w-fontSize))
+					gc.strokeText(df.format(value), x, 0);
 			}
-			// Left y axis
+//			// Left y axis
 			gc.setTextAlign(TextAlignment.LEFT);
 			gc.setTextBaseline(VPos.CENTER);
-			for (int i = 1; i < nHLines; i++) {
-				double v = ((nHLines - i) / (double) nHLines * spaceBounds.getHeight() + spaceBounds.getMinY());
-				double y = i * d;
-				gc.strokeText(df.format(v), 0, y);
+			double startY = spaceBounds.getMinY() - offsetY;
+			for (int i = 0; i <= nYAxisTicks; i++) {
+				double value = i * tickSize + startY;
+				double y = i * tickSize - offsetY;
+				y = h - (scale * y);
+				if (y < (h-fontSize) && y > fontSize)
+					gc.strokeText(df.format(value), 0, y);
 			}
+			// Right y axis
 			gc.setTextAlign(TextAlignment.RIGHT);
-			for (int i = 1; i < nHLines; i++) {
-				double v = ((nHLines - i) / (double) nHLines * spaceBounds.getHeight() + spaceBounds.getMinY());
-				double y = i * d;
-				gc.strokeText(df.format(v), w, y);
+			for (int i = 0; i <= nYAxisTicks; i++) {
+				double value = i * tickSize + startY;
+				double y = i * tickSize - offsetY;
+				y = h - (scale * y);
+				if (y < (h-fontSize) && y > fontSize)
+					gc.strokeText(df.format(value), w, y);
 			}
 		}
 	};
@@ -870,7 +892,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return p * tr + tMin;
 	}
 
-	private Point2D scaleToCanvas(double... coords) {
+	private Point2D spaceToCanvas(double... coords) {
 		double sx = coords[0];
 		double sy = coords[1];
 		double dx = rescale(sx, spaceBounds.getMinX(), spaceBounds.getMaxX(), 0, canvas.getWidth());
@@ -1337,11 +1359,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double clickX = (e.getX() * scale) + spaceBounds.getMinX();
 		double clickY = ((canvas.getHeight() - e.getY()) * scale) + spaceBounds.getMinY();
 		BoundingBox box = new BoundingBox(clickX - rad, clickY - rad, size, size);
+//		System.out.println(e.getX() + "," + e.getY());
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : mpPoints.entrySet()) {
 			String key = entry.getKey();
 			Duple<DataLabel, double[]> value = entry.getValue();
 			double x = value.getSecond()[0];
 			double y = value.getSecond()[1];
+//			System.out.println(e.getX() + "," + e.getY()+":"+x+","+y);
+
 			if (box.contains(x, y)) {
 				return key + " [" + df.format(x) + "," + df.format(y) + "]";
 			}
@@ -1393,11 +1418,27 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	}
 
-	private double getTickWidth() {
-		double mxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
-		double exp = Math.round(Math.log10(mxDim));
-		double mx = Math.pow(10, exp);
-		return mx / 10;
+	private double getTickSize() {
+		double range = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
+		double tickSize = Math.pow(10, Math.round(Math.log10(range) - 1));
+		if (range / tickSize < 5.0)
+			tickSize = tickSize / 2.0;
+		else
+			while (range / tickSize > 10.0)
+				tickSize = tickSize * 2.0;
+		return tickSize;
+	}
+
+	private static double getTickOffset(double min, double tickSize) {
+		double count = Math.floor(min / tickSize);
+		double start = count * tickSize;
+		double result = min - start;
+		return result;
+	}
+
+	private static int getNTicks(double size, double tickSize) {
+		double n = size / tickSize;
+		return (int) Math.floor(n) + 1;
 	}
 
 }
