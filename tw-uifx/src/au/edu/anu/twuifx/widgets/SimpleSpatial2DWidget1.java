@@ -69,7 +69,6 @@ import fr.cnrs.iees.uit.space.Distance;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Tuple;
-//import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -104,7 +103,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -288,8 +286,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			bottomAxis.getChildren().add(b);
 		}
 		// add maximum x
-		if (offsetX == 0.0) {
-			String sMax = axisFormat.format(spaceBounds.getMaxX());
+//		if (offsetX == 0.0) {
+		{
+			String sMax;
+			if (offsetX == 0.0)
+				sMax = axisFormat.format(spaceBounds.getMaxX());
+			else
+				sMax = pointFormat.format(spaceBounds.getMaxX());
 			Label t = new Label(sMax);
 			Label b = new Label(sMax);
 			topAxis.getChildren().add(t);
@@ -301,13 +304,20 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double value = i * tickSize + startY;
 			String s = axisFormat.format(value);
 			Label l = new Label(s);
+//			l.setTextAlignment(TextAlignment.RIGHT);
 			Label r = new Label(s);
+//			r.setTextAlignment(TextAlignment.LEFT);
 			leftAxis.getChildren().add(l);
 			rightAxis.getChildren().add(r);
 		}
 		// add maximum y
-		if (offsetY == 0.0) {
-			String sMax = axisFormat.format(spaceBounds.getMaxY());
+		{
+			String sMax;
+//			if (offsetY == 0.0)// actually height % tickSize>0
+			if (spaceBounds.getWidth() % tickSize > 0.0)
+				sMax = axisFormat.format(spaceBounds.getMaxY());
+			else
+				sMax = pointFormat.format(spaceBounds.getMaxY());
 			Label t = new Label(sMax);
 			Label b = new Label(sMax);
 			leftAxis.getChildren().add(t);
@@ -350,13 +360,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		legend.setVisible(legendVisible);
 		placeLegend();
 		return container;
-	}
-
-	private double getStartValue(double min, double offset, double tickSize) {
-		double result = min - offset;
-		if (offset > 0.0)
-			result += tickSize;
-		return result;
 	}
 
 	private void processDataMessage(SpaceData data) {
@@ -914,8 +917,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			AnchorPane.setLeftAnchor(bottom, xDist - lw);
 			xDist += (tickSize * scale);
 		}
-		// locate max x if any
-		if (offsetX == 0.0) {
+		// locate max x
+//		if (offsetX == 0.0) {
+		{
 			Label top = (Label) topAxis.getChildren().get(nXAxisTicks);
 			Label bottom = (Label) bottomAxis.getChildren().get(nXAxisTicks);
 			double lw = top.getWidth() / 2.0;
@@ -931,16 +935,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			Label left = (Label) leftAxis.getChildren().get(i);
 			Label right = (Label) rightAxis.getChildren().get(i);
 			AnchorPane.setTopAnchor(left, yDist - left.getHeight() / 2.0);
+			AnchorPane.setRightAnchor(left, 0.0);
 			AnchorPane.setTopAnchor(right, yDist - left.getHeight() / 2.0);
 			yDist -= (tickSize * scale);
 		}
-		// locate max y if any
-		if (offsetY == 0.0) {
+		// locate max y
+		{
 			Label left = (Label) leftAxis.getChildren().get(nYAxisTicks);
 			Label right = (Label) rightAxis.getChildren().get(nYAxisTicks);
-			double lw = left.getWidth() / 2.0;
-			AnchorPane.setTopAnchor(left,0.0);
-			AnchorPane.setTopAnchor(right,0.0);
+			double lw = left.getHeight() / 2.0;
+			AnchorPane.setTopAnchor(left, 0.0);
+			AnchorPane.setRightAnchor(left, 0.0);
+			AnchorPane.setTopAnchor(right, 0.0);
 		}
 		if (showAxes) {
 			topAxis.setVisible(true);
@@ -1505,14 +1511,23 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	}
 
 	private static double getTickOffset(double min, double tickSize) {
-		double count = Math.floor(min / tickSize);
-		double start = count * tickSize;
-		double result = min - start;
-		return result;
+		double r = min % tickSize;
+		if (r > 0)
+			return tickSize - r;
+		else
+			return 0;
 	}
 
 	private static int getNTicks(double size, double tickSize) {
-		return (int) Math.floor(size / tickSize);
+		double n = size / tickSize;
+		double nn = Math.floor(n);
+		if (nn < n)
+			nn++;
+		return (int) nn;
+	}
+
+	private double getStartValue(double min, double offset, double tickSize) {
+		return min + offset;
 	}
 
 }
