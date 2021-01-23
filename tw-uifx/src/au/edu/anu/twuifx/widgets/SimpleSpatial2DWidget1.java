@@ -123,7 +123,6 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *
  */
 public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
-//	private AnchorPane zoomTarget;
 	private BorderPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
@@ -159,16 +158,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private DecimalFormat pointFormat;
 	private DecimalFormat axisFormat;
 
-//	private HBox topAxis;
-//	private HBox bottomAxis;
-//	private VBox leftAxis;
-//	private VBox rightAxis;
 	private AnchorPane topAxis;
 	private AnchorPane bottomAxis;
 	private AnchorPane leftAxis;
 	private AnchorPane rightAxis;
+	private Map<Double, Duple<Label, Label>> xAxes;
+	private Map<Double, Duple<Label, Label>> yAxes;
 
-//	private static Logger log = Logging.getLogger(SimpleSpatial2DWidget1.class);
 
 	public SimpleSpatial2DWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
@@ -185,7 +181,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		stLines = new HashSet<>();
 		lstInitialData = new ArrayList<>();
 		units = "";
-
+		xAxes = new HashMap<>();
+		yAxes = new HashMap<>();
 	}
 
 	@Override
@@ -208,12 +205,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 						yLimits.sup() - yLimits.inf());
 				borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
 				eec = BorderListType.getEdgeEffectCorrection(borderList);
+
 				tickSize = getTickSize();
+
 				offsetX = getTickOffset(spaceBounds.getMinX(), tickSize);
-				nXAxisTicks = getNTicks(spaceBounds.getWidth(), tickSize);
 				offsetY = getTickOffset(spaceBounds.getMinY(), tickSize);
-				nYAxisTicks = getNTicks(spaceBounds.getHeight(), tickSize);
+
+				nXAxisTicks = getNTicks(spaceBounds.getMinX(), spaceBounds.getMaxX(), tickSize, offsetX);
+				nYAxisTicks = getNTicks(spaceBounds.getMinY(), spaceBounds.getMaxY(), tickSize, offsetY);
+
 				units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
+
+				// We dont really need it as it can be worked out.
 				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
 				if (prec < Double.MIN_VALUE)
 					prec = 1;
@@ -284,19 +287,25 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			Label b = new Label(s);
 			topAxis.getChildren().add(t);
 			bottomAxis.getChildren().add(b);
+			xAxes.put(value, new Duple<Label, Label>(b, t));
 		}
-		// add maximum x
-//		if (offsetX == 0.0) {
 		{
-			String sMax;
-			if (offsetX == 0.0)
-				sMax = axisFormat.format(spaceBounds.getMaxX());
-			else
-				sMax = pointFormat.format(spaceBounds.getMaxX());
-			Label t = new Label(sMax);
-			Label b = new Label(sMax);
+			double value = spaceBounds.getMinX();
+			String s = pointFormat.format(value);
+			Label t = new Label(s);
+			Label b = new Label(s);
 			topAxis.getChildren().add(t);
 			bottomAxis.getChildren().add(b);
+			xAxes.put(value, new Duple<Label, Label>(b, t));
+		}
+		{
+			double value = spaceBounds.getMaxX();
+			String s = pointFormat.format(value);
+			Label t = new Label(s);
+			Label b = new Label(s);
+			topAxis.getChildren().add(t);
+			bottomAxis.getChildren().add(b);
+			xAxes.put(value, new Duple<Label, Label>(b, t));
 		}
 
 		double startY = getStartValue(spaceBounds.getMinY(), offsetY, tickSize);
@@ -304,24 +313,28 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double value = i * tickSize + startY;
 			String s = axisFormat.format(value);
 			Label l = new Label(s);
-//			l.setTextAlignment(TextAlignment.RIGHT);
 			Label r = new Label(s);
-//			r.setTextAlignment(TextAlignment.LEFT);
 			leftAxis.getChildren().add(l);
 			rightAxis.getChildren().add(r);
+			yAxes.put(value, new Duple<Label, Label>(l, r));
 		}
-		// add maximum y
 		{
-			String sMax;
-//			if (offsetY == 0.0)// actually height % tickSize>0
-			if (spaceBounds.getWidth() % tickSize > 0.0)
-				sMax = axisFormat.format(spaceBounds.getMaxY());
-			else
-				sMax = pointFormat.format(spaceBounds.getMaxY());
-			Label t = new Label(sMax);
-			Label b = new Label(sMax);
-			leftAxis.getChildren().add(t);
-			rightAxis.getChildren().add(b);
+			double value = spaceBounds.getMinY();
+			String s = pointFormat.format(value);
+			Label l = new Label(s);
+			Label r = new Label(s);
+			leftAxis.getChildren().add(l);
+			rightAxis.getChildren().add(r);
+			yAxes.put(value, new Duple<Label, Label>(l, r));
+		}
+		{
+			double value = spaceBounds.getMaxY();
+			String s = pointFormat.format(value);
+			Label l = new Label(s);
+			Label r = new Label(s);
+			leftAxis.getChildren().add(l);
+			rightAxis.getChildren().add(r);
+			yAxes.put(value, new Duple<Label, Label>(l, r));
 		}
 
 		zoomTarget.setTop(topAxis);
@@ -908,45 +921,23 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws, dashes);
 		}
 
-		double xDist = leftAxis.getWidth() + (offsetX * scale);
-		for (int i = 0; i < nXAxisTicks; i++) {
-			Label top = (Label) topAxis.getChildren().get(i);
-			Label bottom = (Label) bottomAxis.getChildren().get(i);
-			double lw = top.getWidth() / 2.0;
-			AnchorPane.setLeftAnchor(top, xDist - lw);
-			AnchorPane.setLeftAnchor(bottom, xDist - lw);
-			xDist += (tickSize * scale);
+		for (Map.Entry<Double, Duple<Label, Label>> entry : xAxes.entrySet()) {
+			Label bottom = entry.getValue().getFirst();
+			Label top = entry.getValue().getSecond();
+			double value = entry.getKey() - spaceBounds.getMinX();
+			double pos = value * scale + leftAxis.getWidth();
+			double center = top.getWidth() / 2.0;
+			AnchorPane.setLeftAnchor(top, pos - center);
+			AnchorPane.setLeftAnchor(bottom, pos - center);
 		}
-		// locate max x
-//		if (offsetX == 0.0) {
-		{
-			Label top = (Label) topAxis.getChildren().get(nXAxisTicks);
-			Label bottom = (Label) bottomAxis.getChildren().get(nXAxisTicks);
-			double lw = top.getWidth() / 2.0;
-			AnchorPane.setLeftAnchor(top, canvas.getWidth() + leftAxis.getWidth() - lw);
-			AnchorPane.setLeftAnchor(bottom, canvas.getWidth() + leftAxis.getWidth() - lw);
-		}
-		/*
-		 * In a borderpane, the top and bottom go the full width. The left and right do
-		 * not.
-		 */
-		double yDist = canvas.getHeight() - (offsetY * scale);
-		for (int i = 0; i < nYAxisTicks; i++) {
-			Label left = (Label) leftAxis.getChildren().get(i);
-			Label right = (Label) rightAxis.getChildren().get(i);
-			AnchorPane.setTopAnchor(left, yDist - left.getHeight() / 2.0);
+		for (Map.Entry<Double, Duple<Label, Label>> entry : yAxes.entrySet()) {
+			Label left = entry.getValue().getFirst();
+			Label right = entry.getValue().getSecond();
+			double value = entry.getKey() - spaceBounds.getMinY();
+			double pos = h - (value * scale);
+			AnchorPane.setTopAnchor(left, pos);
+			AnchorPane.setTopAnchor(right, pos);
 			AnchorPane.setRightAnchor(left, 0.0);
-			AnchorPane.setTopAnchor(right, yDist - left.getHeight() / 2.0);
-			yDist -= (tickSize * scale);
-		}
-		// locate max y
-		{
-			Label left = (Label) leftAxis.getChildren().get(nYAxisTicks);
-			Label right = (Label) rightAxis.getChildren().get(nYAxisTicks);
-			double lw = left.getHeight() / 2.0;
-			AnchorPane.setTopAnchor(left, 0.0);
-			AnchorPane.setRightAnchor(left, 0.0);
-			AnchorPane.setTopAnchor(right, 0.0);
 		}
 		if (showAxes) {
 			topAxis.setVisible(true);
@@ -1511,19 +1502,26 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	}
 
 	private static double getTickOffset(double min, double tickSize) {
-		double r = min % tickSize;
-		if (r > 0)
-			return tickSize - r;
-		else
-			return 0;
+		return tickSize - (min % tickSize);
 	}
 
-	private static int getNTicks(double size, double tickSize) {
-		double n = size / tickSize;
-		double nn = Math.floor(n);
-		if (nn < n)
-			nn++;
-		return (int) nn;
+	private static int getNTicks(double min, double max, double tickSize, double offset) {
+		double start = min + offset;
+		int n = 0;
+
+		while (((n * tickSize) + start) < max)
+			n++;
+
+		if (offset == tickSize)
+			n = n--;
+		return n;
+//			
+//			
+//		double n = size / tickSize;
+//		double nn = Math.floor(n);
+//		if (nn < n)
+//			nn++;
+//		return (int) nn;
 	}
 
 	private double getStartValue(double min, double offset, double tickSize) {

@@ -78,6 +78,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
@@ -108,7 +109,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final BooleanProperty edgeLineVisibleProperty;
 
 	// private final BooleanProperty sideLineProperty;
-	private final DropShadow ds;
+	private final DropShadow dropShadow;
 	private final ObjectProperty<Font> font;
 	private final Color hoverColor;
 	private final Color treeEdgeColor;
@@ -142,7 +143,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.recorder = recorder;
 		this.edgeSelect = edgeSelect;
 		this.nodeSelect = nodeSelect;
-		ds = new DropShadow();
+		dropShadow = new DropShadow();
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
@@ -248,7 +249,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
-		c.setEffect(ds);
+		c.setEffect(dropShadow);
 		c.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY) {
 				dragNode = n;
