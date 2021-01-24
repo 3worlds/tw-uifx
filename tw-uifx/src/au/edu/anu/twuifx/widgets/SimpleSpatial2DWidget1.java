@@ -165,7 +165,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private Map<Double, Duple<Label, Label>> xAxes;
 	private Map<Double, Duple<Label, Label>> yAxes;
 
-
 	public SimpleSpatial2DWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
 		timeFormatter = new WidgetTimeFormatter();
@@ -239,7 +238,14 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				eec = BorderListType.getEdgeEffectCorrection(borderList);
 				// TODO: ticksize etc should be rounded to units of cellsize
 				tickSize = getTickSize();
-				units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
+				offsetX = getTickOffset(spaceBounds.getMinX(), tickSize);
+				offsetY = getTickOffset(spaceBounds.getMinY(), tickSize);
+
+				nXAxisTicks = getNTicks(spaceBounds.getMinX(), spaceBounds.getMaxX(), tickSize, offsetX);
+				nYAxisTicks = getNTicks(spaceBounds.getMinY(), spaceBounds.getMaxY(), tickSize, offsetY);
+
+				if (meta.properties().hasProperty(P_SPACE_UNITS.key()))
+					units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
 				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
 				if (prec < Double.MIN_VALUE)
 					prec = 1;
@@ -249,6 +255,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 					ndp++;
 				}
 				pointFormat = Decimals.getDecimalFormat(ndp);
+				axisFormat = Decimals.getDecimalFormat(ndp - 1);
 
 				return;
 			}
