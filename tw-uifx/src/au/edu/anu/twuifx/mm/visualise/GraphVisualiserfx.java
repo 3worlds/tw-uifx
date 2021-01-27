@@ -320,8 +320,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this, recorder);
 			} else {
 				controller.onNodeSelected(n);
-				if (neighMode.getValue())
+				if (neighMode.getValue()) {
 					onShowLocalGraph(n, pathLength.getValue());
+				}	onHighlightAll();
 			}
 		});
 
