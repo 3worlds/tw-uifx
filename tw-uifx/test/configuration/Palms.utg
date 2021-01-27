@@ -47,24 +47,28 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dDef
 		record palmcst
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(palmcst)
 			field y
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(y spatial coordinate)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
+				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m)
 			field x
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
+				description = java.lang.String(x spatial coordinate)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
+				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(m)
 			field sex
-				description = java.lang.String()
+				description = java.lang.String(female?)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		record adjuvdrv
 			dynamic = java.lang.Boolean(true)
@@ -92,6 +96,12 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 				description = java.lang.String(P(dN|H>0): Height slope)
 				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
 				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field jDeathRate
+				description = java.lang.String(death rate)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(1.0E-4)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field aj1PdNneg
@@ -124,6 +134,11 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+			field jb1
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 			field aj0PdN1
 				description = java.lang.String(P(dN=1|H=0): intercept)
 				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
@@ -134,6 +149,22 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 				description = java.lang.String(P(dN|H=0): mounds slope)
 				interval = fr.ens.biologie.generic.utils.Interval([-2000.0,2000.0])
 				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field j0BudHt
+				description = java.lang.String(P(Rec): Height slope)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field ja1
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field jpdh0
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field jpdhMound
@@ -147,12 +178,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field jpdh0
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field jpdhSNLeaves
+			field jpdh1
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
@@ -162,15 +188,9 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field jpdh1
+			field jpdhSNLeaves
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field j1Tree
-				description = java.lang.String(P(dN|H>0): Trees slope)
-				interval = fr.ens.biologie.generic.utils.Interval([-2000.0,2000.0])
-				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field j1Juvenile
@@ -179,6 +199,32 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+			field j1Tree
+				description = java.lang.String(P(dN|H>0): Trees slope)
+				interval = fr.ens.biologie.generic.utils.Interval([-2000.0,2000.0])
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field jTol
+				description = java.lang.String(growth deficit tolerance)
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field ajPR
+				description = java.lang.String(P(Rec): int.)
+				interval = fr.ens.biologie.generic.utils.Interval([-50.0,50.0])
+				precision = java.lang.Double(0.001)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record adjuvdeco
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(adjuvdeco)
+			field canopyRadius
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
 		record sdldrv
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(sdldrv)
@@ -219,7 +265,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 					process procA
 						function Reproduction
-							relateToProduct = java.lang.Boolean(true)
+							relateToProduct = java.lang.Boolean(false)
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys1.Reproduction)
 							snippet snpt1
@@ -247,13 +293,24 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
-					process procAA
-						function CompetitionAA
+					process getAdults
+						function AdultNeighbour
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
-							userClassName = java.lang.String(code.sys1.CompetitionAA)
+							userClassName = java.lang.String(code.sys1.AdultNeighbour)
 							snippet snpt9
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return true;"))
+					process getJuveniles
+						function JuvenileNeighbour
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.JuvenileNeighbour)
+							snippet snpt11
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return true;"))
 					process procJ
+						function MortalityJuvenile
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.sys1.MortalityJuvenile)
+							snippet snpt10
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([6]"	    double pSur = 1- group_jDeathRate;","	    if (nleaves<=0.0) ","	    	pSur = 0;","	    else if (log(budHt+0.01)>=group_ja1+group_jb1*log(nleaves+group_jTol)) ","	    	pSur=0;","	    return decider.decide(1-pSur);"))
 						function RecruitJuvenile
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
 							userClassName = java.lang.String(code.sys1.RecruitJuvenile)
@@ -263,14 +320,16 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 								snippet snpt6
 									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"		otherCnt.sex = sex;","		otherCnt.x = x;","		otherCnt.y = y;","		otherDrv.budHt = budHt;","		otherDrv.nleaves = nleaves;"))
 							snippet snpt7
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return recruit.transition(age>50);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"		double logit = group_ajPR + group_j0BudHt*sqr(budHt);","		double pRec = 0.0;","		if (budHt>=8.0)","			pRec = 1-1/(exp(-logit)+1);","		return recruit.transition(decider.decide(pRec));"))
 						function GrowJuvenile
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys1.GrowJuvenile)
 							snippet snpt8
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([51]"		double niMound = 0.0; // TODO: replace by neighbourhood index","		double niTree=0; double niAdult = 0.0; double niJuv = 0.0; // TODO: replace by neighbourhood index","		// increment in number of leaves","		double[] proba = new double[3];","		if (budHt>0.0) {","			double neighb = group_j0Mound*niMound + group_j0NLeaves*nleaves;","			double logit = neighb + group_aj0PdNneg;","			proba[0] = 1/(1+exp(-logit));","			logit = neighb + group_aj0PdN0;","			proba[1] = 1/(1+exp(-logit));","			logit = neighb + group_aj0PdN1;","			proba[2] = 1/(1+exp(-logit));","		}","		else {","			double neighb = group_j1Tree*niTree + group_j1Adult*niAdult + group_j1Juvenile*niJuv + group_j1BudHt*budHt;","			double logit = neighb + group_aj1PdNneg;","			proba[0] = 1/(1+exp(-logit));","			logit = neighb + group_aj1PdN0;","			proba[1] = 1/(1+exp(-logit));","			logit = neighb + group_aj1PdN1;","			proba[2] = 1/(1+exp(-logit));			","		}","		double real = random.nextDouble();","		int result = 3;","		for (int i=0; i<3; i++)","			if (real<proba[i]) {","				result = i;","				break;","		}","		int dN = result-1; // possible outcomes: -1,0,1,2","		// increment in bud height","		double neighb = group_jpdhMound*niMound+ group_jpdhAdult* niAdult+ group_jpdhSNLeaves*sqr(nleaves);","		double logit = neighb + group_jpdh0;","		proba[0] = 1/(1+exp(-logit));","		logit = neighb + group_jpdh1;","		proba[1] = 1/(1+exp(-logit));","		proba[2] = 1.0;","		real = random.nextDouble();","		result = 2;","		for (int i=0; i<2; i++)","			if (real<proba[i]) {","				result = i;","				break;","		}","		double dH=0.0;","		if (result==1)","			dH = 0.05;","		else if (result>=2)","			dH = 0.2;","		focalDrv.budHt = budHt+dH;","		focalDrv.nleaves = nleaves+dN;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([52]"		double niMound = 0.0; // TODO: replace by neighbourhood index","		double niTree=0; double niAdult = 0.0; double niJuv = 0.0; // TODO: replace by neighbourhood index","		// increment in number of leaves","		double[] proba = new double[3];","		if (budHt>0.0) {","			double neighb = group_j0Mound*niMound + group_j0NLeaves*nleaves;","			double logit = neighb + group_aj0PdNneg;","			proba[0] = 1/(1+exp(-logit));","			logit = neighb + group_aj0PdN0;","			proba[1] = 1/(1+exp(-logit));","			logit = neighb + group_aj0PdN1;","			proba[2] = 1/(1+exp(-logit));","		}","		else {","			double neighb = group_j1Tree*niTree + group_j1Adult*niAdult + group_j1Juvenile*niJuv + group_j1BudHt*budHt;","			double logit = neighb + group_aj1PdNneg;","			proba[0] = 1/(1+exp(-logit));","			logit = neighb + group_aj1PdN0;","			proba[1] = 1/(1+exp(-logit));","			logit = neighb + group_aj1PdN1;","			proba[2] = 1/(1+exp(-logit));			","		}","		double real = random.nextDouble();","		int result = 3;","		for (int i=0; i<3; i++)","			if (real<proba[i]) {","				result = i;","				break;","		}","		int dN = result-1; // possible outcomes: -1,0,1,2","		// increment in bud height","		double neighb = group_jpdhMound*niMound+ group_jpdhAdult* niAdult+ group_jpdhSNLeaves*sqr(nleaves);","		double logit = neighb + group_jpdh0;","		proba[0] = 1/(1+exp(-logit));","		logit = neighb + group_jpdh1;","		proba[1] = 1/(1+exp(-logit));","		proba[2] = 1.0;","		real = random.nextDouble();","		result = 2;","		for (int i=0; i<2; i++)","			if (real<proba[i]) {","				result = i;","				break;","		}","		double dH=0.0;","		if (result==1)","			dH = 0.05;","		else if (result>=2)","			dH = 0.2;","		focalDrv.budHt = budHt+dH;","		focalDrv.nleaves = nleaves+dN;","		focalDec.canopyRadius = budHt+0.5+0.06*nleaves;"))
 		structure structure
 			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
+			relationType neighbourhoodJ
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			space plot
 				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
 				guardAreaWidth = java.lang.Double(0.0)
@@ -280,9 +339,6 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 				units = java.lang.String(m)
 				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
 				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,300.0])
-			relationType neighbourhoodAA
-				directional = java.lang.Boolean(false)
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			categorySet plant
 				category palm
 					categorySet stages
@@ -324,6 +380,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 					constantClass = java.lang.String(code.sys1.JuvGrpPar)
 					componentType palmJuvenile
 						constantClass = java.lang.String(code.sys1.Palmcst)
+						decoratorClass = java.lang.String(code.sys1.Adjuvdeco)
 						driverClass = java.lang.String(code.sys1.Adjuvdrv)
 						mobile = java.lang.Boolean(false)
 					group juvBOR
@@ -334,17 +391,26 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 							aj1PdN0 = java.lang.Double(3.0)
 							aj1PdN1 = java.lang.Double(4.0)
 							aj1PdNneg = java.lang.Double(1.4)
+							ajPR = java.lang.Double(6.0)
+							j0BudHt = java.lang.Double(-0.06)
 							j0Mound = java.lang.Double(-1349.0)
 							j0NLeaves = java.lang.Double(2.7)
 							j1Adult = java.lang.Double(-98.0)
 							j1BudHt = java.lang.Double(0.0)
 							j1Juvenile = java.lang.Double(30.0)
 							j1Tree = java.lang.Double(-500.0)
+							jDeathRate = java.lang.Double(0.002)
+							jTol = java.lang.Double(3.5)
+							ja1 = java.lang.Double(-5.516)
+							jb1 = java.lang.Double(2.68)
 							jpdh0 = java.lang.Double(3.5)
 							jpdh1 = java.lang.Double(5.4)
 							jpdhAdult = java.lang.Double(122.0)
 							jpdhMound = java.lang.Double(-1764.0)
 							jpdhSNLeaves = java.lang.Double(-0.049)
+			relationType neighbourhoodA
+				directional = java.lang.Boolean(false)
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			categorySet groupCats
 				category juvPar
 				category adultPar
@@ -383,6 +449,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 [system:sys1] belongsTo bt8 [category:*assemblage*]
 [group:sdBOR] groupOf grpOf1 [componentType:palmSeedling]
 [group:sdBOR] cycle cycl2 [lifeCycle:Borassus aethiopum]
+[category:juvenile] decorators decs1 [record:adjuvdeco]
 [category:juvenile] drivers drvs3 [record:adjuvdrv]
 [category:adult] drivers drvs2 [record:adjuvdrv]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
@@ -395,50 +462,55 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 [groupType:palmAd] belongsTo bt12 [category:*assemblage*]
 [groupType:palmAd] belongsTo bt11 [category:*group*]
 [groupType:palmAd] belongsTo bt31 [category:adultPar]
-[process:procAA] appliesTo aplyTo11 [relationType:neighbourhoodAA]
-[process:procAA] inSpace in4 [space:plot]
-	searchRadius = java.lang.Double(15.0)
-[relationType:neighbourhoodAA] toCategory to4 [category:adult]
-[relationType:neighbourhoodAA] fromCategory from4 [category:adult]
-[relationType:neighbourhoodAA] fromCategory from5 [category:palm]
-[relationType:neighbourhoodAA] toCategory to5 [category:palm]
 [component:adBORinit] instanceOf instOf1 [group:adBOR]
 [lifeCycleType:palmLC] belongsTo bt14 [category:*assemblage*]
 [lifeCycleType:palmLC] belongsTo bt10 [category:*permanent*]
 [lifeCycleType:palmLC] appliesTo aplyTo1 [categorySet:stages]
 [lifeCycleType:palmLC] belongsTo bt9 [category:*life cycle*]
 [widget:numbers] trackSeries trks6 [dataTracker:trk1]
+[relationType:neighbourhoodJ] fromCategory from4 [category:palm]
+[relationType:neighbourhoodJ] toCategory to7 [category:juvenile]
+[relationType:neighbourhoodJ] toCategory to6 [category:palm]
 [groupType:palmSd] belongsTo bt25 [category:*assemblage*]
 [groupType:palmSd] belongsTo bt24 [category:*permanent*]
 [groupType:palmSd] belongsTo bt23 [category:*group*]
+[relationType:neighbourhoodA] toCategory to4 [category:adult]
+[relationType:neighbourhoodA] fromCategory from5 [category:palm]
+[relationType:neighbourhoodA] toCategory to5 [category:palm]
 [category:adultPar] constants cnsts2 [record:adultGrpPar]
 [groupType:palmJuv] belongsTo bt22 [category:*permanent*]
 [groupType:palmJuv] belongsTo bt21 [category:*assemblage*]
 [groupType:palmJuv] belongsTo bt32 [category:juvPar]
 [groupType:palmJuv] belongsTo bt20 [category:*group*]
+[category:juvPar] constants cnsts3 [record:juvGrpPar]
 [recruit:recruitmentJA] effectedBy effdBy3 [function:RecruitJuvenile]
 [recruit:recruitmentJA] toCategory to3 [category:adult]
 [recruit:recruitmentJA] fromCategory from3 [category:juvenile]
-[category:juvPar] constants cnsts3 [record:juvGrpPar]
+[process:getJuveniles] appliesTo aplyTo12 [relationType:neighbourhoodJ]
+[process:getJuveniles] inSpace in5 [space:plot]
+	searchRadius = java.lang.Double(15.0)
 [group:juvBOR] groupOf grpOf2 [componentType:palmJuvenile]
 [group:juvBOR] cycle cycl3 [lifeCycle:Borassus aethiopum]
+[process:getAdults] appliesTo aplyTo11 [relationType:neighbourhoodA]
+[process:getAdults] inSpace in4 [space:plot]
+	searchRadius = java.lang.Double(15.0)
 [recruit:recruitmentSJ] effectedBy effdBy2 [function:RecruitSeedling]
-[recruit:recruitmentSJ] fromCategory from2 [category:seedling]
 [recruit:recruitmentSJ] toCategory to2 [category:juvenile]
+[recruit:recruitmentSJ] fromCategory from2 [category:seedling]
 [process:proc3] appliesTo aplyTo6 [category:seedling]
 [process:proc3] appliesTo aplyTo5 [category:palm]
 [process:proc3] appliesTo aplyTo7 [category:*ephemeral*]
 [process:proc3] inSpace in2 [space:plot]
 	searchRadius = java.lang.Double(15.0)
-[process:proc2] dependsOn depsOn1 [process:procA]
-[process:proc2] dependsOn depsOn2 [process:proc3]
-[process:proc2] appliesTo aplyTo4 [category:*assemblage*]
-[process:proc2] dependsOn depsOn3 [process:procJ]
 [componentType:palmTree] belongsTo bt3 [category:*atomic*]
 [componentType:palmTree] belongsTo bt2 [category:*ephemeral*]
 [componentType:palmTree] belongsTo bt1 [category:*component*]
 [componentType:palmTree] belongsTo bt5 [category:palm]
 [componentType:palmTree] belongsTo bt4 [category:adult]
+[process:proc2] dependsOn depsOn1 [process:procA]
+[process:proc2] dependsOn depsOn2 [process:proc3]
+[process:proc2] dependsOn depsOn3 [process:procJ]
+[process:proc2] appliesTo aplyTo4 [category:*assemblage*]
 [widget:timer] trackTime trks3 [dynamics:sim1]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [space:plot] coordinate crdmp [field:x]
@@ -464,3 +536,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 14 16:56:03 CET 2021
 [produce:reproduction] effectedBy effdBy1 [function:Reproduction]
 [produce:reproduction] fromCategory from1 [category:adult]
 [produce:reproduction] toCategory to1 [category:seedling]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[relationType:*returnsTo*] toCategory to2 [category:*component*]
