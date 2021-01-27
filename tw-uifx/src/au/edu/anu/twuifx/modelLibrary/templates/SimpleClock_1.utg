@@ -47,6 +47,10 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dDef
 		record decs
 		record drvs
@@ -94,3 +98,7 @@ treegraph // saved by OmugiGraphExporter on Fri Jun 19 19:49:42 AEST 2020
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*arena*] constants cnsts1 [record:cnsts]
 [category:*arena*] drivers drvs1 [record:drvs]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[relationType:*returnsTo*] toCategory to2 [category:*component*]

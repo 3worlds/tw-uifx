@@ -36,6 +36,10 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 11:27:56 AEST 2020
 			category *life cycle*
 			category *component*
 			category *arena*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 		record AVEphemeral
 			field age
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
@@ -239,3 +243,7 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 11:27:56 AEST 2020
 [componentType:commType] belongsTo blngsTo5 [category:*permanent*]
 [table:x] sizedBy szBy1 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[relationType:*returnsTo*] toCategory to2 [category:*component*]

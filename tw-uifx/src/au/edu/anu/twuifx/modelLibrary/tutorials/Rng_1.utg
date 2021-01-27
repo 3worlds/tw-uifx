@@ -47,6 +47,10 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dDef
 		record drvs
 			dynamic = java.lang.Boolean(true)
@@ -142,3 +146,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 [system:sys1] belongsTo bt3 [category:*atomic*]
 [system:sys1] belongsTo bt2 [category:*permanent*]
 [system:sys1] belongsTo bt1 [category:*arena*]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[relationType:*returnsTo*] toCategory to2 [category:*component*]

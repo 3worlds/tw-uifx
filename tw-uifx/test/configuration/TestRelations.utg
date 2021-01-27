@@ -16,6 +16,7 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 16 15:48:43 CET 2020
 //			BA ephemeral n time steps (with a maintainRelation function)
 //			BB permanent
 //
+// Once deployed, the test should be run step-by-step.
 // what the test should show:
 //
 //	10 time steps
@@ -77,6 +78,10 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 16 15:48:43 CET 2020
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dDef
 		record recA
 			dynamic = java.lang.Boolean(true)
@@ -297,3 +302,7 @@ treegraph // saved by OmugiGraphExporter on Mon Nov 16 15:48:43 CET 2020
 	rank = java.lang.Integer(1)
 [space:space1] coordinate crdmp [field:x]
 	rank = java.lang.Integer(0)
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[relationType:*returnsTo*] toCategory to2 [category:*component*]

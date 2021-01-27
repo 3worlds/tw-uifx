@@ -47,7 +47,15 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 10:38:38 AEST 2020
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 
 // CROSS-LINKS
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*assemblage*] autoVar auto2 [record:AVPopulation]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[relationType:*returnsTo*] toCategory to2 [category:*component*]

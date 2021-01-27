@@ -74,6 +74,10 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dDef
 		record drvs
 			dynamic = java.lang.Boolean(true)
@@ -181,3 +185,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:57:12 AEST 2020
 [table:x] sizedBy szBy5 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
 [widget:population sizes] trackSeries trks3 [dataTracker:trk1]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[relationType:*returnsTo*] toCategory to2 [category:*component*]

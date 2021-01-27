@@ -48,6 +48,10 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dDef
 		record commDecs
 			dynamic = java.lang.Boolean(false)
@@ -248,3 +252,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jul 21 11:59:20 AEST 2020
 [componentType:commType] belongsTo bt9 [category:*component*]
 [table:x] sizedBy szBy5 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[relationType:*returnsTo*] toCategory to2 [category:*component*]
