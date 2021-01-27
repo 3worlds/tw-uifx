@@ -173,7 +173,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private ToggleButton tglSideline;
 
 	@FXML
-	private Button btnSelectAll;
+	private ToggleButton tglNeighbourhood;
+
+//	@FXML
+//	private Button btnSelectAll;
 
 	@FXML
 	private BorderPane rootPane;
@@ -266,6 +269,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private Spinner<Integer> spinJitter;
 
 	@FXML
+	private Spinner<Integer> spinPathLength;
+
+	@FXML
 	private Label lblChecking;
 
 	@FXML
@@ -316,6 +322,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		spinFontSize.setMaxWidth(75.0);
 		spinNodeSize.setMaxWidth(75.0);
 		spinJitter.setMaxWidth(75.0);
+		spinPathLength.setMaxWidth(75.0);
+
+//		spinPathLength.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
 
 		font = Font.font("Verdana", 10);
 		fontProperty = new SimpleObjectProperty<Font>(font);
@@ -349,8 +358,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnLayout.setTooltip(getFastToolTip("Re-apply layout"));
 		btnXLinks.setTooltip(getFastToolTip("Show/hide cross-links"));
 		btnChildLinks.setTooltip(getFastToolTip("Show/hide parent-child edges"));
-		btnSelectAll.setTooltip(getFastToolTip("Show all nodes"));
+//		btnSelectAll.setTooltip(getFastToolTip("Show all nodes"));
 		tglSideline.setTooltip(getFastToolTip("Move isolated nodes aside"));
+		tglNeighbourhood.setTooltip(getFastToolTip("Show/hide local neighbourhood"));
 		cbEdgeTextChoice.setTooltip(getFastToolTip("Edge text display options"));
 		cbNodeTextChoice.setTooltip(getFastToolTip("Node text display options"));
 
@@ -516,7 +526,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void onSelectAll(ActionEvent event) {
-		visualiser.onSelectAll();
+//		visualiser.onSelectAll();
 	}
 
 	@FXML
@@ -663,6 +673,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
+	@FXML
+	void onNeighMode(ActionEvent event) {
+		if (!tglNeighbourhood.isSelected()) {
+			visualiser.onShowAll();
+			visualiser.onHighlightAll();
+		}
+	}
+
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
@@ -696,6 +714,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				cbNodeTextChoice.getSelectionModel().selectedItemProperty(), //
 				cbEdgeTextChoice.getSelectionModel().selectedItemProperty(), //
 				tglSideline.selectedProperty(), //
+				tglNeighbourhood.selectedProperty(), //
+				spinPathLength.valueProperty(), //
 				fontProperty, this, model);
 
 		final double duration = GraphVisualiserfx.animateFast;
@@ -860,6 +880,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String EdgeTextDisplayChoice = "edgeTextDisplayChoice";
 	private static final String ScrollHValue = "HValue";
 	private static final String ScrollVValue = "VValue";
+	private static final String KeyPathLength = "PathLength";
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
@@ -888,6 +909,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putDouble(scrollPane.idProperty().get() + ScrollHValue, scrollPane.getHvalue());
 			Preferences.putDouble(scrollPane.idProperty().get() + ScrollVValue, scrollPane.getVvalue());
 
+			Preferences.putInt(KeyPathLength, spinPathLength.getValue());
 			Preferences.flush();
 		}
 	}
@@ -959,6 +981,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				});
 			}
 		});
+
+		int pl = Preferences.getInt(KeyPathLength, 1);
+		spinPathLength.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, pl));
 
 	}
 
@@ -1078,7 +1103,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name") + date);
 				}
 
-				model.doNewProject(proposedName,libGraph);
+				model.doNewProject(proposedName, libGraph);
 			});
 		}
 
@@ -1361,8 +1386,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnXLinks.setDisable(!isOpen);
 		cbNodeTextChoice.setDisable(!isOpen);
 		cbEdgeTextChoice.setDisable(!isOpen);
-		btnSelectAll.setDisable(!isOpen);
+//		btnSelectAll.setDisable(!isOpen);
 		tglSideline.setDisable(!isOpen);
+		tglNeighbourhood.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;

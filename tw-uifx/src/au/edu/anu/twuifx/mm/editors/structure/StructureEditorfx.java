@@ -236,29 +236,29 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			}
 		}
 		// --
-		{
-			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_SHOWLOCALGRAPH);
-			mi.setOnAction((e) -> {
-				String title = MenuLabels.ML_SHOWLOCALGRAPH.label();
-				String header = "Show graph surrounding '"
-						+ editableNode.getSelectedVisualNode().getDisplayText(ElementDisplayText.RoleName) + "'.";
-				String content = "Path length: ";
-				String defaultValue = "1";
-				String result = Dialogs.getText(title, header, content, defaultValue, Dialogs.vsInteger);
-				if (result != null) {
-					int depth = Integer.parseInt(result);
-					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
-
-					GraphState.setChanged();
-
-					String desc = MenuLabels.ML_SHOWLOCALGRAPH.label() + " ["
-							+ editableNode.getConfigNode().toShortString() + "(" + depth + ")]";
-
-					recorder.addState(desc);
-				}
-
-			});
-		}
+//		{
+//			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_SHOWLOCALGRAPH);
+//			mi.setOnAction((e) -> {
+//				String title = MenuLabels.ML_SHOWLOCALGRAPH.label();
+//				String header = "Show graph surrounding '"
+//						+ editableNode.getSelectedVisualNode().getDisplayText(ElementDisplayText.RoleName) + "'.";
+//				String content = "Path length: ";
+//				String defaultValue = "1";
+//				String result = Dialogs.getText(title, header, content, defaultValue, Dialogs.vsInteger);
+//				if (result != null) {
+//					int depth = Integer.parseInt(result);
+//					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
+//
+//					GraphState.setChanged();
+//
+//					String desc = MenuLabels.ML_SHOWLOCALGRAPH.label() + " ["
+//							+ editableNode.getConfigNode().toShortString() + "(" + depth + ")]";
+//
+//					recorder.addState(desc);
+//				}
+//
+//			});
+//		}
 		// ---------------------------------------------------------------
 		cm.getItems().add(new SeparatorMenuItem());
 		// ---------------------------------------------------------------

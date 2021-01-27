@@ -185,6 +185,8 @@
                         <Spinner fx:id="spinNodeSize" editable="true" prefWidth="65.0" />
                         <Label text="Jitter: " />
                         <Spinner fx:id="spinJitter" prefWidth="65.0" />
+                        <Label text="Path length: " />
+                        <Spinner fx:id="spinPathLength" prefWidth="65.0" />
                         <Label text="N text" />
                         <ComboBox fx:id="cbNodeTextChoice" disable="true" prefWidth="115.0" />
                         <Label text="E text" />
@@ -215,7 +217,7 @@
                         <ToggleButton fx:id="btnXLinks" disable="true" mnemonicParsing="false" selected="true" text="X" textAlignment="CENTER" />
                         <ToggleButton fx:id="btnChildLinks" disable="true" mnemonicParsing="false" selected="true" text="&lt;" textAlignment="CENTER" />
                         <ToggleButton fx:id="tglSideline" disable="true" mnemonicParsing="false" text="&gt;|" textAlignment="CENTER" />
-                        <Button fx:id="btnSelectAll" disable="true" mnemonicParsing="false" onAction="#onSelectAll" text="A" textAlignment="CENTER" />
+                        <ToggleButton fx:id="tglNeighbourhood" disable="true" mnemonicParsing="false" onAction="#onNeighMode" text="O" />
                     </items>
                   </ToolBar>
                </right>

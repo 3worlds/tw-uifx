@@ -78,7 +78,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
-import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
@@ -110,6 +110,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	// private final BooleanProperty sideLineProperty;
 	private final DropShadow dropShadow;
+	private final ColorAdjust colorAdjust;
 	private final ObjectProperty<Font> font;
 	private final Color hoverColor;
 	private final Color treeEdgeColor;
@@ -119,6 +120,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Originator recorder;
 	private final ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
 	private final ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
+	private final ReadOnlyObjectProperty<Integer> pathLength;
+	private final BooleanProperty neighMode;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
@@ -128,6 +131,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			ReadOnlyObjectProperty<ElementDisplayText> nodeSelect, //
 			ReadOnlyObjectProperty<ElementDisplayText> edgeSelect, //
 			BooleanProperty sideline, //
+			BooleanProperty neighMode, ReadOnlyObjectProperty<Integer> pathLength, //
 			ObjectProperty<Font> font, //
 			IMMController controller, //
 			Originator recorder) {
@@ -143,7 +147,16 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.recorder = recorder;
 		this.edgeSelect = edgeSelect;
 		this.nodeSelect = nodeSelect;
+		this.neighMode = neighMode;
+		this.pathLength = pathLength;
+
 		dropShadow = new DropShadow();
+		colorAdjust = new ColorAdjust();
+//		colorAdjust.setHue(-0.05);
+//		colorAdjust.setBrightness(0.9);
+		colorAdjust.setBrightness(0.8);
+//		colorAdjust.setSaturation(0.7);
+
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
@@ -249,12 +262,22 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
+		c.setOnMouseEntered(e -> {
+			if (neighMode.getValue())
+				onHighlightLocalGraph(n, pathLength.getValue());
+		});
+		c.setOnMouseExited(e -> {
+//			if (neighMode.getValue())
+//				onSelectAll();
+		});
+
 		c.setEffect(dropShadow);
 		c.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY) {
 				dragNode = n;
 				e.consume();
 			}
+
 		});
 		c.setOnMouseDragged(e -> {
 			if (dragNode != null) {
@@ -295,9 +318,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY) {
 				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this, recorder);
-			} else
+			} else {
 				controller.onNodeSelected(n);
-
+				if (neighMode.getValue())
+					onShowLocalGraph(n, pathLength.getValue());
+			}
 		});
 
 		text.fontProperty().bind(font);
@@ -843,35 +868,81 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void onSelectAll() {
+	public void onHighlightAll() {
+		Set<VisualNode> highlightNodes = new HashSet<>();
+		for (VisualNode n : visualGraph.nodes())
+//			if (!n.isCollapsed())
+			highlightNodes.add(n);
+		updateElementColour(highlightNodes);
+	}
+
+	@Override
+	public void onShowLocalGraph(VisualNode root, int pathLength) {
+		Set<VisualNode> visibleNodes = new HashSet<>();
+		traversal(root, 0, pathLength, visibleNodes);
+		visibleNodes.add(root);
+		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
+	}
+
+	@Override
+	public void onShowAll() {
 		Set<VisualNode> visibleNodes = new HashSet<>();
 		for (VisualNode n : visualGraph.nodes())
 			if (!n.isCollapsed())
 				visibleNodes.add(n);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-
-		GraphState.setChanged();
-//		recorder.addState("Show all");
 	}
 
 	@Override
-	public void showLocalGraph(VisualNode root, int pathLength) {
-		Set<VisualNode> visibleNodes = new HashSet<>();
-		traversal(root, 0, pathLength, visibleNodes);
-		visibleNodes.add(root);
-		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-//	GraphState.setChanged();
-//		recorder.addState("Show neighbourhood");
+	public void onHighlightLocalGraph(VisualNode root, int pathLength) {
+		Set<VisualNode> focusNodes = new HashSet<>();
+		traversal(root, 0, pathLength, focusNodes);
+		focusNodes.add(root);
+		updateElementColour(focusNodes);
 	}
 
-	private static void updateGraphVisibility(TreeGraph<VisualNode, VisualEdge> g, Set<VisualNode> visibleNodes,
-			BooleanProperty parentLineVisibleProperty, BooleanProperty edgeLineVisibleProperty) {
-		for (VisualNode n : g.nodes())
-			hideNode(n);
-		for (VisualNode n : visibleNodes) {
-			showNode(n, parentLineVisibleProperty, edgeLineVisibleProperty, visibleNodes);
+	private void updateElementColour(Set<VisualNode> focusNodes) {
+		for (VisualNode n : visualGraph.nodes())
+			dimNode(n);
+		for (VisualNode n : focusNodes) {
+			unDimNode(n, focusNodes);
 		}
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private void unDimNode(VisualNode n, Set<VisualNode> focusNodes) {
+		Shape c = (Shape) n.getSymbol();
+		c.setEffect(dropShadow);
+		Text t = (Text) n.getText();
+		t.setEffect(null);
+		if (n.getParent() != null && (focusNodes.contains(n.getParent()))) {
+			((Line) n.getParentLine().getFirst()).setEffect(null);
+			((Line) n.getParentLine().getSecond()).setEffect(null);
+		}
+		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
+			if (focusNodes.contains(e.endNode())) {
+				((Shape) e.getSymbol().getFirst()).setEffect(null);
+				((Shape) e.getSymbol().getSecond()).setEffect(null);
+				((Text) e.getText()).setEffect(null);
+			}
+		}
+	}
+
+	private void dimNode(VisualNode n) {
+		Shape c = (Shape) n.getSymbol();
+		c.setEffect(colorAdjust);
+		Text t = (Text) n.getText();
+		t.setEffect(colorAdjust);
+		if (n.getParent() != null) {
+			((Line) n.getParentLine().getFirst()).setEffect(colorAdjust);
+			((Line) n.getParentLine().getSecond()).setEffect(colorAdjust);
+		}
+		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
+			((Shape) e.getSymbol().getFirst()).setEffect(colorAdjust);
+			((Shape) e.getSymbol().getSecond()).setEffect(colorAdjust);
+			((Text) e.getText()).setEffect(colorAdjust);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -884,8 +955,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		if (n.getParent() != null) {
 			if (visibleNodes.contains(n.getParent())) {
 				s = (Shape) n.getParentLine().getFirst();
-				s.visibleProperty().bind(parentVisibleProperty);// TODO check what happens to bindings on collapse /
-																// expand
+				s.visibleProperty().bind(parentVisibleProperty);
+				// TODO check what happens to bindings on collapse /
+				// expand
 			}
 		}
 		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
@@ -897,22 +969,33 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 	}
 
-	private static void hideShape(Shape s) {
-		if (s.visibleProperty().isBound())
-			s.visibleProperty().unbind();
-		s.setVisible(false);
-	}
-
 	@SuppressWarnings("unchecked")
 	private static void hideNode(VisualNode n) {
 		hideShape((Shape) n.getSymbol());
 		n.setVisible(false);
-		if (n.getParent() != null)
+		if (n.getParent() != null) {
 			hideShape((Shape) n.getParentLine().getFirst());
+		}
 		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
 			hideShape((Shape) e.getSymbol().getFirst());
 			e.setVisible(false);
 		}
+	}
+
+	private static void updateGraphVisibility(TreeGraph<VisualNode, VisualEdge> g, Set<VisualNode> visibleNodes,
+			BooleanProperty parentLineVisibleProperty, BooleanProperty edgeLineVisibleProperty) {
+		for (VisualNode n : g.nodes())
+			hideNode(n);
+		for (VisualNode n : visibleNodes) {
+			showNode(n, parentLineVisibleProperty, edgeLineVisibleProperty, visibleNodes);
+		}
+
+	}
+
+	private static void hideShape(Shape s) {
+		if (s.visibleProperty().isBound())
+			s.visibleProperty().unbind();
+		s.setVisible(false);
 	}
 
 	@SuppressWarnings("unchecked")
