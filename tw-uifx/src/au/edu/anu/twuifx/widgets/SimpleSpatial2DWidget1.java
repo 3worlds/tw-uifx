@@ -432,7 +432,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				System.out.println("Warning: Attempt to delete non-existing point. [" + lab + "]");
 			else {
 				pd++;
-				updateLegend = updateLegend || uninstallColour(lab);
+// 				JG Fix: we dont want the legend to shrink everytime a colour disappears:
+//				updateLegend = updateLegend || uninstallColour(lab);
 			}
 		}
 
