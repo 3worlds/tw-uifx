@@ -77,6 +77,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
@@ -196,7 +198,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (!n.isCollapsed() && n.hasCollaspedChild())
 				collapsedParents.add(n);
 		}
-		resetZorder();
+		resetZorder(pane.getChildren());
 
 		for (VisualNode parent : collapsedParents)
 			for (VisualNode child : parent.getChildren()) {
@@ -213,12 +215,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	}
 
-	private void resetZorder() {
+	private void resetZorder(ObservableList<Node> nodeList) {
 		List<Node> lstText = new ArrayList<>();
 		List<Node> lstCircle = new ArrayList<>();
 		List<Node> lstLines = new ArrayList<>();
 		List<Node> lstArrows = new ArrayList<>();
-		for (Node n : pane.getChildren()) {
+		for (Node n : nodeList) {
 			if (n instanceof Text)
 				lstText.add(n);
 			else if (n instanceof Circle)
@@ -228,14 +230,24 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			else if (n instanceof Line)
 				lstLines.add(n);
 		}
-		for (Node n : lstCircle)
-			n.toBack();
-		for (Node n : lstText)
-			n.toBack();
-		for (Node n : lstArrows)
-			n.toBack();
 		for (Node n : lstLines)
-			n.toBack();
+			n.toFront();
+		for (Node n : lstArrows)
+			n.toFront();
+		for (Node n : lstText)
+			n.toFront();
+		for (Node n : lstCircle)
+			n.toFront();
+
+		
+//		for (Node n : lstCircle)
+//			n.toBack();
+//		for (Node n : lstText)
+//			n.toBack();
+//		for (Node n : lstArrows)
+//			n.toBack();
+//		for (Node n : lstLines)
+//			n.toBack();
 
 	}
 
@@ -320,9 +332,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this, recorder);
 			} else {
 				controller.onNodeSelected(n);
-				if (neighMode.getValue()) {
-					onShowLocalGraph(n, pathLength.getValue());
-				}	onHighlightAll();
+//				if (neighMode.getValue()) {
+//					onShowLocalGraph(n, pathLength.getValue());
+//				}	onHighlightAll();
 			}
 		});
 
@@ -340,7 +352,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	public void onNewNode(VisualNode node) {
 		createNodeVisualisation(node);
 		createParentLines(node, parentLineVisibleProperty);
-		resetZorder();
+		resetZorder(pane.getChildren());
 	}
 
 	private void createParentLines(VisualNode child, BooleanProperty show) {
@@ -662,7 +674,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			pt.play();
 
 		}
-		resetZorder();
+		resetZorder(pane.getChildren());
 	}
 
 	@Override
@@ -745,7 +757,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onNewParent(VisualNode child) {
 		createParentLines(child, parentLineVisibleProperty);
-		resetZorder();
+		resetZorder(pane.getChildren());
 	}
 
 	@Override
@@ -900,32 +912,45 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		traversal(root, 0, pathLength, focusNodes);
 		focusNodes.add(root);
 		updateElementColour(focusNodes);
+		
 	}
 
 	private void updateElementColour(Set<VisualNode> focusNodes) {
 		for (VisualNode n : visualGraph.nodes())
 			dimNode(n);
+		
+		ObservableList<Node> obs = FXCollections.observableArrayList();
 		for (VisualNode n : focusNodes) {
-			unDimNode(n, focusNodes);
+			unDimNode(n, focusNodes,obs);
 		}
+		resetZorder(obs);
 
 	}
 
 	@SuppressWarnings("unchecked")
-	private void unDimNode(VisualNode n, Set<VisualNode> focusNodes) {
+	private void unDimNode(VisualNode n, Set<VisualNode> focusNodes, ObservableList<Node>obs) {
 		Shape c = (Shape) n.getSymbol();
 		c.setEffect(dropShadow);
+		obs.add(c);
 		Text t = (Text) n.getText();
+		obs.add(t);
 		t.setEffect(null);
 		if (n.getParent() != null && (focusNodes.contains(n.getParent()))) {
-			((Line) n.getParentLine().getFirst()).setEffect(null);
-			((Line) n.getParentLine().getSecond()).setEffect(null);
+			Duple<Object,Object> dpl = n.getParentLine();
+			((Line) dpl.getFirst()).setEffect(null);
+			((Line) dpl.getSecond()).setEffect(null);
+			obs.add((Line)dpl.getFirst());
+			obs.add((Line)dpl.getSecond());
 		}
 		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
 			if (focusNodes.contains(e.endNode())) {
-				((Shape) e.getSymbol().getFirst()).setEffect(null);
-				((Shape) e.getSymbol().getSecond()).setEffect(null);
+				Duple<Object,Object> dpl =e.getSymbol();
+				((Shape) dpl.getFirst()).setEffect(null);
+				((Shape) dpl.getSecond()).setEffect(null);
 				((Text) e.getText()).setEffect(null);
+				obs.add((Line)dpl.getFirst());
+				obs.add((Line)dpl.getSecond());
+				obs.add((Text)e.getText());
 			}
 		}
 	}

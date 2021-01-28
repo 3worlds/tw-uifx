@@ -676,7 +676,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void onNeighMode(ActionEvent event) {
 		if (!tglNeighbourhood.isSelected()) {
-			visualiser.onShowAll();
+//			visualiser.onShowAll();
 			visualiser.onHighlightAll();
 		}
 	}
