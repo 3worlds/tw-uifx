@@ -946,6 +946,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@SuppressWarnings("unchecked")
 	private void dimNode(VisualNode n) {
 		Shape c = (Shape) n.getSymbol();
+		if (c==null)
+			return;// may occur when creating a node!
 		c.setEffect(colorAdjust);
 		Text t = (Text) n.getText();
 		t.setEffect(colorAdjust);

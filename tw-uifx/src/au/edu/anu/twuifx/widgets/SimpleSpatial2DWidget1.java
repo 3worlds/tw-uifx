@@ -1522,13 +1522,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		if (offset == tickSize)
 			n = n--;
 		return n;
-//			
-//			
-//		double n = size / tickSize;
-//		double nn = Math.floor(n);
-//		if (nn < n)
-//			nn++;
-//		return (int) nn;
 	}
 
 	private double getStartValue(double min, double offset, double tickSize) {
