@@ -2,6 +2,47 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 28 16:02:18 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
+	
+// TEST SETUP FOR LIFE CYCLES
+//
+// main characteristics:
+//
+//	3 categories, A & B nested under XY
+//	XY has location constants x and y
+//	componentTypes 	A ephemeral
+//			B ephemeral
+//	life cycle A recruits to B
+//			B produces A
+//	At age=2 A recruits to B
+//	At age=3 B starts to produce 1 A per time step
+//	At age=8 B dies
+//	Relation parentTo is established between parent and offspring
+//
+// Once deployed, the test should be run step-by-step.
+// Set point colour hierarchical level to 2 in space widget config
+// what the test should show:
+//
+//	10 time steps
+//	t=0 only 1 individual 'A5'
+//
+//	t=1 nothing happens
+//	t=2 nothing happens
+//	t=3 'A5' recruits to 'B6' (notice colour change)
+//	t=4 'B6' produces 'A7' and a parentTo relation is displayed between them
+//	t=5 'B6' produces 'A9' and a parentTo relation is displayed between them
+//	t=6 'B6' produces 'A11' and a parentTo relation is displayed between them
+//	t=7 'B6' produces 'A13' and a parentTo relation is displayed between them
+//		'A7' recruits to 'B14' - notice colour change + maintenance of parentTo relation
+//	t=8 'B6' produces 'A18' and a parentTo relation is displayed between them
+//		'B14' produces 'A19' and a parentTo relation is displayed between them
+//		'A9' recruits to 'B19' - notice colour change + maintenance of parentTo relation
+//	t=9 'B6' dies - notice disappearance of all its parentTo relation to its offspring
+//	 	previous AB relations disappear
+//		'B14' produces 'A23' and a parentTo relation is displayed between them
+//		'B19' produces 'A25' and a parentTo relation is displayed between them	
+//		'A11' recruits to 'B24' - notice colour change + maintenance of parentTo relation
+//	etc...
+	
 // TREE
 3worlds TestLifeCycle
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -71,7 +112,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 28 16:02:18 CET 2021
 	system sys1
 		dynamics sim1
 			stoppingCondition stCd1
-				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(12)
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(10)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
