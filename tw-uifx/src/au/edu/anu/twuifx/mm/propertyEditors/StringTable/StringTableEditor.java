@@ -38,7 +38,6 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
-import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;

@@ -238,17 +238,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			n.toFront();
 		for (Node n : lstCircle)
 			n.toFront();
-
-		
-//		for (Node n : lstCircle)
-//			n.toBack();
-//		for (Node n : lstText)
-//			n.toBack();
-//		for (Node n : lstArrows)
-//			n.toBack();
-//		for (Node n : lstLines)
-//			n.toBack();
-
 	}
 
 	@Override
@@ -912,23 +901,22 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		traversal(root, 0, pathLength, focusNodes);
 		focusNodes.add(root);
 		updateElementColour(focusNodes);
-		
 	}
 
 	private void updateElementColour(Set<VisualNode> focusNodes) {
 		for (VisualNode n : visualGraph.nodes())
 			dimNode(n);
-		
+
 		ObservableList<Node> obs = FXCollections.observableArrayList();
-		for (VisualNode n : focusNodes) {
-			unDimNode(n, focusNodes,obs);
-		}
+		for (VisualNode n : focusNodes)
+			unDimNode(n, focusNodes, obs);
+
 		resetZorder(obs);
 
 	}
 
 	@SuppressWarnings("unchecked")
-	private void unDimNode(VisualNode n, Set<VisualNode> focusNodes, ObservableList<Node>obs) {
+	private void unDimNode(VisualNode n, Set<VisualNode> focusNodes, ObservableList<Node> obs) {
 		Shape c = (Shape) n.getSymbol();
 		c.setEffect(dropShadow);
 		obs.add(c);
@@ -936,25 +924,26 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		obs.add(t);
 		t.setEffect(null);
 		if (n.getParent() != null && (focusNodes.contains(n.getParent()))) {
-			Duple<Object,Object> dpl = n.getParentLine();
+			Duple<Object, Object> dpl = n.getParentLine();
 			((Line) dpl.getFirst()).setEffect(null);
 			((Line) dpl.getSecond()).setEffect(null);
-			obs.add((Line)dpl.getFirst());
-			obs.add((Line)dpl.getSecond());
+			obs.add((Line) dpl.getFirst());
+			obs.add((Line) dpl.getSecond());
 		}
 		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
 			if (focusNodes.contains(e.endNode())) {
-				Duple<Object,Object> dpl =e.getSymbol();
+				Duple<Object, Object> dpl = e.getSymbol();
 				((Shape) dpl.getFirst()).setEffect(null);
 				((Shape) dpl.getSecond()).setEffect(null);
 				((Text) e.getText()).setEffect(null);
-				obs.add((Line)dpl.getFirst());
-				obs.add((Line)dpl.getSecond());
-				obs.add((Text)e.getText());
+				obs.add((Line) dpl.getFirst());
+				obs.add((Line) dpl.getSecond());
+				obs.add((Text) e.getText());
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void dimNode(VisualNode n) {
 		Shape c = (Shape) n.getSymbol();
 		c.setEffect(colorAdjust);

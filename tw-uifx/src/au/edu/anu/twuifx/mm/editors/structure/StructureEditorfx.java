@@ -33,7 +33,6 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.Originator;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
