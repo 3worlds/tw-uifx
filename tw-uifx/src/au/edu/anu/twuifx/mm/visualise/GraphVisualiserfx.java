@@ -356,7 +356,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		VisualNode oldRoot = controller.setLayoutRoot(newRoot);
 		if (oldRoot != null)
 			((Circle) oldRoot.getSymbol()).setStroke(null);
-		((Circle) newRoot.getSymbol()).setStroke(Color.BLACK);
+		if (newRoot.cClassId().equals(N_ROOT.label()))
+			((Circle) newRoot.getSymbol()).setStroke(Color.WHITE);
+		else
+			((Circle) newRoot.getSymbol()).setStroke(Color.BLACK);
 	}
 
 	@Override
@@ -545,7 +548,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			// Hide every edge between this tree and other non-collapsed nodes
 			hideEdges(childRoot);
 			setLayoutNode(controller.getLayoutRoot());
-			
+
 			if (record) {
 				// Don't do this so "record" can be removed sometime
 				// Problem stemming from CollapseAll
