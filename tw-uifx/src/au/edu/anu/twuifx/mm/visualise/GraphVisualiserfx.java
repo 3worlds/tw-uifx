@@ -123,7 +123,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
 	private final ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
 	private final ReadOnlyObjectProperty<Integer> pathLength;
-	private final BooleanProperty neighMode;
+//	private final BooleanProperty neighMode;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
@@ -133,7 +133,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			ReadOnlyObjectProperty<ElementDisplayText> nodeSelect, //
 			ReadOnlyObjectProperty<ElementDisplayText> edgeSelect, //
 			BooleanProperty sideline, //
-			BooleanProperty neighMode, ReadOnlyObjectProperty<Integer> pathLength, //
+//			BooleanProperty neighMode, 
+			ReadOnlyObjectProperty<Integer> pathLength, //
 			ObjectProperty<Font> font, //
 			IMMController controller, //
 			Originator recorder) {
@@ -149,15 +150,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.recorder = recorder;
 		this.edgeSelect = edgeSelect;
 		this.nodeSelect = nodeSelect;
-		this.neighMode = neighMode;
+//		this.neighMode = neighMode;
 		this.pathLength = pathLength;
 
 		dropShadow = new DropShadow();
 		colorAdjust = new ColorAdjust();
-//		colorAdjust.setHue(-0.05);
-//		colorAdjust.setBrightness(0.9);
 		colorAdjust.setBrightness(0.8);
-//		colorAdjust.setSaturation(0.7);
 
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
@@ -213,6 +211,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 
+		setLayoutNode(null);
 	}
 
 	private void resetZorder(ObservableList<Node> nodeList) {
@@ -253,6 +252,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	private VisualNode dragNode;
 
+	private boolean dimmingOn;
+
 	private void createNodeVisualisation(VisualNode n) {
 		double x = n.getX() * pane.getWidth();
 		double y = n.getY() * pane.getHeight();
@@ -262,19 +263,27 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Text text = new Text(n.getDisplayText(nodeSelect.get()));
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
+
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
+//		c.setStroke(Color.BLACK);
 		c.setOnMouseEntered(e -> {
-			if (neighMode.getValue())
+			if (e.isShiftDown()) {
+				dimmingOn = true;
 				onHighlightLocalGraph(n, pathLength.getValue());
+			} else
+				dimmingOn = false;
 		});
+
 		c.setOnMouseExited(e -> {
-//			if (neighMode.getValue())
-//				onSelectAll();
+			if (dimmingOn) {
+				onHighlightAll();
+				dimmingOn = false;
+			}
 		});
 
 		c.setEffect(dropShadow);
 		c.setOnMousePressed(e -> {
-			if (e.getButton() == MouseButton.PRIMARY) {
+			if (e.getButton() == MouseButton.PRIMARY && !e.isControlDown()) {
 				dragNode = n;
 				e.consume();
 			}
@@ -317,13 +326,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			}
 		});
 		c.setOnMouseClicked(e -> {
-			if (e.getButton() == MouseButton.SECONDARY) {
+			if (e.getButton() == MouseButton.SECONDARY && !e.isControlDown()) {
 				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this, recorder);
+			} else if (e.getButton() == MouseButton.SECONDARY && e.isControlDown()) {
+				setLayoutNode(n);
 			} else {
 				controller.onNodeSelected(n);
-//				if (neighMode.getValue()) {
-//					onShowLocalGraph(n, pathLength.getValue());
-//				}	onHighlightAll();
 			}
 		});
 
@@ -335,6 +343,20 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		text.visibleProperty().bind(c.visibleProperty());
 		pane.getChildren().addAll(c, text);
 
+	}
+
+	@Override
+	public void setLayoutNode(VisualNode newRoot) {
+		if (newRoot == null)
+			newRoot = getTWRoot();
+		if (!newRoot.isVisible() || newRoot.isCollapsed())
+			newRoot = getTWRoot();
+		if (!visualGraph.nodes().contains(newRoot))
+			newRoot = getTWRoot();
+		VisualNode oldRoot = controller.setLayoutRoot(newRoot);
+		if (oldRoot != null)
+			((Circle) oldRoot.getSymbol()).setStroke(null);
+		((Circle) newRoot.getSymbol()).setStroke(Color.BLACK);
 	}
 
 	@Override
@@ -522,6 +544,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pt.setOnFinished(e -> {
 			// Hide every edge between this tree and other non-collapsed nodes
 			hideEdges(childRoot);
+			setLayoutNode(controller.getLayoutRoot());
+			
 			if (record) {
 				// Don't do this so "record" can be removed sometime
 				// Problem stemming from CollapseAll
@@ -946,7 +970,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@SuppressWarnings("unchecked")
 	private void dimNode(VisualNode n) {
 		Shape c = (Shape) n.getSymbol();
-		if (c==null)
+		if (c == null)
 			return;// may occur when creating a node!
 		c.setEffect(colorAdjust);
 		Text t = (Text) n.getText();

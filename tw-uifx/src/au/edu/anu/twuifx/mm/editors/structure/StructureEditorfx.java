@@ -39,7 +39,6 @@ import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
-import au.edu.anu.twapps.mm.layout.LayoutType;
 import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
@@ -216,48 +215,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			} else
 				mu.setDisable(true);
 		}
-		// --
-
-		{
-			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_APPLYLAYOUT);
-			for (LayoutType lt : LayoutType.values()) {
-				MenuItem mi = new MenuItem(lt.name());
-				mu.getItems().add(mi);
-				if (lt.equals(controller.getCurrentLayout()))
-					mi.setText("*" + mi.getText());
-				mi.setUserData(lt);
-				mi.setOnAction((e) -> {
-					LayoutType layout = (LayoutType) ((MenuItem) e.getSource()).getUserData();
-					controller.doFocusedLayout(editableNode.getSelectedVisualNode(), layout, duration);
-					// Either record state on transition.setOnFinished(...) or launch delayed thread
-
-				});
-			}
-		}
-		// --
-//		{
-//			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_SHOWLOCALGRAPH);
-//			mi.setOnAction((e) -> {
-//				String title = MenuLabels.ML_SHOWLOCALGRAPH.label();
-//				String header = "Show graph surrounding '"
-//						+ editableNode.getSelectedVisualNode().getDisplayText(ElementDisplayText.RoleName) + "'.";
-//				String content = "Path length: ";
-//				String defaultValue = "1";
-//				String result = Dialogs.getText(title, header, content, defaultValue, Dialogs.vsInteger);
-//				if (result != null) {
-//					int depth = Integer.parseInt(result);
-//					gvisualiser.showLocalGraph(editableNode.getSelectedVisualNode(), depth);
-//
-//					GraphState.setChanged();
-//
-//					String desc = MenuLabels.ML_SHOWLOCALGRAPH.label() + " ["
-//							+ editableNode.getConfigNode().toShortString() + "(" + depth + ")]";
-//
-//					recorder.addState(desc);
-//				}
-//
-//			});
-//		}
 		// ---------------------------------------------------------------
 		cm.getItems().add(new SeparatorMenuItem());
 		// ---------------------------------------------------------------
@@ -270,6 +227,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 							+ editableNode.getConfigNode().toShortString() + "]";
 
 					onDeleteNode(duration);
+				
+					gvisualiser.setLayoutNode(controller.getLayoutRoot());
 
 					recorder.addState(desc);
 				});
@@ -335,7 +294,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						String desc = MenuLabels.ML_DELETE_TREE.label + " [" + vn.getConfigNode().toShortString() + "]";
 
 						onDeleteTree(vn, duration);
-
+				
+						gvisualiser.setLayoutNode(controller.getLayoutRoot());
+						
 						recorder.addState(desc);
 					});
 				}
@@ -375,6 +336,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 							+ editableNode.getConfigNode().toShortString() + "]";
 
 					onRenameNode();
+					
+					gvisualiser.setLayoutNode(controller.getLayoutRoot());
+
 
 					recorder.addState(desc);
 				});

@@ -172,8 +172,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private ToggleButton tglSideline;
 
-	@FXML
-	private ToggleButton tglNeighbourhood;
+//	@FXML
+//	private ToggleButton tglNeighbourhood;
 
 //	@FXML
 //	private Button btnSelectAll;
@@ -275,6 +275,21 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private Label lblChecking;
 
 	@FXML
+	private RadioButton rbl1;
+
+	@FXML
+	private RadioButton rbl2;
+
+	@FXML
+	private RadioButton rbl3;
+
+	@FXML
+	private RadioButton rbl4;
+
+	@FXML
+	private TextField txfLayoutRoot;
+
+	@FXML
 	private ComboBox<ElementDisplayText> cbNodeTextChoice;
 
 	@FXML
@@ -284,9 +299,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		brief, medium, full;
 	}
 
+	private RadioButton[] rbLayouts;
 	private IMMModel model;
 	private Stage stage;
 	private ToggleGroup tgArchetype;
+	private ToggleGroup tgLayout;
 	private Verbosity verbosity = Verbosity.brief;
 
 	private List<ErrorMessagable> lstErrorMsgs = new ArrayList<>();
@@ -360,7 +377,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnChildLinks.setTooltip(getFastToolTip("Show/hide parent-child edges"));
 //		btnSelectAll.setTooltip(getFastToolTip("Show all nodes"));
 		tglSideline.setTooltip(getFastToolTip("Move isolated nodes aside"));
-		tglNeighbourhood.setTooltip(getFastToolTip("Show/hide local neighbourhood"));
+//		tglNeighbourhood.setTooltip(getFastToolTip("Show/hide local neighbourhood"));
 		cbEdgeTextChoice.setTooltip(getFastToolTip("Edge text display options"));
 		cbNodeTextChoice.setTooltip(getFastToolTip("Node text display options"));
 
@@ -381,6 +398,27 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		rb3.setToggleGroup(tgArchetype);
 		tgArchetype.selectedToggleProperty().addListener(t -> {
 			verbosityChange(t);
+		});
+		rbLayouts = new RadioButton[4];
+		rbLayouts[0] = rbl1;
+		rbLayouts[1] = rbl2;
+		rbLayouts[2] = rbl3;
+		rbLayouts[3] = rbl4;
+		tgLayout = new ToggleGroup();
+		rbl1.setToggleGroup(tgLayout);
+		rbl2.setToggleGroup(tgLayout);
+		rbl3.setToggleGroup(tgLayout);
+		rbl4.setToggleGroup(tgLayout);
+		tgLayout.selectedToggleProperty().addListener(t -> {
+			RadioButton rb = (RadioButton) tgLayout.getSelectedToggle();
+			if (rb == rbl1)
+				currentLayout = LayoutType.OrderedTree;
+			else if (rb == rbl2)
+				currentLayout = LayoutType.RadialTree1;
+			else if (rb == rbl3)
+				currentLayout = LayoutType.RadialTree2;
+			else if (rb == rbl4)
+				currentLayout = LayoutType.SpringGraph;
 		});
 
 		// Listen for error msgs from error system
@@ -477,19 +515,20 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void handlePaneOnMouseClicked(MouseEvent e) {
-		if (newNode != null) {
-			newNode.setPosition(e.getX() / zoomTarget.getWidth(), e.getY() / zoomTarget.getHeight());
-			visualiser.onNewNode(newNode);
-			zoomTarget.setCursor(Cursor.DEFAULT);
-			String desc = "New node [" + newNode.getConfigNode().toShortString() + "]";
-			lastSelectedNode = newNode;
-			newNode = null;
-			initialisePropertySheets();
-			GraphState.setChanged();
-			ConfigGraph.validateGraph();
+		if (!e.isControlDown())
+			if (newNode != null) {
+				newNode.setPosition(e.getX() / zoomTarget.getWidth(), e.getY() / zoomTarget.getHeight());
+				visualiser.onNewNode(newNode);
+				zoomTarget.setCursor(Cursor.DEFAULT);
+				String desc = "New node [" + newNode.getConfigNode().toShortString() + "]";
+				lastSelectedNode = newNode;
+				newNode = null;
+				initialisePropertySheets();
+				GraphState.setChanged();
+				ConfigGraph.validateGraph();
 
-			model.addState(desc);
-		}
+				model.addState(desc);
+			}
 	}
 
 	@FXML
@@ -673,14 +712,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
-	@FXML
-	void onNeighMode(ActionEvent event) {
-		if (!tglNeighbourhood.isSelected()) {
-//			visualiser.onShowAll();
-			visualiser.onHighlightAll();
-		}
-	}
-
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
@@ -714,7 +745,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				cbNodeTextChoice.getSelectionModel().selectedItemProperty(), //
 				cbEdgeTextChoice.getSelectionModel().selectedItemProperty(), //
 				tglSideline.selectedProperty(), //
-				tglNeighbourhood.selectedProperty(), //
 				spinPathLength.valueProperty(), //
 				fontProperty, this, model);
 
@@ -767,7 +797,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@Override
 	public void doLayout(double duration) {
-		callLayout(null, currentLayout, duration);
+		callLayout(layoutRoot, currentLayout, duration);
 	}
 
 	@Override
@@ -861,6 +891,24 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				fillSelPropertySheet(items.getSecond());
 	}
 
+	private VisualNode layoutRoot;
+
+	@Override
+	public VisualNode setLayoutRoot(VisualNode newRoot) {
+		VisualNode oldRoot = layoutRoot;
+		layoutRoot = newRoot;
+		if (layoutRoot != null)
+			txfLayoutRoot.setText(layoutRoot.getConfigNode().toShortString());
+		else
+			txfLayoutRoot.setText("");
+		return oldRoot;
+	}
+	
+	@Override
+	public VisualNode getLayoutRoot() {
+		return layoutRoot;
+	}
+
 	// -------------- IMMController End ---------------------
 
 	// -------------- Preferencable Start ---------------------
@@ -903,6 +951,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putInt(tabPaneProperties.idProperty().get(),
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
 			Preferences.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
+
 			Preferences.putEnum(CurrentLayoutKey, currentLayout);
 			Preferences.putEnum(NodeTextDisplayChoice, cbNodeTextChoice.getSelectionModel().getSelectedItem());
 			Preferences.putEnum(EdgeTextDisplayChoice, cbEdgeTextChoice.getSelectionModel().getSelectedItem());
@@ -943,6 +992,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
 
 		currentLayout = (LayoutType) Preferences.getEnum(CurrentLayoutKey, LayoutType.OrderedTree);
+		rbLayouts[currentLayout.ordinal()].setSelected(true);
+
 		cbNodeTextChoice.getSelectionModel()
 				.select((ElementDisplayText) Preferences.getEnum(NodeTextDisplayChoice, ElementDisplayText.RoleName));
 		cbEdgeTextChoice.getSelectionModel()
@@ -984,6 +1035,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		int pl = Preferences.getInt(KeyPathLength, 1);
 		spinPathLength.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, pl));
+
+		setLayoutRoot(null);
 
 	}
 
@@ -1111,7 +1164,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private void setFontSize(int size) {
 		this.fontSize = size;
-		spinFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, fontSize));
+		SpinnerValueFactory<Integer> sf = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, fontSize);
+		spinFontSize.setValueFactory(sf);
 		fontProperty.set(Font.font("Verdana", fontSize));
 	}
 
@@ -1388,8 +1442,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		cbEdgeTextChoice.setDisable(!isOpen);
 //		btnSelectAll.setDisable(!isOpen);
 		tglSideline.setDisable(!isOpen);
-		tglNeighbourhood.setDisable(!isOpen);
+//		tglNeighbourhood.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
+		txfLayoutRoot.setDisable(!isOpen);
+		rbl1.setDisable(!isOpen);
+		rbl2.setDisable(!isOpen);
+		rbl3.setDisable(!isOpen);
+		rbl4.setDisable(!isOpen);
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;
 		btnDeploy.setDisable(!cleanAndValid);
