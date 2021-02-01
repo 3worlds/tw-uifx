@@ -273,11 +273,11 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="N size">
+                              <Label text="Node size">
                                  <font>
                                     <Font size="10.0" />
                                  </font></Label>
-                              <Label text="E size" GridPane.rowIndex="1">
+                              <Label text="Font size" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="10.0" />
                                  </font></Label>
@@ -296,11 +296,11 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="N txt">
+                              <Label text="Node text">
                                  <font>
                                     <Font size="10.0" />
                                  </font></Label>
-                              <Label text="E txt" GridPane.rowIndex="1">
+                              <Label text="Edge text" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="10.0" />
                                  </font></Label>
