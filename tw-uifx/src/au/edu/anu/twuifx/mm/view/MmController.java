@@ -32,14 +32,17 @@ package au.edu.anu.twuifx.mm.view;
 
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WritableDoubleValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,6 +53,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -259,11 +263,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private RadioButton rb3;
 
-	@FXML
-	private Spinner<Integer> spinFontSize;
-
-	@FXML
-	private Spinner<Integer> spinNodeSize;
+//	@FXML
+//	private Spinner<Integer> spinFontSize;
+//
+//	@FXML
+//	private Spinner<Integer> spinNodeSize;
+//
+//	@FXML
+//	private Spinner<Integer> spinLineWidth;
 
 	@FXML
 	private Spinner<Integer> spinJitter;
@@ -309,7 +316,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private List<ErrorMessagable> lstErrorMsgs = new ArrayList<>();
 
 	private StringProperty userProjectPath = new SimpleStringProperty("");
-	private IntegerProperty nodeRadiusProperty = new SimpleIntegerProperty(0);
+
+	private DoubleProperty nodeRadiusProperty = new SimpleDoubleProperty(0);
+	private DoubleProperty lineWidthProperty = new SimpleDoubleProperty(0);
+
 	private IntegerProperty jitterProperty = new SimpleIntegerProperty(1);
 	private ObjectProperty<Font> fontProperty;
 
@@ -335,32 +345,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		cbNodeTextChoice.getSelectionModel().select(ElementDisplayText.RoleName);
 		cbEdgeTextChoice.getItems().addAll(ElementDisplayText.values());
 		cbEdgeTextChoice.getSelectionModel().select(ElementDisplayText.RoleName);
-
-		spinFontSize.setMaxWidth(75.0);
-		spinNodeSize.setMaxWidth(75.0);
 		spinJitter.setMaxWidth(75.0);
 		spinPathLength.setMaxWidth(75.0);
 
-//		spinPathLength.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1));
 
 		font = Font.font("Verdana", 10);
 		fontProperty = new SimpleObjectProperty<Font>(font);
-
-		spinFontSize.valueProperty().addListener(new ChangeListener<Integer>() {
-			@Override
-			public void changed(ObservableValue<? extends Integer> observable, //
-					Integer oldValue, Integer newValue) {
-				setFontSize(newValue);
-			}
-		});
-
-		spinNodeSize.valueProperty().addListener(new ChangeListener<Integer>() {
-			@Override
-			public void changed(ObservableValue<? extends Integer> observable, //
-					Integer oldValue, Integer newValue) {
-				setNodeRadius(newValue);
-			}
-		});
 
 		spinJitter.valueProperty().addListener(new ChangeListener<Integer>() {
 
@@ -375,9 +365,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		btnLayout.setTooltip(getFastToolTip("Re-apply layout"));
 		btnXLinks.setTooltip(getFastToolTip("Show/hide cross-links"));
 		btnChildLinks.setTooltip(getFastToolTip("Show/hide parent-child edges"));
-//		btnSelectAll.setTooltip(getFastToolTip("Show all nodes"));
 		tglSideline.setTooltip(getFastToolTip("Move isolated nodes aside"));
-//		tglNeighbourhood.setTooltip(getFastToolTip("Show/hide local neighbourhood"));
 		cbEdgeTextChoice.setTooltip(getFastToolTip("Edge text display options"));
 		cbNodeTextChoice.setTooltip(getFastToolTip("Node text display options"));
 
@@ -427,7 +415,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		// Setup zooming from the graph display pane (zoomTarget)
 		// zoomTarget.setOnScroll(event -> UiHelpers.zoom(zoomTarget, event));
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
+
 		// are prefs saved regardless of graphState??
+		zoomTarget.scaleXProperty().addListener((observableValue, oldValue, newValue) -> {
+			setElementScales(newValue.doubleValue());
+		});
+	}
+
+	private void setElementScales(double zoom) {
+		nodeRadiusProperty.set(8.0/zoom);
+		lineWidthProperty.set(1.0/zoom);
+		fontProperty.set(Font.font("Verdana", 10.0/zoom));
 	}
 
 	private Tooltip getFastToolTip(String text) {
@@ -712,6 +710,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
+	@FXML
+	void onPaneKeyReleased(KeyEvent event) {
+		System.out.println("KEY RELEASED: " + event.isShiftDown());
+
+	}
+
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
@@ -740,6 +744,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser = new GraphVisualiserfx(visualGraph, //
 				zoomTarget, //
 				nodeRadiusProperty, //
+				lineWidthProperty, //
 				btnChildLinks.selectedProperty(), //
 				btnXLinks.selectedProperty(), //
 				cbNodeTextChoice.getSelectionModel().selectedItemProperty(), //
@@ -752,8 +757,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		visualiser.initialiseView(duration);
 
 		initialisePropertySheets();
-
-//		getPreferences();
 
 		setCursor(oldCursor);
 		stage.setTitle(Project.getDisplayName());
@@ -903,7 +906,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			txfLayoutRoot.setText("");
 		return oldRoot;
 	}
-	
+
 	@Override
 	public VisualNode getLayoutRoot() {
 		return layoutRoot;
@@ -917,8 +920,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String scaleX = "_scaleX";
 	private static final String scaleY = "_scaleY";
 	private static final String UserProjectPath = "userProjectPath";
-	private static final String fontSizeKey = "fontSize";
-	private static final String nodeSizeKey = "nodeSize";
 	private static final String jitterKey = "jitter";
 	private static final String Mode = "_mode";
 	private static final String AccordionSelection = "_AccSel";
@@ -945,8 +946,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
 			Preferences.putBoolean(tglSideline.idProperty().get(), tglSideline.isSelected());
-			Preferences.putInt(fontSizeKey, fontSize);
-			Preferences.putInt(nodeSizeKey, nodeRadiusProperty.get());
 			Preferences.putInt(jitterKey, jitterProperty.get());
 			Preferences.putInt(tabPaneProperties.idProperty().get(),
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
@@ -960,6 +959,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 			Preferences.putInt(KeyPathLength, spinPathLength.getValue());
 			Preferences.flush();
+			setElementScales(zoomTarget.scaleXProperty().doubleValue());
 		}
 	}
 
@@ -985,8 +985,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		stage.setHeight(ws[3]);
 		stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
 
-		setFontSize(Preferences.getInt(fontSizeKey, 10));
-		setNodeRadius(Preferences.getInt(nodeSizeKey, 8));
 		setJitter(Preferences.getInt(jitterKey, 0));
 		tabPaneProperties.getSelectionModel()
 				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
@@ -1160,18 +1158,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			});
 		}
 
-	}
-
-	private void setFontSize(int size) {
-		this.fontSize = size;
-		SpinnerValueFactory<Integer> sf = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, fontSize);
-		spinFontSize.setValueFactory(sf);
-		fontProperty.set(Font.font("Verdana", fontSize));
-	}
-
-	private void setNodeRadius(int size) {
-		spinNodeSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 40, size));
-		nodeRadiusProperty.set(size);
 	}
 
 	private void setJitter(int size) {

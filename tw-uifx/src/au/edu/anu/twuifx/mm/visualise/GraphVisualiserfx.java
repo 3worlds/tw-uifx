@@ -106,7 +106,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private final Pane pane;
-	private final IntegerProperty nodeRadius;
+	private final DoubleProperty nodeRadius;
+	private final DoubleProperty lineWidth;
 	private final BooleanProperty parentLineVisibleProperty;
 	private final BooleanProperty edgeLineVisibleProperty;
 
@@ -123,11 +124,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
 	private final ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
 	private final ReadOnlyObjectProperty<Integer> pathLength;
-//	private final BooleanProperty neighMode;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
-			IntegerProperty nodeRadius, //
+			DoubleProperty nodeRadius, //
+			DoubleProperty lineWidth, //
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
 			ReadOnlyObjectProperty<ElementDisplayText> nodeSelect, //
@@ -141,6 +142,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.visualGraph = visualGraph;
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
+		this.lineWidth = lineWidth;
 		this.edgeLineVisibleProperty = showGraphLine;
 		this.parentLineVisibleProperty = showTreeLine;
 
@@ -270,15 +272,17 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (e.isShiftDown()) {
 				dimmingOn = true;
 				onHighlightLocalGraph(n, pathLength.getValue());
-			} else
-				dimmingOn = false;
-		});
-
-		c.setOnMouseExited(e -> {
-			if (dimmingOn) {
+			} else if (dimmingOn) {
 				onHighlightAll();
 				dimmingOn = false;
 			}
+		});
+
+		c.setOnMouseExited(e -> {
+//			if (dimmingOn) {
+//				onHighlightAll();
+//				dimmingOn = false;
+//			}
 		});
 
 		c.setEffect(dropShadow);
@@ -376,6 +380,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			Circle parentCircle = (Circle) parent.getSymbol();
 			Circle childCircle = (Circle) child.getSymbol();
 			Line line = new Line();
+			line.strokeWidthProperty().bind(lineWidth);
 
 			line.setStroke(treeEdgeColor);
 			line.startXProperty().bind(parentCircle.centerXProperty());
@@ -385,7 +390,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			line.endYProperty().bind(childCircle.centerYProperty());
 
 			line.visibleProperty().bind(show);
-			Arrowhead arrow = new Arrowhead(line, nodeRadius);
+			Arrowhead arrow = new Arrowhead(line, nodeRadius, lineWidth);
 
 			child.setParentLine(line, arrow);
 
@@ -412,6 +417,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
 		Line line = new Line();
+		line.strokeWidthProperty().bind(lineWidth);
 		Text text = new Text(edge.getDisplayText(edgeSelect.get()));
 		text.fontProperty().bind(font);
 		// TODO use property here
@@ -426,7 +432,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		line.visibleProperty().bind(show);
 
-		Arrowhead arrow = new Arrowhead(line, nodeRadius);
+		Arrowhead arrow = new Arrowhead(line, nodeRadius, lineWidth);
 
 		edge.setVisualElements(line, arrow, text);
 

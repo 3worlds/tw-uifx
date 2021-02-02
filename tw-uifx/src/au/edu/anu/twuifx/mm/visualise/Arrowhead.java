@@ -11,12 +11,13 @@ import javafx.scene.shape.Line;
  * @date 25 May 2020
  */
 public class Arrowhead extends Line {
-	public Arrowhead(Line line, IntegerProperty r) {
+	public Arrowhead(Line line, DoubleProperty r,DoubleProperty lineWidth) {
 		super();
 		// arrow same colour as line
 		setStroke(line.getStroke());
 		// make thicker
-		setStrokeWidth(4);
+		this.strokeWidthProperty().bind(lineWidth.multiply(4));
+//		setStrokeWidth(4);
 		// same visibility
 		visibleProperty().bind(line.visibleProperty());
 
