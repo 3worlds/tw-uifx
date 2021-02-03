@@ -12,6 +12,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
@@ -29,6 +30,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.PropertySheet?>
@@ -285,6 +287,17 @@
                               <ComboBox fx:id="cbEdgeTextChoice" disable="true" prefWidth="115.0" style="-fx-scale-x: 0.75; -fx-scale-y: 0.75;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
+                        <Separator orientation="VERTICAL" />
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Slider fx:id="sldrElements" disable="true" max="1.8" min="0.2" scaleY="0.75" showTickMarks="true" value="1.0" />
+                              <Label text="Element size">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
                         <Separator orientation="VERTICAL" />
                      </items>
                      <BorderPane.margin>

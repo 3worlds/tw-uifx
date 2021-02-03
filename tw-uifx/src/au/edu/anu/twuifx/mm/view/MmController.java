@@ -52,7 +52,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -262,15 +264,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private RadioButton rb3;
 
-//	@FXML
-//	private Spinner<Integer> spinFontSize;
-//
-//	@FXML
-//	private Spinner<Integer> spinNodeSize;
-//
-//	@FXML
-//	private Spinner<Integer> spinLineWidth;
-
 	@FXML
 	private Spinner<Integer> spinJitter;
 
@@ -305,6 +298,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		brief, medium, full;
 	}
 
+	@FXML
+	private Slider sldrElements;
+
 	private RadioButton[] rbLayouts;
 	private IMMModel model;
 	private Stage stage;
@@ -326,9 +322,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private Font font;
-	private static final double fontSize=9.5;
-	private static final double nodeRadius=7.0;
-	private static final double lineWidth=1.0;
+	private static final double fontSize = 9.5;
+	private static final double nodeRadius = 7.0;
+	private static final double lineWidth = 1.0;
 
 	// TODO: make menu options and preferences entry for this choice when netbeans
 	// and IntelliJ have been tested
@@ -348,7 +344,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		cbEdgeTextChoice.getSelectionModel().select(ElementDisplayText.RoleName);
 		spinJitter.setMaxWidth(75.0);
 		spinPathLength.setMaxWidth(75.0);
-
 
 		font = Font.font("Verdana", 10);
 		fontProperty = new SimpleObjectProperty<Font>(font);
@@ -418,20 +413,16 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 
 		// are prefs saved regardless of graphState??
-//		zoomTarget.scaleXProperty().addListener((observableValue, oldValue, newValue) -> {
-//			setElementScales(newValue.doubleValue());
-//			System.out.println(newValue+ "\t"+zoomTarget.getWidth()+"\t"+zoomTarget.getHeight());
-//			System.out.println((zoomTarget.getWidth()/newValue.doubleValue())+"\t"+ zoomTarget.getHeight()/newValue.doubleValue());
-//			double w = zoomTarget.getWidth()/newValue.doubleValue();
-//			double h = zoomTarget.getHeight()/newValue.doubleValue();
-//			zoomTarget.setPrefSize(w, h);
-//		});
+		sldrElements.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+//			System.out.println(newValue.doubleValue());
+			setElementScales(newValue.doubleValue());
+		});
 	}
 
 	private void setElementScales(double zoom) {
-		nodeRadiusProperty.set(nodeRadius/zoom);
-		lineWidthProperty.set(lineWidth/zoom);
-		fontProperty.set(Font.font("Verdana", fontSize/zoom));
+		nodeRadiusProperty.set(nodeRadius / zoom);
+		lineWidthProperty.set(lineWidth / zoom);
+		fontProperty.set(Font.font("Verdana", fontSize / zoom));
 	}
 
 	private Tooltip getFastToolTip(String text) {
@@ -930,6 +921,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String Mode = "_mode";
 	private static final String AccordionSelection = "_AccSel";
 	private static final String CurrentLayoutKey = "currentLayout";
+	private static final String ElementScalesKey = "elementScales";
 
 	private static final String NodeTextDisplayChoice = "nodeTextDisplayChoice";
 	private static final String EdgeTextDisplayChoice = "edgeTextDisplayChoice";
@@ -964,6 +956,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putDouble(scrollPane.idProperty().get() + ScrollVValue, scrollPane.getVvalue());
 
 			Preferences.putInt(KeyPathLength, spinPathLength.getValue());
+			
+			Preferences.putDouble(ElementScalesKey, sldrElements.getValue());
 			Preferences.flush();
 		}
 	}
@@ -1041,7 +1035,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		spinPathLength.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, pl));
 
 		setLayoutRoot(null);
-		setElementScales(1.0);// elements no longer change size with zooming
+		double scale = Preferences.getDouble(ElementScalesKey, 1.0);
+		sldrElements.setValue(scale);
+//		setElementScales(scale);// elements no longer change size with zooming
 
 	}
 
@@ -1442,6 +1438,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		rbl2.setDisable(!isOpen);
 		rbl3.setDisable(!isOpen);
 		rbl4.setDisable(!isOpen);
+		sldrElements.setDisable(!isOpen);
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;
 		btnDeploy.setDisable(!cleanAndValid);
