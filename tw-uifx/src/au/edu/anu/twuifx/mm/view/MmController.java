@@ -327,7 +327,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private Font font;
-	private int fontSize;
+	private static final double fontSize=10.0;
+	private static final double nodeRadius=7.0;
+	private static final double lineWidth=1.0;
 
 	// TODO: make menu options and preferences entry for this choice when netbeans
 	// and IntelliJ have been tested
@@ -417,15 +419,20 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 
 		// are prefs saved regardless of graphState??
-		zoomTarget.scaleXProperty().addListener((observableValue, oldValue, newValue) -> {
-			setElementScales(newValue.doubleValue());
-		});
+//		zoomTarget.scaleXProperty().addListener((observableValue, oldValue, newValue) -> {
+//			setElementScales(newValue.doubleValue());
+//			System.out.println(newValue+ "\t"+zoomTarget.getWidth()+"\t"+zoomTarget.getHeight());
+//			System.out.println((zoomTarget.getWidth()/newValue.doubleValue())+"\t"+ zoomTarget.getHeight()/newValue.doubleValue());
+//			double w = zoomTarget.getWidth()/newValue.doubleValue();
+//			double h = zoomTarget.getHeight()/newValue.doubleValue();
+//			zoomTarget.setPrefSize(w, h);
+//		});
 	}
 
 	private void setElementScales(double zoom) {
-		nodeRadiusProperty.set(8.0/zoom);
-		lineWidthProperty.set(1.0/zoom);
-		fontProperty.set(Font.font("Verdana", 10.0/zoom));
+		nodeRadiusProperty.set(nodeRadius/zoom);
+		lineWidthProperty.set(lineWidth/zoom);
+		fontProperty.set(Font.font("Verdana", fontSize/zoom));
 	}
 
 	private Tooltip getFastToolTip(String text) {
@@ -959,7 +966,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 			Preferences.putInt(KeyPathLength, spinPathLength.getValue());
 			Preferences.flush();
-			setElementScales(zoomTarget.scaleXProperty().doubleValue());
 		}
 	}
 
@@ -1012,7 +1018,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, 1));
 		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, 1));
-
+		double s1 = Preferences.getDouble(splitPane1.getId(), DefaultWindowSettings.splitter1());
+		splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(s1, splitPane1.getId()));
 		// get splitPanes later after UI has settled down
 		splitPane1.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>() {
 
@@ -1035,6 +1042,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		spinPathLength.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, pl));
 
 		setLayoutRoot(null);
+		setElementScales(1.0);// elements no longer change size with zooming
 
 	}
 

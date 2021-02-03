@@ -5,11 +5,11 @@ import javafx.stage.Screen;
 
 public class DefaultWindowSettings {
 	private static Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-	private static double w = 1220;
-	private static double h =840;
+	private static double w = 1520;
+	private static double h =900;
 	private static double x = (screenBounds.getWidth() - w) / 2;
 	private static double y = (screenBounds.getHeight() - h) / 3;
-	private static double splitter1 = 0.3;
+	private static double splitter1 = 0.2;
 	private static double splitter2 = 0.5;
 	private static String defaultMMName = "3Worlds Model Maker";
 	public static double getWidth() {
