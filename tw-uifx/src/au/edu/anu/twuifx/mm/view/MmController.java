@@ -326,7 +326,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
 	private Font font;
-	private static final double fontSize=10.0;
+	private static final double fontSize=9.5;
 	private static final double nodeRadius=7.0;
 	private static final double lineWidth=1.0;
 
