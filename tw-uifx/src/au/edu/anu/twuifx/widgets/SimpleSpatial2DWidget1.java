@@ -91,11 +91,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -123,6 +126,10 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *
  */
 public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
+	private static final double fontSize = 9.5;
+	private static final double nodeRadius = 7.0;
+	private static final double lineWidth = 1.0;
+	private static final double paperSize = 500.0;
 	private BorderPane zoomTarget;
 	private Canvas canvas;
 	private ScrollPane scrollPane;
@@ -145,6 +152,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private final List<SpaceData> lstInitialData;
 
 	private FlowPane legend;
+	private Slider sldrElements;
+	private Slider sldrResolution;
 	private EdgeEffectCorrection eec;
 	private double tickSize;
 	private int nXAxisTicks;
@@ -164,6 +173,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private AnchorPane rightAxis;
 	private Map<Double, Duple<Label, Label>> xAxes;
 	private Map<Double, Duple<Label, Label>> yAxes;
+
+	private double scaledLineWidth;
+	private double scaledNodeRadius;
+	private Font scaledFont;
 
 	public SimpleSpatial2DWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
@@ -267,13 +280,97 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
+	private CheckBox chbxLabels;
+	private CheckBox chbxLegend;
+	private CheckBox chbxGrid;
+	private CheckBox chbxBoundaries;
+	private CheckBox chbxLines;
+
 	@Override
 	public Object getUserInterfaceContainer() {
 
 		BorderPane container = new BorderPane();
 		Label lbl = new Label(widgetId + " [" + units + "]");
-		container.setTop(lbl);
-		BorderPane.setAlignment(lbl, Pos.CENTER);
+		Font smallFont = new Font("System Regular", 11.0);
+
+		ToolBar tlbr = new ToolBar();
+		tlbr.getItems().add(lbl);
+
+		GridPane gp = new GridPane();
+		tlbr.getItems().add(new Separator());
+		tlbr.getItems().add(gp);
+		sldrElements = new Slider();
+		sldrElements.setMin(0.2);
+		sldrElements.setMax(1.8);
+		sldrElements.setValue(1.0);
+		sldrElements.setShowTickMarks(true);
+		sldrElements.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+			setElementScales();
+		});
+//		sldrElements.setScaleX(0.75);
+//		sldrElements.setScaleY(0.75);
+		Label sllb;
+		sllb = new Label("Elements");
+		sllb.setFont(smallFont);
+		gp.add(sllb, 0, 0);
+		gp.add(sldrElements, 1, 0);
+		tlbr.getItems().add(new Separator());
+
+		sldrResolution = new Slider();
+		sldrResolution.setMin(1.0);
+		sldrResolution.setMax(5.0);
+		sldrResolution.setValue(1.0);
+		sldrResolution.setShowTickMarks(true);
+		sldrResolution.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+			setPaperWidth();
+		});
+//		sldrResolution.setScaleX(0.75);
+//		sldrResolution.setScaleY(0.75);
+		sllb = new Label("Resolution");
+		sllb.setFont(smallFont);
+
+		gp.add(sllb, 0, 1);
+		gp.add(sldrResolution, 1, 1);
+
+		chbxLabels = new CheckBox("Labels");
+		chbxLabels.setFont(smallFont);
+		chbxLabels.selectedProperty().addListener((obs, oldValue, newValue) -> {
+			drawScene();
+		});
+		gp.add(chbxLabels, 2, 0);
+
+		chbxLegend = new CheckBox("Legend");
+		chbxLegend.setFont(smallFont);
+		chbxLegend.selectedProperty().addListener((obs, o, n) -> {
+			legend.setVisible(n);
+			placeLegend();
+		});
+		gp.add(chbxLegend, 2, 1);
+
+		chbxGrid = new CheckBox("Grid");
+		chbxGrid.setFont(smallFont);
+		chbxGrid.selectedProperty().addListener((obx, o, n) -> {
+			drawScene();
+		});
+		gp.add(chbxGrid, 3, 0);
+
+		chbxBoundaries = new CheckBox("Boundaries");
+		chbxBoundaries.setFont(smallFont);
+		chbxBoundaries.selectedProperty().addListener((obs, o, n) -> {
+			drawScene();
+		});
+		gp.add(chbxBoundaries, 3, 1);
+
+		chbxLines = new CheckBox("Relations");
+		chbxLines.setFont(smallFont);
+		chbxLines.selectedProperty().addListener((obs, o, n) -> {
+			drawScene();
+		});
+		gp.add(chbxLines, 4, 0);
+		
+//		gp.setGridLinesVisible(true);
+
+		container.setTop(tlbr);
 		centerContainer = new BorderPane();
 
 		container.setCenter(centerContainer);
@@ -373,13 +470,25 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		getUserPreferences();
 
-		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
+		setPaperWidth();
+//
+//		resizeCanvas();
 
-		font = new Font(fontSize);
-
-		legend.setVisible(legendVisible);
-		placeLegend();
 		return container;
+	}
+
+	private void setPaperWidth() {
+		resizeCanvas();
+		setElementScales();
+	}
+
+	private void setElementScales() {
+		double scale = sldrElements.getValue();
+		scale = scale * sldrResolution.getValue();
+		scaledNodeRadius = scale * nodeRadius;
+		scaledFont = new Font(scale * fontSize);
+		scaledLineWidth = scale * lineWidth;
+		drawScene();
 	}
 
 	private void processDataMessage(SpaceData data) {
@@ -511,21 +620,21 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return updateLegend;
 	}
 
-	private boolean uninstallColour(DataLabel dl) {
-		String cKey = getColourKey(dl);
-		Duple<Integer, Color> value = mpColours.get(cKey);
-		if (value != null) {
-			if (value.getFirst() == 1) {
-				mpColours.remove(cKey);
-				return true;
-			} else {
-				value = new Duple<Integer, Color>(value.getFirst() - 1, value.getSecond());
-				mpColours.put(cKey, value);
-				return false;
-			}
-		}
-		return false;
-	}
+//	private boolean uninstallColour(DataLabel dl) {
+//		String cKey = getColourKey(dl);
+//		Duple<Integer, Color> value = mpColours.get(cKey);
+//		if (value != null) {
+//			if (value.getFirst() == 1) {
+//				mpColours.remove(cKey);
+//				return true;
+//			} else {
+//				value = new Duple<Integer, Color>(value.getFirst() - 1, value.getSecond());
+//				mpColours.put(cKey, value);
+//				return false;
+//			}
+//		}
+//		return false;
+//	}
 
 	private boolean installColour(DataLabel dl) {
 		boolean update = false;
@@ -551,14 +660,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private synchronized void drawScene() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setFont(font);
-//		resizeCanvas(spaceBounds.getWidth(), spaceBounds.getHeight());
+		gc.setFont(scaledFont);
 		drawPaper(gc);
-
-		gc.setLineWidth(relLineWidth);
+		gc.setLineWidth(scaledLineWidth);
 		gc.setLineDashes(0);
 
-		if (showLines) {
+		if (chbxLines.isSelected()) {
 			gc.setStroke(lineColour);
 			for (Tuple<DataLabel, DataLabel, String> lineReference : stLines) {
 				String sKey = lineReference.getFirst().toString();
@@ -585,7 +692,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			}
 		}
 
-		int size = 2 * symbolRadius;
+		double size = 2 * scaledNodeRadius;
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setTextBaseline(VPos.CENTER);
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : mpPoints.entrySet()) {
@@ -598,16 +705,16 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				gc.setStroke(colour);
 				double[] coords = value.getSecond();
 				Point2D point = spaceToCanvas(coords);
-				point = point.add(-symbolRadius, -symbolRadius);
+				point = point.add(-scaledNodeRadius, -scaledNodeRadius);
 				gc.strokeOval(point.getX(), point.getY(), size, size);
 				if (symbolFill) {
 					gc.setFill(colour);
 					gc.fillOval(point.getX(), point.getY(), size, size);
 				}
-				if (showPointLabels) {
+				if (chbxLabels.isSelected()) {
 					gc.setFill(fontColour);
 					String label = value.getFirst().getEnd();
-					gc.fillText(label, point.getX() + symbolRadius, point.getY() + symbolRadius);
+					gc.fillText(label, point.getX() + scaledNodeRadius, point.getY() + scaledNodeRadius);
 				}
 			}
 		}
@@ -847,12 +954,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double x1 = start.getX();
 		double y1 = start.getY();
 		// # length of the arrowhead in absolute units (constant)
-		double f = symbolRadius;// why not
+		double f = scaledNodeRadius;// why not
 		// # sine and cosine of the arrowhead 1/2 angle (constant)
 		double sin30 = 0.5;// prep
 		double cos30 = Math.sqrt(3.0) / 2.0;// prep
 		// #circle radius
-		double rad = symbolRadius;// repl
+		double rad = scaledNodeRadius;// repl
 		// # compute length of the segment
 		double r = Distance.euclidianDistance(x0, y0, x1, y1);
 		if (r < rad)// don't bother?
@@ -881,13 +988,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-	private void resizeCanvas(double sWidth, double sHeight) {
-		int newWidth = (int) Math.round(spaceCanvasRatio * sWidth);
-		int newHeight = (int) Math.round(spaceCanvasRatio * sHeight);
+	private void resizeCanvas() {
+		double r = getSpaceCanvasRatio();
+		int newWidth = (int) Math.round(r * spaceBounds.getWidth());
+		int newHeight = (int) Math.round(r * spaceBounds.getHeight());
 		if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
 			canvas.setWidth(newWidth);
 			canvas.setHeight(newHeight);
 		}
+	}
+
+	private double getSpaceCanvasRatio() {
+		return (sldrResolution.getValue() * paperSize) / spaceBounds.getWidth();
 	}
 
 	private void drawPaper(GraphicsContext gc) {
@@ -902,7 +1014,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double scaledTickSize = scale * tickSize;
 		double lineWidth = scaledTickSize / 100.0;
 		double dashes = scaledTickSize / 10.0;
-		if (showGrid) {
+		if (chbxGrid.isSelected()) {
 			gc.setStroke(Color.GREY);
 			gc.setLineDashes(dashes);
 			gc.setLineWidth(lineWidth);
@@ -921,7 +1033,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				gc.strokeLine(0, y, w, y);
 			}
 		}
-		if (showEdgeEffect) {
+		if (chbxBoundaries.isSelected()) {
 			double lws = lineWidth * 10;// line width scaling
 			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws, dashes);
 			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws, dashes);
@@ -946,18 +1058,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			AnchorPane.setTopAnchor(left, pos);
 			AnchorPane.setTopAnchor(right, pos);
 			AnchorPane.setRightAnchor(left, 0.0);
-		}
-		if (showAxes) {
-			topAxis.setVisible(true);
-			bottomAxis.setVisible(true);
-			leftAxis.setVisible(true);
-			rightAxis.setVisible(true);
-		} else {
-			topAxis.setVisible(false);
-			bottomAxis.setVisible(false);
-			leftAxis.setVisible(false);
-			rightAxis.setVisible(false);
-
 		}
 	};
 
@@ -987,8 +1087,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyScaleY = "scaleY";
 	private static final String keyScrollH = "scrollH";
 	private static final String keyScrollV = "scrollV";
-	private static final String keyPaperWidth = "paperWidth";
-	private static final String keySymbolRad = "radius";
+	private static final String keyElementScale = "elementScale";
+	private static final String keyPaperScale = "paperScale";
 	private static final String keySymbolFill = "fill";
 	private static final String keyBKG = "bkg";
 	private static final String keyLineColour = "lineColour";
@@ -998,54 +1098,39 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyShowLines = "showLines";
 	private static final String keyShowGrid = "showGrid";
 	private static final String keyShowEdgeEffect = "showEdgeEffect";
-	private static final String keyRelLineWidth = "relationLineWidth";
 	private static final String keyLegendVisible = "legendVisible";
 	private static final String keyMaxLegendItems = "maxLegendItems";
 	private static final String keyLegendSide = "legendSide";
 	private static final String keyShowPointLabels = "showPointLabels";
 	private static final String keyShowArrows = "showArrows";
-	private static final String keyShowAxes = "showAxes";
 	private static final String keyShowIntermediateArrows = "showIntermediateArrows";
-	private static final String keyFontSize = "fontSize";
 	private static final String keyFontColour = "fontColour";
 
-	private double relLineWidth;
-	private double spaceCanvasRatio;
-	private int paperWidth;
 	private int colourHLevel;
-	private int symbolRadius;
 	private boolean symbolFill;
-	private boolean showGrid;
-	private boolean showEdgeEffect;
 	private Color bkgColour;
 	private Color lineColour;
 	private Color fontColour;
 	private double contrast;
 	private boolean colour64;
-	private boolean showLines;
-	private boolean legendVisible;
+//	private boolean showLines;
 	private int maxLegendItems;
 	private Side legendSide;
-	private boolean showPointLabels;
 	private boolean showArrows;
-	private boolean showAxes;
 	private boolean showIntermediateArrows;
-	private int fontSize;
-	private Font font;
 
 	@Override
 	public void putUserPreferences() {
-		Preferences.putDouble(widgetId + keyRelLineWidth, relLineWidth);
 		Preferences.putDouble(widgetId + keyScaleX, zoomTarget.getScaleX());
 		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
 		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
-		Preferences.putInt(widgetId + keyPaperWidth, paperWidth);
 		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
-		Preferences.putInt(widgetId + keySymbolRad, symbolRadius);
+		Preferences.putDouble(widgetId + keyElementScale, sldrElements.getValue());
+		Preferences.putDouble(widgetId + keyPaperScale, sldrResolution.getValue());
 		Preferences.putBoolean(widgetId + keySymbolFill, symbolFill);
-		Preferences.putBoolean(widgetId + keyShowGrid, showGrid);
-		Preferences.putBoolean(widgetId + keyShowEdgeEffect, showEdgeEffect);
+		Preferences.putBoolean(widgetId + keyShowGrid, chbxGrid.isSelected());
+		Preferences.putBoolean(widgetId + keyShowEdgeEffect, chbxBoundaries.isSelected());
 		Preferences.putDoubles(widgetId + keyBKG, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue());
 		Preferences.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
 				lineColour.getBlue());
@@ -1053,32 +1138,29 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				fontColour.getBlue());
 		Preferences.putDouble(widgetId + keyContrast, contrast);
 		Preferences.putBoolean(widgetId + keyColour64, colour64);
-		Preferences.putBoolean(widgetId + keyShowLines, showLines);
-		Preferences.putBoolean(widgetId + keyLegendVisible, legendVisible);
+		Preferences.putBoolean(widgetId + keyShowLines, chbxLines.isSelected());
+		Preferences.putBoolean(widgetId + keyLegendVisible, chbxLegend.isSelected());
 		Preferences.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
 		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
-		Preferences.putBoolean(widgetId + keyShowPointLabels, showPointLabels);
+		Preferences.putBoolean(widgetId + keyShowPointLabels, chbxLabels.isSelected());
 		Preferences.putBoolean(widgetId + keyShowArrows, showArrows);
-		Preferences.putBoolean(widgetId + keyShowAxes, showAxes);
+//		Preferences.putBoolean(widgetId + keyShowAxes, showAxes);
 		Preferences.putBoolean(widgetId + keyShowIntermediateArrows, showIntermediateArrows);
-		Preferences.putInt(widgetId + keyFontSize, fontSize);
 	}
 
 	// called at END of UI construction because this depends on UI components.
 	@Override
 	public void getUserPreferences() {
-		relLineWidth = Preferences.getDouble(widgetId + keyRelLineWidth, 0.5);
 		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
 		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
 		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
 		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
 		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
-		symbolRadius = Preferences.getInt(widgetId + keySymbolRad, 2);
-		paperWidth = Preferences.getInt(widgetId + keyPaperWidth, 500);
-		spaceCanvasRatio = paperWidth / spaceBounds.getWidth();
+		sldrElements.setValue(Preferences.getDouble(widgetId + keyElementScale, 1.0));
+		sldrResolution.setValue(Preferences.getDouble(widgetId + keyPaperScale, 1.0));
 		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
-		showGrid = Preferences.getBoolean(widgetId + keyShowGrid, true);
-		showEdgeEffect = Preferences.getBoolean(widgetId + keyShowEdgeEffect, true);
+		chbxGrid.setSelected(Preferences.getBoolean(widgetId + keyShowGrid, true));
+		chbxBoundaries.setSelected(Preferences.getBoolean(widgetId + keyShowEdgeEffect, true));
 		double[] rgb;
 		rgb = Preferences.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
 				Color.WHITE.getBlue());
@@ -1094,19 +1176,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
 		colour64 = Preferences.getBoolean(widgetId + keyColour64, false);
-		showLines = Preferences.getBoolean(widgetId + keyShowLines, true);
 		if (colour64)
 			lstColoursAvailable = ColourContrast.getContrastingColours64(bkgColour, contrast);
 		else
 			lstColoursAvailable = ColourContrast.getContrastingColours(bkgColour, contrast);
-		legendVisible = Preferences.getBoolean(widgetId + keyLegendVisible, true);
-		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 10);
 		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
-		showPointLabels = Preferences.getBoolean(widgetId + keyShowPointLabels, false);
+		chbxLegend.setSelected(Preferences.getBoolean(widgetId + keyLegendVisible, true));
+		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 10);
+		chbxLines.setSelected(Preferences.getBoolean(widgetId + keyShowLines, true));
+		chbxLabels.setSelected(Preferences.getBoolean(widgetId + keyShowPointLabels, false));
 		showArrows = Preferences.getBoolean(widgetId + keyShowArrows, false);
-		showAxes = Preferences.getBoolean(widgetId + keyShowAxes, true);
 		showIntermediateArrows = Preferences.getBoolean(widgetId + keyShowIntermediateArrows, true);
-		fontSize = Preferences.getInt(widgetId + keyFontSize, 13);
+
 	}
 
 	// --------------- GUI
@@ -1117,7 +1198,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		centerContainer.setRight(null);
 		centerContainer.setTop(null);
 		centerContainer.setBottom(null);
-		if (legendVisible)
+		if (chbxLegend.isSelected())
 			switch (legendSide) {
 			case TOP: {
 				legend.setOrientation(Orientation.HORIZONTAL);
@@ -1254,12 +1335,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		CheckBox chbxFill = new CheckBox("");
 		addGridControl("Fill", row++, col, chbxFill, pointsGrid);
 		chbxFill.setSelected(symbolFill);
-		// -----
-		Spinner<Integer> spRadius = new Spinner<>();
-		addGridControl("Radius", row++, col, spRadius, pointsGrid);
-		spRadius.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, symbolRadius));
-		spRadius.setMaxWidth(100);
-		spRadius.setEditable(true);
 		// ----
 		Spinner<Integer> spHLevel = new Spinner<>();
 		addGridControl("Hierarchical colour level", row++, col, spHLevel, pointsGrid);
@@ -1270,10 +1345,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		CheckBox chbxCS = new CheckBox("");
 		addGridControl("64 Colour system", row++, col, chbxCS, pointsGrid);
 		chbxCS.setSelected(colour64);
-		// -----
-		CheckBox chbxShowPointLabels = new CheckBox("");
-		addGridControl("Labels", row++, col, chbxShowPointLabels, pointsGrid);
-		chbxShowPointLabels.setSelected(showPointLabels);
+//		// -----
+//		CheckBox chbxShowPointLabels = new CheckBox("");
+//		addGridControl("Labels", row++, col, chbxShowPointLabels, pointsGrid);
+//		chbxShowPointLabels.setSelected(showPointLabels);
 		// -----
 		ColorPicker cpFont = new ColorPicker(fontColour);
 		addGridControl("Font colour", row++, col, cpFont, pointsGrid);
@@ -1282,15 +1357,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// --------------------------------------- Lines
 		row = 0;
 		// -----
-		CheckBox chbxShowLines = new CheckBox("");
-		addGridControl("Visible", row++, col, chbxShowLines, linesGrid);
-		chbxShowLines.setSelected(showLines);
-		// -----
-		TextField tfRelLineWidth = new TextField(Double.toString(relLineWidth));
-		tfRelLineWidth.setTextFormatter(
-				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
-		tfRelLineWidth.setMaxWidth(50);
-		addGridControl("Width", row++, col, tfRelLineWidth, linesGrid);
+//		CheckBox chbxShowLines = new CheckBox("");
+//		addGridControl("Visible", row++, col, chbxShowLines, linesGrid);
+//		chbxShowLines.setSelected(showLines);
 		// -----
 		ColorPicker cpLine = new ColorPicker(lineColour);
 		addGridControl("Colour", row++, col, cpLine, linesGrid);
@@ -1307,29 +1376,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// --------------------------------------- Paper
 		// -----
 		row = 0;
-		CheckBox chbxShowGrid = new CheckBox("");
-		addGridControl("Grid", row++, col, chbxShowGrid, paperGrid);
-		chbxShowGrid.setSelected(showGrid);
+//		CheckBox chbxShowGrid = new CheckBox("");
+//		addGridControl("Grid", row++, col, chbxShowGrid, paperGrid);
+//		chbxShowGrid.setSelected(showGrid);
 		// -----
-		CheckBox chbxShowEdgeEffect = new CheckBox("");
-		addGridControl("Boundaries", row++, col, chbxShowEdgeEffect, paperGrid);
-		chbxShowEdgeEffect.setSelected(showEdgeEffect);
-		// -----
-		CheckBox chbxShowAxes = new CheckBox("");
-		addGridControl("Axes", row++, col, chbxShowAxes, paperGrid);
-		chbxShowAxes.setSelected(showAxes);
-		// -----
-		Spinner<Integer> spPaperWidth = new Spinner<>();
-		spPaperWidth.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5000, paperWidth));
-		spPaperWidth.setMaxWidth(100);
-		spPaperWidth.setEditable(true);
-		addGridControl("Width", row++, col, spPaperWidth, paperGrid);
-		// ----
-		Spinner<Integer> spFontSize = new Spinner<>();
-		spFontSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 48, fontSize));
-		spFontSize.setMaxWidth(100);
-		spFontSize.setEditable(true);
-		addGridControl("Font size", row++, col, spFontSize, paperGrid);
+//		CheckBox chbxShowEdgeEffect = new CheckBox("");
+//		addGridControl("Boundaries", row++, col, chbxShowEdgeEffect, paperGrid);
+//		chbxShowEdgeEffect.setSelected(showEdgeEffect);
 
 		// ----
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
@@ -1345,9 +1398,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// ---------------------------- Legend
 		row = 0;
 		// ----
-		CheckBox chbxLegendVisible = new CheckBox("");
-		addGridControl("Visible", row++, col, chbxLegendVisible, legendGrid);
-		chbxLegendVisible.setSelected(legendVisible);
+//		CheckBox chbxLegendVisible = new CheckBox("");
+//		addGridControl("Visible", row++, col, chbxLegendVisible, legendGrid);
+//		chbxLegendVisible.setSelected(legendVisible);
 		// ----
 		ComboBox<Side> cmbSide = new ComboBox<>();
 		cmbSide.getItems().addAll(Side.values());
@@ -1365,19 +1418,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		boolean newLegend = false;
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
-			showLines = chbxShowLines.isSelected();
+//			showLines = chbxShowLines.isSelected();
 			if (symbolFill != chbxFill.isSelected()) {
 				symbolFill = chbxFill.isSelected();
 				newLegend = true;
 			}
-			showGrid = chbxShowGrid.isSelected();
-			showAxes = chbxShowAxes.isSelected();
-			showEdgeEffect = chbxShowEdgeEffect.isSelected();
-
-			relLineWidth = Double.parseDouble(tfRelLineWidth.getText());
-			symbolRadius = spRadius.getValue();
-			paperWidth = spPaperWidth.getValue();
-
+//			showGrid = chbxShowGrid.isSelected();
+//			showEdgeEffect = chbxShowEdgeEffect.isSelected();
 			if (contrast != Double.parseDouble(tfContrast.getText())) {
 				contrast = Double.parseDouble(tfContrast.getText());
 				newLegend = true;
@@ -1403,16 +1450,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				lstColoursAvailable = ColourContrast.getContrastingColours(bkgColour, contrast);
 
 			legendSide = cmbSide.getValue();
-			legendVisible = chbxLegendVisible.isSelected();
+//			legendVisible = chbxLegendVisible.isSelected();
 			maxLegendItems = spMaxLegendItems.getValue();
-			legend.setVisible(legendVisible);
-			showPointLabels = chbxShowPointLabels.isSelected();
+//			legend.setVisible(true);
 			showArrows = chbxShowArrows.isSelected();
 			showIntermediateArrows = chbxShowIntermediateArrows.isSelected();
-			fontSize = spFontSize.getValue();
-			font = new Font(fontSize);
-
-			spaceCanvasRatio = paperWidth / spaceBounds.getWidth();
 
 			if (newLegend) {
 				mpColours.clear();
@@ -1423,6 +1465,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			}
 
 			placeLegend();
+			resizeCanvas();
 			drawScene();
 		}
 	}
@@ -1433,9 +1476,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	}
 
 	private String findName(MouseEvent e) {
-		double scale = 1.0 / (double) spaceCanvasRatio;
-		double size = (symbolRadius * 2) * scale;
-		double rad = symbolRadius * scale;
+		double scale = 1.0 / getSpaceCanvasRatio();
+		double size = (scaledNodeRadius * 2) * scale;
+		double rad = scaledNodeRadius * scale;
 		double clickX = (e.getX() * scale) + spaceBounds.getMinX();
 		double clickY = ((canvas.getHeight() - e.getY()) * scale) + spaceBounds.getMinY();
 		BoundingBox box = new BoundingBox(clickX - rad, clickY - rad, size, size);

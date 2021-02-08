@@ -417,12 +417,13 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //			System.out.println(newValue.doubleValue());
 			setElementScales(newValue.doubleValue());
 		});
+		
 	}
 
 	private void setElementScales(double zoom) {
-		nodeRadiusProperty.set(nodeRadius / zoom);
-		lineWidthProperty.set(lineWidth / zoom);
-		fontProperty.set(Font.font("Verdana", fontSize / zoom));
+		nodeRadiusProperty.set(nodeRadius * zoom);
+		lineWidthProperty.set(lineWidth * zoom);
+		fontProperty.set(Font.font("Verdana", fontSize * zoom));
 	}
 
 	private Tooltip getFastToolTip(String text) {
@@ -956,7 +957,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putDouble(scrollPane.idProperty().get() + ScrollVValue, scrollPane.getVvalue());
 
 			Preferences.putInt(KeyPathLength, spinPathLength.getValue());
-			
+
 			Preferences.putDouble(ElementScalesKey, sldrElements.getValue());
 			Preferences.flush();
 		}
@@ -1035,10 +1036,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		spinPathLength.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, pl));
 
 		setLayoutRoot(null);
-		double scale = Preferences.getDouble(ElementScalesKey, 1.0);
-		sldrElements.setValue(scale);
-//		setElementScales(scale);// elements no longer change size with zooming
 
+		sldrElements.setDisable(false);
+		sldrElements.setValue(Preferences.getDouble(ElementScalesKey, 1.0));
+		this.setElementScales(sldrElements.getValue());
 	}
 
 	// -------------- Preferencable End ---------------------
