@@ -70,6 +70,8 @@ import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Tuple;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
@@ -126,7 +128,8 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *
  */
 public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
-	private static final double fontSize = 9.5;
+	private static final double labelFontSize = 9.5;
+	private static final double axisFontSize = 13.0;
 	private static final double nodeRadius = 7.0;
 	private static final double lineWidth = 1.0;
 	private static final double paperSize = 500.0;
@@ -182,13 +185,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		super(statusSender, DataMessageTypes.SPACE);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
-		// Thread-safe may no longer be necessary
-//		mapPoints = new ConcurrentHashMap<>();// Thread-safe seems no longer be necessary
+		// Thread-safe is no longer necessary
+//		mapPoints = new ConcurrentHashMap<>();// Thread-safe is no longer necessary
 		mpPoints = new HashMap<>();
 		lstColoursAvailable = new ArrayList<>();
-//		colourMap = new ConcurrentHashMap<>();// Thread-safe seems no longer be necessary
+//		colourMap = new ConcurrentHashMap<>();// Thread-safe is no longer necessary
 		mpColours = new HashMap<>();
-		// Thread-safe seems no longer be necessary
+		// Thread-safe is no longer necessary
 //		setLines = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>, Boolean>());
 		stLines = new HashSet<>();
 		lstInitialData = new ArrayList<>();
@@ -285,6 +288,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private CheckBox chbxGrid;
 	private CheckBox chbxBoundaries;
 	private CheckBox chbxLines;
+	private ObjectProperty<Font> fontProperty;
 
 	@Override
 	public Object getUserInterfaceContainer() {
@@ -307,8 +311,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		sldrElements.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			setElementScales();
 		});
-//		sldrElements.setScaleX(0.75);
-//		sldrElements.setScaleY(0.75);
+		sldrElements.setScaleX(0.75);
+		sldrElements.setScaleY(0.75);
 		Label sllb;
 		sllb = new Label("Elements");
 		sllb.setFont(smallFont);
@@ -324,8 +328,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		sldrResolution.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			setPaperWidth();
 		});
-//		sldrResolution.setScaleX(0.75);
-//		sldrResolution.setScaleY(0.75);
+		sldrResolution.setScaleX(0.75);
+		sldrResolution.setScaleY(0.75);
 		sllb = new Label("Resolution");
 		sllb.setFont(smallFont);
 
@@ -367,7 +371,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			drawScene();
 		});
 		gp.add(chbxLines, 4, 0);
-		
+
 //		gp.setGridLinesVisible(true);
 
 		container.setTop(tlbr);
@@ -383,12 +387,15 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		leftAxis = new AnchorPane();
 		rightAxis = new AnchorPane();
 
+		fontProperty = new SimpleObjectProperty<Font>( getSystemFont(axisFontSize));
 		double startX = getStartValue(spaceBounds.getMinX(), offsetX, tickSize);
 		for (int i = 0; i < nXAxisTicks; i++) {
 			double value = i * tickSize + startX;
 			String s = axisFormat.format(value);
 			Label t = new Label(s);
+			t.fontProperty().bind(fontProperty);
 			Label b = new Label(s);
+			b.fontProperty().bind(fontProperty);
 			topAxis.getChildren().add(t);
 			bottomAxis.getChildren().add(b);
 			xAxes.put(value, new Duple<Label, Label>(b, t));
@@ -397,7 +404,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double value = spaceBounds.getMinX();
 			String s = pointFormat.format(value);
 			Label t = new Label(s);
+			t.fontProperty().bind(fontProperty);
 			Label b = new Label(s);
+			b.fontProperty().bind(fontProperty);
 			topAxis.getChildren().add(t);
 			bottomAxis.getChildren().add(b);
 			xAxes.put(value, new Duple<Label, Label>(b, t));
@@ -406,7 +415,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double value = spaceBounds.getMaxX();
 			String s = pointFormat.format(value);
 			Label t = new Label(s);
+			t.fontProperty().bind(fontProperty);
 			Label b = new Label(s);
+			b.fontProperty().bind(fontProperty);
 			topAxis.getChildren().add(t);
 			bottomAxis.getChildren().add(b);
 			xAxes.put(value, new Duple<Label, Label>(b, t));
@@ -417,7 +428,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double value = i * tickSize + startY;
 			String s = axisFormat.format(value);
 			Label l = new Label(s);
+			l.fontProperty().bind(fontProperty);
 			Label r = new Label(s);
+			r.fontProperty().bind(fontProperty);
 			leftAxis.getChildren().add(l);
 			rightAxis.getChildren().add(r);
 			yAxes.put(value, new Duple<Label, Label>(l, r));
@@ -426,8 +439,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double value = spaceBounds.getMinY();
 			String s = pointFormat.format(value);
 			Label l = new Label(s);
+			l.fontProperty().bind(fontProperty);
 			Label r = new Label(s);
 			leftAxis.getChildren().add(l);
+			r.fontProperty().bind(fontProperty);
 			rightAxis.getChildren().add(r);
 			yAxes.put(value, new Duple<Label, Label>(l, r));
 		}
@@ -435,7 +450,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			double value = spaceBounds.getMaxY();
 			String s = pointFormat.format(value);
 			Label l = new Label(s);
+			l.fontProperty().bind(fontProperty);
 			Label r = new Label(s);
+			r.fontProperty().bind(fontProperty);
 			leftAxis.getChildren().add(l);
 			rightAxis.getChildren().add(r);
 			yAxes.put(value, new Duple<Label, Label>(l, r));
@@ -471,13 +488,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		getUserPreferences();
 
 		setPaperWidth();
-//
-//		resizeCanvas();
 
 		return container;
 	}
 
+	private Font getSystemFont(double size) {
+		return Font.font("Courier New", size);
+	}
 	private void setPaperWidth() {
+		fontProperty.set(getSystemFont(axisFontSize * sldrResolution.getValue()));
+//		System.out.println(sldrResolution.getValue()+"\t"+zoomTarget.getScaleX()+"\t"+(zoomTarget.getScaleX()/sldrResolution.getValue()));
+//		zoomTarget.setScaleX(zoomTarget.getScaleX()/sldrResolution.getValue());
+//		zoomTarget.setScaleY(zoomTarget.getScaleY()/sldrResolution.getValue());
 		resizeCanvas();
 		setElementScales();
 	}
@@ -486,7 +508,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double scale = sldrElements.getValue();
 		scale = scale * sldrResolution.getValue();
 		scaledNodeRadius = scale * nodeRadius;
-		scaledFont = new Font(scale * fontSize);
+		scaledFont = Font.font("Courier New", scale*labelFontSize);
 		scaledLineWidth = scale * lineWidth;
 		drawScene();
 	}
@@ -1144,7 +1166,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
 		Preferences.putBoolean(widgetId + keyShowPointLabels, chbxLabels.isSelected());
 		Preferences.putBoolean(widgetId + keyShowArrows, showArrows);
-//		Preferences.putBoolean(widgetId + keyShowAxes, showAxes);
 		Preferences.putBoolean(widgetId + keyShowIntermediateArrows, showIntermediateArrows);
 	}
 
@@ -1333,7 +1354,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		int row = 0;
 		// -----
 		CheckBox chbxFill = new CheckBox("");
-		addGridControl("Fill", row++, col, chbxFill, pointsGrid);
+		addGridControl("Solid", row++, col, chbxFill, pointsGrid);
 		chbxFill.setSelected(symbolFill);
 		// ----
 		Spinner<Integer> spHLevel = new Spinner<>();
@@ -1345,10 +1366,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		CheckBox chbxCS = new CheckBox("");
 		addGridControl("64 Colour system", row++, col, chbxCS, pointsGrid);
 		chbxCS.setSelected(colour64);
-//		// -----
-//		CheckBox chbxShowPointLabels = new CheckBox("");
-//		addGridControl("Labels", row++, col, chbxShowPointLabels, pointsGrid);
-//		chbxShowPointLabels.setSelected(showPointLabels);
 		// -----
 		ColorPicker cpFont = new ColorPicker(fontColour);
 		addGridControl("Font colour", row++, col, cpFont, pointsGrid);
@@ -1356,10 +1373,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		// --------------------------------------- Lines
 		row = 0;
-		// -----
-//		CheckBox chbxShowLines = new CheckBox("");
-//		addGridControl("Visible", row++, col, chbxShowLines, linesGrid);
-//		chbxShowLines.setSelected(showLines);
 		// -----
 		ColorPicker cpLine = new ColorPicker(lineColour);
 		addGridControl("Colour", row++, col, cpLine, linesGrid);
@@ -1376,14 +1389,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// --------------------------------------- Paper
 		// -----
 		row = 0;
-//		CheckBox chbxShowGrid = new CheckBox("");
-//		addGridControl("Grid", row++, col, chbxShowGrid, paperGrid);
-//		chbxShowGrid.setSelected(showGrid);
-		// -----
-//		CheckBox chbxShowEdgeEffect = new CheckBox("");
-//		addGridControl("Boundaries", row++, col, chbxShowEdgeEffect, paperGrid);
-//		chbxShowEdgeEffect.setSelected(showEdgeEffect);
-
 		// ----
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
 		addGridControl("Colour", row++, col, cpBkg, paperGrid);
@@ -1397,10 +1402,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		// ---------------------------- Legend
 		row = 0;
-		// ----
-//		CheckBox chbxLegendVisible = new CheckBox("");
-//		addGridControl("Visible", row++, col, chbxLegendVisible, legendGrid);
-//		chbxLegendVisible.setSelected(legendVisible);
 		// ----
 		ComboBox<Side> cmbSide = new ComboBox<>();
 		cmbSide.getItems().addAll(Side.values());
@@ -1418,13 +1419,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		boolean newLegend = false;
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
-//			showLines = chbxShowLines.isSelected();
 			if (symbolFill != chbxFill.isSelected()) {
 				symbolFill = chbxFill.isSelected();
 				newLegend = true;
 			}
-//			showGrid = chbxShowGrid.isSelected();
-//			showEdgeEffect = chbxShowEdgeEffect.isSelected();
 			if (contrast != Double.parseDouble(tfContrast.getText())) {
 				contrast = Double.parseDouble(tfContrast.getText());
 				newLegend = true;
@@ -1450,9 +1448,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				lstColoursAvailable = ColourContrast.getContrastingColours(bkgColour, contrast);
 
 			legendSide = cmbSide.getValue();
-//			legendVisible = chbxLegendVisible.isSelected();
 			maxLegendItems = spMaxLegendItems.getValue();
-//			legend.setVisible(true);
 			showArrows = chbxShowArrows.isSelected();
 			showIntermediateArrows = chbxShowIntermediateArrows.isSelected();
 
