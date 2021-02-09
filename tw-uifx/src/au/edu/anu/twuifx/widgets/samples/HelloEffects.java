@@ -41,6 +41,7 @@ import javafx.scene.Scene;
 import javafx.scene.effect.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -49,278 +50,297 @@ import javafx.stage.Stage;
 
 public class HelloEffects extends Application {
 
-    Stage stage;
-    Scene scene;
+	Stage stage;
+	Scene scene;
 
-    @Override public void start(Stage stage) {
-        stage.show();
+	@Override
+	public void start(Stage stage) {
+		stage.show();
 
-        scene = new Scene(new Group(), 840, 680);
-        ObservableList<Node> content = ((Group)scene.getRoot()).getChildren();
+		scene = new Scene(new Group(), 840, 680);
+		ObservableList<Node> content = ((Group) scene.getRoot()).getChildren();
 
-        /// Perspective
+		/// Perspective
 //        content.add(perspective());
-        /// DropShadow
+		/// DropShadow
 //        content.add(dropShadow());
-        /// BlendMode
-        content.add(blendMode());
-        /// Bloom
+		/// BlendMode
+//		content.add(blendMode());
+		/// Bloom
 //        content.add(bloom());
-        /// BoxBlur
+		/// BoxBlur
 //        content.add(boxBlur());
-        /// DisplacementMap
+		/// DisplacementMap
 //        content.add(displacementMap());
-        /// InnerShadow
+		/// InnerShadow
 //        content.add(innerShadow());
-        /// Lighting
+		/// Lighting
 //        content.add(lighting());
-        /// MotionBlur
+		/// MotionBlur
 //        content.add(motionBlur());
-        /// Reflection
+		/// Reflection
 //        content.add(reflection());
-        /// GaussianBlur
+		/// GaussianBlur
 //        content.add(gaussianBlur());
-        /// DistantLight
+		/// DistantLight
 //        content.add(distantLight());
-        stage.setScene(scene);
-    }
 
-    static Node distantLight() {
-        Light.Distant light = new Light.Distant();
-        light.setAzimuth(-135.0f);
-        light.setElevation(30.0f);
+		QuadCurve qc = new QuadCurve();
+		qc.setStartX(100);
+		qc.setStartY(100);
+		qc.setEndX(500);
+		qc.setEndY(100);
+		qc.setControlX(300);
+		qc.setControlY(300);
+		qc.setFill(null);
+		qc.setStroke(Color.BLACK);
+		qc.setOnMouseDragged((e) -> {
+//			System.out.println(e);
+			qc.setControlX(e.getX());
+			qc.setControlY(e.getY());
+		});
 
-        Lighting l = new Lighting();
-        l.setLight(light);
-        l.setSurfaceScale(5.0f);
+//        840, 680
+		content.add(qc);
+		stage.setScene(scene);
+	}
 
-        final Text t = new Text();
-        t.setText("Distant Light");
-        t.setFill(Color.RED);
-        t.setFont(Font.font("null", FontWeight.BOLD, 70));
-        t.setX(10.0f);
-        t.setY(50.0f);
-        t.setTextOrigin(VPos.TOP);
+	static Node distantLight() {
+		Light.Distant light = new Light.Distant();
+		light.setAzimuth(-135.0f);
+		light.setElevation(30.0f);
 
-        t.setEffect(l);
+		Lighting l = new Lighting();
+		l.setLight(light);
+		l.setSurfaceScale(5.0f);
 
-        final Rectangle r = new Rectangle();
-        r.setFill(Color.BLACK);
+		final Text t = new Text();
+		t.setText("Distant Light");
+		t.setFill(Color.RED);
+		t.setFont(Font.font("null", FontWeight.BOLD, 70));
+		t.setX(10.0f);
+		t.setY(50.0f);
+		t.setTextOrigin(VPos.TOP);
 
-        Group g = new Group();
-        g.getChildren().add(r);
-        g.getChildren().add(t);
+		t.setEffect(l);
 
-        g.setTranslateY(460);
+		final Rectangle r = new Rectangle();
+		r.setFill(Color.BLACK);
 
-        return g;
-    }
+		Group g = new Group();
+		g.getChildren().add(r);
+		g.getChildren().add(t);
 
-    static Node perspective() {
-        Group g = new Group();
-        PerspectiveTransform pt = new PerspectiveTransform();
-        pt.setUlx(10.0f);
-        pt.setUly(10.0f);
-        pt.setUrx(210.0f);
-        pt.setUry(40.0f);
-        pt.setLrx(210.0f);
-        pt.setLry(60.0f);
-        pt.setLlx(10.0f);
-        pt.setLly(90.0f);
+		g.setTranslateY(460);
 
-        g.setEffect(pt);
-        g.setCache(true);
+		return g;
+	}
 
-        Rectangle r = new Rectangle();
-        r.setX(10.0f);
-        r.setY(10.0f);
-        r.setWidth(280.0f);
-        r.setHeight(80.0f);
-        r.setFill(Color.DARKBLUE);
+	static Node perspective() {
+		Group g = new Group();
+		PerspectiveTransform pt = new PerspectiveTransform();
+		pt.setUlx(10.0f);
+		pt.setUly(10.0f);
+		pt.setUrx(210.0f);
+		pt.setUry(40.0f);
+		pt.setLrx(210.0f);
+		pt.setLry(60.0f);
+		pt.setLlx(10.0f);
+		pt.setLly(90.0f);
 
-        Text t = new Text();
-        t.setX(20.0f);
-        t.setY(65.0f);
-        t.setText("Perspective");
-        t.setFill(Color.RED);
-        t.setFont(Font.font("null", FontWeight.BOLD, 36));
+		g.setEffect(pt);
+		g.setCache(true);
 
-        g.getChildren().add(r);
-        g.getChildren().add(t);
-        return g;
-    }
+		Rectangle r = new Rectangle();
+		r.setX(10.0f);
+		r.setY(10.0f);
+		r.setWidth(280.0f);
+		r.setHeight(80.0f);
+		r.setFill(Color.DARKBLUE);
 
-    static Node gaussianBlur() {
-        Text t2 = new Text();
-        t2.setX(10.0f);
-        t2.setY(140.0f);
-        t2.setCache(true);
-        t2.setText("Gaussian Blur");
-        t2.setFill(Color.RED);
-        t2.setFont(Font.font("null", FontWeight.BOLD, 36));
-        t2.setEffect(new GaussianBlur());
-        return t2;
-    }
+		Text t = new Text();
+		t.setX(20.0f);
+		t.setY(65.0f);
+		t.setText("Perspective");
+		t.setFill(Color.RED);
+		t.setFont(Font.font("null", FontWeight.BOLD, 36));
 
-    static Node reflection() {
-        Text t = new Text();
-        t.setX(10.0f);
-        t.setY(50.0f);
-        t.setCache(true);
-        t.setText("Reflections on JavaFX...");
-        t.setFill(Color.RED);
-        t.setFont(Font.font("null", FontWeight.BOLD, 30));
+		g.getChildren().add(r);
+		g.getChildren().add(t);
+		return g;
+	}
 
-        Reflection r = new Reflection();
-        r.setFraction(0.7f);
+	static Node gaussianBlur() {
+		Text t2 = new Text();
+		t2.setX(10.0f);
+		t2.setY(140.0f);
+		t2.setCache(true);
+		t2.setText("Gaussian Blur");
+		t2.setFill(Color.RED);
+		t2.setFont(Font.font("null", FontWeight.BOLD, 36));
+		t2.setEffect(new GaussianBlur());
+		return t2;
+	}
 
-        t.setEffect(r);
+	static Node reflection() {
+		Text t = new Text();
+		t.setX(10.0f);
+		t.setY(50.0f);
+		t.setCache(true);
+		t.setText("Reflections on JavaFX...");
+		t.setFill(Color.RED);
+		t.setFont(Font.font("null", FontWeight.BOLD, 30));
 
-        t.setTranslateY(400);
-        return t;
-    }
+		Reflection r = new Reflection();
+		r.setFraction(0.7f);
 
-    static Node motionBlur() {
-        Text t = new Text();
-        t.setX(20.0f);
-        t.setY(80.0f);
-        t.setText("Motion Blur");
-        t.setFill(Color.RED);
-        t.setFont(Font.font("null", FontWeight.BOLD, 60));
+		t.setEffect(r);
 
-        MotionBlur mb = new MotionBlur();
-        mb.setRadius(15.0f);
-        mb.setAngle(45.0f);
+		t.setTranslateY(400);
+		return t;
+	}
 
-        t.setEffect(mb);
+	static Node motionBlur() {
+		Text t = new Text();
+		t.setX(20.0f);
+		t.setY(80.0f);
+		t.setText("Motion Blur");
+		t.setFill(Color.RED);
+		t.setFont(Font.font("null", FontWeight.BOLD, 60));
 
-        t.setTranslateX(520);
-        t.setTranslateY(100);
+		MotionBlur mb = new MotionBlur();
+		mb.setRadius(15.0f);
+		mb.setAngle(45.0f);
 
-        return t;
-    }
+		t.setEffect(mb);
 
-    static Node lighting() {
-        Light.Distant light = new Light.Distant();
-        light.setAzimuth(-135.0f);
+		t.setTranslateX(520);
+		t.setTranslateY(100);
 
-        Lighting l = new Lighting();
-        l.setLight(light);
-        l.setSurfaceScale(5.0f);
+		return t;
+	}
 
-        Text t = new Text();
-        t.setText("JavaFX\nLighting!");
-        t.setFill(Color.RED);
-        t.setFont(Font.font("null", FontWeight.BOLD, 70));
-        t.setX(500.0f);
-        t.setY(100.0f);
-        t.setTextOrigin(VPos.TOP);
+	static Node lighting() {
+		Light.Distant light = new Light.Distant();
+		light.setAzimuth(-135.0f);
 
-        t.setEffect(l);
+		Lighting l = new Lighting();
+		l.setLight(light);
+		l.setSurfaceScale(5.0f);
 
-        t.setTranslateX(0);
-        t.setTranslateY(320);
+		Text t = new Text();
+		t.setText("JavaFX\nLighting!");
+		t.setFill(Color.RED);
+		t.setFont(Font.font("null", FontWeight.BOLD, 70));
+		t.setX(500.0f);
+		t.setY(100.0f);
+		t.setTextOrigin(VPos.TOP);
 
-        return t;
-    }
+		t.setEffect(l);
 
-    static Node innerShadow() {
-        InnerShadow is = new InnerShadow();
-        is.setOffsetX(2.0f);
-        is.setOffsetY(2.0f);
+		t.setTranslateX(0);
+		t.setTranslateY(320);
 
-        Text t = new Text();
-        t.setEffect(is);
-        t.setX(20);
-        t.setY(100);
-        t.setText("Inner Shadow");
-        t.setFill(Color.RED);
-        t.setFont(Font.font("null", FontWeight.BOLD, 80));
+		return t;
+	}
 
-        t.setTranslateX(300);
-        t.setTranslateY(300);
+	static Node innerShadow() {
+		InnerShadow is = new InnerShadow();
+		is.setOffsetX(2.0f);
+		is.setOffsetY(2.0f);
 
-        return t;
-    }
+		Text t = new Text();
+		t.setEffect(is);
+		t.setX(20);
+		t.setY(100);
+		t.setText("Inner Shadow");
+		t.setFill(Color.RED);
+		t.setFont(Font.font("null", FontWeight.BOLD, 80));
 
-    static Node displacementMap() {
-        int w = 220;
-        int h = 100;
-        FloatMap map = new FloatMap();
-        map.setWidth(w);
-        map.setHeight(h);
+		t.setTranslateX(300);
+		t.setTranslateY(300);
 
-        for (int i = 0; i < w; i++) {
-            double v = (Math.sin(i / 50.0 * Math.PI) - 0.5) / 40.0;
-            for (int j = 0; j < h; j++) {
-                map.setSamples(i, j, 0.0f, (float) v);
-            }
-        }
+		return t;
+	}
 
-        Group g = new Group();
-        DisplacementMap dm = new DisplacementMap();
-        dm.setMapData(map);
+	static Node displacementMap() {
+		int w = 220;
+		int h = 100;
+		FloatMap map = new FloatMap();
+		map.setWidth(w);
+		map.setHeight(h);
 
-        Rectangle r = new Rectangle();
-        r.setX(20.0f);
-        r.setY(20.0f);
-        r.setWidth(w);
-        r.setHeight(h);
-        r.setFill(Color.BLUE);
+		for (int i = 0; i < w; i++) {
+			double v = (Math.sin(i / 50.0 * Math.PI) - 0.5) / 40.0;
+			for (int j = 0; j < h; j++) {
+				map.setSamples(i, j, 0.0f, (float) v);
+			}
+		}
 
-        g.getChildren().add(r);
+		Group g = new Group();
+		DisplacementMap dm = new DisplacementMap();
+		dm.setMapData(map);
 
-        Text t = new Text();
-        t.setX(40.0f);
-        t.setY(80.0f);
-        t.setText("Wavy Text");
-        t.setFill(Color.YELLOW);
-        t.setFont(Font.font("null", FontWeight.BOLD, 36));
+		Rectangle r = new Rectangle();
+		r.setX(20.0f);
+		r.setY(20.0f);
+		r.setWidth(w);
+		r.setHeight(h);
+		r.setFill(Color.BLUE);
 
-        g.getChildren().add(t);
+		g.getChildren().add(r);
 
-        g.setEffect(dm);
-        g.setCache(true);
+		Text t = new Text();
+		t.setX(40.0f);
+		t.setY(80.0f);
+		t.setText("Wavy Text");
+		t.setFill(Color.YELLOW);
+		t.setFont(Font.font("null", FontWeight.BOLD, 36));
 
-        g.setTranslateX(400);
-        g.setTranslateY(200);
+		g.getChildren().add(t);
 
-        return g;
-    }
+		g.setEffect(dm);
+		g.setCache(true);
 
-    static Node boxBlur() {
-        Text t = new Text();
-        t.setText("Blurry Text!");
-        t.setFill(Color.RED);
-        t.setFont(Font.font("null", FontWeight.BOLD, 36));
-        t.setX(10);
-        t.setY(40);
+		g.setTranslateX(400);
+		g.setTranslateY(200);
 
-        BoxBlur bb = new BoxBlur();
-        bb.setWidth(5);
-        bb.setHeight(5);
-        bb.setIterations(3);
+		return g;
+	}
 
-        t.setEffect(bb);
-        t.setTranslateX(300);
-        t.setTranslateY(100);
+	static Node boxBlur() {
+		Text t = new Text();
+		t.setText("Blurry Text!");
+		t.setFill(Color.RED);
+		t.setFont(Font.font("null", FontWeight.BOLD, 36));
+		t.setX(10);
+		t.setY(40);
 
-        return t;
-    }
+		BoxBlur bb = new BoxBlur();
+		bb.setWidth(5);
+		bb.setHeight(5);
+		bb.setIterations(3);
 
-    static Node blendMode() {
-    	ColorAdjust colorAdjust = new ColorAdjust();
-        // Setting the contrast value
-        colorAdjust.setContrast(0.3);
-   
-        // Setting the hue value
-        colorAdjust.setHue(-0.05);
-   
-        // Setting the brightness value
-        colorAdjust.setBrightness(0.9);
-   
-        // Setting the saturation value
-        colorAdjust.setSaturation(0.7);
+		t.setEffect(bb);
+		t.setTranslateX(300);
+		t.setTranslateY(100);
+
+		return t;
+	}
+
+	static Node blendMode() {
+		ColorAdjust colorAdjust = new ColorAdjust();
+		// Setting the contrast value
+		colorAdjust.setContrast(0.3);
+
+		// Setting the hue value
+		colorAdjust.setHue(-0.05);
+
+		// Setting the brightness value
+		colorAdjust.setBrightness(0.9);
+
+		// Setting the saturation value
+		colorAdjust.setSaturation(0.7);
 //        Rectangle r = new Rectangle();
 //        r.setX(590);
 //        r.setY(50);
@@ -328,84 +348,84 @@ public class HelloEffects extends Application {
 //        r.setHeight(50);
 //        r.setFill(Color.BLUE);
 
-        Circle c = new Circle();
-        c.setFill(Color.rgb(255, 0, 0, 0.5f));
-        c.setCenterX(590);
-        c.setCenterY(50);
-        c.setRadius(25);
-        c.setEffect(colorAdjust);
-        return c;
+		Circle c = new Circle();
+		c.setFill(Color.rgb(255, 0, 0, 0.5f));
+		c.setCenterX(590);
+		c.setCenterY(50);
+		c.setRadius(25);
+		c.setEffect(colorAdjust);
+		return c;
 
 //        Group g = new Group();
 //        g.setBlendMode(BlendMode.MULTIPLY);
 //        g.getChildren().add(r);
 //        g.getChildren().add(c);
 //        return g;
-    }
+	}
 
-    static Node dropShadow() {
-        Group g = new Group();
-        DropShadow ds = new DropShadow();
-        ds.setOffsetY(3.0f);
-        ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
+	static Node dropShadow() {
+		Group g = new Group();
+		DropShadow ds = new DropShadow();
+		ds.setOffsetY(3.0f);
+		ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
 
-        Text t = new Text();
-        t.setEffect(ds);
-        t.setCache(true);
-        t.setX(10.0f);
-        t.setY(270.0f);
-        t.setFill(Color.RED);
-        t.setText("JavaFX drop shadow...");
-        t.setFont(Font.font("null", FontWeight.BOLD, 32));
+		Text t = new Text();
+		t.setEffect(ds);
+		t.setCache(true);
+		t.setX(10.0f);
+		t.setY(270.0f);
+		t.setFill(Color.RED);
+		t.setText("JavaFX drop shadow...");
+		t.setFont(Font.font("null", FontWeight.BOLD, 32));
 
-        DropShadow ds1 = new DropShadow();
-        ds1.setOffsetY(4.0f);
+		DropShadow ds1 = new DropShadow();
+		ds1.setOffsetY(4.0f);
 
-        Circle c = new Circle();
-        c.setEffect(ds1);
-        c.setCenterX(50.0f);
-        c.setCenterY(325.0f);
-        c.setRadius(30.0f);
-        c.setFill(Color.ORANGE);
-        c.setCache(true);
+		Circle c = new Circle();
+		c.setEffect(ds1);
+		c.setCenterX(50.0f);
+		c.setCenterY(325.0f);
+		c.setRadius(30.0f);
+		c.setFill(Color.ORANGE);
+		c.setCache(true);
 
-        g.getChildren().add(t);
-        g.getChildren().add(c);
-        return g;
-    }
+		g.getChildren().add(t);
+		g.getChildren().add(c);
+		return g;
+	}
 
-    static Node bloom() {
-        Group g = new Group();
+	static Node bloom() {
+		Group g = new Group();
 
-        Rectangle r = new Rectangle();
-        r.setX(10);
-        r.setY(10);
-        r.setWidth(160);
-        r.setHeight(80);
-        r.setFill(Color.DARKBLUE);
+		Rectangle r = new Rectangle();
+		r.setX(10);
+		r.setY(10);
+		r.setWidth(160);
+		r.setHeight(80);
+		r.setFill(Color.DARKBLUE);
 
-        Text t = new Text();
-        t.setText("Bloom!");
-        t.setFill(Color.YELLOW);
-        t.setFont(Font.font("null", FontWeight.BOLD, 36));
-        t.setX(25);
-        t.setY(65);
+		Text t = new Text();
+		t.setText("Bloom!");
+		t.setFill(Color.YELLOW);
+		t.setFont(Font.font("null", FontWeight.BOLD, 36));
+		t.setX(25);
+		t.setY(65);
 
-        g.setCache(true);
-        //g.setEffect(new Bloom());
-        Bloom bloom = new Bloom();
-        bloom.setThreshold(1.0);
-        g.setEffect(bloom);
-        g.getChildren().add(r);
-        g.getChildren().add(t);
-        g.setTranslateX(350);
-        return g;
-    }
+		g.setCache(true);
+		// g.setEffect(new Bloom());
+		Bloom bloom = new Bloom();
+		bloom.setThreshold(1.0);
+		g.setEffect(bloom);
+		g.getChildren().add(r);
+		g.getChildren().add(t);
+		g.setTranslateX(350);
+		return g;
+	}
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        Application.launch(args);
-    }
+	/**
+	 * @param args the command line arguments
+	 */
+	public static void main(String[] args) {
+		Application.launch(args);
+	}
 }
