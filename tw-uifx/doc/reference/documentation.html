@@ -447,25 +447,42 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="email2" class="email"><a href="mailto:ian.davies@anu.edu.au">ian.davies@anu.edu.au</a></span><br>
 <span id="author3" class="author">Shayne R. Flint</span><br>
 <span id="email3" class="email"><a href="mailto:shayne.flint@anu.edu.au">shayne.flint@anu.edu.au</a></span><br>
-<span id="revnumber">version 1.1,</span>
-<span id="revdate">23 September 2019</span>
+<span id="revnumber">version 1.2,</span>
+<span id="revdate">10 February 2021</span>
 <br><span id="revremark"></span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#truepurpose-and-motivation">1. Purpose and motivation</a></li>
+<li><a href="#truepurpose-and-motivation">1. Purpose and motivation</a>
+<ul class="sectlevel2">
+<li><a href="#truewhy-another-simulation-environment-for-ecology">1.1. Why another simulation environment for ecology?</a></li>
+<li><a href="#truedesign-concepts">1.2. Design Concepts</a>
+<ul class="sectlevel3">
+<li><a href="#trueindividual-based-models">1.2.1. Individual based models</a></li>
+<li><a href="#truethe-complex-system-as-a-dynamic-graph">1.2.2. The complex system as a dynamic graph</a></li>
+<li><a href="#truecategories">1.2.3. Categories</a></li>
+<li><a href="#truetime-with-simultaneous-events">1.2.4. Time with simultaneous events</a></li>
+<li><a href="#truespace-as-a-mediator-for-interactions">1.2.5. Space as a mediator for interactions</a></li>
+<li><a href="#truemodelling-made-easy">1.2.6. Modelling made easy</a></li>
+<li><a href="#truemodel-comparison-graphs-can-be-compared">1.2.7. Model comparison: graphs can be compared</a></li>
+<li><a href="#trueproblem-upscaling">1.2.8. Problem upscaling</a></li>
+<li><a href="#trueportability-and-performance">1.2.9. Portability and performance</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a href="#truegetting-started-download-and-installation">2. Getting started - download and installation</a>
 <ul class="sectlevel2">
 <li><a href="#truebasics-what-you-must-know-before-starting">2.1. Basics - what you must know before starting</a></li>
 <li><a href="#trueprerequisites">2.2. Prerequisites</a></li>
-<li><a href="#truerunning-modelmaker-standalone">2.3. Running ModelMaker standalone</a></li>
-<li><a href="#truesetting-up-a-java-development-environment-for-the-user-code">Setting up a java development environment for the user code</a>
+<li><a href="#truerunning-modelmaker">2.3. Running ModelMaker</a></li>
+<li><a href="#truesetting-up-a-java-development-environment-for-the-user-code">2.4. Setting up a java development environment for the user code</a>
 <ul class="sectlevel3">
-<li><a href="#truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds">Setting up an eclipse <em>i</em>ntegrated <em>d</em>evelopment <em>e</em>nvironment (IDE) for 3Worlds</a></li>
-<li><a href="#truerunning-modelmaker-from-eclipse">Running ModelMaker from eclipse</a></li>
-<li><a href="#truelinking-user-code-with-model-configuration">Linking user code with model configuration</a></li>
-<li><a href="#truedebugging-and-testing-user-code">Debugging and testing user code</a></li>
+<li><a href="#truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds">2.4.1. Setting up an eclipse <em>i</em>ntegrated <em>d</em>evelopment <em>e</em>nvironment (IDE) for 3Worlds</a></li>
+<li><a href="#truerunning-modelmaker-from-eclipse">2.4.2. Running ModelMaker from eclipse</a></li>
+<li><a href="#truelinking-user-code-with-model-configuration">2.4.3. Linking user code with model configuration</a></li>
+<li><a href="#truedebugging-and-testing-user-code">2.4.4. Debugging and testing user code</a></li>
 </ul>
 </li>
 </ul>
@@ -493,7 +510,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truethe-hardware-node">3.3.9. The <em>hardware</em> node</a></li>
 </ul>
 </li>
-<li><a href="#truedeveloping-and-testing-model-code">3.4. Developing and testing model code</a></li>
+<li><a href="#truedeveloping-and-testing-model-code">3.4. Developing and testing model code</a>
+<ul class="sectlevel3">
+<li><a href="#truegeneric-method-arguments">3.4.1. generic method arguments</a></li>
+<li><a href="#truegeneric-method-fields">3.4.2. generic method fields</a></li>
+</ul>
+</li>
 <li><a href="#truefeeding-the-model-with-data">3.5. Feeding the model with data</a></li>
 </ul>
 </li>
@@ -515,16 +537,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>by <strong>Jacques Gignoux</strong>, <strong>Ian D. Davies</strong> &amp; <strong>Shayne R. Flint</strong></p>
 </div>
 <div class="paragraph">
-<p>Version: <strong>1.1</strong> (23 September 2019)</p>
+<p>Version: <strong>1.2</strong> (10 February 2021)</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="truepurpose-and-motivation"><a class="anchor" href="#truepurpose-and-motivation"></a>1. Purpose and motivation</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Why another simulation environment for ecology?</p>
-</div>
+<div class="sect2">
+<h3 id="truewhy-another-simulation-environment-for-ecology"><a class="anchor" href="#truewhy-another-simulation-environment-for-ecology"></a>1.1. Why another simulation environment for ecology?</h3>
 <div class="paragraph">
 <p><em>“Though the organisms may claim our primary interest, when we are trying to think fundamentally we cannot separate them from their special environment, with which they form
 one physical system”</em> A. G. Tanlsey (1935).</p>
@@ -598,8 +619,130 @@ simulation modellers often have well-established solutions, sometimes in other s
 systems are not <em>that</em> complex once properly designed. Things are just
 available around here, it&#8217;s just a matter of making them work together, and <strong>3Worlds</strong> is our best try to do so!</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="truedesign-concepts"><a class="anchor" href="#truedesign-concepts"></a>1.2. Design Concepts</h3>
+<div class="paragraph">
+<p>3Worlds is based on a few concepts and techniques that have a very broad application and harnesses them to fit the needs of ecosystem modelling.</p>
+</div>
+<div class="sect3">
+<h4 id="trueindividual-based-models"><a class="anchor" href="#trueindividual-based-models"></a>1.2.1. Individual based models</h4>
+<div class="paragraph">
+<p>Fundamentally, <strong>3Worlds</strong> is designed as a framework for <em>individual-based models</em> (IBMs: Grimm &amp; Railsback 2005). IBMs, like multi-agent systems (MASs: Bousquet &amp; Lepage 2004), assume that some important properties of complex systems (like ecosystems and human societies) cannot be understood without representing the detailed behaviour of every individual in the system. In an IBM, a list of 'individuals' (called 'agents' in MASs) is kept in memory, and their interactions through various functions yield the dynamics of the whole system over time. Individuals can come and go, which means that their list is constantly changing in size.</p>
+</div>
+<div class="paragraph">
+<p>3Worlds simulates a <em>system</em> made of interacting <em>system components</em>, which are equivalent to the individuals or agents of IBMs and MASs. If required by a simple application, the 3Worlds <em>system</em> can be reduced to zero component, just as in any system dynamics application; but this is not the use 3Worlds has been designed for, and other more specialised software may be more adapted for this use case.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truethe-complex-system-as-a-dynamic-graph"><a class="anchor" href="#truethe-complex-system-as-a-dynamic-graph"></a>1.2.2. The complex system as a dynamic graph</h4>
+<div class="paragraph">
+<p>Ecosystems are commonly considered as <em>complex systems</em>, without much agreement on what this latter concept means. Complex systems are usually supposed to possess <em>emergent properties</em>; again, with little agreement on what this means. We argued in Gignoux et al. (2017) that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems <em>hierarchical systems</em> and assumed that they coud be ideally represented with a <em>dynamic graph</em>.</p>
+</div>
+<div class="paragraph">
+<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical object comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes according to an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Fig. 1</a>). A <em>dynamic</em> graph (Harary &amp; Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
+</div>
+<div id="fig-what-is-a-graph" class="imageblock text-center">
+<div class="content">
+<img src="graph.svg" alt="graph">
+</div>
+<div class="title">Figure 1. A mathematical graph, showing both the usual mathematical terms and the vocabulary used in 3Worlds. The incidence function is the particular pattern of which node is related to which one. Edges can be directed (with arrows) or undirected.</div>
+</div>
+<div class="paragraph">
+<p>If we allow to attach <em>descriptors</em> (e.g. numbers with a specific meaning: <a href="#fig-graph-descriptors">Fig. 2</a>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define <em>functions</em> that can modify nodes and edges and their descriptors, we are able to make our graph dynamic. A 3Worlds simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to user needs for their particular application. Nodes are called <em>system components</em>, edges <em>system relations</em>, and descriptors <em>properties</em>.</p>
+</div>
+<div id="fig-graph-descriptors" class="imageblock text-"center">
+<div class="content">
+<img src="graph-with-descriptors.svg" alt="graph with descriptors">
+</div>
+<div class="title">Figure 2. An example of graph descrpitors (redrawn from Gignoux et al. 2017).</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truecategories"><a class="anchor" href="#truecategories"></a>1.2.3. Categories</h4>
+<div class="paragraph">
+<p>In an IBM, every individual is different from all others. But it is common practice to assume that some groups of individuals share some common particularities. This is the essence of modelling: finding commonalities within an ocean of particular cases. We use the concetp of <em>category</em> to group system components that 'look like each other' in some way. Categories are used to express how alike and how different certain groups of components are from each other.</p>
+</div>
+<div class="paragraph">
+<p>Within the dynamic graph context, categories are used to specify common descriptors to groups of components (e.g. a plant species average growth rate, an animal cohort survival rate, &#8230;&#8203;) and functions that operate on a group of component of the same category. They are also used to specify which <em>type of relation</em> is possible between components of diffent categories.</p>
+</div>
+<div class="paragraph">
+<p>Th category concept use here is very close to the class concept used in the <a href="http://uml.org/what-is-uml.htm">UML</a> language and in  <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented programming</a> . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in 3Worlds.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truetime-with-simultaneous-events"><a class="anchor" href="#truetime-with-simultaneous-events"></a>1.2.4. Time with simultaneous events</h4>
+<div class="paragraph">
+<p>Ecosystems are both biological and physical systems. They do not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<a href="#fig-3w-main-loop">Fig. 3</a>). This is where IBMs somewhat differ from MASs in their most common current implementations: MASs emphasize the <em>autonomy</em> of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the rule as its default, but by using particular time models it is possible to relax this constraint.</p>
+</div>
+<div id="fig-3w-main-loop" class="imageblock text-center">
+<div class="content">
+<img src="state-change-loop.svg" alt="state change loop">
+</div>
+<div class="title">Figure 3. The time model of 3Worlds. The overall dynamics of a system is computed as X(t+dt) = f(X(t)) where X represents the state of all system components, t is time and f is the function (or rather, the set of functions) used to compute the change over the time interval dt.</div>
+</div>
+<div class="paragraph">
+<p>Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. 3Worlds provides three types of <em>time model</em> that can be used in interaction: '<em>clock</em>' models using a constant time step, <em>event-driven </em>time models where time events trigger computations that can generate further events in the future, and <em>scenarios</em> where the list of events where computations are to be made is user-prescribed. Time steps span the whole scale of time units possibly relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truespace-as-a-mediator-for-interactions"><a class="anchor" href="#truespace-as-a-mediator-for-interactions"></a>1.2.5. Space as a mediator for interactions</h4>
+<div class="paragraph">
+<p>IBMs are often 'spatialized', which means they include some representation of the physical space in which organisms of an ecosystem interact. We argued in Gignoux et al. (2011) that space is not a requirement of the ecosystem definition, but rather an optional feature. Besides the usual 3-dimensional space everyone is familiar with, we called the place where organims interact in an ecosystem the <em>arena</em>, ie the place where things happen and where a public (of ecological modellers) is watching them. This does not mean an Euclidian (or any other kind of) space must be attached to the ecosystem representation. Using a dynamic graph is sufficient.</p>
+</div>
+<div class="paragraph">
+<p>However, it appears that in numerous cases explicitly considering space in a model helps computing ecological interactions. In most ecological process models, there are actually implicit assumptions about space and how it affects organism interactions. For example, seed dispersal in plants is easily computed in a 2-dimensional space where the location of seeds depends on that of parent plants and some simple decreasing with distance distribution law; water flows in a water catchment rely on a 2 dimensional space plus an elevation of ground surface to some x and y resolution; competition between individual trees in a forest assume a vertical distribution of leaves that can be more or less elaborate.</p>
+</div>
+<div class="paragraph">
+<p>Following Gignoux et al. (2011), we optionally provide predefined spatial representations to include in a simulator. Different spaces can be used within a single simulator, depending on the needs of the process computations. They are associated with optimal item search algorithms (e.g. Kd-trees) that speed up the search of components between which to establish relations.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truemodelling-made-easy"><a class="anchor" href="#truemodelling-made-easy"></a>1.2.6. Modelling made easy</h4>
+<div class="paragraph">
+<p>The community of ecological scientists has been developing an impressively high number of models, yet most of them are poorly designed in terms of programming, as ecologists are not software engineers. Ecosystem simulators are among the most complex existing programs (Coquillard &amp; Hill 1997). They require high programming skills and constitute a huge investment in time, which makes their production slow and hazardous. As a result, they tend to be used beyond their initial domain of application once build (e.g. the overuse and abuse of the CENTURY model: Parton et al. 1988), issues of provenance and repeatability are rarely addressed, shedding some doubt on the discipline as a whole.</p>
+</div>
+<div class="paragraph">
+<p>With 3Worlds we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programing techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used <em>automatic code generation</em> to ensure that end-users only have to write one code file to build a simulator for their particular problem. We used a <em>graph editor</em> to build the configuration and organise the data required for a particular use case. In 3Worlds, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written.</p>
+</div>
+<div class="paragraph">
+<p>When designing a model, it is important to get a quick visual feedback of how the system behaves when one changes equations or their implementation. 3Worlds comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to user needs.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truemodel-comparison-graphs-can-be-compared"><a class="anchor" href="#truemodel-comparison-graphs-can-be-compared"></a>1.2.7. Model comparison: graphs can be compared</h4>
+<div class="paragraph">
+<p>Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they al yield different results. This is expected given the size of their code, but what is appalling is that nobody is able to trace within the code where the differences come from  (Lim &amp; Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models takes the form of computer codes, which are very difficult to compare above a ridiculously small code size.</p>
+</div>
+<div class="paragraph">
+<p>3Worlds is an attempt to solve this issue <em>in the future</em> (there is nothing we can do for past model codes). If models are developed within the standard framework of 3Worlds, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueproblem-upscaling"><a class="anchor" href="#trueproblem-upscaling"></a>1.2.8. Problem upscaling</h4>
+<div class="paragraph">
+<p>Developing a simulator is only a small part of the ecological modelling exercise: once the siulator is ready, it is used as a real ecosystem in <em>simulation experiments</em>. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologicallly relevant, publishable results.</p>
+</div>
+<div class="paragraph">
+<p>IBMs are most of the time stochastic, as population rates translate into probabiities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on random number drawings. A a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.</p>
+</div>
+<div class="paragraph">
+<p>3Worlds is interfaced with <a href="https://openmole.org/">OpenMole</a>  to provide access to big computing power. Through OpenMole, big simulation experiments can be deployed on networks of computers, grids, or supercalculators.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueportability-and-performance"><a class="anchor" href="#trueportability-and-performance"></a>1.2.9. Portability and performance</h4>
+<div class="paragraph">
+<p>3Worlds is written in java to ensure portability between all operating systems. Its code has been carefully optimised, although genericity comes at some performance cost compared to specialisation.</p>
+</div>
 <div class="paragraph">
 <p><strong>Cited references:</strong></p>
+</div>
+<div class="paragraph">
+<p>Bousquet, F., &amp; Le Page, C. (2004). Multi-agent simulations and ecosystem management: a review. <em>Ecological Modelling</em>, 176:313–332. <a href="https://doi.org/10.1016/j.ecolmodel.2004.01.011" class="bare">https://doi.org/10.1016/j.ecolmodel.2004.01.011</a></p>
+</div>
+<div class="paragraph">
+<p>Coquillard, P., &amp; Hill, D. (1997). <em>Modélisation et simulation d’écosystèmes. Des modèles déterministes aux simulations à événements discrets</em>. Masson, Paris.</p>
 </div>
 <div class="paragraph">
 <p>Flint, S. R. (2006). <em>Aspect-Oriented Thinking - An approach to bridging the disciplinary divides</em>. PhD, Australian National University.</p>
@@ -613,11 +756,31 @@ Problems of an Old Definition for Constructing Ecological Models. <em>Ecosystems
 Contribution of Dynamic Graph Theory. <em>Ecological Complexity</em> 31: 34‑49. <a href="https://doi.org/10.1016/j.ecocom.2017.02.006" class="bare">https://doi.org/10.1016/j.ecocom.2017.02.006</a>.</p>
 </div>
 <div class="paragraph">
+<p>Grimm, V., &amp; Railsback, S. (2005). <em>Individual-based modelling and ecology</em>. Princeton University Press.</p>
+</div>
+<div class="paragraph">
+<p>Harary, F., &amp; Gupta, G. (1997). Dynamic graph models. <em>Mathematical and Computer Modelling</em>, 25(7), 79–87. <a href="https://doi.org/10.1016/S0895-7177(97)00050-2" class="bare">https://doi.org/10.1016/S0895-7177(97)00050-2</a></p>
+</div>
+<div class="paragraph">
+<p>Lim, W. H., &amp; Roderick, M. L. (2009). <em>An atlas of the global water cycle based on the IPCC AR4 climate models.</em> ANU E Press.</p>
+</div>
+<div class="paragraph">
+<p>Melilo, J. M., Borchers, J., Chaney, J., Fisher, H., Fox, S., Haxeltine, A., Janetos, A., Kicklighter, D. C., Kittel, T. G. F., McGuire, A. D., McKeown, R., Neilson, R., Nemani, R., Ojima, D. S., Painter, T., Pan, Y., Parton, W. J., Pierce, L., Pitelka, L., … Woodward, F. I. (1995). Vegetation/ecosystem modeling and analysis project: comparing biogeography and biogeochemistry models in a continental-scale study of terrestrial ecosystem responses to climate change and CO<sub>2</sub> doubling. <em>Global Biogeochemical Cycles</em>, 9(4), 407–437.</p>
+</div>
+<div class="paragraph">
+<p>Parton, W., Stewart, J., &amp; Cole, C. (1988). Dynamics of C,N, P and S in grassland soils: a model. <em>Biogeochemistry</em>, 5, 109–131.</p>
+</div>
+<div class="paragraph">
+<p>Roxburgh, S. H., Barrett, D. J., Berry, S. L., Carter, J. O., Davies, I. D., Gifford, R. M., Kirschbaum, M. U. E., McBeth, B. P., Noble, I. R., Parton, W. G., Raupach, M. R., &amp; Roderick, M. L. (2004). A critical overview of model estimates of net primary productivity for the Australian continent. <em>Functional Plant Biology</em>, 31(11), 1043–1059.</p>
+</div>
+<div class="paragraph">
 <p>Tansley, A G. (1935). The use and abuse of vegetational concepts and terms. <em>Ecology</em> 16: 284‑307.</p>
 </div>
 <div class="paragraph">
 <p>Zucker, J.D. (2003). A Grounded Theory of Abstraction in Artificial Intelligence. <em>Philosophical Transactions of
 the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https://doi.org/10.1098/rstb.2003.1308" class="bare">https://doi.org/10.1098/rstb.2003.1308</a>.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -689,7 +852,7 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclips
 </div>
 </div>
 <div class="sect2">
-<h3 id="truerunning-modelmaker-standalone"><a class="anchor" href="#truerunning-modelmaker-standalone"></a>2.3. Running ModelMaker standalone</h3>
+<h3 id="truerunning-modelmaker"><a class="anchor" href="#truerunning-modelmaker"></a>2.3. Running ModelMaker</h3>
 <div class="paragraph">
 <p>This assumes you have downloaded <code>3w.zip</code>.</p>
 </div>
@@ -743,9 +906,9 @@ to develop your model-specific code, you will need to setup a java development e
 </div>
 </div>
 <div class="sect2">
-<h3 id="truesetting-up-a-java-development-environment-for-the-user-code"><a class="anchor" href="#truesetting-up-a-java-development-environment-for-the-user-code"></a>Setting up a java development environment for the user code</h3>
+<h3 id="truesetting-up-a-java-development-environment-for-the-user-code"><a class="anchor" href="#truesetting-up-a-java-development-environment-for-the-user-code"></a>2.4. Setting up a java development environment for the user code</h3>
 <div class="sect3">
-<h4 id="truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds"><a class="anchor" href="#truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds"></a>Setting up an eclipse <em>i</em>ntegrated <em>d</em>evelopment <em>e</em>nvironment (IDE) for 3Worlds</h4>
+<h4 id="truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds"><a class="anchor" href="#truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds"></a>2.4.1. Setting up an eclipse <em>i</em>ntegrated <em>d</em>evelopment <em>e</em>nvironment (IDE) for 3Worlds</h4>
 <div class="paragraph">
 <p>This assumes you have downloaded <code>UserCodeRunner.java</code> and <code>tw-dep.jar</code>.</p>
 </div>
@@ -836,7 +999,7 @@ to develop your model-specific code, you will need to setup a java development e
 </div>
 </div>
 <div class="sect3">
-<h4 id="truerunning-modelmaker-from-eclipse"><a class="anchor" href="#truerunning-modelmaker-from-eclipse"></a>Running ModelMaker from eclipse</h4>
+<h4 id="truerunning-modelmaker-from-eclipse"><a class="anchor" href="#truerunning-modelmaker-from-eclipse"></a>2.4.2. Running ModelMaker from eclipse</h4>
 <div class="paragraph">
 <p>ModelMaker can be run as a standalone application, or from eclipse since it is included in the <code>tw-dep.jar</code> library required to develop the user code.</p>
 </div>
@@ -861,7 +1024,7 @@ to develop your model-specific code, you will need to setup a java development e
 </div>
 </div>
 <div class="sect3">
-<h4 id="truelinking-user-code-with-model-configuration"><a class="anchor" href="#truelinking-user-code-with-model-configuration"></a>Linking user code with model configuration</h4>
+<h4 id="truelinking-user-code-with-model-configuration"><a class="anchor" href="#truelinking-user-code-with-model-configuration"></a>2.4.3. Linking user code with model configuration</h4>
 <div class="paragraph">
 <p>This requires the following actions:</p>
 </div>
@@ -919,7 +1082,7 @@ You don&#8217;t <strong>have</strong> to do this. We provide it as a facility if
 </div>
 </div>
 <div class="sect3">
-<h4 id="truedebugging-and-testing-user-code"><a class="anchor" href="#truedebugging-and-testing-user-code"></a>Debugging and testing user code</h4>
+<h4 id="truedebugging-and-testing-user-code"><a class="anchor" href="#truedebugging-and-testing-user-code"></a>2.4.4. Debugging and testing user code</h4>
 <div class="paragraph">
 <p>The user code, first generated by <code>ModelMaker</code> and further edited by the user, can be run using <code>UserCodeRunner.java</code>.
 It requires two command line arguments (we assume that you know how to setup and run a <code>Run Configuration</code> in eclipse):</p>
@@ -961,7 +1124,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect3">
 <h4 id="truea-tree-structure"><a class="anchor" href="#truea-tree-structure"></a>3.1.1. A tree structure&#8230;&#8203;</h4>
 <div class="paragraph">
-<p>The configuration of a 3Worlds <em>simulation experiment</em> is organised as a tree (<em>cf.</em> <a href="#fig-configuration-tree">Figure 1</a>). Each tree <em>node</em> specifies a subset of the parameters of the whole configuration. Each <em>node</em> has <em>child nodes</em> linked through a <em>tree edge</em>, so that large pieces of configuration can be broken down into the relevant details. At each level of this hierarchy, <em>properties</em> can be attached to <em>nodes</em>.</p>
+<p>The configuration of a 3Worlds <em>simulation experiment</em> is organised as a tree (<em>cf.</em> <a href="#fig-configuration-tree">Figure 4</a>). Each tree <em>node</em> specifies a subset of the parameters of the whole configuration. Each <em>node</em> has <em>child nodes</em> linked through a <em>tree edge</em>, so that large pieces of configuration can be broken down into the relevant details. At each level of this hierarchy, <em>properties</em> can be attached to <em>nodes</em>.</p>
 </div>
 <div class="paragraph">
 <p><em>Nodes</em> have a <em>label</em> and a <em>name</em> that are displayed in the <code>ModelMaker</code> interface as <code>label:name</code>:</p>
@@ -983,25 +1146,25 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="content">
 <img src="dsl-tree2.svg" alt="dsl tree2">
 </div>
-<div class="title">Figure 1. Tree structure of a simulation experiment configuration in 3Worlds</div>
+<div class="title">Figure 4. Tree structure of a simulation experiment configuration in 3Worlds</div>
 </div>
 <div class="paragraph">
 <p>The configuration tree is stored in a file in a specially designed text format, ending with the extension <code>.ugt</code> or <code>.twg</code>. Such files are produced by <code>ModelMaker</code> and can then be exchanged and imported into <code>ModelMaker</code> via the <code>Projects &#8594; Import&#8230;&#8203;</code> menu entry. Their format is human-readable, but they must <strong>never</strong> be edited with another software than <code>ModelMaker</code> - <strong>the risk is to corrupt all your configuration</strong> and be unable to run it (or even edit it with <code>ModelMaker</code> again).</p>
 </div>
 <div class="paragraph">
-<p>Each node in the configuration has a particular meaning for <code>ModelRunner</code>: the configuration must comply with certain rules and constraints, the first one being the particular set of <em>nodes</em> that have been designed and appear on <a href="#fig-configuration-tree">Figure 1</a>. The detailed meaning of all <em>nodes</em> and their <em>properties</em> is described in section <a href="#truereference-of-3worlds-configuration">3Worlds reference</a>.</p>
+<p>Each node in the configuration has a particular meaning for <code>ModelRunner</code>: the configuration must comply with certain rules and constraints, the first one being the particular set of <em>nodes</em> that have been designed and appear on <a href="#fig-configuration-tree">Figure 4</a>. The detailed meaning of all <em>nodes</em> and their <em>properties</em> is described in section <a href="#truereference-of-3worlds-configuration">3Worlds reference</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truewith-cross-links"><a class="anchor" href="#truewith-cross-links"></a>3.1.2. &#8230;&#8203;with cross-links</h4>
 <div class="paragraph">
-<p>Actually, the 3Worlds configuration is not stritcly hierarchical (<em>cf.</em> <a href="#fig-configuration-tree2">Figure 2</a>): according to their role in <code>ModelRunner</code>, some configuration <em>nodes</em> need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference <em>edges</em> to be defined, that overlay with the strict hierarchical structure of the tree. As a result fo these cross links, the whole configuration is a <em>graph</em> rather than a tree.</p>
+<p>Actually, the 3Worlds configuration is not stritcly hierarchical (<em>cf.</em> <a href="#fig-configuration-tree2">Figure 5</a>): according to their role in <code>ModelRunner</code>, some configuration <em>nodes</em> need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference <em>edges</em> to be defined, that overlay with the strict hierarchical structure of the tree. As a result fo these cross links, the whole configuration is a <em>graph</em> rather than a tree.</p>
 </div>
 <div id="fig-configuration-tree2" class="imageblock text-center">
 <div class="content">
 <img src="dsl-tree2links.svg" alt="dsl tree2links">
 </div>
-<div class="title">Figure 2. Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes</div>
+<div class="title">Figure 5. Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes</div>
 </div>
 <div class="paragraph">
 <p><em>Edges</em> representing cross links have a <em>label</em>, <em>name</em>, and may have <em>properties</em> just as <em>nodes</em> do. The detailed meaning of all cross-reference <em>edges</em> and their <em>properties</em> is described in section <a href="#Configuration options: reference">[Configuration options: reference]</a>.</p>
@@ -1083,13 +1246,13 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>/<strong>3worlds</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
-<p>This node is the root of any 3Worlds configuration file (<a href="#fig-root-example">Figure 3</a>). The name will appear in <code>ModelMaker</code>'s main window title, in the <strong>project directory name</strong> and in the <strong>configuration graph file</strong>. The name is requested and set when creating a new project (<code>Projects&gt;New</code> menu entry in <code>ModelMaker</code>).</p>
+<p>This node is the root of any 3Worlds configuration file (<a href="#fig-root-example">Figure 6</a>). The name will appear in <code>ModelMaker</code>'s main window title, in the <strong>project directory name</strong> and in the <strong>configuration graph file</strong>. The name is requested and set when creating a new project (<code>Projects&gt;New</code> menu entry in <code>ModelMaker</code>).</p>
 </div>
 <div id="fig-root-example" class="imageblock text-center">
 <div class="content">
 <img src="example-root.png" alt="example root">
 </div>
-<div class="title">Figure 3. The base tree of any 3Worlds configuration</div>
+<div class="title">Figure 6. The base tree of any 3Worlds configuration</div>
 </div>
 </div>
 <div class="sect3">
@@ -1241,7 +1404,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="content">
 <img src="example-category.png" alt="example category">
 </div>
-<div class="title">Figure 4. Example of a configuration with category sets, categories and relations</div>
+<div class="title">Figure 7. Example of a configuration with category sets, categories and relations</div>
 </div>
 <div class="paragraph">
 <p>In this example, a <em>plant</em> can be a <em>C3 tree</em> but cannot be simultaneously a <em>grass</em> and a <em>liana</em>. Similarly, an <em>animal</em> cannot be both <em>herbivore</em> and <em>carnivore</em>. The <em>predation</em> relation links an <em>animal</em> of any kind (the prey) to a <em>carnivore</em> (its predator).</p>
@@ -2068,7 +2231,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="content">
 <img src="example-life-cycle.svg" alt="example life cycle">
 </div>
-<div class="title">Figure 5. Example of a life cycle</div>
+<div class="title">Figure 8. Example of a life cycle</div>
 </div>
 <div class="paragraph">
 <p>is specified with this graph:</p>
@@ -2077,7 +2240,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="content">
 <img src="example-life-cycle.png" alt="example life cycle">
 </div>
-<div class="title">Figure 6. Example of a life cycle configuration</div>
+<div class="title">Figure 9. Example of a life cycle configuration</div>
 </div>
 </div>
 </div>
@@ -2256,113 +2419,6 @@ The name of a function must be a valid java class name, starting with an upperca
 </div>
 <div class="paragraph">
 <p>This java source file is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function.</p>
-</div>
-<div class="paragraph">
-<p>All the generated function classes look like this:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package system1;
-
-import au.edu.anu.rscs.aot.collections.tables.*;
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
-import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
-
-/*
-[... some big comment...]
-* Class Function1
-* Model "system1" -  - Mon Sep 23 09:05:33 CEST 2019
-* CAUTION: Edit this template but do not change class declaration.
-*/
-
-public class Function1 extends ChangeStateFunction {
-
-	@Override
-	public void changeState(double t, double dt, SystemComponent focal) {
-		// INSERT YOUR CODE HERE
-	}
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this example, "<strong>system1</strong>" was the name given to the <code>system</code> node, while "<strong>Function1</strong>" was the name given to the <code>function</code> node. The <code>type</code> property set for the <code>function</code> was "<strong>ChangeState</strong>", as shown by the generated code. Other function types would have caused the generation of different methods in the class. These methods differ in their arguments and in the way they are used by the simulator:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>In <em>all</em> function type methods, the first and second argument are <em>the current time</em> <em><strong>t</strong></em> and <em>current time step <strong>dt</strong></em>, passed by the simulator as double values in units of the <code>timeModel</code> of the parent <code>process</code> of the <code>function</code>.</p>
-</li>
-<li>
-<p>For all function types which process applies to categories (<code>appliesTo &#8594;  category</code>), i.e. <code>ChangeCategoryDecision</code>, <code>ChangeState</code>, <code>DeleteDecision</code>, <code>CreateOtherDecision</code>, there is an additional argument, the system component which will be affected by the computations, called <em>focal</em>.</p>
-</li>
-<li>
-<p>For all function types which process applies to relations (<code>appliesTo &#8594;  relationType</code>), i.e. <code>ChangeOtherCategoryDecision</code>, <code>ChangeOtherState</code>, <code>DeleteOtherDecision</code>, <code>ChangeRelationState</code>, <code>MaintainRelationDecision</code>, and for <code>RelateToDecision</code>, there  is another additional argument, a second system component, the one at the other end of the relation starting from <em>focal</em>, called <em>other</em>.</p>
-</li>
-<li>
-<p>In addition to these arguments, every function class has a protected field called <code>localContext</code> that contain contextual data that may be used in computations. The local context data consist in:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><em>system</em>-level data, i.e. system parameters, state variables, population data (= number of system components, of newly created and deleted ones), and name;</p>
-</li>
-<li>
-<p><em>life cycle</em>-level data, i.e. life cycle parameters, state variables <strong>[NB:not yet],</strong> population data, and name;</p>
-</li>
-<li>
-<p><em>group</em>-level data, i.e. group parameters, state variables, population data, and name. A group represents here components sharing the same categories and same parameter set (eg <em>species</em> characteristics for living organisms).</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>The <code>changeState(&#8230;&#8203;)</code> method of the <code>ChangeState</code> and <code>ChangeRelationState</code> function types, and the <code>changeOtherState(&#8230;&#8203;)</code> method of the <code>ChangeOtherState</code> function type,  are expected to compute changes in state variables of the <em>focal</em> component or relation <strong>[NB: this is not yet implemented for relations]</strong>, or the <em>other</em> component in the case of the <code>ChangeOtherState</code> function. The state variables are found in <code>focal.currentState()</code>, a read-only set of values, and new values may be computed into <code>focal.nextState()</code>.</p>
-</li>
-<li>
-<p>The <code>delete(&#8230;&#8203;)</code> method of the <code>DeleteDecision</code> and <code>DeleteOtherDecision</code> must return a <code>boolean</code> value. If <code>true</code> is returned, this will trigger the removal of the <em>focal</em> (for <code>DeleteDecision</code>) or <em>other</em> component (for <code>DeleteOtherDecision</code>).</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-In all <code>&#8230;&#8203;Decision</code> functions except <code>CreateOtherDecision</code>, a helper method called <code>decide(double proba)</code> is available. This method will return true with probability <code>proba</code> and can be used to return a boolean result based on a probability computation. This method uses the in-built <a href="#a">random stream facility</a> of 3Worlds.
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>nNew(&#8230;&#8203;)</code> method of the <code>CreateOtherDecision</code> function takes an extra argument called <code>newType</code>, which is the category name of the newly created component, as per the life cycle. <code>nNew(&#8230;&#8203;)</code> returns a number of new components to create as a decimal number (<code>double</code>): the <em>integral part</em> directly translates into a number of new components, while the <em>decimal part</em> is used as a probability of an extra new component. This way, very low fecundity probabilities can be simulated.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;)</code> method will be called as many times, with the <code>newType</code> parameter changing accordingly. The <code>nNew(&#8230;&#8203;)</code> method must be prepared to handle multiple choices in such case (for example with a <code>switch</code> statement).
-</td>
-</tr>
-</table>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>changeCategory(&#8230;&#8203;)</code> method of the <code>ChangeCategoryDecision</code> and <code>ChangeOtherCategoryDecision</code> function types returns a category name (<code>String</code>), that of the new recruit. This name must be consistent with the life cycle information. After the function is executed, the  <em>focal</em> (for <code>ChangeCategoryDecision</code>) or the <em>other</em> (for <code>ChangeOtherCategoryDecision</code>) component is recruited to its new category.</p>
-</li>
-<li>
-<p>The <code>maintainRelation(&#8230;&#8203;)</code> method of the <code>MaintainRelationDecision</code> and the <code>relate(&#8230;&#8203;)</code> method of the <code>RelateToDecision</code> both return a <code>boolean</code> value. If <code>true</code> is returned, the relation is maintained/set between the two components, otherwise it is removed/not set.<strong>[TODO: a lot to add when indexers come in]</strong></p>
-</li>
-</ul>
 </div>
 </div>
 <div class="sect5">
@@ -2699,7 +2755,153 @@ This part is still under construction. The default settings should be used.
 <div class="sect2">
 <h3 id="truedeveloping-and-testing-model-code"><a class="anchor" href="#truedeveloping-and-testing-model-code"></a>3.4. Developing and testing model code</h3>
 <div class="paragraph">
-<p><strong>TODO</strong></p>
+<p>This section gives general rules to follow to successfully edit the generated <code>TwFunction</code>-descendant classes in order for your model to behave as you wish. Section <a href="#truesetting_up_a_java_development_environment_for_the_user_code">Setting up a user coding environment</a> describes how to link your ModelMaker session with an eclipse development enviromnent where you can edit the generated code. Section <a href="#truefunction">Function</a> describes all the options you can setup in <code>ModelMaker</code> to specify your function.</p>
+</div>
+<div class="paragraph">
+<p>All the generated function classes look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package system1;
+
+import au.edu.anu.rscs.aot.collections.tables.*;
+import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
+import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
+
+/*
+[... some big comment...]
+* Class Function1
+* Model "system1" -  - Mon Sep 23 09:05:33 CEST 2019
+* CAUTION: Edit this template but do not change class declaration.
+*/
+
+public class Function1 extends ChangeStateFunction {
+
+	@Override
+	public void changeState(double t, double dt, SystemComponent focal) {
+		// INSERT YOUR CODE HERE
+	}
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example, "<strong>system1</strong>" was the name given to the <code>system</code> node, while "<strong>Function1</strong>" was the name given to the <code>function</code> node. The <code>type</code> property set for the <code>function</code> was "<strong>ChangeState</strong>", as shown by the generated code. Other function types would have caused the generation of different methods in the class.</p>
+</div>
+<div class="sect3">
+<h4 id="truegeneric-method-arguments"><a class="anchor" href="#truegeneric-method-arguments"></a>3.4.1. generic method arguments</h4>
+<div class="paragraph">
+<p>All generated methods share the following arguments:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the first and second argument are <em>the current time</em> <em><strong>t</strong></em> and <em>current time step <strong>dt</strong></em>, passed by the simulator as double values in units of the <code>timeModel</code> of the parent <code>process</code> of the <code>function</code>.</p>
+</li>
+<li>
+<p>For all function types which process applies to categories (<code>appliesTo &#8594;  category</code>), i.e. <code>ChangeCategoryDecision</code>, <code>ChangeState</code>, <code>DeleteDecision</code>, <code>CreateOtherDecision</code>, there is an additional argument, the system component which will be affected by the computations, called <em>focal</em>.</p>
+</li>
+<li>
+<p>For all function types which process applies to relations (<code>appliesTo &#8594;  relationType</code>), i.e. <code>ChangeOtherCategoryDecision</code>, <code>ChangeOtherState</code>, <code>DeleteOtherDecision</code>, <code>ChangeRelationState</code>, <code>MaintainRelationDecision</code>, and for <code>RelateToDecision</code>, there  is another additional argument, a second system component, the one at the other end of the relation starting from <em>focal</em>, called <em>other</em>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truegeneric-method-fields"><a class="anchor" href="#truegeneric-method-fields"></a>3.4.2. generic method fields</h4>
+<div class="paragraph">
+<p>In addition to these arguments, every function class has a protected field called <code>localContext</code> that contain contextual data that may be used in computations. The local context data consist in:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>ecosystem</em>-level data, i.e. ecosystem population data (= number [source,]</p>
+<div class="listingblock">
+<div class="content">
+<pre>focalContext.ecosystemPopulationData
+focalContext.ecosystemName</pre>
+</div>
+</div>
+</li>
+<li>
+<p><em>life cycle</em>-level data, i.e. life cycle parameters, population data, and name:</p>
+<div class="listingblock">
+<div class="content">
+<pre>focalContext.lifeCycleParameters
+focalContext.lifeCyclePopulationData
+focalContext.lifeCycleName</pre>
+</div>
+</div>
+</li>
+<li>
+<p><em>group</em>-level data, i.e. group parameters, population data, and name. A group represents here components sharing the same categories and same parameter set (eg <em>species</em> characteristics for living organisms).</p>
+<div class="listingblock">
+<div class="content">
+<pre>focalContext.groupParameters
+focalContext.groupPopulationData
+focalContext.groupCycleName</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>PopulationData</code> has 3 accessible fields: <code>count</code>, <code>nremoved</code> and <code>nAdded</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>TODO</strong> update this</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>changeState(&#8230;&#8203;)</code> method of the <code>ChangeState</code> and <code>ChangeRelationState</code> function types, and the <code>changeOtherState(&#8230;&#8203;)</code> method of the <code>ChangeOtherState</code> function type,  are expected to compute changes in state variables of the <em>focal</em> component or relation <strong>[NB: this is not yet implemented for relations]</strong>, or the <em>other</em> component in the case of the <code>ChangeOtherState</code> function. The state variables are found in <code>focal.currentState()</code>, a read-only set of values, and new values may be computed into <code>focal.nextState()</code>.</p>
+</li>
+<li>
+<p>The <code>delete(&#8230;&#8203;)</code> method of the <code>DeleteDecision</code> and <code>DeleteOtherDecision</code> must return a <code>boolean</code> value. If <code>true</code> is returned, this will trigger the removal of the <em>focal</em> (for <code>DeleteDecision</code>) or <em>other</em> component (for <code>DeleteOtherDecision</code>).</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In all <code>&#8230;&#8203;Decision</code> functions except <code>CreateOtherDecision</code>, a helper method called <code>decide(double proba)</code> is available. This method will return true with probability <code>proba</code> and can be used to return a boolean result based on a probability computation. This method uses the in-built <a href="#a">random stream facility</a> of 3Worlds.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>nNew(&#8230;&#8203;)</code> method of the <code>CreateOtherDecision</code> function takes an extra argument called <code>newType</code>, which is the category name of the newly created component, as per the life cycle. <code>nNew(&#8230;&#8203;)</code> returns a number of new components to create as a decimal number (<code>double</code>): the <em>integral part</em> directly translates into a number of new components, while the <em>decimal part</em> is used as a probability of an extra new component. This way, very low fecundity probabilities can be simulated.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;)</code> method will be called as many times, with the <code>newType</code> parameter changing accordingly. The <code>nNew(&#8230;&#8203;)</code> method must be prepared to handle multiple choices in such case (for example with a <code>switch</code> statement).
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>changeCategory(&#8230;&#8203;)</code> method of the <code>ChangeCategoryDecision</code> and <code>ChangeOtherCategoryDecision</code> function types returns a category name (<code>String</code>), that of the new recruit. This name must be consistent with the life cycle information. After the function is executed, the  <em>focal</em> (for <code>ChangeCategoryDecision</code>) or the <em>other</em> (for <code>ChangeOtherCategoryDecision</code>) component is recruited to its new category.</p>
+</li>
+<li>
+<p>The <code>maintainRelation(&#8230;&#8203;)</code> method of the <code>MaintainRelationDecision</code> and the <code>relate(&#8230;&#8203;)</code> method of the <code>RelateToDecision</code> both return a <code>boolean</code> value. If <code>true</code> is returned, the relation is maintained/set between the two components, otherwise it is removed/not set.<strong>[TODO: a lot to add when indexers come in]</strong></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2740,8 +2942,8 @@ This part is still under construction. The default settings should be used.
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1<br>
-Last updated 2019-11-13 14:19:45 +0100
+Version 1.2<br>
+Last updated 2021-02-10 17:46:41 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
