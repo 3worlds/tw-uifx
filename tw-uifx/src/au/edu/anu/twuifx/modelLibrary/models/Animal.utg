@@ -82,14 +82,16 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 		record animalConsts
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(animalConsts)
+			field isFemale
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		record gConsts
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(gConsts)
 			field deathRate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-		record gConsts
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(gConsts)
 			field fld2
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -101,6 +103,11 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 	system sys1
 		constantClass = java.lang.String(code.sys1.generated.GConsts)
 		driverClass = java.lang.String(code.sys1.generated.GDrivers)
+		initFunction GlobalInit
+			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
+			snippet snptGlobalnit
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalCnt.deathRate=0.5;"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -119,6 +126,14 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 						function CanDie
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.sys1.generated.CanDie)
+							snippet snptCanDie
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return (random.nextDouble()>deathRate);"))
+					process reproduction
+						function IsMatingPair
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.generated.IsMatingPair)
+							snippet snptIsMatingPair
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return isFemale && !other_isFemale;"))
 		structure struc1
 			categorySet AnimalSet
 				category animalCat
@@ -131,28 +146,39 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 				x-limits = fr.ens.biologie.generic.utils.Interval(]0.0,1000.0[)
 				y-limits = fr.ens.biologie.generic.utils.Interval(]0.0,1000.0[)
+			relationType relTyp1
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			componentType animalType
 				constantClass = java.lang.String(code.sys1.generated.AnimalConsts)
 				driverClass = java.lang.String(code.sys1.generated.AnimalDrivers)
 				component animal
 					nInstances = java.lang.Integer(100)
-				initFunction Init1
+				initFunction AnimalInit
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-					userClassName = java.lang.String(code.sys1.generated.Init1)
+					userClassName = java.lang.String(code.sys1.generated.AnimalInit)
+					snippet snptAnimalInit
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalDrv.x=random.nextInt(1000);","		focalDrv.y=random.nextInt(1000);","		focalCnt.isFemale = random.nextBoolean();"))
 	userInterface gui
 		top top
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget landscape
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
 
 // CROSS-LINKS
 [category:animalCat] constants cnsts2 [record:animalConsts]
 [category:animalCat] drivers drvs2 [record:animalDrivers]
 [relationType:*returnsTo*] fromCategory frm2 [category:*component*]
 [relationType:*returnsTo*] toCategory to2 [category:*component*]
-[system:sys1] belongsTo bt3 [category:*ephemeral*]
+[system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*arena*]
 [system:sys1] belongsTo bt1 [category:*assemblage*]
+[relationType:relTyp1] fromCategory from1 [category:animalCat]
+[relationType:relTyp1] toCategory to3 [category:animalCat]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [relationType:*parentTo*] fromCategory frm1 [category:*component*]
@@ -163,9 +189,12 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [componentType:animalType] belongsTo bt4 [category:*component*]
 [category:*arena*] constants cnsts1 [record:gConsts]
 [category:*arena*] drivers drvs1 [record:gDrivers]
-[process:mortality] appliesTo aplyTo2 [category:*assemblage*]
 [process:mortality] appliesTo aplyTo1 [category:animalCat]
 [process:mortality] inSpace in1 [space:space1]
 	searchRadius = java.lang.Double(1.0)
 [space:space1] coordinate xcoord [field:x]
 	rank = java.lang.Integer(0)
+[space:space1] coordinate ycoord [field:y]
+	rank = java.lang.Integer(1)
+[widget:landscape] trackSpace trks1 [space:space1]
+[process:reproduction] appliesTo aplyTo2 [relationType:relTyp1]
