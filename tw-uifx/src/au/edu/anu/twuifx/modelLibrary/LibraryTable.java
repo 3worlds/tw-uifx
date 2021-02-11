@@ -31,7 +31,7 @@ package au.edu.anu.twuifx.modelLibrary;
 
 import au.edu.anu.twuifx.modelLibrary.templates.TemplatesDummy;
 import au.edu.anu.twuifx.modelLibrary.tutorials.TutorialsDummy;
-//import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
+import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -65,7 +65,7 @@ public enum LibraryTable {
 	Tut9("9 Headless(Logistic)", "Headless1", "LogisticHeadless.utg", LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut10("10 Random number generators", "Rng1", "Rng_1.utg", LibraryType.Tutorial, TutorialsDummy.class), //
 	//
-//	Model1("1 Some model", "SomeModel1","someModelFile.utg",LibraryType.Model, ModelsDummy.class), //
+	Model1("1 Animal", "Animal1","Animal.utg",LibraryType.Model, ModelsDummy.class), //
 
 	/**
 	 * Could also have "Tests" package - maybe in tw-core to avoid rebuilding this

@@ -74,6 +74,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		cm = new ContextMenu();
 		buildgui();
 		cm.show((Node) event.getSource(), event.getScreenX(), event.getScreenY());
+//		System.out.println(this.baseSpec.toShortString());
 	}
 
 	@Override
