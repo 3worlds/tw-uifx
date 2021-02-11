@@ -67,10 +67,6 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field counter
-				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String()
 		record gDrivers
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(gDrivers)
@@ -103,11 +99,6 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 	system sys1
 		constantClass = java.lang.String(code.sys1.generated.GConsts)
 		driverClass = java.lang.String(code.sys1.generated.GDrivers)
-		initFunction GlobalInit
-			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
-			snippet snptGlobalnit
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalCnt.deathRate=0.5;"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -134,6 +125,10 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 							userClassName = java.lang.String(code.sys1.generated.IsMatingPair)
 							snippet snptIsMatingPair
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return isFemale && !other_isFemale;"))
+					process global
+						dataTracker globalTracker
+							sampleSize = java.lang.String()
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 		structure struc1
 			categorySet AnimalSet
 				category animalCat
@@ -158,6 +153,11 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 					userClassName = java.lang.String(code.sys1.generated.AnimalInit)
 					snippet snptAnimalInit
 						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalDrv.x=random.nextInt(1000);","		focalDrv.y=random.nextInt(1000);","		focalCnt.isFemale = random.nextBoolean();"))
+		initFunction GlobalInit
+			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
+			snippet snptGlobalnit
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalCnt.deathRate=0.5;"))
 	userInterface gui
 		top top
 			widget ctrl
@@ -165,6 +165,11 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget srs
+				maxAxes = java.lang.Integer(1)
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
 			widget landscape
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
@@ -179,8 +184,12 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [system:sys1] belongsTo bt1 [category:*assemblage*]
 [relationType:relTyp1] fromCategory from1 [category:animalCat]
 [relationType:relTyp1] toCategory to3 [category:animalCat]
+[process:global] appliesTo aplyTo3 [category:*assemblage*]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[dataTracker:globalTracker] trackField trks4 [field:count]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:globalTracker] trackComponent trks3 [system:sys1]
 [relationType:*parentTo*] fromCategory frm1 [category:*component*]
 [relationType:*parentTo*] toCategory to1 [category:*component*]
 [componentType:animalType] belongsTo bt7 [category:animalCat]
@@ -189,6 +198,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [componentType:animalType] belongsTo bt4 [category:*component*]
 [category:*arena*] constants cnsts1 [record:gConsts]
 [category:*arena*] drivers drvs1 [record:gDrivers]
+[widget:srs] trackSeries trks2 [dataTracker:globalTracker]
 [process:mortality] appliesTo aplyTo1 [category:animalCat]
 [process:mortality] inSpace in1 [space:space1]
 	searchRadius = java.lang.Double(1.0)
