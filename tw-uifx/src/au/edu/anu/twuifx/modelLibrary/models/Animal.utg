@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 // TREE
 3worlds Animal
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(ian (11 Feb. 2021))
+	built-by = java.lang.String(ian (14 Feb. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String()
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -43,8 +43,8 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 		relationType *returnsTo*
 			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 		categorySet *systemElements*
-			category *life cycle*
 			category *group*
+			category *life cycle*
 			category *relation*
 			category *component*
 			category *arena*
@@ -90,9 +90,6 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-	experiment expt
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
 		constantClass = java.lang.String(code.sys1.generated.GConsts)
 		dynamics sim1
@@ -111,7 +108,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 					process reproduce
 						function NBirths
-							relateToProduct = java.lang.Boolean(false)
+							relateToProduct = java.lang.Boolean(true)
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
 							userClassName = java.lang.String(code.sys1.generated.NBirths)
 							function Birth
@@ -144,13 +141,13 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 							sampleSize = java.lang.String()
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 		structure struc1
+			relationType mateRelation
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 			categorySet AnimalSet
 				category animalCat
 					constantClass = java.lang.String(AnimalCat_Cnt)
 					decoratorClass = java.lang.String(AnimalCat_Dec)
 					driverClass = java.lang.String(AnimalCat_Drv)
-			relationType mateRelation
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 			space space1
 				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
 				precision = java.lang.Double(0.1)
@@ -173,6 +170,9 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
 			snippet snptGlobalInit
 				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.deathRate = 0.5;","		focalCnt.birthRate = 0.5;"))
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	userInterface gui
 		top top
 			widget ctrl
@@ -202,8 +202,8 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [system:sys1] belongsTo bt1 [category:*assemblage*]
 [process:mate] appliesTo aplyTo2 [relationType:mateRelation]
 [process:mate] dependsOn after1 [process:courting]
-[relationType:mateRelation] fromCategory from1 [category:animalCat]
 [relationType:mateRelation] toCategory to3 [category:animalCat]
+[relationType:mateRelation] fromCategory from1 [category:animalCat]
 [process:global] appliesTo aplyTo3 [category:*assemblage*]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
