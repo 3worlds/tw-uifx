@@ -1294,7 +1294,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					for (String key : node.properties().getKeysAsSet()) {
 						if (node.properties().getPropertyValue(key) != null) {
 							boolean editable = model.propertyEditable(node.classId(), key);
-							editable = editable || vn.isPredefined();
+							if (vn.isPredefined())
+								editable = false;
 
 							if (selectedNode) {
 								Item item = makeItemType(key, node, editable, cat, "Something");
