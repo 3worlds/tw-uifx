@@ -26,15 +26,15 @@ conceptual framework. A second aim of *3Worlds* is to fill this gap. If the ecos
 we believe it is given its success in ecology and its spread in other scientific fields, then it should be possible
 to design a conceptually sound and consistent computing framework to deal with a multiplicity of scales.
 
-Changing the scale of a model is not only a matter of space and time resolution relative to an order of magnitude.
+Changing the scale of a model just a matter of changing spatio-temporal resolution.
 It also involves the level of detail of the representations used in the model, something which has been formalized
-in _abstraction theory_ (Zucker 2003): the more detail there is in a model, the less abstract it is. At what 
+in _abstraction theory_ (Zucker 2003): the more detailed a model, the less abstract it is. At what 
  level of detail should we model our system to capture its important behaviour? How does changing scale (in this 
  broadest sense) effect model outcomes? There can be no general answer to this question beyond trial and error. This makes the possibility
  to test and compare different representations of the same system at different scales an essential feature of
  any software dealing with ecosystems. *3Worlds* provides _a maximal flexibility in ecosystem representation_
  enabling one to represent _any_ ecosystem at _any_ spatial and temporal scale with _any_ level of detail -- all this being set by
- the end-user in accordance with the purpose of their study. The end-user has full control on the detailed biological functions 
+ the researcher in accordance with the purpose of their study. The researcher has full control on the detailed biological functions 
 and variables relevant to their problem.
  
 How is this flexiblity compatible with the strong conceptual backbone? *3Worlds* uses _aspect-oriented thinking (AOT)_ (Flint 2006), a method to build complex systems (e.g.
@@ -57,14 +57,12 @@ This provides an elegant solution to the apparent complexity of ecosystems: it a
 enables the comparison of system structures and simulation trajectories, and can represent virtually anything
 an ecological modeller can conceive of.
 
-////
-How is this possible in one single software? Well, *3Worlds* builds upon more than thirty years of experience of
-its developers in ecosystem and complex system modelling and simulation. Over this time, we reached the conclusion that (1) robust concepts
-are fundamental for building sound software, (2) some problems that appear over and over again in the life of a
-simulation modellers often have well-established solutions, sometimes in other scientific fields, (3) complex
-systems are not _that_ complex once properly designed. Things are just
-available around here, it's just a matter of making them work together, and *3Worlds* is our best try to do so! 
-////
+*3Worlds* builds upon more than thirty years of experience of its developers in ecosystem and complex system modelling and simulation. Over this time, we have reached the conclusion that: (1) robust concepts
+are fundamental for building sound software; (2) some problems that appear over and over again in the life of a
+simulation modellers often have well-established solutions, sometimes in other scientific fields; and (3) complex
+systems are more easily managed and understood when designed within a sound framework. 
+
+Many of the ideas we use are already available, it's just a matter of making them work together, and *3Worlds* is our best attempt to do so! 
 
 === Design Concepts
 
@@ -95,11 +93,11 @@ image::graph-with-descriptors.svg[align="center]
 
 ==== Categories
 
-In an IBM, every individual is different from all others. But it is common practice to assume that some groups of individuals share some things in common. This is the essence of modelling: finding commonalities within an ocean of particular cases. We use the concept of _category_ to group system components that 'look like each other' in some way. Categories are used to express how alike and how different certain groups of components are from each other.
+In an IBM, every individual differs from all others. But it is common practice to assume that some groups of individuals share some things in common. This is the essence of modelling: finding commonalities within an ocean of particular cases. We use the concept of _category_ to group system components that 'look like each other' in some way. Categories are used to express how alike and how different certain groups of components are from each other.
 
-Within the dynamic graph context, categories are used to specify common descriptors to groups of components (e.g. a plant species average growth rate, an animal cohort survival rate, ...) and functions that operate on a group of components of the same category. They are also used to specify which _type of relation_ is possible between components of diffent categories.
+In a dynamic graph, categories are used to specify common descriptors to groups of components (e.g. a plant species average growth rate, an animal cohort survival rate, ...) and functions that operate on a group of components of the same category. They are also used to specify which _type of relation_ is possible between components of different categories.
 
-The category concept as used here is very close to the class concept used in the http://uml.org/what-is-uml.htm[UML] language and in  https://en.wikipedia.org/wiki/Object-oriented_programming[object oriented programming] . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in 3Worlds.
+This category concept is very close to the class concept used in the http://uml.org/what-is-uml.htm[UML] language and in  https://en.wikipedia.org/wiki/Object-oriented_programming[object oriented programming] . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in 3Worlds.
 
 ==== Time with simultaneous events
 
@@ -109,7 +107,7 @@ Because ecosystems are both biological and physical systems, they not only deal 
 .The time model of 3Worlds. The overall dynamics of a system is computed as X(t+dt) = f(X(t)) where X represents the state of all system components, t is time and f is the function (or rather, the set of functions) used to compute the change over the time interval dt.
 image::state-change-loop.svg[align="center"]
 
-Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. 3Worlds provides three types of _time model_ that can be used in interaction: '__clock__' models using a constant time step, __event-driven __time models where time events trigger computations that can generate further events in the future, and _scenarios_ where the list of events where computations are to be made is user-prescribed. Time steps span the whole scale of time units possibly relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.
+Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. 3Worlds provides three types of _time model_ that can be used in interaction: '__clock__' models using a constant time step, __event-driven __time models where time events trigger computations that can generate further events in the future, and _scenarios_ where the list of events determines when computations are to be made. Time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.
 
 ==== Space as a mediator for interactions
 
@@ -123,13 +121,13 @@ Following Gignoux et al. (2011), we optionally provide predefined spatial repres
 
 The community of ecological scientists has been developing an impressively large number of models, yet most of them are poorly designed in terms of programming, as ecologists are not software engineers. Ecosystem simulators are among the most complex existing programs (Coquillard & Hill 1997). They require high programming skills and constitute a huge investment in time, which makes their production slow and hazardous. As a result, once built, they tend to be used beyond their initial domain of application (e.g. the overuse and abuse of the CENTURY model: Parton et al. 1988), issues of provenance and repeatability are rarely addressed, shedding some doubt on the discipline as a whole.
 
-With 3Worlds we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programming techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used _automatic code generation_ to ensure that end-users only have to write one code file to build a simulator for their particular problem. We used a _graph editor_ to build the configuration and organise the data required for a particular use case. In 3Worlds, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written.
+With 3Worlds we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programming techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used _automatic code generation_ to ensure that researchers need only edit one code file to build a simulator for their particular model. We used a _graph editor_ to build the configuration and organise the data required for a particular study. In 3Worlds therefore, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written.
 
 When designing a model, it is important to get a quick visual feedback of how the system behaves when one changes equations or their implementation. 3Worlds comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to user needs.
 
 ==== Model comparison: graphs can be compared
 
-Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they al yield different results. This is expected given the size of their code, but what is appalling is that nobody is able to trace within the code where the differences come from  (Lim & Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models takes the form of computer codes, which are very difficult to compare above a ridiculously small code size.
+Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they all yield different results. This is expected given the size of their code, but what is appalling is that nobody is able to trace within the code where the differences come from  (Lim & Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models is represented in computer code, which are very difficult to compare for any but the simplest of models.
 
 3Worlds is an attempt to solve this issue _in the future_ (there is nothing we can do for past model codes). If models are developed within the standard framework of 3Worlds, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.
 
@@ -137,7 +135,7 @@ Climate change modelling relies on 19 major general circulation models (GCMs) al
 
 Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in _simulation experiments_. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologicallly relevant, publishable results.
 
-IBMs are most of the time stochastic, as population rates translate into probabiities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on random number drawings. A a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.
+IBMs are often stochastic, as population rates translate into probabilities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on random number drawings. As a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.
 
 3Worlds is interfaced with https://openmole.org/[OpenMole]  to provide access to big computing power. Through OpenMole, big simulation experiments can be deployed on networks of computers, grids, or supercalculators.
 
