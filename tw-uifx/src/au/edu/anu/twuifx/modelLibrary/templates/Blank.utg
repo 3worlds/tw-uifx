@@ -11,6 +11,9 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 10:38:38 AEST 2020
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	predefined *categories*
+		categorySet *organisation*
+			category *assemblage*
+			category *atomic*
 		record AVEphemeral
 			field birthDate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -35,27 +38,31 @@ treegraph // saved by OmugiGraphExporter on Wed May 20 10:38:38 AEST 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		categorySet *organisation*
-			category *assemblage*
-			category *atomic*
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
 			category *relation*
 			category *component*
 			category *arena*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
-		relationType *parentTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-		relationType *returnsTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+	dataDefinition dDef
+	experiment expt
+	system sys1
+		dynamics sim1
+	userInterface gui
 
 // CROSS-LINKS
-[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:*assemblage*] autoVar auto2 [record:AVPopulation]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [relationType:*parentTo*] fromCategory frm1 [category:*component*]
 [relationType:*parentTo*] toCategory to1 [category:*component*]
 [relationType:*returnsTo*] fromCategory frm2 [category:*component*]
 [relationType:*returnsTo*] toCategory to2 [category:*component*]
+[system:sys1] belongsTo bt2 [category:*permanent*]
+[system:sys1] belongsTo bt1 [category:*arena*]

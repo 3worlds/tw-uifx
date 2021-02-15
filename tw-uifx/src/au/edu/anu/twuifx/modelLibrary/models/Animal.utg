@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 // TREE
 3worlds Animal
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(ian (14 Feb. 2021))
+	built-by = java.lang.String(ian (15 Feb. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String(Preliminary testing of landscape animal model with local mating)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -190,6 +190,8 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
 
 // CROSS-LINKS
+[process:reproduce] inSpace in3 [space:space1]
+	searchRadius = java.lang.Double(500.0)
 [process:reproduce] dependsOn after2 [process:mate]
 [process:reproduce] appliesTo aplyTo4 [category:animalCat]
 [category:animalCat] constants cnsts2 [record:animalConsts]
@@ -200,6 +202,8 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [system:sys1] belongsTo bt3 [category:*permanent*]
 [system:sys1] belongsTo bt2 [category:*arena*]
 [system:sys1] belongsTo bt1 [category:*assemblage*]
+[process:mate] inSpace in4 [space:space1]
+	searchRadius = java.lang.Double(500.0)
 [process:mate] appliesTo aplyTo2 [relationType:mateRelation]
 [process:mate] dependsOn after1 [process:courting]
 [relationType:mateRelation] toCategory to3 [category:animalCat]
