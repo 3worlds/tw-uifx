@@ -951,27 +951,29 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@SuppressWarnings("unchecked")
 	private void unDimNode(VisualNode n, Set<VisualNode> focusNodes, ObservableList<Node> obs) {
 		Shape c = (Shape) n.getSymbol();
-		c.setEffect(dropShadow);
-		obs.add(c);
-		Text t = (Text) n.getText();
-		obs.add(t);
-		t.setEffect(null);
-		if (n.getParent() != null && (focusNodes.contains(n.getParent()))) {
-			Duple<Object, Object> dpl = n.getParentLine();
-			((Line) dpl.getFirst()).setEffect(null);
-			((Line) dpl.getSecond()).setEffect(null);
-			obs.add((Line) dpl.getFirst());
-			obs.add((Line) dpl.getSecond());
-		}
-		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
-			if (focusNodes.contains(e.endNode())) {
-				Duple<Object, Object> dpl = e.getSymbol();
-				((Shape) dpl.getFirst()).setEffect(null);
-				((Shape) dpl.getSecond()).setEffect(null);
-				((Text) e.getText()).setEffect(null);
+		if (c != null) {// will be null during node creation
+			c.setEffect(dropShadow);
+			obs.add(c);
+			Text t = (Text) n.getText();
+			obs.add(t);
+			t.setEffect(null);
+			if (n.getParent() != null && (focusNodes.contains(n.getParent()))) {
+				Duple<Object, Object> dpl = n.getParentLine();
+				((Line) dpl.getFirst()).setEffect(null);
+				((Line) dpl.getSecond()).setEffect(null);
 				obs.add((Line) dpl.getFirst());
 				obs.add((Line) dpl.getSecond());
-				obs.add((Text) e.getText());
+			}
+			for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
+				if (focusNodes.contains(e.endNode())) {
+					Duple<Object, Object> dpl = e.getSymbol();
+					((Shape) dpl.getFirst()).setEffect(null);
+					((Shape) dpl.getSecond()).setEffect(null);
+					((Text) e.getText()).setEffect(null);
+					obs.add((Line) dpl.getFirst());
+					obs.add((Line) dpl.getSecond());
+					obs.add((Text) e.getText());
+				}
 			}
 		}
 	}

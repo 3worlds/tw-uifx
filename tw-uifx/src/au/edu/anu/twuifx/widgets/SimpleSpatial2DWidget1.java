@@ -613,7 +613,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			boolean removed = stLines.remove(line);
 			if (!removed) {
 //				throw new TwuifxException("Attempt to delete a non-existing line. [" + line+"]");
-				System.out.println("Warning: Attempt to delete a non-existing line. [" + line + "]");
+//				This is allowed now. Forgot why.
+//				System.out.println("Warning: Attempt to delete a non-existing line. [" + line + "]");
 			} else
 				ld++;
 		}
