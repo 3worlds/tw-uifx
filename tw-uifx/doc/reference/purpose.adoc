@@ -12,7 +12,7 @@ the game. To this day, reconciling these two aspects remains a key problem in ec
 studies: How does an energy flux translate into a number of living individuals or in a higher biodiversity? 
 How might the reproduction strategy of the beaver affect river hydrology and the regional water budget? 
 How might social interactions (society) affect the frequency of hurricanes (e.g. climate change)? 
-*3Worlds* aims at providing _a tool for building simulations that couple the physical and biologial aspects of ecosystems_.
+*3Worlds* aims at providing _a tool for building simulations that couple the physical and biological aspects of ecosystems_.
 Existing tools either: (1) focus on the physics (e.g. dynamic models based on differential equations) and can
 only represent reproduction and growth with metaphors for continuous physical quantities (e.g. matrix population
 models); or (2) focus on the biology (e.g. multi-agent systems describing social interactions in detail but posing
@@ -37,7 +37,7 @@ in _abstraction theory_ (Zucker 2003): the more detailed a model, the less abstr
  the researcher in accordance with the purpose of their study. The researcher has full control on the detailed biological functions 
 and variables relevant to their problem.
  
-How is this flexiblity compatible with the strong conceptual backbone? *3Worlds* uses _aspect-oriented thinking (AOT)_ (Flint 2006), a method to build complex systems (e.g.
+How is this flexibility compatible with the strong conceptual backbone? *3Worlds* uses _aspect-oriented thinking (AOT)_ (Flint 2006), a method to build complex systems (e.g.
 software) from independent areas of knowledge. We have designed an _archetype_ of what we believe constitutes an 
 ecosystem -- a recursive and multi-scale system of interacting entities. We use an implementation of AOT to ensure
 that any user-defined representation of an ecosystem complies with the archetype. This guarantees that, despite a 
@@ -46,7 +46,7 @@ benefit of this is that while we believe it’s possible to construct any type o
 model within this archetype, imposing specification constraints greatly assists in model comparison: why should 
 two models, ostensibly constructed for the same purpose, differ in their outputs? How does a change in temporal 
 or spatial scale affect projections?  How does adding or removing sub-systems change model projections?
-_Models developed in *3Worlds* are always comparable_,  unlike many large model intercomparison exercises where the models are independantly developed without reference to any common structuring principals.
+_Models developed in *3Worlds* are always comparable_,  unlike many large model intercomparison exercises where the models are independently developed without reference to any common structuring principals.
 
 The ecosystem is a recursive concept (Gignoux et al. 2011): ecosystems can be nested. Parts of an ecosystem can
 be studied as ecosystems themselves. We use the concept of a hierarchical system, formalized as a graph (Gignoux et
@@ -88,7 +88,7 @@ image::graph.svg[align="center"]
 With the addition of _descriptors_ (e.g. numbers with a specific meaning: <<fig-graph-descriptors,Fig. 2>>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define _functions_ that can modify nodes and edges and their descriptors, the graph becomes dynamic. A 3Worlds simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to the user's particular application. Nodes are called _system components_, edges __system relations__, and descriptors __properties__.
 
 [[fig-graph-descriptors]]
-.An example of graph descripitors (redrawn from Gignoux et al. 2017).
+.An example of graph descriptors (redrawn from Gignoux et al. 2017).
 image::graph-with-descriptors.svg[align="center]
 
 ==== Categories
@@ -133,11 +133,11 @@ Climate change modelling relies on 19 major general circulation models (GCMs) al
 
 ==== Problem upscaling
 
-Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in _simulation experiments_. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologicallly relevant, publishable results.
+Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in _simulation experiments_. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologically relevant, publishable results.
 
 IBMs are often stochastic, as population rates translate into probabilities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on random number drawings. As a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.
 
-3Worlds is interfaced with https://openmole.org/[OpenMole]  to provide access to big computing power. Through OpenMole, big simulation experiments can be deployed on networks of computers, grids, or supercalculators.
+3Worlds is interfaced with https://openmole.org/[OpenMole]  to provide access to big computing power. Through OpenMole, big simulation experiments can be deployed on networks of computers, grids, or supercomputers.
 
 ==== Portability and performance
 
