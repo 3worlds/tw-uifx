@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.modelLibrary;
 import au.edu.anu.twuifx.modelLibrary.templates.TemplatesDummy;
 import au.edu.anu.twuifx.modelLibrary.tutorials.TutorialsDummy;
 import au.edu.anu.twuifx.modelLibrary.models.ModelsDummy;
+import au.edu.anu.twuifx.modelLibrary.tests.TestsDummy;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -48,6 +49,8 @@ import fr.cnrs.iees.graph.io.GraphImporter;
  * @author Ian Davies
  *
  * @date 11 Nov. 2020
+ * 
+ * TODO: Move this system to tw-core to prevent rebuilding the time consuming twuifx lib.
  */
 public enum LibraryTable {
 	/*-	Menu name,	|	ProposedName|	File name,	|	category,	|package file association */
@@ -67,11 +70,12 @@ public enum LibraryTable {
 	//
 	Model1("1 Animal", "Animal1","Animal.utg",LibraryType.Model, ModelsDummy.class), //
 
-	/**
-	 * Could also have "Tests" package - maybe in tw-core to avoid rebuilding this
-	 * slow tw-uifx library. Not sure if this is useful. You still have to run MR
-	 * from eclipse to avoid rerunning twSetup again.
-	 */
+	//
+	Test1 ("1 TestRelations","TestRelations1","TestRelations.utg",LibraryType.Test,TestsDummy.class),//
+	Test2 ("2 TestLifeCycle","TestLifeCycle1","TestLifeCycle.utg",LibraryType.Test,TestsDummy.class),//
+	Test3 ("3 Palms","Palms1","Palms.utg",LibraryType.Test,TestsDummy.class),//
+	Test4 ("4 WrapTest","WrapTest1","WrapTest.utg",LibraryType.Test,TestsDummy.class),//
+	
 	;
 
 	private final String displayName;

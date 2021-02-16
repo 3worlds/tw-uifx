@@ -1115,7 +1115,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Menu muTemplates = new Menu("Templates");
 		Menu muTutorials = new Menu("Tutorials");
 		Menu muModels = new Menu("Model Library");
-		menuNew.getItems().addAll(muTemplates, muTutorials, muModels);
+		Menu muTests = new Menu("Test cases");
+		menuNew.getItems().addAll(muTemplates, muTutorials, muModels,muTests);
 		for (LibraryTable entry : LibraryTable.values()) {
 			MenuItem mi = new MenuItem(entry.displayName());
 			mi.setMnemonicParsing(false);
@@ -1129,8 +1130,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				muTutorials.getItems().add(mi);
 				break;
 			}
-			default: {
+			case Model:{
 				muModels.getItems().add(mi);
+				break;
+			}
+			default: {
+				muTests.getItems().add(mi);
 			}
 			}
 
