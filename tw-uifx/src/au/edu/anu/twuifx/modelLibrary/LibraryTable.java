@@ -69,12 +69,12 @@ public enum LibraryTable {
 	Tut10("10 Random number generators", "Rng1", "Rng_1.utg", LibraryType.Tutorial, TutorialsDummy.class), //
 	//
 	Model1("1 Animal", "Animal1","Animal.utg",LibraryType.Model, ModelsDummy.class), //
+	Model2("2 Palms","Palms1","Palms.utg",LibraryType.Model,ModelsDummy.class),//
 
 	//
 	Test1 ("1 TestRelations","TestRelations1","TestRelations.utg",LibraryType.Test,TestsDummy.class),//
 	Test2 ("2 TestLifeCycle","TestLifeCycle1","TestLifeCycle.utg",LibraryType.Test,TestsDummy.class),//
-	Test3 ("3 Palms","Palms1","Palms.utg",LibraryType.Test,TestsDummy.class),//
-	Test4 ("4 WrapTest","WrapTest1","WrapTest.utg",LibraryType.Test,TestsDummy.class),//
+	Test4 ("3 WrapTest","WrapTest1","WrapTest.utg",LibraryType.Test,TestsDummy.class),//
 	
 	;
 
