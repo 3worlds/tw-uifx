@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Mon Feb 15 15:53:29 CET 2021
+treegraph // saved by OmugiGraphExporter on Wed Feb 17 15:56:30 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -10,13 +10,103 @@ treegraph // saved by OmugiGraphExporter on Mon Feb 15 15:53:29 CET 2021
 	precis = java.lang.String(Tutorial: Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model. Illustrates the use of an EventTimer.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
 	version = java.lang.String(demo)
+	dataDefinition dDef
+		dimensioner nspp
+			size = java.lang.Integer(40)
+		record commCnsts
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(commCnsts)
+			table r
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(growh rate)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+			table K
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(carrying capacity)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+			table alpha
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(interspecific competition coefficien)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+		record distPar
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(distPar)
+			field freq
+				description = java.lang.String(average return time)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String()
+			field intensity
+				description = java.lang.String(% population decrease)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record commDrvs
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(commDrvs)
+			table x
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				description = java.lang.String(population size)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				units = java.lang.String()
+		record commDecs
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(commDecs)
+			field div
+				description = java.lang.String(shannon diversity)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+	userInterface gui
+		tab srs
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget srsPop
+				order = java.lang.Integer(0)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			widget srsDiv
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+		top top
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 	experiment expt
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	predefined *categories*
 		categorySet *organisation*
-			category *assemblage*
 			category *atomic*
+			category *assemblage*
+		categorySet *systemElements*
+			category *arena*
+			category *component*
+			category *relation*
+			category *life cycle*
+			category *group*
+		record AVPopulation
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
 		record AVEphemeral
 			field birthDate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -28,58 +118,51 @@ treegraph // saved by OmugiGraphExporter on Mon Feb 15 15:53:29 CET 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-		categorySet *systemElements*
-			category *arena*
-			category *group*
-			category *life cycle*
-			category *relation*
-			category *component*
 		categorySet *lifespan*
-			category *ephemeral*
 			category *permanent*
-		record AVPopulation
-			field count
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nRemoved
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nAdded
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-	userInterface gui
-		top top
-			widget ctrl
-				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
-		tab srs
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget srsPop
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-			widget srsDiv
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			category *ephemeral*
 	system sys1
+		structure struc1
+			componentType commType
+				constantClass = java.lang.String(code.sys1.generated.CommCnsts)
+				decoratorClass = java.lang.String(code.sys1.generated.CommDecs)
+				driverClass = java.lang.String(code.sys1.generated.CommDrvs)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				initFunction InitComm
+					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+					userClassName = java.lang.String(code.sys1.generated.InitComm)
+					snippet snpt5
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([12]"double initfreq = 1.0/x.size();","focalDrv.x.fillWith(initfreq);","for (int i=0; i<r.size(0); i++) {","focalCnt.r.setByInt(random.nextDouble(),i);","focalCnt.K.setByInt(5.0+initfreq+random.nextDouble(),i);","for (int j=0; j<alpha.size(1); j++) {","if (i==j)","focalCnt.alpha.setByInt(1.0,i,j);","else","focalCnt.alpha.setByInt(max(0.0001,random.nextDouble()),i,j);","}","}"))
+				component savanna
+			componentType distType
+				constantClass = java.lang.String(code.sys1.generated.DistPar)
+				mobile = java.lang.Boolean(false)
+				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				initFunction InitDist
+					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+					userClassName = java.lang.String(code.sys1.generated.InitDist)
+					snippet snpt4
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"focalCnt.freq = 30+random.nextInt(50);","focalCnt.intensity = random.nextDouble()*100;","// populate the time event queue with 10000 events","double nextT = 0;","for (int i=0; i<100; i++) {","// reciprocal of exponential cumulative distribution function","nextT += max(1.0,log(1-random.nextDouble())*(-focalCnt.freq));","event.postTimeEvent(nextT);","}"))
+				component fire
+				component herbivore
+			relationType DistToComm
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			categorySet world
+				category plants
+					constantClass = java.lang.String(Plants_Cnt)
+					decoratorClass = java.lang.String(Plants_Dec)
+					driverClass = java.lang.String(Plants_Drv)
+				category distrb
+					constantClass = java.lang.String(Distrb_Cnt)
+					decoratorClass = java.lang.Object(null)
+					driverClass = java.lang.Object(null)
 		dynamics sim
 			timeline tmLn
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(ARBITRARY)
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-				timer event
-					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.EventTimer)
-					process procDist
-						function Effects
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
-							userClassName = java.lang.String(code.sys1.generated.Effects)
-							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"for (int i=0; i<other_x.size(); i++) {","if (other_x.getByInt(i)>other_K.getByInt(i)*intensity/100000)","otherDrv.x.setByInt(otherDrv.x.getByInt(i)*other_K.getByInt(i)*intensity/10000, i);","}"))
 				timer clock
 					dt = java.lang.Long(1)
 					nTimeUnits = java.lang.Integer(1)
@@ -109,98 +192,14 @@ treegraph // saved by OmugiGraphExporter on Mon Feb 15 15:53:29 CET 2021
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
-		structure struc1
-			categorySet world
-				category plants
-					constantClass = java.lang.String(Plants_Cnt)
-					decoratorClass = java.lang.String(Plants_Dec)
-					driverClass = java.lang.String(Plants_Drv)
-				category distrb
-					constantClass = java.lang.String(Distrb_Cnt)
-					decoratorClass = java.lang.Object(null)
-					driverClass = java.lang.Object(null)
-			componentType distType
-				constantClass = java.lang.String(code.sys1.generated.DistPar)
-				mobile = java.lang.Boolean(false)
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-				component fire
-				component herbivore
-				initFunction InitDist
-					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-					userClassName = java.lang.String(code.sys1.generated.InitDist)
-					snippet snpt4
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"focalCnt.freq = 30+random.nextInt(50);","focalCnt.intensity = random.nextDouble()*100;","// populate the time event queue with 10000 events","double nextT = 0;","for (int i=0; i<100; i++) {","// reciprocal of exponential cumulative distribution function","nextT += max(1.0,log(1-random.nextDouble())*(-focalCnt.freq));","event.postTimeEvent(nextT);","}"))
-			relationType DistToComm
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-			groupType commGrpType
-				componentType commType
-					constantClass = java.lang.String(code.sys1.generated.CommCnsts)
-					decoratorClass = java.lang.String(code.sys1.generated.CommDecs)
-					driverClass = java.lang.String(code.sys1.generated.CommDrvs)
-					mobile = java.lang.Boolean(false)
-					relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-					component savanna
-					initFunction InitComm
-						type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-						userClassName = java.lang.String(code.sys1.generated.InitComm)
-						snippet snpt5
-							javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([12]"double initfreq = 1.0/x.size();","focalDrv.x.fillWith(initfreq);","for (int i=0; i<r.size(0); i++) {","focalCnt.r.setByInt(random.nextDouble(),i);","focalCnt.K.setByInt(5.0+initfreq+random.nextDouble(),i);","for (int j=0; j<alpha.size(1); j++) {","if (i==j)","focalCnt.alpha.setByInt(1.0,i,j);","else","focalCnt.alpha.setByInt(max(0.0001,random.nextDouble()),i,j);","}","}"))
-	dataDefinition dDef
-		record commCnsts
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(commCnsts)
-			table r
-				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(growh rate)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				units = java.lang.String()
-			table alpha
-				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(interspecific competition coefficien)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
-				precision = java.lang.Double(0.0)
-				units = java.lang.String()
-			table K
-				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(carrying capacity)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				units = java.lang.String()
-		record commDrvs
-			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(commDrvs)
-			table x
-				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				description = java.lang.String(population size)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				units = java.lang.String()
-		dimensioner nspp
-			size = java.lang.Integer(40)
-		record distPar
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(distPar)
-			field freq
-				description = java.lang.String(average return time)
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String()
-			field intensity
-				description = java.lang.String(% population decrease)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record commDecs
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(commDecs)
-			field div
-				description = java.lang.String(shannon diversity)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				timer event
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.EventTimer)
+					process procDist
+						function Effects
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String(code.sys1.generated.Effects)
+							snippet snpt1
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"for (int i=0; i<other_x.size(); i++) {","if (other_x.getByInt(i)>other_K.getByInt(i)*intensity/100000)","otherDrv.x.setByInt(otherDrv.x.getByInt(i)*other_K.getByInt(i)*intensity/10000, i);","}"))
 
 // CROSS-LINKS
 [widget:srsPop] trackSeries trks6 [dataTracker:trk1]
@@ -208,19 +207,16 @@ treegraph // saved by OmugiGraphExporter on Mon Feb 15 15:53:29 CET 2021
 [dataTracker:trk1] trackTable trks2 [table:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"[0:39]"))
 [dataTracker:trk1] trackComponent trks4 [component:savanna]
-[groupType:commGrpType] belongsTo bt1 [category:*assemblage*]
-[groupType:commGrpType] belongsTo bt2 [category:*group*]
-[groupType:commGrpType] belongsTo bt3 [category:*permanent*]
 [dataTracker:trk2] trackField trks3 [field:div]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trk2] trackComponent trks5 [component:savanna]
+[process:procDist] appliesTo aplyTo2 [relationType:DistToComm]
 [process:procDist] dependsOn depsOn2 [process:procRel]
 [process:procDist] dependsOn depsOn1 [process:procComm]
-[process:procDist] appliesTo aplyTo2 [relationType:DistToComm]
 [componentType:distType] belongsTo blngsTo41 [category:*atomic*]
+[componentType:distType] belongsTo blngsTo4 [category:*component*]
 [componentType:distType] belongsTo blngsTo7 [category:*permanent*]
 [componentType:distType] belongsTo blngsTo8 [category:distrb]
-[componentType:distType] belongsTo blngsTo4 [category:*component*]
 [relationType:DistToComm] toCategory to1 [category:plants]
 [relationType:DistToComm] fromCategory from1 [category:distrb]
 [system:sys1] belongsTo blngsTo28 [category:*assemblage*]
@@ -232,20 +228,20 @@ treegraph // saved by OmugiGraphExporter on Mon Feb 15 15:53:29 CET 2021
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [category:plants] decorators decs1 [record:commDecs]
-[category:plants] drivers drvs1 [record:commDrvs]
 [category:plants] constants cnts1 [record:commCnsts]
-[table:alpha] sizedBy szBy2 [dimensioner:nspp]
-	rank = java.lang.Integer(0)
+[category:plants] drivers drvs1 [record:commDrvs]
 [table:alpha] sizedBy szBy3 [dimensioner:nspp]
 	rank = java.lang.Integer(1)
+[table:alpha] sizedBy szBy2 [dimensioner:nspp]
+	rank = java.lang.Integer(0)
 [timer:event] fedBy fedBy2 [initFunction:InitDist]
 [process:procRel] appliesTo aplyTo3 [relationType:DistToComm]
 [table:r] sizedBy szBy5 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
 [category:distrb] constants cnts2 [record:distPar]
+[componentType:commType] belongsTo blngsTo3 [category:*component*]
+[componentType:commType] belongsTo blngsTo37 [category:*atomic*]
 [componentType:commType] belongsTo blngsTo5 [category:*permanent*]
 [componentType:commType] belongsTo blngsTo6 [category:plants]
-[componentType:commType] belongsTo blngsTo37 [category:*atomic*]
-[componentType:commType] belongsTo blngsTo3 [category:*component*]
 [table:x] sizedBy szBy1 [dimensioner:nspp]
 	rank = java.lang.Integer(0)
