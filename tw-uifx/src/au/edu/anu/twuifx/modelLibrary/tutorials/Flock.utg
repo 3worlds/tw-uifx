@@ -1,13 +1,13 @@
-treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
+treegraph // saved by OmugiGraphExporter on Tue Feb 23 11:44:14 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds Flock
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String()
+	built-by = java.lang.String(gignoux (14 janv. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
-	precis = java.lang.String("Tutorial: Testing flocking behaviour of mobile components")
+	precis = java.lang.String(Tutorial: Testing flocking behaviour of mobile components)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https://en.wikipedia.org/wiki/Boids"))
 	version = java.lang.String(demo)
 	dataDefinition dDef
@@ -115,6 +115,9 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(m)
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	userInterface gui
 		top top
 			widget timer
@@ -130,9 +133,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
-	experiment expt
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
 		dynamics sim1
 			timeline tmLn1
@@ -148,39 +148,40 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 					process p3
 						function Move
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys1.Move)
+							userClassName = java.lang.String(code.sys1.generated.Move)
 							snippet snpt4
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([35]"//		double x = focalLoc.x();","//		double y = focalLoc.y();","		double x = xx;","		double y = yy;","		double incR = 0.0;","		double incT = 0.0;","		// default movement based on inertia, ie in the same direction as before + some random tilt","		incR = speed;","		incT = (random.nextDouble()*PI/4 - PI/8)/speed;","		double radHeading = heading*PI/180+incT;","		double moveX = incR*cos(radHeading);","		double moveY = incR*sin(radHeading);","		// if there are visible birds, add corrections:","		if (nLocal>0) {","			// rule 1: cohesion - flying towards the barycentre of the local group","			// move 1% towards the centre","			moveX += (avgX/nLocal-x)/100;","			moveY += (avgY/nLocal-y)/100;","			// rule 2: separation - avoid collision with other boids","			moveX += focalDec.avoidX/nLocal;","			moveY += focalDec.avoidY/nLocal;","			// rule 3: match movement to others","			moveX += (avgdX/nLocal-dX)/8;","			moveY += (avgdY/nLocal-dY)/8;","		}","		// new location","//		nextFocalLoc[0] = x+moveX;","//		nextFocalLoc[1] = y+moveY;","		focalDrv.xx = x+moveX;","		focalDrv.yy = y+moveY;","		focalDrv.dX = moveX;","		focalDrv.dY = moveY;","		focalDrv.heading = acos(moveX/euclidianDistance(0.0,0.0,moveX,moveY))*180/PI;","		if (moveY<0.0)","			focalDrv.heading = 360-focalDrv.heading;"))
 					process p2
 						function Follow
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(MaintainRelationDecision)
-							userClassName = java.lang.String(code.sys1.Follow)
+							userClassName = java.lang.String(code.sys1.generated.Follow)
 							snippet snpt2
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([22]"		// neighbourhood is 3/4 of a circle in the direction of heading","//		double sqd = squaredEuclidianDistance(focalLoc,otherLoc);","		double sqd = squaredEuclidianDistance(xx,yy,other_xx,other_yy);","		if (sqd==0.0)","			return true;","		if (sqd<range*range) { // points within range","			double rOther = sqrt(sqd);","//			double tetaOther = acos((otherLoc.x()-focalLoc.x())/rOther)*180/PI;","			double tetaOther = acos((other_xx-xx)/rOther)*180/PI;","//			if (otherLoc.y()-focalLoc.y()<0)","			if (other_yy-yy<0)","				tetaOther = 360 - tetaOther;","			// points within hemisphere determined by heading","			double test = heading-tetaOther;","			while (test<0)","				test = 360+test;","			while (test>360)","				test -=360;","			return !((test>=225)&&(test<=315));","			}","		return false;","		//		return (squaredEuclidianDistance(focalLoc,otherLoc)<range*range);"))
 						function PrepareMove
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeRelationState)
-							userClassName = java.lang.String(code.sys1.PrepareMove)
+							userClassName = java.lang.String(code.sys1.generated.PrepareMove)
 							snippet snpt3
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([23]"		focalDec.avgHeading += other_heading;","//		focalDec.avgX += otherLoc.x();","//		focalDec.avgY += otherLoc.y();","		focalDec.avgX += other_xx;","		focalDec.avgY += other_yy;","		focalDec.avgdX += other_dX;","		focalDec.avgdY += other_dY;","		focalDec.nLocal++;","		// rule 2: avoid collisions","		if (squaredEuclidianDistance(xx,yy,other_xx,other_yy)<safetyRange*safetyRange) {","//			focalDec.avoidX -= (otherLoc.x()-focalLoc.x());","//			focalDec.avoidY -= (otherLoc.y()-focalLoc.y());","			focalDec.avoidX -= (other_xx-xx);","			focalDec.avoidY -= (other_yy-yy);","		}","//		for (int i=0; i<nextFocalLoc.length; i++) {","//			nextFocalLoc[i] = focalLoc.coordinate(i);","//			nextOtherLoc[i] = otherLoc.coordinate(i);","//		}","		focalDrv.xx = xx;","		focalDrv.yy = yy;","		otherDrv.xx = other_xx;","		otherDrv.yy = other_yy;"))
 					process p1
 						function Detect
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
-							userClassName = java.lang.String(code.sys1.Detect)
+							userClassName = java.lang.String(code.sys1.generated.Detect)
 							snippet snpt1
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([22]"		// neighbourhood is 3/4 of a circle in the direction of heading","//		double sqd = squaredEuclidianDistance(focalLoc,otherLoc);","		double sqd = squaredEuclidianDistance(xx,yy,other_xx,other_yy);","		if (sqd==0.0)","			return true;","		if (sqd<range*range) { // points within range","			double rOther = sqrt(sqd);","//			double tetaOther = acos((otherLoc.x()-focalLoc.x())/rOther)*180/PI;","			double tetaOther = acos((other_xx-xx)/rOther)*180/PI;","//			if (otherLoc.y()-focalLoc.y()<0)","			if (other_yy-yy<0)","				tetaOther = 360 - tetaOther;","			// points within hemisphere determined by heading","			double test = heading-tetaOther;","			while (test<0)","				test = 360+test;","			while (test>360)","				test -=360;","			return !((test>=225)&&(test<=315));","			}","		return false;","		//		return (squaredEuclidianDistance(focalLoc,otherLoc)<range*range);"))
 		structure struc1
 			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
 			space space1
 				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
-				precision = java.lang.Double(1)
+				guardAreaWidth = java.lang.Double(0.0)
+				precision = java.lang.Double(1.0)
 				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 				units = java.lang.String(m)
 				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,1000.0])
 				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,1000.0])
 			componentType bird
-				constantClass = java.lang.String(code.sys1.Cnt)
-				decoratorClass = java.lang.String(code.sys1.Dec)
-				driverClass = java.lang.String(code.sys1.Drv)
+				constantClass = java.lang.String(code.sys1.generated.Cnt)
+				decoratorClass = java.lang.String(code.sys1.generated.Dec)
+				driverClass = java.lang.String(code.sys1.generated.Drv)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -188,9 +189,9 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 					nInstances = java.lang.Integer(40)
 				initFunction Init1
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-					userClassName = java.lang.String(code.sys1.Init1)
+					userClassName = java.lang.String(code.sys1.generated.Init1)
 					snippet snpt5
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		focalCnt.speed = 3;","		focalCnt.range = 80;","		focalCnt.safetyRange = 20;","		focalDrv.heading = random.nextDouble()*360;"))
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([6]"		focalCnt.speed = 3;","		focalCnt.range = 80;","		focalCnt.safetyRange = 20;","		focalDrv.heading = random.nextDouble()*360;","		focalDrv.xx = random.nextDouble()*1000;","		focalDrv.yy = random.nextDouble()*1000;"))
 			relationType sight
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 	predefined *categories*
@@ -219,10 +220,6 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 		categorySet *organisation*
 			category *assemblage*
 			category *atomic*
-		relationType *parentTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-		relationType *returnsTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 		record AVEphemeral
 			field birthDate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
@@ -241,8 +238,8 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 [componentType:bird] belongsTo bt5 [category:*component*]
 [relationType:sight] toCategory to1 [category:*atomic*]
 [relationType:sight] fromCategory from1 [category:*atomic*]
-[category:*atomic*] decorators decs1 [record:dec]
 [category:*atomic*] constants cnts1 [record:cnt]
+[category:*atomic*] decorators decs1 [record:dec]
 [category:*atomic*] drivers  [record:drv]
 [system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt3 [category:*permanent*]
@@ -260,13 +257,9 @@ treegraph // saved by OmugiGraphExporter on Fri Jul 24 17:01:45 CEST 2020
 [process:p3] inSpace in3 [space:space1]
 	searchRadius = java.lang.Double(100.0)
 [widget:timer] trackTime trks1 [dynamics:sim1]
-[category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[category:*assemblage*] autoVar auto [record:AVPopulation]
 [space:space1] coordinate crdmp [field:xx]
 	rank = java.lang.Integer(0)
 [space:space1] coordinate crdmp1 [field:yy]
 	rank = java.lang.Integer(1)
-[relationType:*parentTo*] fromCategory frm1 [category:*component*]
-[relationType:*parentTo*] toCategory to1 [category:*component*]
-[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
-[relationType:*returnsTo*] toCategory to2 [category:*component*]
