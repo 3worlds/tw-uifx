@@ -304,8 +304,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		tlbr.getItems().add(new Separator());
 		tlbr.getItems().add(gp);
 		sldrElements = new Slider();
-		sldrElements.setMin(0.2);
-		sldrElements.setMax(1.8);
+		sldrElements.setMin(0.1);
+		sldrElements.setMax(2.0);
 		sldrElements.setValue(1.0);
 		sldrElements.setShowTickMarks(true);
 		sldrElements.valueProperty().addListener((observableValue, oldValue, newValue) -> {
