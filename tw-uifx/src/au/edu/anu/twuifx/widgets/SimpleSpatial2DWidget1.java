@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.widgets;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -110,7 +113,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -149,6 +154,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private final Map<String, Duple<DataLabel, double[]>> mpPoints;
 	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
 	private final Set<Tuple<DataLabel, DataLabel, String>> stLines;
+	private final Map<String, Color> lineTypeColours;
 
 	private final Map<String, Duple<Integer, Color>> mpColours;
 	/** Temporary store for initialising data */
@@ -186,14 +192,15 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
 		// Thread-safe is no longer necessary
-//		mapPoints = new ConcurrentHashMap<>();// Thread-safe is no longer necessary
+//		mpPoints = new ConcurrentHashMap<>();// Thread-safe is no longer necessary
 		mpPoints = new HashMap<>();
 		lstColoursAvailable = new ArrayList<>();
-//		colourMap = new ConcurrentHashMap<>();// Thread-safe is no longer necessary
+//		mpColours = new ConcurrentHashMap<>();// Thread-safe is no longer necessary
 		mpColours = new HashMap<>();
 		// Thread-safe is no longer necessary
-//		setLines = Collections.newSetFromMap(new ConcurrentHashMap<Duple<DataLabel, DataLabel>, Boolean>());
+//		stLines = Collections.newSetFromMap(new ConcurrentHashMap<Tuple<DataLabel, DataLabel, String>, Boolean>());
 		stLines = new HashSet<>();
+		lineTypeColours = new HashMap<>();
 		lstInitialData = new ArrayList<>();
 		units = "";
 		xAxes = new HashMap<>();
@@ -387,7 +394,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		leftAxis = new AnchorPane();
 		rightAxis = new AnchorPane();
 
-		fontProperty = new SimpleObjectProperty<Font>( getSystemFont(axisFontSize));
+		fontProperty = new SimpleObjectProperty<Font>(getSystemFont(axisFontSize));
 		double startX = getStartValue(spaceBounds.getMinX(), offsetX, tickSize);
 		for (int i = 0; i < nXAxisTicks; i++) {
 			double value = i * tickSize + startX;
@@ -495,6 +502,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private Font getSystemFont(double size) {
 		return Font.font("Courier New", size);
 	}
+
 	private void setPaperWidth() {
 		fontProperty.set(getSystemFont(axisFontSize * sldrResolution.getValue()));
 //		System.out.println(sldrResolution.getValue()+"\t"+zoomTarget.getScaleX()+"\t"+(zoomTarget.getScaleX()/sldrResolution.getValue()));
@@ -508,7 +516,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double scale = sldrElements.getValue();
 		scale = scale * sldrResolution.getValue();
 		scaledNodeRadius = scale * nodeRadius;
-		scaledFont = Font.font("Courier New", scale*labelFontSize);
+		scaledFont = Font.font("Courier New", scale * labelFontSize);
 		scaledLineWidth = scale * lineWidth;
 		drawScene();
 	}
@@ -517,18 +525,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Platform.runLater(() -> {
 			lblTime.setText(timeFormatter.getTimeText(data.time()));
 			boolean refreshLegend = updateData(data);
-			drawScene();
 			if (refreshLegend)
 				updateLegend();
+			drawScene();
 		});
 	}
 
 	@Override
 	public void onDataMessage(SpaceData data) {
 		if (policy.canProcessDataMessage(data)) {
-			if (data.status().equals(SimulatorStatus.Initial))
+			if (data.status().equals(SimulatorStatus.Initial)) {
 				lstInitialData.add(data);
-			else
+			} else
 				processDataMessage(data);
 		}
 	}
@@ -563,8 +571,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				System.out.println("Warning: Attempt to delete non-existing point. [" + lab + "]");
 			else {
 				pd++;
-// 				JG Fix: we dont want the legend to shrink everytime a colour disappears:
-//				updateLegend = updateLegend || uninstallColour(lab);
+// 				JG Fix: we dont want the legend to shrink every time a colour disappears:
+//				if ( uninstallColour(lab))
+//				updateLegend = true;
+//				IDD: ok but will quickly start to recycle colours
 			}
 		}
 
@@ -576,7 +586,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			if (mpPoints.put(lab.toString(), newValue) != null)
 				throw new TwuifxException("Attempt to add an already existing point. [" + lab + "]");
 			pa++;
-			updateLegend = updateLegend || installColour(lab);
+			if (installPointColour(lab))
+				updateLegend = true;
+
 		}
 		// move points in the point list
 //		int pm = 0;
@@ -586,7 +598,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			if (mpPoints.put(lab.toString(), newValue) == null)
 				throw new TwuifxException("Attempt to move a non-existing point. [" + lab + "]");
 //			pm++;
-			updateLegend = updateLegend || installColour(lab);
+			if (installPointColour(lab))
+				updateLegend = true;
 		}
 
 		int pu = mpPoints.size();
@@ -601,6 +614,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			// PROBLEM HERE: there may be two relations OF DIFFERENT TYPES relating the
 			// same two points....
 			// so we must allow for identical ends but different types.
+
+			// Thats ok: The lines are just Tuples - it doesn't matter what the start and
+			// end points are
+			if (installLineColour(line.getThird()))
+				updateLegend = true;
 			if (!added) {
 				throw new TwuifxException("Attempt to add already existing line. [" + line + "]");
 			} else
@@ -659,7 +677,20 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 //		return false;
 //	}
 
-	private boolean installColour(DataLabel dl) {
+	private boolean installLineColour(String type) {
+		boolean update = false;
+		if (lineTypeColours.get(type) == null) {
+			// arbitrary offset to list of colours to separate them from point colours
+			int dx = 10;
+			if (colour64)
+				dx = 13;
+			lineTypeColours.put(type, getColour(lineTypeColours.size() + dx));
+			update = true;
+		}
+		return update;
+	}
+
+	private boolean installPointColour(DataLabel dl) {
 		boolean update = false;
 		String cKey = getColourKey(dl);
 		Duple<Integer, Color> value = mpColours.get(cKey);
@@ -689,8 +720,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		gc.setLineDashes(0);
 
 		if (chbxLines.isSelected()) {
-			gc.setStroke(lineColour);
+			// gc.setStroke(lineColour);
 			for (Tuple<DataLabel, DataLabel, String> lineReference : stLines) {
+				String sType = lineReference.getThird();
+				Color lineTypeColour = lineTypeColours.get(sType);
+				gc.setStroke(lineTypeColour);
+				// now we need a line type colour system.
 				String sKey = lineReference.getFirst().toString();
 				String eKey = lineReference.getSecond().toString();
 				Duple<DataLabel, double[]> sEntry = mpPoints.get(sKey);
@@ -721,26 +756,25 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : mpPoints.entrySet()) {
 			Duple<DataLabel, double[]> value = entry.getValue();
 			String cKey = getColourKey(value.getFirst());
-
 			Duple<Integer, Color> colourEntry = mpColours.get(cKey);
-			if (colourEntry != null) {
-				Color colour = colourEntry.getSecond();
-				gc.setStroke(colour);
-				double[] coords = value.getSecond();
-				Point2D point = spaceToCanvas(coords);
-				point = point.add(-scaledNodeRadius, -scaledNodeRadius);
-				gc.strokeOval(point.getX(), point.getY(), size, size);
-				if (symbolFill) {
-					gc.setFill(colour);
-					gc.fillOval(point.getX(), point.getY(), size, size);
-				}
-				if (chbxLabels.isSelected()) {
-					gc.setFill(fontColour);
-					String label = value.getFirst().getEnd();
-					gc.fillText(label, point.getX() + scaledNodeRadius, point.getY() + scaledNodeRadius);
-				}
+//			if (colourEntry != null) {
+			Color colour = colourEntry.getSecond();
+			gc.setStroke(colour);
+			double[] coords = value.getSecond();
+			Point2D point = spaceToCanvas(coords);
+			point = point.add(-scaledNodeRadius, -scaledNodeRadius);
+			gc.strokeOval(point.getX(), point.getY(), size, size);
+			if (symbolFill) {
+				gc.setFill(colour);
+				gc.fillOval(point.getX(), point.getY(), size, size);
+			}
+			if (chbxLabels.isSelected()) {
+				gc.setFill(fontColour);
+				String label = value.getFirst().getEnd();
+				gc.fillText(label, point.getX() + scaledNodeRadius, point.getY() + scaledNodeRadius);
 			}
 		}
+//		}
 	}
 
 	private void drawTubularLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
@@ -1114,7 +1148,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyPaperScale = "paperScale";
 	private static final String keySymbolFill = "fill";
 	private static final String keyBKG = "bkg";
-	private static final String keyLineColour = "lineColour";
+//	private static final String keyLineColour = "lineColour";
 	private static final String keyContrast = "contrast";
 	private static final String keyColour64 = "colour64";
 	private static final String keyColourHLevel = "colourHLevel";
@@ -1132,7 +1166,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private int colourHLevel;
 	private boolean symbolFill;
 	private Color bkgColour;
-	private Color lineColour;
+//	private Color lineColour;
 	private Color fontColour;
 	private double contrast;
 	private boolean colour64;
@@ -1155,8 +1189,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putBoolean(widgetId + keyShowGrid, chbxGrid.isSelected());
 		Preferences.putBoolean(widgetId + keyShowEdgeEffect, chbxBoundaries.isSelected());
 		Preferences.putDoubles(widgetId + keyBKG, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue());
-		Preferences.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
-				lineColour.getBlue());
+//		Preferences.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
+//				lineColour.getBlue());
 		Preferences.putDoubles(widgetId + keyFontColour, fontColour.getRed(), fontColour.getGreen(),
 				fontColour.getBlue());
 		Preferences.putDouble(widgetId + keyContrast, contrast);
@@ -1188,9 +1222,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				Color.WHITE.getBlue());
 		bkgColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
-		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),
-				Color.GREY.getBlue());
-		lineColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
+//		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),
+//				Color.GREY.getBlue());
+//		lineColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
 		rgb = Preferences.getDoubles(widgetId + keyFontColour, Color.BLACK.getRed(), Color.BLACK.getGreen(),
 				Color.BLACK.getBlue());
@@ -1252,28 +1286,38 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (Map.Entry<String, Duple<Integer, Color>> entry : mpColours.entrySet()) {
 			count++;
 			if (count <= maxLegendItems)
-				addLegendItem(entry.getKey(), entry.getValue().getSecond());
+				addLegendItem(entry.getKey(), entry.getValue().getSecond(), true);
 		}
-
+		// private final Map<String, Color> lineTypeColours;
+		for (Map.Entry<String, Color> entry : lineTypeColours.entrySet()) {
+			count++;
+			if (count <= maxLegendItems)
+				addLegendItem(entry.getKey(), entry.getValue(), false);
+		}
 		if (count > maxLegendItems)
 			legend.getChildren().add(new Label("more ..."));
 
 	}
 
-	private void addLegendItem(String name, Color colour) {
+	private void addLegendItem(String name, Color colour, boolean isPoint) {
 		StackPane stackPane = new StackPane();
 		Rectangle r = new Rectangle(12, 12);
 		r.setStroke(bkgColour);
 		r.setFill(bkgColour);
-		Circle c = null;
-		if (!symbolFill) {
-			c = new Circle(4, Color.TRANSPARENT);
-		} else
-			c = new Circle(4, colour);
-		c.setStroke(colour);
-		stackPane.getChildren().addAll(r, c);
-		StackPane.setAlignment(c, Pos.CENTER);
-		StackPane.setAlignment(r, Pos.CENTER);
+		Shape s = null;
+		if (isPoint) {
+			if (!symbolFill) {
+				s = new Circle(4, Color.TRANSPARENT);
+			} else
+				s = new Circle(4, colour);
+			s.setStroke(colour);
+		} else {
+			s = new Line(0, 6, 12, 6);
+		}
+		stackPane.getChildren().addAll(r, s);
+		StackPane.setAlignment(s, Pos.CENTER);
+		StackPane.setAlignment(s, Pos.CENTER);
+
 		legend.getChildren().add(new Label(name, stackPane));
 	}
 
@@ -1375,9 +1419,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// --------------------------------------- Lines
 		row = 0;
 		// -----
-		ColorPicker cpLine = new ColorPicker(lineColour);
-		addGridControl("Colour", row++, col, cpLine, linesGrid);
-		GridPane.setValignment(cpLine, VPos.TOP);
+//		ColorPicker cpLine = new ColorPicker(lineColour);
+//		addGridControl("Colour", row++, col, cpLine, linesGrid);
+//		GridPane.setValignment(cpLine, VPos.TOP);
 		// -----
 		CheckBox chbxShowArrows = new CheckBox("");
 		addGridControl("Arrowheads", row++, col, chbxShowArrows, linesGrid);
@@ -1441,7 +1485,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 				newLegend = true;
 			}
 
-			lineColour = cpLine.getValue();
+//			lineColour = cpLine.getValue();
 			fontColour = cpFont.getValue();
 			if (colour64)
 				lstColoursAvailable = ColourContrast.getContrastingColours64(bkgColour, contrast);
@@ -1454,9 +1498,15 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			showIntermediateArrows = chbxShowIntermediateArrows.isSelected();
 
 			if (newLegend) {
+
 				mpColours.clear();
 				mpPoints.forEach((k, v) -> {
-					installColour(v.getFirst());
+					installPointColour(v.getFirst());
+				});
+
+				lineTypeColours.clear();
+				stLines.forEach((e) -> {
+					installLineColour(e.getThird());
 				});
 				updateLegend();
 			}
