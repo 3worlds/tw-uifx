@@ -132,7 +132,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-//		1) Called first immediately after construction
+		/** 1) Called first immediately after construction */
 		policy.setProperties(id, properties);
 		this.widgetId = id;
 		this.maxAxes = 1;
@@ -145,8 +145,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-//		System.out.println("Metadata sender:\t"+meta.sender());
-//		2) called second after construction
+		/** 2) called second after construction */
 		if (policy.canProcessMetadataMessage(meta)) {
 			msgMetadata = meta;
 			metadataTS = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
@@ -155,9 +154,11 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 
 	@Override
 	public Object getUserInterfaceContainer() {
-//		System.out.println("UI building");
-//		3) called third after metadata
-//		get the prefs before building the ui
+		/**
+		 * 3) called third after metadata.
+		 * 
+		 * Get the prefs before building the ui
+		 */
 		getUserPreferences();
 
 		sas = null;
@@ -181,7 +182,6 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
 		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
-		
 
 		final BorderPane content = new BorderPane();
 		final DefaultNumericAxis xAxis = new DefaultNumericAxis("Tracker time: ", timeUnitName);
@@ -244,7 +244,7 @@ public class SimpleTimeSeriesWidget extends AbstractDisplayWidget<Output0DData, 
 //		chart.getPlugins().add(new Panner());
 //		using this is a very confusing and perhaps buggy ui
 //		chart.getPlugins().add(new EditAxis());
-		chart.setTitle(widgetId+"[#"+policy.toString()+"]");
+		chart.setTitle(widgetId + "[#" + policy.toString() + "]");
 
 		content.setCenter(chart);
 		content.setRight(new Label(" "));
