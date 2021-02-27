@@ -183,6 +183,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	@Override
 	public void onDataMessage(OutputXYData data) {
+		System.out.println(data);
 
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial))
