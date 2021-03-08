@@ -1240,15 +1240,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		String t = "";
 		switch (verbosity) {
 		case brief: {
-			t = msg.verbose1() + "\n\n";
+			t = msg.actionInfo() + "\n\n";
 			break;
 		}
 		case medium: {
-			t = msg.verbose2() + "\n\n";
+			t = msg.detailsInfo() + "\n\n";
 			break;
 		}
 		default: {
-			t = msg.toString() + "\n\n";
+			t = msg.debugInfo() + "\n\n";
 		}
 		}
 
@@ -1261,7 +1261,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			@Override
 			public int compare(ErrorMessagable m1, ErrorMessagable m2) {
 				// keep the same order regardless of the verbosity
-				return m1.verbose1().compareToIgnoreCase(m2.verbose1());
+				return m1.actionInfo().compareToIgnoreCase(m2.actionInfo());
 			}
 		});
 

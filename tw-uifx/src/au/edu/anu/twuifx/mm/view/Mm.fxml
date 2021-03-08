@@ -148,10 +148,9 @@
                            <top>
                               <ToolBar BorderPane.alignment="CENTER">
                                 <items>
-                                    <Label text="Verbosity: " />
-                                    <RadioButton fx:id="rb1" mnemonicParsing="false" selected="true" text="1" />
-                                    <RadioButton fx:id="rb2" mnemonicParsing="false" text="2" />
-                                    <RadioButton fx:id="rb3" mnemonicParsing="false" text="3" />
+                                    <RadioButton fx:id="rb1" mnemonicParsing="false" selected="true" text="Actions" />
+                                    <RadioButton fx:id="rb2" mnemonicParsing="false" text="Details" />
+                                    <RadioButton fx:id="rb3" mnemonicParsing="false" text="Debug" />
                                 </items>
                               </ToolBar>
                            </top>
