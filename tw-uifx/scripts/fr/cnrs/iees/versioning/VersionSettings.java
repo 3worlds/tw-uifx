@@ -88,8 +88,9 @@ public class VersionSettings {
 			{ "org.openjfx", "javafx-graphics", "[11,)", "_os" },
 			{ "org.openjfx", "javafx-base", "[11,)", "_os" },
 
-			{ "org.controlsfx", "controlsfx", "[11,)", null }, { "org.apache.commons", "commons-math", "[2,)", null },
-
+			{ "org.controlsfx", "controlsfx", "[11,)", null }, 
+//			{ "org.apache.commons", "commons-math", "[2,)", null },
+			{"org.apache.commons","commons-math3","[3.6.1,)",null},
 
 			{ "de.gsi", "chartfx", "11.2.3", null }, // pom?
 			{ "de.gsi", "chartfx-samples", "11.2.3", null },
