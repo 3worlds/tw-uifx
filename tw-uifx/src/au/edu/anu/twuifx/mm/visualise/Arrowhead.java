@@ -2,7 +2,6 @@ package au.edu.anu.twuifx.mm.visualise;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.scene.shape.Line;
 
 /**

@@ -70,7 +70,7 @@ public enum LibraryTable {
 	//
 	Model1("1 Animal", "Animal1","Animal.utg",LibraryType.Model, ModelsDummy.class), //
 	Model2("2 Palms","Palms1","Palms.utg",LibraryType.Model,ModelsDummy.class),//
-
+	Model3("3 Resproutch","Resproutch1","Resproutch.utg",LibraryType.Model,ModelsDummy.class),//
 	//
 	Test1 ("1 TestRelations","TestRelations1","TestRelations.utg",LibraryType.Test,TestsDummy.class),//
 	Test2 ("2 TestLifeCycle","TestLifeCycle1","TestLifeCycle.utg",LibraryType.Test,TestsDummy.class),//
