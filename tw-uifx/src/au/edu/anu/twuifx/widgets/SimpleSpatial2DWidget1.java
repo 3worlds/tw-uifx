@@ -57,6 +57,7 @@ import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import au.edu.anu.ymuit.ui.colour.ColourContrast;
+import au.edu.anu.ymuit.ui.colour.PaletteSize;
 import au.edu.anu.ymuit.util.CenteredZooming;
 import au.edu.anu.ymuit.util.Decimals;
 import javafx.geometry.Side;
@@ -1175,6 +1176,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private Side legendSide;
 	private boolean showArrows;
 	private boolean showIntermediateArrows;
+	private PaletteSize paletteSize = PaletteSize.veryLarge;
 
 	@Override
 	public void putUserPreferences() {
@@ -1232,10 +1234,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
 		colour64 = Preferences.getBoolean(widgetId + keyColour64, false);
+	// small= 8, medium=27, large = 64, veryLarge 125 colours max
+		
 		if (colour64)
-			lstColoursAvailable = ColourContrast.getContrastingColours64(bkgColour, contrast);
+			lstColoursAvailable = ColourContrast.getContrastingColours64(paletteSize,bkgColour, contrast);
 		else
-			lstColoursAvailable = ColourContrast.getContrastingColours(bkgColour, contrast);
+			lstColoursAvailable = ColourContrast.getContrastingColours(paletteSize,bkgColour, contrast);
 		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
 		chbxLegend.setSelected(Preferences.getBoolean(widgetId + keyLegendVisible, true));
 		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 10);
@@ -1313,6 +1317,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			s.setStroke(colour);
 		} else {
 			s = new Line(0, 6, 12, 6);
+			s.setStroke(colour);
+			s.setFill(colour);
 		}
 		stackPane.getChildren().addAll(r, s);
 		StackPane.setAlignment(s, Pos.CENTER);
@@ -1488,9 +1494,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 //			lineColour = cpLine.getValue();
 			fontColour = cpFont.getValue();
 			if (colour64)
-				lstColoursAvailable = ColourContrast.getContrastingColours64(bkgColour, contrast);
+				lstColoursAvailable = ColourContrast.getContrastingColours64(paletteSize,bkgColour, contrast);
 			else
-				lstColoursAvailable = ColourContrast.getContrastingColours(bkgColour, contrast);
+				lstColoursAvailable = ColourContrast.getContrastingColours(paletteSize,bkgColour, contrast);
 
 			legendSide = cmbSide.getValue();
 			maxLegendItems = spMaxLegendItems.getValue();
