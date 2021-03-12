@@ -5,11 +5,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 // TREE
 3worlds Resproutch
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(gignoux (5 févr. 2021))
+	built-by = java.lang.String(ian (12 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String()
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
+	experiment expt
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	predefined *categories*
 		categorySet *organisation*
 			category *assemblage*
@@ -25,6 +28,19 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		categorySet *systemElements*
+			category *arena*
+			category *life cycle*
+			category *group*
+			category *relation*
+			category *component*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		categorySet *lifespan*
+			category *ephemeral*
+			category *permanent*
 		record AVPopulation
 			field count
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
@@ -38,88 +54,169 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-		relationType *returnsTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-		categorySet *systemElements*
-			category *life cycle*
-			category *group*
-			category *relation*
-			category *component*
-			category *arena*
-		relationType *parentTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-		categorySet *lifespan*
-			category *ephemeral*
-			category *permanent*
+	userInterface gui
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget wgt2
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+			widget wgt1
+				order = java.lang.Integer(1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+		top top
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+	system sys1
+		decoratorClass = java.lang.String(code.sys1.generated.Climate)
+		dynamics sim1
+			stoppingCondition stCd1
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(600)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
+			timeline tmLn1
+				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(MONTH_30)
+				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONTH_30D)
+				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(MONTH_30)
+				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
+				timer clock1
+					dt = java.lang.Long(1)
+					nTimeUnits = java.lang.Integer(1)
+					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
+					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(MONTH_30)
+					process p3
+						function FireEffect
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String(code.sys1.generated.FireEffect)
+							snippet snpt6
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		otherDrv.bmS = 0.0;","		otherDrv.ht = 0.0;","		otherDrv.d = 0.0;"))
+					process p2
+						function Ignition
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.generated.Ignition)
+							snippet snpt4
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"		long tt = round(t);","		int month = (int) (tt % 12);","		if (fuelPresent)","			if (random.nextDouble()<ignitionProba.getByInt(month)) {","				focalDec.flameHt = 2.0;","				focalDrv.fuelPresent = false;","		}","		if ((!fuelPresent)&&(month>=8))","			focalDrv.fuelPresent = true;"))
+						dataTracker trk1
+							sampleSize = java.lang.String()
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+					process p5
+						function SeasonalCycle
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.generated.SeasonalCycle)
+							snippet snpt1
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([7]"		long tt = round(t);","		long month = tt % 12;","		// assuming numbering of months: 8 = nov., 11 = feb.","		if (month<=9)","			focalDec.growingSeason = true;","		else","			focalDec.growingSeason = false;"))
+					process p4
+						function FireSpread
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.generated.FireSpread)
+							snippet snpt5
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if (flameHt>0.0)","			return true;","		return false;"))
+					process p1
+						function Reproduction
+							relateToProduct = java.lang.Boolean(false)
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
+							userClassName = java.lang.String(code.sys1.generated.Reproduction)
+						function Mortality
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
+							userClassName = java.lang.String(code.sys1.generated.Mortality)
+						function Growth
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.generated.Growth)
+							snippet snpt2
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([51]"/*		if (growingSeason) {","			FirstOrderIntegrator mpi = new MidpointIntegrator(0.001);","			FirstOrderDifferentialEquations ode = new ResproutEquations(group_a,group_b,group_reservesMax,","				group_p,group_r,group_q,group_s,group_n,group_f,group_e,group_m,group_mL);","			double[] yy = new double[ode.getDimension()];","			yy[0] = bmL;","			yy[1] = bmS;","			yy[2] = bmR;","			yy[3] = reserves;","			mpi.integrate(ode,t,yy,t+dt,yy);","//			// growth = photosynthesis + translocation from reserves","//			double G = group_a*bmL + group_b*reserves;","//			// maximal reserve storage","//			double bplim = 1 - (reserves/group_reservesMax)*(bmR+bmS);","//			// increase in reserve biomass TODO:integration","//			double dResdt = group_p*bplim*G - group_b*reserves;","//			// correction term for root allocation coef","//			double alpha = 1 - group_p*bplim/(1-group_p);","//			// increase in root biomass TODO: integration + check: use of alpha ?","//			double dRdt = group_r*alpha*G - group_q*bmR;","//			// aboveground growth","//			double GA = group_s*alpha*G;","//			// architecture constraint","//			double beta = group_n*group_mL*pow(8*group_f*group_f/(PI*group_m),1.0/3)/group_e;			","//			// increase in stem biomass TODO:integration","//			double beta3 = pow(beta,3);","//			double dSdt = group_s * 3*bmL*bmL/(beta3+3*bmL*bmL) *GA - group_q*bmS;","//			// increase in leaf biomass TODO:integration","//			double dLdt = group_s * beta3/(beta3+3*bmL*bmL) * GA;","			// carryover to next month","//			focalDrv.bmL = bmL+dLdt*dt;","//			focalDrv.bmS = bmS+dSdt*dt;","//			focalDrv.bmR = bmR+dRdt*dt;","//			focalDrv.reserves = reserves+dResdt*dt;","			focalDrv.bmL = yy[0];","			focalDrv.bmS = yy[1];","			focalDrv.bmR = yy[2];","			focalDrv.reserves = yy[3];","		}","		else {","			focalDrv.bmL = 0.0;","			focalDrv.bmS = (1-group_q/10.0)*bmS;","			focalDrv.bmR = (1-group_q/10.0)*bmR;","			focalDrv.reserves = reserves; // NB: flaw here in case pLim*(bmS+bmR) becomes < than reserves ","		}","		// FLAW here: diameter and height decrease during dry season","		// compute ht and d","		double stemVolume = focalDrv.bmS/group_m;","		focalDrv.d = pow(8*stemVolume/(PI*group_f),1.0/3.0);","		focalDrv.ht = focalDrv.d*group_f;","*/"))
+						dataTracker trk2
+							sampleSize = java.lang.String()
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+		structure struc1
+			categorySet disturbances
+				category fire
+					constantClass = java.lang.String(Fire_Cnt)
+					decoratorClass = java.lang.String(Fire_Dec)
+					driverClass = java.lang.String(Fire_Drv)
+			groupType treeG
+				constantClass = java.lang.String(code.sys1.generated.TreePar)
+				group Piliostigma
+					constantValues initCnts1
+						a = java.lang.Double(2.0)
+						b = java.lang.Double(0.1)
+						e = java.lang.Double(3.73)
+						f = java.lang.Double(39.73)
+						m = java.lang.Double(0.65)
+						mL = java.lang.Double(3.98)
+						n = java.lang.Double(1.0)
+						p = java.lang.Double(0.25)
+						q = java.lang.Double(0.15)
+						r = java.lang.Double(0.25)
+						reservesMax = java.lang.Double(0.65)
+						s = java.lang.Double(0.5)
+				componentType treeI
+					constantClass = java.lang.String(code.sys1.generated.TreeCst)
+					driverClass = java.lang.String(code.sys1.generated.TreeDrv)
+					component bri
+						nInstances = java.lang.Integer(1)
+					initFunction InitTree
+						type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+						userClassName = java.lang.String(code.sys1.generated.InitTree)
+						snippet snpt7
+							javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([6]"		focalCnt.x = random.nextDouble();","		focalCnt.y = random.nextDouble();","		focalDrv.bmL = 0.0;","		focalDrv.bmS = 0.0;","		focalDrv.bmR = 1.0;","		focalDrv.reserves = 0.5;"))
+					component cro
+						nInstances = java.lang.Integer(1)
+					component pil
+				group Bridelia
+					constantValues initCnts2
+						a = java.lang.Double(2.0)
+						b = java.lang.Double(0.1)
+						e = java.lang.Double(3.35)
+						f = java.lang.Double(93.23)
+						m = java.lang.Double(0.59)
+						mL = java.lang.Double(5.25)
+						n = java.lang.Double(1.0)
+						p = java.lang.Double(0.25)
+						q = java.lang.Double(0.15)
+						r = java.lang.Double(0.25)
+						reservesMax = java.lang.Double(0.65)
+						s = java.lang.Double(0.5)
+				group Crossopteryx
+					constantValues initCnts3
+						a = java.lang.Double(2.0)
+						b = java.lang.Double(0.1)
+						e = java.lang.Double(3.3)
+						f = java.lang.Double(82.5)
+						m = java.lang.Double(0.8)
+						mL = java.lang.Double(5.0)
+						n = java.lang.Double(2.0)
+						p = java.lang.Double(0.25)
+						q = java.lang.Double(0.15)
+						r = java.lang.Double(0.25)
+						reservesMax = java.lang.Double(0.65)
+						s = java.lang.Double(0.5)
+			categorySet plants
+				category tree
+					constantClass = java.lang.String(Tree_Cnt)
+					decoratorClass = java.lang.Object(null)
+					driverClass = java.lang.String(Tree_Drv)
+				category treeSpecies
+					constantClass = java.lang.String(TreeSpecies_Cnt)
+					decoratorClass = java.lang.Object(null)
+					driverClass = java.lang.Object(null)
+			space space1
+				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
+				precision = java.lang.Double(0.01)
+				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
+				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
+			relationType burning
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+			componentType fireType
+				constantClass = java.lang.String(code.sys1.generated.FireCst)
+				decoratorClass = java.lang.String(code.sys1.generated.FireDec)
+				driverClass = java.lang.String(code.sys1.generated.FireDrv)
+				initFunction InitFire
+					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+					userClassName = java.lang.String(code.sys1.generated.InitFire)
+					snippet snpt3
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([7]"		// ignition probabilities per month","		for (int i=0; i<12; i++)","			focalCnt.ignitionProba.setWithFlatIndex(0.0,i);","		focalCnt.ignitionProba.setWithFlatIndex(0.0,8);","		focalCnt.ignitionProba.setWithFlatIndex(1.0,9);","		focalCnt.ignitionProba.setWithFlatIndex(0.0,10);","		focalCnt.ignitionProba.setWithFlatIndex(0.0,11);"))
+				component fire1
 	dataDefinition dDef
-		record treeCst
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(treeCst)
-			field y
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field x
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record fireDec
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(fireDec)
-			field flameHt
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,8.0[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String(m)
-		record treeDrv
-			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(treeDrv)
-			field bmL
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field d
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field reserves
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field stage
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Char)
-			field bmS
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field ht
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field bmR
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		dimensioner byMonth
-			size = java.lang.Integer(12)
-		record climate
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(climate)
-			field growingSeason
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
-		record fireDrv
-			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(fireDrv)
-			field fuelPresent
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		record treePar
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(treePar)
@@ -169,6 +266,12 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+			field reservesMax
+				description = java.lang.String(maximal proportion of reserves in structural biomass)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 			field f
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
@@ -179,13 +282,52 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field reservesMax
-				description = java.lang.String(maximal proportion of reserves in structural biomass)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+			field mL
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field mL
+		dimensioner byMonth
+			size = java.lang.Integer(12)
+		record fireDec
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(fireDec)
+			field flameHt
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,8.0[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(m)
+		record treeDrv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(treeDrv)
+			field bmR
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field bmS
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field d
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field bmL
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field ht
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field stage
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Char)
+			field reserves
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
@@ -198,196 +340,54 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(0.01)
 				units = java.lang.String()
-	experiment expt
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
-	system sys1
-		decoratorClass = java.lang.String(code.sys1.generated.Climate)
-		dynamics sim1
-			stoppingCondition stCd1
-				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(600)
-				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
-			timeline tmLn1
-				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(MONTH_30)
-				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONTH_30D)
-				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(MONTH_30)
-				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
-				timer clock1
-					dt = java.lang.Long(1)
-					nTimeUnits = java.lang.Integer(1)
-					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
-					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(MONTH_30)
-					process p5
-						function SeasonalCycle
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys1.generated.SeasonalCycle)
-							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([7]"		long tt = round(t);","		long month = tt % 12;","		// assuming numbering of months: 8 = nov., 11 = feb.","		if (month<=9)","			focalDec.growingSeason = true;","		else","			focalDec.growingSeason = false;"))
-					process p4
-						function FireSpread
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
-							userClassName = java.lang.String(code.sys1.generated.FireSpread)
-							snippet snpt5
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if (flameHt>0.0)","			return true;","		return false;"))
-					process p3
-						function FireEffect
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
-							userClassName = java.lang.String(code.sys1.generated.FireEffect)
-							snippet snpt6
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		otherDrv.bmS = 0.0;","		otherDrv.ht = 0.0;","		otherDrv.d = 0.0;"))
-					process p2
-						function Ignition
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys1.generated.Ignition)
-							snippet snpt4
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([9]"		long tt = round(t);","		int month = (int) (tt % 12);","		if (fuelPresent)","			if (random.nextDouble()<ignitionProba.getByInt(month)) {","				focalDec.flameHt = 2.0;","				focalDrv.fuelPresent = false;","		}","		if ((!fuelPresent)&&(month>=8))","			focalDrv.fuelPresent = true;"))
-						dataTracker trk1
-							sampleSize = java.lang.String()
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-					process p1
-						function Growth
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys1.generated.Growth)
-							snippet snpt2
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([51]"		if (growingSeason) {","			FirstOrderIntegrator mpi = new MidpointIntegrator(0.001);","			FirstOrderDifferentialEquations ode = new ResproutEquations(group_a,group_b,group_reservesMax,","				group_p,group_r,group_q,group_s,group_n,group_f,group_e,group_m,group_mL);","			double[] yy = new double[ode.getDimension()];","			yy[0] = bmL;","			yy[1] = bmS;","			yy[2] = bmR;","			yy[3] = reserves;","			mpi.integrate(ode,t,yy,t+dt,yy);","//			// growth = photosynthesis + translocation from reserves","//			double G = group_a*bmL + group_b*reserves;","//			// maximal reserve storage","//			double bplim = 1 - (reserves/group_reservesMax)*(bmR+bmS);","//			// increase in reserve biomass TODO:integration","//			double dResdt = group_p*bplim*G - group_b*reserves;","//			// correction term for root allocation coef","//			double alpha = 1 - group_p*bplim/(1-group_p);","//			// increase in root biomass TODO: integration + check: use of alpha ?","//			double dRdt = group_r*alpha*G - group_q*bmR;","//			// aboveground growth","//			double GA = group_s*alpha*G;","//			// architecture constraint","//			double beta = group_n*group_mL*pow(8*group_f*group_f/(PI*group_m),1.0/3)/group_e;			","//			// increase in stem biomass TODO:integration","//			double beta3 = pow(beta,3);","//			double dSdt = group_s * 3*bmL*bmL/(beta3+3*bmL*bmL) *GA - group_q*bmS;","//			// increase in leaf biomass TODO:integration","//			double dLdt = group_s * beta3/(beta3+3*bmL*bmL) * GA;","			// carryover to next month","//			focalDrv.bmL = bmL+dLdt*dt;","//			focalDrv.bmS = bmS+dSdt*dt;","//			focalDrv.bmR = bmR+dRdt*dt;","//			focalDrv.reserves = reserves+dResdt*dt;","			focalDrv.bmL = yy[0];","			focalDrv.bmS = yy[1];","			focalDrv.bmR = yy[2];","			focalDrv.reserves = yy[3];","","		}","		else {","			focalDrv.bmL = 0.0;","			focalDrv.bmS = (1-group_q/10.0)*bmS;","			focalDrv.bmR = (1-group_q/10.0)*bmR;","			focalDrv.reserves = reserves; // NB: flaw here in case pLim*(bmS+bmR) becomes < than reserves ","		}","		// FLAW here: diameter and height decrease during dry season","		// compute ht and d","		double stemVolume = focalDrv.bmS/group_m;","		focalDrv.d = pow(8*stemVolume/(PI*group_f),1.0/3.0);","		focalDrv.ht = focalDrv.d*group_f;"))
-						function Reproduction
-							relateToProduct = java.lang.Boolean(false)
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
-							userClassName = java.lang.String(code.sys1.generated.Reproduction)
-						function Mortality
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
-							userClassName = java.lang.String(code.sys1.generated.Mortality)
-						dataTracker trk2
-							sampleSize = java.lang.String()
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-		structure struc1
-			space space1
-				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
-				precision = java.lang.Double(0.01)
-				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
-				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
-				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
-			categorySet plants
-				category treeSpecies
-					constantClass = java.lang.String(TreeSpecies_Cnt)
-					decoratorClass = java.lang.Object(null)
-					driverClass = java.lang.Object(null)
-				category tree
-					constantClass = java.lang.String(Tree_Cnt)
-					decoratorClass = java.lang.Object(null)
-					driverClass = java.lang.String(Tree_Drv)
-			categorySet disturbances
-				category fire
-					constantClass = java.lang.String(Fire_Cnt)
-					decoratorClass = java.lang.String(Fire_Dec)
-					driverClass = java.lang.String(Fire_Drv)
-			relationType burning
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
-			componentType fireType
-				constantClass = java.lang.String(code.sys1.generated.FireCst)
-				decoratorClass = java.lang.String(code.sys1.generated.FireDec)
-				driverClass = java.lang.String(code.sys1.generated.FireDrv)
-				component fire1
-				initFunction InitFire
-					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-					userClassName = java.lang.String(code.sys1.generated.InitFire)
-					snippet snpt3
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([7]"		// ignition probabilities per month","		for (int i=0; i<12; i++)","			focalCnt.ignitionProba.setWithFlatIndex(0.0,i);","		focalCnt.ignitionProba.setWithFlatIndex(0.0,8);","		focalCnt.ignitionProba.setWithFlatIndex(1.0,9);","		focalCnt.ignitionProba.setWithFlatIndex(0.0,10);","		focalCnt.ignitionProba.setWithFlatIndex(0.0,11);"))
-			groupType treeG
-				constantClass = java.lang.String(code.sys1.generated.TreePar)
-				group Piliostigma
-					constantValues initCnts1
-						a = java.lang.Double(2.0)
-						b = java.lang.Double(0.1)
-						e = java.lang.Double(3.73)
-						f = java.lang.Double(39.73)
-						m = java.lang.Double(0.65)
-						mL = java.lang.Double(3.98)
-						n = java.lang.Double(1.0)
-						p = java.lang.Double(0.25)
-						q = java.lang.Double(0.15)
-						r = java.lang.Double(0.25)
-						reservesMax = java.lang.Double(0.65)
-						s = java.lang.Double(0.5)
-				group Bridelia
-					constantValues initCnts2
-						a = java.lang.Double(2.0)
-						b = java.lang.Double(0.1)
-						e = java.lang.Double(3.35)
-						f = java.lang.Double(93.23)
-						m = java.lang.Double(0.59)
-						mL = java.lang.Double(5.25)
-						n = java.lang.Double(1.0)
-						p = java.lang.Double(0.25)
-						q = java.lang.Double(0.15)
-						r = java.lang.Double(0.25)
-						reservesMax = java.lang.Double(0.65)
-						s = java.lang.Double(0.5)
-				componentType treeI
-					constantClass = java.lang.String(code.sys1.generated.TreeCst)
-					driverClass = java.lang.String(code.sys1.generated.TreeDrv)
-					component cro
-						nInstances = java.lang.Integer(1)
-					component pil
-					initFunction InitTree
-						type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-						userClassName = java.lang.String(code.sys1.generated.InitTree)
-						snippet snpt7
-							javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([6]"		focalCnt.x = random.nextDouble();","		focalCnt.y = random.nextDouble();","		focalDrv.bmL = 0.0;","		focalDrv.bmS = 0.0;","		focalDrv.bmR = 1.0;","		focalDrv.reserves = 0.5;"))
-					component bri
-						nInstances = java.lang.Integer(1)
-				group Crossopteryx
-					constantValues initCnts3
-						a = java.lang.Double(2.0)
-						b = java.lang.Double(0.1)
-						e = java.lang.Double(3.3)
-						f = java.lang.Double(82.5)
-						m = java.lang.Double(0.8)
-						mL = java.lang.Double(5.0)
-						n = java.lang.Double(2.0)
-						p = java.lang.Double(0.25)
-						q = java.lang.Double(0.15)
-						r = java.lang.Double(0.25)
-						reservesMax = java.lang.Double(0.65)
-						s = java.lang.Double(0.5)
-	userInterface gui
-		top top
-			widget ctrl
-				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
-		tab tab1
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget wgt1
-				order = java.lang.Integer(1)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
-			widget wgt2
-				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+		record treeCst
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(treeCst)
+			field y
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field x
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record fireDrv
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(fireDrv)
+			field fuelPresent
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		record climate
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(climate)
+			field growingSeason
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 
 // CROSS-LINKS
 [group:Crossopteryx] groupOf grpOf2 [componentType:treeI]
-[dataTracker:trk1] trackComponent trks3 [component:fire1]
 [dataTracker:trk1] trackField trks1 [field:flameHt]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trk1] trackComponent trks3 [component:fire1]
+[dataTracker:trk2] trackComponent trks4 [component:bri]
 [dataTracker:trk2] trackField trks6 [field:ht]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[dataTracker:trk2] trackComponent trks4 [component:bri]
 [category:treeSpecies] constants cnsts3 [record:treePar]
 [component:bri] instanceOf instOf1 [group:Bridelia]
-[category:fire] constants cnsts1 [record:fireCst]
 [category:fire] drivers drvs1 [record:fireDrv]
 [category:fire] decorators decs2 [record:fireDec]
-[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[category:fire] constants cnsts1 [record:fireCst]
 [relationType:*returnsTo*] toCategory to2 [category:*component*]
-[system:sys1] belongsTo bt10 [category:*permanent*]
-[system:sys1] belongsTo bt9 [category:*assemblage*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
 [system:sys1] belongsTo bt8 [category:*arena*]
+[system:sys1] belongsTo bt9 [category:*assemblage*]
+[system:sys1] belongsTo bt10 [category:*permanent*]
 [widget:wgt2] trackSeries trks2 [dataTracker:trk1]
 [widget:wgt1] trackSeries trks5 [dataTracker:trk2]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [group:Piliostigma] groupOf grpOf3 [componentType:treeI]
-[relationType:*parentTo*] fromCategory frm1 [category:*component*]
 [relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
 [category:*arena*] decorators decs1 [record:climate]
 [group:Bridelia] groupOf grpOf1 [componentType:treeI]
 [space:space1] coordinate crdmp [field:x]
@@ -397,12 +397,12 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 [component:pil] instanceOf instOf3 [group:Piliostigma]
 [table:ignitionProba] sizedBy szBy1 [dimensioner:byMonth]
 	rank = java.lang.Integer(0)
-[category:tree] constants cnsts2 [record:treeCst]
 [category:tree] drivers drvs2 [record:treeDrv]
-[process:p1] appliesTo aplyTo1 [category:tree]
+[category:tree] constants cnsts2 [record:treeCst]
 [process:p1] dependsOn depsOn4 [process:p5]
-[process:p2] appliesTo aplyTo2 [category:fire]
+[process:p1] appliesTo aplyTo1 [category:tree]
 [process:p2] dependsOn depsOn1 [process:p5]
+[process:p2] appliesTo aplyTo2 [category:fire]
 [process:p3] dependsOn depsOn3 [process:p4]
 [process:p3] appliesTo aplyTo3 [relationType:burning]
 [process:p4] dependsOn depsOn2 [process:p2]
@@ -413,14 +413,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 [relationType:burning] toCategory to3 [category:tree]
 [relationType:burning] fromCategory from1 [category:fire]
 [groupType:treeG] belongsTo bt15 [category:treeSpecies]
-[groupType:treeG] belongsTo bt7 [category:*group*]
-[groupType:treeG] belongsTo bt6 [category:*permanent*]
 [groupType:treeG] belongsTo bt5 [category:*assemblage*]
-[componentType:treeI] belongsTo bt3 [category:*ephemeral*]
-[componentType:treeI] belongsTo bt2 [category:*atomic*]
+[groupType:treeG] belongsTo bt6 [category:*permanent*]
+[groupType:treeG] belongsTo bt7 [category:*group*]
 [componentType:treeI] belongsTo bt1 [category:*component*]
+[componentType:treeI] belongsTo bt2 [category:*atomic*]
+[componentType:treeI] belongsTo bt3 [category:*ephemeral*]
 [componentType:treeI] belongsTo bt4 [category:tree]
-[componentType:fireType] belongsTo bt14 [category:*permanent*]
-[componentType:fireType] belongsTo bt13 [category:fire]
-[componentType:fireType] belongsTo bt12 [category:*atomic*]
 [componentType:fireType] belongsTo bt11 [category:*component*]
+[componentType:fireType] belongsTo bt12 [category:*atomic*]
+[componentType:fireType] belongsTo bt13 [category:fire]
+[componentType:fireType] belongsTo bt14 [category:*permanent*]

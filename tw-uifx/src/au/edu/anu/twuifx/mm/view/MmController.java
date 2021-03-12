@@ -415,7 +415,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //			System.out.println(newValue.doubleValue());
 			setElementScales(newValue.doubleValue());
 		});
-		
+
 	}
 
 	private void setElementScales(double zoom) {
@@ -625,7 +625,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void onImportSnippets(ActionEvent event) {
-
+		Dialogs.warnAlert("Code import", "Code dependencies",
+				"Java snippit importing is intended to be a convenient way of storing Function code within the project configuration graph."
+						+ "\nHowever, importing snippets that have a third-party dependency will cause compile errors."
+						+ "\nTo avoid this and preserve your code, surround the relevant snippet code with comment markers after importing.");
+		// Add comment markers to the snippet code to preserve the code and allow a
+		// clean compilation.
 		List<String> errorList = new ArrayList<>();
 		Map<String, TreeGraphDataNode> snippetNodes = new HashMap<>();
 		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets();
@@ -1114,7 +1119,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Menu muTutorials = new Menu("Tutorials");
 		Menu muModels = new Menu("Model Library");
 		Menu muTests = new Menu("Test cases");
-		menuNew.getItems().addAll(muTemplates, muTutorials, muModels,muTests);
+		menuNew.getItems().addAll(muTemplates, muTutorials, muModels, muTests);
 		for (LibraryTable entry : LibraryTable.values()) {
 			MenuItem mi = new MenuItem(entry.displayName());
 			mi.setMnemonicParsing(false);
@@ -1128,7 +1133,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				muTutorials.getItems().add(mi);
 				break;
 			}
-			case Model:{
+			case Model: {
 				muModels.getItems().add(mi);
 				break;
 			}

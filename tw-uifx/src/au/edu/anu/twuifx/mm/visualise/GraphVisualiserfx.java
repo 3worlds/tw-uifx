@@ -35,8 +35,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.math.util.MathUtils;
+import fr.cnrs.iees.uit.space.Distance;
+//import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
@@ -466,9 +466,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	protected void textPropertyChange(Line line, Text text, VisualNode startNode, VisualNode endNode) {
 		boolean collapsed = startNode.isCollapsed() || endNode.isCollapsed();
-		double[] p1 = { line.getStartX(), line.getStartY() };
-		double[] p2 = { line.getEndX(), line.getEndY() };
-		double distance = MathUtils.distance(p1, p2);
+//		double[] p1 = { line.getStartX(), line.getStartY() };
+//		double[] p2 = { line.getEndX(), line.getEndY() };
+		double distance = Distance.euclidianDistance(line.getStartX(),line.getStartY(),line.getEndX(),line.getEndY() );
 		// or dy small (horizontal) and dx shorter than label??
 		if ((distance < (4 * nodeRadius.get())) | collapsed) {
 			text.visibleProperty().unbind();
