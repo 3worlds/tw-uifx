@@ -30,6 +30,7 @@ import de.gsi.chart.renderer.LineStyle;
 import de.gsi.chart.renderer.Renderer;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
+import de.gsi.dataset.spi.DefaultDataSet;
 import de.gsi.dataset.spi.DoubleDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -125,29 +126,29 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		}
 		BorderPane content = new BorderPane();
 		// aka makeChannels
-		dataSet = new DoubleDataSet(xName+":"+yName);
+		dataSet = new DefaultDataSet(xName+":"+yName);
 		
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis(xName, xUnits);
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis(yName, yUnits);
 		
-		xAxis1.setAnimated(false);
-		yAxis1.setAnimated(false);
-		
-		xAxis1.setAutoRangeRounding(false);
-		yAxis1.setAutoRangeRounding(false);
-
-		xAxis1.setTimeAxis(false);
-		yAxis1.setTimeAxis(false);
-
-		xAxis1.invertAxis(false);
-		yAxis1.invertAxis(false);
-
-		xAxis1.setForceZeroInRange(false);
-		yAxis1.setForceZeroInRange(false);
+//		xAxis1.setAnimated(false);
+//		yAxis1.setAnimated(false);
+//		
+//		xAxis1.setAutoRangeRounding(false);
+//		yAxis1.setAutoRangeRounding(false);
+//
+//		xAxis1.setTimeAxis(false);
+//		yAxis1.setTimeAxis(false);
+//
+//		xAxis1.invertAxis(false);
+//		yAxis1.invertAxis(false);
+//
+//		xAxis1.setForceZeroInRange(false);
+//		yAxis1.setForceZeroInRange(false);
 
 		xAxis1.setTickLabelRotation(45);
 
-		// one renderer
+		// create one renderer
 		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
 		// setup renderer
 		rndr.setErrorType(ErrorStyle.NONE);
@@ -169,7 +170,6 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		chart.getRenderers().add(rndr);
 		chart.legendVisibleProperty().set(false);
 		chart.setAnimated(false);
-		chart.getDatasets().add(dataSet);
 		content.setCenter(chart);
 		content.setRight(new Label(""));
 		chart.getPlugins().add(new Zoomer());
@@ -181,7 +181,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	private void processDataMessage(OutputXYData data) {
 		Platform.runLater(() -> {
-			System.out.println(data.time()+"\t"+data.getX()+"\t"+data.getY());
+//			System.out.println(data.time()+"\t"+data.getX()+"\t"+data.getY());
 			dataSet.add(data.getX(),data.getY());		
 		});
 
@@ -200,11 +200,11 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-			System.out.println("CLEAR DATA");
+//			System.out.println("CLEAR DATA");
 			dataSet.clearData();
 		} else if (isSimulatorState(state, finished)) {
 			Platform.runLater(() -> {
-				System.out.println("--AXIS REDRAW--");
+//				System.out.println("--AXIS REDRAW--");
 				chart.getAxes().forEach((axis) -> {
 					axis.forceRedraw();
 				});
