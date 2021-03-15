@@ -1,9 +1,41 @@
+/**************************************************************************
+ *  TW-UIFX - ThreeWorlds User-Interface fx                               *
+ *                                                                        *
+ *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
+ *       jacques.gignoux@upmc.fr                                          *
+ *       ian.davies@anu.edu.au                                            *
+ *                                                                        *
+ *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
+ *  This is to separate concerns of UI implementation and the code for    *
+ *  these java programs.                                                  *
+ *                                                                        *
+ **************************************************************************
+ *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
+ *                                                                        *
+ *  TW-UIFX is free software: you can redistribute it and/or modify       *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation, either version 3 of the License, or     *
+ *  (at your option) any later version.                                   *
+ *                                                                        *
+ *  TW-UIFX is distributed in the hope that it will be useful,            *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *  GNU General Public License for more details.                          *
+ *                                                                        *
+ *  You should have received a copy of the GNU General Public License     *
+ *  along with TW-UIFX.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
+ *                                                                        *
+ **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -48,20 +80,17 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
-//private static final DefaultMarker[] symbols = { //
-//DefaultMarker.RECTANGLE, //
-//DefaultMarker.DIAMOND, //
-//DefaultMarker.CIRCLE, //
-//DefaultMarker.CROSS, //
-//DefaultMarker.RECTANGLE2, //
-//DefaultMarker.DIAMOND2, //
-//DefaultMarker.CIRCLE2, //
-//};
 
+/**
+ * @author Ian Davies
+ *
+ * @date 16 Mar. 2021
+ */
 public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
 	private String widgetId;
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
+	private final Map<Integer, DoubleDataSet> senderDataSet;
 	// private static Logger log = Logging.getLogger(SimpleXYPlotWidget.class);
 	private XYChart chart;
 	private DoubleDataSet dataSet;
@@ -77,13 +106,13 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		super(statusSender, DataMessageTypes.XY);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
+		senderDataSet = new ConcurrentHashMap<>();
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
 		policy.setProperties(id, properties);
-
 	}
 
 	@Override
@@ -92,6 +121,12 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 			msgMetadata = meta;
 		}
 	}
+//	xAxis1.setAnimated(false);// default = false;
+//	xAxis1.setAutoRangeRounding(false);// default = false;
+//	xAxis1.setTimeAxis(false);// default = false
+//	xAxis1.invertAxis(false);// default = false
+//	xAxis1.setForceZeroInRange(false);// default = false
+//	rndr.setDrawMarker(true);// Default true
 
 	@Override
 	public Object getUserInterfaceContainer() {
@@ -131,33 +166,16 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis(xName, xUnits);
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis(yName, yUnits);
 
-//		xAxis1.setAnimated(false);// default = false;
-//		yAxis1.setAnimated(false);
-//		
-//		xAxis1.setAutoRangeRounding(false);// default = false;
-//		yAxis1.setAutoRangeRounding(false);
-//
-//		xAxis1.setTimeAxis(false);// default = false
-//		yAxis1.setTimeAxis(false);
-//
-//		xAxis1.invertAxis(false);// default = false
-//		yAxis1.invertAxis(false);
-//
-//		xAxis1.setForceZeroInRange(false);// default = false
-//		yAxis1.setForceZeroInRange(false);
-
 		xAxis1.setTickLabelRotation(45);
 
 		// create one renderer
 		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
 		// setup renderer
-//		System.out.println(rndr.drawMarkerProperty().get());
 		rndr.setErrorType(ErrorStyle.NONE);// Default ErrorStyle.ERRORCOMBO
 		rndr.setPolyLineStyle(LineStyle.NONE);// Default LineStyle.NORMAL
 		rndr.setMarkerSize(symbolSize);// Default = 1.5
 		rndr.setMarker(symbol);// Default DefaultMarker.RECTANGLE
 		rndr.setPointReduction(false);// Default: true;
-//		rndr.setDrawMarker(true);// Default true
 		rndr.setAssumeSortedData(false);// Default: true !! important since DS is likely unsorted
 		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) rndr.getRendererDataReducer();
 		reductionAlgorithm.setMinPointPixelDistance(0);
@@ -183,7 +201,6 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	private void processDataMessage(OutputXYData data) {
 		Platform.runLater(() -> {
-//			System.out.println(data.time()+"\t"+data.getX()+"\t"+data.getY());
 			dataSet.add(data.getX(),data.getY());		
 		});
 
@@ -202,11 +219,9 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-//			System.out.println("CLEAR DATA");
 			dataSet.clearData();
 		} else if (isSimulatorState(state, finished)) {
 			Platform.runLater(() -> {
-//				System.out.println("--AXIS REDRAW--");
 				chart.getAxes().forEach((axis) -> {
 					axis.forceRedraw();
 				});
@@ -236,6 +251,7 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		Label lbl = new Label("Symbol size");
 		Spinner<Integer> spCapacity = new Spinner<>();
 		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, symbolSize));
+		// 
 		spCapacity.setMaxWidth(100);
 		spCapacity.setEditable(true);
 		content.add(lbl, 0, 0);
@@ -254,6 +270,15 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 			}
 		}
 	}
+	//private static final DefaultMarker[] symbols = { //
+	//DefaultMarker.RECTANGLE, //
+	//DefaultMarker.DIAMOND, //
+	//DefaultMarker.CIRCLE, //
+	//DefaultMarker.CROSS, //
+	//DefaultMarker.RECTANGLE2, //
+	//DefaultMarker.DIAMOND2, //
+	//DefaultMarker.CIRCLE2, //
+	//};
 
 	private static final String keySymbolSize = "symbolSize";
 	private static final String keySymbol = "symbol";
