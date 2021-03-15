@@ -32,7 +32,7 @@ package au.edu.anu.twuifx.widgets.samples;
 public class TestSamples {
 
 	public static void main(String[] args) {
-		de.gsi.chart.samples.RunChartSamples.main(args);
+		de.gsi.chart.samples.ChartPerformanceGraph.main(args);
 
 	}
 

@@ -1,11 +1,13 @@
 package au.edu.anu.twuifx.widgets;
 
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.util.Optional;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
+import au.edu.anu.twcore.data.runtime.IndexedDataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.OutputXYData;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -61,17 +63,19 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	private final WidgetTrackingPolicy<TimeData> policy;
 	// private static Logger log = Logging.getLogger(SimpleXYPlotWidget.class);
 	private XYChart chart;
-//	private DoubleDataSet ds;
+	private DoubleDataSet dataSet;
 	private int symbolSize;
 	private DefaultMarker symbol;
 	private Metadata msgMetadata;
-	private OutputXYData metadataXY;
+	private String xName;
+	private String yName;
+	private String xUnits;
+	private String yUnits;
 
 	public SimpleXYPlotWidget(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.XY);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
-		// dataSetMap = new HashMap<>();
 	}
 
 	@Override
@@ -81,52 +85,10 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	}
 
-	/*- TIPS
-	 * ((Region) currentChart.getYAxis()).lookup(".axis-label").setStyle("-fx-text-fill: green;");
-	 * currentChart.getYAxis().setLabel("Current");
-	 * currentChart.getYAxis().setSide(Side.RIGHT);
-	 * currentChart.getDatasets().addAll(createSeries());
-	*/
-//	private static int bufferSize = 1000;
-
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		if (policy.canProcessMetadataMessage(meta)) {
 			msgMetadata = meta;
-			System.out.println(meta.properties());
-//			Platform.runLater(() -> {
-//			for (String key : meta.properties().getKeysAsSet()) {
-//				System.out.println(key+"\t"+meta.properties().getProperty(key));
-//			}
-//				DataLabel dlx = (DataLabel) meta.properties().getPropertyValue("x.hlabel");
-//				DataLabel dly = (DataLabel) meta.properties().getPropertyValue("xnew.hlabel");
-//				ds = new DoubleDataSet(dlx.toString() + "|" + dly.toString());
-//				ds.getStyle();
-//				ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
-//				rndr.setErrorType(ErrorStyle.NONE);
-//				rndr.setPolyLineStyle(LineStyle.NONE);
-//				rndr.setMarkerSize(symbolSize);
-//				rndr.setMarker(symbol);
-//				rndr.setPointReduction(true);
-//				rndr.setDrawMarker(true);
-//				DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) rndr.getRendererDataReducer();
-//				reductionAlgorithm.setMinPointPixelDistance(0);
-//
-//				chart.getRenderers().setAll(rndr);
-//				chart.getDatasets().addAll(ds);
-//				String axisUnit = "units";
-//				chart.getXAxis().set(dlx.toString(), axisUnit);
-//
-//				chart.getYAxis().set(dly.toString());
-//				chart.getXAxis().setUnit((String) meta.properties().getPropertyValue("x.units"));
-//				chart.getYAxis().setUnit((String) meta.properties().getPropertyValue("y.units"));
-//				chart.setLegendVisible(false);
-//
-//				timeFormatter.onMetaDataMessage(meta);
-//				TimeUnits tu = (TimeUnits) meta.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-//				int nTu = (Integer) meta.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-			// show this somewhere
-//			});
 		}
 	}
 
@@ -138,12 +100,41 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		// Get the prefs before building the ui
 		getUserPreferences();
 
+		for (String key : msgMetadata.properties().getKeysAsSet()) {
+			if (key.contains(P_FIELD_LABEL.key())) {
+				IndexedDataLabel idxdl = (IndexedDataLabel) msgMetadata.properties().getPropertyValue(key);
+				if (xName == null) {
+					xName = idxdl.getEnd();
+				} else
+					yName = idxdl.getEnd();
+			}
+		}
+		timeFormatter.onMetaDataMessage(msgMetadata);
+		for (String key : msgMetadata.properties().getKeysAsSet()) {
+			if (key.contains(xName + ".")) {
+				if (key.contains(P_FIELD_UNITS.key())) {
+					xUnits =  (String) msgMetadata.properties().getPropertyValue(key);
+				}
+
+			} else if (key.contains(yName + ".")) {
+				if (key.contains(P_FIELD_UNITS.key())) {
+					yUnits =  (String) msgMetadata.properties().getPropertyValue(key);
+				}
+
+			}
+		}
 		BorderPane content = new BorderPane();
-		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis("", "x label");
-		// xAxis1.setUnitScaling(MetricPrefix.);
-		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis("", "?");
-		xAxis1.setAutoRangeRounding(true);
-		yAxis1.setAutoRangeRounding(true);
+		// aka makeChannels
+		dataSet = new DoubleDataSet(xName+":"+yName);
+		
+		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis(xName, xUnits);
+		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis(yName, yUnits);
+		
+		xAxis1.setAnimated(false);
+		yAxis1.setAnimated(false);
+		
+		xAxis1.setAutoRangeRounding(false);
+		yAxis1.setAutoRangeRounding(false);
 
 		xAxis1.setTimeAxis(false);
 		yAxis1.setTimeAxis(false);
@@ -151,22 +142,36 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		xAxis1.invertAxis(false);
 		yAxis1.invertAxis(false);
 
-		xAxis1.setForceZeroInRange(true);
-		yAxis1.setForceZeroInRange(true);
+		xAxis1.setForceZeroInRange(false);
+		yAxis1.setForceZeroInRange(false);
 
 		xAxis1.setTickLabelRotation(45);
 
-		xAxis1.setUnit("x unit?");
-		yAxis1.setUnit("y unit?");
-
-		xAxis1.set("x label");
-		yAxis1.set("y label");
+		// one renderer
+		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
+		// setup renderer
+		rndr.setErrorType(ErrorStyle.NONE);
+		rndr.setPolyLineStyle(LineStyle.NONE);
+		rndr.setMarkerSize(symbolSize);
+		rndr.setMarker(symbol);
+		rndr.setPointReduction(false);
+		rndr.setDrawMarker(true);
+		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) rndr.getRendererDataReducer();
+		reductionAlgorithm.setMinPointPixelDistance(0);
 
 		chart = new XYChart(xAxis1, yAxis1);
-		chart.legendVisibleProperty().set(true);
+// -------------IS THIS ORDER IMPORTANT? NOT CERTAIN
+		// 1) add axes to renderer
+		rndr.getAxes().addAll(xAxis1,yAxis1);
+		// 2) add dataSet to renderer
+		rndr.getDatasets().add(dataSet);
+		//--------------------------------------------
+		chart.getRenderers().add(rndr);
+		chart.legendVisibleProperty().set(false);
 		chart.setAnimated(false);
+		chart.getDatasets().add(dataSet);
 		content.setCenter(chart);
-		content.setRight(new Label(" "));
+		content.setRight(new Label(""));
 		chart.getPlugins().add(new Zoomer());
 		chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
@@ -175,16 +180,15 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	}
 
 	private void processDataMessage(OutputXYData data) {
-//		Platform.runLater(() -> {
-//			ds.add(data.getX(), data.getY());
-//		});
+		Platform.runLater(() -> {
+			System.out.println(data.time()+"\t"+data.getX()+"\t"+data.getY());
+			dataSet.add(data.getX(),data.getY());		
+		});
 
 	}
 
 	@Override
 	public void onDataMessage(OutputXYData data) {
-		System.out.println(data);
-
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial))
 				throw new TwuifxException("Handling initial data not implemented for this widget.");
@@ -196,8 +200,16 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-//			if (ds != null)
-//				ds.clearData();
+			System.out.println("CLEAR DATA");
+			dataSet.clearData();
+		} else if (isSimulatorState(state, finished)) {
+			Platform.runLater(() -> {
+				System.out.println("--AXIS REDRAW--");
+				chart.getAxes().forEach((axis) -> {
+					axis.forceRedraw();
+				});
+			});
+
 		}
 	}
 

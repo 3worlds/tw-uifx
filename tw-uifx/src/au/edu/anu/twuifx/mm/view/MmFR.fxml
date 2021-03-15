@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.PropertySheet?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mm.view.MmController">
+	<top>
+		<MenuBar BorderPane.alignment="CENTER">
+			<menus>
+				<Menu mnemonicParsing="false" text="Projects">
+					<items>
+                  <Menu fx:id="menuNew" mnemonicParsing="false" text="New">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                  </Menu>
+						<SeparatorMenuItem mnemonicParsing="false" />
+						<Menu fx:id="menuOpen" mnemonicParsing="false" text="Open">
+							<items>
+								<MenuItem mnemonicParsing="false" text="Action 1" />
+							</items>
+						</Menu>
+                  <MenuItem fx:id="menuItemImport" mnemonicParsing="false" onAction="#handleImport" text="Import..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+						<MenuItem fx:id="menuItemSave" disable="true" mnemonicParsing="false" onAction="#handleSave" text="Save">
+							<accelerator>
+								<KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+							</accelerator>
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../../images/Save16.gif" />
+									</image>
+								</ImageView>
+							</graphic>
+						</MenuItem>
+						<MenuItem fx:id="menuItemSaveAs" disable="true" mnemonicParsing="false" onAction="#handleSaveAs" text="Save As...">
+							<graphic>
+								<ImageView pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../../images/SaveAs16.gif" />
+									</image>
+								</ImageView>
+							</graphic>
+							<accelerator>
+								<KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+							</accelerator>
+						</MenuItem>
+						<SeparatorMenuItem mnemonicParsing="false" />
+						<MenuItem fx:id="menuItemExit" mnemonicParsing="false" onAction="#handleMenuExit" text="Exit">
+							<accelerator>
+								<KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+							</accelerator>
+						</MenuItem>
+					</items>
+				</Menu>
+				<Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem fx:id="miUndo" disable="true" mnemonicParsing="false" onAction="#doUndo" text="Undo" />
+                  <MenuItem fx:id="miRedo" disable="true" mnemonicParsing="false" onAction="#doRedo" text="Redo" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Import snippets" />
+                  <MenuItem fx:id="miClearSnippets" disable="true" mnemonicParsing="false" onAction="#doClearSnippets" text="Clear snippets" />
+                  <Menu mnemonicParsing="false" text="Java project">
+                    <items>
+                        <MenuItem fx:id="miDisconnect" disable="true" mnemonicParsing="false" onAction="#handleDisconnectJavaProject" text="Disconnect" />
+                        <MenuItem fx:id="miSetCodePath" disable="true" mnemonicParsing="false" onAction="#handleSetCodePath" text="Connect..." />
+                    </items>
+                  </Menu>
+               </items></Menu>
+            <Menu mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="About" />
+              </items>
+            </Menu>
+			</menus>
+		</MenuBar>
+	</top>
+   <center>
+      <SplitPane fx:id="splitPane1" dividerPositions="0.2" BorderPane.alignment="CENTER">
+         <items>
+            <BorderPane>
+               <center>
+                  <SplitPane fx:id="splitPane2" dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
+                     <items>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <center>
+                              <TabPane fx:id="tabPaneProperties" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                <tabs>
+                                  <Tab text="Properties">
+                                       <content>
+                                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                             <center>
+                                                <PropertySheet fx:id="allElementsPropertySheet" BorderPane.alignment="CENTER" />
+                                             </center>
+                                          </BorderPane>
+                                       </content>
+                                  </Tab>
+                                  <Tab text="Selected Properties">
+                                       <content>
+                                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                             <center>
+                                                <PropertySheet fx:id="nodePropertySheet" BorderPane.alignment="CENTER" />
+                                             </center>
+                                          </BorderPane>
+                                       </content>
+                                  </Tab>
+                                </tabs>
+                              </TabPane>
+                           </center>
+                        </BorderPane>
+                        <BorderPane>
+                           <center>
+                              <TextArea fx:id="textAreaErrorMsgs" editable="false" wrapText="true" BorderPane.alignment="CENTER" />
+                           </center>
+                           <top>
+                              <ToolBar BorderPane.alignment="CENTER">
+                                <items>
+                                    <RadioButton fx:id="rb1" mnemonicParsing="false" selected="true" text="Actions" />
+                                    <RadioButton fx:id="rb2" mnemonicParsing="false" text="Details" />
+                                    <RadioButton fx:id="rb3" mnemonicParsing="false" text="Debug" />
+                                </items>
+                              </ToolBar>
+                           </top>
+                        </BorderPane>
+                     </items>
+                  </SplitPane>
+               </center>
+               <bottom>
+            		<ToolBar BorderPane.alignment="CENTER">
+            			<items>
+            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Compile" />
+            				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Deploy">
+                           <graphic>
+                              <ImageView pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../git/tw-uifx/tw-uifx/src/au/edu/anu/twuifx/images/ApplicationDeploy16.gif" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+            				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.5" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Label fx:id="lblChecking" style="-fx-background-color: white; -fx-font-style: italic;" text="compiling..." visible="false">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+            			</items>
+            		</ToolBar>
+               </bottom>
+            </BorderPane>
+            <BorderPane>
+               <center>
+                  <ScrollPane fx:id="scrollPane" pannable="true" BorderPane.alignment="CENTER">
+                     <content>
+                        <StackPane fx:id="scrollContent" style="-fx-background-color: lightgrey;">
+                           <children>
+                              <Group fx:id="group">
+                                 <children>
+                                    <AnchorPane fx:id="zoomTarget" focusTraversable="true" layoutX="14.0" minHeight="740.0" minWidth="1200.0" onKeyReleased="#onPaneKeyReleased" onMouseClicked="#handlePaneOnMouseClicked" style="-fx-background-color: white;" />
+                                 </children>
+                              </Group>
+                           </children>
+                        </StackPane>
+                     </content>
+                  </ScrollPane>
+               </center>
+               <top>
+                  <ToolBar>
+                     <items>
+                        <AnchorPane prefHeight="60.0" prefWidth="177.0">
+                           <children>
+                              <RadioButton fx:id="rbl1" disable="true" layoutY="5.0" mnemonicParsing="false" text="L1">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></RadioButton>
+                              <RadioButton fx:id="rbl2" disable="true" layoutX="40.0" layoutY="5.0" mnemonicParsing="false" text="L2">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></RadioButton>
+                              <RadioButton fx:id="rbl3" disable="true" layoutY="33.0" mnemonicParsing="false" text="L3">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></RadioButton>
+                              <RadioButton fx:id="rbl4" disable="true" layoutX="40.0" layoutY="33.0" mnemonicParsing="false" text="L4">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></RadioButton>
+                              <TextField fx:id="txfLayoutRoot" disable="true" editable="false" layoutX="89.0" layoutY="29.0" prefHeight="26.0" prefWidth="128.0">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></TextField>
+                              <ToggleButton fx:id="btnXLinks" disable="true" layoutX="123.0" layoutY="2.0" mnemonicParsing="false" selected="true" text="X" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></ToggleButton>
+                              <ToggleButton fx:id="btnChildLinks" disable="true" layoutX="152.0" layoutY="2.0" mnemonicParsing="false" selected="true" text="&lt;" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></ToggleButton>
+                              <Button fx:id="btnLayout" disable="true" layoutX="90.0" layoutY="2.0" onAction="#handleLayout" text="_L" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></Button>
+                              <ToggleButton fx:id="tglSideline" disable="true" layoutX="183.0" layoutY="2.0" mnemonicParsing="false" text="&gt;|" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></ToggleButton>
+                           </children>
+                        </AnchorPane>
+                        <Separator orientation="VERTICAL" />
+                        <GridPane hgap="5.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" prefWidth="65.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Path len.">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></Label>
+                              <Label text="Jitter" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></Label>
+                              <Spinner fx:id="spinJitter" editable="true" prefWidth="65.0" style="-fx-scale-x: 0.75; -fx-scale-y: 0.75;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Spinner fx:id="spinPathLength" editable="true" prefWidth="65.0" style="-fx-scale-x: 0.75; -fx-scale-y: 0.75;" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                        <Separator orientation="VERTICAL" />
+                        <GridPane hgap="5.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Node text">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></Label>
+                              <Label text="Edge text" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font></Label>
+                              <ComboBox fx:id="cbNodeTextChoice" disable="true" prefWidth="115.0" style="-fx-scale-x: 0.75; -fx-scale-y: 0.75;" GridPane.columnIndex="1" />
+                              <ComboBox fx:id="cbEdgeTextChoice" disable="true" prefWidth="115.0" style="-fx-scale-x: 0.75; -fx-scale-y: 0.75;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                        <Separator orientation="VERTICAL" />
+                        <VBox alignment="CENTER">
+                           <children>
+                              <Slider fx:id="sldrElements" disable="true" max="1.8" min="0.2" scaleY="0.75" showTickMarks="true" value="1.0" />
+                              <Label text="Element size">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <Separator orientation="VERTICAL" />
+                     </items>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                  </ToolBar>
+               </top>
+            </BorderPane>
+         </items>
+      </SplitPane>
+   </center>
+</BorderPane>

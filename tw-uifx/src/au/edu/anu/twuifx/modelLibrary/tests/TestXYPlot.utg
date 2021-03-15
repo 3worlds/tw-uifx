@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Fri Feb 26 17:11:24 AEDT 2021
 // TREE
 3worlds TestXYPlot
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(ian (27 Feb. 2021))
+	built-by = java.lang.String(ian (13 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(Tutorial: Testing the intermediate disturbance hypothesis (IDH) with the Lotka-Volterra competition model. Illustrates the use of a SystemComponent.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"https:/en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations"))
@@ -52,11 +52,11 @@ treegraph // saved by OmugiGraphExporter on Fri Feb 26 17:11:24 AEDT 2021
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(commDecs)
 			field div
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				description = java.lang.String(Shannon's diversity index)
+				interval = fr.ens.biologie.generic.utils.Interval(]0.0,1.0[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(index)
 		record commCnsts
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(commCnsts)
@@ -103,10 +103,11 @@ treegraph // saved by OmugiGraphExporter on Fri Feb 26 17:11:24 AEDT 2021
 				precision = java.lang.Double(0.0)
 				units = java.lang.String()
 			field tsld
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				description = java.lang.String(Time since last disturbance)
+				interval = fr.ens.biologie.generic.utils.Interval(]0.0,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
+				units = java.lang.String(y)
 		dimensioner nspp
 			size = java.lang.Integer(40)
 	experiment expt
@@ -138,7 +139,7 @@ treegraph // saved by OmugiGraphExporter on Fri Feb 26 17:11:24 AEDT 2021
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
 							userClassName = java.lang.String(code.sys1.generated.DistEffectsComm)
 							snippet snpDistEffects
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"for (int i = 0; i < other_x.size(); i++)","if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)","otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([5]"for (int i = 0; i < other_x.size(); i++)","	if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0){","		otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);","		otherDrv.tsld = 0;","	}"))
 					process procCommGrowth
 						dataTracker trkTSLD
 							sampleSize = java.lang.String()
@@ -147,7 +148,7 @@ treegraph // saved by OmugiGraphExporter on Fri Feb 26 17:11:24 AEDT 2021
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
 							userClassName = java.lang.String(code.sys1.generated.CommGrowth)
 							snippet snpGrowth
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([17]"double[] dxdt = new double[x.size(0)];","for (int i = 0; i < x.size(0); i++) {","double sum = 0;","for (int j = 0; j < alpha.size(1); j++)","sum += alpha.getByInt(i, j) * x.getByInt(j);","dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));","}","for (int i = 0; i < dxdt.length; i++)","focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);","// compute diversity","double xtot = 0.0;","for (int i = 0; i < focalDrv.x.size(0); i++)","xtot += focalDrv.x.getByInt(i);","focalDec.div = 0.0;","for (int i = 0; i < focalDrv.x.size(0); i++)","if (focalDrv.x.getByInt(i) > 0.0)","focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([18]"double[] dxdt = new double[x.size(0)];","focalDrv.tsld = tsld +1;","for (int i = 0; i < x.size(0); i++) {","	double sum = 0;","	for (int j = 0; j < alpha.size(1); j++)","	sum += alpha.getByInt(i, j) * x.getByInt(j);","	dxdt[i] = r.getByInt(i) * x.getByInt(i) * (1 - sum / K.getByInt(i));","}","for (int i = 0; i < dxdt.length; i++)","	focalDrv.x.setByInt(Math.max(x.getByInt(i) + dxdt[i] * dt, 0.0), i);","// compute diversity","double xtot = 0.0;","for (int i = 0; i < focalDrv.x.size(0); i++)","	xtot += focalDrv.x.getByInt(i);","focalDec.div = 0.0;","for (int i = 0; i < focalDrv.x.size(0); i++)","	if (focalDrv.x.getByInt(i) > 0.0)","		focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);"))
 		structure struc1
 			relationType distEffectComm
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)

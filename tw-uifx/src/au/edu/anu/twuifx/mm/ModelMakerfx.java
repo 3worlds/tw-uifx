@@ -32,9 +32,11 @@ package au.edu.anu.twuifx.mm;
 
 import java.io.IOException;
 import java.net.URL;
+
+import au.edu.anu.rscs.aot.errorMessaging.impl.ErrorMessageText;
+//import au.edu.anu.rscs.aot.errorMessaging.impl.ErrorMessageText;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.Caretaker;
-//import au.edu.anu.twapps.mm.Rollover;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
@@ -65,7 +67,10 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	private void createMainWindow() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 //		URL URLView = ModelMakerfx.class.getResource("view/Mmfr.fxml");
-		URL URLView = ModelMakerfx.class.getResource("view/Mm.fxml");
+		String skinFile = "view/MmEN.fxml";
+		if (ErrorMessageText.isFrench())
+			skinFile =  "view/MmFR.fxml";
+		URL URLView = ModelMakerfx.class.getResource(skinFile);
 		loader.setLocation(URLView);
 		root = (Parent) loader.load();
 		controller = loader.getController();
