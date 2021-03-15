@@ -29,10 +29,16 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets.samples;
 
+import de.gsi.chart.samples.ChartPerformanceGraph;
+import de.gsi.chart.samples.ScatterAndBubbleRendererSample;
+
 public class TestSamples {
 
-	public static void main(String[] args) {
-		de.gsi.chart.samples.ChartPerformanceGraph.main(args);
+	public static void main(String[] args) throws ClassNotFoundException {
+		args = new String[1];
+		args[0]= ScatterAndBubbleRendererSample.class.getName();
+		de.gsi.samples.util.LaunchJFX.main(args);
+		//de.gsi.chart.samples.ChartPerformanceGraph.main(args);
 
 	}
 
