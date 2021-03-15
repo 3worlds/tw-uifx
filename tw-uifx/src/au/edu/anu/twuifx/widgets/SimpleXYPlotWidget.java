@@ -130,20 +130,20 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis(xName, xUnits);
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis(yName, yUnits);
-		
-//		xAxis1.setAnimated(false);
+
+//		xAxis1.setAnimated(false);// default = false;
 //		yAxis1.setAnimated(false);
 //		
-//		xAxis1.setAutoRangeRounding(false);
+//		xAxis1.setAutoRangeRounding(false);// default = false;
 //		yAxis1.setAutoRangeRounding(false);
 //
-//		xAxis1.setTimeAxis(false);
+//		xAxis1.setTimeAxis(false);// default = false
 //		yAxis1.setTimeAxis(false);
 //
-//		xAxis1.invertAxis(false);
+//		xAxis1.invertAxis(false);// default = false
 //		yAxis1.invertAxis(false);
 //
-//		xAxis1.setForceZeroInRange(false);
+//		xAxis1.setForceZeroInRange(false);// default = false
 //		yAxis1.setForceZeroInRange(false);
 
 		xAxis1.setTickLabelRotation(45);
@@ -151,23 +151,25 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		// create one renderer
 		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
 		// setup renderer
-		rndr.setErrorType(ErrorStyle.NONE);
-		rndr.setPolyLineStyle(LineStyle.NONE);
-		rndr.setMarkerSize(symbolSize);
-		rndr.setMarker(symbol);
-		rndr.setPointReduction(false);
-		rndr.setDrawMarker(true);
+//		System.out.println(rndr.drawMarkerProperty().get());
+		rndr.setErrorType(ErrorStyle.NONE);// Default ErrorStyle.ERRORCOMBO
+		rndr.setPolyLineStyle(LineStyle.NONE);// Default LineStyle.NORMAL
+		rndr.setMarkerSize(symbolSize);// Default = 1.5
+		rndr.setMarker(symbol);// Default DefaultMarker.RECTANGLE
+		rndr.setPointReduction(false);// Default: true;
+//		rndr.setDrawMarker(true);// Default true
+		rndr.setAssumeSortedData(false);// Default: true !! important since DS is likely unsorted
 		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) rndr.getRendererDataReducer();
 		reductionAlgorithm.setMinPointPixelDistance(0);
 
 		chart = new XYChart(xAxis1, yAxis1);
-// -------------IS THIS ORDER IMPORTANT? NOT CERTAIN
-		// 1) add axes to renderer
-		rndr.getAxes().addAll(xAxis1,yAxis1);
-		// 2) add dataSet to renderer
+
 		rndr.getDatasets().add(dataSet);
-		//--------------------------------------------
+
+		rndr.getAxes().addAll(xAxis1,yAxis1);
+
 		chart.getRenderers().add(rndr);
+		
 		chart.legendVisibleProperty().set(false);
 		chart.setAnimated(false);
 		content.setCenter(chart);
