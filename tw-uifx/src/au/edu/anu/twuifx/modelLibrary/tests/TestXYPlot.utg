@@ -192,7 +192,7 @@ treegraph // saved by OmugiGraphExporter on Fri Feb 26 17:11:24 AEDT 2021
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget xyplot
 				order = java.lang.Integer(1)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleXYPlotWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ScatterPlotWidget1)
 
 // CROSS-LINKS
 [dataTracker:trkTSLD] trackField trks8 [field:div]

@@ -38,7 +38,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.IndexedDataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.OutputXYData;
@@ -48,7 +47,7 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
-import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.RangeWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
@@ -70,6 +69,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -86,14 +86,14 @@ import javafx.stage.Window;
  *
  * @date 16 Mar. 2021
  */
-public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
+public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
 	private String widgetId;
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
 	private final Map<Integer, DoubleDataSet> senderDataSet;
 	// private static Logger log = Logging.getLogger(SimpleXYPlotWidget.class);
 	private XYChart chart;
-	private DoubleDataSet dataSet;
+//	private DoubleDataSet dataSet;
 	private int symbolSize;
 	private DefaultMarker symbol;
 	private Metadata msgMetadata;
@@ -102,10 +102,10 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 	private String xUnits;
 	private String yUnits;
 
-	public SimpleXYPlotWidget(StateMachineEngine<StatusWidget> statusSender) {
+	public ScatterPlotWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.XY);
 		timeFormatter = new WidgetTimeFormatter();
-		policy = new SimpleWidgetTrackingPolicy();
+		policy = new RangeWidgetTrackingPolicy();
 		senderDataSet = new ConcurrentHashMap<>();
 	}
 
@@ -121,13 +121,14 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 			msgMetadata = meta;
 		}
 	}
+
+//	hints:
 //	xAxis1.setAnimated(false);// default = false;
 //	xAxis1.setAutoRangeRounding(false);// default = false;
 //	xAxis1.setTimeAxis(false);// default = false
 //	xAxis1.invertAxis(false);// default = false
 //	xAxis1.setForceZeroInRange(false);// default = false
 //	rndr.setDrawMarker(true);// Default true
-
 	@Override
 	public Object getUserInterfaceContainer() {
 		/**
@@ -136,6 +137,8 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		// Get the prefs before building the ui
 		getUserPreferences();
 
+		timeFormatter.onMetaDataMessage(msgMetadata);
+// Know nothing about sampledItem at this stage!?
 		for (String key : msgMetadata.properties().getKeysAsSet()) {
 			if (key.contains(P_FIELD_LABEL.key())) {
 				IndexedDataLabel idxdl = (IndexedDataLabel) msgMetadata.properties().getPropertyValue(key);
@@ -145,24 +148,27 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 					yName = idxdl.getEnd();
 			}
 		}
-		timeFormatter.onMetaDataMessage(msgMetadata);
 		for (String key : msgMetadata.properties().getKeysAsSet()) {
 			if (key.contains(xName + ".")) {
 				if (key.contains(P_FIELD_UNITS.key())) {
-					xUnits =  (String) msgMetadata.properties().getPropertyValue(key);
+					xUnits = (String) msgMetadata.properties().getPropertyValue(key);
 				}
 
 			} else if (key.contains(yName + ".")) {
 				if (key.contains(P_FIELD_UNITS.key())) {
-					yUnits =  (String) msgMetadata.properties().getPropertyValue(key);
+					yUnits = (String) msgMetadata.properties().getPropertyValue(key);
 				}
 
 			}
 		}
 		BorderPane content = new BorderPane();
-		// aka makeChannels
-		dataSet = new DefaultDataSet(xName+":"+yName);
-		
+		// a.k.a. makeChannels
+		for (int sender = policy.getDataMessageRange().getFirst(); sender <= policy.getDataMessageRange()
+				.getLast(); sender++) {
+			DoubleDataSet ds = new DefaultDataSet(xName + ":" + yName);
+			senderDataSet.put(sender, ds);
+		}
+
 		final DefaultNumericAxis xAxis1 = new DefaultNumericAxis(xName, xUnits);
 		final DefaultNumericAxis yAxis1 = new DefaultNumericAxis(yName, yUnits);
 
@@ -182,12 +188,13 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 		chart = new XYChart(xAxis1, yAxis1);
 
-		rndr.getDatasets().add(dataSet);
+		for (Map.Entry<Integer, DoubleDataSet> entry : senderDataSet.entrySet())
+			rndr.getDatasets().add(entry.getValue());
 
-		rndr.getAxes().addAll(xAxis1,yAxis1);
+		rndr.getAxes().addAll(xAxis1, yAxis1);
 
 		chart.getRenderers().add(rndr);
-		
+
 		chart.legendVisibleProperty().set(false);
 		chart.setAnimated(false);
 		content.setCenter(chart);
@@ -201,7 +208,8 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	private void processDataMessage(OutputXYData data) {
 		Platform.runLater(() -> {
-			dataSet.add(data.getX(),data.getY());		
+			DoubleDataSet ds = senderDataSet.get(data.sender());
+			ds.add(data.getX(), data.getY());
 		});
 
 	}
@@ -218,8 +226,9 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 
 	@Override
 	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {
-			dataSet.clearData();
+		if (isSimulatorState(state, waiting)) { // use this concurrent map rather than the chart list of dataSets
+			for (Map.Entry<Integer, DoubleDataSet> entry : senderDataSet.entrySet())
+				entry.getValue().clearData();
 		} else if (isSimulatorState(state, finished)) {
 			Platform.runLater(() -> {
 				chart.getAxes().forEach((axis) -> {
@@ -251,34 +260,39 @@ public class SimpleXYPlotWidget extends AbstractDisplayWidget<OutputXYData, Meta
 		Label lbl = new Label("Symbol size");
 		Spinner<Integer> spCapacity = new Spinner<>();
 		spCapacity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, symbolSize));
-		// 
+		//
 		spCapacity.setMaxWidth(100);
 		spCapacity.setEditable(true);
+
+		ComboBox<DefaultMarker> cmbMarker = new ComboBox<>();
+		cmbMarker.getItems().addAll(DefaultMarker.values());
+		cmbMarker.getSelectionModel().select(symbol);
 		content.add(lbl, 0, 0);
 		content.add(spCapacity, 1, 0);
+		content.add(new Label("Symbol"), 0, 1);
+		content.add(cmbMarker, 1, 1);
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
-			int v = spCapacity.getValue();
-			if (v != symbolSize) {
-				symbolSize = v;
-//				for (Renderer renderer : chart.getRenderers()) {
-//					ErrorDataSetRenderer r = (ErrorDataSetRenderer) renderer;
-//					r.setMarkerSize(symbolSize);
-//				}
-//				chart.requestLayout();
-			}
+			symbolSize = spCapacity.getValue();
+			symbol = cmbMarker.getValue();
+				for (Renderer renderer : chart.getRenderers()) {
+					ErrorDataSetRenderer r = (ErrorDataSetRenderer) renderer;
+					r.setMarkerSize(symbolSize);
+					r.setMarker(symbol);
+				}
+				chart.requestLayout();
 		}
 	}
-	//private static final DefaultMarker[] symbols = { //
-	//DefaultMarker.RECTANGLE, //
-	//DefaultMarker.DIAMOND, //
-	//DefaultMarker.CIRCLE, //
-	//DefaultMarker.CROSS, //
-	//DefaultMarker.RECTANGLE2, //
-	//DefaultMarker.DIAMOND2, //
-	//DefaultMarker.CIRCLE2, //
-	//};
+	// private static final DefaultMarker[] symbols = { //
+	// DefaultMarker.RECTANGLE, //
+	// DefaultMarker.DIAMOND, //
+	// DefaultMarker.CIRCLE, //
+	// DefaultMarker.CROSS, //
+	// DefaultMarker.RECTANGLE2, //
+	// DefaultMarker.DIAMOND2, //
+	// DefaultMarker.CIRCLE2, //
+	// };
 
 	private static final String keySymbolSize = "symbolSize";
 	private static final String keySymbol = "symbol";
