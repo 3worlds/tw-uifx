@@ -102,7 +102,10 @@ import javafx.stage.Window;
  *
  * @date 10 Dec. 2020
  * 
- *       Show data from all simulator.id() from [lower.. lower+range]
+S *       Displays 1..* time series lines: one set for each selected simulator
+ *       (default sender = 0)
+ *       
+ *       TODO: Rename to TimeSeriesWidget1 and delete SimpleTimeSeriesWidget (and update tutorials);
  */
 public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
@@ -479,7 +482,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
 				dataSetMap.put(key, ds);
 			}
-		}else {
+		} else {
 			String key = sender + ":" + dl.getEnd();
 			throw new TwuifxException("Don't know how to handle '" + key + "'");
 //			System.out.println(key+"???");

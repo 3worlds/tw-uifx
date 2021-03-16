@@ -85,6 +85,8 @@ import javafx.stage.Window;
  * @author Ian Davies
  *
  * @date 16 Mar. 2021
+ * 
+ * Displays one scatter plot for each selected simulator (default sender = 0)
  */
 public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
 	private String widgetId;
@@ -284,15 +286,6 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 				chart.requestLayout();
 		}
 	}
-	// private static final DefaultMarker[] symbols = { //
-	// DefaultMarker.RECTANGLE, //
-	// DefaultMarker.DIAMOND, //
-	// DefaultMarker.CIRCLE, //
-	// DefaultMarker.CROSS, //
-	// DefaultMarker.RECTANGLE2, //
-	// DefaultMarker.DIAMOND2, //
-	// DefaultMarker.CIRCLE2, //
-	// };
 
 	private static final String keySymbolSize = "symbolSize";
 	private static final String keySymbol = "symbol";
