@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Fri Feb 26 15:07:36 CET 2021
+treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -804,6 +804,8 @@ treegraph // saved by OmugiGraphExporter on Fri Feb 26 15:07:36 CET 2021
 [process:procS] appliesTo aplyTo7 [category:*ephemeral*]
 [process:procS] appliesTo aplyTo19 [category:located]
 [process:getMounds] appliesTo aplyTo20 [relationType:neighbourhoodM]
+[process:getMounds] inSpace in1 [space:plot]
+	searchRadius = java.lang.Double(15.0)
 [widget:control] trackTime trks2 [dynamics:sim1]
 [process:procJ] appliesTo aplyTo9 [category:juvenile]
 [process:procJ] appliesTo aplyTo10 [category:palm]
