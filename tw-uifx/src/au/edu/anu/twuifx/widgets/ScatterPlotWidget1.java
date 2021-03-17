@@ -69,6 +69,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -86,7 +87,8 @@ import javafx.stage.Window;
  *
  * @date 16 Mar. 2021
  * 
- * Displays one scatter plot for each selected simulator (default sender = 0)
+ *       Displays one scatter plot for each selected simulator (default sender =
+ *       0)
  */
 public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
 	private String widgetId;
@@ -95,10 +97,8 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 	private final Map<Integer, DoubleDataSet> senderDataSet;
 	// private static Logger log = Logging.getLogger(SimpleXYPlotWidget.class);
 	private XYChart chart;
-//	private DoubleDataSet dataSet;
-	private int symbolSize;
-	private DefaultMarker symbol;
 	private Metadata msgMetadata;
+	private BorderPane content;
 	private String xName;
 	private String yName;
 	private String xUnits;
@@ -141,6 +141,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 
 		timeFormatter.onMetaDataMessage(msgMetadata);
 // Know nothing about sampledItem at this stage!?
+
 		for (String key : msgMetadata.properties().getKeysAsSet()) {
 			if (key.contains(P_FIELD_LABEL.key())) {
 				IndexedDataLabel idxdl = (IndexedDataLabel) msgMetadata.properties().getPropertyValue(key);
@@ -163,11 +164,17 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 
 			}
 		}
-		BorderPane content = new BorderPane();
+
+		content = new BorderPane();
 		// a.k.a. makeChannels
 		for (int sender = policy.getDataMessageRange().getFirst(); sender <= policy.getDataMessageRange()
 				.getLast(); sender++) {
-			DoubleDataSet ds = new DefaultDataSet(xName + ":" + yName);
+			DoubleDataSet ds;
+			if (!swapAxes)
+				ds = new DefaultDataSet(xName + ":" + yName);
+			else
+				ds = new DefaultDataSet(yName + ":" + xName);
+
 			senderDataSet.put(sender, ds);
 		}
 
@@ -196,14 +203,21 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		rndr.getAxes().addAll(xAxis1, yAxis1);
 
 		chart.getRenderers().add(rndr);
-
 		chart.legendVisibleProperty().set(false);
 		chart.setAnimated(false);
-		content.setCenter(chart);
 		content.setRight(new Label(""));
 		chart.getPlugins().add(new Zoomer());
 		chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
+
+		content.setCenter(chart);
+
+		if (swapAxes) {
+			chart.getXAxis().setName(yName);
+			chart.getXAxis().setUnit(yUnits);
+			chart.getYAxis().setName(xName);
+			chart.getYAxis().setUnit(xUnits);
+		}
 
 		return content;
 	}
@@ -211,7 +225,10 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 	private void processDataMessage(OutputXYData data) {
 		Platform.runLater(() -> {
 			DoubleDataSet ds = senderDataSet.get(data.sender());
-			ds.add(data.getX(), data.getY());
+			if (swapAxes)
+				ds.add(data.getY(), data.getX());
+			else
+				ds.add(data.getX(), data.getY());
 		});
 
 	}
@@ -273,33 +290,70 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		content.add(spCapacity, 1, 0);
 		content.add(new Label("Symbol"), 0, 1);
 		content.add(cmbMarker, 1, 1);
+		content.add(new Label("Swap axes"), 0, 2);
+		CheckBox cbsa = new CheckBox("");
+		cbsa.setSelected(swapAxes);
+		content.add(cbsa, 1, 2);
+
 		dialog.getDialogPane().setContent(content);
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
 			symbolSize = spCapacity.getValue();
 			symbol = cmbMarker.getValue();
-				for (Renderer renderer : chart.getRenderers()) {
-					ErrorDataSetRenderer r = (ErrorDataSetRenderer) renderer;
-					r.setMarkerSize(symbolSize);
-					r.setMarker(symbol);
+
+			for (Renderer renderer : chart.getRenderers()) {
+				ErrorDataSetRenderer r = (ErrorDataSetRenderer) renderer;
+				r.setMarkerSize(symbolSize);
+				r.setMarker(symbol);
+			}
+			if (swapAxes != cbsa.isSelected()) {
+				swapAxes = cbsa.isSelected();
+				// swap names and units
+				String xName = chart.getXAxis().getName();
+				String xUnits = chart.getXAxis().getUnit();
+				String yName = chart.getYAxis().getName();
+				String yUnits = chart.getYAxis().getUnit();
+				chart.getXAxis().setName(yName);
+				chart.getXAxis().setUnit(yUnits);
+				chart.getYAxis().setName(xName);
+				chart.getYAxis().setUnit(xUnits);
+
+				// swap data
+				for (Map.Entry<Integer, DoubleDataSet> entry : senderDataSet.entrySet()) {
+					DoubleDataSet ds = entry.getValue();
+					ds.setName(chart.getXAxis().getName()+":"+chart.getYAxis().getName());
+					double[] xv = ds.getXValues();
+					double[] yv = ds.getYValues();
+					ds.clearData();
+					for (int i = 0; i < xv.length; i++)
+						ds.add(yv[i], xv[i]);
+
 				}
-				chart.requestLayout();
+			}
+			chart.requestLayout();
 		}
 	}
 
 	private static final String keySymbolSize = "symbolSize";
 	private static final String keySymbol = "symbol";
+	private static final String keySwapAxes = "swapAxes";
+
+	private int symbolSize;
+	private DefaultMarker symbol;
+	private boolean swapAxes;
 
 	@Override
 	public void putUserPreferences() {
 		Preferences.putInt(widgetId + keySymbolSize, symbolSize);
 		Preferences.putEnum(widgetId + keySymbol, symbol);
+		Preferences.putBoolean(keySwapAxes, swapAxes);
 	}
 
 	@Override
 	public void getUserPreferences() {
 		symbolSize = Preferences.getInt(widgetId + keySymbolSize, 2);
 		symbol = (DefaultMarker) Preferences.getEnum(widgetId + keySymbol, DefaultMarker.DIAMOND);
+		swapAxes = Preferences.getBoolean(keySwapAxes, false);
 	}
 
 }
