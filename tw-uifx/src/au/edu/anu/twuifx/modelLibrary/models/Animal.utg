@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 // TREE
 3worlds Animal
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(ian (24 Feb. 2021))
+	built-by = java.lang.String(ian (17 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String(Preliminary testing of landscape animal model with local mating)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -94,7 +94,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 		constantClass = java.lang.String(code.sys1.generated.GConsts)
 		dynamics sim1
 			stoppingCondition stCd1
-				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(1000)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
@@ -115,7 +115,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
 								userClassName = java.lang.String(code.sys1.generated.Birth)
 								snippet snptBirth
-									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([11]"		otherCnt.isFemale = random.nextBoolean();","		boolean dx = random.nextBoolean();","		boolean dy = random.nextBoolean();","		if (dx)","			otherDrv.x = random.nextDouble() *10 + x;","		else","			otherDrv.x = -random.nextDouble() *10 + x;","		if (dy)","			otherDrv.y = random.nextDouble() * 10 + y;","		else","			otherDrv.y = -random.nextDouble() * 10 + y;"))
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([11]"		otherCnt.isFemale = random.nextBoolean();","		boolean dx = random.nextBoolean();","		boolean dy = random.nextBoolean();","		if (dx)","			otherDrv.x = random.nextDouble() *50 + x;","		else","			otherDrv.x = -random.nextDouble() *50 + x;","		if (dy)","			otherDrv.y = random.nextDouble() * 50 + y;","		else","			otherDrv.y = -random.nextDouble() * 50 + y;"))
 							snippet snptNBirths
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if (isFemale && pregnant)","			return birthRate;","		return 0.0;"))
 					process mortality
@@ -170,7 +170,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
 			snippet snptGlobalInit
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.deathRate = 0.2;","		focalCnt.birthRate = 0.8;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.deathRate = 0.5;","		focalCnt.birthRate = 2.0;"))
 	experiment expt
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
@@ -178,7 +178,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 		top top
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget srs
@@ -192,7 +192,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 
 // CROSS-LINKS
 [process:reproduce] inSpace in3 [space:space1]
-	searchRadius = java.lang.Double(10.0)
+	searchRadius = java.lang.Double(1.0)
 [process:reproduce] dependsOn after2 [process:mate]
 [process:reproduce] appliesTo aplyTo4 [category:animalCat]
 [category:animalCat] constants cnsts2 [record:animalConsts]
@@ -204,11 +204,12 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [system:sys1] belongsTo bt2 [category:*arena*]
 [system:sys1] belongsTo bt1 [category:*assemblage*]
 [process:mate] inSpace in4 [space:space1]
-	searchRadius = java.lang.Double(10.0)
+	searchRadius = java.lang.Double(1.0)
 [process:mate] appliesTo aplyTo2 [relationType:mateRelation]
 [process:mate] dependsOn after1 [process:courting]
 [relationType:mateRelation] toCategory to3 [category:animalCat]
 [relationType:mateRelation] fromCategory from1 [category:animalCat]
+[widget:ctrl] trackTime trks5 [dynamics:sim1]
 [process:global] dependsOn after4 [process:mortality]
 [process:global] appliesTo aplyTo3 [category:*assemblage*]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
@@ -227,10 +228,10 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [process:mortality] appliesTo aplyTo5 [category:animalCat]
 [process:mortality] dependsOn after3 [process:reproduce]
 [process:mortality] inSpace in2 [space:space1]
-	searchRadius = java.lang.Double(10.0)
+	searchRadius = java.lang.Double(1.0)
 [process:courting] appliesTo aplyTo1 [relationType:mateRelation]
 [process:courting] inSpace in1 [space:space1]
-	searchRadius = java.lang.Double(10.0)
+	searchRadius = java.lang.Double(100.0)
 [space:space1] coordinate xcoord [field:x]
 	rank = java.lang.Integer(0)
 [space:space1] coordinate ycoord [field:y]
