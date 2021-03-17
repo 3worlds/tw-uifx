@@ -85,6 +85,11 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+			field meanDispersalDistance
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
 			field birthRate
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(1.0E-6)
@@ -115,7 +120,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
 								userClassName = java.lang.String(code.sys1.generated.Birth)
 								snippet snptBirth
-									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([11]"		otherCnt.isFemale = random.nextBoolean();","		boolean dx = random.nextBoolean();","		boolean dy = random.nextBoolean();","		if (dx)","			otherDrv.x = random.nextDouble() *50 + x;","		else","			otherDrv.x = -random.nextDouble() *50 + x;","		if (dy)","			otherDrv.y = random.nextDouble() * 50 + y;","		else","			otherDrv.y = -random.nextDouble() * 50 + y;"))
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([10]"		// sex ratio 1:1","		otherCnt.isFemale = random.nextBoolean();","		","		// -ve exponential","		double distance = -meanDispersalDistance * Math.log(1 - random.nextDouble());","		double direction = random.nextDouble() * 6.28318530717959;","		double dx =distance * Math.cos(direction);","		double dy = distance * Math.sin(direction);","		otherDrv.x = x+dx;","		otherDrv.y = y+dy;"))
 							snippet snptNBirths
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if (isFemale && pregnant)","			return birthRate;","		return 0.0;"))
 					process mortality
@@ -165,12 +170,12 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 					userClassName = java.lang.String(code.sys1.generated.AnimalInit)
 					snippet snptAnimalInit
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalDrv.x = random.nextDouble()*1000;","		focalDrv.y =  random.nextDouble()*1000;","		focalCnt.isFemale = random.nextBoolean();"))
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([6]"		// random bath dispersal","		// we don't know the box limits here!","		focalDrv.x = random.nextDouble()*1000;","		focalDrv.y =  random.nextDouble()*1000;","		// 1:1 sex ratio","		focalCnt.isFemale = random.nextBoolean();"))
 		initFunction GlobalInit
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
 			snippet snptGlobalInit
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.deathRate = 0.5;","		focalCnt.birthRate = 2.0;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalCnt.deathRate = 0.5;","		focalCnt.birthRate = 2.1;","		focalCnt.meanDispersalDistance=100.0;"))
 	experiment expt
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
