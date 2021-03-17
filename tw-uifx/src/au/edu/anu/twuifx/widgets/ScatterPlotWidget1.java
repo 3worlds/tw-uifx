@@ -321,7 +321,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 				// swap data
 				for (Map.Entry<Integer, DoubleDataSet> entry : senderDataSet.entrySet()) {
 					DoubleDataSet ds = entry.getValue();
-					ds.setName(chart.getXAxis().getName()+":"+chart.getYAxis().getName());
+					ds.setName(chart.getXAxis().getName() + ":" + chart.getYAxis().getName());
 					double[] xv = ds.getXValues();
 					double[] yv = ds.getYValues();
 					ds.clearData();
