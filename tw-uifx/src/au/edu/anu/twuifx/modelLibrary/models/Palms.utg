@@ -654,7 +654,7 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 			widget timer
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
 			widget control
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)

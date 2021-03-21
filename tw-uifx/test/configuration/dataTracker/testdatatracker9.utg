@@ -205,7 +205,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			widget time
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
 			widget ctrl
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)

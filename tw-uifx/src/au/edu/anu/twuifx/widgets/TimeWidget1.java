@@ -79,7 +79,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  * Important: The SimCloneWIdgetTrackingPolicy assumes all simulators are
  * instances of the same SimulatorNode!
  */
-public class MeanTimeWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
+public class TimeWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
 	private Label lblTime;
@@ -88,7 +88,7 @@ public class MeanTimeWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 	private final Map<Integer, Long> currentSenderTimes;
 	private long refreshRate;// ms
 
-	public MeanTimeWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	public TimeWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimCloneWidgetTrackingPolicy();
