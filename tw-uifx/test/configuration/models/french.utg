@@ -744,17 +744,14 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 				widget popwgt
 					order = java.lang.Integer(0)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 				widget indwgt
 					order = java.lang.Integer(0)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
 		top toolBar
 			widget time
 				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)

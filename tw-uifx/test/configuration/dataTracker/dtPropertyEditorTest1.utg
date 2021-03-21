@@ -42,12 +42,11 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 02 09:41:00 AEDT 2019
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget timeSeries
 				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 		top toolBar
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 			widget time
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
