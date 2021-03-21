@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.deprecated;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,6 +82,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRA
  * Displays a table of data - largely for debugging. This replaces label/value
  * pair widget
  */
+@Deprecated // no longer used: subsumed within TableWidget1
 public class SimpleDM0Widget extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;

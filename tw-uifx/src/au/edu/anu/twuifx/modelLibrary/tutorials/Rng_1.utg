@@ -5,52 +5,11 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 // TREE
 3worlds Rng_x
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(ian (7 Dec. 2020))
+	built-by = java.lang.String(ian (20 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	precis = java.lang.String("Tutorial: Testing random number streams.")
+	precis = java.lang.String(Tutorial: Demonstrating the use of random number streams.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
-	predefined *categories*
-		categorySet *organisation*
-			category *assemblage*
-			category *atomic*
-		record AVEphemeral
-			field birthDate
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field age
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record AVPopulation
-			field count
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nRemoved
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nAdded
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-		categorySet *systemElements*
-			category *life cycle*
-			category *group*
-			category *relation*
-			category *component*
-			category *arena*
-		categorySet *lifespan*
-			category *ephemeral*
-			category *permanent*
-		relationType *parentTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-		relationType *returnsTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dDef
 		record drvs
 			dynamic = java.lang.Boolean(true)
@@ -67,22 +26,76 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-		rng gen1
-			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(JAVA)
-			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(ONRUNSTART)
-			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(PSEUDO)
-			tableIndex = java.lang.Integer(0)
 		rng gen2
 			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(PCG32)
 			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(ONRUNSTART)
 			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(NATURAL)
 			tableIndex = java.lang.Integer(0)
+		rng gen1
+			algorithm = fr.cnrs.iees.twcore.constants.RngAlgType(JAVA)
+			resetTime = fr.cnrs.iees.twcore.constants.RngResetType(ONRUNSTART)
+			seedSource = fr.cnrs.iees.twcore.constants.RngSeedSourceType(PSEUDO)
+			tableIndex = java.lang.Integer(0)
+	userInterface gui
+		top top
+			widget timer
+				order = java.lang.Integer(1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.MeanTimeWidget1)
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget random series
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
+	predefined *categories*
+		categorySet *organisation*
+			category *atomic*
+			category *assemblage*
+		categorySet *systemElements*
+			category *component*
+			category *life cycle*
+			category *group*
+			category *arena*
+			category *relation*
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+		categorySet *lifespan*
+			category *permanent*
+			category *ephemeral*
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		record AVPopulation
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
 	experiment expt
 		nReplicates = java.lang.Integer(1)
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
-		driverClass = java.lang.String(code.sys1.Drvs)
+		driverClass = java.lang.String(code.sys1.generated.Drvs)
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -98,55 +111,41 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(UNSPECIFIED)
 					process p1
-						function F2
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys1.F2)
-							snippet snpt2
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"focalDrv.fld2 = random.nextDouble();"))
-						function F1
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.sys1.F1)
-							snippet snpt1
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.fld1 = random.nextDouble();"))
 						dataTracker trk1
 							sampleSize = java.lang.String()
 							samplingMode = fr.cnrs.iees.twcore.constants.SamplingMode(RANDOM)
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
-	userInterface gui
-		top top
-			widget timer
-				order = java.lang.Integer(1)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.MeanTimeWidget1)
-			widget ctrl
-				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
-		tab tab1
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget random series
-				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+						function F1
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.generated.F1)
+							snippet snpt1
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.fld1 = random.nextDouble();"))
+						function F2
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
+							userClassName = java.lang.String(code.sys1.generated.F2)
+							snippet snpt2
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"focalDrv.fld2 = random.nextDouble();"))
 
 // CROSS-LINKS
 [process:p1] appliesTo aplyTo1 [category:*arena*]
 [widget:random series] trackSeries trks4 [dataTracker:trk1]
 [widget:timer] trackTime trks3 [dynamics:sim1]
-[dataTracker:trk1] trackField trks5 [field:fld2]
-	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[dataTracker:trk1] trackComponent trks2 [system:sys1]
 [dataTracker:trk1] trackField trks1 [field:fld1]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[dataTracker:trk1] trackComponent trks2 [system:sys1]
+[dataTracker:trk1] trackField trks5 [field:fld2]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [category:*assemblage*] autoVar auto [record:AVPopulation]
+[category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
 [function:F1] useRNG uses1 [rng:gen1]
 [category:*arena*] drivers drvs1 [record:drvs]
 [function:F2] useRNG uses2 [rng:gen2]
-[system:sys1] belongsTo bt3 [category:*atomic*]
-[system:sys1] belongsTo bt2 [category:*permanent*]
-[system:sys1] belongsTo bt1 [category:*arena*]
-[relationType:*parentTo*] fromCategory frm1 [category:*component*]
-[relationType:*parentTo*] toCategory to1 [category:*component*]
-[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
 [relationType:*returnsTo*] toCategory to2 [category:*component*]
+[relationType:*returnsTo*] fromCategory frm2 [category:*component*]
+[system:sys1] belongsTo bt3 [category:*atomic*]
+[system:sys1] belongsTo bt1 [category:*arena*]
+[system:sys1] belongsTo bt2 [category:*permanent*]

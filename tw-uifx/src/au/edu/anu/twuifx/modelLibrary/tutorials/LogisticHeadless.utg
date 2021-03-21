@@ -5,26 +5,40 @@ treegraph // saved by OmugiGraphExporter on Sat Dec 05 11:55:47 AEDT 2020
 // TREE
 3worlds LogisticHeadless
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(ian (4 Dec. 2020))
+	built-by = java.lang.String(ian (20 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(Tutorial: Discrete logistic model. 100,000 parallel unattended simulations without GUI.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https://en.wikipedia.org/wiki/Logistic_map","https://en.wikipedia.org/wiki/Chaos_theory"))
 	version = java.lang.String(demo)
-	predefined *categories*
-		categorySet *organisation*
-			category *assemblage*
-			category *atomic*
-		record AVEphemeral
-			field birthDate
+	experiment expt
+		nReplicates = java.lang.Integer(100000)
+		design dsgn
+			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	dataDefinition dDef
+		record cnsts
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(cnsts)
+			field r
+				description = java.lang.String()
 				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
-			field age
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+		record drvs
+			dynamic = java.lang.Boolean(true)
+			generatedClassName = java.lang.String(drvs)
+			field x
+				description = java.lang.String()
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+	predefined *categories*
+		categorySet *lifespan*
+			category *permanent*
+			category *ephemeral*
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 		record AVPopulation
 			field count
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
@@ -38,44 +52,34 @@ treegraph // saved by OmugiGraphExporter on Sat Dec 05 11:55:47 AEDT 2020
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
+		record AVEphemeral
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		categorySet *organisation*
+			category *assemblage*
+			category *atomic*
 		categorySet *systemElements*
 			category *life cycle*
 			category *group*
 			category *relation*
-			category *component*
 			category *arena*
-		categorySet *lifespan*
-			category *ephemeral*
-			category *permanent*
+			category *component*
 		relationType *parentTo*
 			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-		relationType *returnsTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-	dataDefinition dDef
-		record drvs
-			dynamic = java.lang.Boolean(true)
-			generatedClassName = java.lang.String(drvs)
-			field x
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record cnsts
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(cnsts)
-			field r
-				description = java.lang.String()
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
 	system population
-		constantClass = java.lang.String(code.population.Cnsts)
-		driverClass = java.lang.String(code.population.Drvs)
+		constantClass = java.lang.String(code.population.generated.Cnsts)
+		driverClass = java.lang.String(code.population.generated.Drvs)
 		initFunction Init1
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.population.Init1)
+			userClassName = java.lang.String(code.population.generated.Init1)
 			snippet snpt2
 				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.r = 3.7;","		focalDrv.x = 0.01;"))
 		dynamics sim1
@@ -95,16 +99,12 @@ treegraph // saved by OmugiGraphExporter on Sat Dec 05 11:55:47 AEDT 2020
 					process p1
 						function Chaos
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.population.Chaos)
+							userClassName = java.lang.String(code.population.generated.Chaos)
 							snippet snpt1
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.x = r * x * (1 - x);"))
 						dataTracker trk1
 							sampleSize = java.lang.String(1)
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-	experiment expt
-		nReplicates = java.lang.Integer(100000)
-		design dsgn
-			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	userInterface gui
 		headless hl
 			widget ctrl
@@ -117,12 +117,12 @@ treegraph // saved by OmugiGraphExporter on Sat Dec 05 11:55:47 AEDT 2020
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [category:*assemblage*] autoVar auto2 [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
 [category:*arena*] drivers drvs1 [record:drvs]
 [category:*arena*] constants cnts1 [record:cnsts]
 [system:population] belongsTo bt3 [category:*atomic*]
-[system:population] belongsTo bt2 [category:*permanent*]
 [system:population] belongsTo bt1 [category:*arena*]
-[relationType:*parentTo*] fromCategory frm1 [category:*component*]
-[relationType:*parentTo*] toCategory to1 [category:*component*]
+[system:population] belongsTo bt2 [category:*permanent*]
 [relationType:*returnsTo*] fromCategory frm2 [category:*component*]
 [relationType:*returnsTo*] toCategory to2 [category:*component*]

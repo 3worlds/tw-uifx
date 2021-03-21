@@ -79,7 +79,7 @@ public class HLSimpleControlWidget extends StateMachineController implements Wid
 		if (isSimulatorState(state, finished)) {
 			sendEvent(quit.event());
 			long endTime = System.currentTimeMillis();
-			System.out.println("Experiment finished. [Instance: " + RunTimeId.runTimeId() + "; Duration: "
+			System.out.println("Experiment [done; Instance: " + RunTimeId.runTimeId() + "; Duration: "
 					+ (endTime - startTime) + " ms]");
 			ended = true;
 		}
