@@ -40,7 +40,7 @@ treegraph // saved by OmugiGraphExporter on Tue Dec 08 10:22:09 AEDT 2020
 		top top
 			widget timer
 				order = java.lang.Integer(1)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.MeanTimeWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
