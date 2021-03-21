@@ -88,7 +88,7 @@ import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
-import au.edu.anu.rscs.aot.errorMessaging.ErrorList;
+import au.edu.anu.rscs.aot.errorMessaging.ErrorMessageManager;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorMessagable;
 import au.edu.anu.rscs.aot.util.IntegerRange;
@@ -404,7 +404,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		});
 
 		// Listen for error msgs from error system
-		ErrorList.addListener(this);
+		ErrorMessageManager.addListener(this);
 
 		// Setup zooming from the graph display pane (zoomTarget)
 		// zoomTarget.setOnScroll(event -> UiHelpers.zoom(zoomTarget, event));
