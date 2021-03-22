@@ -207,7 +207,8 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		chart.setAnimated(false);
 		content.setRight(new Label(""));
 		chart.getPlugins().add(new Zoomer());
-		chart.getPlugins().add(new TableViewer());
+		if (senderDataSet.size() <= 100)
+			chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
 
 		content.setCenter(chart);

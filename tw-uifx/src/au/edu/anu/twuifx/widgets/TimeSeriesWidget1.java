@@ -271,7 +271,8 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		chart.getRenderers().addAll(renderers);
 
 		chart.getPlugins().add(new Zoomer());
-		chart.getPlugins().add(new TableViewer());
+		if (senderDataSetMap.get(0).size() <= 100)
+			chart.getPlugins().add(new TableViewer());
 //		causes  concurrent modification error at times.
 		chart.getPlugins().add(new DataPointTooltip());
 //		not sure how this works?
