@@ -47,6 +47,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
+import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
 import au.edu.anu.twuifx.mr.view.GUIBuilder;
 import au.edu.anu.twuifx.mr.view.MrController;
 import fr.cnrs.iees.graph.TreeNode;
@@ -117,8 +118,8 @@ public class ModelRunnerfx extends Application {
 		// we could build the scene in an init() method.??
 		EnumProperties.recordEnums();
 		this.stage = primaryStage;
-		stage.setWidth(800);
-		stage.setHeight(600);
+		stage.setWidth(DefaultWindowSettings.getWidth());
+		stage.setHeight(DefaultWindowSettings.getHeight());
 		String title = Project.getDisplayName();
 		stage.titleProperty().set(title);
 		// setUserAgentStylesheet(STYLESHEET_CASPIAN);
