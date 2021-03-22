@@ -46,7 +46,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 28 16:02:18 CET 2021
 // TREE
 3worlds TestLifeCycle
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(gignoux (28 janv. 2021))
+	built-by = java.lang.String(ian (22 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String()
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -127,37 +127,46 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 28 16:02:18 CET 2021
 					process p2
 						function Mortality
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
-							userClassName = java.lang.String(code.sys1.Mortality)
+							userClassName = java.lang.String(code.sys1.generated.Mortality)
 							snippet snpt3
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return (age>7.5);"))
 						function ProduceA
 							relateToProduct = java.lang.Boolean(true)
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(CreateOtherDecision)
-							userClassName = java.lang.String(code.sys1.ProduceA)
+							userClassName = java.lang.String(code.sys1.generated.ProduceA)
 							snippet snpt1
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if (age>2.5)","			return 1.0;","		else","			return 0.0d;"))
 							function InitProduct
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
-								userClassName = java.lang.String(code.sys1.InitProduct)
+								userClassName = java.lang.String(code.sys1.generated.InitProduct)
 								snippet snpt4
 									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		otherCnt.x = x+random.nextDouble();","		otherCnt.y = y+random.nextDouble();"))
 					process p1
 						function RecruitAB
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeCategoryDecision)
-							userClassName = java.lang.String(code.sys1.RecruitAB)
+							userClassName = java.lang.String(code.sys1.generated.RecruitAB)
 							snippet snpt2
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if ((age>1.5)&(age<2.5))","			return recruit.transition(true);","		else","			return recruit.transition(false);"))
 							function InitRecruit
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
-								userClassName = java.lang.String(code.sys1.InitRecruit)
+								userClassName = java.lang.String(code.sys1.generated.InitRecruit)
 								snippet snpt5
 									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		otherCnt.x = x;","		otherCnt.y = y;"))
 		structure struc1
 			categorySet set1
 				category XY
+					constantClass = java.lang.String(XY_Cnt)
+					decoratorClass = java.lang.Object(null)
+					driverClass = java.lang.Object(null)
 					categorySet stages
 						category A
+							constantClass = java.lang.Object(null)
+							decoratorClass = java.lang.Object(null)
+							driverClass = java.lang.Object(null)
 						category B
+							constantClass = java.lang.Object(null)
+							decoratorClass = java.lang.Object(null)
+							driverClass = java.lang.Object(null)
 			space space1
 				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","reflection","reflection"))
 				precision = java.lang.Double(0.1)
@@ -171,7 +180,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 28 16:02:18 CET 2021
 				groupType grpTypA
 					group stageA
 					componentType compTypA
-						constantClass = java.lang.String(code.sys1.Loc)
+						constantClass = java.lang.String(code.sys1.generated.Loc)
 						component cmp1
 							constantValues initCnts1
 								x = java.lang.Double(1.0)
@@ -179,7 +188,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 28 16:02:18 CET 2021
 				groupType grpTypB
 					group stageB
 					componentType compTypB
-						constantClass = java.lang.String(code.sys1.Loc)
+						constantClass = java.lang.String(code.sys1.generated.Loc)
 				lifeCycle lifeCycle
 	userInterface gui
 		top top
