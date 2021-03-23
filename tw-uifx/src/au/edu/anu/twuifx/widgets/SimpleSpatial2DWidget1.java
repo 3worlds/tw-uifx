@@ -662,22 +662,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		return updateLegend;
 	}
 
-//	private boolean uninstallColour(DataLabel dl) {
-//		String cKey = getColourKey(dl);
-//		Duple<Integer, Color> value = mpColours.get(cKey);
-//		if (value != null) {
-//			if (value.getFirst() == 1) {
-//				mpColours.remove(cKey);
-//				return true;
-//			} else {
-//				value = new Duple<Integer, Color>(value.getFirst() - 1, value.getSecond());
-//				mpColours.put(cKey, value);
-//				return false;
-//			}
-//		}
-//		return false;
-//	}
-
 	private boolean installLineColour(String type) {
 		boolean update = false;
 		if (lineTypeColours.get(type) == null) {
@@ -1163,6 +1147,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyShowArrows = "showArrows";
 	private static final String keyShowIntermediateArrows = "showIntermediateArrows";
 	private static final String keyFontColour = "fontColour";
+//	private static final String keyFullLegendNames = "fullLegendNames";
 
 	private int colourHLevel;
 	private boolean symbolFill;
@@ -1176,6 +1161,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private Side legendSide;
 	private boolean showArrows;
 	private boolean showIntermediateArrows;
+//	private boolean fullLegendNames;
 	private PaletteSize paletteSize = PaletteSize.veryLarge;
 
 	@Override
@@ -1204,6 +1190,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putBoolean(widgetId + keyShowPointLabels, chbxLabels.isSelected());
 		Preferences.putBoolean(widgetId + keyShowArrows, showArrows);
 		Preferences.putBoolean(widgetId + keyShowIntermediateArrows, showIntermediateArrows);
+//		Preferences.putBoolean(widgetId + keyFullLegendNames, fullLegendNames);
 	}
 
 	// called at END of UI construction because this depends on UI components.
@@ -1234,12 +1221,12 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
 		colour64 = Preferences.getBoolean(widgetId + keyColour64, false);
-	// small= 8, medium=27, large = 64, veryLarge 125 colours max
-		
+		// small= 8, medium=27, large = 64, veryLarge 125 colours max
+
 		if (colour64)
-			lstColoursAvailable = ColourContrast.getContrastingColours64(paletteSize,bkgColour, contrast);
+			lstColoursAvailable = ColourContrast.getContrastingColours64(paletteSize, bkgColour, contrast);
 		else
-			lstColoursAvailable = ColourContrast.getContrastingColours(paletteSize,bkgColour, contrast);
+			lstColoursAvailable = ColourContrast.getContrastingColours(paletteSize, bkgColour, contrast);
 		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
 		chbxLegend.setSelected(Preferences.getBoolean(widgetId + keyLegendVisible, true));
 		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 10);
@@ -1247,6 +1234,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		chbxLabels.setSelected(Preferences.getBoolean(widgetId + keyShowPointLabels, false));
 		showArrows = Preferences.getBoolean(widgetId + keyShowArrows, false);
 		showIntermediateArrows = Preferences.getBoolean(widgetId + keyShowIntermediateArrows, true);
+//		fullLegendNames = Preferences.getBoolean(widgetId + keyFullLegendNames, false);
 
 	}
 
@@ -1289,10 +1277,11 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		int count = 0;
 		for (Map.Entry<String, Duple<Integer, Color>> entry : mpColours.entrySet()) {
 			count++;
-			if (count <= maxLegendItems)
-				addLegendItem(entry.getKey(), entry.getValue().getSecond(), true);
+			if (count <= maxLegendItems) {
+				String legendName = entry.getKey();
+				addLegendItem(legendName, entry.getValue().getSecond(), true);
+			}
 		}
-		// private final Map<String, Color> lineTypeColours;
 		for (Map.Entry<String, Color> entry : lineTypeColours.entrySet()) {
 			count++;
 			if (count <= maxLegendItems)
@@ -1494,9 +1483,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 //			lineColour = cpLine.getValue();
 			fontColour = cpFont.getValue();
 			if (colour64)
-				lstColoursAvailable = ColourContrast.getContrastingColours64(paletteSize,bkgColour, contrast);
+				lstColoursAvailable = ColourContrast.getContrastingColours64(paletteSize, bkgColour, contrast);
 			else
-				lstColoursAvailable = ColourContrast.getContrastingColours(paletteSize,bkgColour, contrast);
+				lstColoursAvailable = ColourContrast.getContrastingColours(paletteSize, bkgColour, contrast);
 
 			legendSide = cmbSide.getValue();
 			maxLegendItems = spMaxLegendItems.getValue();
@@ -1624,5 +1613,20 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private double getStartValue(double min, double offset, double tickSize) {
 		return min + offset;
 	}
+//	private boolean uninstallColour(DataLabel dl) {
+//	String cKey = getColourKey(dl);
+//	Duple<Integer, Color> value = mpColours.get(cKey);
+//	if (value != null) {
+//		if (value.getFirst() == 1) {
+//			mpColours.remove(cKey);
+//			return true;
+//		} else {
+//			value = new Duple<Integer, Color>(value.getFirst() - 1, value.getSecond());
+//			mpColours.put(cKey, value);
+//			return false;
+//		}
+//	}
+//	return false;
+//}
 
 }

@@ -183,11 +183,6 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
 
 		final BorderPane content = new BorderPane();
-		final DefaultNumericAxis xAxis = new DefaultNumericAxis("Tracker time: ", timeUnitName);
-		xAxis.setAutoRangeRounding(false);
-		xAxis.setTickLabelRotation(45);
-		xAxis.invertAxis(false);
-		xAxis.setTimeAxis(false);
 
 		sas = null;
 		if (msgMetadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
@@ -262,6 +257,12 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 				}
 			}
 		});
+		
+		final DefaultNumericAxis xAxis = new DefaultNumericAxis("Tracker time: ", timeUnitName);
+		xAxis.setAutoRangeRounding(false);
+		xAxis.setTickLabelRotation(45);
+		xAxis.invertAxis(false);
+		xAxis.setTimeAxis(false);
 
 		chart = new XYChart(xAxis, yAxes.get(0));
 		chart.setLegendSide(legendSide);
