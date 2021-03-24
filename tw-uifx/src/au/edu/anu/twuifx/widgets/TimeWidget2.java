@@ -109,7 +109,7 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 		BorderPane content = new BorderPane();
 
 		chart = new XYChart();
-		chart.setTitle("Stop when: " + metadata.properties().getPropertyValue("StoppingDesc"));
+		chart.setTitle("Stop when [" + metadata.properties().getPropertyValue("StoppingDesc")+"]");
 		chart.setLegendVisible(false);
 		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
 		rndr.setDrawBars(true);
@@ -142,8 +142,8 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 	}
 
 	private void processDataMessage(TimeData data) {
-		final int sender = data.sender();
-		histDataSet.addBinContent(sender, 1);
+		final int binNumber = data.sender()+1;
+		histDataSet.addBinContent(binNumber, 1);
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 				// defacto initialisation point
 				double minX = 0.0;
 				double maxX = nSenders;
-				histDataSet = new Histogram("Stop when: " + metadata.properties().getPropertyValue("StoppingDesc"),
+				histDataSet = new Histogram("",
 						nSenders, minX, maxX, HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY);
 				chart.getDatasets().setAll(histDataSet);
 				
