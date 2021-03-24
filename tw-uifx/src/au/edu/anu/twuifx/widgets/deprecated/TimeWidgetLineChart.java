@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.deprecated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,30 +40,23 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.renderer.ErrorStyle;
-import de.gsi.chart.renderer.LineStyle;
 import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
-import de.gsi.dataset.DataSet;
-import de.gsi.dataset.spi.AbstractHistogram.HistogramOuterBounds;
 import de.gsi.dataset.spi.DefaultDataSet;
 import de.gsi.dataset.spi.DoubleDataSet;
-import de.gsi.dataset.spi.Histogram;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import javafx.application.Platform;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
-import static de.gsi.dataset.spi.AbstractHistogram.HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY;
 
 /**
  * @author Ian Davies
@@ -72,19 +65,21 @@ import static de.gsi.dataset.spi.AbstractHistogram.HistogramOuterBounds.BINS_ALI
  * 
  *       Series (time by Sender) for each simulator
  */
-public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
+@Deprecated // too heavy for large number of sims - histogram is better;
+public class TimeWidgetLineChart extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
-	private int nSenders;
+	private final Map<Integer, DoubleDataSet> senderDataSet;
 	private XYChart chart;
 	private Metadata metadata;
-	private Histogram histDataSet;
+	private List<TimeData> initialData;
 
-	public TimeWidget2(StateMachineEngine<StatusWidget> statusSender) {
+	public TimeWidgetLineChart(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimCloneWidgetTrackingPolicy();
-		nSenders = 0;
+		senderDataSet = new ConcurrentHashMap<>();
+		initialData = new ArrayList<>();
 	}
 
 	@Override
@@ -100,30 +95,25 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 			timeFormatter.onMetaDataMessage(metadata);
 		}
 	}
-
 	@Override
 	public Object getUserInterfaceContainer() {
 
 		getUserPreferences();
 
-		BorderPane content = new BorderPane();
+		final BorderPane content = new BorderPane();
 
-		chart = new XYChart();
+		final DefaultNumericAxis xAxis = new DefaultNumericAxis("Time", timeFormatter.getSmallest().abbreviation());
+		final DefaultNumericAxis yAxis = new DefaultNumericAxis("Sim", "#");
+		xAxis.setTickLabelRotation(45);
+		chart = new XYChart(xAxis, yAxis);
 		chart.setTitle("Stop when: " + metadata.properties().getPropertyValue("StoppingDesc"));
 		chart.setLegendVisible(false);
 		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
-		rndr.setDrawBars(true);
-		rndr.setDrawMarker(false);
-		rndr.setPolyLineStyle(LineStyle.NONE);
-		rndr.setBarWidthPercentage(50);
-		rndr.setErrorType(ErrorStyle.NONE);
-		
-
+		// setup renderer
+		rndr.setErrorType(ErrorStyle.NONE);// Default ErrorStyle.ERRORCOMBO
+		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) rndr.getRendererDataReducer();
+		reductionAlgorithm.setMinPointPixelDistance(1);
 		chart.getRenderers().add(rndr);
-		chart.getXAxis().setName("Simulator");
-		chart.getXAxis().setUnit("Id");
-		chart.getYAxis().setName("Time");
-		chart.getYAxis().setUnit(timeFormatter.getSmallest().abbreviation());
 		content.setCenter(chart);
 
 		return content;
@@ -132,33 +122,39 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 	@Override
 	public void onDataMessage(TimeData data) {
 		if (policy.canProcessDataMessage(data)) {
-			if (data.status().equals(SimulatorStatus.Initial)) {
-				if (histDataSet == null)
-					nSenders++;
-			} else {
+			if (data.status().equals(SimulatorStatus.Initial))
+				initialData.add(data);
+			else {
 				processDataMessage(data);
 			}
 		}
 	}
 
 	private void processDataMessage(TimeData data) {
+		if (senderDataSet.get(data.sender()) == null) {
+			DoubleDataSet dds = new DefaultDataSet(Integer.toString(data.sender()));
+			senderDataSet.put(data.sender(), dds);
+			chart.getDatasets().add(dds);
+		}
+		final DoubleDataSet ds = senderDataSet.get(data.sender());
+		final long time = data.time();
 		final int sender = data.sender();
-		histDataSet.addBinContent(sender, 1);
+		ds.add(time, sender);
+//		Platform.runLater(() -> {
+////			System.out.println(time+", "+sender);
+//			ds.add(time, sender);
+//		});
+
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-			Platform.runLater(() -> {
-				// defacto initialisation point
-				double minX = 0.0;
-				double maxX = nSenders;
-				histDataSet = new Histogram("Stop when: " + metadata.properties().getPropertyValue("StoppingDesc"),
-						nSenders, minX, maxX, HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY);
-				chart.getDatasets().setAll(histDataSet);
-				
-			});
-
+			for (Map.Entry<Integer, DoubleDataSet> entry : senderDataSet.entrySet())
+				entry.getValue().clearData();
+			for (TimeData data : initialData) {
+				processDataMessage(data);
+			}
 		} else if (isSimulatorState(state, finished)) {
 			Platform.runLater(() -> {
 				chart.getAxes().forEach((axis) -> {
@@ -167,6 +163,7 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 			});
 		}
 	}
+
 
 	@Override
 	public Object getMenuContainer() {
