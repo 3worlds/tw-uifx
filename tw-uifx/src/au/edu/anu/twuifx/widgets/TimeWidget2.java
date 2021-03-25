@@ -29,31 +29,20 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
-import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.renderer.ErrorStyle;
 import de.gsi.chart.renderer.LineStyle;
-import de.gsi.chart.renderer.datareduction.DefaultDataReducer;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
-import de.gsi.dataset.DataSet;
 import de.gsi.dataset.spi.AbstractHistogram.HistogramOuterBounds;
-import de.gsi.dataset.spi.DefaultDataSet;
-import de.gsi.dataset.spi.DoubleDataSet;
 import de.gsi.dataset.spi.Histogram;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -63,7 +52,6 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
-import static de.gsi.dataset.spi.AbstractHistogram.HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY;
 
 /**
  * @author Ian Davies
@@ -79,6 +67,8 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 	private XYChart chart;
 	private Metadata metadata;
 	private Histogram histDataSet;
+	private static int MAX_BINS = 16;
+	private double[] binWeights;
 
 	public TimeWidget2(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
@@ -95,6 +85,8 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
+//      Count senders here before policy as only one meta data msg is processed		
+		nSenders++;
 		if (policy.canProcessMetadataMessage(meta)) {
 			metadata = meta;
 			timeFormatter.onMetaDataMessage(metadata);
@@ -107,17 +99,17 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 		getUserPreferences();
 
 		BorderPane content = new BorderPane();
+		content.setTop(new Label("Simulators: " + nSenders + "; Cores: " + Runtime.getRuntime().availableProcessors()
+				+ "; Stop: when " + metadata.properties().getPropertyValue("StoppingDesc")));
 
 		chart = new XYChart();
-		chart.setTitle("Stop when [" + metadata.properties().getPropertyValue("StoppingDesc")+"]");
 		chart.setLegendVisible(false);
 		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
 		rndr.setDrawBars(true);
 		rndr.setDrawMarker(false);
 		rndr.setPolyLineStyle(LineStyle.NONE);
-		rndr.setBarWidthPercentage(50);
+		rndr.setBarWidthPercentage(67);
 		rndr.setErrorType(ErrorStyle.NONE);
-		
 
 		chart.getRenderers().add(rndr);
 		chart.getXAxis().setName("Simulator");
@@ -133,8 +125,8 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 	public void onDataMessage(TimeData data) {
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial)) {
-				if (histDataSet == null)
-					nSenders++;
+//				if (histDataSet == null)
+//					nSenders++;
 			} else {
 				processDataMessage(data);
 			}
@@ -142,8 +134,9 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 	}
 
 	private void processDataMessage(TimeData data) {
-		final int binNumber = data.sender()+1;
-		histDataSet.addBinContent(binNumber, 1);
+		int bin = histDataSet.findBin(0, data.sender());
+		histDataSet.addBinContent(bin, binWeights[bin]);
+
 	}
 
 	@Override
@@ -153,10 +146,21 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 				// defacto initialisation point
 				double minX = 0.0;
 				double maxX = nSenders;
-				histDataSet = new Histogram("",
-						nSenders, minX, maxX, HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY);
+				int nBins = Math.min(MAX_BINS, nSenders);
+				histDataSet = new Histogram("", nBins, minX, maxX, HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY);
+				int[] spb = new int[histDataSet.getBinCount(0)];// sims per bin
+				for (int i = 0; i < nSenders; i++) {
+					int bin = histDataSet.findBin(0, i);
+					spb[bin]++;
+				}
+				binWeights = new double[spb.length];
+				for (int i = 0; i < spb.length; i++) {
+					if (spb[i] > 0)
+						binWeights[i] = 1.0 / (double) spb[i];
+					else
+						binWeights[i] = 1.0;// over/under flow
+				}
 				chart.getDatasets().setAll(histDataSet);
-				
 			});
 
 		} else if (isSimulatorState(state, finished)) {
