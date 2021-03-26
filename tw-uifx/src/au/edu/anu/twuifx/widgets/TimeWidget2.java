@@ -108,7 +108,7 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 		rndr.setDrawBars(true);
 		rndr.setDrawMarker(false);
 		rndr.setPolyLineStyle(LineStyle.NONE);
-		rndr.setBarWidthPercentage(67);
+		rndr.setBarWidthPercentage(90);
 		rndr.setErrorType(ErrorStyle.NONE);
 
 		chart.getRenderers().add(rndr);
