@@ -70,6 +70,7 @@ import javafx.stage.Window;
  *
  * Date 12 Dec. 2018
  */
+
 public class Dialogsfx implements IDialogs {
 	private Window owner;
 
