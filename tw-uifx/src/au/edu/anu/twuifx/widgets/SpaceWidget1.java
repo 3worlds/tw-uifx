@@ -50,7 +50,7 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
-import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import au.edu.anu.ymuit.ui.colour.ColourContrast;
@@ -108,6 +108,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -130,31 +131,31 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *       Widget to show spatial map of objects and their relations.
  *
  */
-public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
+public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
 	private static final double labelFontSize = 9.5;
 	private static final double axisFontSize = 13.0;
 	private static final double nodeRadius = 7.0;
 	private static final double lineWidth = 1.0;
 	private static final double paperSize = 500.0;
-	private BorderPane zoomTarget;
-	private Canvas canvas;
-	private ScrollPane scrollPane;
-	private Label lblItem;
-	private Label lblTime;
+
 	private Bounds spaceBounds;
-	private String widgetId;
-	private final WidgetTrackingPolicy<TimeData> policy;
-	private final WidgetTimeFormatter timeFormatter;
+	private Label lblTime;
+	private BorderPane centerContainer;
+
 	/**
 	 * Hierarchically organised locations. Colours can be applied to any level in
 	 * the data label hierarchy from species to stages to individuals.
 	 */
-	private final Map<String, Duple<DataLabel, double[]>> mpPoints;
-	/** Lines are non-hierarchical. Just use the datalabel string as a lookup */
-	private final Set<Tuple<DataLabel, DataLabel, String>> stLines;
+
+
+	private final Map<Integer, Map<String, Duple<DataLabel, double[]>>> senderVertices;
+
+	private final Map<Integer, Set<Tuple<DataLabel, DataLabel, String>>> senderLines;
+
+	// Global
 	private final Map<String, Color> lineTypeColours;
 
-	private final Map<String, Duple<Integer, Color>> mpColours;
+	private final Map<String, Duple<Integer, Color>> vertexColours;
 	/** Temporary store for initialising data */
 	private final List<SpaceData> lstInitialData;
 
@@ -169,46 +170,51 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private double offsetY;
 	private BorderListType borderList;
 	private List<Color> lstColoursAvailable;
+	private CheckBox chbxLabels;
+	private CheckBox chbxLegend;
+	private CheckBox chbxGrid;
+	private CheckBox chbxBoundaries;
+	private CheckBox chbxLines;
 
 	private String units;
 	private DecimalFormat pointFormat;
 	private DecimalFormat axisFormat;
 
-	private AnchorPane topAxis;
-	private AnchorPane bottomAxis;
-	private AnchorPane leftAxis;
-	private AnchorPane rightAxis;
-	private Map<Double, Duple<Label, Label>> xAxes;
-	private Map<Double, Duple<Label, Label>> yAxes;
-
 	private double scaledLineWidth;
 	private double scaledNodeRadius;
 	private Font scaledFont;
 
-	public SimpleSpatial2DWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	private String widgetId;
+	private final WidgetTrackingPolicy<TimeData> policy;
+	private final WidgetTimeFormatter timeFormatter;
+	private int nDisplays;
+
+	private final List<SpDisplay> displays;
+
+	public SpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
 		timeFormatter = new WidgetTimeFormatter();
-		policy = new SimpleWidgetTrackingPolicy();
-		// Thread-safe is no longer necessary
-//		mpPoints = new ConcurrentHashMap<>();// Thread-safe is no longer necessary
-		mpPoints = new HashMap<>();
+		policy = new SimCloneWidgetTrackingPolicy();
+
+		senderVertices = new HashMap<>();
 		lstColoursAvailable = new ArrayList<>();
-//		mpColours = new ConcurrentHashMap<>();// Thread-safe is no longer necessary
-		mpColours = new HashMap<>();
-		// Thread-safe is no longer necessary
-//		stLines = Collections.newSetFromMap(new ConcurrentHashMap<Tuple<DataLabel, DataLabel, String>, Boolean>());
-		stLines = new HashSet<>();
+
+		vertexColours = new HashMap<>();
+
+		senderLines = new HashMap<>();
 		lineTypeColours = new HashMap<>();
 		lstInitialData = new ArrayList<>();
 		units = "";
-		xAxes = new HashMap<>();
-		yAxes = new HashMap<>();
+		displays = new ArrayList<>();
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
 		policy.setProperties(id, properties);
+		nDisplays = 1;
+		if (properties.hasProperty("nDisplays"))
+			nDisplays = (Integer) properties.getPropertyValue("nDisplays");
 	}
 
 	@Override
@@ -288,12 +294,509 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-	private CheckBox chbxLabels;
-	private CheckBox chbxLegend;
-	private CheckBox chbxGrid;
-	private CheckBox chbxBoundaries;
-	private CheckBox chbxLines;
 	private ObjectProperty<Font> fontProperty;
+
+	// TODO: display unique time for each display
+	private class SpDisplay {
+		private Label lblItem;// selected vertex name for status bar
+		private int sender;
+		private final BorderPane container;
+		private final BorderPane zoomTarget;
+		private final Canvas canvas;
+		private final AnchorPane topAxis;
+		private final AnchorPane bottomAxis;
+		private final AnchorPane leftAxis;
+		private final AnchorPane rightAxis;
+		private final Map<Double, Duple<Label, Label>> xAxes;
+		private final Map<Double, Duple<Label, Label>> yAxes;
+		private final ScrollPane scrollPane;
+
+		private final ComboBox<String> cmbxSender;
+
+		private SpDisplay(int sender) {
+			this.sender = sender;
+			container = new BorderPane();
+			cmbxSender = new ComboBox<String>();
+			container.setTop(cmbxSender);
+			zoomTarget = new BorderPane();
+			canvas = new Canvas();
+			canvas.setOnMouseClicked(e -> onMouseClicked(e));
+			zoomTarget.setCenter(canvas);
+			topAxis = new AnchorPane();
+			bottomAxis = new AnchorPane();
+			leftAxis = new AnchorPane();
+			rightAxis = new AnchorPane();
+			xAxes = new HashMap<>();
+			yAxes = new HashMap<>();
+			canvas.setOnMouseClicked(e -> onMouseClicked(e));
+			zoomTarget.setCenter(canvas);
+			double startX = getStartValue(spaceBounds.getMinX(), offsetX, tickSize);
+			for (int i = 0; i < nXAxisTicks; i++) {
+				double value = i * tickSize + startX;
+				String s = axisFormat.format(value);
+				Label t = new Label(s);
+				t.fontProperty().bind(fontProperty);
+				Label b = new Label(s);
+				b.fontProperty().bind(fontProperty);
+				topAxis.getChildren().add(t);
+				bottomAxis.getChildren().add(b);
+				xAxes.put(value, new Duple<Label, Label>(b, t));
+			}
+			{
+				double value = spaceBounds.getMinX();
+				String s = pointFormat.format(value);
+				Label t = new Label(s);
+				t.fontProperty().bind(fontProperty);
+				Label b = new Label(s);
+				b.fontProperty().bind(fontProperty);
+				topAxis.getChildren().add(t);
+				bottomAxis.getChildren().add(b);
+				xAxes.put(value, new Duple<Label, Label>(b, t));
+			}
+			{
+				double value = spaceBounds.getMaxX();
+				String s = pointFormat.format(value);
+				Label t = new Label(s);
+				t.fontProperty().bind(fontProperty);
+				Label b = new Label(s);
+				b.fontProperty().bind(fontProperty);
+				topAxis.getChildren().add(t);
+				bottomAxis.getChildren().add(b);
+				xAxes.put(value, new Duple<Label, Label>(b, t));
+			}
+
+			double startY = getStartValue(spaceBounds.getMinY(), offsetY, tickSize);
+			for (int i = 0; i < nYAxisTicks; i++) {
+				double value = i * tickSize + startY;
+				String s = axisFormat.format(value);
+				Label l = new Label(s);
+				l.fontProperty().bind(fontProperty);
+				Label r = new Label(s);
+				r.fontProperty().bind(fontProperty);
+				leftAxis.getChildren().add(l);
+				rightAxis.getChildren().add(r);
+				yAxes.put(value, new Duple<Label, Label>(l, r));
+			}
+			{
+				double value = spaceBounds.getMinY();
+				String s = pointFormat.format(value);
+				Label l = new Label(s);
+				l.fontProperty().bind(fontProperty);
+				Label r = new Label(s);
+				leftAxis.getChildren().add(l);
+				r.fontProperty().bind(fontProperty);
+				rightAxis.getChildren().add(r);
+				yAxes.put(value, new Duple<Label, Label>(l, r));
+			}
+			{
+				double value = spaceBounds.getMaxY();
+				String s = pointFormat.format(value);
+				Label l = new Label(s);
+				l.fontProperty().bind(fontProperty);
+				Label r = new Label(s);
+				r.fontProperty().bind(fontProperty);
+				leftAxis.getChildren().add(l);
+				rightAxis.getChildren().add(r);
+				yAxes.put(value, new Duple<Label, Label>(l, r));
+			}
+
+			zoomTarget.setTop(topAxis);
+			zoomTarget.setBottom(bottomAxis);
+			zoomTarget.setLeft(leftAxis);
+			zoomTarget.setRight(rightAxis);
+
+			Group group = new Group(zoomTarget);
+			StackPane content = new StackPane(group);
+			scrollPane = new ScrollPane(content);
+			scrollPane.setPannable(true);
+			scrollPane.setContent(content);
+			scrollPane.setMinSize(170, 170);
+			CenteredZooming.center(scrollPane, content, group, zoomTarget);
+			container.setCenter(scrollPane);
+
+			HBox statusBar = new HBox();
+			// statusBar.setAlignment(Pos.CENTER);
+			statusBar.setSpacing(5);
+			lblItem = new Label("");
+		}
+
+		private Pane getContainer() {
+			return container;
+		}
+
+		private int sender() {
+			return sender;
+		}
+
+		private void drawScene() {
+
+			Set<Tuple<DataLabel, DataLabel, String>> lineSets = senderLines.get(sender);
+			
+			Map<String, Duple<DataLabel, double[]>> vertices = senderVertices.get(sender);
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+			gc.setFont(scaledFont);
+			drawPaper(gc);
+			gc.setLineWidth(scaledLineWidth);
+			gc.setLineDashes(0);
+
+			if (chbxLines.isSelected()) {
+				// gc.setStroke(lineColour);
+				for (Tuple<DataLabel, DataLabel, String> lineReference : lineSets) {
+					String sType = lineReference.getThird();
+					Color lineTypeColour = lineTypeColours.get(sType);
+					gc.setStroke(lineTypeColour);
+					// now we need a line type colour system.
+					String sKey = lineReference.getFirst().toString();
+					String eKey = lineReference.getSecond().toString();
+					Duple<DataLabel, double[]> sEntry = vertices.get(sKey);
+					Duple<DataLabel, double[]> eEntry = vertices.get(eKey);
+					if (sEntry == null)
+						throw new TwuifxException("Line error. Start point not found " + sKey);
+					if (eEntry == null)
+						throw new TwuifxException("Line error. End point not found " + eKey);
+					double[] start = sEntry.getSecond();
+					double[] end = eEntry.getSecond();
+					// Clone if altering: may need to limit lines to intersection with he map edge
+					if (eec == null) {
+						drawLine(gc, start[0], start[1], end[0], end[1], true);
+					} else if (eec.equals(EdgeEffectCorrection.periodic))
+						drawPeriodicLines(gc, start, end);
+					else if (eec.equals(EdgeEffectCorrection.tubular)) {
+						// assume first dim means 'x'
+						drawTubularLines(gc, start, end);
+					} else {
+						drawLine(gc, start[0], start[1], end[0], end[1], true);
+					}
+				}
+			}
+
+			double size = 2 * scaledNodeRadius;
+			gc.setTextAlign(TextAlignment.CENTER);
+			gc.setTextBaseline(VPos.CENTER);
+			for (Map.Entry<String, Duple<DataLabel, double[]>> entry : vertices.entrySet()) {
+				Duple<DataLabel, double[]> value = entry.getValue();
+				String cKey = getColourKey(value.getFirst());
+				Duple<Integer, Color> colourEntry = vertexColours.get(cKey);
+//				if (colourEntry != null) {
+				Color colour = colourEntry.getSecond();
+				gc.setStroke(colour);
+				double[] coords = value.getSecond();
+				Point2D point = spaceToCanvas(coords);
+				point = point.add(-scaledNodeRadius, -scaledNodeRadius);
+				gc.strokeOval(point.getX(), point.getY(), size, size);
+				if (symbolFill) {
+					gc.setFill(colour);
+					gc.fillOval(point.getX(), point.getY(), size, size);
+				}
+				if (chbxLabels.isSelected()) {
+					gc.setFill(fontColour);
+					String label = value.getFirst().getEnd();
+					gc.fillText(label, point.getX() + scaledNodeRadius, point.getY() + scaledNodeRadius);
+				}
+			}
+		}
+
+		private void drawPaper(GraphicsContext gc) {
+			gc.setFill(bkgColour);
+			gc.setStroke(bkgColour);
+			gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+			double w = canvas.getWidth();
+			double h = canvas.getHeight();
+			double maxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
+			double maxSize = Math.max(w, h);
+			double scale = maxSize / maxDim;
+			double scaledTickSize = scale * tickSize;
+			double lineWidth = scaledTickSize / 100.0;
+			double dashes = scaledTickSize / 10.0;
+			if (chbxGrid.isSelected()) {
+				gc.setStroke(Color.GREY);
+				gc.setLineDashes(dashes);
+				gc.setLineWidth(lineWidth);
+//				double startX = getStartValue(spaceBounds.getMinX(), offsetX, tickSize);
+				double startX = offsetX;
+				for (int i = 0; i < nXAxisTicks; i++) {
+					double x = i * tickSize + startX;
+					x = x * scale;
+					gc.strokeLine(x, 0, x, h);
+				}
+
+				double startY = offsetY;
+				for (int i = 0; i < nYAxisTicks; i++) {
+					double y = i * tickSize + startY;
+					y = h - (scale * y);
+					gc.strokeLine(0, y, w, y);
+				}
+			}
+			if (chbxBoundaries.isSelected()) {
+				double lws = lineWidth * 10;// line width scaling
+				drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws, dashes);
+				drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws, dashes);
+				drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws, dashes);
+				drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws, dashes);
+			}
+
+			for (Map.Entry<Double, Duple<Label, Label>> entry : xAxes.entrySet()) {
+				Label bottom = entry.getValue().getFirst();
+				Label top = entry.getValue().getSecond();
+				double value = entry.getKey() - spaceBounds.getMinX();
+				double pos = value * scale + leftAxis.getWidth();
+				double center = top.getWidth() / 2.0;
+				AnchorPane.setLeftAnchor(top, pos - center);
+				AnchorPane.setLeftAnchor(bottom, pos - center);
+			}
+			for (Map.Entry<Double, Duple<Label, Label>> entry : yAxes.entrySet()) {
+				Label left = entry.getValue().getFirst();
+				Label right = entry.getValue().getSecond();
+				double value = entry.getKey() - spaceBounds.getMinY();
+				double pos = h - (value * scale);
+				AnchorPane.setTopAnchor(left, pos);
+				AnchorPane.setTopAnchor(right, pos);
+				AnchorPane.setRightAnchor(left, 0.0);
+			}
+		};
+
+		private void resizeCanvas() {
+			double r = getSpaceCanvasRatio();
+			int newWidth = (int) Math.round(r * spaceBounds.getWidth());
+			int newHeight = (int) Math.round(r * spaceBounds.getHeight());
+			if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
+				canvas.setWidth(newWidth);
+				canvas.setHeight(newHeight);
+			}
+		}
+
+		private Node zoomTarget() {
+			// TODO Auto-generated method stub
+			return zoomTarget;
+		}
+
+		private ScrollPane scrollPane() {
+			// TODO Auto-generated method stub
+			return scrollPane;
+		}
+
+		private void onMouseClicked(MouseEvent e) {
+			String name = findName(e);
+			lblItem.setText(name);
+		}
+
+		private String findName(MouseEvent e) {
+
+			Map<String, Duple<DataLabel, double[]>> vertices = senderVertices.get(sender);
+
+			double scale = 1.0 / getSpaceCanvasRatio();
+			double size = (scaledNodeRadius * 2) * scale;
+			double rad = scaledNodeRadius * scale;
+			double clickX = (e.getX() * scale) + spaceBounds.getMinX();
+			double clickY = ((canvas.getHeight() - e.getY()) * scale) + spaceBounds.getMinY();
+			BoundingBox box = new BoundingBox(clickX - rad, clickY - rad, size, size);
+//			System.out.println(e.getX() + "," + e.getY());
+			for (Map.Entry<String, Duple<DataLabel, double[]>> entry : vertices.entrySet()) {
+				String key = entry.getKey();
+				Duple<DataLabel, double[]> value = entry.getValue();
+				double x = value.getSecond()[0];
+				double y = value.getSecond()[1];
+//				System.out.println(e.getX() + "," + e.getY()+":"+x+","+y);
+
+				if (box.contains(x, y)) {
+					return key + " [" + pointFormat.format(x) + "," + pointFormat.format(y) + "]";
+				}
+			}
+			return "";
+		}
+
+		private Point2D spaceToCanvas(double... coords) {
+			double sx = coords[0];
+			double sy = coords[1];
+			double dx = rescale(sx, spaceBounds.getMinX(), spaceBounds.getMaxX(), 0, canvas.getWidth());
+			double dy = rescale(sy, spaceBounds.getMinY(), spaceBounds.getMaxY(), 0, canvas.getHeight());
+			dy = canvas.getHeight() - dy;
+			return new Point2D(dx, dy);
+		}
+
+		private void drawLine(GraphicsContext gc, double x1, double y1, double x2, double y2, boolean endNode) {
+			Point2D start = spaceToCanvas(x1, y1);
+			Point2D end = spaceToCanvas(x2, y2);
+			gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
+			if (showArrows)
+				drawArrow(gc, start, end, endNode);
+
+		}
+
+		private void drawTubularLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
+			// TODO: Check this!
+			double[] transPoint = new double[2];
+			transPoint[0] = endPoint[0];
+			transPoint[1] = endPoint[1];
+			double tx = translate(startPoint[0], endPoint[0], spaceBounds.getMaxX());
+			if (Double.isFinite(tx))
+				transPoint[0] = tx;
+			int quad = getQuad(transPoint);
+
+			double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
+			double b = startPoint[1] - (m * startPoint[0]);
+			switch (quad) {
+			case 0: {// no wrap: nothing to do
+				drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
+				break;
+			}
+			case 1: {// right
+				double yi = getYAt(spaceBounds.getMaxX(), m, b);
+				drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, false);
+				drawLine(gc, 0.0, yi, endPoint[0], endPoint[1], true);
+				break;
+			}
+			case 5: {// left
+				double yi = getYAt(0.0, m, b);
+				drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
+				drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
+				break;
+			}
+			default: {
+				throw new TwuifxException("Line to unhandled quadrant [" + quad + ": (" + startPoint[0] + ","
+						+ startPoint[1] + ") > (" + endPoint[0] + "," + endPoint[1] + ")]");
+			}
+			}
+
+		}
+
+		private void drawPeriodicLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
+			double[] transPoint = new double[2];
+			transPoint[0] = endPoint[0];
+			transPoint[1] = endPoint[1];
+			double tx = translate(startPoint[0], endPoint[0], spaceBounds.getMaxX());
+			double ty = translate(startPoint[1], endPoint[1], spaceBounds.getMaxY());
+			if (Double.isFinite(tx))
+				transPoint[0] = tx;
+			if (Double.isFinite(ty))
+				transPoint[1] = ty;
+
+			int quad = getQuad(transPoint);
+
+			double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
+			double b = startPoint[1] - (m * startPoint[0]);
+			switch (quad) {
+			case 0: {// no wrap: nothing to do
+				drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
+				break;
+			}
+			// right
+			case 1: {
+				double yi = getYAt(spaceBounds.getMaxX(), m, b);
+				drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, false);
+				drawLine(gc, 0.0, yi, endPoint[0], endPoint[1], true);
+				break;
+			}
+			// top right
+			case 2: {
+				double yi = getYAt(spaceBounds.getMaxX(), m, b);
+				double xi = getXAt(spaceBounds.getMaxY(), m, b);
+				double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, spaceBounds.getMaxY());
+				double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
+				if (xd2 < yd2) { // cross the x-axis first
+					drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), false);
+					drawLine(gc, xi, 0.0, spaceBounds.getMaxX(), (yi - spaceBounds.getMaxY()), false);
+					drawLine(gc, 0.0, (yi - spaceBounds.getMaxY()), endPoint[0], endPoint[1], true);
+				} else { // cross at y-axis first
+					drawLine(gc, 0.0, yi, (xi - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
+					drawLine(gc, 0.0, yi, (xi - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
+					drawLine(gc, (xi - spaceBounds.getMaxX()), 0.0, endPoint[0], endPoint[1], true);
+				}
+				break;
+			}
+			// top
+			case 3: {
+				double xi = getXAt(spaceBounds.getMaxY(), m, b);
+				if (Double.isNaN(xi)) {// vertical line
+					xi = startPoint[0];
+					drawLine(gc, xi, startPoint[1], xi, spaceBounds.getMaxY(), false);
+					drawLine(gc, xi, 0.0, xi, endPoint[1], true);
+				} else {
+					drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), false);
+					drawLine(gc, xi, 0.0, endPoint[0], endPoint[1], true);
+				}
+				break;
+			}
+			// top left
+			case 4: {
+				double yi = getYAt(0.0, m, b);
+				double xi = getXAt(spaceBounds.getMaxY(), m, b);
+				double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, spaceBounds.getMaxY());
+				double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], 0, yi);
+				if (xd2 < yd2) { // cross the x-axis first
+					drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), false);
+					drawLine(gc, xi, 0.0, 0, yi - spaceBounds.getMaxY(), false);
+					drawLine(gc, spaceBounds.getMaxX(), yi - spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+				} else { // cross at y-axis first
+					drawLine(gc, startPoint[0], startPoint[1], 0, yi, false);
+					drawLine(gc, spaceBounds.getMaxX(), yi, spaceBounds.getMaxX() + xi, spaceBounds.getMaxY(), false);
+					drawLine(gc, spaceBounds.getMaxX() + xi, 0.0, endPoint[0], endPoint[1], true);
+				}
+				break;
+			}
+			// left
+			case 5: {
+				double yi = getYAt(0.0, m, b);
+				drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
+				drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
+				break;
+			}
+			// bottom left
+			case 6: {
+				double xi = getXAt(0.0, m, b);
+				double yi = getYAt(0.0, m, b);
+				double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0.0);
+				double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], 0.0, yi);
+				if (xd2 < yd2) { // cross the x-axis first
+					drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, false);
+					drawLine(gc, xi, spaceBounds.getMaxY(), 0.0, spaceBounds.getMaxY() + yi, false);
+					drawLine(gc, spaceBounds.getMaxX(), spaceBounds.getMaxY() + yi, endPoint[0], endPoint[1], true);
+				} else {
+					drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
+					drawLine(gc, spaceBounds.getMaxX(), yi, spaceBounds.getMaxX() + xi, 0.0, false);
+					drawLine(gc, spaceBounds.getMaxX() + xi, spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+				}
+				break;
+			}
+			// bottom
+			case 7: {
+				double xi = getXAt(0.0, m, b);
+				if (Double.isNaN(xi)) {// vertical line
+					xi = startPoint[0];
+					drawLine(gc, xi, startPoint[1], xi, 0.0, false);
+					drawLine(gc, xi, spaceBounds.getMaxY(), xi, endPoint[1], true);
+				} else {
+					drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, false);
+					drawLine(gc, xi, spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+				}
+				break;
+			}
+			// bottom right
+			case 8: {
+				double yi = getYAt(spaceBounds.getMaxX(), m, b);
+				double xi = getXAt(0.0, m, b);
+				double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0);
+				double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
+				if (xd2 < yd2) { // cross at x-axis first
+					drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, false);
+					drawLine(gc, xi, spaceBounds.getMaxY(), spaceBounds.getMaxX(), spaceBounds.getMaxY() + yi, false);
+					drawLine(gc, 0.0, spaceBounds.getMaxY() + yi, endPoint[0], endPoint[1], true);
+				} else { // cross at y-axis first
+					drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, false);
+					drawLine(gc, 0.0, yi, xi - spaceBounds.getMaxX(), 0.0, false);
+					drawLine(gc, xi - spaceBounds.getMaxX(), spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+				}
+				break;
+			}
+			default: {
+				throw new TwuifxException("Line to unhandled quadrant [" + quad + ": (" + startPoint[0] + ","
+						+ startPoint[1] + ") > (" + endPoint[0] + "," + endPoint[1] + ")]");
+			}
+			}
+
+		}
+
+	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
@@ -344,7 +847,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		chbxLabels = new CheckBox("Labels");
 		chbxLabels.setFont(smallFont);
 		chbxLabels.selectedProperty().addListener((obs, oldValue, newValue) -> {
-			drawScene();
+			for (SpDisplay d : displays)
+				d.drawScene();
 		});
 		gp.add(chbxLabels, 2, 0);
 
@@ -359,21 +863,24 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		chbxGrid = new CheckBox("Grid");
 		chbxGrid.setFont(smallFont);
 		chbxGrid.selectedProperty().addListener((obx, o, n) -> {
-			drawScene();
+			for (SpDisplay d : displays)
+				d.drawScene();
 		});
 		gp.add(chbxGrid, 3, 0);
 
 		chbxBoundaries = new CheckBox("Boundaries");
 		chbxBoundaries.setFont(smallFont);
 		chbxBoundaries.selectedProperty().addListener((obs, o, n) -> {
-			drawScene();
+			for (SpDisplay d : displays)
+				d.drawScene();
 		});
 		gp.add(chbxBoundaries, 3, 1);
 
 		chbxLines = new CheckBox("Relations");
 		chbxLines.setFont(smallFont);
 		chbxLines.selectedProperty().addListener((obs, o, n) -> {
-			drawScene();
+			for (SpDisplay d : displays)
+				d.drawScene();
 		});
 		gp.add(chbxLines, 4, 0);
 
@@ -383,107 +890,32 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		centerContainer = new BorderPane();
 
 		container.setCenter(centerContainer);
-		zoomTarget = new BorderPane();
-		canvas = new Canvas();
-		canvas.setOnMouseClicked(e -> onMouseClicked(e));
-		zoomTarget.setCenter(canvas);
-		topAxis = new AnchorPane();
-		bottomAxis = new AnchorPane();
-		leftAxis = new AnchorPane();
-		rightAxis = new AnchorPane();
 
 		fontProperty = new SimpleObjectProperty<Font>(getSystemFont(axisFontSize));
-		double startX = getStartValue(spaceBounds.getMinX(), offsetX, tickSize);
-		for (int i = 0; i < nXAxisTicks; i++) {
-			double value = i * tickSize + startX;
-			String s = axisFormat.format(value);
-			Label t = new Label(s);
-			t.fontProperty().bind(fontProperty);
-			Label b = new Label(s);
-			b.fontProperty().bind(fontProperty);
-			topAxis.getChildren().add(t);
-			bottomAxis.getChildren().add(b);
-			xAxes.put(value, new Duple<Label, Label>(b, t));
-		}
-		{
-			double value = spaceBounds.getMinX();
-			String s = pointFormat.format(value);
-			Label t = new Label(s);
-			t.fontProperty().bind(fontProperty);
-			Label b = new Label(s);
-			b.fontProperty().bind(fontProperty);
-			topAxis.getChildren().add(t);
-			bottomAxis.getChildren().add(b);
-			xAxes.put(value, new Duple<Label, Label>(b, t));
-		}
-		{
-			double value = spaceBounds.getMaxX();
-			String s = pointFormat.format(value);
-			Label t = new Label(s);
-			t.fontProperty().bind(fontProperty);
-			Label b = new Label(s);
-			b.fontProperty().bind(fontProperty);
-			topAxis.getChildren().add(t);
-			bottomAxis.getChildren().add(b);
-			xAxes.put(value, new Duple<Label, Label>(b, t));
-		}
 
-		double startY = getStartValue(spaceBounds.getMinY(), offsetY, tickSize);
-		for (int i = 0; i < nYAxisTicks; i++) {
-			double value = i * tickSize + startY;
-			String s = axisFormat.format(value);
-			Label l = new Label(s);
-			l.fontProperty().bind(fontProperty);
-			Label r = new Label(s);
-			r.fontProperty().bind(fontProperty);
-			leftAxis.getChildren().add(l);
-			rightAxis.getChildren().add(r);
-			yAxes.put(value, new Duple<Label, Label>(l, r));
-		}
-		{
-			double value = spaceBounds.getMinY();
-			String s = pointFormat.format(value);
-			Label l = new Label(s);
-			l.fontProperty().bind(fontProperty);
-			Label r = new Label(s);
-			leftAxis.getChildren().add(l);
-			r.fontProperty().bind(fontProperty);
-			rightAxis.getChildren().add(r);
-			yAxes.put(value, new Duple<Label, Label>(l, r));
-		}
-		{
-			double value = spaceBounds.getMaxY();
-			String s = pointFormat.format(value);
-			Label l = new Label(s);
-			l.fontProperty().bind(fontProperty);
-			Label r = new Label(s);
-			r.fontProperty().bind(fontProperty);
-			leftAxis.getChildren().add(l);
-			rightAxis.getChildren().add(r);
-			yAxes.put(value, new Duple<Label, Label>(l, r));
-		}
-
-		zoomTarget.setTop(topAxis);
-		zoomTarget.setBottom(bottomAxis);
-		zoomTarget.setLeft(leftAxis);
-		zoomTarget.setRight(rightAxis);
-
-		Group group = new Group(zoomTarget);
-		StackPane content = new StackPane(group);
-		scrollPane = new ScrollPane(content);
-		scrollPane.setPannable(true);
-		scrollPane.setContent(content);
-		scrollPane.setMinSize(170, 170);
-		CenteredZooming.center(scrollPane, content, group, zoomTarget);
-		centerContainer.setCenter(scrollPane);
+		// add a view for each item limited by nSenders;
+		GridPane displaysPane = new GridPane();
+		centerContainer.setCenter(displaysPane);
+		int nSenders = policy.getDataMessageRange().getLast() - policy.getDataMessageRange().getFirst();
+		nDisplays = Math.min(nSenders, nDisplays);
+		int nCols = (int) Math.max(1, Math.sqrt(nDisplays));
+		int nRows = nCols;
+		if ((nRows * nCols) < nDisplays)
+			nCols++;
+		int display = 0;
+		for (int r = 0; r < nRows; r++)
+			for (int c = 0; c < nCols; c++) {
+				SpDisplay d = new SpDisplay(display++);
+				displays.add(d);
+				displaysPane.add(d.getContainer(), c, r);
+			}
 
 		HBox statusBar = new HBox();
 		// statusBar.setAlignment(Pos.CENTER);
 		statusBar.setSpacing(5);
-		lblItem = new Label("");
 		lblTime = new Label("");
 
-		statusBar.getChildren().addAll(new Label("Tracker time"), lblTime, new Label("	"), lblItem);
+		statusBar.getChildren().addAll(new Label("Tracker time"), lblTime);
 		container.setBottom(statusBar);
 
 		legend = new FlowPane();
@@ -503,10 +935,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private void setPaperWidth() {
 		fontProperty.set(getSystemFont(axisFontSize * sldrResolution.getValue()));
-//		System.out.println(sldrResolution.getValue()+"\t"+zoomTarget.getScaleX()+"\t"+(zoomTarget.getScaleX()/sldrResolution.getValue()));
-//		zoomTarget.setScaleX(zoomTarget.getScaleX()/sldrResolution.getValue());
-//		zoomTarget.setScaleY(zoomTarget.getScaleY()/sldrResolution.getValue());
-		resizeCanvas();
+		for (SpDisplay d : displays)
+			d.resizeCanvas();
 		setElementScales();
 	}
 
@@ -516,7 +946,8 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		scaledNodeRadius = scale * nodeRadius;
 		scaledFont = Font.font("Courier New", scale * labelFontSize);
 		scaledLineWidth = scale * lineWidth;
-		drawScene();
+		for (SpDisplay d : displays)
+			d.drawScene();
 	}
 
 	private void processDataMessage(SpaceData data) {
@@ -525,7 +956,10 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 			boolean refreshLegend = updateData(data);
 			if (refreshLegend)
 				updateLegend();
-			drawScene();
+			for (SpDisplay d : displays) {
+				if (d.sender() == data.sender())
+					d.drawScene();
+			}
 		});
 	}
 
@@ -542,10 +976,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
-
-			mpPoints.clear();
-			stLines.clear();
-			mpColours.clear();
+			senderVertices.forEach((k, vertices) -> {
+				vertices.clear();
+			});
+			senderLines.forEach((k, lineSets) -> {
+				lineSets.clear();
+			});
+			vertexColours.clear();
 
 			for (SpaceData data : lstInitialData)
 				processDataMessage(data);
@@ -557,15 +994,22 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 // This be synchronized to prevent errors when resetting during a slow
 	// simulation
 	private synchronized boolean updateData(SpaceData data) {
+		// get the data set for this sender
+		// dataset = dataSets.get(data.sender());
 		boolean updateLegend = false;
 		// Update points
 
+		Map<String, Duple<DataLabel, double[]>> vertices = senderVertices.get(data.sender());
+		if (vertices==null) {
+			vertices = new HashMap<>();
+			senderVertices.put(data.sender(),vertices);
+		}
 		// delete points in the point list
-		int pc = mpPoints.size();
+		int pc = vertices.size();
 		int pd = 0;
 		for (DataLabel lab : data.pointsToDelete()) {
 			// It's an error if the lab is NOT found in the list before
-			if (mpPoints.remove(lab.toString()) == null)
+			if (vertices.remove(lab.toString()) == null)
 				System.out.println("Warning: Attempt to delete non-existing point. [" + lab + "]");
 			else {
 				pd++;
@@ -581,7 +1025,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (DataLabel lab : data.pointsToCreate().keySet()) {
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToCreate().get(lab));
 			// It's an error if the lab IS found in the list before
-			if (mpPoints.put(lab.toString(), newValue) != null)
+			if (vertices.put(lab.toString(), newValue) != null)
 				throw new TwuifxException("Attempt to add an already existing point. [" + lab + "]");
 			pa++;
 			if (installPointColour(lab))
@@ -593,22 +1037,27 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		for (DataLabel lab : data.pointsToMove().keySet()) {
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToMove().get(lab));
 			// It's an error if the lab is NOT in the list
-			if (mpPoints.put(lab.toString(), newValue) == null)
+			if (vertices.put(lab.toString(), newValue) == null)
 				throw new TwuifxException("Attempt to move a non-existing point. [" + lab + "]");
 //			pm++;
 			if (installPointColour(lab))
 				updateLegend = true;
 		}
 
-		int pu = mpPoints.size();
+		int pu = vertices.size();
 		if (pu != (pc - pd + pa))
 			System.out.println("Points don't add up. [" + pc + "-" + pd + "+" + pa + "=" + pu + "]");
 
 		// update lines
-		int lc = stLines.size();
+		Set<Tuple<DataLabel, DataLabel, String>> lineSets = senderLines.get(data.sender());
+		if (lineSets==null) {
+			lineSets = new HashSet<>();
+			senderLines.put(data.sender(),lineSets);
+		}
+		int lc = lineSets.size();
 		int la = 0;
 		for (Tuple<DataLabel, DataLabel, String> line : data.linesToCreate()) {
-			boolean added = stLines.add(line);
+			boolean added = lineSets.add(line);
 			// PROBLEM HERE: there may be two relations OF DIFFERENT TYPES relating the
 			// same two points....
 			// so we must allow for identical ends but different types.
@@ -626,7 +1075,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// remove lines
 		int ld = 0;
 		for (Tuple<DataLabel, DataLabel, String> line : data.linesToDelete()) {
-			boolean removed = stLines.remove(line);
+			boolean removed = lineSets.remove(line);
 			if (!removed) {
 //				throw new TwuifxException("Attempt to delete a non-existing line. [" + line+"]");
 //				This is allowed now. Forgot why.
@@ -639,18 +1088,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		// removed just above.
 
 		int ldnr = 0;
-		Iterator<Tuple<DataLabel, DataLabel, String>> itline = stLines.iterator();
+		Iterator<Tuple<DataLabel, DataLabel, String>> itline = lineSets.iterator();
 		while (itline.hasNext()) {
 			Tuple<DataLabel, DataLabel, String> line = itline.next();
-			if (!mpPoints.containsKey(line.getFirst().toString())
-					|| !mpPoints.containsKey(line.getSecond().toString())) {
+			if (!vertices.containsKey(line.getFirst().toString())
+					|| !vertices.containsKey(line.getSecond().toString())) {
 				itline.remove();
 				ldnr++;
 			}
 		}
 
 		// This will fail on reset unless synchronized
-		int lu = stLines.size();
+		int lu = lineSets.size();
 		if (lu != (lc - (ld + ldnr) + la))
 			System.out.println("Lines don't add up. [" + lc + "-(" + (ld + ldnr) + "+" + la + "=" + lu + "]");
 //		System.out.println("Stored points: "+hPointsMap.size());
@@ -675,13 +1124,13 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private boolean installPointColour(DataLabel dl) {
 		boolean update = false;
 		String cKey = getColourKey(dl);
-		Duple<Integer, Color> value = mpColours.get(cKey);
+		Duple<Integer, Color> value = vertexColours.get(cKey);
 		if (value == null) {
-			value = new Duple<Integer, Color>(1, getColour(mpColours.size()));
+			value = new Duple<Integer, Color>(1, getColour(vertexColours.size()));
 			update = true;
 		} else
 			value = new Duple<Integer, Color>(value.getFirst() + 1, value.getSecond());
-		mpColours.put(cKey, value);
+		vertexColours.put(cKey, value);
 		return update;
 	}
 
@@ -693,108 +1142,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	}
 
 //-------------------------------------------- Drawing ---
-
-	private synchronized void drawScene() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setFont(scaledFont);
-		drawPaper(gc);
-		gc.setLineWidth(scaledLineWidth);
-		gc.setLineDashes(0);
-
-		if (chbxLines.isSelected()) {
-			// gc.setStroke(lineColour);
-			for (Tuple<DataLabel, DataLabel, String> lineReference : stLines) {
-				String sType = lineReference.getThird();
-				Color lineTypeColour = lineTypeColours.get(sType);
-				gc.setStroke(lineTypeColour);
-				// now we need a line type colour system.
-				String sKey = lineReference.getFirst().toString();
-				String eKey = lineReference.getSecond().toString();
-				Duple<DataLabel, double[]> sEntry = mpPoints.get(sKey);
-				Duple<DataLabel, double[]> eEntry = mpPoints.get(eKey);
-				if (sEntry == null)
-					throw new TwuifxException("Line error. Start point not found " + sKey);
-				if (eEntry == null)
-					throw new TwuifxException("Line error. End point not found " + eKey);
-				double[] start = sEntry.getSecond();
-				double[] end = eEntry.getSecond();
-				// Clone if altering: may need to limit lines to intersection with he map edge
-				if (eec == null) {
-					drawLine(gc, start[0], start[1], end[0], end[1], true);
-				} else if (eec.equals(EdgeEffectCorrection.periodic))
-					drawPeriodicLines(gc, start, end);
-				else if (eec.equals(EdgeEffectCorrection.tubular)) {
-					// assume first dim means 'x'
-					drawTubularLines(gc, start, end);
-				} else {
-					drawLine(gc, start[0], start[1], end[0], end[1], true);
-				}
-			}
-		}
-
-		double size = 2 * scaledNodeRadius;
-		gc.setTextAlign(TextAlignment.CENTER);
-		gc.setTextBaseline(VPos.CENTER);
-		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : mpPoints.entrySet()) {
-			Duple<DataLabel, double[]> value = entry.getValue();
-			String cKey = getColourKey(value.getFirst());
-			Duple<Integer, Color> colourEntry = mpColours.get(cKey);
-//			if (colourEntry != null) {
-			Color colour = colourEntry.getSecond();
-			gc.setStroke(colour);
-			double[] coords = value.getSecond();
-			Point2D point = spaceToCanvas(coords);
-			point = point.add(-scaledNodeRadius, -scaledNodeRadius);
-			gc.strokeOval(point.getX(), point.getY(), size, size);
-			if (symbolFill) {
-				gc.setFill(colour);
-				gc.fillOval(point.getX(), point.getY(), size, size);
-			}
-			if (chbxLabels.isSelected()) {
-				gc.setFill(fontColour);
-				String label = value.getFirst().getEnd();
-				gc.fillText(label, point.getX() + scaledNodeRadius, point.getY() + scaledNodeRadius);
-			}
-		}
-//		}
-	}
-
-	private void drawTubularLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
-		// TODO: Check this!
-		double[] transPoint = new double[2];
-		transPoint[0] = endPoint[0];
-		transPoint[1] = endPoint[1];
-		double tx = translate(startPoint[0], endPoint[0], spaceBounds.getMaxX());
-		if (Double.isFinite(tx))
-			transPoint[0] = tx;
-		int quad = getQuad(transPoint);
-
-		double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
-		double b = startPoint[1] - (m * startPoint[0]);
-		switch (quad) {
-		case 0: {// no wrap: nothing to do
-			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
-			break;
-		}
-		case 1: {// right
-			double yi = getYAt(spaceBounds.getMaxX(), m, b);
-			drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, false);
-			drawLine(gc, 0.0, yi, endPoint[0], endPoint[1], true);
-			break;
-		}
-		case 5: {// left
-			double yi = getYAt(0.0, m, b);
-			drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
-			drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
-			break;
-		}
-		default: {
-			throw new TwuifxException("Line to unhandled quadrant [" + quad + ": (" + startPoint[0] + ","
-					+ startPoint[1] + ") > (" + endPoint[0] + "," + endPoint[1] + ")]");
-		}
-		}
-
-	}
 
 	private static double translate(double s, double e, double max) {
 		double result = Double.POSITIVE_INFINITY;
@@ -836,151 +1183,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 	private static double getYAt(double x, double m, double b) {
 		return m * x + b;
-	}
-
-	private void drawPeriodicLines(GraphicsContext gc, double[] startPoint, double[] endPoint) {
-		double[] transPoint = new double[2];
-		transPoint[0] = endPoint[0];
-		transPoint[1] = endPoint[1];
-		double tx = translate(startPoint[0], endPoint[0], spaceBounds.getMaxX());
-		double ty = translate(startPoint[1], endPoint[1], spaceBounds.getMaxY());
-		if (Double.isFinite(tx))
-			transPoint[0] = tx;
-		if (Double.isFinite(ty))
-			transPoint[1] = ty;
-
-		int quad = getQuad(transPoint);
-
-		double m = (transPoint[1] - startPoint[1]) / (transPoint[0] - startPoint[0]);
-		double b = startPoint[1] - (m * startPoint[0]);
-		switch (quad) {
-		case 0: {// no wrap: nothing to do
-			drawLine(gc, startPoint[0], startPoint[1], endPoint[0], endPoint[1], true);
-			break;
-		}
-		// right
-		case 1: {
-			double yi = getYAt(spaceBounds.getMaxX(), m, b);
-			drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, false);
-			drawLine(gc, 0.0, yi, endPoint[0], endPoint[1], true);
-			break;
-		}
-		// top right
-		case 2: {
-			double yi = getYAt(spaceBounds.getMaxX(), m, b);
-			double xi = getXAt(spaceBounds.getMaxY(), m, b);
-			double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, spaceBounds.getMaxY());
-			double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
-			if (xd2 < yd2) { // cross the x-axis first
-				drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), false);
-				drawLine(gc, xi, 0.0, spaceBounds.getMaxX(), (yi - spaceBounds.getMaxY()), false);
-				drawLine(gc, 0.0, (yi - spaceBounds.getMaxY()), endPoint[0], endPoint[1], true);
-			} else { // cross at y-axis first
-				drawLine(gc, 0.0, yi, (xi - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
-				drawLine(gc, 0.0, yi, (xi - spaceBounds.getMaxX()), spaceBounds.getMaxY(), false);
-				drawLine(gc, (xi - spaceBounds.getMaxX()), 0.0, endPoint[0], endPoint[1], true);
-			}
-			break;
-		}
-		// top
-		case 3: {
-			double xi = getXAt(spaceBounds.getMaxY(), m, b);
-			if (Double.isNaN(xi)) {// vertical line
-				xi = startPoint[0];
-				drawLine(gc, xi, startPoint[1], xi, spaceBounds.getMaxY(), false);
-				drawLine(gc, xi, 0.0, xi, endPoint[1], true);
-			} else {
-				drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), false);
-				drawLine(gc, xi, 0.0, endPoint[0], endPoint[1], true);
-			}
-			break;
-		}
-		// top left
-		case 4: {
-			double yi = getYAt(0.0, m, b);
-			double xi = getXAt(spaceBounds.getMaxY(), m, b);
-			double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, spaceBounds.getMaxY());
-			double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], 0, yi);
-			if (xd2 < yd2) { // cross the x-axis first
-				drawLine(gc, startPoint[0], startPoint[1], xi, spaceBounds.getMaxY(), false);
-				drawLine(gc, xi, 0.0, 0, yi - spaceBounds.getMaxY(), false);
-				drawLine(gc, spaceBounds.getMaxX(), yi - spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
-			} else { // cross at y-axis first
-				drawLine(gc, startPoint[0], startPoint[1], 0, yi, false);
-				drawLine(gc, spaceBounds.getMaxX(), yi, spaceBounds.getMaxX() + xi, spaceBounds.getMaxY(), false);
-				drawLine(gc, spaceBounds.getMaxX() + xi, 0.0, endPoint[0], endPoint[1], true);
-			}
-			break;
-		}
-		// left
-		case 5: {
-			double yi = getYAt(0.0, m, b);
-			drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
-			drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
-			break;
-		}
-		// bottom left
-		case 6: {
-			double xi = getXAt(0.0, m, b);
-			double yi = getYAt(0.0, m, b);
-			double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0.0);
-			double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], 0.0, yi);
-			if (xd2 < yd2) { // cross the x-axis first
-				drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, false);
-				drawLine(gc, xi, spaceBounds.getMaxY(), 0.0, spaceBounds.getMaxY() + yi, false);
-				drawLine(gc, spaceBounds.getMaxX(), spaceBounds.getMaxY() + yi, endPoint[0], endPoint[1], true);
-			} else {
-				drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
-				drawLine(gc, spaceBounds.getMaxX(), yi, spaceBounds.getMaxX() + xi, 0.0, false);
-				drawLine(gc, spaceBounds.getMaxX() + xi, spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
-			}
-			break;
-		}
-		// bottom
-		case 7: {
-			double xi = getXAt(0.0, m, b);
-			if (Double.isNaN(xi)) {// vertical line
-				xi = startPoint[0];
-				drawLine(gc, xi, startPoint[1], xi, 0.0, false);
-				drawLine(gc, xi, spaceBounds.getMaxY(), xi, endPoint[1], true);
-			} else {
-				drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, false);
-				drawLine(gc, xi, spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
-			}
-			break;
-		}
-		// bottom right
-		case 8: {
-			double yi = getYAt(spaceBounds.getMaxX(), m, b);
-			double xi = getXAt(0.0, m, b);
-			double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0);
-			double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
-			if (xd2 < yd2) { // cross at x-axis first
-				drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, false);
-				drawLine(gc, xi, spaceBounds.getMaxY(), spaceBounds.getMaxX(), spaceBounds.getMaxY() + yi, false);
-				drawLine(gc, 0.0, spaceBounds.getMaxY() + yi, endPoint[0], endPoint[1], true);
-			} else { // cross at y-axis first
-				drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, false);
-				drawLine(gc, 0.0, yi, xi - spaceBounds.getMaxX(), 0.0, false);
-				drawLine(gc, xi - spaceBounds.getMaxX(), spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
-			}
-			break;
-		}
-		default: {
-			throw new TwuifxException("Line to unhandled quadrant [" + quad + ": (" + startPoint[0] + ","
-					+ startPoint[1] + ") > (" + endPoint[0] + "," + endPoint[1] + ")]");
-		}
-		}
-
-	}
-
-	private void drawLine(GraphicsContext gc, double x1, double y1, double x2, double y2, boolean endNode) {
-		Point2D start = spaceToCanvas(x1, y1);
-		Point2D end = spaceToCanvas(x2, y2);
-		gc.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
-		if (showArrows)
-			drawArrow(gc, start, end, endNode);
-
 	}
 
 	private void drawArrow(GraphicsContext gc, Point2D start, Point2D end, boolean endNode) {
@@ -1027,78 +1229,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		}
 	}
 
-	private void resizeCanvas() {
-		double r = getSpaceCanvasRatio();
-		int newWidth = (int) Math.round(r * spaceBounds.getWidth());
-		int newHeight = (int) Math.round(r * spaceBounds.getHeight());
-		if (canvas.getWidth() != newWidth || canvas.getHeight() != newHeight) {
-			canvas.setWidth(newWidth);
-			canvas.setHeight(newHeight);
-		}
-	}
-
 	private double getSpaceCanvasRatio() {
 		return (sldrResolution.getValue() * paperSize) / spaceBounds.getWidth();
 	}
-
-	private void drawPaper(GraphicsContext gc) {
-		gc.setFill(bkgColour);
-		gc.setStroke(bkgColour);
-		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		double w = canvas.getWidth();
-		double h = canvas.getHeight();
-		double maxDim = Math.max(spaceBounds.getWidth(), spaceBounds.getHeight());
-		double maxSize = Math.max(w, h);
-		double scale = maxSize / maxDim;
-		double scaledTickSize = scale * tickSize;
-		double lineWidth = scaledTickSize / 100.0;
-		double dashes = scaledTickSize / 10.0;
-		if (chbxGrid.isSelected()) {
-			gc.setStroke(Color.GREY);
-			gc.setLineDashes(dashes);
-			gc.setLineWidth(lineWidth);
-//			double startX = getStartValue(spaceBounds.getMinX(), offsetX, tickSize);
-			double startX = offsetX;
-			for (int i = 0; i < nXAxisTicks; i++) {
-				double x = i * tickSize + startX;
-				x = x * scale;
-				gc.strokeLine(x, 0, x, h);
-			}
-
-			double startY = offsetY;
-			for (int i = 0; i < nYAxisTicks; i++) {
-				double y = i * tickSize + startY;
-				y = h - (scale * y);
-				gc.strokeLine(0, y, w, y);
-			}
-		}
-		if (chbxBoundaries.isSelected()) {
-			double lws = lineWidth * 10;// line width scaling
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(0)), 1, 0, 1, h, lws, dashes);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(1)), w, 0, w, h, lws, dashes);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(2)), 0, h, w, h, lws, dashes);
-			drawBorder(gc, BorderType.valueOf(borderList.getWithFlatIndex(3)), 0, 1, w, 1, lws, dashes);
-		}
-
-		for (Map.Entry<Double, Duple<Label, Label>> entry : xAxes.entrySet()) {
-			Label bottom = entry.getValue().getFirst();
-			Label top = entry.getValue().getSecond();
-			double value = entry.getKey() - spaceBounds.getMinX();
-			double pos = value * scale + leftAxis.getWidth();
-			double center = top.getWidth() / 2.0;
-			AnchorPane.setLeftAnchor(top, pos - center);
-			AnchorPane.setLeftAnchor(bottom, pos - center);
-		}
-		for (Map.Entry<Double, Duple<Label, Label>> entry : yAxes.entrySet()) {
-			Label left = entry.getValue().getFirst();
-			Label right = entry.getValue().getSecond();
-			double value = entry.getKey() - spaceBounds.getMinY();
-			double pos = h - (value * scale);
-			AnchorPane.setTopAnchor(left, pos);
-			AnchorPane.setTopAnchor(right, pos);
-			AnchorPane.setRightAnchor(left, 0.0);
-		}
-	};
 
 	private Color getColour(int idx) {
 		return lstColoursAvailable.get(idx % lstColoursAvailable.size());
@@ -1109,15 +1242,6 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		double tr = tMax - tMin;
 		double p = (value - fMin) / fr;
 		return p * tr + tMin;
-	}
-
-	private Point2D spaceToCanvas(double... coords) {
-		double sx = coords[0];
-		double sy = coords[1];
-		double dx = rescale(sx, spaceBounds.getMinX(), spaceBounds.getMaxX(), 0, canvas.getWidth());
-		double dy = rescale(sy, spaceBounds.getMinY(), spaceBounds.getMaxY(), 0, canvas.getHeight());
-		dy = canvas.getHeight() - dy;
-		return new Point2D(dx, dy);
 	}
 
 // ---------------------------------------- Preferences
@@ -1144,29 +1268,28 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private static final String keyShowArrows = "showArrows";
 	private static final String keyShowIntermediateArrows = "showIntermediateArrows";
 	private static final String keyFontColour = "fontColour";
-//	private static final String keyFullLegendNames = "fullLegendNames";
 
 	private int colourHLevel;
 	private boolean symbolFill;
 	private Color bkgColour;
-//	private Color lineColour;
 	private Color fontColour;
 	private double contrast;
 	private boolean colour64;
-//	private boolean showLines;
 	private int maxLegendItems;
 	private Side legendSide;
 	private boolean showArrows;
 	private boolean showIntermediateArrows;
-//	private boolean fullLegendNames;
 	private PaletteSize paletteSize = PaletteSize.veryLarge;
 
 	@Override
 	public void putUserPreferences() {
-		Preferences.putDouble(widgetId + keyScaleX, zoomTarget.getScaleX());
-		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
-		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
-		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
+		for (int i = 0; i < displays.size(); i++) {
+			SpDisplay d = displays.get(i);
+			Preferences.putDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX());
+			Preferences.putDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY());
+			Preferences.putDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue());
+			Preferences.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
+		}
 		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
 		Preferences.putDouble(widgetId + keyElementScale, sldrElements.getValue());
 		Preferences.putDouble(widgetId + keyPaperScale, sldrResolution.getValue());
@@ -1187,16 +1310,18 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		Preferences.putBoolean(widgetId + keyShowPointLabels, chbxLabels.isSelected());
 		Preferences.putBoolean(widgetId + keyShowArrows, showArrows);
 		Preferences.putBoolean(widgetId + keyShowIntermediateArrows, showIntermediateArrows);
-//		Preferences.putBoolean(widgetId + keyFullLegendNames, fullLegendNames);
 	}
 
 	// called at END of UI construction because this depends on UI components.
 	@Override
 	public void getUserPreferences() {
-		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
-		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
-		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
-		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
+		for (int i = 0; i < displays.size(); i++) {
+			SpDisplay d = displays.get(i);
+			d.zoomTarget().setScaleX(Preferences.getDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX()));
+			d.zoomTarget().setScaleY(Preferences.getDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY()));
+			d.scrollPane().setHvalue(Preferences.getDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue()));
+			d.scrollPane().setVvalue(Preferences.getDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue()));
+		}
 		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
 		sldrElements.setValue(Preferences.getDouble(widgetId + keyElementScale, 1.0));
 		sldrResolution.setValue(Preferences.getDouble(widgetId + keyPaperScale, 1.0));
@@ -1231,12 +1356,9 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		chbxLabels.setSelected(Preferences.getBoolean(widgetId + keyShowPointLabels, false));
 		showArrows = Preferences.getBoolean(widgetId + keyShowArrows, false);
 		showIntermediateArrows = Preferences.getBoolean(widgetId + keyShowIntermediateArrows, true);
-//		fullLegendNames = Preferences.getBoolean(widgetId + keyFullLegendNames, false);
-
 	}
 
 	// --------------- GUI
-	private BorderPane centerContainer;
 
 	private void placeLegend() {
 		centerContainer.setLeft(null);
@@ -1272,7 +1394,7 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 		legend.getChildren().clear();
 
 		int count = 0;
-		for (Map.Entry<String, Duple<Integer, Color>> entry : mpColours.entrySet()) {
+		for (Map.Entry<String, Duple<Integer, Color>> entry : vertexColours.entrySet()) {
 			count++;
 			if (count <= maxLegendItems) {
 				String legendName = entry.getKey();
@@ -1491,49 +1613,26 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 
 			if (newLegend) {
 
-				mpColours.clear();
-				mpPoints.forEach((k, v) -> {
-					installPointColour(v.getFirst());
+				vertexColours.clear();
+				Map<String, Duple<DataLabel, double[]>> vertices = senderVertices.get(0);//???
+				vertices.forEach((k, vertex) -> {
+					installPointColour(vertex.getFirst());
 				});
 
 				lineTypeColours.clear();
-				stLines.forEach((e) -> {
-					installLineColour(e.getThird());
+				Set<Tuple<DataLabel, DataLabel, String>> lineSets = senderLines.get(0);
+				lineSets.forEach((line) -> {
+					installLineColour(line.getThird());
 				});
 				updateLegend();
 			}
 
 			placeLegend();
-			resizeCanvas();
-			drawScene();
-		}
-	}
-
-	private void onMouseClicked(MouseEvent e) {
-		String name = findName(e);
-		lblItem.setText(name);
-	}
-
-	private String findName(MouseEvent e) {
-		double scale = 1.0 / getSpaceCanvasRatio();
-		double size = (scaledNodeRadius * 2) * scale;
-		double rad = scaledNodeRadius * scale;
-		double clickX = (e.getX() * scale) + spaceBounds.getMinX();
-		double clickY = ((canvas.getHeight() - e.getY()) * scale) + spaceBounds.getMinY();
-		BoundingBox box = new BoundingBox(clickX - rad, clickY - rad, size, size);
-//		System.out.println(e.getX() + "," + e.getY());
-		for (Map.Entry<String, Duple<DataLabel, double[]>> entry : mpPoints.entrySet()) {
-			String key = entry.getKey();
-			Duple<DataLabel, double[]> value = entry.getValue();
-			double x = value.getSecond()[0];
-			double y = value.getSecond()[1];
-//			System.out.println(e.getX() + "," + e.getY()+":"+x+","+y);
-
-			if (box.contains(x, y)) {
-				return key + " [" + pointFormat.format(x) + "," + pointFormat.format(y) + "]";
+			for (SpDisplay d : displays) {
+				d.resizeCanvas();
+				d.drawScene();
 			}
 		}
-		return "";
 	}
 
 	private static void drawBorder(GraphicsContext gc, BorderType bt, double x1, double y1, double x2, double y2,
@@ -1610,20 +1709,5 @@ public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Met
 	private double getStartValue(double min, double offset, double tickSize) {
 		return min + offset;
 	}
-//	private boolean uninstallColour(DataLabel dl) {
-//	String cKey = getColourKey(dl);
-//	Duple<Integer, Color> value = mpColours.get(cKey);
-//	if (value != null) {
-//		if (value.getFirst() == 1) {
-//			mpColours.remove(cKey);
-//			return true;
-//		} else {
-//			value = new Duple<Integer, Color>(value.getFirst() - 1, value.getSecond());
-//			mpColours.put(cKey, value);
-//			return false;
-//		}
-//	}
-//	return false;
-//}
 
 }
