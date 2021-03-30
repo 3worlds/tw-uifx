@@ -78,6 +78,7 @@ public enum LibraryTable {
 	Test4 ("4 TestXYPlot","TestXYPlot1","TestXYPlot.utg",LibraryType.Test,TestsDummy.class),//
 	Test5 ("5 ParallelTest (Palms)","Palms1","ParallelTestPalms.utg",LibraryType.Test,TestsDummy.class),//
 	Test6 ("6 ParallelTest (Logistic)","Logistic1","ParallelTestLogistic.utg",LibraryType.Test,TestsDummy.class),//
+	Test7 ("7 ParallelTest (Boids)","Boids1","ParallelTestBoids.utg",LibraryType.Test,TestsDummy.class),//
 	
 	;
 

@@ -105,11 +105,14 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -131,6 +134,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *       Widget to show spatial map of objects and their relations.
  *
  */
+//https://stackoverflow.com/questions/36168429/javafx-gridpane-dynamic-resizng-of-child-nodes-to-fill-assigned-area
 public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
 	private static final double labelFontSize = 9.5;
 	private static final double axisFontSize = 13.0;
@@ -146,7 +150,6 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	 * Hierarchically organised locations. Colours can be applied to any level in
 	 * the data label hierarchy from species to stages to individuals.
 	 */
-
 
 	private final Map<Integer, Map<String, Duple<DataLabel, double[]>>> senderVertices;
 
@@ -187,7 +190,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	private String widgetId;
 	private final WidgetTrackingPolicy<TimeData> policy;
 	private final WidgetTimeFormatter timeFormatter;
-	private int nDisplays;
+	private int nViews;
 
 	private final List<SpDisplay> displays;
 
@@ -212,9 +215,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
 		policy.setProperties(id, properties);
-		nDisplays = 1;
-		if (properties.hasProperty("nDisplays"))
-			nDisplays = (Integer) properties.getPropertyValue("nDisplays");
+		nViews = 1;
+		if (properties.hasProperty("nViews"))
+			nViews = (Integer) properties.getPropertyValue("nViews");
 	}
 
 	@Override
@@ -310,14 +313,26 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		private final Map<Double, Duple<Label, Label>> xAxes;
 		private final Map<Double, Duple<Label, Label>> yAxes;
 		private final ScrollPane scrollPane;
+		private final int nSenders;
 
 		private final ComboBox<String> cmbxSender;
 
-		private SpDisplay(int sender) {
+		private SpDisplay(int sender, int nSenders) {
 			this.sender = sender;
+			this.nSenders = nSenders;
 			container = new BorderPane();
+			// container.pref
 			cmbxSender = new ComboBox<String>();
-			container.setTop(cmbxSender);
+			for (int i = 0; i < nSenders; i++)
+				cmbxSender.getItems().add(Integer.toString(i));
+			cmbxSender.getSelectionModel().select(sender);
+			HBox topBar = new HBox();
+			topBar.setAlignment(Pos.CENTER_LEFT);
+			lblItem = new Label("");
+			topBar.setSpacing(5);
+		
+			topBar.getChildren().addAll(new Label("Simulator"), cmbxSender,lblItem);
+			container.setTop(topBar);
 			zoomTarget = new BorderPane();
 			canvas = new Canvas();
 			canvas.setOnMouseClicked(e -> onMouseClicked(e));
@@ -404,34 +419,41 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			zoomTarget.setBottom(bottomAxis);
 			zoomTarget.setLeft(leftAxis);
 			zoomTarget.setRight(rightAxis);
+//			zoomTarget.setPrefSize(200, 200);
 
 			Group group = new Group(zoomTarget);
 			StackPane content = new StackPane(group);
 			scrollPane = new ScrollPane(content);
 			scrollPane.setPannable(true);
 			scrollPane.setContent(content);
-			scrollPane.setMinSize(170, 170);
+//			scrollPane.setMinSize(170, 170);
 			CenteredZooming.center(scrollPane, content, group, zoomTarget);
 			container.setCenter(scrollPane);
 
-			HBox statusBar = new HBox();
-			// statusBar.setAlignment(Pos.CENTER);
-			statusBar.setSpacing(5);
-			lblItem = new Label("");
+
+			cmbxSender.setOnAction(e -> {
+				this.sender = cmbxSender.getSelectionModel().getSelectedIndex();
+				drawScene();
+			});
 		}
 
 		private Pane getContainer() {
 			return container;
 		}
 
-		private int sender() {
+		private int getSender() {
 			return sender;
+		}
+		private void setSender(int s) {
+			s = Math.min(s, nSenders-1);
+			sender = s;
+			cmbxSender.getSelectionModel().select(sender);
 		}
 
 		private void drawScene() {
 
 			Set<Tuple<DataLabel, DataLabel, String>> lineSets = senderLines.get(sender);
-			
+
 			Map<String, Duple<DataLabel, double[]>> vertices = senderVertices.get(sender);
 			GraphicsContext gc = canvas.getGraphicsContext2D();
 			gc.setFont(scaledFont);
@@ -439,7 +461,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			gc.setLineWidth(scaledLineWidth);
 			gc.setLineDashes(0);
 
-			if (chbxLines.isSelected()) {
+			if (chbxLines.isSelected() && lineSets != null) {
 				// gc.setStroke(lineColour);
 				for (Tuple<DataLabel, DataLabel, String> lineReference : lineSets) {
 					String sType = lineReference.getThird();
@@ -470,28 +492,30 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 				}
 			}
 
-			double size = 2 * scaledNodeRadius;
-			gc.setTextAlign(TextAlignment.CENTER);
-			gc.setTextBaseline(VPos.CENTER);
-			for (Map.Entry<String, Duple<DataLabel, double[]>> entry : vertices.entrySet()) {
-				Duple<DataLabel, double[]> value = entry.getValue();
-				String cKey = getColourKey(value.getFirst());
-				Duple<Integer, Color> colourEntry = vertexColours.get(cKey);
+			if (vertices != null) {
+				double size = 2 * scaledNodeRadius;
+				gc.setTextAlign(TextAlignment.CENTER);
+				gc.setTextBaseline(VPos.CENTER);
+				for (Map.Entry<String, Duple<DataLabel, double[]>> entry : vertices.entrySet()) {
+					Duple<DataLabel, double[]> value = entry.getValue();
+					String cKey = getColourKey(value.getFirst());
+					Duple<Integer, Color> colourEntry = vertexColours.get(cKey);
 //				if (colourEntry != null) {
-				Color colour = colourEntry.getSecond();
-				gc.setStroke(colour);
-				double[] coords = value.getSecond();
-				Point2D point = spaceToCanvas(coords);
-				point = point.add(-scaledNodeRadius, -scaledNodeRadius);
-				gc.strokeOval(point.getX(), point.getY(), size, size);
-				if (symbolFill) {
-					gc.setFill(colour);
-					gc.fillOval(point.getX(), point.getY(), size, size);
-				}
-				if (chbxLabels.isSelected()) {
-					gc.setFill(fontColour);
-					String label = value.getFirst().getEnd();
-					gc.fillText(label, point.getX() + scaledNodeRadius, point.getY() + scaledNodeRadius);
+					Color colour = colourEntry.getSecond();
+					gc.setStroke(colour);
+					double[] coords = value.getSecond();
+					Point2D point = spaceToCanvas(coords);
+					point = point.add(-scaledNodeRadius, -scaledNodeRadius);
+					gc.strokeOval(point.getX(), point.getY(), size, size);
+					if (symbolFill) {
+						gc.setFill(colour);
+						gc.fillOval(point.getX(), point.getY(), size, size);
+					}
+					if (chbxLabels.isSelected()) {
+						gc.setFill(fontColour);
+						String label = value.getFirst().getEnd();
+						gc.fillText(label, point.getX() + scaledNodeRadius, point.getY() + scaledNodeRadius);
+					}
 				}
 			}
 		}
@@ -895,20 +919,35 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 		// add a view for each item limited by nSenders;
 		GridPane displaysPane = new GridPane();
+
 		centerContainer.setCenter(displaysPane);
+
 		int nSenders = policy.getDataMessageRange().getLast() - policy.getDataMessageRange().getFirst();
-		nDisplays = Math.min(nSenders, nDisplays);
-		int nCols = (int) Math.max(1, Math.sqrt(nDisplays));
+		nViews = Math.min(nSenders, nViews);
+		int nCols = (int) Math.max(1, Math.sqrt(nViews));
 		int nRows = nCols;
-		if ((nRows * nCols) < nDisplays)
+		if ((nRows * nCols) < nViews)
 			nCols++;
 		int display = 0;
 		for (int r = 0; r < nRows; r++)
 			for (int c = 0; c < nCols; c++) {
-				SpDisplay d = new SpDisplay(display++);
+				SpDisplay d = new SpDisplay(display++, nSenders);
 				displays.add(d);
 				displaysPane.add(d.getContainer(), c, r);
+				d.getContainer().setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
 			}
+		double rowSize = (1.0 / (double) nRows) * 100.0;
+		double colSize = (1.0 / (double) nCols) * 100.0;
+		for (int r = 0; r < nRows; r++) {
+			RowConstraints row1 = new RowConstraints();
+			row1.setPercentHeight(rowSize);
+			displaysPane.getRowConstraints().addAll(row1);
+		}
+		for (int c = 0; c < nCols; c++) {
+			ColumnConstraints col1 = new ColumnConstraints();
+			col1.setPercentWidth(colSize);
+			displaysPane.getColumnConstraints().addAll(col1);
+		}
 
 		HBox statusBar = new HBox();
 		// statusBar.setAlignment(Pos.CENTER);
@@ -957,7 +996,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			if (refreshLegend)
 				updateLegend();
 			for (SpDisplay d : displays) {
-				if (d.sender() == data.sender())
+				if (d.getSender() == data.sender())
 					d.drawScene();
 			}
 		});
@@ -1000,9 +1039,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		// Update points
 
 		Map<String, Duple<DataLabel, double[]>> vertices = senderVertices.get(data.sender());
-		if (vertices==null) {
+		if (vertices == null) {
 			vertices = new HashMap<>();
-			senderVertices.put(data.sender(),vertices);
+			senderVertices.put(data.sender(), vertices);
 		}
 		// delete points in the point list
 		int pc = vertices.size();
@@ -1050,9 +1089,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 		// update lines
 		Set<Tuple<DataLabel, DataLabel, String>> lineSets = senderLines.get(data.sender());
-		if (lineSets==null) {
+		if (lineSets == null) {
 			lineSets = new HashSet<>();
-			senderLines.put(data.sender(),lineSets);
+			senderLines.put(data.sender(), lineSets);
 		}
 		int lc = lineSets.size();
 		int la = 0;
@@ -1268,6 +1307,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	private static final String keyShowArrows = "showArrows";
 	private static final String keyShowIntermediateArrows = "showIntermediateArrows";
 	private static final String keyFontColour = "fontColour";
+	private static final String keySender = "sender";
 
 	private int colourHLevel;
 	private boolean symbolFill;
@@ -1289,6 +1329,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			Preferences.putDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY());
 			Preferences.putDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue());
 			Preferences.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
+			Preferences.putInt(widgetId+keySender+i, d.getSender());
 		}
 		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
 		Preferences.putDouble(widgetId + keyElementScale, sldrElements.getValue());
@@ -1321,6 +1362,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			d.zoomTarget().setScaleY(Preferences.getDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY()));
 			d.scrollPane().setHvalue(Preferences.getDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue()));
 			d.scrollPane().setVvalue(Preferences.getDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue()));
+			d.setSender(Preferences.getInt(widgetId+keySender+i, 0));
 		}
 		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
 		sldrElements.setValue(Preferences.getDouble(widgetId + keyElementScale, 1.0));
@@ -1614,7 +1656,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			if (newLegend) {
 
 				vertexColours.clear();
-				Map<String, Duple<DataLabel, double[]>> vertices = senderVertices.get(0);//???
+				Map<String, Duple<DataLabel, double[]>> vertices = senderVertices.get(0);// ???
 				vertices.forEach((k, vertex) -> {
 					installPointColour(vertex.getFirst());
 				});
