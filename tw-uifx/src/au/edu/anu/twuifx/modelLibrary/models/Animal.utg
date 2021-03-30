@@ -67,15 +67,12 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(m)
+			field pregnant
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		record animalConsts
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(animalConsts)
 			field isFemale
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
-		record animalDecs
-			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(animalDecs)
-			field pregnant
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		record gConsts
 			dynamic = java.lang.Boolean(false)
@@ -140,7 +137,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
 							userClassName = java.lang.String(code.sys1.generated.Conceive)
 							snippet snptConceive
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		if (!isFemale) ","			otherDec.pregnant = true;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		if (!isFemale) ","			otherDrv.pregnant = true;"))
 					process global
 						dataTracker globalTracker
 							sampleSize = java.lang.String()
@@ -151,7 +148,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 			categorySet AnimalSet
 				category animalCat
 					constantClass = java.lang.String(AnimalCat_Cnt)
-					decoratorClass = java.lang.String(AnimalCat_Dec)
+					decoratorClass = java.lang.Object(null)
 					driverClass = java.lang.String(AnimalCat_Drv)
 			space space1
 				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
@@ -162,7 +159,6 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				y-limits = fr.ens.biologie.generic.utils.Interval(]0.0,1000.0[)
 			componentType animalType
 				constantClass = java.lang.String(code.sys1.generated.AnimalConsts)
-				decoratorClass = java.lang.String(code.sys1.generated.AnimalDecs)
 				driverClass = java.lang.String(code.sys1.generated.AnimalDrivers)
 				component animal
 					nInstances = java.lang.Integer(1000)
@@ -170,7 +166,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 					userClassName = java.lang.String(code.sys1.generated.AnimalInit)
 					snippet snptAnimalInit
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([6]"		// random bath dispersal","		// we don't know the box limits here!","		focalDrv.x = random.nextDouble()*1000;","		focalDrv.y =  random.nextDouble()*1000;","		// 1:1 sex ratio","		focalCnt.isFemale = random.nextBoolean();"))
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([10]"		// random bath dispersal","		// we don't know the box limits here!","		focalDrv.x = random.nextDouble()*1000;","		focalDrv.y =  random.nextDouble()*1000;","		// 1:1 sex ratio","		focalCnt.isFemale = random.nextBoolean();","		if (focalCnt.isFemale)","			focalDrv.pregnant =true;","		else","			focalDrv.pregnant = false;"))
 		initFunction GlobalInit
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
@@ -195,11 +191,10 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 
 // CROSS-LINKS
 [process:reproduce] inSpace in3 [space:space1]
-	searchRadius = java.lang.Double(1.0)
+	searchRadius = java.lang.Double(100.0)
 [process:reproduce] dependsOn after2 [process:mate]
 [process:reproduce] appliesTo aplyTo4 [category:animalCat]
 [category:animalCat] constants cnsts2 [record:animalConsts]
-[category:animalCat] decorators decs1 [record:animalDecs]
 [category:animalCat] drivers drvs2 [record:animalDrivers]
 [relationType:*returnsTo*] fromCategory frm2 [category:*component*]
 [relationType:*returnsTo*] toCategory to2 [category:*component*]
@@ -207,7 +202,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [system:sys1] belongsTo bt2 [category:*arena*]
 [system:sys1] belongsTo bt1 [category:*assemblage*]
 [process:mate] inSpace in4 [space:space1]
-	searchRadius = java.lang.Double(1.0)
+	searchRadius = java.lang.Double(100.0)
 [process:mate] appliesTo aplyTo2 [relationType:mateRelation]
 [process:mate] dependsOn after1 [process:courting]
 [relationType:mateRelation] toCategory to3 [category:animalCat]
@@ -231,7 +226,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [process:mortality] appliesTo aplyTo5 [category:animalCat]
 [process:mortality] dependsOn after3 [process:reproduce]
 [process:mortality] inSpace in2 [space:space1]
-	searchRadius = java.lang.Double(1.0)
+	searchRadius = java.lang.Double(100.0)
 [process:courting] appliesTo aplyTo1 [relationType:mateRelation]
 [process:courting] inSpace in1 [space:space1]
 	searchRadius = java.lang.Double(100.0)
