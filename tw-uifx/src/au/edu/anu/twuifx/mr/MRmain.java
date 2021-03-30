@@ -31,6 +31,9 @@ package au.edu.anu.twuifx.mr;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -59,6 +62,7 @@ import fr.ens.biologie.generic.utils.Logging;
 import java.util.logging.Logger;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
@@ -98,8 +102,8 @@ public class MRmain {
 
 		// must have an id and a project
 		if (args.length < 2) {
-			System.out.println(Arrays.deepToString(args));
-			System.out.println(usage);
+			System.err.println(Arrays.deepToString(args));
+			System.err.println(usage);
 			System.exit(1);
 		}
 		try {
@@ -107,8 +111,8 @@ public class MRmain {
 			RunTimeId.setRunTimeId(id);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
-			System.out.println(Arrays.deepToString(args));
-			System.out.println(usage);
+			System.err.println(Arrays.deepToString(args));
+			System.err.println(usage);
 			System.exit(1);
 			;
 		}
@@ -127,8 +131,8 @@ public class MRmain {
 		for (int i = 3; i < args.length; i++) {
 			String[] pair = args[i].split(":");
 			if (pair.length != 2) {
-				System.out.println(Arrays.deepToString(args));
-				System.out.println(usage);
+				System.err.println(Arrays.deepToString(args));
+				System.err.println(usage);
 				System.exit(1);
 			}
 			String klass = pair[0];
@@ -150,14 +154,14 @@ public class MRmain {
 
 		File prjDir = new File(TwPaths.TW_ROOT + File.separator + args[1]);
 		if (!prjDir.exists()) {
-			System.out.println("Project not found: [" + prjDir + "]");
-			System.out.println(Arrays.deepToString(args));
+			System.err.println("Project not found: [" + prjDir + "]");
+			System.err.println(Arrays.deepToString(args));
 			System.exit(1);
 		}
 
 		if (Project.isOpen()) {
-			System.out.println("Project is already open: [" + prjDir + "]");
-			System.out.println(Arrays.deepToString(args));
+			System.err.println("Project is already open: [" + prjDir + "]");
+			System.err.println(Arrays.deepToString(args));
 			System.exit(1);
 		}
 
@@ -170,8 +174,8 @@ public class MRmain {
 			log.info("ModelRunner is NOT running from JAR");
 			File userJar = Project.makeFile(Project.getProjectUserName() + ".jar");
 			if (!userJar.exists()) {
-				System.out.println("User generated classes not found: [" + userJar + "]");
-				System.out.println(Arrays.deepToString(args));
+				System.err.println("User generated classes not found: [" + userJar + "]");
+				System.err.println(Arrays.deepToString(args));
 				System.exit(1);
 			}
 			// enable the url class loader
@@ -186,9 +190,9 @@ public class MRmain {
 					Logger log = Logging.getLogger(c);
 					log.setLevel(lvl);
 				} catch (ClassNotFoundException e) {
-					System.out.println("Unable to set logger: Class not found [" + klass + "]");
-					System.out.println(Arrays.deepToString(args));
-					System.out.println(usage);
+					System.err.println("Unable to set logger: Class not found [" + klass + "]");
+					System.err.println(Arrays.deepToString(args));
+					System.err.println(usage);
 					System.exit(1);
 				}
 			}
@@ -239,14 +243,34 @@ public class MRmain {
 			 * some other time, we could wrap this in a cmd line interactive shell that
 			 * allows typing cmds. run/stop / pause etc
 			 */
+			TreeGraphDataNode exp = (TreeGraphDataNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_EXPERIMENT.label())));
+			int nSim = 1;
+			if (exp.properties().hasProperty(P_EXP_NREPLICATES.key())) 
+				nSim = (Integer)exp.properties().getPropertyValue(P_EXP_NREPLICATES.key());
+			
+			
+			DateTimeFormatter fm = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS");
+			LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
+			String date = currentDate.format(fm);
+
+			System.out.println("Running... [Project: "+Project.getDisplayName()+"; Date: "+date+"]");
+			System.out.println("Initialising... [Simulators: "+nSim+"]");
 			Kicker ctrl = (Kicker) ctrlHl.getInstance();
+			System.out.println("Initialising [done]");
+		
+			System.out.println("Starting... ["+exp.toShortString()+"]");
 			ctrl.start();
 			// Loop the main thread until controller receives finished msg
 			while (!ctrl.ended());
 			
+			System.out.println("Running [done]");
 			// Generate doco - there is no other opportunity so it's done here without asking.
+			File f = Project.makeFile(ProjectPaths.RUNTIME, configGraph.root().id() + ".odt");
+			System.out.println("Writing... ["+f.getName()+"-"+f.getParent()+"]");
 			DocoGenerator gen = new DocoGenerator(configGraph);
 			gen.generate();
+			System.out.println("Writing [done]");
+			System.out.println("Finished");
 
 //			System.out.println("--- Main thread exit ---");
 		}
@@ -294,7 +318,7 @@ public class MRmain {
 		initer.initialise();
 		if (initer.errorList() != null) {
 			for (InitialiseMessage msg : initer.errorList())
-				System.out.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
+				System.err.println("FAILED: " + msg.getTarget() + msg.getException().getMessage());
 			System.exit(1);
 		}
 

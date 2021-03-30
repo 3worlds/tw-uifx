@@ -1,11 +1,11 @@
-treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
+treegraph // saved by OmugiGraphExporter on Wed Mar 24 17:58:34 AEDT 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
-3worlds Palms
+3worlds ParallelTestPalms
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(gignoux (21 déc. 2020))
+	built-by = java.lang.String(ian (24 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String()
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -379,10 +379,14 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 	experiment expt
+		nReplicates = java.lang.Integer(20)
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
 		dynamics sim1
+			stoppingCondition stCd1
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(150)
+				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 				scale = fr.cnrs.iees.twcore.constants.TimeScaleType(MONO_UNIT)
@@ -651,21 +655,23 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	userInterface gui
 		top top
-			widget timer
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
-			widget control
+			widget ctrl
 				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 		tab outputs
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget plot map
+			container cont1
 				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+				widget time
+					order = java.lang.Integer(1)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget2)
+				widget plot1
+					order = java.lang.Integer(2)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
 			widget numbers
+				firstSender = java.lang.Integer(0)
+				nSenders = java.lang.Integer(20)
 				order = java.lang.Integer(1)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 
@@ -674,7 +680,6 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 [dataTracker:trk1] trackComponent trks4 [group:adBOR]
 [dataTracker:trk1] trackField trks5 [field:count]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[widget:plot map] trackSpace trks1 [space:plot]
 [category:adult] drivers drvs2 [record:adDrv]
 [componentType:mound] belongsTo bt39 [category:termiteMound]
 [componentType:mound] belongsTo bt38 [category:*component*]
@@ -724,6 +729,7 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 [space:plot] coordinate crdmp1 [field:y]
 	rank = java.lang.Integer(1)
 [category:seedling] drivers drvs4 [record:sdldrv]
+[widget:time] trackTime trks3 [dynamics:sim1]
 [process:pJuvComp] appliesTo aplyTo13 [relationType:neighbourhoodJ]
 [process:pJuvComp] inSpace in6 [space:plot]
 	searchRadius = java.lang.Double(15.0)
@@ -738,6 +744,7 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 [process:pAdComp] inSpace in7 [space:plot]
 	searchRadius = java.lang.Double(15.0)
 [group:adBOR] cycle cycl1 [lifeCycle:Borassus aethiopum]
+[widget:plot1] trackSpace trks1 [space:plot]
 [relationType:*returnsTo*] toCategory to9 [category:*component*]
 [relationType:*returnsTo*] fromCategory frm2 [category:*component*]
 [system:sys1] belongsTo bt7 [category:*permanent*]
@@ -795,7 +802,6 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 [componentType:palmTree] belongsTo bt33 [category:singleStemmed]
 [componentType:palmTree] belongsTo bt4 [category:adult]
 [componentType:palmTree] belongsTo bt40 [category:located]
-[widget:timer] trackTime trks3 [dynamics:sim1]
 [process:procS] appliesTo aplyTo6 [category:seedling]
 [process:procS] appliesTo aplyTo5 [category:palm]
 [process:procS] appliesTo aplyTo7 [category:*ephemeral*]
@@ -803,7 +809,6 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 [process:getMounds] appliesTo aplyTo20 [relationType:neighbourhoodM]
 [process:getMounds] inSpace in1 [space:plot]
 	searchRadius = java.lang.Double(15.0)
-[widget:control] trackTime trks2 [dynamics:sim1]
 [process:procJ] appliesTo aplyTo9 [category:juvenile]
 [process:procJ] appliesTo aplyTo10 [category:palm]
 [process:procJ] appliesTo aplyTo8 [category:*ephemeral*]

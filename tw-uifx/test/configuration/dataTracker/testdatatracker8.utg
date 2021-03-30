@@ -47,7 +47,7 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 			widget time
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget)
@@ -58,12 +58,10 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 				widget timeSeries1
 					order = java.lang.Integer(0)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 				widget table
 					order = java.lang.Integer(1)
-					sender = java.lang.Integer(0)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
 			container cntnr3
 				order = java.lang.Integer(0)
 				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
@@ -72,23 +70,19 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 					widget timeSeries4
 						order = java.lang.Integer(0)
-						sender = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 					widget table1
 						order = java.lang.Integer(1)
-						sender = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
 				container cntnr5
 					order = java.lang.Integer(0)
 					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 					widget timeSeries5
 						order = java.lang.Integer(0)
-						sender = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 					widget table2
 						order = java.lang.Integer(1)
-						sender = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
 	experiment exp
 		design design1
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)

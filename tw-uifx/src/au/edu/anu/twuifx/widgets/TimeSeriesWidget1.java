@@ -102,12 +102,13 @@ import javafx.stage.Window;
  *
  * @date 10 Dec. 2020
  * 
-S *       Displays 1..* time series lines: one set for each selected simulator
- *       (default sender = 0)
- *       
- *       TODO: Rename to TimeSeriesWidget1 and delete SimpleTimeSeriesWidget (and update tutorials);
+ *       S * Displays 1..* time series lines: one set for each selected
+ *       simulator (default sender = 0)
+ * 
+ *       TODO: Rename to TimeSeriesWidget1 and delete SimpleTimeSeriesWidget
+ *       (and update tutorials);
  */
-public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
+public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
 
 	private int bufferSize;
@@ -124,7 +125,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
 
-	public RangeTimeSeriesWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	public TimeSeriesWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		// needs to be thread-safe because chartfx plugins may be looking at chart
 		// data?? No sure this makes sense but seems to work.
@@ -182,11 +183,6 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
 
 		final BorderPane content = new BorderPane();
-		final DefaultNumericAxis xAxis = new DefaultNumericAxis("Tracker time: ", timeUnitName);
-		xAxis.setAutoRangeRounding(false);
-		xAxis.setTickLabelRotation(45);
-		xAxis.invertAxis(false);
-		xAxis.setTimeAxis(false);
 
 		sas = null;
 		if (msgMetadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
@@ -196,10 +192,6 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 			if (st != null) {
 				sampledItems = new ArrayList<>(st.size());
 				for (int i = 0; i < st.size(); i++) {
-//					String[] parts = st.getWithFlatIndex(i).split( DataLabel.HIERARCHY_DOWN);
-//					String name=parts[0];
-//					for (int j=1;j<parts.length-1;j++) 
-//						name+=DataLabel.HIERARCHY_DOWN+parts[j];
 					sampledItems.add(st.getWithFlatIndex(i));
 				}
 			}
@@ -211,7 +203,12 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 			nModifiers += sas.values().size();
 		if (sampledItems != null)
 			nModifiers += sampledItems.size();
-		int nAxes = Math.min(nItems * nModifiers, maxAxes);
+		// TODO: Look out this is probably wrong
+		int nAxes;
+		if (nModifiers > 0)
+			nAxes = Math.min(nItems * nModifiers, maxAxes);
+		else
+			nAxes = Math.min(nItems, maxAxes);
 
 		for (int sender = policy.getDataMessageRange().getFirst(); sender <= policy.getDataMessageRange()
 				.getLast(); sender++) {
@@ -260,6 +257,12 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				}
 			}
 		});
+		
+		final DefaultNumericAxis xAxis = new DefaultNumericAxis("Tracker time: ", timeUnitName);
+		xAxis.setAutoRangeRounding(false);
+		xAxis.setTickLabelRotation(45);
+		xAxis.invertAxis(false);
+		xAxis.setTimeAxis(false);
 
 		chart = new XYChart(xAxis, yAxes.get(0));
 		chart.setLegendSide(legendSide);
@@ -269,7 +272,13 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 		chart.getRenderers().addAll(renderers);
 
 		chart.getPlugins().add(new Zoomer());
-		chart.getPlugins().add(new TableViewer());
+		senderDataSetMap.get(0).values();
+		int nSims = senderDataSetMap.size();
+		int nSeriesPerSim = senderDataSetMap.get(0).size();
+		int nSeries = nSims*nSeriesPerSim;
+		
+		if (nSeries <= 100)
+			chart.getPlugins().add(new TableViewer());
 //		causes  concurrent modification error at times.
 		chart.getPlugins().add(new DataPointTooltip());
 //		not sure how this works?
@@ -307,7 +316,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 	private void processDataMessage(Output0DData data) {
 		final Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(data.sender());
 		final int sender = data.sender();
-		System.out.println("Sender: " + sender + " dataLabel: " + data.itemLabel());
+//		System.out.println("Sender: " + sender + " dataLabel: " + data.itemLabel());
 
 		Platform.runLater(() -> {
 
@@ -321,7 +330,7 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 
 			String itemId = null;
 			if (sas != null)
-				itemId = data.itemLabel().toString();
+				itemId = data.itemLabel().getEnd();
 			else if (sampledItems != null)
 				itemId = data.itemLabel().toString();
 
@@ -483,11 +492,9 @@ public class RangeTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, 
 				dataSetMap.put(key, ds);
 			}
 		} else {
-			String key = sender + ":" + dl.getEnd();
-			throw new TwuifxException("Don't know how to handle '" + key + "'");
-//			System.out.println(key+"???");
-//			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
-//			dataSetMap.put(key, ds);
+			String key = sender + ":" + dl.toString();
+			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
+			dataSetMap.put(key, ds);
 		}
 	}
 

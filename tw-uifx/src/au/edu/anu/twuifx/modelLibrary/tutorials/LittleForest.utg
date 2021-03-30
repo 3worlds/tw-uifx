@@ -64,26 +64,26 @@ treegraph // saved by OmugiGraphExporter on Tue Feb 23 11:51:40 CET 2021
 					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 					widget tbl biomass
 						order = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
 					widget tbl spp count
 						order = java.lang.Integer(1)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleDM0Widget)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
 				container cont3
 					order = java.lang.Integer(1)
 					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 					widget neigh biomass
 						maxAxes = java.lang.Integer(4)
 						order = java.lang.Integer(1)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 					widget spp count
 						maxAxes = java.lang.Integer(2)
 						order = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 		top top
 			widget timer
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
 			widget ctrl
 				order = java.lang.Integer(0)
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)

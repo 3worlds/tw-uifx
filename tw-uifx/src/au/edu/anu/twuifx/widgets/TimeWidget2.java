@@ -29,14 +29,6 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
-
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
@@ -46,128 +38,141 @@ import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
+import de.gsi.chart.XYChart;
+import de.gsi.chart.renderer.ErrorStyle;
+import de.gsi.chart.renderer.LineStyle;
+import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
+import de.gsi.dataset.DataSet;
+import de.gsi.dataset.spi.AbstractHistogram.HistogramOuterBounds;
+import de.gsi.dataset.spi.Histogram;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-
+import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
+
+import java.util.Arrays;
 
 /**
  * @author Ian Davies
  *
- * @date 5 Dec. 2020
+ * @date 23 Mar. 2021
+ * 
+ *       Series (time by Sender) for each simulator
  */
-
-/**
- * Displays the average sim time for a collection of simulators.
- * 
- * Every simulator msg is recorded in a collection. A java timer determines how
- * often an average value from this collection is calculated (controlled by the
- * 'refreshRate'). If the average time has change the ui is updated.
- * 
- * NB: The currentSenderTimes will become as large as the number of unique
- * simulator ids.
- * 
- * Tested to 1,000,000 simulators.
- * 
- * Important: The SimCloneWIdgetTrackingPolicy assumes all simulators are
- * instances of the same SimulatorNode!
- */
-public class MeanTimeWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
+public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
 	private WidgetTimeFormatter timeFormatter;
 	private WidgetTrackingPolicy<TimeData> policy;
-	private Label lblTime;
-	private String scText;
-	private final List<TimeData> initialData;
-	private final Map<Integer, Long> currentSenderTimes;
-	private long refreshRate;// ms
+	private int nSenders;
+	private XYChart chart;
+	private Metadata metadata;
+	private Histogram histDataSet;
+	private static int MAX_BINS = 2000;
+	private Double[] binWeights;
 
-	public MeanTimeWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	public TimeWidget2(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimCloneWidgetTrackingPolicy();
-		initialData = new ArrayList<>();
-		currentSenderTimes = new ConcurrentHashMap<>();
+		nSenders = 0;
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		timeFormatter.setProperties(id, properties);
 		policy.setProperties(id, properties);
-		refreshRate = 250;
-		if (properties.hasProperty(P_WIDGET_REFRESHRATE.key()))
-			refreshRate = (Long) properties.getPropertyValue(P_WIDGET_REFRESHRATE.key());
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
+//      Count senders here before policy as only one meta data msg is processed		
+		nSenders++;
 		if (policy.canProcessMetadataMessage(meta)) {
-			timeFormatter.onMetaDataMessage(meta);
-			scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
-			timeFormatter.getInitialTime();
-		}
-	}
-
-	@Override
-	public void onDataMessage(TimeData data) {
-		if (policy.canProcessDataMessage(data)) {
-			if (data.status().equals(SimulatorStatus.Initial))
-				initialData.add(data);
-			else
-				processDataMessage(data);
-		}
-	}
-
-	private void processDataMessage(TimeData data) {
-		currentSenderTimes.put(data.sender(), data.time());
-	}
-
-	@Override
-	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {
-
-			currentSenderTimes.clear();
-
-			for (TimeData data : initialData)
-				processDataMessage(data);
-
-			initialData.clear();
+			metadata = meta;
+			timeFormatter.onMetaDataMessage(metadata);
 		}
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		HBox content = new HBox(5);
-		content.setAlignment(Pos.BASELINE_LEFT);
-		lblTime = new Label("");
-		content.getChildren().addAll(new Label("Simulator average time: "), lblTime, new Label(scText));
 
 		getUserPreferences();
 
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
-			private long lastTime = Long.MAX_VALUE;
+		BorderPane content = new BorderPane();
+		content.setTop(new Label("Simulators: " + nSenders + "; Cores: " + Runtime.getRuntime().availableProcessors()
+				+ "; Stop: when " + metadata.properties().getPropertyValue("StoppingDesc")));
 
-			@Override
-			public void run() {
-				long time = Math.round(getMeanTime());
-				if (time != lastTime) {
-					lastTime = time;
-					String text = formatOutput(currentSenderTimes.size(), time);
-					Platform.runLater(() -> {
-						lblTime.setText(text);
-					});
-				}
-			}
-		}, 0, refreshRate);
+		chart = new XYChart();
+		chart.setLegendVisible(false);
+		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
+		rndr.setDrawBars(true);
+		rndr.setDrawMarker(false);
+		rndr.setPolyLineStyle(LineStyle.NONE);
+		rndr.setBarWidthPercentage(100);
+		rndr.setErrorType(ErrorStyle.NONE);
+
+		chart.getRenderers().add(rndr);
+		chart.getXAxis().setName("Simulator");
+		chart.getXAxis().setUnit("Id");
+		chart.getYAxis().setName("Time");
+		chart.getYAxis().setUnit(timeFormatter.getSmallest().abbreviation());
+		content.setCenter(chart);
 
 		return content;
+	}
+
+	@Override
+	public void onDataMessage(TimeData data) {
+		if (policy.canProcessDataMessage(data)) {
+			if (data.status().equals(SimulatorStatus.Initial)) {
+			} else {
+				processDataMessage(data);
+			}
+		}
+	}
+
+	private void processDataMessage(TimeData data) {
+		int bin = histDataSet.findBin(DataSet.DIM_X, data.sender()+0.0001);
+//		System.out.println(data.sender() + " -> " + bin);
+		histDataSet.addBinContent(bin, binWeights[bin]);
+
+	}
+
+	@Override
+	public void onStatusMessage(State state) {
+		if (isSimulatorState(state, waiting)) {
+			Platform.runLater(() -> {
+				// defacto initialisation point
+				double minX = 0.0;
+				double maxX = nSenders-0.5;
+				int nBins = Math.min(MAX_BINS, nSenders);
+				histDataSet = new Histogram("", nBins, minX, maxX, HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY);
+				int[] spb = new int[histDataSet.getBinCount(DataSet.DIM_X)];// sims per bin
+				for (int i = 0; i < nSenders; i++) {
+					int bin = histDataSet.findBin(DataSet.DIM_X, i);
+					spb[bin]++;
+				}
+				binWeights = new Double[spb.length];
+				for (int i = 0; i < spb.length; i++) {
+					if (spb[i] > 0)
+						binWeights[i] = 1.0 / (double) spb[i];
+					else
+						binWeights[i] = 1.0;// over/under flow
+				}
+				System.out.println(Arrays.deepToString(binWeights));
+				chart.getDatasets().setAll(histDataSet);
+			});
+
+		} else if (isSimulatorState(state, finished)) {
+			Platform.runLater(() -> {
+				chart.getAxes().forEach((axis) -> {
+					axis.forceRedraw();
+				});
+			});
+		}
 	}
 
 	@Override
@@ -181,20 +186,6 @@ public class MeanTimeWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 
 	@Override
 	public void getUserPreferences() {
-	}
-
-	private double getMeanTime() {
-		double sum = 0;
-		double n = currentSenderTimes.size();
-		for (Entry<Integer, Long> entry : currentSenderTimes.entrySet())
-			sum += entry.getValue();
-		if (n > 0)
-			return sum / n;
-		return timeFormatter.getInitialTime();
-	}
-
-	private String formatOutput(int n, long time) {
-		return "[#" + n + "] " + timeFormatter.getTimeText(time);
 	}
 
 }

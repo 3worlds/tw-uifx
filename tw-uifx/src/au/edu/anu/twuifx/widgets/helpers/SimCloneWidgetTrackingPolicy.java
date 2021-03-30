@@ -55,9 +55,11 @@ import fr.cnrs.iees.properties.SimplePropertyList;
  */
 
 public class SimCloneWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData> {
+	int nSenders;
 	
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
+		nSenders = 0;
 	}
 
 	@Override
@@ -67,12 +69,13 @@ public class SimCloneWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeDa
 
 	@Override
 	public boolean canProcessMetadataMessage(Metadata meta) {
+		nSenders++;
 		return meta.sender()==0;
 	}
 
 	@Override
 	public IntegerRange getDataMessageRange() {
-		return new IntegerRange(0,Integer.MAX_VALUE);
+		return new IntegerRange(0,nSenders);
 	}
 
 }

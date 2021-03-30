@@ -13,7 +13,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 // TREE
 3worlds Logistic
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(ian (22 Nov. 2020))
+	built-by = java.lang.String(ian (20 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"jacques.gignoux@upmc.fr","Ian.Davies@anu.edu.au"))
 	precis = java.lang.String(Tutorial: Discrete logistic model. A minimal configuration file for 3Worlds introducing Process, Function, Widgets and DataTrackers.)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"https://en.wikipedia.org/wiki/Logistic_map","https://en.wikipedia.org/wiki/Chaos_theory"))
@@ -33,16 +33,18 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+		relationType *returnsTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 		record AVPopulation
 			field count
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nAdded
+			field nRemoved
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
-			field nRemoved
+			field nAdded
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String(#)
@@ -52,13 +54,11 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 			category *relation*
 			category *component*
 			category *arena*
+		relationType *parentTo*
+			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 		categorySet *lifespan*
 			category *ephemeral*
 			category *permanent*
-		relationType *parentTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-		relationType *returnsTo*
-			lifespan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 	dataDefinition dDef
 		record drvs
 			dynamic = java.lang.Boolean(true)
@@ -79,13 +79,13 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 	system population
-		constantClass = java.lang.String(code.population.Cnsts)
-		driverClass = java.lang.String(code.population.Drvs)
+		constantClass = java.lang.String(code.population.generated.Cnsts)
+		driverClass = java.lang.String(code.population.generated.Drvs)
 		initFunction Init1
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.population.Init1)
+			userClassName = java.lang.String(code.population.generated.Init1)
 			snippet snpt2
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.r = 3.7;","		focalDrv.x = 0.01;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.r = 3.7 + 0.001*random.nextDouble();","		focalDrv.x = 0.01;"))
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -103,7 +103,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 					process p1
 						function Chaos
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
-							userClassName = java.lang.String(code.population.Chaos)
+							userClassName = java.lang.String(code.population.generated.Chaos)
 							snippet snpt1
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalDrv.x = r * x * (1 - x);"))
 						dataTracker trk1
@@ -119,25 +119,24 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			widget population size
+			widget srsX
 				order = java.lang.Integer(0)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleTimeSeriesWidget)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 
 // CROSS-LINKS
 [process:p1] appliesTo aplyTo1 [category:*arena*]
 [dataTracker:trk1] trackComponent trks2 [system:population]
 [dataTracker:trk1] trackField trks1 [field:x]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[widget:srsX] trackSeries trks3 [dataTracker:trk1]
 [category:*assemblage*] autoVar auto2 [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
+[relationType:*parentTo*] fromCategory frm1 [category:*component*]
+[relationType:*parentTo*] toCategory to1 [category:*component*]
 [category:*arena*] drivers drvs1 [record:drvs]
 [category:*arena*] constants cnts1 [record:cnsts]
-[widget:population size] trackSeries trks3 [dataTracker:trk1]
 [system:population] belongsTo bt3 [category:*atomic*]
 [system:population] belongsTo bt2 [category:*permanent*]
 [system:population] belongsTo bt1 [category:*arena*]
-[relationType:*parentTo*] fromCategory frm1 [category:*component*]
-[relationType:*parentTo*] toCategory to1 [category:*component*]
 [relationType:*returnsTo*] fromCategory frm2 [category:*component*]
 [relationType:*returnsTo*] toCategory to2 [category:*component*]

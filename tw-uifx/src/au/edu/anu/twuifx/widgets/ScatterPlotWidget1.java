@@ -193,7 +193,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		rndr.setPointReduction(false);// Default: true;
 		rndr.setAssumeSortedData(false);// Default: true !! important since DS is likely unsorted
 		DefaultDataReducer reductionAlgorithm = (DefaultDataReducer) rndr.getRendererDataReducer();
-		reductionAlgorithm.setMinPointPixelDistance(0);
+		reductionAlgorithm.setMinPointPixelDistance(1);
 
 		chart = new XYChart(xAxis1, yAxis1);
 
@@ -207,7 +207,8 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		chart.setAnimated(false);
 		content.setRight(new Label(""));
 		chart.getPlugins().add(new Zoomer());
-		chart.getPlugins().add(new TableViewer());
+		if (senderDataSet.size() <= 100)
+			chart.getPlugins().add(new TableViewer());
 		chart.getPlugins().add(new DataPointTooltip());
 
 		content.setCenter(chart);
@@ -254,7 +255,6 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 					axis.forceRedraw();
 				});
 			});
-
 		}
 	}
 

@@ -84,7 +84,6 @@ public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI
 	private List<Button> buttons;
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
-	//private static Logger log = Logging.getLogger(SimpleControlWidget1.class);
 
 	public SimpleControlWidget1(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
@@ -124,19 +123,17 @@ public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI
 		return pane;
 	}
 
-	private Object handleResetPressed() {
+	private void handleResetPressed() {
 		nullButtons();
 		sendEventThreaded(reset.event());
-		return null;
 	}
 
-	private Object handleStepPressed() {
+	private void handleStepPressed() {
 		nullButtons();
 		sendEventThreaded(step.event());
-		return null;
 	}
 
-	private Object handleRunPausePressed() {
+	private void handleRunPausePressed() {
 		nullButtons();
 		State state = stateMachine().getCurrentState();
 		Event event = null;
@@ -148,34 +145,30 @@ public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI
 			event = goOn.event();
 		if (event != null)
 			sendEventThreaded(event);
-		return null;
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
-//		log.info(state.toString());
 		setButtonLogic(state);
 	}
 
 	private void setButtonLogic(State state) {
-		Platform.runLater(() -> {
-			if (isSimulatorState(state, waiting)) {
-				setButtons(false, false, true, runGraphic);
-				return;
-			} else if (isSimulatorState(state, running)) {
-				setButtons(false, true, true, pauseGraphic);
-				return;
-			} else if (isSimulatorState(state, stepping)) {
-				setButtons(false, false, false, runGraphic);
-				return;
-			} else if (state.getName().equals(finished.name())) {
-				setButtons(true, true, false, runGraphic);
-				return;
-			} else if (isSimulatorState(state, pausing)) {
-				setButtons(false, false, false, runGraphic);
-				return;
-			}
-		});
+		if (isSimulatorState(state, waiting)) {
+			setButtons(false, false, true, runGraphic);
+			return;
+		} else if (isSimulatorState(state, running)) {
+			setButtons(false, true, true, pauseGraphic);
+			return;
+		} else if (isSimulatorState(state, stepping)) {
+			setButtons(false, false, false, runGraphic);
+			return;
+		} else if (state.getName().equals(finished.name())) {
+			setButtons(true, true, false, runGraphic);
+			return;
+		} else if (isSimulatorState(state, pausing)) {
+			setButtons(false, false, false, runGraphic);
+			return;
+		}
 	}
 
 	@Override
@@ -200,11 +193,12 @@ public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI
 	}
 
 	private void setButtons(boolean runPauseDisable, boolean stepDisable, boolean resetDisable, ImageView iv) {
-		btnRunPause.setDisable(runPauseDisable);
-		btnStep.setDisable(stepDisable);
-		btnReset.setDisable(resetDisable);
-		if (iv != null)
-			btnRunPause.setGraphic(iv);
+		Platform.runLater(() -> {
+			btnRunPause.setDisable(runPauseDisable);
+			btnStep.setDisable(stepDisable);
+			btnReset.setDisable(resetDisable);
+			if (iv != null)
+				btnRunPause.setGraphic(iv);
+		});
 	}
-
 }

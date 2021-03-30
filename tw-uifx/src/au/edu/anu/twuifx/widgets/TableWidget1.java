@@ -81,10 +81,10 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRA
 /**
  * Displays a table of data from all simulator.id() from [lower.. lower+range]
  */
-public class RangeDM0Widget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
+public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
-	private static Logger log = Logging.getLogger(RangeDM0Widget1.class);
+	private static Logger log = Logging.getLogger(TableWidget1.class);
 	private TableView<WidgetTableData> table;
 	private Label lblTime;
 	private StatisticalAggregatesSet sas;
@@ -95,7 +95,7 @@ public class RangeDM0Widget1 extends AbstractDisplayWidget<Output0DData, Metadat
 	private final ObservableList<WidgetTableData> tableDataList;
 	private Map<Integer, TreeMap<String, WidgetTableData>> senderDataSetMap;
 
-	public RangeDM0Widget1(StateMachineEngine<StatusWidget> statusSender) {
+	public TableWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new RangeWidgetTrackingPolicy();
@@ -140,21 +140,21 @@ public class RangeDM0Widget1 extends AbstractDisplayWidget<Output0DData, Metadat
 			}
 		}
 
-//		int nChannels = metadataTS.doubleNames().size() + metadataTS.intNames().size();
-//		if (sas != null)
-//			nChannels += sas.values().size();
-//		if (sampledItems != null)
-//			nChannels += sampledItems.size();
+		int nItems = metadataTS.doubleNames().size() + metadataTS.intNames().size();
+		int nModifiers = 0;
+		if (sas != null)
+			nModifiers += sas.values().size();
+		if (sampledItems != null)
+			nModifiers += sampledItems.size();
 
 		for (int sender = policy.getDataMessageRange().getFirst(); sender <= policy.getDataMessageRange()
 				.getLast(); sender++) {
 			senderDataSetMap.put(sender, new TreeMap<String, WidgetTableData>());
 
 			for (DataLabel dl : metadataTS.doubleNames())
-				makeChannels(dl,sender);
-			// normally with statistics there are no int variables
+				makeChannels(dl, sender);
 			for (DataLabel dl : metadataTS.intNames())
-				makeChannels(dl,sender);
+				makeChannels(dl, sender);
 		}
 		timeFormatter.onMetaDataMessage(msgMetadata);
 
@@ -179,7 +179,7 @@ public class RangeDM0Widget1 extends AbstractDisplayWidget<Output0DData, Metadat
 		BorderPane.setAlignment(lname, Pos.CENTER);
 		content.setCenter(table);
 		content.setBottom(hbox);
-	
+
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);
@@ -215,15 +215,15 @@ public class RangeDM0Widget1 extends AbstractDisplayWidget<Output0DData, Metadat
 				itemId = data.itemLabel().getEnd();
 			else if (sampledItems != null)
 				itemId = data.itemLabel().toString();
-			
+
 			for (DataLabel dl : metadataTS.doubleNames()) {
-				String key = getKey(sender,dl, itemId);
+				String key = getKey(sender, dl, itemId);
 				WidgetTableData td = dataSetMap.get(key);
 				final double value = data.getDoubleValues()[metadataTS.indexOf(dl)];
 				td.setValue(value);
 			}
 			for (DataLabel dl : metadataTS.intNames()) {
-				String key = getKey(sender,dl, itemId);
+				String key = getKey(sender, dl, itemId);
 				WidgetTableData td = dataSetMap.get(key);
 				final long value = data.getIntValues()[metadataTS.indexOf(dl)];
 				td.setValue(value);
@@ -244,12 +244,12 @@ public class RangeDM0Widget1 extends AbstractDisplayWidget<Output0DData, Metadat
 	}
 
 	// TODO move to a helper class
-	private String getKey(int sender,DataLabel dl, String itemId) {
+	private String getKey(int sender, DataLabel dl, String itemId) {
 		String result;
 		if (itemId != null)
-			result = sender+":"+itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+			result = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
 		else
-			result = sender+":"+dl.toString();
+			result = sender + ":" + dl.toString();
 		return result;
 	}
 
@@ -301,18 +301,23 @@ public class RangeDM0Widget1 extends AbstractDisplayWidget<Output0DData, Metadat
 		Map<String, WidgetTableData> dataSetMap = senderDataSetMap.get(sender);
 		if (sas != null) {
 			for (StatisticalAggregates sa : sas.values()) {
-				String key = sender+":"+sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
+				String key = sender + ":" + sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
 				WidgetTableData wtd = new WidgetTableData(key);
 				tableDataList.add(wtd);
 				dataSetMap.put(key, wtd);
 			}
 		} else if (sampledItems != null) {
 			for (String si : sampledItems) {
-				String key = sender+":"+si + DataLabel.HIERARCHY_DOWN + dl.toString();
+				String key = sender + ":" + si + DataLabel.HIERARCHY_DOWN + dl.toString();
 				WidgetTableData wtd = new WidgetTableData(key);
 				tableDataList.add(wtd);
 				dataSetMap.put(key, wtd);
 			}
+		} else {
+			String key = sender + ":" + dl.toString();
+			WidgetTableData wtd = new WidgetTableData(key);
+			tableDataList.add(wtd);
+			dataSetMap.put(key, wtd);
 		}
 
 	}

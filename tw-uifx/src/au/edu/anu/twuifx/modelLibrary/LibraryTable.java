@@ -74,8 +74,11 @@ public enum LibraryTable {
 	//
 	Test1 ("1 TestRelations","TestRelations1","TestRelations.utg",LibraryType.Test,TestsDummy.class),//
 	Test2 ("2 TestLifeCycle","TestLifeCycle1","TestLifeCycle.utg",LibraryType.Test,TestsDummy.class),//
-	Test4 ("3 WrapTest","WrapTest1","WrapTest.utg",LibraryType.Test,TestsDummy.class),//
-	Test5 ("4 TestXYPlot","TestXYPlot1","TestXYPlot.utg",LibraryType.Test,TestsDummy.class),//
+	Test3 ("3 WrapTest","WrapTest1","WrapTest.utg",LibraryType.Test,TestsDummy.class),//
+	Test4 ("4 TestXYPlot","TestXYPlot1","TestXYPlot.utg",LibraryType.Test,TestsDummy.class),//
+	Test5 ("5 ParallelTest (Palms)","Palms1","ParallelTestPalms.utg",LibraryType.Test,TestsDummy.class),//
+	Test6 ("6 ParallelTest (Logistic)","Logistic1","ParallelTestLogistic.utg",LibraryType.Test,TestsDummy.class),//
+	Test7 ("7 ParallelTest (Boids)","Boids1","ParallelTestBoids.utg",LibraryType.Test,TestsDummy.class),//
 	
 	;
 
