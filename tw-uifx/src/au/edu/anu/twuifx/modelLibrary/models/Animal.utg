@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 // TREE
 3worlds Animal
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(ian (17 Mar. 2021))
+	built-by = java.lang.String(ian (30 Mar. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String(Preliminary testing of landscape animal model with local mating)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -191,7 +191,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 			widget landscape
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceWidget1)
 
 // CROSS-LINKS
 [process:reproduce] inSpace in3 [space:space1]
