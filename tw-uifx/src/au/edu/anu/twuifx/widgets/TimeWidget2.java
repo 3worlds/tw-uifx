@@ -162,7 +162,7 @@ public class TimeWidget2 extends AbstractDisplayWidget<TimeData, Metadata> imple
 					else
 						binWeights[i] = 1.0;// over/under flow
 				}
-				System.out.println(Arrays.deepToString(binWeights));
+//				System.out.println(Arrays.deepToString(binWeights));
 				chart.getDatasets().setAll(histDataSet);
 			});
 

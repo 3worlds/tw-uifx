@@ -113,6 +113,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -143,7 +144,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	private static final double paperSize = 500.0;
 
 	private Bounds spaceBounds;
-	private Label lblTime;
+//	private Label lblTime;
 	private BorderPane centerContainer;
 
 	/**
@@ -302,6 +303,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	// TODO: display unique time for each display
 	private class SpDisplay {
 		private Label lblItem;// selected vertex name for status bar
+		private Label lblTime;
 		private int sender;
 		private final BorderPane container;
 		private final BorderPane zoomTarget;
@@ -326,12 +328,19 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			for (int i = 0; i < nSenders; i++)
 				cmbxSender.getItems().add(Integer.toString(i));
 			cmbxSender.getSelectionModel().select(sender);
-			HBox topBar = new HBox();
-			topBar.setAlignment(Pos.CENTER_LEFT);
+			VBox topBar = new VBox();
+			HBox bar1 = new HBox();
+			bar1.setAlignment(Pos.CENTER_LEFT);
+			HBox bar2 = new HBox();
+			bar2.setAlignment(Pos.CENTER_LEFT);
+			topBar.getChildren().addAll(bar1,bar2);
 			lblItem = new Label("");
-			topBar.setSpacing(5);
-		
-			topBar.getChildren().addAll(new Label("Simulator"), cmbxSender,lblItem);
+			lblTime = new Label("");
+			bar1.setSpacing(5);
+			bar2.setSpacing(5);
+
+			bar1.getChildren().addAll(new Label("Simulator"), cmbxSender, new Label("Time"), lblTime);
+			topBar.getChildren().addAll(lblItem);
 			container.setTop(topBar);
 			zoomTarget = new BorderPane();
 			canvas = new Canvas();
@@ -430,7 +439,6 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			CenteredZooming.center(scrollPane, content, group, zoomTarget);
 			container.setCenter(scrollPane);
 
-
 			cmbxSender.setOnAction(e -> {
 				this.sender = cmbxSender.getSelectionModel().getSelectedIndex();
 				drawScene();
@@ -444,8 +452,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		private int getSender() {
 			return sender;
 		}
+
 		private void setSender(int s) {
-			s = Math.min(s, nSenders-1);
+			s = Math.min(s, nSenders - 1);
 			sender = s;
 			cmbxSender.getSelectionModel().select(sender);
 		}
@@ -819,6 +828,11 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			}
 
 		}
+		
+
+		public void setTime(String timeText) {
+			lblTime.setText(timeText);
+		}
 
 	}
 
@@ -949,13 +963,13 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			displaysPane.getColumnConstraints().addAll(col1);
 		}
 
-		HBox statusBar = new HBox();
+//		HBox statusBar = new HBox();
 		// statusBar.setAlignment(Pos.CENTER);
-		statusBar.setSpacing(5);
-		lblTime = new Label("");
+//		statusBar.setSpacing(5);
+//		lblTime = new Label("");
 
-		statusBar.getChildren().addAll(new Label("Tracker time"), lblTime);
-		container.setBottom(statusBar);
+//		statusBar.getChildren().addAll(new Label("Tracker time"), lblTime);
+//		container.setBottom(statusBar);
 
 		legend = new FlowPane();
 		legend.setHgap(3);
@@ -991,13 +1005,15 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 	private void processDataMessage(SpaceData data) {
 		Platform.runLater(() -> {
-			lblTime.setText(timeFormatter.getTimeText(data.time()));
+//			lblTime.setText(timeFormatter.getTimeText(data.time()));
 			boolean refreshLegend = updateData(data);
 			if (refreshLegend)
 				updateLegend();
 			for (SpDisplay d : displays) {
-				if (d.getSender() == data.sender())
+				if (d.getSender() == data.sender()) {
+					d.setTime(timeFormatter.getTimeText(data.time()));
 					d.drawScene();
+				}
 			}
 		});
 	}
@@ -1329,7 +1345,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			Preferences.putDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY());
 			Preferences.putDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue());
 			Preferences.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
-			Preferences.putInt(widgetId+keySender+i, d.getSender());
+			Preferences.putInt(widgetId + keySender + i, d.getSender());
 		}
 		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
 		Preferences.putDouble(widgetId + keyElementScale, sldrElements.getValue());
@@ -1362,7 +1378,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			d.zoomTarget().setScaleY(Preferences.getDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY()));
 			d.scrollPane().setHvalue(Preferences.getDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue()));
 			d.scrollPane().setVvalue(Preferences.getDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue()));
-			d.setSender(Preferences.getInt(widgetId+keySender+i, 0));
+			d.setSender(Preferences.getInt(widgetId + keySender + i, i));
 		}
 		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
 		sldrElements.setValue(Preferences.getDouble(widgetId + keyElementScale, 1.0));

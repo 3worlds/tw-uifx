@@ -86,7 +86,7 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 	private final WidgetTrackingPolicy<TimeData> policy;
 	private static Logger log = Logging.getLogger(TableWidget1.class);
 	private TableView<WidgetTableData> table;
-	private Label lblTime;
+//	private Label lblTime;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
 	private Output0DMetadata metadataTS;
@@ -140,13 +140,6 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 			}
 		}
 
-		int nItems = metadataTS.doubleNames().size() + metadataTS.intNames().size();
-		int nModifiers = 0;
-		if (sas != null)
-			nModifiers += sas.values().size();
-		if (sampledItems != null)
-			nModifiers += sampledItems.size();
-
 		for (int sender = policy.getDataMessageRange().getFirst(); sender <= policy.getDataMessageRange()
 				.getLast(); sender++) {
 			senderDataSetMap.put(sender, new TreeMap<String, WidgetTableData>());
@@ -164,28 +157,27 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 
 		TableColumn<WidgetTableData, String> col2Value = new TableColumn<>("Value");
 		col2Value.setCellValueFactory(new PropertyValueFactory<WidgetTableData, String>("value"));
-		col2Value.prefWidthProperty().bind(table.widthProperty().subtract(col1Label.prefWidthProperty()));
 
-		table.getColumns().addAll(col1Label, col2Value);
+		TableColumn<WidgetTableData, String> col3Time = new TableColumn<>("Time");
+		col3Time.setCellValueFactory(new PropertyValueFactory<WidgetTableData, String>("time"));
+
+		table.getColumns().addAll(col1Label, col2Value, col3Time);
+
+		col1Label.prefWidthProperty().bind(table.widthProperty().multiply(1.0 / 3.0));
+		col2Value.prefWidthProperty().bind(table.widthProperty().multiply(1.0 / 3.0));
+		col3Time.prefWidthProperty().bind(table.widthProperty().multiply(1.0 / 3.0));
 
 		BorderPane content = new BorderPane();
-		HBox hbox = new HBox();
-		hbox.setAlignment(Pos.CENTER);
-		lblTime = new Label("uninitialised");
-		hbox.getChildren().addAll(new Label("Tracker time: "), lblTime/** , lblItemLabel */
-		);
 		Label lname = new Label(widgetId);
 		content.setTop(lname);
 		BorderPane.setAlignment(lname, Pos.CENTER);
 		content.setCenter(table);
-		content.setBottom(hbox);
 
 		ScrollPane sp = new ScrollPane();
 		sp.setFitToWidth(true);
 		sp.setFitToHeight(true);
 		sp.setContent(content);
 
-		lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 		table.setItems(tableDataList);
 		table.refresh();
 		return content;
@@ -196,10 +188,12 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 //		4) Called 4th after UI construction - this is only in the UI thread the first time it's called
 		if (isSimulatorState(state, waiting))
 			Platform.runLater(() -> {
-				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+//				lblTime.setText(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
 				// initialvalue (if we had one)
-				for (WidgetTableData td : tableDataList)
+				for (WidgetTableData td : tableDataList) {
 					td.setValue(0);
+					td.setTime(timeFormatter.getTimeText(timeFormatter.getInitialTime()));
+				}
 
 				table.refresh();
 
@@ -221,15 +215,17 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 				WidgetTableData td = dataSetMap.get(key);
 				final double value = data.getDoubleValues()[metadataTS.indexOf(dl)];
 				td.setValue(value);
+				td.setTime(timeFormatter.getTimeText(data.time()));
 			}
 			for (DataLabel dl : metadataTS.intNames()) {
 				String key = getKey(sender, dl, itemId);
 				WidgetTableData td = dataSetMap.get(key);
 				final long value = data.getIntValues()[metadataTS.indexOf(dl)];
 				td.setValue(value);
+				td.setTime(timeFormatter.getTimeText(data.time()));
 			}
 			table.refresh();
-			lblTime.setText(timeFormatter.getTimeText(data.time()));
+//			lblTime.setText(timeFormatter.getTimeText(data.time()));
 		});
 	}
 
@@ -271,11 +267,12 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 		// the list that is observed.
 		private final SimpleStringProperty labelProperty;
 		private final SimpleStringProperty valueProperty;
-//		private final Statistics stats;
+		private final SimpleStringProperty timeProperty;
 
 		public WidgetTableData(String label) {
 			this.labelProperty = new SimpleStringProperty(label);
 			this.valueProperty = new SimpleStringProperty();
+			this.timeProperty = new SimpleStringProperty();
 //			this.stats = new Statistics();
 		}
 
@@ -293,6 +290,14 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 
 		public void setValue(Number value) {
 			this.valueProperty.set(value.toString());
+		}
+
+		public String getTime() {
+			return timeProperty.get();
+		}
+
+		public void setTime(String timeText) {
+			this.timeProperty.set(timeText);
 		}
 
 	}

@@ -1,4 +1,4 @@
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.samples;
 
 import static de.gsi.dataset.spi.AbstractHistogram.HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY;
 
