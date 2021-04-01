@@ -6,31 +6,40 @@
 
 `.../categorySet/*category*:<[underline]##__name__##>` {1..*}
 
-A `*category*` is simply a name attached to a set of objects sharing common properties. Practically, these common properties are _state variables_, _parameters_ and dynamic behaviours (or _processes_). Categories, grouped into ``*categorySet*``s, constitute a user-defined _classification_ of _system component types_ relevant for a particular model.
+A `*category*` is simply a name attached to a set of objects sharing common properties (cf. section <<truecategories,1.2.3>>). These common properties are descriptors (cf. section <<truethe-complex-system-as-a-dynamic-graph,1.2.2>>), and dynamic behaviours (or _processes_). Categories, grouped into ``*categorySet*``s, constitute a user-defined _classification_ of _system component types_ relevant for a particular model.
 
-To make this classification useful, we attach _parameters_ and _state variables_ to categories. State variables are variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (_e.g._ biomass, age, sex, social status...). They will vary during a simulation. Parameters do not vary during a simulation; they are characteristic of a group of system components sharing them -- conceptually, a 'species' (e.g. average individual growth rate, mortality rate...).
+Descriptors consist in _drivers_, _decorators_, _constants_ and _automatic variables_:
 
-Practically, this means that any instance of a system component of a given category will implement the state variables of this category and share parameters with other system components of the same 'species'.
+_drivers_:: are _independent_ variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (_e.g._ biomass, age, sex, social status...). They will vary during a simulation. 'Independent' means that these variables cannot be computed from each other, e.g. if some category is described by drivers age and biomass, it means neither of them can be computed from the other. The values of drivers are carried over from a simulation step to the next, i.e. they _drive_ the dynamics of the system.
 
-The exact data structures for state variables and parameters are specified under the <<truethe-em-dataDefinition-em-node,dataDefinition>> node and linked to the category through the following:
+_decorators_:: are _dependent_ variables that are computed from drivers and other decorators. As such, they are not independent from the drivers and are used only for convenience in computations or output display. They are not carried over from a simulation step to the next, they are always automatically reset to zero at the end of each step.
+
+_constants_:: are values (numbers, text, logical values) that do not change during a simulation. For example, sex or number of legs are not going to change during the lifetime of animal. They are set at birth and never changed after.
+
+_automatic variables_:: are values internally managed by 3Worlds and only available as read-only values for computation. For components representing individuals, these are _age_ and __birth date__. For components representing populations, these are _number of individualls_, __number of births__, __number of deaths__.
+
+The exact data structures for descriptors are specified under the <<truethe-em-dataDefinition-em-node,dataDefinition>> node and linked to the category through the following:
 
 _Cross-links for_ `category`:
-
-`parameters -> record:<[underline]##__name__##>` {0..1}::
-This link tells which record data structure (in <<truethe-em-codesource-em-node,codeSource>>) is used to store parameters.
 
 `drivers -> record:<[underline]##__name__##>` {0..1}::
 
 `decorators -> record:<[underline]##__name__##>` {0..1}::
-Similarly, these links tell which data structure in <<truethe-em-dataDefinition-em-node,dataDefinition>> is used to store state variables. State variables are further classified into _drivers_, i.e. variables that _drive_ the dynamics of the system; and _decorators_, i.e. secondary state variables which values are computed from those of the drivers, only reflecting the dynamics of the drivers.
 
-A category may be defined with no parameters, drivers or decorators, but it would be pretty useless to have neither of them.
+`constants -> record:<[underline]##__name__##>` {0..1}::
+These links tell which data structure in <<truethe-em-dataDefinition-em-node,dataDefinition>> is used to store  _drivers_, _decorators_  and __constants__. 
+
+_Automatic variables_ do not need to be specified - because they are automatic.
+
+A category may be defined with no drivers, decorators or constants, but it would be pretty useless to have neither of them.
+
+There are _predefined categories_ in 3Worlds under the node `/3worlds/*predefined*`, used to specify particular components of the system. They will be explained in time.
 
 ====== CategorySet
 
 `/3worlds/system/structure/*categorySet*:<[underline]##__name__##>` {1..*}
 
-Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can't be both. For this reason, _exclusive_ categories are grouped into `*categorySets*`. A categorySet is _a set of **mutually exclusive** categories_. Further, it may apply only to categories of a particular type (categorySet). Hence categories can be nested:
+Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can't be both. For this reason, _exclusive_ categories are grouped into `*categorySets*`. A categorySet is _a set of **mutually exclusive** categories_. Categories can be nested, by simply defining a `*categorySet*` as a child of a `*category*`:
 
 `.../category/*categorySet*:<[underline]##__name__##>` {0..*}
 
@@ -38,7 +47,7 @@ Some categories must be exclusive of each other: for example, an ecological enti
 
 `/3worlds/system/structure/*relationType*:<[underline]##__name__##>` {0..*}
 
-A `*relationType*` is just a name representing a meaningful link between two categories. It is specified by giving it a name and cross-linking it to the relevant categories with `fromCategory` and `toCategory` cross-links. Note that a relationType can link more than one 'from' categories to more than one 'to' categories if required. RelationTypes are used to implement specific processes acting on ecological entities (for example, a predation process).
+A `*relationType*` is just a name representing a meaningful link between two kinds of categories. It is specified by giving it a name and cross-linking it to the relevant categories with `fromCategory` and `toCategory` cross-links. Note that a relationType can link more than one 'from' categories to more than one 'to' categories if required. RelationTypes are used to implement specific processes acting on ecological entities (for example, a predation process).
 
 _Cross-links for_ `relationType`:
 
@@ -46,7 +55,7 @@ _Cross-links for_ `relationType`:
 This link tells which categories are at the start of the relation.
 
 `toCategory -> category:<__name__>` {1..*}::
-This link tells which categories are at the end of the relation 
+This link tells which categories are at the end of the relation. 
 
 _Properties for_ `relationType`:
 
@@ -74,16 +83,139 @@ In this example, a _plant_ can be a _C3 tree_ but cannot be simultaneously a _gr
 
 `/3worlds/system/structure/*componentType*:<[underline]##__name__##>` {1..*}
 
-3Worlds simulates a _system_ made of _system components_. These are the things which are instantiated at run time, hold state variables, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach _categories_ to _system components_. The rules prevailing to build up categories hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the _plant_ and _tree_ categories, but not to the _animal_ and _tree_ categories.
+3Worlds simulates a _system_ made of _system components_. These are the things which are instantiated at run time, hold descriptors, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach _categories_ to _system components_. The rules prevailing to build up category hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the _plant_ and _tree_ categories, but not to the _animal_ and _tree_ categories.
 
 _Cross-links_ for `componentType`:
 
 `belongsTo -> category:<__name__>` {1..*}::
 This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the _C3_ category automatically implies the system component is also a _plant_).
 
-`initialiser -> initialiser:<__name__>` {0..1}::
-Use this optional link to specify a function to initialise state variables of a `componentType` at the beginning of a simulation.
+`belongsTo -> category:*component*` {1..1}::
+This link to the predefined category `\*component*` is required in all models.
 
-include::ArchetypeDoc-system.adoc[]
+`belongsTo -> category:*atomic*` {1..1}::
+This link to the predefined category `\*atomic*` is required in all models. It means that a component has no further subdivisions.
 
+`belongsTo -> category:*ephemeral*|\*permanent*` {1..1}::
+This link to either of the predefined category `\*ephemeral*` or `\*permanent*` is required in all models. It specifies if components of this `componentType` are going to stay forever (permanent) or can be created and deleted (ephemeral) during a simulation. Ephemeral components have two automatic variables, `birthDate` and `age`. 
+
+====== Component group
+
+`/3worlds/system/structure/*groupType*:<[underline]##__name__##>` {0..*}
+
+Sometimes it makes sense to group components of a given componentType into __groups__; the best example of this in ecology is the species. Animals of different species may be described by the same descriptors, but nevertheless they will only reproduce within their species. Typically, animals of a species would share some constants, like plumage coloration, average body size, main diet etc. The `*groupType*` node is meant to fullfil this use case.
+
+To make a `componentType` belong to a `groupType`, you just need to declare it as a child of the `groupType`:
+
+`.../groupType/*groupType*:<[underline]##__name__##>` {0..*}
+
+_Cross-links_ for `componentType`:
+
+`belongsTo -> category:<__name__>` {1..*}::
+This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the _C3_ category automatically implies the system component is also a _plant_). The categories targets of these links must be specific to groups, i.e. no `componentType` or `lifeCycleType` should refer (`belongTo` cross-link) to any of them.
+
+`belongsTo -> category:*group*` {1..1}::
+This link to the predefined category `\*group*` is required in all models.
+
+`belongsTo -> category:*assemblage*` {1..1}::
+This link to the predefined category `\*assemblage*` is required in all models. It means that a group is a population of components. Assemblages have three automatic variables: the group size (number of components) `count`, the number of new components added during last time step `nAdded`, and the number of components deleted during the last time step `nRemoved`.
+
+`belongsTo -> category:*permanent*` {1..1}::
+This link to the predefined category `\*permanent*` is required in all models. It means that groups will stay forever in the system, even if all components of this groups are gone. 
+
+====== Life cycle
+
+`/3worlds/system/structure/*lifeCycleType*:<[underline]##__name__##>` {0..*}
+
+As __system component__s are designed to represent -- among other things -- individual organisms, they are able to create other system components at runtime, or to transform themselves into a system component of another category assemblage. These abilities are captured in a `*lifeCycle*`, which describes the possible creations and transitions of system components of a given category set into another.
+
+Since `components` belong to `categories`, different types of system components represented by different state variables, subject to different ecological processes, can coexist in a simulation. It may occur in a particular model that one wishes to represent a transition between, e.g. development stages: think for example of a caterpillar turning into a butterfly. There are chances that you don't want to describe the caterpillar with the same variables and behaviours as the adult butterfly. The operation of transforming a system component from a selection of categories to another is called _recruitment_. Computationally, it means that the simulator must keep track of the system component's identity and age in the first stage and carry these properties on to the new system component of the second stage, and call an appropriate function to transform state variables of the first stage into the new one.
+
+_Reproduction_ is the second process by which system components of a given group of categories may produce other system components belonging to possibly different categories.
+
+A specification of a life cycle requires:
+
+. a `categorySet` in which the categories represent the various stages of the life cycle;
+
+. at least one `groupType` definition per `category` of the above `categorySet`;
+
+. `recruit` and `produce` nodes linking categories within the above `categorySet` to describe possible recruitment and reproduction pathways;
+
+. optionnally, a `category` can be linked to a `lifeCycle` if one wants to attach descriptors to the life cycle.
+
+To define a groupType within the context of a lifeCycleType, simply make it a child node of the lifeCycleType:
+
+`.../lifeCycleType/*groupType*:<[underline]##__name__##>` {0..*}
+
+_Cross-links for_ `lifeCycle`
+
+`appliesTo -> categorySet:<[underline]##__name__##>` {1}::
+This links indicates which categories define the stages of the life cycle. `recruit` or `produce` nodes can only link categories of this set.
+
+`belongsTo -> category:<[underline]##__name__##>` {0..*}::
+These links enable to attach descriptors to a `lifeCycle`, if needed by some ecological processes. The categories targets of these links must be specific to life cycles, i.e. no `componentType` or `groupType` should refer (`belongTo` cross-link) to any of them.
+
+`belongsTo -> category:*life cycle*` {1..1}::
+This link to the predefined category `\*life cycle*` is required in all models.
+
+`belongsTo -> category:*assemblage*` {1..1}::
+This link to the predefined category `\*assemblage*` is required in all models. It means that a life cycle is a population of components. Assemblages have three automatic variables: size (number of components) `count`, the number of new components added during last time step `nAdded`, and the number of components deleted during the last time step `nRemoved`.
+
+`belongsTo -> category:*permanent*` {1..1}::
+This link to the predefined category `\*permanent*` is required in all models. It means that life cycles will stay forever in the system. 
+
+====== Recruitment
+
+`/3worlds/system/dynamics/lifeCycle/*recruit*:<[underline]##__name__##>` {0..*}
+
+This node specifies that two categories of the life cycle `categorySet` are linked by a _recruitment_ process.
+
+_Cross-links for_ `recruit`:
+
+`fromCategory -> category:<__name__>` {1}::
+This link tells which system component type is getting changed by the recruitment.
+
+`toCategory -> category:<__name__>` {1}::
+This link tells which system component type is the result of the recruitment.
+
+NOTE: multiple targets are possible from the same category, i.e. a component of a category may recruit to different categories. E.g., a bee larva can recruit to a worker or a queen.
+
+`effectedBy -> process:<__name__>` {1}::
+This link tells which ecological process is used to compute the recruitment. This process must implement at least one**[maximum one? it returns a category name]** `ChangeCategoryDecision` function (cf <<a,TODO>>).
+
+====== Reproduction
+
+`/3worlds/system/dynamics/lifeCycle/*produce*:<[underline]##__name__##>` {0..*}
+
+This node specifies that two categories of the life cycle `categorySet` are linked by a _reproduction_ process.
+
+_Cross-links for_ `produce`:
+
+`fromCategory -> category:<__name__>` {1}::
+This link tells which system component type is producing new system components.
+
+`toCategory -> category:<__name__>` {1}::
+This link tells which system component type is the result of the reproduction.
+
+NOTE: multiple targets are possible from the same category, i.e. a component of a category may produce components of different categories. E.g., a tree can produce seedlings through sexual reproduction and root suckers through vegetative reproduction.
+
+`effectedBy -> process:<__name__>` {1}::
+This link tells which ecological process is used to compute the production of new system components. This process must implement at least one `CreateOtherDecision` function (cf <<a,TODO>>).
+
+====== Example of a life cycle specification
+
+This life cycle:
+
+[#fig-life-cycle-example]
+.Example of a life cycle
+image::example-life-cycle.svg[align="center"]
+
+is specified with this graph:
+
+[#fig-life-cycle-config-example]
+.Example of a life cycle configuration
+image::example-life-cycle.png[align="center"]
+
+
+** HERE **
 

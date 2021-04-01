@@ -447,8 +447,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="email2" class="email"><a href="mailto:ian.davies@anu.edu.au">ian.davies@anu.edu.au</a></span><br>
 <span id="author3" class="author">Shayne R. Flint</span><br>
 <span id="email3" class="email"><a href="mailto:shayne.flint@anu.edu.au">shayne.flint@anu.edu.au</a></span><br>
-<span id="revnumber">version 1.2,</span>
-<span id="revdate">10 February 2021</span>
+<span id="revnumber">version 1.3,</span>
+<span id="revdate">1 April 2021</span>
 <br><span id="revremark"></span>
 </div>
 <div id="toc" class="toc2">
@@ -537,7 +537,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>by <strong>Jacques Gignoux</strong>, <strong>Ian D. Davies</strong> &amp; <strong>Shayne R. Flint</strong></p>
 </div>
 <div class="paragraph">
-<p>Version: <strong>1.2</strong> (10 February 2021)</p>
+<p>Version: <strong>1.3</strong> (1 April 2021)</p>
 </div>
 </div>
 </div>
@@ -555,15 +555,15 @@ one physical system”</em> A. G. Tanlsey (1935).</p>
 not only energy and chemical stocks and flows but also living things that are born, reproduce and die, exhibiting
 particular behaviours over the course of their existence. They are made from and return to the physical world
 (dust to dust, ashes to ashes), are part of it and at one and the same time, they constitute an entire new world
-where concepts such as reproduction, social interaction, communication, life cycle, but also death, dominate
+where concepts such as reproduction, social interaction, communication and life cycle dominate
 the game. To this day, reconciling these two aspects remains a key problem in ecosystem
 studies: How does an energy flux translate into a number of living individuals or in a higher biodiversity?
-How does a particular reproduction strategy affect river hydrology and the regional water budget (e.g. the beaver)?
-How do social interactions affect the frequency of hurricanes (e.g. climate change)?
-<strong>3Worlds</strong> aims at providing <em>a tool for building simulations that couple the physical and biologial aspects of ecosystems</em>.
-Existing tools are either (1) focusing on the physics (e.g. dynamic models based on differential equations) and can
+How might the reproduction strategy of the beaver affect river hydrology and the regional water budget?
+How might social interactions (society) affect the frequency of hurricanes (e.g. climate change)?
+<strong>3Worlds</strong> aims at providing <em>a tool for building simulations that couple the physical and biological aspects of ecosystems</em>.
+Existing tools either: (1) focus on the physics (e.g. dynamic models based on differential equations) and can
 only represent reproduction and growth with metaphors for continuous physical quantities (e.g. matrix population
-models); or (2) focusing on the biology (e.g. multi-agent systems describing social interactions in detail but posing
+models); or (2) focus on the biology (e.g. multi-agent systems describing social interactions in detail but posing
 difficulties to balance a mass or energy budget).</p>
 </div>
 <div class="paragraph">
@@ -576,30 +576,28 @@ we believe it is given its success in ecology and its spread in other scientific
 to design a conceptually sound and consistent computing framework to deal with a multiplicity of scales.</p>
 </div>
 <div class="paragraph">
-<p>Changing the scale of a model is not only a matter of space and time resolution relative to an order of magnitude.
+<p>Changing the scale of a model just a matter of changing spatio-temporal resolution.
 It also involves the level of detail of the representations used in the model, something which has been formalized
-in <em>abstraction theory</em> (Zucker 2003): the more detail there is in a model, the less abstract it is. At what
- level of detail should we model our system to capture its important behaviour? How does changing scale (in the
- broadest sense) effect model outcomes? There is no general answer to this question. This makes the possibility
- to test and compare different representations of the same system at different scales a must-have feature of
+in <em>abstraction theory</em> (Zucker 2003): the more detailed a model, the less abstract it is. At what
+ level of detail should we model our system to capture its important behaviour? How does changing scale (in this
+ broadest sense) effect model outcomes? There can be no general answer to this question beyond trial and error. This makes the possibility
+ to test and compare different representations of the same system at different scales an essential feature of
  any software dealing with ecosystems. <strong>3Worlds</strong> provides <em>a maximal flexibility in ecosystem representation</em>
- enabling to represent <em>any</em> ecosystem at <em>any</em> spatial and temporal scale with <em>any</em> level of detail&#8201;&#8212;&#8201;all this being set by
- the end-user in accordance with the purpose of their study. The end-user has full control on the detailed biological functions
+ enabling one to represent <em>any</em> ecosystem at <em>any</em> spatial and temporal scale with <em>any</em> level of detail&#8201;&#8212;&#8201;all this being set by
+ the researcher in accordance with the purpose of their study. The researcher has full control on the detailed biological functions
 and variables relevant to their problem.</p>
 </div>
 <div class="paragraph">
-<p>How is this compatible with the strong conceptual backbone to build required by the previous demand for easy change
-between scales? <strong>3Worlds</strong> uses <em>aspect-oriented thinking (AOT)</em> (Flint 2006), a method to build complex systems (e.g.
+<p>How is this flexibility compatible with the strong conceptual backbone? <strong>3Worlds</strong> uses <em>aspect-oriented thinking (AOT)</em> (Flint 2006), a method to build complex systems (e.g.
 software) from independent areas of knowledge. We have designed an <em>archetype</em> of what we believe constitutes an
-ecosystem&#8201;&#8212;&#8201;a recursive and multi-scale system of interacting entities. We use an implementation of AOT to make sure
+ecosystem&#8201;&#8212;&#8201;a recursive and multi-scale system of interacting entities. We use an implementation of AOT to ensure
 that any user-defined representation of an ecosystem complies with the archetype. This guarantees that, despite a
 great freedom left to the end-user, their model will always be compatible with the 3Worlds software. The great
 benefit of this is that while we believe it’s possible to construct any type of
 model within this archetype, imposing specification constraints greatly assists in model comparison: why should
 two models, ostensibly constructed for the same purpose, differ in their outputs? How does a change in temporal
 or spatial scale affect projections?  How does adding or removing sub-systems change model projections?
-<em>Models developed in <strong>3Worlds</strong> are always comparable</em>, different to what usually
-happens in large model intercomparison exercises.</p>
+<em>Models developed in <strong>3Worlds</strong> are always comparable</em>,  unlike many large model intercomparison exercises where the models are independently developed without reference to any common structuring principals.</p>
 </div>
 <div class="paragraph">
 <p>The ecosystem is a recursive concept (Gignoux et al. 2011): ecosystems can be nested. Parts of an ecosystem can
@@ -609,15 +607,16 @@ entities: individuals, populations, climate, soil, area, &#8230;&#8203;; and edg
 These relations can be of any kind, including a hierarchical relation describing the complex nesting of sub-systems.
 This provides an elegant solution to the apparent complexity of ecosystems: it allows for various types of <em>emergence</em>,
 enables the comparison of system structures and simulation trajectories, and can represent virtually anything
-an ecological modeller can dream of.</p>
+an ecological modeller can conceive of.</p>
 </div>
 <div class="paragraph">
-<p>How is this possible in one single software? Well, <strong>3Worlds</strong> builds upon more than thirty years of experience of
-its developers in ecosystem and complex system modelling and simulation. Over this time, we reached the conclusion that (1) robust concepts
-are fundamental for building sound software, (2) some problems that appear over and over again in the life of a
-simulation modellers often have well-established solutions, sometimes in other scientific fields, (3) complex
-systems are not <em>that</em> complex once properly designed. Things are just
-available around here, it&#8217;s just a matter of making them work together, and <strong>3Worlds</strong> is our best try to do so!</p>
+<p><strong>3Worlds</strong> builds upon more than thirty years of experience of its developers in ecosystem and complex system modelling and simulation. Over this time, we have reached the conclusion that: (1) robust concepts
+are fundamental for building sound software; (2) some problems that appear over and over again in the life of a
+simulation modellers often have well-established solutions, sometimes in other scientific fields; and (3) complex
+systems are more easily managed and understood when designed within a sound framework.</p>
+</div>
+<div class="paragraph">
+<p>Many of the ideas we use are already available, it&#8217;s just a matter of making them work together, and <strong>3Worlds</strong> is our best attempt to do so!</p>
 </div>
 </div>
 <div class="sect2">
@@ -631,49 +630,49 @@ available around here, it&#8217;s just a matter of making them work together, an
 <p>Fundamentally, <strong>3Worlds</strong> is designed as a framework for <em>individual-based models</em> (IBMs: Grimm &amp; Railsback 2005). IBMs, like multi-agent systems (MASs: Bousquet &amp; Lepage 2004), assume that some important properties of complex systems (like ecosystems and human societies) cannot be understood without representing the detailed behaviour of every individual in the system. In an IBM, a list of 'individuals' (called 'agents' in MASs) is kept in memory, and their interactions through various functions yield the dynamics of the whole system over time. Individuals can come and go, which means that their list is constantly changing in size.</p>
 </div>
 <div class="paragraph">
-<p>3Worlds simulates a <em>system</em> made of interacting <em>system components</em>, which are equivalent to the individuals or agents of IBMs and MASs. If required by a simple application, the 3Worlds <em>system</em> can be reduced to zero component, just as in any system dynamics application; but this is not the use 3Worlds has been designed for, and other more specialised software may be more adapted for this use case.</p>
+<p>3Worlds simulates a <em>system</em> made of interacting <em>system components</em>, which are equivalent to the individuals or agents of IBMs and MASs. If required by a simple application, the 3Worlds <em>system</em> can be reduced to zero components, just as in any system dynamics application; but this is not the use 3Worlds has been designed for, and other more specialised software may be more adapted for this use case.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truethe-complex-system-as-a-dynamic-graph"><a class="anchor" href="#truethe-complex-system-as-a-dynamic-graph"></a>1.2.2. The complex system as a dynamic graph</h4>
 <div class="paragraph">
-<p>Ecosystems are commonly considered as <em>complex systems</em>, without much agreement on what this latter concept means. Complex systems are usually supposed to possess <em>emergent properties</em>; again, with little agreement on what this means. We argued in Gignoux et al. (2017) that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems <em>hierarchical systems</em> and assumed that they coud be ideally represented with a <em>dynamic graph</em>.</p>
+<p>Ecosystems are commonly considered as <em>complex systems</em>, without much agreement on what this concept means. Complex systems are usually assumed to possess <em>emergent properties</em>; again, with little agreement on what this means. We argued in Gignoux et al. (2017) that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems <em>hierarchical systems</em> and assumed that they can be ideally represented with a <em>dynamic graph</em>.</p>
 </div>
 <div class="paragraph">
-<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical object comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes according to an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Fig. 1</a>). A <em>dynamic</em> graph (Harary &amp; Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
+<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical object comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes defined in an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Fig. 1</a>). A <em>dynamic</em> graph (Harary &amp; Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
 </div>
 <div id="fig-what-is-a-graph" class="imageblock text-center">
 <div class="content">
 <img src="graph.svg" alt="graph">
 </div>
-<div class="title">Figure 1. A mathematical graph, showing both the usual mathematical terms and the vocabulary used in 3Worlds. The incidence function is the particular pattern of which node is related to which one. Edges can be directed (with arrows) or undirected.</div>
+<div class="title">Figure 1. A mathematical graph, showing both the usual mathematical terms and the vocabulary used in 3Worlds. The incidence function defines edges between nodes. Edges can be directed (with arrows) or undirected.</div>
 </div>
 <div class="paragraph">
-<p>If we allow to attach <em>descriptors</em> (e.g. numbers with a specific meaning: <a href="#fig-graph-descriptors">Fig. 2</a>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define <em>functions</em> that can modify nodes and edges and their descriptors, we are able to make our graph dynamic. A 3Worlds simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to user needs for their particular application. Nodes are called <em>system components</em>, edges <em>system relations</em>, and descriptors <em>properties</em>.</p>
+<p>With the addition of <em>descriptors</em> (e.g. numbers with a specific meaning: <a href="#fig-graph-descriptors">Fig. 2</a>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define <em>functions</em> that can modify nodes and edges and their descriptors, the graph becomes dynamic. A 3Worlds simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to the user&#8217;s particular application. Nodes are called <em>system components</em>, edges <em>system relations</em>, and descriptors <em>properties</em>.</p>
 </div>
 <div id="fig-graph-descriptors" class="imageblock text-"center">
 <div class="content">
 <img src="graph-with-descriptors.svg" alt="graph with descriptors">
 </div>
-<div class="title">Figure 2. An example of graph descrpitors (redrawn from Gignoux et al. 2017).</div>
+<div class="title">Figure 2. An example of graph descriptors (redrawn from Gignoux et al. 2017).</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truecategories"><a class="anchor" href="#truecategories"></a>1.2.3. Categories</h4>
 <div class="paragraph">
-<p>In an IBM, every individual is different from all others. But it is common practice to assume that some groups of individuals share some common particularities. This is the essence of modelling: finding commonalities within an ocean of particular cases. We use the concetp of <em>category</em> to group system components that 'look like each other' in some way. Categories are used to express how alike and how different certain groups of components are from each other.</p>
+<p>In an IBM, every individual differs from all others. But it is common practice to assume that some groups of individuals share some things in common. This is the essence of modelling: finding commonalities within an ocean of particular cases. We use the concept of <em>category</em> to group system components that 'look like each other' in some way. Categories are used to express how alike and how different certain groups of components are from each other.</p>
 </div>
 <div class="paragraph">
-<p>Within the dynamic graph context, categories are used to specify common descriptors to groups of components (e.g. a plant species average growth rate, an animal cohort survival rate, &#8230;&#8203;) and functions that operate on a group of component of the same category. They are also used to specify which <em>type of relation</em> is possible between components of diffent categories.</p>
+<p>In a dynamic graph, categories are used to specify common descriptors to groups of components (e.g. a plant species average growth rate, an animal cohort survival rate, &#8230;&#8203;) and functions that operate on a group of components of the same category. They are also used to specify which <em>type of relation</em> is possible between components of different categories.</p>
 </div>
 <div class="paragraph">
-<p>Th category concept use here is very close to the class concept used in the <a href="http://uml.org/what-is-uml.htm">UML</a> language and in  <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented programming</a> . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in 3Worlds.</p>
+<p>This category concept is very close to the class concept used in the <a href="http://uml.org/what-is-uml.htm">UML</a> language and in  <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented programming</a> . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in 3Worlds.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truetime-with-simultaneous-events"><a class="anchor" href="#truetime-with-simultaneous-events"></a>1.2.4. Time with simultaneous events</h4>
 <div class="paragraph">
-<p>Ecosystems are both biological and physical systems. They do not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<a href="#fig-3w-main-loop">Fig. 3</a>). This is where IBMs somewhat differ from MASs in their most common current implementations: MASs emphasize the <em>autonomy</em> of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the rule as its default, but by using particular time models it is possible to relax this constraint.</p>
+<p>Because ecosystems are both biological and physical systems, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<a href="#fig-3w-main-loop">Fig. 3</a>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the <em>autonomy</em> of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint.</p>
 </div>
 <div id="fig-3w-main-loop" class="imageblock text-center">
 <div class="content">
@@ -682,28 +681,28 @@ available around here, it&#8217;s just a matter of making them work together, an
 <div class="title">Figure 3. The time model of 3Worlds. The overall dynamics of a system is computed as X(t+dt) = f(X(t)) where X represents the state of all system components, t is time and f is the function (or rather, the set of functions) used to compute the change over the time interval dt.</div>
 </div>
 <div class="paragraph">
-<p>Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. 3Worlds provides three types of <em>time model</em> that can be used in interaction: '<em>clock</em>' models using a constant time step, <em>event-driven </em>time models where time events trigger computations that can generate further events in the future, and <em>scenarios</em> where the list of events where computations are to be made is user-prescribed. Time steps span the whole scale of time units possibly relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.</p>
+<p>Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. 3Worlds provides three types of <em>time model</em> that can be used in interaction: '<em>clock</em>' models using a constant time step, <em>event-driven </em>time models where time events trigger computations that can generate further events in the future, and <em>scenarios</em> where the list of events determines when computations are to be made. Time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truespace-as-a-mediator-for-interactions"><a class="anchor" href="#truespace-as-a-mediator-for-interactions"></a>1.2.5. Space as a mediator for interactions</h4>
 <div class="paragraph">
-<p>IBMs are often 'spatialized', which means they include some representation of the physical space in which organisms of an ecosystem interact. We argued in Gignoux et al. (2011) that space is not a requirement of the ecosystem definition, but rather an optional feature. Besides the usual 3-dimensional space everyone is familiar with, we called the place where organims interact in an ecosystem the <em>arena</em>, ie the place where things happen and where a public (of ecological modellers) is watching them. This does not mean an Euclidian (or any other kind of) space must be attached to the ecosystem representation. Using a dynamic graph is sufficient.</p>
+<p>IBMs are often 'spatialized', which means they include some representation of the physical space in which organisms of an ecosystem interact. We argued in Gignoux et al. (2011) that space is not a requirement of the ecosystem definition, but rather an optional feature. Besides the usual 3-dimensional space, we called the place where organisms interact in an ecosystem the <em>arena</em>, i.e. the place where things happen and where a public (of ecological modellers) is watching them. This does not mean an Euclidian (or any other kind of) space must be attached to the ecosystem representation. Using a dynamic graph is sufficient.</p>
 </div>
 <div class="paragraph">
-<p>However, it appears that in numerous cases explicitly considering space in a model helps computing ecological interactions. In most ecological process models, there are actually implicit assumptions about space and how it affects organism interactions. For example, seed dispersal in plants is easily computed in a 2-dimensional space where the location of seeds depends on that of parent plants and some simple decreasing with distance distribution law; water flows in a water catchment rely on a 2 dimensional space plus an elevation of ground surface to some x and y resolution; competition between individual trees in a forest assume a vertical distribution of leaves that can be more or less elaborate.</p>
+<p>However, it is often the case that explicitly considering space in a model is necessary for computing ecological interactions. In most ecological process models, there are actually implicit assumptions about space and how it affects organism interactions. For example, seed dispersal in plants is easily computed in a 2-dimensional space where the location of seeds depends on that of parent plants and some simple distance law; water flow in a catchment relies on a 2 dimensional space plus an elevation of ground surface to some x and y resolution; competition between individual trees in a forest assume a vertical distribution of leaves depicted with varying degrees of detail.</p>
 </div>
 <div class="paragraph">
-<p>Following Gignoux et al. (2011), we optionally provide predefined spatial representations to include in a simulator. Different spaces can be used within a single simulator, depending on the needs of the process computations. They are associated with optimal item search algorithms (e.g. Kd-trees) that speed up the search of components between which to establish relations.</p>
+<p>Following Gignoux et al. (2011), we optionally provide predefined spatial representations to include in a simulator. Different spaces can be used within a single simulator, depending on the needs of the process computations. They are associated with optimal search algorithms (e.g. Kd-trees) that speed up the search of components with which to form dynamic relations.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truemodelling-made-easy"><a class="anchor" href="#truemodelling-made-easy"></a>1.2.6. Modelling made easy</h4>
 <div class="paragraph">
-<p>The community of ecological scientists has been developing an impressively high number of models, yet most of them are poorly designed in terms of programming, as ecologists are not software engineers. Ecosystem simulators are among the most complex existing programs (Coquillard &amp; Hill 1997). They require high programming skills and constitute a huge investment in time, which makes their production slow and hazardous. As a result, they tend to be used beyond their initial domain of application once build (e.g. the overuse and abuse of the CENTURY model: Parton et al. 1988), issues of provenance and repeatability are rarely addressed, shedding some doubt on the discipline as a whole.</p>
+<p>The community of ecological scientists has been developing an impressively large number of models, yet most of them are poorly designed in terms of programming, as ecologists are not software engineers. Ecosystem simulators are among the most complex existing programs (Coquillard &amp; Hill 1997). They require high programming skills and constitute a huge investment in time, which makes their production slow and hazardous. As a result, once built, they tend to be used beyond their initial domain of application (e.g. the overuse and abuse of the CENTURY model: Parton et al. 1988), issues of provenance and repeatability are rarely addressed, shedding some doubt on the discipline as a whole.</p>
 </div>
 <div class="paragraph">
-<p>With 3Worlds we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programing techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used <em>automatic code generation</em> to ensure that end-users only have to write one code file to build a simulator for their particular problem. We used a <em>graph editor</em> to build the configuration and organise the data required for a particular use case. In 3Worlds, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written.</p>
+<p>With 3Worlds we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programming techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used <em>automatic code generation</em> to ensure that researchers need only edit one code file to build a simulator for their particular model. We used a <em>graph editor</em> to build the configuration and organise the data required for a particular study. In 3Worlds therefore, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written.</p>
 </div>
 <div class="paragraph">
 <p>When designing a model, it is important to get a quick visual feedback of how the system behaves when one changes equations or their implementation. 3Worlds comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to user needs.</p>
@@ -712,7 +711,7 @@ available around here, it&#8217;s just a matter of making them work together, an
 <div class="sect3">
 <h4 id="truemodel-comparison-graphs-can-be-compared"><a class="anchor" href="#truemodel-comparison-graphs-can-be-compared"></a>1.2.7. Model comparison: graphs can be compared</h4>
 <div class="paragraph">
-<p>Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they al yield different results. This is expected given the size of their code, but what is appalling is that nobody is able to trace within the code where the differences come from  (Lim &amp; Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models takes the form of computer codes, which are very difficult to compare above a ridiculously small code size.</p>
+<p>Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they all yield different results. This is expected given the size of their code, but what is appalling is that nobody is able to trace within the code where the differences come from  (Lim &amp; Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models is represented in computer code, which are very difficult to compare for any but the simplest of models.</p>
 </div>
 <div class="paragraph">
 <p>3Worlds is an attempt to solve this issue <em>in the future</em> (there is nothing we can do for past model codes). If models are developed within the standard framework of 3Worlds, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.</p>
@@ -721,13 +720,13 @@ available around here, it&#8217;s just a matter of making them work together, an
 <div class="sect3">
 <h4 id="trueproblem-upscaling"><a class="anchor" href="#trueproblem-upscaling"></a>1.2.8. Problem upscaling</h4>
 <div class="paragraph">
-<p>Developing a simulator is only a small part of the ecological modelling exercise: once the siulator is ready, it is used as a real ecosystem in <em>simulation experiments</em>. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologicallly relevant, publishable results.</p>
+<p>Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in <em>simulation experiments</em>. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologically relevant, publishable results.</p>
 </div>
 <div class="paragraph">
-<p>IBMs are most of the time stochastic, as population rates translate into probabiities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on random number drawings. A a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.</p>
+<p>IBMs are often stochastic, as population rates translate into probabilities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on random number drawings. As a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.</p>
 </div>
 <div class="paragraph">
-<p>3Worlds is interfaced with <a href="https://openmole.org/">OpenMole</a>  to provide access to big computing power. Through OpenMole, big simulation experiments can be deployed on networks of computers, grids, or supercalculators.</p>
+<p>3Worlds is interfaced with <a href="https://openmole.org/">OpenMole</a>  to provide access to big computing power. Through OpenMole, big simulation experiments can be deployed on networks of computers, grids, or supercomputers.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1286,35 +1285,55 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>&#8230;&#8203;/categorySet/<strong>category</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p>A <code><strong>category</strong></code> is simply a name attached to a set of objects sharing common properties. Practically, these common properties are <em>state variables</em>, <em>parameters</em> and dynamic behaviours (or <em>processes</em>). Categories, grouped into <code><strong>categorySet</strong></code>s, constitute a user-defined <em>classification</em> of <em>system component types</em> relevant for a particular model.</p>
+<p>A <code><strong>category</strong></code> is simply a name attached to a set of objects sharing common properties (cf. section <a href="#truecategories">1.2.3</a>). These common properties are descriptors (cf. section <a href="#truethe-complex-system-as-a-dynamic-graph">1.2.2</a>), and dynamic behaviours (or <em>processes</em>). Categories, grouped into <code><strong>categorySet</strong></code>s, constitute a user-defined <em>classification</em> of <em>system component types</em> relevant for a particular model.</p>
 </div>
 <div class="paragraph">
-<p>To make this classification useful, we attach <em>parameters</em> and <em>state variables</em> to categories. State variables are variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (<em>e.g.</em> biomass, age, sex, social status&#8230;&#8203;). They will vary during a simulation. Parameters do not vary during a simulation; they are characteristic of a group of system components sharing them&#8201;&#8212;&#8201;conceptually, a 'species' (e.g. average individual growth rate, mortality rate&#8230;&#8203;).</p>
+<p>Descriptors consist in <em>drivers</em>, <em>decorators</em>, <em>constants</em> and <em>automatic variables</em>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><em>drivers</em></dt>
+<dd>
+<p>are <em>independent</em> variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (<em>e.g.</em> biomass, age, sex, social status&#8230;&#8203;). They will vary during a simulation. 'Independent' means that these variables cannot be computed from each other, e.g. if some category is described by drivers age and biomass, it means neither of them can be computed from the other. The values of drivers are carried over from a simulation step to the next, i.e. they <em>drive</em> the dynamics of the system.</p>
+</dd>
+<dt class="hdlist1"><em>decorators</em></dt>
+<dd>
+<p>are <em>dependent</em> variables that are computed from drivers and other decorators. As such, they are not independent from the drivers and are used only for convenience in computations or output display. They are not carried over from a simulation step to the next, they are always automatically reset to zero at the end of each step.</p>
+</dd>
+<dt class="hdlist1"><em>constants</em></dt>
+<dd>
+<p>are values (numbers, text, logical values) that do not change during a simulation. For example, sex or number of legs are not going to change during the lifetime of animal. They are set at birth and never changed after.</p>
+</dd>
+<dt class="hdlist1"><em>automatic variables</em></dt>
+<dd>
+<p>are values internally managed by 3Worlds and only available as read-only values for computation. For components representing individuals, these are <em>age</em> and <em>birth date</em>. For components representing populations, these are <em>number of individualls</em>, <em>number of births</em>, <em>number of deaths</em>.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p>Practically, this means that any instance of a system component of a given category will implement the state variables of this category and share parameters with other system components of the same 'species'.</p>
-</div>
-<div class="paragraph">
-<p>The exact data structures for state variables and parameters are specified under the <a href="#truethe-em-dataDefinition-em-node">dataDefinition</a> node and linked to the category through the following:</p>
+<p>The exact data structures for descriptors are specified under the <a href="#truethe-em-dataDefinition-em-node">dataDefinition</a> node and linked to the category through the following:</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>category</code>:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>parameters &#8594; record:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
-<dd>
-<p>This link tells which record data structure (in <a href="#truethe-em-codesource-em-node">codeSource</a>) is used to store parameters.</p>
-</dd>
 <dt class="hdlist1"><code>drivers &#8594; record:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dt class="hdlist1"><code>decorators &#8594; record:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dt class="hdlist1"><code>constants &#8594; record:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dd>
-<p>Similarly, these links tell which data structure in <a href="#truethe-em-dataDefinition-em-node">dataDefinition</a> is used to store state variables. State variables are further classified into <em>drivers</em>, i.e. variables that <em>drive</em> the dynamics of the system; and <em>decorators</em>, i.e. secondary state variables which values are computed from those of the drivers, only reflecting the dynamics of the drivers.</p>
+<p>These links tell which data structure in <a href="#truethe-em-dataDefinition-em-node">dataDefinition</a> is used to store  <em>drivers</em>, <em>decorators</em>  and <em>constants</em>.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>A category may be defined with no parameters, drivers or decorators, but it would be pretty useless to have neither of them.</p>
+<p><em>Automatic variables</em> do not need to be specified - because they are automatic.</p>
+</div>
+<div class="paragraph">
+<p>A category may be defined with no drivers, decorators or constants, but it would be pretty useless to have neither of them.</p>
+</div>
+<div class="paragraph">
+<p>There are <em>predefined categories</em> in 3Worlds under the node <code>/3worlds/<strong>predefined</strong></code>, used to specify particular components of the system. They will be explained in time.</p>
 </div>
 </div>
 <div class="sect5">
@@ -1323,7 +1342,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>/3worlds/system/structure/<strong>categorySet</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p>Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can&#8217;t be both. For this reason, <em>exclusive</em> categories are grouped into <code><strong>categorySets</strong></code>. A categorySet is <em>a set of <strong>mutually exclusive</strong> categories</em>. Further, it may apply only to categories of a particular type (categorySet). Hence categories can be nested:</p>
+<p>Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can&#8217;t be both. For this reason, <em>exclusive</em> categories are grouped into <code><strong>categorySets</strong></code>. A categorySet is <em>a set of <strong>mutually exclusive</strong> categories</em>. Categories can be nested, by simply defining a <code><strong>categorySet</strong></code> as a child of a <code><strong>category</strong></code>:</p>
 </div>
 <div class="paragraph">
 <p><code>&#8230;&#8203;/category/<strong>categorySet</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
@@ -1335,7 +1354,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>/3worlds/system/structure/<strong>relationType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>A <code><strong>relationType</strong></code> is just a name representing a meaningful link between two categories. It is specified by giving it a name and cross-linking it to the relevant categories with <code>fromCategory</code> and <code>toCategory</code> cross-links. Note that a relationType can link more than one 'from' categories to more than one 'to' categories if required. RelationTypes are used to implement specific processes acting on ecological entities (for example, a predation process).</p>
+<p>A <code><strong>relationType</strong></code> is just a name representing a meaningful link between two kinds of categories. It is specified by giving it a name and cross-linking it to the relevant categories with <code>fromCategory</code> and <code>toCategory</code> cross-links. Note that a relationType can link more than one 'from' categories to more than one 'to' categories if required. RelationTypes are used to implement specific processes acting on ecological entities (for example, a predation process).</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>relationType</code>:</p>
@@ -1348,7 +1367,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </dd>
 <dt class="hdlist1"><code>toCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1..*}</dt>
 <dd>
-<p>This link tells which categories are at the end of the relation</p>
+<p>This link tells which categories are at the end of the relation.</p>
 </dd>
 </dl>
 </div>
@@ -1375,7 +1394,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <code>permanent</code>
 </td>
 <td class="hdlist2">
-<p>(1) system component stays forever during a simulation, (2) relation stays as long as both its ends stay (default value)</p>
+<p>relation stays as long as both its ends stay (default value)</p>
 </td>
 </tr>
 <tr>
@@ -1383,7 +1402,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <code>ephemeral</code>
 </td>
 <td class="hdlist2">
-<p>system component / relations are created and deleted during a simulation by the means of the appropriate  <code>Function</code> classes (e.g. <code>DeleteDecision</code>, <code>CreateOtherDecision</code>, etc. cf. <code>TwFunctionTypes</code>)</p>
+<p>relations are created during a simulation by the means of a  <code>relateTo</code> function, and kept or deleted by means of a ‘maintainRelation’ decision function. If no ‘maintainRelation’ function is provided, then the relation only lasts for one simulation step.</p>
 </td>
 </tr>
 </table>
@@ -1419,7 +1438,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>/3worlds/system/structure/<strong>componentType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p>3Worlds simulates a <em>system</em> made of <em>system components</em>. These are the things which are instantiated at run time, hold state variables, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach <em>categories</em> to <em>system components</em>. The rules prevailing to build up categories hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the <em>plant</em> and <em>tree</em> categories, but not to the <em>animal</em> and <em>tree</em> categories.</p>
+<p>3Worlds simulates a <em>system</em> made of <em>system components</em>. These are the things which are instantiated at run time, hold descriptors, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach <em>categories</em> to <em>system components</em>. The rules prevailing to build up category hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the <em>plant</em> and <em>tree</em> categories, but not to the <em>animal</em> and <em>tree</em> categories.</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links</em> for <code>componentType</code>:</p>
@@ -1430,53 +1449,240 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <dd>
 <p>This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the <em>C3</em> category automatically implies the system component is also a <em>plant</em>).</p>
 </dd>
-<dt class="hdlist1"><code>initialiser &#8594; initialiser:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*component*</code> {1..1}</dt>
 <dd>
-<p>Use this optional link to specify a function to initialise state variables of a <code>componentType</code> at the beginning of a simulation.</p>
+<p>This link to the predefined category <code>*component*</code> is required in all models.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*atomic*</code> {1..1}</dt>
+<dd>
+<p>This link to the predefined category <code>*atomic*</code> is required in all models. It means that a component has no further subdivisions.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*ephemeral*|*permanent*</code> {1..1}</dt>
+<dd>
+<p>This link to either of the predefined category <code>*ephemeral*</code> or <code>*permanent*</code> is required in all models. It specifies if components of this <code>componentType</code> are going to stay forever (permanent) or can be created and deleted (ephemeral) during a simulation. Ephemeral components have two automatic variables, <code>birthDate</code> and <code>age</code>.</p>
 </dd>
 </dl>
 </div>
-<div class="paragraph">
-<p><em>Properties for</em> <code>component</code>:</p>
 </div>
-<div class="hdlist">
+<div class="sect5">
+<h6 id="truecomponent-group"><a class="anchor" href="#truecomponent-group"></a>Component group</h6>
+<div class="paragraph">
+<p><code>/3worlds/system/structure/<strong>groupType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>Sometimes it makes sense to group components of a given componentType into <em>groups</em>; the best example of this in ecology is the species. Animals of different species may be described by the same descriptors, but nevertheless they will only reproduce within their species. Typically, animals of a species would share some constants, like plumage coloration, average body size, main diet etc. The <code><strong>groupType</strong></code> node is meant to fullfil this use case.</p>
+</div>
+<div class="paragraph">
+<p>To make a <code>componentType</code> belong to a <code>groupType</code>, you just need to declare it as a child of the <code>groupType</code>:</p>
+</div>
+<div class="paragraph">
+<p><code>&#8230;&#8203;/groupType/<strong>groupType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p><em>Cross-links</em> for <code>componentType</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>belongsTo &#8594; category:&lt;<em>name</em>&gt;</code> {1..*}</dt>
+<dd>
+<p>This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the <em>C3</em> category automatically implies the system component is also a <em>plant</em>). The categories targets of these links must be specific to groups, i.e. no <code>componentType</code> or <code>lifeCycleType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*group*</code> {1..1}</dt>
+<dd>
+<p>This link to the predefined category <code>*group*</code> is required in all models.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*assemblage*</code> {1..1}</dt>
+<dd>
+<p>This link to the predefined category <code>*assemblage*</code> is required in all models. It means that a group is a population of components. Assemblages have three automatic variables: the group size (number of components) <code>count</code>, the number of new components added during last time step <code>nAdded</code>, and the number of components deleted during the last time step <code>nRemoved</code>.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1..1}</dt>
+<dd>
+<p>This link to the predefined category <code>*permanent*</code> is required in all models. It means that groups will stay forever in the system, even if all components of this groups are gone.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truelife-cycle"><a class="anchor" href="#truelife-cycle"></a>Life cycle</h6>
+<div class="paragraph">
+<p><code>/3worlds/system/structure/<strong>lifeCycleType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>As <em>system component</em>s are designed to represent&#8201;&#8212;&#8201;among other things&#8201;&#8212;&#8201;individual organisms, they are able to create other system components at runtime, or to transform themselves into a system component of another category assemblage. These abilities are captured in a <code><strong>lifeCycle</strong></code>, which describes the possible creations and transitions of system components of a given category set into another.</p>
+</div>
+<div class="paragraph">
+<p>Since <code>components</code> belong to <code>categories</code>, different types of system components represented by different state variables, subject to different ecological processes, can coexist in a simulation. It may occur in a particular model that one wishes to represent a transition between, e.g. development stages: think for example of a caterpillar turning into a butterfly. There are chances that you don&#8217;t want to describe the caterpillar with the same variables and behaviours as the adult butterfly. The operation of transforming a system component from a selection of categories to another is called <em>recruitment</em>. Computationally, it means that the simulator must keep track of the system component&#8217;s identity and age in the first stage and carry these properties on to the new system component of the second stage, and call an appropriate function to transform state variables of the first stage into the new one.</p>
+</div>
+<div class="paragraph">
+<p><em>Reproduction</em> is the second process by which system components of a given group of categories may produce other system components belonging to possibly different categories.</p>
+</div>
+<div class="paragraph">
+<p>A specification of a life cycle requires:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>a <code>categorySet</code> in which the categories represent the various stages of the life cycle;</p>
+</li>
+<li>
+<p>at least one <code>groupType</code> definition per <code>category</code> of the above <code>categorySet</code>;</p>
+</li>
+<li>
+<p><code>recruit</code> and <code>produce</code> nodes linking categories within the above <code>categorySet</code> to describe possible recruitment and reproduction pathways;</p>
+</li>
+<li>
+<p>optionnally, a <code>category</code> can be linked to a <code>lifeCycle</code> if one wants to attach descriptors to the life cycle.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To define a groupType within the context of a lifeCycleType, simply make it a child node of the lifeCycleType:</p>
+</div>
+<div class="paragraph">
+<p><code>&#8230;&#8203;/lifeCycleType/<strong>groupType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>lifeCycle</code></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>appliesTo &#8594; categorySet:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This links indicates which categories define the stages of the life cycle. <code>recruit</code> or <code>produce</code> nodes can only link categories of this set.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
+<dd>
+<p>These links enable to attach descriptors to a <code>lifeCycle</code>, if needed by some ecological processes. The categories targets of these links must be specific to life cycles, i.e. no <code>componentType</code> or <code>groupType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*life cycle*</code> {1..1}</dt>
+<dd>
+<p>This link to the predefined category <code>*life cycle*</code> is required in all models.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*assemblage*</code> {1..1}</dt>
+<dd>
+<p>This link to the predefined category <code>*assemblage*</code> is required in all models. It means that a life cycle is a population of components. Assemblages have three automatic variables: size (number of components) <code>count</code>, the number of new components added during last time step <code>nAdded</code>, and the number of components deleted during the last time step <code>nRemoved</code>.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1..1}</dt>
+<dd>
+<p>This link to the predefined category <code>*permanent*</code> is required in all models. It means that life cycles will stay forever in the system.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truerecruitment"><a class="anchor" href="#truerecruitment"></a>Recruitment</h6>
+<div class="paragraph">
+<p><code>/3worlds/system/dynamics/lifeCycle/<strong>recruit</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>This node specifies that two categories of the life cycle <code>categorySet</code> are linked by a <em>recruitment</em> process.</p>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>recruit</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>fromCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells which system component type is getting changed by the recruitment.</p>
+</dd>
+<dt class="hdlist1"><code>toCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells which system component type is the result of the recruitment.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
 <table>
 <tr>
-<td class="hdlist1">
-<code>lifespan</code>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
 </td>
-<td class="hdlist2">
-<p>This property specifies if this type of system component will stay forever, or may get created and deleted during a simulation</p>
-<div class="sidebarblock">
+<td class="content">
+multiple targets are possible from the same category, i.e. a component of a category may recruit to different categories. E.g., a bee larva can recruit to a worker or a queen.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>effectedBy &#8594; process:&lt;<em>name</em>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells which ecological process is used to compute the recruitment. This process must implement at least one<strong>[maximum one? it returns a category name]</strong> <code>ChangeCategoryDecision</code> function (cf <a href="#a">TODO</a>).</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truereproduction"><a class="anchor" href="#truereproduction"></a>Reproduction</h6>
+<div class="paragraph">
+<p><code>/3worlds/system/dynamics/lifeCycle/<strong>produce</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>This node specifies that two categories of the life cycle <code>categorySet</code> are linked by a <em>reproduction</em> process.</p>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>produce</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>fromCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells which system component type is producing new system components.</p>
+</dd>
+<dt class="hdlist1"><code>toCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells which system component type is the result of the reproduction.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+multiple targets are possible from the same category, i.e. a component of a category may produce components of different categories. E.g., a tree can produce seedlings through sexual reproduction and root suckers through vegetative reproduction.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>effectedBy &#8594; process:&lt;<em>name</em>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells which ecological process is used to compute the production of new system components. This process must implement at least one <code>CreateOtherDecision</code> function (cf <a href="#a">TODO</a>).</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="trueexample-of-a-life-cycle-specification"><a class="anchor" href="#trueexample-of-a-life-cycle-specification"></a>Example of a life cycle specification</h6>
+<div class="paragraph">
+<p>This life cycle:</p>
+</div>
+<div id="fig-life-cycle-example" class="imageblock text-center">
 <div class="content">
+<img src="example-life-cycle.svg" alt="example life cycle">
+</div>
+<div class="title">Figure 8. Example of a life cycle</div>
+</div>
 <div class="paragraph">
-<p><em>possible values</em>:</p>
+<p>is specified with this graph:</p>
 </div>
-<div class="hdlist">
-<table>
-<tr>
-<td class="hdlist1">
-<code>permanent</code>
-</td>
-<td class="hdlist2">
-<p>(1) system component stays forever during a simulation, (2) relation stays as long as both its ends stay (default value)</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>ephemeral</code>
-</td>
-<td class="hdlist2">
-<p>system component / relations are created and deleted during a simulation by the means of the appropriate  <code>Function</code> classes (e.g. <code>DeleteDecision</code>, <code>CreateOtherDecision</code>, etc. cf. <code>TwFunctionTypes</code>)</p>
-</td>
-</tr>
-</table>
+<div id="fig-life-cycle-config-example" class="imageblock text-center">
+<div class="content">
+<img src="example-life-cycle.png" alt="example life cycle">
 </div>
+<div class="title">Figure 9. Example of a life cycle configuration</div>
 </div>
-</div>
-</td>
-</tr>
-</table>
+<div class="ulist">
+<ul>
+<li>
+<p>HERE **</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -1809,6 +2015,14 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p>The longest time unit used in this model. <em>cf.</em> <code>shortestTimeUnit</code> for valid values</p>
 </td>
 </tr>
+<tr>
+<td class="hdlist1">
+<code>grain</code>
+</td>
+<td class="hdlist2">
+<p>The finest time interval used in this model: this value is the number of time intervals within a shortest time unit (e.g.  if <code>shortestTimeUnit</code>=<code>MINUTE</code> and <code>grain</code>=10, the shortest time interval in the model is 6 seconds. It means dates and times will be considered equal if differing by less than 6 seconds.</p>
+</td>
+</tr>
 </table>
 </div>
 </div>
@@ -2089,158 +2303,9 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <p>To represent category changes, start and end of life, we need the concept of a <em>life cycle</em>: a series of successive discrete states decribed by different categories (starting  from non-existence and finishing alike). Notice that the life cycle is optional: if a system component is going to be represented by the same set of variables (same category) during its whole life, there is no need to attach a life cycle to it as there will be no transition to other categories.</p>
 </div>
 <div class="sect5">
-<h6 id="truelife-cycle"><a class="anchor" href="#truelife-cycle"></a>Life cycle</h6>
+<h6 id="truelife-cycle-2"><a class="anchor" href="#truelife-cycle-2"></a>Life cycle</h6>
 <div class="paragraph">
 <p><code>/3worlds/system/dynamics/<strong>lifeCycle</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p>As <em>system component</em>s are designed to represent&#8201;&#8212;&#8201;among other things&#8201;&#8212;&#8201;individual organisms, they are able to create other system components ar runtime, or to transform themselves into a system component of another category assemblage. These abilities are captured in a <code><strong>lifeCycle</strong></code>, which describes the possible creations and transitions of system components of a given category set into another.</p>
-</div>
-<div class="paragraph">
-<p>Since <code>components</code> belong to <code>categories</code>, different types of system components represented by different state variables, subject to different ecological processes, can coexist in a simulation. It may occur in a particular model that one wishes to represent a transition between, e.g. development stages: think for example of a caterpillar turning into a butterfly. There are chances that you don&#8217;t want to describe the caterpillar with the same variables and behaviours as the adult butterfly. The operation of transforming a system component from a selection of categories to another is called <em>recruitment</em>. Computationally, it means that the simulator must keep track of the system component&#8217;s identity and age in the first stage and carry these properties on to the new system component of the second stage, and call an appropriate function to transform state variables of the first stage into the new one.</p>
-</div>
-<div class="paragraph">
-<p><em>Reproduction</em> is the second process by which system components of a given group of categories may produce other system components belonging to possibly different categories.</p>
-</div>
-<div class="paragraph">
-<p>A specification of a life cycle requires:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>a <code>categorySet</code> in which the categories represent the various stages of the life cycle;</p>
-</li>
-<li>
-<p><code>recruit</code> and <code>produce</code> nodes linking categories within this set to describe possible recruitment and reproduction pathways;</p>
-</li>
-<li>
-<p>optionnally, a <code>category</code> can be linked to a <code>lifeCycle</code> if one wants to attach parameters to the life cycle.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p><em>Cross-links for</em> <code>lifeCycle</code></p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>appliesTo &#8594; categorySet:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
-<dd>
-<p>This links indicates which categories define the stages of the life cycle. <code>recruit</code> or <code>produce</code> nodes can only link categories of this set.</p>
-</dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
-<dd>
-<p>These links enable to attach parameters to a <code>lifeCycle</code>, if needed by some ecological processes. The categories targets of these links must be specific to life cycles, i.e. no <code>component</code> or <code>process</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect5">
-<h6 id="truerecruitment"><a class="anchor" href="#truerecruitment"></a>Recruitment</h6>
-<div class="paragraph">
-<p><code>/3worlds/system/dynamics/lifeCycle/<strong>recruit</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p>This node specifies that two categories of the life cycle <code>categorySet</code> are linked by a <em>recruitment</em> process.</p>
-</div>
-<div class="paragraph">
-<p><em>Cross-links for</em> <code>recruit</code>:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>fromCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells which system component type is getting changed by the recruitment.</p>
-</dd>
-<dt class="hdlist1"><code>toCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells which system component type is the result of the recruitment.</p>
-</dd>
-</dl>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-multiple targets are possible from the same category, i.e. a component of a category may recruit to different categories. E.g., a bee larva can recruit to a worker or a queen.
-</td>
-</tr>
-</table>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>effectedBy &#8594; process:&lt;<em>name</em>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells which ecological process is used to compute the recruitment. This process must implement at least one<strong>[maximum one? it returns a category name]</strong> <code>ChangeCategoryDecision</code> function (cf <a href="#a">TODO</a>).</p>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect5">
-<h6 id="truereproduction"><a class="anchor" href="#truereproduction"></a>Reproduction</h6>
-<div class="paragraph">
-<p><code>/3worlds/system/dynamics/lifeCycle/<strong>produce</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p>This node specifies that two categories of the life cycle <code>categorySet</code> are linked by a <em>reproduction</em> process.</p>
-</div>
-<div class="paragraph">
-<p><em>Cross-links for</em> <code>produce</code>:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>fromCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells which system component type is producing new system components.</p>
-</dd>
-<dt class="hdlist1"><code>toCategory &#8594; category:&lt;<em>name</em>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells which system component type is the result of the reproduction.</p>
-</dd>
-</dl>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-multiple targets are possible from the same category, i.e. a component of a category may produce components of different categories. E.g., a tree can produce seedlings through sexual reproduction and root suckers through vegetative reproduction.
-</td>
-</tr>
-</table>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>effectedBy &#8594; process:&lt;<em>name</em>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells which ecological process is used to compute the production of new system components. This process must implement at least one <code>CreateOtherDecision</code> function (cf <a href="#a">TODO</a>).</p>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect5">
-<h6 id="trueexample-of-a-life-cycle-specification"><a class="anchor" href="#trueexample-of-a-life-cycle-specification"></a>Example of a life cycle specification</h6>
-<div class="paragraph">
-<p>This life cycle:</p>
-</div>
-<div id="fig-life-cycle-example" class="imageblock text-center">
-<div class="content">
-<img src="example-life-cycle.svg" alt="example life cycle">
-</div>
-<div class="title">Figure 8. Example of a life cycle</div>
-</div>
-<div class="paragraph">
-<p>is specified with this graph:</p>
-</div>
-<div id="fig-life-cycle-config-example" class="imageblock text-center">
-<div class="content">
-<img src="example-life-cycle.png" alt="example life cycle">
-</div>
-<div class="title">Figure 9. Example of a life cycle configuration</div>
 </div>
 </div>
 </div>
@@ -2340,34 +2405,10 @@ multiple targets are possible from the same category, i.e. a component of a cate
 </tr>
 <tr>
 <td class="hdlist1">
-<code>Aggregator</code>
-</td>
-<td class="hdlist2">
-<p>compute statistics</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
 <code>ChangeOtherState</code>
 </td>
 <td class="hdlist2">
 <p><em>focal</em> changes the state of <em>other</em></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>ChangeOtherCategoryDecision</code>
-</td>
-<td class="hdlist2">
-<p><em>focal</em> changes the category of <em>other</em> (requires a life cycle for <em>other</em>)</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>DeleteOtherDecision</code>
-</td>
-<td class="hdlist2">
-<p><em>focal</em> deletes <em>other</em></p>
 </td>
 </tr>
 <tr>
@@ -2391,7 +2432,23 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <code>ChangeRelationState</code>
 </td>
 <td class="hdlist2">
-<p>change the state of a relation</p>
+<p>change the state of a relation, i.e. possibly both the state of focal and other at the same time</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>SetInitialState</code>
+</td>
+<td class="hdlist2">
+<p>sets the initial state of a newly created SystemComponent</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>SetOtherInitialState</code>
+</td>
+<td class="hdlist2">
+<p>sets the initial state of a newly created SystemComponent given a parent component</p>
 </td>
 </tr>
 </table>
@@ -2942,8 +2999,8 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.2<br>
-Last updated 2021-02-10 17:46:41 +0100
+Version 1.3<br>
+Last updated 2021-04-01 16:56:39 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
