@@ -1065,7 +1065,8 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		for (DataLabel lab : data.pointsToDelete()) {
 			// It's an error if the lab is NOT found in the list before
 			if (vertices.remove(lab.toString()) == null)
-				System.out.println("Warning: Attempt to delete non-existing point. [" + lab + "]");
+//				System.out.println("Warning: Attempt to delete non-existing point. [" + lab + "]");
+				;
 			else {
 				pd++;
 // 				JG Fix: we dont want the legend to shrink every time a colour disappears:
