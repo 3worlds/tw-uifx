@@ -6,5 +6,5 @@ _possible values_:
 
 [horizontal]
 `permanent`:: relation stays as long as both its ends stay (default value)
-`ephemeral`:: relations are created during a simulation by the means of a  `relateTo` function, and kept or deleted by means of a ‘maintainRelation’ decision function. If no ‘maintainRelation’ function is provided, then the relation only lasts for one simulation step.
+`ephemeral`:: relations are created during a simulation by the means of a  `relateTo` function, and kept or deleted by means of a `maintainRelation` decision function. If no `maintainRelation` function is provided, then the relation only lasts for one simulation step.
 

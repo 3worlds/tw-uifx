@@ -1,6 +1,6 @@
 ===== The representation of time
 
-Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called processes) to either categories or relations. Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.
+Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called processes) to either `Categories` (<<configuration-ecosystem-structure.adoc#truecategory>>) or ``relationType``s (<<configuration-ecosystem-structure.adoc#truerelationtype>>). Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.
 
 ====== Time line
 
@@ -10,39 +10,38 @@ Every simulator has a reference _time line_. Since different ecological processe
 
 include::ArchetypeDoc-timeLine.adoc[]
 
-====== Time models
+====== Timers
 
-`/3worlds/system/dynamics/timeLine/*timeModel*:<[underline]##__name__##>` {1..*}
+`/3worlds/system/dynamics/timeLine/*timer*:<[underline]##__name__##>` {1..*}
 
-Ecological processes may be run following different time models. A time model is a particular way of representing time in the simulator. Time models may differ in parameters, like e.g. two time models using different time steps; but they can also be radically different in their logic: e.g. clock-like ticking vs. event-driven simulation.
+Ecological processes may be run following different times. A timer is a particular way of representing time in the simulator. Timers may differ in parameters, like e.g. two timers using different time steps; but they can also be radically different in their logic: e.g. clock-like ticking vs. event-driven simulation.
 
-include::ArchetypeDoc-timeModel.adoc[]
+include::ArchetypeDoc-timer.adoc[]
 
-`class`:: the type of `timeModel` to use.
+`subclass`:: the type of `timer` to use.
 +
 ****
 _possible values_:
 
 [horizontal]
-`ClockTimeModel`:: Time is incremented by a constant amount _dt_. This is commonly used to simulate regular processes like growth.
-`EventTimeModel`:: Model dynamics generates _events_ and computes the date in the future at which they are going to occur. This is commonly used to generate irregular processes like fire occurrence.
-`ScenarioTimeModel`:: *Not yet implemented*.
+`ClockTimer`:: Time is incremented by a constant amount _dt_. This is commonly used to simulate regular processes like growth.
+`EventTimer`:: Model dynamics generates _events_ and computes the date in the future at which they are going to occur. This is commonly used to generate irregular processes like fire occurrence.
+`ScenarioTimer`:: *Not yet implemented*.
 ****
 
-_Additional properties when_ `class = ClockTimeModel`
+_Additional properties when_ `class = ClockTimer`
 
 [horizontal]
-`dt`:: The constant time increment used in this `ClockTimeModel`, expressed as an integer number of `TimeModel` base unit (=`TimeModel.nTimeUnits` x `TimeModel.timeUnit`). For example, if the TimeModel has `timeUnit` = `DAY` and `nTimeUnits` = 3, `dt` is expressed in units of 3 days (e.g. `dt` = 2 means the time increment is 6 days).
+`dt`:: The constant time increment used in this `ClockTimer`, expressed as an integer number of `timer` base unit (=`timer.nTimeUnits` × `timer.timeUnit`). For example, if the `timer` has `timeUnit` = `DAY` and `nTimeUnits` = 3, `dt` is expressed in units of 3 days (e.g. `dt` = 2 means the time increment is 6 days).
 +
-WARNING: if calendar time is used (`timeLine.scale` = `GREGORIAN`), then `dt` will sometimes not be constant (e.g. if `dt` = 2 `MONTH`, `dt` will vary in duration between 28 and 31 days according to the exact date).
+WARNING: if calendar time is used (`timeLine.scale` = `GREGORIAN`), then `dt` will sometimes not be constant (e.g. if `dt` = 2 `MONTH`, `dt` will vary in duration between 59 and 62 days according to the exact date).
 
-_Additional sub-tree when_ `class = EventTimeModel`
+_Additional sub-tree when_ `class = EventTimer`
 
-`/3worlds/system/dynamics/timeLine/timeModel/*eventQueue*:<[underline]##__name__##>` {1}
+`/3worlds/system/dynamics/timeLine/timer/*eventQueue*:<[underline]##__name__##>` {1}
 
-An `EventTimeModel` maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.
+An `EventTimer` maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.
 
-// NB: is this maintained?
 _Cross-links for_ `eventQueue`
 
 `populatedBy -> function:<[underline]##__name__##>` {1..*}::
@@ -67,7 +66,7 @@ _possible values_:
 `SimpleStoppingCondition`:: 
 Simulation stops when a maximal time value is reached.
 `ValueStoppingCondition`:: 
-Simulation stops when a variable in a reference system component is reached.
+Simulation stops when a variable in a reference system component reaches a given value.
 `InRangeStoppingCondition`:: 
 Simulation stops when a variable in a reference system gets within the given range.
 `OutRangeStoppingCondition`:: 
@@ -86,7 +85,12 @@ _Additional properties when_ `class = SimpleStoppingCondition`
 _Additional cross-links when_ `class = ValueStoppingCondition`, `InRangeStoppingCondition`,  `OutRangeStoppingCondition`
 
 `stopSystem -> component:<[underline]##__name__##>` {1}::
-The system component in which the criterion variable will be checked to stop the simulation.
+The system component in which some variable will be checked to stop the simulation.
+
+_Additional properties when_ `class = ValueStoppingCondition`, `InRangeStoppingCondition`,  `OutRangeStoppingCondition`
+
+[horizontal]
+`stopVariable`:: The name of the variable in `stopSystem` which values are used to decide to stop the simulation.
 
 _Additional properties when_ `class = ValueStoppingCondition`
 
@@ -102,26 +106,17 @@ _Additional properties when_ `class = InRangeStoppingCondition`, `OutRangeStoppi
 _Additional cross-links when_ `class = MultipleOrStoppingCondition`, `MultipleAndStoppingCondition`
 
 `condition -> stoppingCondition:<[underline]##__name__##>` {1}::
-These links point to the stopping conditions that will be used as elementary stopping conditions by the multiple and/or stopping condition.
+These links point to the stopping conditions that will be used as elementary stopping conditions by the multiple and/or stopping condition. Use these links to construct complex stopping conditions.
 
 ===== The transformations of a system component
 
 Changes in a _system component_ through time may be of different kinds: changes in __state__, i.e. in its driver and decorator variables; or more radical changes where the component actually changes __category__, so becomes represented by a different set of variables. Plus, a component may have an ephemeral life (lifespan property), which means component objects are dynamically created or deleted during a simulation.
 
-To represent category changes, start and end of life, we need the concept of a __life cycle__: a series of successive discrete states decribed by different categories (starting  from non-existence and finishing alike). Notice that the life cycle is optional: if a system component is going to be represented by the same set of variables (same category) during its whole life, there is no need to attach a life cycle to it as there will be no transition to other categories.
-
-====== Life cycle
-
-`/3worlds/system/dynamics/*lifeCycle*:<[underline]##__name__##>` {0..*}
-
-
-===== Ecological processes
-
 ====== Process
 
-`/3worlds/system/dynamics/timeLine/timeModel/*process*:<[underline]##__name__##>` {1..*}
+`/3worlds/system/dynamics/timeLine/timer/*process*:<[underline]##__name__##>` {1..*}
 
-_Processes_ are used in 3Worlds to compute change in _system components_. Each process acts on system components of a particular group of categories (cf. <<truecategory,Category>>, <<truesystem-component,System Component>>) and is scheduled by a particular time model (cf. <<truetime-representation,time representation>>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (time models). A `process` is run according to its parent `timeModel`.
+_Processes_ are used in 3Worlds to compute change in _system components_. Each process acts on system components of a particular group of categories (cf. <<purpose.adoc#truecategories>>, <<configuration-ecosystem-structure.adoc#truesystem-component>>) and is scheduled by a particular timer (<<truetimers>>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (times). A `process` is run according to its parent `timer`.
 
 _Cross-links for_ `process`
 
@@ -136,7 +131,7 @@ This link tells that the process must be activated _after_ the processes targete
 
 ====== Function
 
-`/3worlds/system/dynamics/timeLine/timeModel/*function*:<[underline]##__name__##>` {1..*}
+`/3worlds/system/dynamics/timeLine/timer/*function*:<[underline]##__name__##>` {1..*}
 
 This node is used to specify the details of the computations made in a `process`. The `process` defines which system components are going to be activated and at what time in the simulation course; the `function` defines which computations, in detail, will be applied to the system components of that process. This enables to build complex computations applying to one component (a series of ``function``s within a `process`) in the context of a particular subset of components (`process`).
 
@@ -144,12 +139,11 @@ There are different types of functions, differing by the way they affect system 
 
 include::ArchetypeDoc-function.adoc[]
 
-The selection of a function type will trigger the generation of a java source file *[WHERE?]* for a class having the name specified in the `function` node name.
+The selection of a function type will trigger the generation in the model java source file of a method having the name specified in the `function` node name. This method is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function. 
 
 CAUTION: The name of a function must be a valid java class name, starting with an uppercase letter.
 
-This java source file is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function. 
-
+//todo: remove this condition !
 
 ====== Function consequences
 
@@ -163,18 +157,17 @@ Some functions may imply consequences: for example, a decision to delete another
 | `changeState` |  |  
 | `changeRelationState` | |
 | `changeOtherState` |  |
-| `deleteDecision` .2+| `changeOtherState`  .2+|  carry over values to another component linked by a `returnsTo` relation
-| `deleteOtherDecision`
-.3+| `createOtherDecision` | `changeState` |  set the initial state of the new component
-|  `changeOtherState` |  set values to the new component according to parent  (_focal_) state
-|  `relateToDecision` |  set a `parentTo` relation between new component and parent
-| `changeCategoryDecision` .2+| `changeOtherState` .2+|  carry over and compute values from the former component (__focal__) to the new recruit
-| `changeOtherCategoryDecision`
+| `deleteDecision` | `changeOtherState` |  carry over values to another component linked by a `returnsTo` relation
+| `createOtherDecision` | `setOtherInitialState` |  set the initial state of the new component
+|  `relateToDecision` |  |
+| `changeCategoryDecision` | `setOtherInitialState` |  carry over and compute values from the former component (__focal__) to the new recruit
 | `maintainRelationDecision` |  |  
 | `relateToDecision` |  |  
 |====================
 
 ====== Data tracking
+
+** HERE **
 
 *[TO DO]*
 

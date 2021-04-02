@@ -503,7 +503,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truethe-system-node">3.3.2. The <em>system</em> node</a></li>
 <li><a href="#truethe-systemstructure-node">3.3.3. The <em>system/structure</em> node</a></li>
 <li><a href="#truethe-systemdynamics-node">3.3.4. The <em>system/dynamics</em> node</a></li>
-<li><a href="#truethe-codesource-node">3.3.5. The <em>codeSource</em> node</a></li>
+<li><a href="#truethe-datadefinition-node">3.3.5. The <em>dataDefinition</em> node</a></li>
 <li><a href="#truethe-dataio-node">3.3.6. The <em>dataIO</em> node</a></li>
 <li><a href="#truethe-experiment-node">3.3.7. The <em>experiment</em> node</a></li>
 <li><a href="#truethe-userinterface-node">3.3.8. The <em>userInterface</em> node</a></li>
@@ -639,7 +639,7 @@ systems are more easily managed and understood when designed within a sound fram
 <p>Ecosystems are commonly considered as <em>complex systems</em>, without much agreement on what this concept means. Complex systems are usually assumed to possess <em>emergent properties</em>; again, with little agreement on what this means. We argued in Gignoux et al. (2017) that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems <em>hierarchical systems</em> and assumed that they can be ideally represented with a <em>dynamic graph</em>.</p>
 </div>
 <div class="paragraph">
-<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical object comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes defined in an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Fig. 1</a>). A <em>dynamic</em> graph (Harary &amp; Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
+<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical object comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes defined in an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Figure 1</a>). A <em>dynamic</em> graph (Harary &amp; Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
 </div>
 <div id="fig-what-is-a-graph" class="imageblock text-center">
 <div class="content">
@@ -648,7 +648,7 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="title">Figure 1. A mathematical graph, showing both the usual mathematical terms and the vocabulary used in 3Worlds. The incidence function defines edges between nodes. Edges can be directed (with arrows) or undirected.</div>
 </div>
 <div class="paragraph">
-<p>With the addition of <em>descriptors</em> (e.g. numbers with a specific meaning: <a href="#fig-graph-descriptors">Fig. 2</a>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define <em>functions</em> that can modify nodes and edges and their descriptors, the graph becomes dynamic. A 3Worlds simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to the user&#8217;s particular application. Nodes are called <em>system components</em>, edges <em>system relations</em>, and descriptors <em>properties</em>.</p>
+<p>With the addition of <em>descriptors</em> (e.g. numbers with a specific meaning: <a href="#fig-graph-descriptors">Figure 2</a>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define <em>functions</em> that can modify nodes and edges and their descriptors, the graph becomes dynamic. A 3Worlds simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to the user&#8217;s particular application. Nodes are called <em>system components</em>, edges <em>system relations</em>, and descriptors <em>properties</em>.</p>
 </div>
 <div id="fig-graph-descriptors" class="imageblock text-"center">
 <div class="content">
@@ -672,7 +672,7 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="sect3">
 <h4 id="truetime-with-simultaneous-events"><a class="anchor" href="#truetime-with-simultaneous-events"></a>1.2.4. Time with simultaneous events</h4>
 <div class="paragraph">
-<p>Because ecosystems are both biological and physical systems, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<a href="#fig-3w-main-loop">Fig. 3</a>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the <em>autonomy</em> of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint.</p>
+<p>Because ecosystems are both biological and physical systems, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<a href="#fig-3w-main-loop">Figure 3</a>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the <em>autonomy</em> of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint.</p>
 </div>
 <div id="fig-3w-main-loop" class="imageblock text-center">
 <div class="content">
@@ -1123,7 +1123,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect3">
 <h4 id="truea-tree-structure"><a class="anchor" href="#truea-tree-structure"></a>3.1.1. A tree structure&#8230;&#8203;</h4>
 <div class="paragraph">
-<p>The configuration of a 3Worlds <em>simulation experiment</em> is organised as a tree (<em>cf.</em> <a href="#fig-configuration-tree">Figure 4</a>). Each tree <em>node</em> specifies a subset of the parameters of the whole configuration. Each <em>node</em> has <em>child nodes</em> linked through a <em>tree edge</em>, so that large pieces of configuration can be broken down into the relevant details. At each level of this hierarchy, <em>properties</em> can be attached to <em>nodes</em>.</p>
+<p>The configuration of a 3Worlds <em>simulation experiment</em> is organised as a tree (<a href="#fig-configuration-tree">Figure 4</a>). Each tree <em>node</em> specifies a subset of the parameters of the whole configuration. Each <em>node</em> has <em>child nodes</em> linked through a <em>tree edge</em>, so that large pieces of configuration can be broken down into the relevant details. At each level of this hierarchy, <em>properties</em> can be attached to <em>nodes</em>.</p>
 </div>
 <div class="paragraph">
 <p><em>Nodes</em> have a <em>label</em> and a <em>name</em> that are displayed in the <code>ModelMaker</code> interface as <code>label:name</code>:</p>
@@ -1134,7 +1134,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p>The <em>label</em> specifies what role this particular <em>node</em> plays in the whole configuration. For example, the <em>node</em> labelled <code>experiment</code> is used to configure a <em>simulation experiment</em>.</p>
 </li>
 <li>
-<p>The <em>name</em> is used to differentiate <em>nodes</em>. It must be unique over the whole configuration tree. By default, ModelMaker generates unique names (by adding a number to the name if replicates are found).</p>
+<p>The <em>name</em> is used to differentiate <em>nodes</em>. It must be unique over the whole configuration tree. By default, <code>ModelMaker</code> generates unique names (by adding a number to the name if replicates are found).</p>
 </li>
 </ul>
 </div>
@@ -1143,30 +1143,42 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </div>
 <div id="fig-configuration-tree" class="imageblock text-center">
 <div class="content">
-<img src="dsl-tree2.svg" alt="dsl tree2">
+<img src="dsl-tree3.svg" alt="dsl tree3">
 </div>
 <div class="title">Figure 4. Tree structure of a simulation experiment configuration in 3Worlds</div>
 </div>
 <div class="paragraph">
 <p>The configuration tree is stored in a file in a specially designed text format, ending with the extension <code>.ugt</code> or <code>.twg</code>. Such files are produced by <code>ModelMaker</code> and can then be exchanged and imported into <code>ModelMaker</code> via the <code>Projects &#8594; Import&#8230;&#8203;</code> menu entry. Their format is human-readable, but they must <strong>never</strong> be edited with another software than <code>ModelMaker</code> - <strong>the risk is to corrupt all your configuration</strong> and be unable to run it (or even edit it with <code>ModelMaker</code> again).</p>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<strong>NEVER</strong> edit the 3worlds configuration <code>.ugt</code> file 'by hand'! You may make it unreadable to <code>ModelMaker</code> and lose all your work.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<p>Each node in the configuration has a particular meaning for <code>ModelRunner</code>: the configuration must comply with certain rules and constraints, the first one being the particular set of <em>nodes</em> that have been designed and appear on <a href="#fig-configuration-tree">Figure 4</a>. The detailed meaning of all <em>nodes</em> and their <em>properties</em> is described in section <a href="#truereference-of-3worlds-configuration">3Worlds reference</a>.</p>
+<p>Each node in the configuration has a particular meaning for <code>ModelRunner</code>: the configuration must comply with certain rules and constraints, the first one being the particular set of <em>nodes</em> that have been designed and appear on <a href="#fig-configuration-tree">Figure 4</a>. The detailed meaning of all <em>nodes</em> and their <em>properties</em> is described in <a href="#trueconfiguration-options-reference">Section 3.3</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truewith-cross-links"><a class="anchor" href="#truewith-cross-links"></a>3.1.2. &#8230;&#8203;with cross-links</h4>
 <div class="paragraph">
-<p>Actually, the 3Worlds configuration is not stritcly hierarchical (<em>cf.</em> <a href="#fig-configuration-tree2">Figure 5</a>): according to their role in <code>ModelRunner</code>, some configuration <em>nodes</em> need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference <em>edges</em> to be defined, that overlay with the strict hierarchical structure of the tree. As a result fo these cross links, the whole configuration is a <em>graph</em> rather than a tree.</p>
+<p>Actually, the 3Worlds configuration is not stritcly hierarchical (<a href="#fig-configuration-tree2">Figure 5</a>): according to their role in <code>ModelRunner</code>, some configuration <em>nodes</em> need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference <em>edges</em> to be defined, that overlay with the strict hierarchical structure of the tree. As a result fo these cross links, the whole configuration is a <em>graph</em> rather than a tree.</p>
 </div>
 <div id="fig-configuration-tree2" class="imageblock text-center">
 <div class="content">
-<img src="dsl-tree2links.svg" alt="dsl tree2links">
+<img src="dsl-tree3links.svg" alt="dsl tree3links">
 </div>
-<div class="title">Figure 5. Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes</div>
+<div class="title">Figure 5. Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes (NB: not all cross-links are drawn)</div>
 </div>
 <div class="paragraph">
-<p><em>Edges</em> representing cross links have a <em>label</em>, <em>name</em>, and may have <em>properties</em> just as <em>nodes</em> do. The detailed meaning of all cross-reference <em>edges</em> and their <em>properties</em> is described in section <a href="#Configuration options: reference">[Configuration options: reference]</a>.</p>
+<p><em>Edges</em> representing cross links have a <em>label</em>, <em>name</em>, and may have <em>properties</em> just as <em>nodes</em> do. The detailed meaning of all cross-reference <em>edges</em> and their <em>properties</em> is described in <a href="#trueconfiguration-options-reference">Section 3.3</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1237,6 +1249,9 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <li>
 <p>levels in the tree hierarchy are indicated by slashes <code>/</code>.</p>
 </li>
+<li>
+<p>a column <code>:</code> separates a node label from its name.</p>
+</li>
 </ul>
 </div>
 <div class="sect3">
@@ -1246,6 +1261,64 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </div>
 <div class="paragraph">
 <p>This node is the root of any 3Worlds configuration file (<a href="#fig-root-example">Figure 6</a>). The name will appear in <code>ModelMaker</code>'s main window title, in the <strong>project directory name</strong> and in the <strong>configuration graph file</strong>. The name is requested and set when creating a new project (<code>Projects&gt;New</code> menu entry in <code>ModelMaker</code>).</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>3worlds</code></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>authors</code>
+</td>
+<td class="hdlist2">
+<p>The list of this project author names.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>contacts</code>
+</td>
+<td class="hdlist2">
+<p>The list of the author contacts (e.g. e-mail addresses), in the same order as the author names (1-1 match).</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>precis</code>
+</td>
+<td class="hdlist2">
+<p>A short description of the model contained in this project.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>publication</code>
+</td>
+<td class="hdlist2">
+<p>A list of bibliographic references in relation with the project.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>built-by</code>
+</td>
+<td class="hdlist2">
+<p>The user name under which this project was constructed and saved, together with the date of saving. This property is automatically set by ModelMaker.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>version</code>
+</td>
+<td class="hdlist2">
+<p>A user-defined version identifier for this project.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>All these properties appear in the about box of <code>ModelRunner</code> and are saved in the ODD file describing the model.</p>
 </div>
 <div id="fig-root-example" class="imageblock text-center">
 <div class="content">
@@ -1263,13 +1336,39 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p>This node and its sub-tree contains all the ecological concepts used to define a simulation model: what entities are modelled, what biological processes apply to them, at what time step they should run. The name is used to differentiate models as a simulation experiment may involve more than one model.</p>
 </div>
 <div class="paragraph">
-<p>A 3Worlds ecosystem is constructed as a population of 'biological entities', called <em>system components</em>, which establish interactions called <em>system relations</em>. Components and relations have <em>variables</em> that may change value over time, according to various <em>ecological processes</em> attached to components. In other words, an ecosystem is represented as a <em>dynamic graph</em> which changes state and structure over time. To reflect this, <code><strong>system</strong></code> has two sub-trees called <code><strong>structure</strong></code> and <code><strong>dynamics</strong></code></p>
+<p>A 3Worlds ecosystem is constructed as a population of 'biological entities', called <em>system components</em>, which establish interactions called <em>system relations</em>. Components and relations have <em>variables</em> that may change value over time, according to various <em>ecological processes</em> attached to components. In other words, an ecosystem is represented as a <em>dynamic graph</em> which changes state and structure over time. To reflect this, <code><strong>system</strong></code> has two sub-trees called <code><strong>structure</strong></code> and <code><strong>dynamics</strong></code>.</p>
+</div>
+<div class="paragraph">
+<p>For very simple models, where the modelled system is not further subdivided into components, the structure sub-tree is not required. In this case,the system node will be used as a unique 'component' describing the system (cf tutorial: <a href="#TODO">logistic</a>).</p>
+</div>
+<div class="paragraph">
+<p><em>Cross-links</em> for <code>system</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>belongsTo &#8594; category:&lt;<em>name</em>&gt;</code> {1..*}</dt>
+<dd>
+<p>This link tells to which categories the system node belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited.The categories targets of these links must be specific to the system, i.e. no <code>componentType</code>, <code>groupType</code> or <code>lifeCycleType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*arena*</code> {1}</dt>
+<dd>
+<p>This link to the predefined category <code>*arena*</code> is required in all models. The arena is 'the place where things happen', i.e. it describes the part of the system where components interact. If no components are modelled, then it is the system.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*atomic*|*assemblage*</code> {1}</dt>
+<dd>
+<p>This link to either the predefined category <code>*atomic*</code> or <code>*assemblage*</code> is required in all models. Only if the system is very simple (no components, no groups, no life cycles) should <code>*atomic*</code> be selected. It means the system has no further subdivision. In any other case (i.e. as long as there is a structure sub-tree), the system should be an <code>*assemblage*</code>. Assemblages have three automatic variables: the system size (number of components) <code>count</code>, the number of new components added during last time step <code>nAdded</code>, and the number of components deleted during the last time step <code>nRemoved</code>.</p>
+</dd>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1}</dt>
+<dd>
+<p>This link to the predefined category <code>*permanent*</code> is required in all models. It specifies that the system is going to stay forever (permanent) during a simulation.</p>
+</dd>
+</dl>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truethe-systemstructure-node"><a class="anchor" href="#truethe-systemstructure-node"></a>3.3.3. The <em>system/structure</em> node</h4>
 <div class="paragraph">
-<p><code>/3worlds/system/<strong>structure</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
+<p><code>/3worlds/system/<strong>structure</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</p>
 </div>
 <div class="paragraph">
 <p>This node and its sub-tree contains the description of the system component and relation types. It is based on the concept of <em>category</em>. A category is a set of components with an identical description, e.g. the same set of state variables or the same growth function.</p>
@@ -1285,7 +1384,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>&#8230;&#8203;/categorySet/<strong>category</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p>A <code><strong>category</strong></code> is simply a name attached to a set of objects sharing common properties (cf. section <a href="#truecategories">1.2.3</a>). These common properties are descriptors (cf. section <a href="#truethe-complex-system-as-a-dynamic-graph">1.2.2</a>), and dynamic behaviours (or <em>processes</em>). Categories, grouped into <code><strong>categorySet</strong></code>s, constitute a user-defined <em>classification</em> of <em>system component types</em> relevant for a particular model.</p>
+<p>A <code><strong>category</strong></code> is simply a name attached to a set of objects sharing common properties (<a href="#truecategories">Section 1.2.3</a>). These common properties are descriptors (<a href="#truethe-complex-system-as-a-dynamic-graph">Section 1.2.2</a>), and dynamic behaviours (or <em>processes</em>). Categories, grouped into <code><strong>categorySet</strong></code>s, constitute a user-defined <em>classification</em> of <em>system component types</em> relevant for a particular model.</p>
 </div>
 <div class="paragraph">
 <p>Descriptors consist in <em>drivers</em>, <em>decorators</em>, <em>constants</em> and <em>automatic variables</em>:</p>
@@ -1294,15 +1393,15 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <dl>
 <dt class="hdlist1"><em>drivers</em></dt>
 <dd>
-<p>are <em>independent</em> variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (<em>e.g.</em> biomass, age, sex, social status&#8230;&#8203;). They will vary during a simulation. 'Independent' means that these variables cannot be computed from each other, e.g. if some category is described by drivers age and biomass, it means neither of them can be computed from the other. The values of drivers are carried over from a simulation step to the next, i.e. they <em>drive</em> the dynamics of the system.</p>
+<p>are <em>independent</em> variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (<em>e.g.</em> biomass, age, sex, social status&#8230;&#8203;). They will vary during a simulation. 'Independent' means that these variables cannot be computed from each other within a simulation step, they also depend on their previous step values. For example, if some category is described by drivers <em>age</em> and <em>biomass</em>, neither of them can be computed from the other: <em>age</em> is computed from its previous value by adding the time step duration; <em>biomass</em> is computed in some other way probably involving its previous value. The values of drivers are carried over from a simulation step to the next, i.e. they <em>drive</em> the dynamics of the system.</p>
 </dd>
 <dt class="hdlist1"><em>decorators</em></dt>
 <dd>
-<p>are <em>dependent</em> variables that are computed from drivers and other decorators. As such, they are not independent from the drivers and are used only for convenience in computations or output display. They are not carried over from a simulation step to the next, they are always automatically reset to zero at the end of each step.</p>
+<p>are <em>dependent</em> variables that are computed from drivers and other decorators within a simulation step. For example, <em>leaf area</em> could be computed as some constant times <em>biomass</em>: its value is completely determined by the value of <em>biomass</em>. As such, decorators are not independent from the drivers and are used only for convenience in computations or output display. They are not carried over from a simulation step to the next, they are always automatically reset to zero at the end of each step.</p>
 </dd>
 <dt class="hdlist1"><em>constants</em></dt>
 <dd>
-<p>are values (numbers, text, logical values) that do not change during a simulation. For example, sex or number of legs are not going to change during the lifetime of animal. They are set at birth and never changed after.</p>
+<p>are values (numbers, text, logical values) that do not change during a simulation. For example, <em>sex</em> or <em>number of legs</em> are not going to change during the lifetime of animal. They are set at birth and never changed after.</p>
 </dd>
 <dt class="hdlist1"><em>automatic variables</em></dt>
 <dd>
@@ -1311,7 +1410,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </dl>
 </div>
 <div class="paragraph">
-<p>The exact data structures for descriptors are specified under the <a href="#truethe-em-dataDefinition-em-node">dataDefinition</a> node and linked to the category through the following:</p>
+<p>The exact data structures for descriptors are specified under the <code>dataDefinition</code> node (<a href="#truethe-datadefinition-node">Section 3.3.5</a>) and linked to the category through the following:</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>category</code>:</p>
@@ -1322,7 +1421,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <dt class="hdlist1"><code>decorators &#8594; record:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dt class="hdlist1"><code>constants &#8594; record:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dd>
-<p>These links tell which data structure in <a href="#truethe-em-dataDefinition-em-node">dataDefinition</a> is used to store  <em>drivers</em>, <em>decorators</em>  and <em>constants</em>.</p>
+<p>These links tell which data structure in the <code>dataDefinition</code> node (<a href="#truethe-datadefinition-node">Section 3.3.5</a>) is used to store  <em>drivers</em>, <em>decorators</em>  and <em>constants</em>.</p>
 </dd>
 </dl>
 </div>
@@ -1330,7 +1429,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><em>Automatic variables</em> do not need to be specified - because they are automatic.</p>
 </div>
 <div class="paragraph">
-<p>A category may be defined with no drivers, decorators or constants, but it would be pretty useless to have neither of them.</p>
+<p>A category may be defined with no drivers, decorators or constants.</p>
 </div>
 <div class="paragraph">
 <p>There are <em>predefined categories</em> in 3Worlds under the node <code>/3worlds/<strong>predefined</strong></code>, used to specify particular components of the system. They will be explained in time.</p>
@@ -1342,7 +1441,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>/3worlds/system/structure/<strong>categorySet</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p>Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can&#8217;t be both. For this reason, <em>exclusive</em> categories are grouped into <code><strong>categorySets</strong></code>. A categorySet is <em>a set of <strong>mutually exclusive</strong> categories</em>. Categories can be nested, by simply defining a <code><strong>categorySet</strong></code> as a child of a <code><strong>category</strong></code>:</p>
+<p>Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can&#8217;t be both. For this reason, <em>exclusive</em> categories are grouped into <code><strong>categorySets</strong></code>. A <code>categorySet</code> is <em>a set of <strong>mutually exclusive</strong> categories</em>. Categories can be nested, by simply defining a <code>categorySet</code> as a child of a <code>category</code>:</p>
 </div>
 <div class="paragraph">
 <p><code>&#8230;&#8203;/category/<strong>categorySet</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
@@ -1354,7 +1453,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>/3worlds/system/structure/<strong>relationType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>A <code><strong>relationType</strong></code> is just a name representing a meaningful link between two kinds of categories. It is specified by giving it a name and cross-linking it to the relevant categories with <code>fromCategory</code> and <code>toCategory</code> cross-links. Note that a relationType can link more than one 'from' categories to more than one 'to' categories if required. RelationTypes are used to implement specific processes acting on ecological entities (for example, a predation process).</p>
+<p>A <code><strong>relationType</strong></code> is just a name representing a meaningful link between two kinds of categories. It is specified by giving it a name and cross-linking it to the relevant categories with <code>fromCategory</code> and <code>toCategory</code> cross-links. Note that a <code>relationType</code> can link more than one 'from' categories to more than one 'to' categories if required. <code>RelationType</code>s are used to implement specific processes acting on ecological entities (for example, a predation process).</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>relationType</code>:</p>
@@ -1402,7 +1501,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <code>ephemeral</code>
 </td>
 <td class="hdlist2">
-<p>relations are created during a simulation by the means of a  <code>relateTo</code> function, and kept or deleted by means of a ‘maintainRelation’ decision function. If no ‘maintainRelation’ function is provided, then the relation only lasts for one simulation step.</p>
+<p>relations are created during a simulation by the means of a  <code>relateTo</code> function, and kept or deleted by means of a <code>maintainRelation</code> decision function. If no <code>maintainRelation</code> function is provided, then the relation only lasts for one simulation step.</p>
 </td>
 </tr>
 </table>
@@ -1417,7 +1516,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect5">
 <h6 id="trueexample-a-category-tree"><a class="anchor" href="#trueexample-a-category-tree"></a>Example: a category tree</h6>
 <div class="paragraph">
-<p>On this diagram (generated with <code>ModelMaker</code>), hierarchical links are in green and cross-links are in black.</p>
+<p>On this diagram (generated with <code>ModelMaker</code>), hierarchical links are in green and cross-links are in red.</p>
 </div>
 <div id="fig-category-example" class="imageblock text-center">
 <div class="content">
@@ -1426,7 +1525,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="title">Figure 7. Example of a configuration with category sets, categories and relations</div>
 </div>
 <div class="paragraph">
-<p>In this example, a <em>plant</em> can be a <em>C3 tree</em> but cannot be simultaneously a <em>grass</em> and a <em>liana</em>. Similarly, an <em>animal</em> cannot be both <em>herbivore</em> and <em>carnivore</em>. The <em>predation</em> relation links an <em>animal</em> of any kind (the prey) to a <em>carnivore</em> (its predator).</p>
+<p>In this example, a <em>plant</em> can be a <em>C3 tree</em> but cannot be simultaneously a <em>grass</em> and a <em>forb</em>. Similarly, an <em>animal</em> cannot be both <em>herbivore</em> and <em>carnivore</em>. The <em>predation</em> relation links an <em>animal</em> of any kind (the prey) to a <em>carnivore</em> (its predator). A member of category <em>plant</em> will have two driver variables, <em>height</em> and <em>leaf area</em>. A member of category <em>tree</em> will have three driver variables, <em>height</em>, <em>leaf area</em> and <em>DBH</em>, as it inherits all the properties of the <em>plant</em> category in which it is nested.</p>
 </div>
 </div>
 </div>
@@ -1447,17 +1546,17 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <dl>
 <dt class="hdlist1"><code>belongsTo &#8594; category:&lt;<em>name</em>&gt;</code> {1..*}</dt>
 <dd>
-<p>This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the <em>C3</em> category automatically implies the system component is also a <em>plant</em>).</p>
+<p>This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the <em>C3</em> category automatically implies the system component is also a <em>plant</em>).The categories targets of these links must be specific to component types, i.e. no <code>groupType</code> or <code>lifeCycleType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*component*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*component*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*component*</code> is required in all models.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*atomic*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*atomic*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*atomic*</code> is required in all models. It means that a component has no further subdivisions.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*ephemeral*|*permanent*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*ephemeral*|*permanent*</code> {1}</dt>
 <dd>
 <p>This link to either of the predefined category <code>*ephemeral*</code> or <code>*permanent*</code> is required in all models. It specifies if components of this <code>componentType</code> are going to stay forever (permanent) or can be created and deleted (ephemeral) during a simulation. Ephemeral components have two automatic variables, <code>birthDate</code> and <code>age</code>.</p>
 </dd>
@@ -1470,13 +1569,13 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p><code>/3worlds/system/structure/<strong>groupType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>Sometimes it makes sense to group components of a given componentType into <em>groups</em>; the best example of this in ecology is the species. Animals of different species may be described by the same descriptors, but nevertheless they will only reproduce within their species. Typically, animals of a species would share some constants, like plumage coloration, average body size, main diet etc. The <code><strong>groupType</strong></code> node is meant to fullfil this use case.</p>
+<p>Sometimes it makes sense to group components of a given <code>componentType</code> into <em>groups</em>; the best example of this in ecology is the species. Animals of different species may be described by the same descriptors, but nevertheless they will only reproduce within their species. Typically, animals of a species would share some constants, like plumage coloration, average body size, main diet etc. The <code><strong>groupType</strong></code> node is meant to fullfil this use case.</p>
 </div>
 <div class="paragraph">
 <p>To make a <code>componentType</code> belong to a <code>groupType</code>, you just need to declare it as a child of the <code>groupType</code>:</p>
 </div>
 <div class="paragraph">
-<p><code>&#8230;&#8203;/groupType/<strong>groupType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>&#8230;&#8203;/groupType/<strong>componentType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links</em> for <code>componentType</code>:</p>
@@ -1485,17 +1584,17 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <dl>
 <dt class="hdlist1"><code>belongsTo &#8594; category:&lt;<em>name</em>&gt;</code> {1..*}</dt>
 <dd>
-<p>This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the <em>C3</em> category automatically implies the system component is also a <em>plant</em>). The categories targets of these links must be specific to groups, i.e. no <code>componentType</code> or <code>lifeCycleType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
+<p>This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited. The categories targets of these links must be specific to groups, i.e. no <code>componentType</code> or <code>lifeCycleType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*group*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*group*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*group*</code> is required in all models.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*assemblage*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*assemblage*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*assemblage*</code> is required in all models. It means that a group is a population of components. Assemblages have three automatic variables: the group size (number of components) <code>count</code>, the number of new components added during last time step <code>nAdded</code>, and the number of components deleted during the last time step <code>nRemoved</code>.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*permanent*</code> is required in all models. It means that groups will stay forever in the system, even if all components of this groups are gone.</p>
 </dd>
@@ -1528,18 +1627,18 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p>at least one <code>groupType</code> definition per <code>category</code> of the above <code>categorySet</code>;</p>
 </li>
 <li>
-<p><code>recruit</code> and <code>produce</code> nodes linking categories within the above <code>categorySet</code> to describe possible recruitment and reproduction pathways;</p>
+<p><code>recruit</code> and <code>produce</code> nodes linking categories within the above <code>categorySet</code> to describe possible recruitment and reproduction transitions;</p>
 </li>
 <li>
-<p>optionnally, a <code>category</code> can be linked to a <code>lifeCycle</code> if one wants to attach descriptors to the life cycle.</p>
+<p>optionnally, <code>categories</code> can be linked to a <code>lifeCycle</code> if one wants to attach descriptors to the life cycle.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>To define a groupType within the context of a lifeCycleType, simply make it a child node of the lifeCycleType:</p>
+<p>To define a <code>groupType</code> within the context of a <code>lifeCycleType</code>, simply make it a child node of the lifeCycleType:</p>
 </div>
 <div class="paragraph">
-<p><code>&#8230;&#8203;/lifeCycleType/<strong>groupType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>&#8230;&#8203;/lifeCycleType/<strong>groupType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>lifeCycle</code></p>
@@ -1554,15 +1653,15 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <dd>
 <p>These links enable to attach descriptors to a <code>lifeCycle</code>, if needed by some ecological processes. The categories targets of these links must be specific to life cycles, i.e. no <code>componentType</code> or <code>groupType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*life cycle*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*life cycle*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*life cycle*</code> is required in all models.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*assemblage*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*assemblage*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*assemblage*</code> is required in all models. It means that a life cycle is a population of components. Assemblages have three automatic variables: size (number of components) <code>count</code>, the number of new components added during last time step <code>nAdded</code>, and the number of components deleted during the last time step <code>nRemoved</code>.</p>
 </dd>
-<dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1..1}</dt>
+<dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*permanent*</code> is required in all models. It means that life cycles will stay forever in the system.</p>
 </dd>
@@ -1608,7 +1707,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <dl>
 <dt class="hdlist1"><code>effectedBy &#8594; process:&lt;<em>name</em>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells which ecological process is used to compute the recruitment. This process must implement at least one<strong>[maximum one? it returns a category name]</strong> <code>ChangeCategoryDecision</code> function (cf <a href="#a">TODO</a>).</p>
+<p>This link tells which ecological process is used to compute the recruitment. This process must implement exactly one <code>ChangeCategoryDecision</code> function (<a href="#truefunction">Section 3.3.4.2.2</a>).</p>
 </dd>
 </dl>
 </div>
@@ -1652,7 +1751,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <dl>
 <dt class="hdlist1"><code>effectedBy &#8594; process:&lt;<em>name</em>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells which ecological process is used to compute the production of new system components. This process must implement at least one <code>CreateOtherDecision</code> function (cf <a href="#a">TODO</a>).</p>
+<p>This link tells which ecological process is used to compute the production of new system components. This process must implement exactly one <code>CreateOtherDecision</code> function (<a href="#truefunction">Section 3.3.4.2.2</a>).</p>
 </dd>
 </dl>
 </div>
@@ -1677,12 +1776,8 @@ multiple targets are possible from the same category, i.e. a component of a cate
 </div>
 <div class="title">Figure 9. Example of a life cycle configuration</div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>HERE **</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The life cycle has two categories, <em>seedling</em> and <em>adult</em>, and three transitions: a <em>recruit</em> transition called <em>recruitment</em>, effected by the function <em>Recruit</em>, and two <em>produce</em> transitions, effected by the functions <em>Seed</em> and <em>Sprout</em>.</p>
 </div>
 </div>
 </div>
@@ -1698,7 +1793,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="sect4">
 <h5 id="truethe-representation-of-time"><a class="anchor" href="#truethe-representation-of-time"></a>The representation of time</h5>
 <div class="paragraph">
-<p>Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called processes) to either categories or relations. Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.</p>
+<p>Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called processes) to either <code>Categories</code> (<a href="#truecategory">Section 3.3.3.1.1</a>) or <code>relationType</code>s (<a href="#truerelationtype">Section 3.3.3.1.3</a>). Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.</p>
 </div>
 <div class="sect5">
 <h6 id="truetime-line"><a class="anchor" href="#truetime-line"></a>Time line</h6>
@@ -1728,10 +1823,10 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <table>
 <tr>
 <td class="hdlist1">
-<code>MONO_UNIT</code>
+<code>ARBITRARY</code>
 </td>
 <td class="hdlist2">
-<p>single time unit, calendar-compatible (default value)</p>
+<p>arbitrary time units with no predefined name (default value)</p>
 </td>
 </tr>
 <tr>
@@ -1800,10 +1895,10 @@ multiple targets are possible from the same category, i.e. a component of a cate
 </tr>
 <tr>
 <td class="hdlist1">
-<code>ARBITRARY</code>
+<code>MONO_UNIT</code>
 </td>
 <td class="hdlist2">
-<p>arbitrary time units with no predefined name</p>
+<p>single time unit, calendar-compatible</p>
 </td>
 </tr>
 </table>
@@ -2015,27 +2110,19 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <p>The longest time unit used in this model. <em>cf.</em> <code>shortestTimeUnit</code> for valid values</p>
 </td>
 </tr>
-<tr>
-<td class="hdlist1">
-<code>grain</code>
-</td>
-<td class="hdlist2">
-<p>The finest time interval used in this model: this value is the number of time intervals within a shortest time unit (e.g.  if <code>shortestTimeUnit</code>=<code>MINUTE</code> and <code>grain</code>=10, the shortest time interval in the model is 6 seconds. It means dates and times will be considered equal if differing by less than 6 seconds.</p>
-</td>
-</tr>
 </table>
 </div>
 </div>
 <div class="sect5">
-<h6 id="truetime-models"><a class="anchor" href="#truetime-models"></a>Time models</h6>
+<h6 id="truetimers"><a class="anchor" href="#truetimers"></a>Timers</h6>
 <div class="paragraph">
-<p><code>/3worlds/system/dynamics/timeLine/<strong>timeModel</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/system/dynamics/timeLine/<strong>timer</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p>Ecological processes may be run following different time models. A time model is a particular way of representing time in the simulator. Time models may differ in parameters, like e.g. two time models using different time steps; but they can also be radically different in their logic: e.g. clock-like ticking vs. event-driven simulation.</p>
+<p>Ecological processes may be run following different times. A timer is a particular way of representing time in the simulator. Timers may differ in parameters, like e.g. two timers using different time steps; but they can also be radically different in their logic: e.g. clock-like ticking vs. event-driven simulation.</p>
 </div>
 <div class="paragraph">
-<p><em>Properties for</em> <code>timeModel</code>:</p>
+<p><em>Properties for</em> <code>timer</code>:</p>
 </div>
 <div class="hdlist">
 <table>
@@ -2065,10 +2152,10 @@ multiple targets are possible from the same category, i.e. a component of a cate
 </tr>
 <tr>
 <td class="hdlist1">
-<code>class</code>
+<code>subclass</code>
 </td>
 <td class="hdlist2">
-<p>the type of <code>timeModel</code> to use.</p>
+<p>the type of <code>timer</code> to use.</p>
 <div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
@@ -2078,7 +2165,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <table>
 <tr>
 <td class="hdlist1">
-<code>ClockTimeModel</code>
+<code>ClockTimer</code>
 </td>
 <td class="hdlist2">
 <p>Time is incremented by a constant amount <em>dt</em>. This is commonly used to simulate regular processes like growth.</p>
@@ -2086,7 +2173,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 </tr>
 <tr>
 <td class="hdlist1">
-<code>EventTimeModel</code>
+<code>EventTimer</code>
 </td>
 <td class="hdlist2">
 <p>Model dynamics generates <em>events</em> and computes the date in the future at which they are going to occur. This is commonly used to generate irregular processes like fire occurrence.</p>
@@ -2094,7 +2181,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 </tr>
 <tr>
 <td class="hdlist1">
-<code>ScenarioTimeModel</code>
+<code>ScenarioTimer</code>
 </td>
 <td class="hdlist2">
 <p><strong>Not yet implemented</strong>.</p>
@@ -2109,7 +2196,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 </table>
 </div>
 <div class="paragraph">
-<p><em>Additional properties when</em> <code>class = ClockTimeModel</code></p>
+<p><em>Additional properties when</em> <code>class = ClockTimer</code></p>
 </div>
 <div class="hdlist">
 <table>
@@ -2118,7 +2205,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <code>dt</code>
 </td>
 <td class="hdlist2">
-<p>The constant time increment used in this <code>ClockTimeModel</code>, expressed as an integer number of <code>TimeModel</code> base unit (=<code>TimeModel.nTimeUnits</code> x <code>TimeModel.timeUnit</code>). For example, if the TimeModel has <code>timeUnit</code> = <code>DAY</code> and <code>nTimeUnits</code> = 3, <code>dt</code> is expressed in units of 3 days (e.g. <code>dt</code> = 2 means the time increment is 6 days).</p>
+<p>The constant time increment used in this <code>ClockTimer</code>, expressed as an integer number of <code>timer</code> base unit (=<code>timer.nTimeUnits</code> × <code>timer.timeUnit</code>). For example, if the <code>timer</code> has <code>timeUnit</code> = <code>DAY</code> and <code>nTimeUnits</code> = 3, <code>dt</code> is expressed in units of 3 days (e.g. <code>dt</code> = 2 means the time increment is 6 days).</p>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -2126,7 +2213,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>), then <code>dt</code> will sometimes not be constant (e.g. if <code>dt</code> = 2 <code>MONTH</code>, <code>dt</code> will vary in duration between 28 and 31 days according to the exact date).
+if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>), then <code>dt</code> will sometimes not be constant (e.g. if <code>dt</code> = 2 <code>MONTH</code>, <code>dt</code> will vary in duration between 59 and 62 days according to the exact date).
 </td>
 </tr>
 </table>
@@ -2136,13 +2223,13 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 </table>
 </div>
 <div class="paragraph">
-<p><em>Additional sub-tree when</em> <code>class = EventTimeModel</code></p>
+<p><em>Additional sub-tree when</em> <code>class = EventTimer</code></p>
 </div>
 <div class="paragraph">
-<p><code>/3worlds/system/dynamics/timeLine/timeModel/<strong>eventQueue</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
+<p><code>/3worlds/system/dynamics/timeLine/timer/<strong>eventQueue</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
-<p>An <code>EventTimeModel</code> maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.</p>
+<p>An <code>EventTimer</code> maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>eventQueue</code></p>
@@ -2191,7 +2278,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 </dd>
 <dt class="hdlist1"><code>ValueStoppingCondition</code></dt>
 <dd>
-<p>Simulation stops when a variable in a reference system component is reached.</p>
+<p>Simulation stops when a variable in a reference system component reaches a given value.</p>
 </dd>
 <dt class="hdlist1"><code>InRangeStoppingCondition</code></dt>
 <dd>
@@ -2239,9 +2326,24 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <dl>
 <dt class="hdlist1"><code>stopSystem &#8594; component:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>The system component in which the criterion variable will be checked to stop the simulation.</p>
+<p>The system component in which some variable will be checked to stop the simulation.</p>
 </dd>
 </dl>
+</div>
+<div class="paragraph">
+<p><em>Additional properties when</em> <code>class = ValueStoppingCondition</code>, <code>InRangeStoppingCondition</code>,  <code>OutRangeStoppingCondition</code></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>stopVariable</code>
+</td>
+<td class="hdlist2">
+<p>The name of the variable in <code>stopSystem</code> which values are used to decide to stop the simulation.</p>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><em>Additional properties when</em> <code>class = ValueStoppingCondition</code></p>
@@ -2288,7 +2390,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <dl>
 <dt class="hdlist1"><code>condition &#8594; stoppingCondition:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>These links point to the stopping conditions that will be used as elementary stopping conditions by the multiple and/or stopping condition.</p>
+<p>These links point to the stopping conditions that will be used as elementary stopping conditions by the multiple and/or stopping condition. Use these links to construct complex stopping conditions.</p>
 </dd>
 </dl>
 </div>
@@ -2299,25 +2401,13 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <div class="paragraph">
 <p>Changes in a <em>system component</em> through time may be of different kinds: changes in <em>state</em>, i.e. in its driver and decorator variables; or more radical changes where the component actually changes <em>category</em>, so becomes represented by a different set of variables. Plus, a component may have an ephemeral life (lifespan property), which means component objects are dynamically created or deleted during a simulation.</p>
 </div>
-<div class="paragraph">
-<p>To represent category changes, start and end of life, we need the concept of a <em>life cycle</em>: a series of successive discrete states decribed by different categories (starting  from non-existence and finishing alike). Notice that the life cycle is optional: if a system component is going to be represented by the same set of variables (same category) during its whole life, there is no need to attach a life cycle to it as there will be no transition to other categories.</p>
-</div>
-<div class="sect5">
-<h6 id="truelife-cycle-2"><a class="anchor" href="#truelife-cycle-2"></a>Life cycle</h6>
-<div class="paragraph">
-<p><code>/3worlds/system/dynamics/<strong>lifeCycle</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trueecological-processes"><a class="anchor" href="#trueecological-processes"></a>Ecological processes</h5>
 <div class="sect5">
 <h6 id="trueprocess"><a class="anchor" href="#trueprocess"></a>Process</h6>
 <div class="paragraph">
-<p><code>/3worlds/system/dynamics/timeLine/timeModel/<strong>process</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/system/dynamics/timeLine/timer/<strong>process</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p><em>Processes</em> are used in 3Worlds to compute change in <em>system components</em>. Each process acts on system components of a particular group of categories (cf. <a href="#truecategory">Category</a>, <a href="#truesystem-component">System Component</a>) and is scheduled by a particular time model (cf. <a href="#truetime-representation">time representation</a>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (time models). A <code>process</code> is run according to its parent <code>timeModel</code>.</p>
+<p><em>Processes</em> are used in 3Worlds to compute change in <em>system components</em>. Each process acts on system components of a particular group of categories (cf. <a href="#truecategories">Section 1.2.3</a>, <a href="#truesystem-component">Section 3.3.3.2.1</a>) and is scheduled by a particular timer (<a href="#truetimers">Section 3.3.4.1.2</a>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (times). A <code>process</code> is run according to its parent <code>timer</code>.</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>process</code></p>
@@ -2345,7 +2435,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <div class="sect5">
 <h6 id="truefunction"><a class="anchor" href="#truefunction"></a>Function</h6>
 <div class="paragraph">
-<p><code>/3worlds/system/dynamics/timeLine/timeModel/<strong>function</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><code>/3worlds/system/dynamics/timeLine/timer/<strong>function</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p>This node is used to specify the details of the computations made in a <code>process</code>. The <code>process</code> defines which system components are going to be activated and at what time in the simulation course; the <code>function</code> defines which computations, in detail, will be applied to the system components of that process. This enables to build complex computations applying to one component (a series of <code>function</code>s within a <code>process</code>) in the context of a particular subset of components (<code>process</code>).</p>
@@ -2376,7 +2466,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <code>ChangeState</code>
 </td>
 <td class="hdlist2">
-<p>change the state, ie the values of internal variables, of a system component (default value)</p>
+<p>change the state, i.e. the values of the descriptors of a system component (default value)</p>
 </td>
 </tr>
 <tr>
@@ -2432,7 +2522,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <code>ChangeRelationState</code>
 </td>
 <td class="hdlist2">
-<p>change the state of a relation, i.e. possibly both the state of focal and other at the same time</p>
+<p>change the state of a relation, i.e. possibly both the state of <em>focal</em> and <em>other</em> at the same time</p>
 </td>
 </tr>
 <tr>
@@ -2460,7 +2550,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 </table>
 </div>
 <div class="paragraph">
-<p>The selection of a function type will trigger the generation of a java source file <strong>[WHERE?]</strong> for a class having the name specified in the <code>function</code> node name.</p>
+<p>The selection of a function type will trigger the generation in the model java source file of a method having the name specified in the <code>function</code> node name. This method is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -2473,9 +2563,6 @@ The name of a function must be a valid java class name, starting with an upperca
 </td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p>This java source file is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function.</p>
 </div>
 </div>
 <div class="sect5">
@@ -2517,32 +2604,23 @@ The name of a function must be a valid java class name, starting with an upperca
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>deleteDecision</code></p></td>
-<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock"><code>changeOtherState</code></p></td>
-<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock">carry over values to another component linked by a <code>returnsTo</code> relation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>changeOtherState</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">carry over values to another component linked by a <code>returnsTo</code> relation</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deleteOtherDecision</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock"><code>createOtherDecision</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>changeState</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createOtherDecision</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setOtherInitialState</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">set the initial state of the new component</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>changeOtherState</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">set values to the new component according to parent  (<em>focal</em>) state</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>relateToDecision</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">set a <code>parentTo</code> relation between new component and parent</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>changeCategoryDecision</code></p></td>
-<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock"><code>changeOtherState</code></p></td>
-<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock">carry over and compute values from the former component (<em>focal</em>) to the new recruit</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>changeOtherCategoryDecision</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setOtherInitialState</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">carry over and compute values from the former component (<em>focal</em>) to the new recruit</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>maintainRelationDecision</code></p></td>
@@ -2559,6 +2637,13 @@ The name of a function must be a valid java class name, starting with an upperca
 </div>
 <div class="sect5">
 <h6 id="truedata-tracking"><a class="anchor" href="#truedata-tracking"></a>Data tracking</h6>
+<div class="ulist">
+<ul>
+<li>
+<p>HERE **</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p><strong>[TO DO]</strong></p>
 </div>
@@ -2718,6 +2803,14 @@ this implies that this system component is unique of its kind, and no other comp
 <div class="paragraph">
 <p><strong>[TO DO: loading from files&#8230;&#8203;]</strong></p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truethe-datadefinition-node"><a class="anchor" href="#truethe-datadefinition-node"></a>3.3.5. The <em>dataDefinition</em> node</h4>
+<div class="paragraph">
+<p><code>/3worlds/<strong>dataDefinition</strong></code> {1..*}</p>
+</div>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -2729,14 +2822,6 @@ this implies that this system component is unique of its kind, and no other comp
 </td>
 </tr>
 </table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="truethe-codesource-node"><a class="anchor" href="#truethe-codesource-node"></a>3.3.5. The <em>codeSource</em> node</h4>
-<div class="paragraph">
-<p><code>/3worlds/<strong>codeSource</strong></code> {1..*}</p>
 </div>
 <div class="paragraph">
 <p>This node and its sub-tree contains specifications for automatic code generation needed to implement a particular model. Most of its nodes have cross-references to nodes of the <code><strong>ecology</strong></code> sub-tree. The multiplicity allows users to organise their code specifications into meaningful units</p>
@@ -3000,7 +3085,7 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 <div id="footer">
 <div id="footer-text">
 Version 1.3<br>
-Last updated 2021-04-01 16:56:39 +0200
+Last updated 2021-04-02 16:56:18 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

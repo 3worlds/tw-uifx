@@ -13,12 +13,25 @@ In this section,
 {1..*}:: one to many items are required
 {0..*}:: any number of items is possible
 * levels in the tree hierarchy are indicated by slashes `/`.
+* a column `:` separates a node label from its name.
 
 ==== The _3Worlds_ node
 
 `/*3worlds*:<[underline]##__name__##>` {1}
 
 This node is the root of any 3Worlds configuration file (<<fig-root-example>>). The name will appear in ``ModelMaker``'s main window title, in the *project directory name* and in the *configuration graph file*. The name is requested and set when creating a new project (`Projects>New` menu entry in `ModelMaker`).
+
+_Properties for_ `3worlds`
+
+[horizontal]
+`authors`:: The list of this project author names.
+`contacts`:: The list of the author contacts (e.g. e-mail addresses), in the same order as the author names (1-1 match).
+`precis`:: A short description of the model contained in this project.
+`publication`:: A list of bibliographic references in relation with the project.
+`built-by`:: The user name under which this project was constructed and saved, together with the date of saving. This property is automatically set by ModelMaker.
+`version`:: A user-defined version identifier for this project.
+
+All these properties appear in the about box of `ModelRunner` and are saved in the ODD file describing the model.
 
 [#fig-root-example]
 .The base tree of any 3Worlds configuration
@@ -31,11 +44,27 @@ image::example-root.png[align="center"]
 
 This node and its sub-tree contains all the ecological concepts used to define a simulation model: what entities are modelled, what biological processes apply to them, at what time step they should run. The name is used to differentiate models as a simulation experiment may involve more than one model.
 
-A 3Worlds ecosystem is constructed as a population of 'biological entities', called _system components_, which establish interactions called _system relations_. Components and relations have _variables_ that may change value over time, according to various _ecological processes_ attached to components. In other words, an ecosystem is represented as a _dynamic graph_ which changes state and structure over time. To reflect this, `*system*` has two sub-trees called `*structure*` and `*dynamics*`
+A 3Worlds ecosystem is constructed as a population of 'biological entities', called _system components_, which establish interactions called _system relations_. Components and relations have _variables_ that may change value over time, according to various _ecological processes_ attached to components. In other words, an ecosystem is represented as a _dynamic graph_ which changes state and structure over time. To reflect this, `*system*` has two sub-trees called `*structure*` and `*dynamics*`.
+
+For very simple models, where the modelled system is not further subdivided into components, the structure sub-tree is not required. In this case,the system node will be used as a unique 'component' describing the system (cf tutorial: <<TODO,logistic>>).
+
+_Cross-links_ for `system`:
+
+`belongsTo -> category:<__name__>` {1..*}::
+This link tells to which categories the system node belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited.The categories targets of these links must be specific to the system, i.e. no `componentType`, `groupType` or `lifeCycleType` should refer (`belongTo` cross-link) to any of them.
+
+`belongsTo -> category:*arena*` {1}::
+This link to the predefined category `\*arena*` is required in all models. The arena is 'the place where things happen', i.e. it describes the part of the system where components interact. If no components are modelled, then it is the system.
+
+`belongsTo -> category:*atomic*|\*assemblage*` {1}::
+This link to either the predefined category `\*atomic*` or `\*assemblage*` is required in all models. Only if the system is very simple (no components, no groups, no life cycles) should `\*atomic*` be selected. It means the system has no further subdivision. In any other case (i.e. as long as there is a structure sub-tree), the system should be an `\*assemblage*`. Assemblages have three automatic variables: the system size (number of components) `count`, the number of new components added during last time step `nAdded`, and the number of components deleted during the last time step `nRemoved`.
+
+`belongsTo -> category:*permanent*` {1}::
+This link to the predefined category `\*permanent*` is required in all models. It specifies that the system is going to stay forever (permanent) during a simulation.
 
 ==== The _system/structure_ node
 
-`/3worlds/system/*structure*:<[underline]##__name__##>` {1}
+`/3worlds/system/*structure*:<[underline]##__name__##>` {0..1}
 
 This node and its sub-tree contains the description of the system component and relation types. It is based on the concept of __category__. A category is a set of components with an identical description, e.g. the same set of state variables or the same growth function. 
 
@@ -49,13 +78,12 @@ This node and its sub-tree contains the description of the processes that will c
 
 include::configuration-ecosystem-dynamics.adoc[]
 
+==== The _dataDefinition_ node 
+
+`/3worlds/*dataDefinition*` {1..*}
+
 
 WARNING: *Old version of documentation after this line - dont read.*
-
-
-==== The _codeSource_ node 
-
-`/3worlds/*codeSource*` {1..*}
 
 This node and its sub-tree contains specifications for automatic code generation needed to implement a particular model. Most of its nodes have cross-references to nodes of the `*ecology*` sub-tree. The multiplicity allows users to organise their code specifications into meaningful units
 
