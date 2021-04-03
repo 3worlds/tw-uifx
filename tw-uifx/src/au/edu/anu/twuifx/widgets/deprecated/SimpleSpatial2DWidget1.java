@@ -28,7 +28,7 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.deprecated;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -130,6 +130,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  *       Widget to show spatial map of objects and their relations.
  *
  */
+@Deprecated // replaced by SpaceWidget1
 public class SimpleSpatial2DWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
 	private static final double labelFontSize = 9.5;
 	private static final double axisFontSize = 13.0;

@@ -132,7 +132,7 @@ treegraph // saved by OmugiGraphExporter on Tue Feb 23 11:44:14 CET 2021
 			widget wgt1
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceWidget1)
 	system sys1
 		dynamics sim1
 			timeline tmLn1

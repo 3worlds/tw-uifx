@@ -40,7 +40,7 @@ treegraph // saved by OmugiGraphExporter on Mon Jul 20 16:21:01 CEST 2020
 			widget playground
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceWidget1)
 	experiment expt
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)

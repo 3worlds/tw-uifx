@@ -205,7 +205,7 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 17 11:07:01 AEDT 2020
 			widget map
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceWidget1)
 
 // CROSS-LINKS
 [process:procBA] inSpace in6 [space:space1]

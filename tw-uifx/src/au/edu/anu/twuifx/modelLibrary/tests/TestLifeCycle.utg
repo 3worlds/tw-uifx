@@ -199,7 +199,7 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 28 16:02:18 CET 2021
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget wgt1
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceWidget1)
 
 // CROSS-LINKS
 [category:XY] constants cnsts2 [record:loc]

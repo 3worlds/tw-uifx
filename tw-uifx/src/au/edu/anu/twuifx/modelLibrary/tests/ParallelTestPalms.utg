@@ -668,7 +668,7 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 24 17:58:34 AEDT 2021
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget2)
 				widget plot1
 					order = java.lang.Integer(2)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleSpatial2DWidget1)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceDWidget1)
 			widget numbers
 				firstSender = java.lang.Integer(0)
 				nSenders = java.lang.Integer(20)
