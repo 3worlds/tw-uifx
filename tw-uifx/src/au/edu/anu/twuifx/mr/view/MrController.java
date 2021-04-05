@@ -32,6 +32,8 @@ package au.edu.anu.twuifx.mr.view;
 
 import java.io.File;
 import java.util.Scanner;
+
+import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -203,7 +205,11 @@ public class MrController implements IMRController {
 
 		content.getChildren().addAll(leftContent, rightContent);
 		TextArea textArea = new TextArea();
-		Scanner sc = new Scanner(MrController.class.getResourceAsStream("aboutMR.txt"));
+		Scanner sc = null;
+		if (Language.French())
+			sc = new Scanner(MrController.class.getResourceAsStream("aboutMRFR.txt"));
+		else
+			sc = new Scanner(MrController.class.getResourceAsStream("aboutMREN.txt"));
 
 		while (sc.hasNext()) {
 			textArea.appendText(sc.nextLine());

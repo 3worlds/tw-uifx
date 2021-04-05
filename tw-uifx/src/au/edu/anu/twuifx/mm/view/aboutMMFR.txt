@@ -1,0 +1,24 @@
+ModelMaker est l'un des deux programmes qui composent le projet 3Worlds. Son objectif est de construire des modèles d'écosystèmes qui correspondent à la signification originale du terme "écosystème" de Tansley.
+
+Au cœur de 3Worlds se trouve un archétype : un méta-modèle de ce qui constitue un écosystème. En effet, l'archétype concrétise notre interprétation de l'article de Tansley de 1935, à savoir qu'un "écosystème" est un système récursif et multi-échelle d'entités biologiques et physiques en interaction.
+
+Contraint par cet archétype et utilisant le formalisme d'un graphe, l'investigateur peut développer une structure pour un modèle d'écosystème en identifiant tous les composants (nœuds), les relations (arêtes) et les attributs (propriétés) qu'il considère comme pertinents. Au cours de ce processus, ModelMaker génère un modèle de code, où du code de programme peut être ajouté pour définir le comportement de ces éléments.
+
+Si 3Worlds rend le cycle de développement, d'analyse et de raffinement des modèles plus efficace, le résultat le plus important est le suivant : en définissant une structure d'écosystème conforme à l'archétype 3Worlds, les modèles arbitraires n'ont plus de conceptions arbitraires. Il est donc beaucoup plus facile de répondre aux questions qui se posent lors du développement d'un modèle. Par exemple :
+    - Pourquoi deux modèles, apparemment construits dans le même but, diffèrent-ils dans leurs résultats ?
+    - Comment un changement d'échelle temporelle ou spatiale affecte-t-il le comportement du modèle ?
+    - Comment l'ajout ou la suppression de sous-systèmes modifie-t-il le comportement du modèle ?
+
+En général, ces questions reviennent à se demander "de combien de détails ai-je besoin pour capturer le comportement observé d'un écosystème".
+
+Il est plus facile de répondre à cette question si les variations du modèle sont toutes fondées sur la même compréhension de ce qui constitue un "écosystème". C'est l'archétype 3Worlds qui fournit cette base.
+
+Le nom de ce projet est un hommage à la lithographie "Three Worlds" de E. C. Escher. Dans notre esprit, cela représente bien la vision de Tansley de l'écosystème comme un système physique comprenant des organismes vivant leur vie dans leur environnement particulier.
+
+Références
+
+Gignoux, J., Davies, I.D., Flint, S.R. and Zucker, J.D., 2011. The ecosystem in practice: Interest and problems of an old definition for constructing ecological models. Ecosystems, 14, pp.1039-1054.
+
+Gignoux, J., Chérel, G., Davies, I.D., Flint, S.R. and Lateltin, E., 2017. Emergence and complex systems: The contribution of dynamic graph theory. Ecological complexity, 31, pp.34-49.
+
+Tansley, A. G., 1935. The use and abuse of vegetational concepts and terms. Ecology, 16, pp.284–307.

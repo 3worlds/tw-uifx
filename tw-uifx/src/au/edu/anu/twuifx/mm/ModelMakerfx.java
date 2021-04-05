@@ -33,8 +33,7 @@ package au.edu.anu.twuifx.mm;
 import java.io.IOException;
 import java.net.URL;
 
-import au.edu.anu.rscs.aot.errorMessaging.impl.ErrorMessageText;
-//import au.edu.anu.rscs.aot.errorMessaging.impl.ErrorMessageText;
+import au.edu.anu.omhtk.Language;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.Caretaker;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
@@ -66,9 +65,8 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 
 	private void createMainWindow() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
-//		URL URLView = ModelMakerfx.class.getResource("view/Mmfr.fxml");
 		String skinFile = "view/MmEN.fxml";
-		if (ErrorMessageText.isFrench())
+		if (Language.French())
 			skinFile =  "view/MmFR.fxml";
 		URL URLView = ModelMakerfx.class.getResource(skinFile);
 		loader.setLocation(URLView);

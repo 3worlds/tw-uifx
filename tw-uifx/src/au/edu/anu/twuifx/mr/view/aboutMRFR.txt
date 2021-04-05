@@ -1,0 +1,15 @@
+ModelRunner est le deuxième des deux programmes qui composent le projet 3Worlds. Son but est d'effectuer des expériences de simulation en utilisant le modèle conçu avec ModelMaker. Ce modèle, ainsi que sa conception d'expériences et son interface utilisateur, est défini par un graphe de configuration.
+
+Au cœur de 3Worlds se trouve un archétype : un méta-modèle de ce qui constitue un écosystème. En effet, l'archétype concrétise notre interprétation du terme "écosystème" formulé pour la première fois dans l'article de Tansley en 1935. ModelRunner suppose que les spécifications du modèle sont conformes à cet archétype.
+
+En plus d'effectuer des expériences de simulation, ModelRunner permet d'éditer, de sauvegarder et de gérer les paramètres du modèle et l'état initial à partir duquel les simulations commencent. Il affiche et enregistre également les sorties du modèle, en fonction des composants de l'interface utilisateur définis dans le graphe de configuration.
+
+Le nom de ce projet est un hommage à la lithographie "Three Worlds" de E. C. Escher. Dans notre esprit, cela représente bien la vision de Tansley de l'écosystème comme un système physique comprenant des organismes vivant leur vie dans leur environnement particulier.
+
+Références
+
+Gignoux, J., Davies, I.D., Flint, S.R. and Zucker, J.D., 2011. The ecosystem in practice: Interest and problems of an old definition for constructing ecological models. Ecosystems, 14, pp.1039-1054.
+
+Gignoux, J., Chérel, G., Davies, I.D., Flint, S.R. and Lateltin, E., 2017. Emergence and complex systems: The contribution of dynamic graph theory. Ecological complexity, 31, pp.34-49.
+
+Tansley, A. G., 1935. The use and abuse of vegetational concepts and terms. Ecology, 16, pp.284–307.

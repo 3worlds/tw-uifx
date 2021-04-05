@@ -83,7 +83,7 @@ import java.util.Scanner;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 import javafx.scene.effect.DropShadow;
-
+import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
@@ -599,7 +599,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		content.getChildren().addAll(rightContent, leftContent);
 		TextArea textArea = new TextArea();
-		Scanner sc = new Scanner(MmController.class.getResourceAsStream("aboutMM.txt"));
+		Scanner sc = null;
+		if (Language.French())
+			sc = new Scanner(MmController.class.getResourceAsStream("aboutMMFR.txt"));
+		else
+			sc = new Scanner(MmController.class.getResourceAsStream("aboutMMEN.txt"));
 
 		while (sc.hasNext()) {
 			textArea.appendText(sc.nextLine());
