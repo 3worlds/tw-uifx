@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mr.view.MrController">
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                  <Menu mnemonicParsing="false" text="Paramètres">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onParOpen" text="Ouvrir" />
+                        <MenuItem mnemonicParsing="false" onAction="#onParSave" text="Enregistrer sous..." />
+                        <MenuItem mnemonicParsing="false" onAction="#onParEdit" text="Éditer" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Initial state">
+                     <items>
+                        <MenuItem fx:id="miISGenerate" mnemonicParsing="false" onAction="#onISGenerate" text="Produire..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="miISSaveAs" mnemonicParsing="false" onAction="#onISSaveAs" text="Enregistrer sous..." />
+                        <MenuItem fx:id="miISSelect" mnemonicParsing="false" onAction="#onISSelect" text="Sélectionner..." />
+                        <MenuItem fx:id="miISReload" mnemonicParsing="false" onAction="#onISReload" text="Réinitialiser" />
+                        <MenuItem fx:id="miISClear" mnemonicParsing="false" onAction="#onISClear" text="Dégager" />
+                     </items></Menu>
+                <Menu fx:id="menuWidgets" mnemonicParsing="false" text="Widgets" />
+                  <Menu mnemonicParsing="false" text="About">
+                     <items>
+                        <MenuItem id="miCurrentConfiguration" mnemonicParsing="false" onAction="#onODDGen" text="Créer de la documentation" />
+                        <MenuItem id="miAboutModelRunner" mnemonicParsing="false" onAction="#onAboutModelRunner" text="À propos de ModelRunner" />
+                     </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+            <HBox fx:id="toolBar" alignment="BASELINE_LEFT" />
+         </children>
+      </VBox>
+   </top>
+   <bottom>
+      <HBox fx:id="statusBar" BorderPane.alignment="CENTER" />
+   </bottom>
+   <center>
+      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

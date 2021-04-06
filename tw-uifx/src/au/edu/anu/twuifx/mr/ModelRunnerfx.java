@@ -40,6 +40,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -80,8 +81,8 @@ public class ModelRunnerfx extends Application {
 		config = config1;
 		uiNode = (TreeGraphNode) get(config.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label())));
 		String[] args = new String[0];
-		MrSplash.builtBy= (String) config.root().properties().getPropertyValue(P_MODEL_BUILTBY.key());
-		System.setProperty("javafx.preloader",MrSplash.class.getCanonicalName());
+		MrSplash.builtBy = (String) config.root().properties().getPropertyValue(P_MODEL_BUILTBY.key());
+		System.setProperty("javafx.preloader", MrSplash.class.getCanonicalName());
 		launch(args);
 	}
 
@@ -124,7 +125,11 @@ public class ModelRunnerfx extends Application {
 		stage.titleProperty().set(title);
 		// setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ModelRunnerfx.class.getResource("view/Mr.fxml"));
+		if (Language.French())
+			loader.setLocation(ModelRunnerfx.class.getResource("view/MrFR.fxml"));
+		else
+			loader.setLocation(ModelRunnerfx.class.getResource("view/MrEN.fxml"));
+
 		Parent root = (Parent) loader.load();
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
@@ -140,13 +145,14 @@ public class ModelRunnerfx extends Application {
 			stop();
 		});
 		Preferences.initialise(Project.makeRuntimePreferencesFile());
-		// 
+		//
 		// Everything is initialized here through cascading.
 		uiDeployer = new GUIBuilder(uiNode, controller);
 		// Get instance of controller (it is already initialized) and send the
 		WidgetNode ctrlNode = getControllerNode(uiNode);
 		StateMachineController smc = (StateMachineController) ctrlNode.getInstance();
-		// This event is sent from here now rather than from the deployer initialization.
+		// This event is sent from here now rather than from the deployer
+		// initialization.
 		smc.sendEvent(initialise.event());
 
 		stage.show();

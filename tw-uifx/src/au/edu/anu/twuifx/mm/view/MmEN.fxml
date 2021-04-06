@@ -102,7 +102,7 @@
                </items></Menu>
             <Menu mnemonicParsing="false" text="Help">
               <items>
-                <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="About" />
+                <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="About ModelMaker" />
               </items>
             </Menu>
 			</menus>
