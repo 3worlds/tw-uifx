@@ -2,12 +2,12 @@ ModelMaker is one of two programs that comprise the 3Worlds project. Its purpose
 
 At the heart of 3Worlds is an archetype: a meta-model of what constitutes an ecosystem. In effect, the archetype makes concrete our interpretation of Tansley’s 1935 paper, briefly, that an ‘ecosystem’ is a recursive and multi-scale system of interacting biological and physical entities.
 
-Constrained by this archetype and using the formalism of a graph, the investigator can develop a structure for an ecosystem model by identifying all components (nodes), relationships (edges) and attributes (properties) they consider relevant. During this process, ModelMaker generates  a code template, where program code can be added to define the behaviour of these elements.
+Constrained by this archetype and using the formalism of a graph, the investigator can develop a structure for an ecosystem model by identifying all components (nodes), relationships (edges) and attributes (properties) they consider relevant. During this process, ModelMaker generates a code template, where program code can be added to define the behaviour of these elements.
 
 While 3Worlds makes the cycle of model development, analysis and refinement more efficient, a more important outcome is this: by defining an ecosystem structure that complies with the 3Worlds archetype, arbitrary models no longer have arbitrary designs. This makes answering the kinds of questions that arise when developing a model far more tractable. For example:
-    •   Why should two models, ostensibly constructed for the same purpose, differ in their outputs?
-    •   How does a change in temporal or spatial scale affect model behaviour?
-    •   How does adding or removing sub-systems change model behaviour?
+  •  Why should two models, ostensibly constructed for the same purpose, differ in their outputs?
+  •  How does a change in temporal or spatial scale affect model behaviour?
+  •  How does adding or removing sub-systems change model behaviour?
 
 In general, these questions are asking “how much detail do I need to capture the observed behaviour of an ecosystem?”.
 
