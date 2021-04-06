@@ -87,15 +87,7 @@ WARNING: *Old version of documentation after this line - dont read.*
 
 This node and its sub-tree contains specifications for automatic code generation needed to implement a particular model. Most of its nodes have cross-references to nodes of the `*ecology*` sub-tree. The multiplicity allows users to organise their code specifications into meaningful units
 
-// include::configuration-codeSource.adoc[]
-
-==== The _dataIO_ node 
-
-`/3worlds/*dataIO*` {1..*}
-
-This node and its sub-tree contains links to external data sources (usually files) required by a simulation experiment, either for data input or output. Most of its nodes have cross-references to nodes of the `*ecology*` sub-tree. The multiplicity allows users to organise their data sets into meaningful units.
-
-// include::configuration-dataIO.adoc[]
+// include::configuration-dataDefinition.adoc[]
 
 ==== The _experiment_ node
 

@@ -58,7 +58,7 @@ When no stopping condition is defined, the simulation will run indefinitely.
 _Properties for_ `stoppingCondition`
 
 [horizontal]
-`class`:: The type of stopping condition to use
+`subclass`:: The type of stopping condition to use
 +
 ****
 _possible values_:
@@ -145,6 +145,13 @@ CAUTION: The name of a function must be a valid java class name, starting with a
 
 //todo: remove this condition !
 
+
+`/3worlds/.../function/*snippet*:<__name__>` {0..1}
+
+This node is used in 3Worlds tutorial and test models  to store the java code of functions (in its `javaCode` property). 
+
+CAUTION: We recommend not to use it, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming oa field or table. If you use it, do it with caution.
+
 ====== Function consequences
 
 `/3worlds/.../process/function/*consequence*:<[underline]##__name__##>` {0..*}
@@ -165,91 +172,71 @@ Some functions may imply consequences: for example, a decision to delete another
 | `relateToDecision` |  |  
 |====================
 
-====== Data tracking
+===== Data tracking
 
-** HERE **
+`/3worlds/.../process/*dataTracker*:<__name__>` {0..*}
 
-*[TO DO]*
+Data trackers are used to get output from a simulation. This output can then be redirected either to graphic windows of `ModelRunner` or to a data file for later processing with other software. Using a data tracker is similar to what happens in the real world: you set a sensor into the system you want to monitor and wire it to a data logger which translates the signal into human-readable data. There are different kinds of data trackers according to the output format and the sampling method you want to use; and different ways of wiring these trackers to the simulated system and its components.
 
-===== The setup of an initial state for a simulation
+A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget**[TO DO: crossref]**) linked to it. The frequency of data sending is determined by the _timer_ of the parent _process_ of the data tracker.
 
-// WARNING: this section is under dynamics, but maybe it's not the best place to put it.
-*[TO DO: check the consistency of all this]*
+IMPORTANT: A `dataTracker` node can only be specified in a _process_ that applies to __categories__, not to a __relation type__.
 
-====== Initial state
+include::ArchetypeDoc-dataTracker.adoc[]
 
-`/3worlds/system/dynamics/*initialState*:<__name__>` {0..1}
+`subclass`:: The type of data tracker to use
++
+****
+_possible values_:
 
-To run a simulation, an initial population of `components` must be provided. Nodes under the `initialState` node are used to input data to create such an initial state. The initial state is kept in memory by the simulator, and is re-loaded at every reset prior to a new simulation of the simulator.
+`DataTracker0D`:: time series tracker; returns (__t__, __x~1~__, ..., __x~n~__) values (where _t_ is time and _x~i~_ the descriptors of interest).
+`DataTrackerXY`:: raw tracker; returns (__x__,__y__) values at each time step.
+`DataTracker2D`:: *unimplemented yet*
+****
 
-// IMPORTANT: Please note that 3Worlds allows for five different ways of initialising a simulation. These methods are explained in detail in section <<truefeeding-the-model-with-data,feeding the system with data>>).
+_Cross-links for_ `dataTracker`
 
-====== Group
+`trackComponent -> component:<[underline]##__name__##>` {0..*}::
+The `dataTracker` will track all initial components pointed by these links. If these are _permanent_ components, they will be tracked until the end of the simulation. If they are _ephemeral_, *they must all belong to the same _group_* and, when they are deleted, they will be replaced by other components of the same _group_ using the sampling strategy defined by the `samplingMode` and `sampleSize` properties.
 
-`/3worlds/.../initialState/*group*:<__name__>` {0..*}
+`trackComponent -> group:<[underline]##__name__##>` {0..1}::
+If the categories of the `process` parent of this `dataTracker` are the same as those of the `groupType` parent of the __group__ pointed by this link, then the group data are tracked. If they are the same as the `componentType` of this group's __components__, the `dataTracker` will sample the _group_  for components using the sampling strategy defined by the `samplingMode` and `sampleSize` properties. 
 
-Initial system components belong to groups of individual components with common characteristics. A group is either:
+`trackComponent -> groupType:<[underline]##__name__##>` {0..1}::
+The `dataTracker` will sample the _group type_ pointed by this link for _groups_ using the sampling strategy defined by the `samplingMode` and `sampleSize` properties.  
 
-. a number of components that share the same selection of categories and the same parameter set
+`trackComponent -> system:<[underline]##__name__##>` {0..1}::
+The `dataTracker` will only track the _system_ data.
 
-. or a group of previous type groups (1), belonging to the same life cycle.
+IMPORTANT: The items pointed by all the `trackComponent` cross-links must belong to categories compatible with the parent `process` of the `dataTracker` (`process` `appliesTo` cross-links).
 
-_Cross-links for_ `group`:
+IMPORTANT: The four `trackComponent` cross-links types cannot be used together with the same data tracker.
 
-`groupOf -> component:<__name__>` {0..1}::
-This link tells which `component` node defines the individual components of this group (type 1 above).
+`trackField -> field:<[underline]##__name__##>` {0..*}::
+The `dataTracker` will track all fields pointed by these cross-links in all objects (__components__, __groups__, or __system__) it is sampling.
 
-`cycle -> lifeCycle:<__name__>` {0..1}::
-This link tells which `lifeCycle` node defines the grouping of 'groupOf'-type groups (type 2 above).
+`trackTable -> table:<[underline]##__name__##>` {0..*}::
+The `dataTracker` will track all tables pointed by these cross-links in all objects (__components__, __groups__, or __system__) it is sampling.
 
-CAUTION: Exactly one of these cross-links must be present for every group.
+IMPORTANT: the trackField or trackTable cross-links must be refer to fields or tables present in the categories of the parent `process` of the `dataTracker` (`process` `appliesTo` cross-links).
 
-Type (1) groups may be nested into type (2) groups, i.e.:
+_Properties for_ `trackField` _and_ `trackTable` __cross-links__:
 
-`/3worlds/.../initialState/group/*group*:<__name__>` {1..*}
+[horizontal]
+`index`:: A list of ``String``s giving the range of table indices to track. The following rules are used to specify which cells of the table should be picked:
++
+. an index specification for a table is enclosed in square brackets: `[]`;
+. vertical bars separate dimensions: e.g. `[||]` refers to a table with three dimensions;
+. a single number is used to specify a single cell in one dimension: e.g. `[1||]` refers to the cell 1 in dimension 1 (Note: this is the _second_ cell in this dimension as all dimension indices start at 0 = first cell);
+. a list of cells in one dimension is specified using commas: e.g. `[1|0,2,7|]` refers to the cells 0, 2 and 7 in the second dimension;
+. a range of cells in one dimension is specified using a column: e.g. `[1|0,2,7|2:4]` refers to the cells 2,3 and 4 in the third dimension;
+. a negative number means that all cells in a dimension must be tracked _except_ this number: e.g. `[-1|0,2,7|2:4]` indicates that all cells in the first dimension except cell 1 must be tracked.
+. a minus sign in front of a range means that all cells in a dimension must be tracked _except_ this whole range: e.g. `[1|0,2,7|-2:4]` indicates that all cells in the third dimension except cells 2, 3 and 4 must be tracked.
+. an empty dimension means all cells in this dimension are to be tracked: e.g. `[1||2:4]` indicates that all cells in the second dimension will be tracked;
+. an empty index string `[]`, or no index string, means that the whole table (all cells) is to be tracked.
 
-====== Individual
++
+The descriptors may be elaborate hierarchical data structure which include table at some level. For each table in this hierarchy, an index `String` as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.
 
-`/3worlds/.../initialState/**individual**:<__name__>` {0..*}
 
-`/3worlds/.../initialState/group/**individual**:<__name__>` {0..*}
-
-`/3worlds/.../initialState/group/group/**individual**:<__name__>` {0..*}
-
-This node specifies an instance of a _system component_ to be created at the beginning of a simulation.
-
-_Cross-links for_ `individual`:
-
-`instanceOf -> component:<__name__>` {0..1}::
-This link tells which `component` node defines this individual component.
-
-====== Parameters
-
-Parameter sets define a group: they are constant values which are shared by all individual members of a group.
-
-`/3worlds/.../initialState/**parameterValues**:<__name__>` {0..*}
-
-Use this node to attach a set of parameters to the whole ecosystem. There will be only one of such parameter sets in any given simulator. In user-defined functions, these parameters are available through the `focalContext.ecosystemParameters` field.
-
-CAUTION: all focalContext fields may be null if no value was provided at initialisation. Any user-edited function code must check for this possibility when using these fields.
-
-`/3worlds/.../group/**parameterValues**:<__name__>` {0..*}
-
-Use this node to attach a set of parameters to a group. Each different `__name__` will create a different parameter set. Depending on the group type, these parameters are available through `focalContext.lifeCycleParameters` of `focalContext.groupParameters` in the user-defined functions.
-
-`/3worlds/.../component/**parameterValues**:<__name__>` {0..*}
-
-Use this node to attach a set of parameters to an individual system component. 
-
-CAUTION: this implies that this system component is unique of its kind, and no other component is allowed to share these parameter values.
-
-*[TODO: check this is not a flaw - how do we access these parameters ?]*
-
-====== Variables
-
-`/3worlds/.../component/**variableValues**:<__name__>` {0..*}
-
-Use this node to attach a set of initial driver values to an individual system component. A new component will be created for every different value of `__name__`.
-
-*[TO DO: loading from files...]*
-
+*[TO DO: a few examples]*

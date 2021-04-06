@@ -504,10 +504,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truethe-systemstructure-node">3.3.3. The <em>system/structure</em> node</a></li>
 <li><a href="#truethe-systemdynamics-node">3.3.4. The <em>system/dynamics</em> node</a></li>
 <li><a href="#truethe-datadefinition-node">3.3.5. The <em>dataDefinition</em> node</a></li>
-<li><a href="#truethe-dataio-node">3.3.6. The <em>dataIO</em> node</a></li>
-<li><a href="#truethe-experiment-node">3.3.7. The <em>experiment</em> node</a></li>
-<li><a href="#truethe-userinterface-node">3.3.8. The <em>userInterface</em> node</a></li>
-<li><a href="#truethe-hardware-node">3.3.9. The <em>hardware</em> node</a></li>
+<li><a href="#truethe-experiment-node">3.3.6. The <em>experiment</em> node</a></li>
+<li><a href="#truethe-userinterface-node">3.3.7. The <em>userInterface</em> node</a></li>
+<li><a href="#truethe-hardware-node">3.3.8. The <em>hardware</em> node</a></li>
 </ul>
 </li>
 <li><a href="#truedeveloping-and-testing-model-code">3.4. Developing and testing model code</a>
@@ -1781,6 +1780,466 @@ multiple targets are possible from the same category, i.e. a component of a cate
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="truethe-representation-of-space"><a class="anchor" href="#truethe-representation-of-space"></a>The representation of space</h5>
+<div class="paragraph">
+<p>Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a library of different spaces for this need.
+Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations.</p>
+</div>
+<div class="sect5">
+<h6 id="truespace-and-spatial-indexing"><a class="anchor" href="#truespace-and-spatial-indexing"></a>Space and spatial indexing</h6>
+<div class="paragraph">
+<p><code>/3worlds/system/dynamics/<strong>space</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>This defines a space, i.e. a container where system components can be located by their <em>spatial coordinates</em> and where distances can be computed. More than one space can coexist in 3Worlds, applying to possibly different types of components and processes. Spaces can be of 1 to 3 dimensions (this is set by choosing a space type).</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>space</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>type</code>
+</td>
+<td class="hdlist2">
+<p>The type of spatial representation</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>continuousFlatSurface</code>
+</td>
+<td class="hdlist2">
+<p>a flat plan with continuous coordinates (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>squareGrid</code>
+</td>
+<td class="hdlist2">
+<p>a flat square 2D grid for e.g. cellular automata</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>topographicSurface</code>
+</td>
+<td class="hdlist2">
+<p>a topographic plan with elevations <strong>(not yet implemented)</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>linearNetwork</code>
+</td>
+<td class="hdlist2">
+<p>a graph of connected segments for e.g., hydrologic networks  <strong>(not yet implemented)</strong></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>borderType</code>
+</td>
+<td class="hdlist2">
+<p>The space border behaviour</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>wrap</code>
+</td>
+<td class="hdlist2">
+<p>a soft teletransporting border which sends objects crossing it to the other side of the space (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>reflection</code>
+</td>
+<td class="hdlist2">
+<p>a hard border on which objects bounce back if they try to escape</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>sticky</code>
+</td>
+<td class="hdlist2">
+<p>a hard border on which objects stick if they try to escape</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>oblivion</code>
+</td>
+<td class="hdlist2">
+<p>a soft border into oblivion – objects that cross it disappear into nothingness</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>infinite</code>
+</td>
+<td class="hdlist2">
+<p>no border – space extends following object movements</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>edgeEffects</code>
+</td>
+<td class="hdlist2">
+<p>The most common edge effect corrections</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>periodic</code>
+</td>
+<td class="hdlist2">
+<p>wrap-around in all dimensions, i.e. leaving objects enter through the other end (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>reflective</code>
+</td>
+<td class="hdlist2">
+<p>all borders are reflective, i.e. objects bounce on borders as on rubber walls</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>island</code>
+</td>
+<td class="hdlist2">
+<p>a space with oblivious borders in all directions, i.e. leaving objects are lost forever</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>unbounded</code>
+</td>
+<td class="hdlist2">
+<p>an infinite space adapting to location of items</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>bounded</code>
+</td>
+<td class="hdlist2">
+<p>a space with sticky borders in all directions, i.e. objects that bump into the border stay there</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>tubular</code>
+</td>
+<td class="hdlist2">
+<p>wrap around borders in the first dimension, sticky borders in all other dimensions</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>custom</code>
+</td>
+<td class="hdlist2">
+<p>user-specified border properties – provide a borderType property</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>precision</code>
+</td>
+<td class="hdlist2">
+<p>Spatial resolution (in space units). Two locations are considered identical if their distance is below this value.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>units</code>
+</td>
+<td class="hdlist2">
+<p>The measurement unit for distances and coordinates in this space</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>guardAreaWidth</code>
+</td>
+<td class="hdlist2">
+<p>The width of a guard area around the space used to define an observation window</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>observationWindow</code>
+</td>
+<td class="hdlist2">
+<p>A rectangle defining which part of the space is visible</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>space</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>coordinate &#8594; space:&lt;<em>name</em>&gt;</code> {1..*}</dt>
+<dd>
+<p>This link tells which descriptors are used as coordinates to locate system components in this space. This link has a required property <code>rank</code> which tells to which dimension of space a coordinate refers to. For example, you may set to 1 the rank of the <em>x</em> field and to 2 the rank of the <em>y</em> field if you want your 2D space coordinates to be <em>x</em> and <em>y</em>, in this order.</p>
+</dd>
+<dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dd>
+<p>Points to the random number generator channel to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="true3worlds-library-of-spaces"><a class="anchor" href="#true3worlds-library-of-spaces"></a>3Worlds library of spaces</h6>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>FlatSurface</code>: This is a 2 dimensional, continuous space with rectangular limits. Internally, it is coupled to a Quadtree (ref) to optimise the search of nearby points when establishing relations (<code>relateToDecision</code> function).</p>
+<div class="paragraph">
+<p><em>Additional properties for space type</em> <code>FlatSurface</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>x-limits</code>
+</td>
+<td class="hdlist2">
+<p>An <code>Interval</code> representing the minimum and maximum values of the x (first) dimension.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>y-limits</code>
+</td>
+<td class="hdlist2">
+<p>An <code>Interval</code> representing the minimum and maximum values of the y (second) dimension.</p>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p><code>SquareGrid</code>: This is a 2 dimensional, discrete space with rectangular limits and square cells. The locations are only known at the cell level, which helps optimize searches for nearby locations.</p>
+<div class="paragraph">
+<p><em>Additional properties for space type</em> <code>SquareGrid</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>cellSize</code>
+</td>
+<td class="hdlist2">
+<p>The length of the side of the (square) cells in space units</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>x-nCells</code>
+</td>
+<td class="hdlist2">
+<p>The number of cells in the x (first) dimension.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>y-nCells</code>
+</td>
+<td class="hdlist2">
+<p>The number of cells in the y (second) dimension.</p>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect5">
+<h6 id="trueshapes-and-topology"><a class="anchor" href="#trueshapes-and-topology"></a>Shapes and topology</h6>
+<div class="paragraph">
+<p><strong>This part is still under construction.</strong></p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truethe-setup-of-an-initial-state-for-a-simulation"><a class="anchor" href="#truethe-setup-of-an-initial-state-for-a-simulation"></a>The setup of an initial state for a simulation</h5>
+<div class="paragraph">
+<p>To run a simulation, an initial population of system component, group, life cycle, and system <em>instances</em> must be constructed from their respective <em>types</em> (e.g. <code>groupType</code>, <code>componentType</code>, etc.). They constitute the <em>initial state</em> of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific <em>function</em> (<code>setInitialState</code>, see <a href="#truefunction">Section 3.3.4.2.2</a>), or through external data files listed as <em>data sources</em><strong>[TO DO: cross ref to data source]</strong>.</p>
+</div>
+<div class="sect5">
+<h6 id="truecomponent"><a class="anchor" href="#truecomponent"></a>Component</h6>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/componentType/<strong>component</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>Use this node to instantiate components of a given <code>componentType</code>.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>component</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>nInstances</code>
+</td>
+<td class="hdlist2">
+<p>Number of instances to create. If not set, the default behaviour is to create only one instance of this component. Otherwise, <code>nInstances</code> components are created, all with identical descriptors - unless a <code>setInitialState</code> function is used that can use random numbers to differentiate instances.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>component</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>instanceOf &#8594; group:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dd>
+<p>This link tells to which <code>group</code> these component instances belong. It is required if <code>groupTypes</code> have been defined in the model, optional otherwise. This property is ignored if a <code>loadFrom</code> link (see below) is present.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truegroup"><a class="anchor" href="#truegroup"></a>Group</h6>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/groupType/<strong>group</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>Use this node to instantiate a group of components. Use groups to set properties that are shared by a set of component instances, e.g. a species name or group-level constants.</p>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>group</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>groupOf &#8594; componentType:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dd>
+<p>If no <code>component</code> node is defined for this group, this link is required to specify which <code>componentType</code> should be used for instantiation of components of this group. In any other case it is not required. You can view this as a replacement for the <code>instanceOf</code> link above: either must be present for a group, but not both.</p>
+</dd>
+<dt class="hdlist1"><code>cycle &#8594; lifeCycle:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dd>
+<p>This link tells in which <code>lifeCycle</code> instance this group is involved. The <code>groupType</code> of this <code>group</code> must be compatible with the <code>lifeCycleType</code> category requirements.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truelife-cycle-2"><a class="anchor" href="#truelife-cycle-2"></a>Life cycle</h6>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/lifeCycleType/<strong>lifeCycle</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p>Use this node to instantiate a life cycle applying to a set of groups.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truesetting-decriptor-values"><a class="anchor" href="#truesetting-decriptor-values"></a>Setting decriptor values</h6>
+<div class="paragraph">
+<p>A first method to set descriptor values is to define a <code>setInitialState</code> function as a child of the <code>componentType</code>, <code>groupType</code>, <code>lifeCycleType</code> or <code>system</code> nodes. Such functions are only called once, at the beginning of a simulation, to setup the <em>initial state</em> of a model. In a <code>setInitialState</code> function, only drivers and constants can be set (it is the only place where constants can be set).</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/componentType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/groupType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/lifeCycleType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/system/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>initFunction</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>type</code>
+</td>
+<td class="hdlist2">
+<p>The type of function used: only <code>setInitialState</code> is possible (cf. <a href="#truefunction">Section 3.3.4.2.2</a> for more detail on function types) .</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>initFunction</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dd>
+<p>Points to the random number generator channel to use in this function. If unset, the default random number channel is used.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>A second method to set descriptor values is to import data from an external source. This is done by defining a <code>dataSource</code> (cf. <strong>REF</strong>) and linking a <code>component</code>, <code>group</code>, <code>lifeCycle</code> or <code>system</code> to it:</p>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>component</code>, <code>group</code>, <code>lifeCycle</code>, and <code>system</code></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>loadFrom &#8594; dataSource:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dd>
+<p>This link tells where to read the initial values of the descriptors from.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="truethe-systemdynamics-node"><a class="anchor" href="#truethe-systemdynamics-node"></a>3.3.4. The <em>system/dynamics</em> node</h4>
@@ -2261,7 +2720,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <table>
 <tr>
 <td class="hdlist1">
-<code>class</code>
+<code>subclass</code>
 </td>
 <td class="hdlist2">
 <p>The type of stopping condition to use</p>
@@ -2564,6 +3023,24 @@ The name of a function must be a valid java class name, starting with an upperca
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/function/<strong>snippet</strong>:&lt;<em>name</em>&gt;</code> {0..1}</p>
+</div>
+<div class="paragraph">
+<p>This node is used in 3Worlds tutorial and test models  to store the java code of functions (in its <code>javaCode</code> property).</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+We recommend not to use it, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming oa field or table. If you use it, do it with caution.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect5">
 <h6 id="truefunction-consequences"><a class="anchor" href="#truefunction-consequences"></a>Function consequences</h6>
@@ -2635,174 +3112,407 @@ The name of a function must be a valid java class name, starting with an upperca
 </tbody>
 </table>
 </div>
-<div class="sect5">
-<h6 id="truedata-tracking"><a class="anchor" href="#truedata-tracking"></a>Data tracking</h6>
-<div class="ulist">
-<ul>
-<li>
-<p>HERE **</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>[TO DO]</strong></p>
-</div>
-</div>
 </div>
 <div class="sect4">
-<h5 id="truethe-setup-of-an-initial-state-for-a-simulation"><a class="anchor" href="#truethe-setup-of-an-initial-state-for-a-simulation"></a>The setup of an initial state for a simulation</h5>
+<h5 id="truedata-tracking"><a class="anchor" href="#truedata-tracking"></a>Data tracking</h5>
 <div class="paragraph">
-<p><strong>[TO DO: check the consistency of all this]</strong></p>
-</div>
-<div class="sect5">
-<h6 id="trueinitial-state"><a class="anchor" href="#trueinitial-state"></a>Initial state</h6>
-<div class="paragraph">
-<p><code>/3worlds/system/dynamics/<strong>initialState</strong>:&lt;<em>name</em>&gt;</code> {0..1}</p>
+<p><code>/3worlds/&#8230;&#8203;/process/<strong>dataTracker</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>To run a simulation, an initial population of <code>components</code> must be provided. Nodes under the <code>initialState</code> node are used to input data to create such an initial state. The initial state is kept in memory by the simulator, and is re-loaded at every reset prior to a new simulation of the simulator.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="truegroup"><a class="anchor" href="#truegroup"></a>Group</h6>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/initialState/<strong>group</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+<p>Data trackers are used to get output from a simulation. This output can then be redirected either to graphic windows of <code>ModelRunner</code> or to a data file for later processing with other software. Using a data tracker is similar to what happens in the real world: you set a sensor into the system you want to monitor and wire it to a data logger which translates the signal into human-readable data. There are different kinds of data trackers according to the output format and the sampling method you want to use; and different ways of wiring these trackers to the simulated system and its components.</p>
 </div>
 <div class="paragraph">
-<p>Initial system components belong to groups of individual components with common characteristics. A group is either:</p>
+<p>A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget<strong>[TO DO: crossref]</strong>) linked to it. The frequency of data sending is determined by the <em>timer</em> of the parent <em>process</em> of the data tracker.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+A <code>dataTracker</code> node can only be specified in a <em>process</em> that applies to <em>categories</em>, not to a <em>relation type</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>dataTracker</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>samplingMode</code>
+</td>
+<td class="hdlist2">
+<p>This property specifies how to pick system components for data tracking <em>within a group</em>. The data will be either (1) selected for one particular system component within each group, or (2) taken from that group’s own data, if any (e.g. species population size), or (3) aggregated using some statistical method ; all this, depending on the cross-links of the <code>dataTracker</code>. For (1), the default behaviour is that once a system component is selected, it will be tracked until its deletion by the simulator. In all cases, remember that the maximal number of data tracking channels is set by the <code>sampleSize</code> property; this property only tells the software how to fit the data coming from possibly many system components into the requested number of output channels.</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>RANDOM</code>
+</td>
+<td class="hdlist2">
+<p>selects system components randomly to constitute the sample (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>FIRST</code>
+</td>
+<td class="hdlist2">
+<p>selects the first system components of their group (as internally stored) to constitute the sample. Notice that components may come in any order and that this order may change unpredictably during a simulation.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>LAST</code>
+</td>
+<td class="hdlist2">
+<p>selects the last system components of their group (as internally stored) to constitute the sample. Notice that components may come in any order and that this order may change unpredictably during a simulation.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>sampleSize</code>
+</td>
+<td class="hdlist2">
+<p>How many system components at most will be tracked. Valid values are any positive integer or the keyword <code>ALL</code> to sample all the components of a given group.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>statistics</code>
+</td>
+<td class="hdlist2">
+<p>This property lists transformations of the raw data to compute when a group contains more than one system component.</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>mean</code>
+</td>
+<td class="hdlist2">
+<p>mean (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>var</code>
+</td>
+<td class="hdlist2">
+<p>variance</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>se</code>
+</td>
+<td class="hdlist2">
+<p>standard error</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>cv</code>
+</td>
+<td class="hdlist2">
+<p>coefficient of variation (%)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>sum</code>
+</td>
+<td class="hdlist2">
+<p>sum</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>N</code>
+</td>
+<td class="hdlist2">
+<p>count</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>min</code>
+</td>
+<td class="hdlist2">
+<p>minimum</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>max</code>
+</td>
+<td class="hdlist2">
+<p>maximum</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>tableStatistics</code>
+</td>
+<td class="hdlist2">
+<p>This property lists transformations of the raw data to compute in case of a table variable. The grouping is determined by the index specification in the track variable list.</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>mean</code>
+</td>
+<td class="hdlist2">
+<p>mean (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>var</code>
+</td>
+<td class="hdlist2">
+<p>variance</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>se</code>
+</td>
+<td class="hdlist2">
+<p>standard error</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>cv</code>
+</td>
+<td class="hdlist2">
+<p>coefficient of variation (%)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>sum</code>
+</td>
+<td class="hdlist2">
+<p>sum</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>N</code>
+</td>
+<td class="hdlist2">
+<p>count</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>min</code>
+</td>
+<td class="hdlist2">
+<p>minimum</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>max</code>
+</td>
+<td class="hdlist2">
+<p>maximum</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>subclass</code>
+</td>
+<td class="hdlist2">
+<p>The type of data tracker to use</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>DataTracker0D</code></dt>
+<dd>
+<p>time series tracker; returns (<em>t</em>, <em>x<sub>1</sub></em>, &#8230;&#8203;, <em>x<sub>n</sub></em>) values (where <em>t</em> is time and <em>x<sub>i</sub></em> the descriptors of interest).</p>
+</dd>
+<dt class="hdlist1"><code>DataTrackerXY</code></dt>
+<dd>
+<p>raw tracker; returns (<em>x</em>,<em>y</em>) values at each time step.</p>
+</dd>
+<dt class="hdlist1"><code>DataTracker2D</code></dt>
+<dd>
+<p><strong>unimplemented yet</strong></p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>dataTracker</code></p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>trackComponent &#8594; component:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
+<dd>
+<p>The <code>dataTracker</code> will track all initial components pointed by these links. If these are <em>permanent</em> components, they will be tracked until the end of the simulation. If they are <em>ephemeral</em>, <strong>they must all belong to the same <em>group</em></strong> and, when they are deleted, they will be replaced by other components of the same <em>group</em> using the sampling strategy defined by the <code>samplingMode</code> and <code>sampleSize</code> properties.</p>
+</dd>
+<dt class="hdlist1"><code>trackComponent &#8594; group:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dd>
+<p>If the categories of the <code>process</code> parent of this <code>dataTracker</code> are the same as those of the <code>groupType</code> parent of the <em>group</em> pointed by this link, then the group data are tracked. If they are the same as the <code>componentType</code> of this group&#8217;s <em>components</em>, the <code>dataTracker</code> will sample the <em>group</em>  for components using the sampling strategy defined by the <code>samplingMode</code> and <code>sampleSize</code> properties.</p>
+</dd>
+<dt class="hdlist1"><code>trackComponent &#8594; groupType:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dd>
+<p>The <code>dataTracker</code> will sample the <em>group type</em> pointed by this link for <em>groups</em> using the sampling strategy defined by the <code>samplingMode</code> and <code>sampleSize</code> properties.</p>
+</dd>
+<dt class="hdlist1"><code>trackComponent &#8594; system:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dd>
+<p>The <code>dataTracker</code> will only track the <em>system</em> data.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The items pointed by all the <code>trackComponent</code> cross-links must belong to categories compatible with the parent <code>process</code> of the <code>dataTracker</code> (<code>process</code> <code>appliesTo</code> cross-links).
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The four <code>trackComponent</code> cross-links types cannot be used together with the same data tracker.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>trackField &#8594; field:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
+<dd>
+<p>The <code>dataTracker</code> will track all fields pointed by these cross-links in all objects (<em>components</em>, <em>groups</em>, or <em>system</em>) it is sampling.</p>
+</dd>
+<dt class="hdlist1"><code>trackTable &#8594; table:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
+<dd>
+<p>The <code>dataTracker</code> will track all tables pointed by these cross-links in all objects (<em>components</em>, <em>groups</em>, or <em>system</em>) it is sampling.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+the trackField or trackTable cross-links must be refer to fields or tables present in the categories of the parent <code>process</code> of the <code>dataTracker</code> (<code>process</code> <code>appliesTo</code> cross-links).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>trackField</code> <em>and</em> <code>trackTable</code> <em>cross-links</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>index</code>
+</td>
+<td class="hdlist2">
+<p>A list of <code>String</code>s giving the range of table indices to track. The following rules are used to specify which cells of the table should be picked:</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>a number of components that share the same selection of categories and the same parameter set</p>
+<p>an index specification for a table is enclosed in square brackets: <code>[]</code>;</p>
 </li>
 <li>
-<p>or a group of previous type groups (1), belonging to the same life cycle.</p>
+<p>vertical bars separate dimensions: e.g. <code>[||]</code> refers to a table with three dimensions;</p>
+</li>
+<li>
+<p>a single number is used to specify a single cell in one dimension: e.g. <code>[1||]</code> refers to the cell 1 in dimension 1 (Note: this is the <em>second</em> cell in this dimension as all dimension indices start at 0 = first cell);</p>
+</li>
+<li>
+<p>a list of cells in one dimension is specified using commas: e.g. <code>[1|0,2,7|]</code> refers to the cells 0, 2 and 7 in the second dimension;</p>
+</li>
+<li>
+<p>a range of cells in one dimension is specified using a column: e.g. <code>[1|0,2,7|2:4]</code> refers to the cells 2,3 and 4 in the third dimension;</p>
+</li>
+<li>
+<p>a negative number means that all cells in a dimension must be tracked <em>except</em> this number: e.g. <code>[-1|0,2,7|2:4]</code> indicates that all cells in the first dimension except cell 1 must be tracked.</p>
+</li>
+<li>
+<p>a minus sign in front of a range means that all cells in a dimension must be tracked <em>except</em> this whole range: e.g. <code>[1|0,2,7|-2:4]</code> indicates that all cells in the third dimension except cells 2, 3 and 4 must be tracked.</p>
+</li>
+<li>
+<p>an empty dimension means all cells in this dimension are to be tracked: e.g. <code>[1||2:4]</code> indicates that all cells in the second dimension will be tracked;</p>
+</li>
+<li>
+<p>an empty index string <code>[]</code>, or no index string, means that the whole table (all cells) is to be tracked.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p><em>Cross-links for</em> <code>group</code>:</p>
+<p>The descriptors may be elaborate hierarchical data structure which include table at some level. For each table in this hierarchy, an index <code>String</code> as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.</p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>groupOf &#8594; component:&lt;<em>name</em>&gt;</code> {0..1}</dt>
-<dd>
-<p>This link tells which <code>component</code> node defines the individual components of this group (type 1 above).</p>
-</dd>
-<dt class="hdlist1"><code>cycle &#8594; lifeCycle:&lt;<em>name</em>&gt;</code> {0..1}</dt>
-<dd>
-<p>This link tells which <code>lifeCycle</code> node defines the grouping of 'groupOf'-type groups (type 2 above).</p>
-</dd>
-</dl>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-Exactly one of these cross-links must be present for every group.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Type (1) groups may be nested into type (2) groups, i.e.:</p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/initialState/group/<strong>group</strong>:&lt;<em>name</em>&gt;</code> {1..*}</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="trueindividual"><a class="anchor" href="#trueindividual"></a>Individual</h6>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/initialState/<strong>individual</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/initialState/group/<strong>individual</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/initialState/group/group/<strong>individual</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p>This node specifies an instance of a <em>system component</em> to be created at the beginning of a simulation.</p>
-</div>
-<div class="paragraph">
-<p><em>Cross-links for</em> <code>individual</code>:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>instanceOf &#8594; component:&lt;<em>name</em>&gt;</code> {0..1}</dt>
-<dd>
-<p>This link tells which <code>component</code> node defines this individual component.</p>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect5">
-<h6 id="trueparameters"><a class="anchor" href="#trueparameters"></a>Parameters</h6>
-<div class="paragraph">
-<p>Parameter sets define a group: they are constant values which are shared by all individual members of a group.</p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/initialState/<strong>parameterValues</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p>Use this node to attach a set of parameters to the whole ecosystem. There will be only one of such parameter sets in any given simulator. In user-defined functions, these parameters are available through the <code>focalContext.ecosystemParameters</code> field.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-all focalContext fields may be null if no value was provided at initialisation. Any user-edited function code must check for this possibility when using these fields.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/group/<strong>parameterValues</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p>Use this node to attach a set of parameters to a group. Each different <code><em>name</em></code> will create a different parameter set. Depending on the group type, these parameters are available through <code>focalContext.lifeCycleParameters</code> of <code>focalContext.groupParameters</code> in the user-defined functions.</p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/component/<strong>parameterValues</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p>Use this node to attach a set of parameters to an individual system component.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-this implies that this system component is unique of its kind, and no other component is allowed to share these parameter values.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><strong>[TODO: check this is not a flaw - how do we access these parameters ?]</strong></p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="truevariables"><a class="anchor" href="#truevariables"></a>Variables</h6>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/component/<strong>variableValues</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
-</div>
-<div class="paragraph">
-<p>Use this node to attach a set of initial driver values to an individual system component. A new component will be created for every different value of <code><em>name</em></code>.</p>
-</div>
-<div class="paragraph">
-<p><strong>[TO DO: loading from files&#8230;&#8203;]</strong></p>
-</div>
+<p><strong>[TO DO: a few examples]</strong></p>
 </div>
 </div>
 </div>
@@ -2828,16 +3538,7 @@ this implies that this system component is unique of its kind, and no other comp
 </div>
 </div>
 <div class="sect3">
-<h4 id="truethe-dataio-node"><a class="anchor" href="#truethe-dataio-node"></a>3.3.6. The <em>dataIO</em> node</h4>
-<div class="paragraph">
-<p><code>/3worlds/<strong>dataIO</strong></code> {1..*}</p>
-</div>
-<div class="paragraph">
-<p>This node and its sub-tree contains links to external data sources (usually files) required by a simulation experiment, either for data input or output. Most of its nodes have cross-references to nodes of the <code><strong>ecology</strong></code> sub-tree. The multiplicity allows users to organise their data sets into meaningful units.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="truethe-experiment-node"><a class="anchor" href="#truethe-experiment-node"></a>3.3.7. The <em>experiment</em> node</h4>
+<h4 id="truethe-experiment-node"><a class="anchor" href="#truethe-experiment-node"></a>3.3.6. The <em>experiment</em> node</h4>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -2864,7 +3565,7 @@ This part is still under construction
 </div>
 </div>
 <div class="sect3">
-<h4 id="truethe-userinterface-node"><a class="anchor" href="#truethe-userinterface-node"></a>3.3.8. The <em>userInterface</em> node</h4>
+<h4 id="truethe-userinterface-node"><a class="anchor" href="#truethe-userinterface-node"></a>3.3.7. The <em>userInterface</em> node</h4>
 <div class="paragraph">
 <p><code>/3worlds/<strong>userInterface</strong>:&lt;<em>name</em>&gt;</code> {1}</p>
 </div>
@@ -2873,7 +3574,7 @@ This part is still under construction
 </div>
 </div>
 <div class="sect3">
-<h4 id="truethe-hardware-node"><a class="anchor" href="#truethe-hardware-node"></a>3.3.9. The <em>hardware</em> node</h4>
+<h4 id="truethe-hardware-node"><a class="anchor" href="#truethe-hardware-node"></a>3.3.8. The <em>hardware</em> node</h4>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -3085,7 +3786,7 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 <div id="footer">
 <div id="footer-text">
 Version 1.3<br>
-Last updated 2021-04-02 16:56:18 +0200
+Last updated 2021-04-06 16:57:51 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

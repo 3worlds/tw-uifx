@@ -218,3 +218,124 @@ image::example-life-cycle.png[align="center"]
 
 The life cycle has two categories, _seedling_ and __adult__, and three transitions: a _recruit_ transition called __recruitment__, effected by the function __Recruit__, and two _produce_ transitions, effected by the functions _Seed_ and __Sprout__.
 
+===== The representation of space
+
+Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a library of different spaces for this need.
+Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations.
+
+====== Space and spatial indexing
+
+`/3worlds/system/dynamics/*space*:<[underline]##__name__##>` {0..*}
+
+This defines a space, i.e. a container where system components can be located by their _spatial coordinates_ and where distances can be computed. More than one space can coexist in 3Worlds, applying to possibly different types of components and processes. Spaces can be of 1 to 3 dimensions (this is set by choosing a space type).
+
+include::ArchetypeDoc-space.adoc[]
+
+_Cross-links for_ `space`:
+
+`coordinate -> space:<__name__>` {1..*}::
+This link tells which descriptors are used as coordinates to locate system components in this space. This link has a required property `rank` which tells to which dimension of space a coordinate refers to. For example, you may set to 1 the rank of the _x_ field and to 2 the rank of the _y_ field if you want your 2D space coordinates to be _x_ and __y__, in this order.
+
+`useRNG -> rng:<__name__>` {0..1}::
+Points to the random number generator channel to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.
+
+====== 3Worlds library of spaces
+
+. `FlatSurface`: This is a 2 dimensional, continuous space with rectangular limits. Internally, it is coupled to a Quadtree (ref) to optimise the search of nearby points when establishing relations (`relateToDecision` function).
++
+_Additional properties for space type_ `FlatSurface`:
+
++
+[horizontal]
+`x-limits`:: An `Interval` representing the minimum and maximum values of the x (first) dimension.
+
+`y-limits`:: An `Interval` representing the minimum and maximum values of the y (second) dimension.
+
+
+. `SquareGrid`: This is a 2 dimensional, discrete space with rectangular limits and square cells. The locations are only known at the cell level, which helps optimize searches for nearby locations.
++
+_Additional properties for space type_ `SquareGrid`:
+
++
+[horizontal]
+`cellSize`:: The length of the side of the (square) cells in space units 
+
+`x-nCells`:: The number of cells in the x (first) dimension.
+
+`y-nCells`:: The number of cells in the y (second) dimension.
+
+
+====== Shapes and topology
+
+*This part is still under construction.*
+
+
+===== The setup of an initial state for a simulation
+
+To run a simulation, an initial population of system component, group, life cycle, and system _instances_ must be constructed from their respective _types_ (e.g. `groupType`, `componentType`, etc.). They constitute the _initial state_ of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific _function_ (`setInitialState`, see <<configuration-ecosystem-dynamics.adoc#truefunction>>), or through external data files listed as _data sources_**[TO DO: cross ref to data source]**.
+
+====== Component
+
+`/3worlds/.../componentType/*component*:<__name__>` {0..*}
+
+Use this node to instantiate components of a given `componentType`.
+
+_Properties for_ `component`:
+
+[horizontal]
+`nInstances`:: Number of instances to create. If not set, the default behaviour is to create only one instance of this component. Otherwise, `nInstances` components are created, all with identical descriptors - unless a `setInitialState` function is used that can use random numbers to differentiate instances.
+
+_Cross-links for_ `component`:
+
+`instanceOf -> group:<__name__>` {0..1}::
+This link tells to which `group` these component instances belong. It is required if `groupTypes` have been defined in the model, optional otherwise. This property is ignored if a `loadFrom` link (see below) is present.
+
+====== Group
+
+`/3worlds/.../groupType/*group*:<__name__>` {0..*}
+
+Use this node to instantiate a group of components. Use groups to set properties that are shared by a set of component instances, e.g. a species name or group-level constants.
+
+_Cross-links for_ `group`:
+
+`groupOf -> componentType:<__name__>` {0..1}::
+If no `component` node is defined for this group, this link is required to specify which `componentType` should be used for instantiation of components of this group. In any other case it is not required. You can view this as a replacement for the `instanceOf` link above: either must be present for a group, but not both.
+
+`cycle -> lifeCycle:<__name__>` {0..1}::
+This link tells in which `lifeCycle` instance this group is involved. The `groupType` of this `group` must be compatible with the `lifeCycleType` category requirements.
+
+====== Life cycle
+
+`/3worlds/.../lifeCycleType/*lifeCycle*:<__name__>`
+
+Use this node to instantiate a life cycle applying to a set of groups.
+
+====== Setting decriptor values
+
+A first method to set descriptor values is to define a `setInitialState` function as a child of the `componentType`, `groupType`, `lifeCycleType` or `system` nodes. Such functions are only called once, at the beginning of a simulation, to setup the _initial state_ of a model. In a `setInitialState` function, only drivers and constants can be set (it is the only place where constants can be set).
+
+`/3worlds/.../componentType/*initFunction*:<__name__>`
+
+`/3worlds/.../groupType/*initFunction*:<__name__>`
+
+`/3worlds/.../lifeCycleType/*initFunction*:<__name__>`
+
+`/3worlds/.../system/*initFunction*:<__name__>`
+
+_Properties for_ `initFunction`:
+
+[horizontal]
+`type`:: The type of function used: only `setInitialState` is possible (cf. <<configuration-ecosystem-dynamics.adoc#truefunction>> for more detail on function types) .
+
+_Cross-links for_ `initFunction`:
+
+`useRNG -> rng:<__name__>` {0..1}::
+Points to the random number generator channel to use in this function. If unset, the default random number channel is used.
+
+A second method to set descriptor values is to import data from an external source. This is done by defining a `dataSource` (cf. **REF**) and linking a `component`, `group`, `lifeCycle` or `system` to it:
+
+_Cross-links for_ `component`, `group`, `lifeCycle`, and `system`
+
+`loadFrom -> dataSource:<__name__>` {0..1}::
+This link tells where to read the initial values of the descriptors from.
+
