@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 // TREE
 3worlds Animal
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(ian (1 Apr. 2021))
+	built-by = java.lang.String(ian (6 Apr. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String(Preliminary testing of landscape animal model with local mating)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -103,7 +103,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 		constantClass = java.lang.String(code.sys1.generated.GConsts)
 		dynamics sim1
 			stoppingCondition stCd1
-				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(1000)
+				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
 				subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.stop.SimpleStoppingCondition)
 			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
@@ -111,7 +111,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				shortestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
 				timeOrigin = fr.cnrs.iees.twcore.constants.DateTimeType(0)
 				timer clock1
-					dt = java.lang.Long(6)
+					dt = java.lang.Long(1)
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
@@ -179,7 +179,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
 			snippet snptGlobalInit
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalCnt.deathRate = 1.0;","		focalCnt.birthRate = 2.0;","		focalCnt.meanDispersalDistance=1000.0;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalCnt.deathRate = 1.0;","		focalCnt.birthRate = 2.05;","		focalCnt.meanDispersalDistance=100.0;"))
 	userInterface gui
 		top top
 			widget ctrl
@@ -237,7 +237,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 	searchRadius = java.lang.Double(1.0)
 [process:courting] appliesTo aplyTo1 [relationType:mateRelation]
 [process:courting] inSpace in1 [space:space1]
-	searchRadius = java.lang.Double(75.0)
+	searchRadius = java.lang.Double(50.0)
 [space:space1] coordinate xcoord [field:x]
 	rank = java.lang.Integer(0)
 [space:space1] coordinate ycoord [field:y]
