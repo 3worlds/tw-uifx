@@ -123,11 +123,21 @@ _Cross-links for_ `process`
 A process can act on a single system component at a time (called the _focal_ system component), or on a pair of components linked by a relation (called the _focal_ and the _other_ system components). This is specified using the `appliesTo` cross-link (one at least must be present):
 
 `appliesTo -> category:<[underline]##__name__##>` {0..*}::
-These links indicate the categories of system components that will be acted on by the process.
+These links indicate the categories of system components that will be acted on by the process. 
 `appliesTo -> relation:<[underline]##__name__##>` {0..1}::
 This link indicates to which relation type between system component the process applies.
+
+IMPORTANT: A process *must* apply either to categories (__category process__) or to a single relation type (__relation process__), but cannot apply to both.
+
 `dependsOn -> process:<[underline]##__name__##>` {0..*}::
 This link tells that the process must be activated _after_ the processes targeted by the links. Use this link to organize computations when there are dependencies between them.
+`inSpace -> space:<[underline]##__name__##>` {0..1}::
+This link indicates that this process will make use of this space (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>) for its optimisation of neighbour searches. Use this link when you want fast search for candidates to establish a relation, i.e. in association with the `relateToDecision` function. The required property `searchRadius` in the `inSpace` link tells to which _maximal_ distance candidates for establishing a relation must be searched. 3Worlds will only present components at a shorter distance than `searchRadius` (possibly none) to the `relateToDecision` function. A value of zero means the algorithm searches for the closest neighbour only (possibly more than one if all exactly at the same distance), whatever its distance to the focal component.
+
+// NB it may make sense to have a different property for handling the number of neighbours to search for, ie 1 returns the closest neighbour, 2 the 2 closest, etc.
+
+WARNING: Forgetting to set the value of `searchRadius` is a common source of unexpected behaviour in spatial models.
+
 
 ====== Function
 
@@ -135,22 +145,31 @@ This link tells that the process must be activated _after_ the processes targete
 
 This node is used to specify the details of the computations made in a `process`. The `process` defines which system components are going to be activated and at what time in the simulation course; the `function` defines which computations, in detail, will be applied to the system components of that process. This enables to build complex computations applying to one component (a series of ``function``s within a `process`) in the context of a particular subset of components (`process`).
 
-There are different types of functions, differing by the way they affect system components and relations. This is specified by setting the `type` property to the desired function type.
-
-include::ArchetypeDoc-function.adoc[]
-
-The selection of a function type will trigger the generation in the model java source file of a method having the name specified in the `function` node name. This method is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function. 
-
-CAUTION: The name of a function must be a valid java class name, starting with an uppercase letter.
+There are different types of functions, differing by the way they affect system components and relations. The selection of a function type will trigger the generation in the model java source file of a method having the name specified in the `function` node name. This method is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function. 
 
 //todo: remove this condition !
 
+CAUTION: The name of a function must be a valid java class name, starting with an uppercase letter.
+
+include::ArchetypeDoc-function.adoc[]
+
+IMPORTANT: The `relateToDecision` function has a special status among relation processes as it is used to establish a relation, whereas all other functions for relation processes use an already established relation. As a result, a process parent to a `relateToDecision` function cannot be parent to any other type of function. For computation efficiency, it is recommended to associate a _space_ (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>) to the process parent to a `relateToDecision` function.
+
+_Cross-links for_ `function`:
+
+`useRNG -> rng:<__name__>` {0..1}::
+Points to the random number generator channel (<<configuration-dataDefinition.adoc#truerandom-number-channels>>) to use in this function. If unset, the default random number channel is used.
+
+_Additional properties when_ `function = createOtherDecision`:
+
+[horizontal]
+`relateToProduct`:: A logical value (`false` by default) which tells to establish a permanent `parentTo` relation (defined in the `predefined` sub-tree:**CROSSREF needed**) between a parent component and its offspring created by calling `createOtherDecision`.
 
 `/3worlds/.../function/*snippet*:<__name__>` {0..1}
 
 This node is used in 3Worlds tutorial and test models  to store the java code of functions (in its `javaCode` property). 
 
-CAUTION: We recommend not to use it, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming oa field or table. If you use it, do it with caution.
+CAUTION: We recommend not to use snippets, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming a field or table. If you use it, do it with caution.
 
 ====== Function consequences
 
@@ -172,6 +191,8 @@ Some functions may imply consequences: for example, a decision to delete another
 | `relateToDecision` |  |  
 |====================
 
+Consequence functions have the same properties and cross-links as functions (cf. above).
+
 ===== Data tracking
 
 `/3worlds/.../process/*dataTracker*:<__name__>` {0..*}
@@ -180,7 +201,7 @@ Data trackers are used to get output from a simulation. This output can then be 
 
 A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget**[TO DO: crossref]**) linked to it. The frequency of data sending is determined by the _timer_ of the parent _process_ of the data tracker.
 
-IMPORTANT: A `dataTracker` node can only be specified in a _process_ that applies to __categories__, not to a __relation type__.
+IMPORTANT: A `dataTracker` node can only be specified in a _category process_, not in a __relation process__.
 
 include::ArchetypeDoc-dataTracker.adoc[]
 
@@ -236,7 +257,6 @@ _Properties for_ `trackField` _and_ `trackTable` __cross-links__:
 . an empty index string `[]`, or no index string, means that the whole table (all cells) is to be tracked.
 
 +
-The descriptors may be elaborate hierarchical data structure which include table at some level. For each table in this hierarchy, an index `String` as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.
-
+The descriptors may be elaborate hierarchical data structure which include a table at some level (<<configuration-dataDefinition.adoc#truethe-descriptor-tree>>). For each table in this hierarchy, an index `String` as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.
 
 *[TO DO: a few examples]*

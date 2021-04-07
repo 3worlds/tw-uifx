@@ -506,7 +506,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truethe-datadefinition-node">3.3.5. The <em>dataDefinition</em> node</a></li>
 <li><a href="#truethe-experiment-node">3.3.6. The <em>experiment</em> node</a></li>
 <li><a href="#truethe-userinterface-node">3.3.7. The <em>userInterface</em> node</a></li>
-<li><a href="#truethe-hardware-node">3.3.8. The <em>hardware</em> node</a></li>
 </ul>
 </li>
 <li><a href="#truedeveloping-and-testing-model-code">3.4. Developing and testing model code</a>
@@ -551,47 +550,43 @@ one physical system”</em> A. G. Tanlsey (1935).</p>
 </div>
 <div class="paragraph">
 <p>Ecosystems, as first proposed by Arthur Tansley (1935), have both <em>physical</em> and <em>biological</em> aspects. They comprise
-not only energy and chemical stocks and flows but also living things that are born, reproduce and die, exhibiting
-particular behaviours over the course of their existence. They are made from and return to the physical world
+the physics of energy and chemical stocks and flows and the biology of living things with a fleeting existence. They are made from and return to the physical world
 (dust to dust, ashes to ashes), are part of it and at one and the same time, they constitute an entire new world
-where concepts such as reproduction, social interaction, communication and life cycle dominate
-the game. To this day, reconciling these two aspects remains a key problem in ecosystem
+where concepts such as reproduction, social interaction, communication and life cycle dominate. To this day, reconciling these two aspects remains a key problem in ecosystem
 studies: How does an energy flux translate into a number of living individuals or in a higher biodiversity?
 How might the reproduction strategy of the beaver affect river hydrology and the regional water budget?
 How might social interactions (society) affect the frequency of hurricanes (e.g. climate change)?
-<strong>3Worlds</strong> aims at providing <em>a tool for building simulations that couple the physical and biological aspects of ecosystems</em>.
-Existing tools either: (1) focus on the physics (e.g. dynamic models based on differential equations) and can
-only represent reproduction and growth with metaphors for continuous physical quantities (e.g. matrix population
-models); or (2) focus on the biology (e.g. multi-agent systems describing social interactions in detail but posing
-difficulties to balance a mass or energy budget).</p>
+<strong>3Worlds</strong> aims at providing <em>a tool for building simulations that couple the physical and biological aspects of ecosystems</em>.</p>
+</div>
+<div class="paragraph">
+<p>In our view, existing tools focus too much on one or other of these aspects. For example, dynamic models based on differential equations and can only represent reproduction and growth using metaphors for continuous physical quantities (e.g. matrix population models). Multi-agent systems (MAS), on the other hand, model social interactions well but pose difficulties in balancing mass or energy budgets.</p>
 </div>
 <div class="paragraph">
 <p>In addition to this physical and biological duality, ecosystems are '<em>multi-scale</em>' (cf. an extensive discussion on
-this topic and other questions related to the ecosystem concept in Gignoux et al. 2011). The ecosystem definition
+this topic and other questions related to the ecosystem concept in Gignoux et al. 2011). Tansley&#8217;s ecosystem definition
 applies equally well to the whole biosphere as to a single bacteria in a drop of water. Currently, there is no
 software enabling one to consider ecosystems at such different spatial and temporal scales within the same
 conceptual framework. A second aim of <strong>3Worlds</strong> is to fill this gap. If the ecosystem concept is robust enough, and
-we believe it is given its success in ecology and its spread in other scientific fields, then it should be possible
+we believe it is given its success in ecology and its adoption in other scientific fields, then it should be possible
 to design a conceptually sound and consistent computing framework to deal with a multiplicity of scales.</p>
 </div>
 <div class="paragraph">
-<p>Changing the scale of a model just a matter of changing spatio-temporal resolution.
+<p>However, changing the scale of a model is not just a matter of changing spatio-temporal resolution.
 It also involves the level of detail of the representations used in the model, something which has been formalized
-in <em>abstraction theory</em> (Zucker 2003): the more detailed a model, the less abstract it is. At what
- level of detail should we model our system to capture its important behaviour? How does changing scale (in this
+in <em>abstraction theory</em> (Zucker 2003): the more detailed a model, the less abstract it is. The question arises then as to what level of detail should we model our system to capture its important behaviour? How does changing scale (in this
  broadest sense) effect model outcomes? There can be no general answer to this question beyond trial and error. This makes the possibility
  to test and compare different representations of the same system at different scales an essential feature of
- any software dealing with ecosystems. <strong>3Worlds</strong> provides <em>a maximal flexibility in ecosystem representation</em>
- enabling one to represent <em>any</em> ecosystem at <em>any</em> spatial and temporal scale with <em>any</em> level of detail&#8201;&#8212;&#8201;all this being set by
+ any software dealing with ecosystems. <strong>3Worlds</strong> provides <em>great flexibility in ecosystem representation</em>
+ enabling one to represent <em>any</em> ecosystem at <em>any</em> spatial and temporal scale with <em>any</em> level of detail&#8201;&#8212;&#8201;all this being determined by
  the researcher in accordance with the purpose of their study. The researcher has full control on the detailed biological functions
-and variables relevant to their problem.</p>
+and variables relevant to their study.</p>
 </div>
 <div class="paragraph">
 <p>How is this flexibility compatible with the strong conceptual backbone? <strong>3Worlds</strong> uses <em>aspect-oriented thinking (AOT)</em> (Flint 2006), a method to build complex systems (e.g.
 software) from independent areas of knowledge. We have designed an <em>archetype</em> of what we believe constitutes an
 ecosystem&#8201;&#8212;&#8201;a recursive and multi-scale system of interacting entities. We use an implementation of AOT to ensure
 that any user-defined representation of an ecosystem complies with the archetype. This guarantees that, despite a
-great freedom left to the end-user, their model will always be compatible with the 3Worlds software. The great
+great freedom left to the modeller, their model will always be compatible with the 3Worlds software. The great
 benefit of this is that while we believe it’s possible to construct any type of
 model within this archetype, imposing specification constraints greatly assists in model comparison: why should
 two models, ostensibly constructed for the same purpose, differ in their outputs? How does a change in temporal
@@ -647,7 +642,7 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="title">Figure 1. A mathematical graph, showing both the usual mathematical terms and the vocabulary used in 3Worlds. The incidence function defines edges between nodes. Edges can be directed (with arrows) or undirected.</div>
 </div>
 <div class="paragraph">
-<p>With the addition of <em>descriptors</em> (e.g. numbers with a specific meaning: <a href="#fig-graph-descriptors">Figure 2</a>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define <em>functions</em> that can modify nodes and edges and their descriptors, the graph becomes dynamic. A 3Worlds simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to the user&#8217;s particular application. Nodes are called <em>system components</em>, edges <em>system relations</em>, and descriptors <em>properties</em>.</p>
+<p>With the addition of <em>descriptors</em> (e.g. numbers with a specific meaning: <a href="#fig-graph-descriptors">Figure 2</a>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define <em>functions</em> that can modify nodes and edges and their descriptors, the graph becomes dynamic. A <strong>3Worlds</strong> simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to the user&#8217;s particular application. Nodes are called <em>system components</em>, edges <em>system relations</em>, and descriptors <em>properties</em>.</p>
 </div>
 <div id="fig-graph-descriptors" class="imageblock text-"center">
 <div class="content">
@@ -665,7 +660,7 @@ systems are more easily managed and understood when designed within a sound fram
 <p>In a dynamic graph, categories are used to specify common descriptors to groups of components (e.g. a plant species average growth rate, an animal cohort survival rate, &#8230;&#8203;) and functions that operate on a group of components of the same category. They are also used to specify which <em>type of relation</em> is possible between components of different categories.</p>
 </div>
 <div class="paragraph">
-<p>This category concept is very close to the class concept used in the <a href="http://uml.org/what-is-uml.htm">UML</a> language and in  <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented programming</a> . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in 3Worlds.</p>
+<p>This category concept is similar in many ways to the class concept used in the <a href="http://uml.org/what-is-uml.htm">UML</a> language and in  <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented programming</a> . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in <strong>3Worlds</strong>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -680,16 +675,16 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="title">Figure 3. The time model of 3Worlds. The overall dynamics of a system is computed as X(t+dt) = f(X(t)) where X represents the state of all system components, t is time and f is the function (or rather, the set of functions) used to compute the change over the time interval dt.</div>
 </div>
 <div class="paragraph">
-<p>Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. 3Worlds provides three types of <em>time model</em> that can be used in interaction: '<em>clock</em>' models using a constant time step, <em>event-driven </em>time models where time events trigger computations that can generate further events in the future, and <em>scenarios</em> where the list of events determines when computations are to be made. Time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.</p>
+<p>Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. <strong>3Worlds</strong> provides three types of <em>time model</em> that can be used in interaction: '<em>clock</em>' models using a constant time step, <em>event-driven </em>time models where time events trigger computations that can generate further events in the future, and <em>scenarios</em> where the list of events determines when computations are to be made. Time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truespace-as-a-mediator-for-interactions"><a class="anchor" href="#truespace-as-a-mediator-for-interactions"></a>1.2.5. Space as a mediator for interactions</h4>
 <div class="paragraph">
-<p>IBMs are often 'spatialized', which means they include some representation of the physical space in which organisms of an ecosystem interact. We argued in Gignoux et al. (2011) that space is not a requirement of the ecosystem definition, but rather an optional feature. Besides the usual 3-dimensional space, we called the place where organisms interact in an ecosystem the <em>arena</em>, i.e. the place where things happen and where a public (of ecological modellers) is watching them. This does not mean an Euclidian (or any other kind of) space must be attached to the ecosystem representation. Using a dynamic graph is sufficient.</p>
+<p>IBMs are often 'spatialized', which means they include some representation of the physical space in which organisms of an ecosystem interact. We argued in Gignoux et al. (2011) that space is not a requirement of the ecosystem definition, but rather an optional feature. Besides the usual 3-dimensional space, we called the place where organisms interact in an ecosystem the <em>arena</em>, i.e. the place where things happen and where a public (of ecological modellers) is watching them. This does not mean an Euclidian (or any other kind of) space must be associated with the ecosystem representation. Using a dynamic graph is sufficient.</p>
 </div>
 <div class="paragraph">
-<p>However, it is often the case that explicitly considering space in a model is necessary for computing ecological interactions. In most ecological process models, there are actually implicit assumptions about space and how it affects organism interactions. For example, seed dispersal in plants is easily computed in a 2-dimensional space where the location of seeds depends on that of parent plants and some simple distance law; water flow in a catchment relies on a 2 dimensional space plus an elevation of ground surface to some x and y resolution; competition between individual trees in a forest assume a vertical distribution of leaves depicted with varying degrees of detail.</p>
+<p>However, it is often the case that explicitly considering space in a model is necessary for computing ecological interactions. In most ecological process models, there are actually implicit assumptions about space and how it affects organism interactions. For example, seed dispersal in plants is easily computed in a 2-dimensional space where the location of seeds depends on that of parent plants and some simple distance law; water flow in a catchment relies on a 2-dimensional space plus an elevation of ground surface to some x and y resolution; competition between individual trees in a forest assume a vertical distribution of leaves depicted with varying degrees of detail.</p>
 </div>
 <div class="paragraph">
 <p>Following Gignoux et al. (2011), we optionally provide predefined spatial representations to include in a simulator. Different spaces can be used within a single simulator, depending on the needs of the process computations. They are associated with optimal search algorithms (e.g. Kd-trees) that speed up the search of components with which to form dynamic relations.</p>
@@ -698,22 +693,22 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="sect3">
 <h4 id="truemodelling-made-easy"><a class="anchor" href="#truemodelling-made-easy"></a>1.2.6. Modelling made easy</h4>
 <div class="paragraph">
-<p>The community of ecological scientists has been developing an impressively large number of models, yet most of them are poorly designed in terms of programming, as ecologists are not software engineers. Ecosystem simulators are among the most complex existing programs (Coquillard &amp; Hill 1997). They require high programming skills and constitute a huge investment in time, which makes their production slow and hazardous. As a result, once built, they tend to be used beyond their initial domain of application (e.g. the overuse and abuse of the CENTURY model: Parton et al. 1988), issues of provenance and repeatability are rarely addressed, shedding some doubt on the discipline as a whole.</p>
+<p>The community of ecological scientists has been developing an impressively large number of models, yet most of them are poorly designed in terms of programming, as ecologists are not necessarily software engineers. Ecosystem simulators are among the most complex programs (Coquillard &amp; Hill 1997). They require high programming skills and constitute a huge investment in time, which makes their production slow and hazardous. As a result, once built, they tend to be used beyond their initial domain of application (e.g. the overuse and abuse of the CENTURY model: Parton et al. 1988), issues of provenance and repeatability are rarely addressed, shedding some doubt on the discipline as a whole.</p>
 </div>
 <div class="paragraph">
-<p>With 3Worlds we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programming techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used <em>automatic code generation</em> to ensure that researchers need only edit one code file to build a simulator for their particular model. We used a <em>graph editor</em> to build the configuration and organise the data required for a particular study. In 3Worlds therefore, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written.</p>
+<p>With <strong>3Worlds</strong>, we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programming techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used <em>automatic code generation</em> to ensure that researchers need only edit one code file to build a simulator for their particular model. We used a <em>graph editor</em> to build the configuration and organise the data required for a particular study. In <strong>3Worlds</strong> therefore, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written. None of this prevents the modeller from using software libraries, either their own or from a third party, to extend their coding capabilities.</p>
 </div>
 <div class="paragraph">
-<p>When designing a model, it is important to get a quick visual feedback of how the system behaves when one changes equations or their implementation. 3Worlds comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to user needs.</p>
+<p>When designing a model, it is important to get quick visual feedback of how the system behaves when one changes equations or their implementation. <strong>3Worlds</strong> comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to the needs of the researcher.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truemodel-comparison-graphs-can-be-compared"><a class="anchor" href="#truemodel-comparison-graphs-can-be-compared"></a>1.2.7. Model comparison: graphs can be compared</h4>
 <div class="paragraph">
-<p>Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they all yield different results. This is expected given the size of their code, but what is appalling is that nobody is able to trace within the code where the differences come from  (Lim &amp; Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models is represented in computer code, which are very difficult to compare for any but the simplest of models.</p>
+<p>Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they all yield different results. This is expected given the size of their code, but what is troubling is that nobody is able to trace within the code where the differences come from  (Lim &amp; Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models is represented in computer code, which are very difficult to compare for any but the simplest of models.</p>
 </div>
 <div class="paragraph">
-<p>3Worlds is an attempt to solve this issue <em>in the future</em> (there is nothing we can do for past model codes). If models are developed within the standard framework of 3Worlds, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.</p>
+<p><strong>3Worlds</strong> is an attempt to solve this issue <em>in the future</em> (there is nothing we can do for past model codes). If models are developed within the standard framework of <strong>3Worlds</strong>, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.</p>
 </div>
 </div>
 <div class="sect3">
@@ -722,7 +717,7 @@ systems are more easily managed and understood when designed within a sound fram
 <p>Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in <em>simulation experiments</em>. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologically relevant, publishable results.</p>
 </div>
 <div class="paragraph">
-<p>IBMs are often stochastic, as population rates translate into probabilities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on random number drawings. As a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.</p>
+<p>IBMs are often stochastic, as population rates translate into probabilities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on drawing random numbers. As a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.</p>
 </div>
 <div class="paragraph">
 <p>3Worlds is interfaced with <a href="https://openmole.org/">OpenMole</a>  to provide access to big computing power. Through OpenMole, big simulation experiments can be deployed on networks of computers, grids, or supercomputers.</p>
@@ -731,7 +726,7 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="sect3">
 <h4 id="trueportability-and-performance"><a class="anchor" href="#trueportability-and-performance"></a>1.2.9. Portability and performance</h4>
 <div class="paragraph">
-<p>3Worlds is written in java to ensure portability between all operating systems. Its code has been carefully optimised, although genericity comes at some performance cost compared to specialisation.</p>
+<p><strong>3Worlds</strong> is written in Java to ensure portability between all operating systems. Its code has been carefully optimised, although generality inevitably comes with some performance cost.</p>
 </div>
 <div class="paragraph">
 <p><strong>Cited references:</strong></p>
@@ -1783,8 +1778,8 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="sect4">
 <h5 id="truethe-representation-of-space"><a class="anchor" href="#truethe-representation-of-space"></a>The representation of space</h5>
 <div class="paragraph">
-<p>Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a library of different spaces for this need.
-Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations.</p>
+<p>Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a library of different spaces for this need (<a href="#true3worlds-library-of-spaces">Section 3.3.3.3.2</a>).
+Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations (see <a href="#trueprocess">Section 3.3.4.2.1</a>).</p>
 </div>
 <div class="sect5">
 <h6 id="truespace-and-spatial-indexing"><a class="anchor" href="#truespace-and-spatial-indexing"></a>Space and spatial indexing</h6>
@@ -2029,7 +2024,7 @@ Technically, space could just be treated as a component related to other compone
 </dd>
 <dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
 <dd>
-<p>Points to the random number generator channel to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.</p>
+<p>Points to the random number generator channel (<a href="#truerandom-number-channels">Section 3.3.5.3</a>) to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.</p>
 </dd>
 </dl>
 </div>
@@ -2220,7 +2215,7 @@ Technically, space could just be treated as a component related to other compone
 <dl>
 <dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
 <dd>
-<p>Points to the random number generator channel to use in this function. If unset, the default random number channel is used.</p>
+<p>Points to the random number generator channel (<a href="#truerandom-number-channels">Section 3.3.5.3</a>) to use in this function. If unset, the default random number channel is used.</p>
 </dd>
 </dl>
 </div>
@@ -2884,11 +2879,43 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <dd>
 <p>This link indicates to which relation type between system component the process applies.</p>
 </dd>
+</dl>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+A process <strong>must</strong> apply either to categories (<em>category process</em>) or to a single relation type (<em>relation process</em>), but cannot apply to both.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
 <dt class="hdlist1"><code>dependsOn &#8594; process:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
 <dd>
 <p>This link tells that the process must be activated <em>after</em> the processes targeted by the links. Use this link to organize computations when there are dependencies between them.</p>
 </dd>
+<dt class="hdlist1"><code>inSpace &#8594; space:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dd>
+<p>This link indicates that this process will make use of this space (<a href="#truethe-representation-of-space">Section 3.3.3.3</a>) for its optimisation of neighbour searches. Use this link when you want fast search for candidates to establish a relation, i.e. in association with the <code>relateToDecision</code> function. The required property <code>searchRadius</code> in the <code>inSpace</code> link tells to which <em>maximal</em> distance candidates for establishing a relation must be searched. 3Worlds will only present components at a shorter distance than <code>searchRadius</code> (possibly none) to the <code>relateToDecision</code> function. A value of zero means the algorithm searches for the closest neighbour only (possibly more than one if all exactly at the same distance), whatever its distance to the focal component.</p>
+</dd>
 </dl>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Forgetting to set the value of <code>searchRadius</code> is a common source of unexpected behaviour in spatial models.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect5">
@@ -2900,7 +2927,19 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <p>This node is used to specify the details of the computations made in a <code>process</code>. The <code>process</code> defines which system components are going to be activated and at what time in the simulation course; the <code>function</code> defines which computations, in detail, will be applied to the system components of that process. This enables to build complex computations applying to one component (a series of <code>function</code>s within a <code>process</code>) in the context of a particular subset of components (<code>process</code>).</p>
 </div>
 <div class="paragraph">
-<p>There are different types of functions, differing by the way they affect system components and relations. This is specified by setting the <code>type</code> property to the desired function type.</p>
+<p>There are different types of functions, differing by the way they affect system components and relations. The selection of a function type will trigger the generation in the model java source file of a method having the name specified in the <code>function</code> node name. This method is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+The name of a function must be a valid java class name, starting with an uppercase letter.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><em>Properties for</em> <code>function</code>:</p>
@@ -3008,17 +3047,40 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>The selection of a function type will trigger the generation in the model java source file of a method having the name specified in the <code>function</code> node name. This method is expected to be edited by the modeller in order to implement her/his favourite version of the ecological process modelled by the function.</p>
-</div>
-<div class="admonitionblock caution">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-The name of a function must be a valid java class name, starting with an uppercase letter.
+The <code>relateToDecision</code> function has a special status among relation processes as it is used to establish a relation, whereas all other functions for relation processes use an already established relation. As a result, a process parent to a <code>relateToDecision</code> function cannot be parent to any other type of function. For computation efficiency, it is recommended to associate a <em>space</em> (<a href="#truethe-representation-of-space">Section 3.3.3.3</a>) to the process parent to a <code>relateToDecision</code> function.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>function</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dd>
+<p>Points to the random number generator channel (<a href="#truerandom-number-channels">Section 3.3.5.3</a>) to use in this function. If unset, the default random number channel is used.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><em>Additional properties when</em> <code>function = createOtherDecision</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>relateToProduct</code>
+</td>
+<td class="hdlist2">
+<p>A logical value (<code>false</code> by default) which tells to establish a permanent <code>parentTo</code> relation (defined in the <code>predefined</code> sub-tree:<strong>CROSSREF needed</strong>) between a parent component and its offspring created by calling <code>createOtherDecision</code>.</p>
 </td>
 </tr>
 </table>
@@ -3036,7 +3098,7 @@ The name of a function must be a valid java class name, starting with an upperca
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-We recommend not to use it, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming oa field or table. If you use it, do it with caution.
+We recommend not to use snippets, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming a field or table. If you use it, do it with caution.
 </td>
 </tr>
 </table>
@@ -3111,6 +3173,9 @@ We recommend not to use it, or only for simple models, since it may cause proble
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Consequence functions have the same properties and cross-links as functions (cf. above).</p>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -3131,7 +3196,7 @@ We recommend not to use it, or only for simple models, since it may cause proble
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-A <code>dataTracker</code> node can only be specified in a <em>process</em> that applies to <em>categories</em>, not to a <em>relation type</em>.
+A <code>dataTracker</code> node can only be specified in a <em>category process</em>, not in a <em>relation process</em>.
 </td>
 </tr>
 </table>
@@ -3280,82 +3345,7 @@ A <code>dataTracker</code> node can only be specified in a <em>process</em> that
 <code>tableStatistics</code>
 </td>
 <td class="hdlist2">
-<p>This property lists transformations of the raw data to compute in case of a table variable. The grouping is determined by the index specification in the track variable list.</p>
-<div class="sidebarblock">
-<div class="content">
-<div class="paragraph">
-<p><em>possible values</em>:</p>
-</div>
-<div class="hdlist">
-<table>
-<tr>
-<td class="hdlist1">
-<code>mean</code>
-</td>
-<td class="hdlist2">
-<p>mean (default value)</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>var</code>
-</td>
-<td class="hdlist2">
-<p>variance</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>se</code>
-</td>
-<td class="hdlist2">
-<p>standard error</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>cv</code>
-</td>
-<td class="hdlist2">
-<p>coefficient of variation (%)</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>sum</code>
-</td>
-<td class="hdlist2">
-<p>sum</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>N</code>
-</td>
-<td class="hdlist2">
-<p>count</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>min</code>
-</td>
-<td class="hdlist2">
-<p>minimum</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>max</code>
-</td>
-<td class="hdlist2">
-<p>maximum</p>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
+<p>This property lists transformations of the raw data to compute in case of a table variable. The grouping is determined by the index specification in the track variable list. cf. property <code>statistics</code> for valid values.</p>
 </td>
 </tr>
 <tr>
@@ -3505,7 +3495,7 @@ the trackField or trackTable cross-links must be refer to fields or tables prese
 </ol>
 </div>
 <div class="paragraph">
-<p>The descriptors may be elaborate hierarchical data structure which include table at some level. For each table in this hierarchy, an index <code>String</code> as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.</p>
+<p>The descriptors may be elaborate hierarchical data structure which include a table at some level (<a href="#truethe-descriptor-tree">Section 3.3.5.1</a>). For each table in this hierarchy, an index <code>String</code> as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.</p>
 </div>
 </td>
 </tr>
@@ -3519,49 +3509,1014 @@ the trackField or trackTable cross-links must be refer to fields or tables prese
 <div class="sect3">
 <h4 id="truethe-datadefinition-node"><a class="anchor" href="#truethe-datadefinition-node"></a>3.3.5. The <em>dataDefinition</em> node</h4>
 <div class="paragraph">
-<p><code>/3worlds/<strong>dataDefinition</strong></code> {1..*}</p>
+<p><code>/3worlds/<strong>dataDefinition</strong></code> {1}</p>
 </div>
-<div class="admonitionblock warning">
+<div class="paragraph">
+<p>This node and its sub-tree contains the detailed specifications of descriptors used in a model. This information is used by 3Worlds to generate java code for the data structures that will be used in simulations of this particular model. These data structures are then made available to descendants of 3Worlds functions (<a href="#truefunction">Section 3.3.4.2.2</a>) that users will edit and modify to describe their particular model.</p>
+</div>
+<div class="sect4">
+<h5 id="truethe-descriptor-tree"><a class="anchor" href="#truethe-descriptor-tree"></a>The descriptor tree</h5>
+<div class="paragraph">
+<p>Every <em>system component</em> (<a href="#truethe-specification-of-ecological-entities-system-components">Section 3.3.3.2</a>) of 3Worlds potentially holds four kinds of descriptors (<a href="#truecategory">Section 3.3.3.1.1</a>). Each of these (<em>drivers</em>, <em>decorators</em>, <em>constants</em> and <em>automatic variables</em>) is a <em>tree</em> of two kinds of data structures: <em>records</em> and <em>tables</em>. Records contain <em>fields</em>, i.e. atomic (i.e. not breakable into smaller parts) pieces of data of different types (numbers, character strings, logical values), each field having a name to access its value (i.e. field = (name,value) pair). Tables are multi-dimensional arrays of values of the same atomic type.</p>
+</div>
+<div class="paragraph">
+<p>The data tree is constructed by allowing records to contain tables as fields (but not records), and by allowing tables to contain records all made of the same fields (but not tables) instead of atomic types. This gives end-user modellers great flexibility to organise their data into elaborate structures.</p>
+</div>
+<div class="sect5">
+<h6 id="truerecord"><a class="anchor" href="#truerecord"></a>Record</h6>
+<div class="paragraph">
+<p><code>/3worlds/dataDefinition/<strong>record</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/table/<strong>record</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>A <em>record</em> is a data structure made of <em>fields</em> (=(name,value) pairs) or <em>tables</em> that represent the <em>descriptors</em> of a <em>category</em> of <em>components</em>. All descriptor trees must start with a record as their root. The record name will be turned into a java class name by the 3Worlds code generator for use in end-user code. A record may be nested in a <em>table</em>.</p>
+</div>
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-<strong>Old version of documentation after this line - dont read.</strong>
+A record cannot be empty, i.e. it <strong>must</strong> have at least one child node (field or table), see below.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truefield"><a class="anchor" href="#truefield"></a>Field</h5>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/record/<strong>field</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>A <em>field</em> is an atomic piece of data accessed by its name within a record.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>field</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>type</code>
+</td>
+<td class="hdlist2">
+<p>The data type of this field.</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>Double</code>
+</td>
+<td class="hdlist2">
+<p>a single precision floating point number (4 10^-38 to 3.4 10^38) with 15 significant digits (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Integer</code>
+</td>
+<td class="hdlist2">
+<p>an integer [-2147483648; 2147483647]</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Long</code>
+</td>
+<td class="hdlist2">
+<p>a long integer [-9223372036854775808; 9223372036854775807]</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Float</code>
+</td>
+<td class="hdlist2">
+<p>a single precision floating point number (4 10^-38 to 3.4 10^38) with 6 significant digits</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Boolean</code>
+</td>
+<td class="hdlist2">
+<p>a logical value {true, false}</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>String</code>
+</td>
+<td class="hdlist2">
+<p>a text string</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Short</code>
+</td>
+<td class="hdlist2">
+<p>a short integer [-32768; 32767]</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Char</code>
+</td>
+<td class="hdlist2">
+<p>a character value (16-bit Unicode = UTF16, i.e. 65535 different values)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Byte</code>
+</td>
+<td class="hdlist2">
+<p>a very, very short integer [-128 ; 127]</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Object</code>
+</td>
+<td class="hdlist2">
+<p>anything else <strong>TODO: should we keep this? it’s probably useless</strong></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>description</code>
+</td>
+<td class="hdlist2">
+<p>A long description of the field</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>units</code>
+</td>
+<td class="hdlist2">
+<p>Measurement units of field values</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>precision</code>
+</td>
+<td class="hdlist2">
+<p>Precision used for display of field values</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>interval</code>
+</td>
+<td class="hdlist2">
+<p>Range of possible values for this field (real number types)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>range</code>
+</td>
+<td class="hdlist2">
+<p>Range of possible values for this field (integer number types)</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="truedimensioner"><a class="anchor" href="#truedimensioner"></a>Dimensioner</h6>
+<div class="paragraph">
+<p><code>/3worlds/dataDefinition/<strong>dimensioner</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>A <em>dimensioner</em> is used to define the number of entries in a table.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>dimensioner</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>size</code>
+</td>
+<td class="hdlist2">
+<p>The number of table cells in this dimension.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truetable"><a class="anchor" href="#truetable"></a>Table</h6>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/record/<strong>table</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>A table is a multi-dimensional data structure containing either atomic data types or <em>records</em>, all of the same type.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>table</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>dataElementType</code>
+</td>
+<td class="hdlist2">
+<p>The data type of the elements of the table. cf property <code>field.type</code> for valid values.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>description</code>
+</td>
+<td class="hdlist2">
+<p>A long description of the table</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>units</code>
+</td>
+<td class="hdlist2">
+<p>Measurement units of table values</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>precision</code>
+</td>
+<td class="hdlist2">
+<p>Precision used for display of table values</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>interval</code>
+</td>
+<td class="hdlist2">
+<p>Range of possible values for this table (real number types)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>range</code>
+</td>
+<td class="hdlist2">
+<p>Range of possible values for this table (integer number types)</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+These properties are not needed when the table is a table of records (cf. above).
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>This node and its sub-tree contains specifications for automatic code generation needed to implement a particular model. Most of its nodes have cross-references to nodes of the <code><strong>ecology</strong></code> sub-tree. The multiplicity allows users to organise their code specifications into meaningful units</p>
+<p><em>Cross links for</em> <code>table</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>sizedBy &#8594; dimensioner:&lt;<em>name</em>&gt;</code> {1..*}</dt>
+<dd>
+<p>This link sets one dimension of a table to be of the length found in the dimensioner <code>size</code> property. The required property <code>rank</code> in the <code>sizedBy</code> edge tells the rank of the dimension. All <code>sizedBy</code> links of a table should have a different rank, in increasing order starting from 0 to the number of dimensions -1.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truerandom-number-channels"><a class="anchor" href="#truerandom-number-channels"></a>Random number channels</h5>
+<div class="paragraph">
+<p><code>/3worlds/dataDefinition/<strong>rng</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>Simulation models make extensive use of random numbers to make decisions on components (e.g. decision to delete a component or to create new ones). 3Worlds defines random number channels, that can be attached to specific functions (<a href="#truefunction">Section 3.3.4.2.2</a>). These channels can be held constant by using the same seed in a series of simulations, thus enabling to conduct factorial experiments controlling for a source of random numbers or another.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>rng</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>algorithm</code>
+</td>
+<td class="hdlist2">
+<p>Algorithm used to produce random numbers</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>PCG32</code>
+</td>
+<td class="hdlist2">
+<p>Implementation of a permuted congruential generator with 32-bit output (<a href="https://en.wikipedia.org/wiki/Permuted_congruential_generator">PGC32</a>); fast (56% faster than <code>JAVA</code>) and good quality (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>JAVA</code>
+</td>
+<td class="hdlist2">
+<p>The default Java random number generator of <code>java.util.Random</code>; medium speed, poor quality</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>XSRANDOM</code>
+</td>
+<td class="hdlist2">
+<p>Implementation of a Xorshift random number generator as found <a href="http://demesos.blogspot.com/2011/09/replacing-java-random-generator.html">here</a>; very fast (76% faster than <code>JAVA</code>), medium quality</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>seedSource</code>
+</td>
+<td class="hdlist2">
+<p>How to create the seed of the random number generator</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>PSEUDO</code>
+</td>
+<td class="hdlist2">
+<p>The random number seed is produced from a call to a unique instance of <code>java.util.Random.Random()</code>. It uses time to the nanosecond to produce a ‘very likely to be distinct’ seed (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>NATURAL</code>
+</td>
+<td class="hdlist2">
+<p>The random number seed is taken as an element in a table of 1000 natural random numbers that have been obtained from atmospheric noise. Use the property <code>tableIndex</code> to specify which item in this table should be taken for the seed</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>CONSTANT</code>
+</td>
+<td class="hdlist2">
+<p>The random number seed is a constant (either 0 or 1, depending on the algorithm)</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>resetTime</code>
+</td>
+<td class="hdlist2">
+<p>When to reset the random number channel seed</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>NEVER</code>
+</td>
+<td class="hdlist2">
+<p>The random number seed is never reset after initialisation of the random number channel (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>ONRUNSTART</code>
+</td>
+<td class="hdlist2">
+<p>The random number seed is reset to its former value for every simulation run (producing the same series of random numbers for every simulation)</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>tableIndex</code>
+</td>
+<td class="hdlist2">
+<p>Index into an <code>array[0..999]</code> of naturally generated random numbers to act as seeds for resetting</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If no random number channel is specified, 3Worlds uses a single default channel with algorithm <code>XSRANDOM</code>, seedSource <code>PSEUDO</code> and resetTime <code>NEVER</code>.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truethe-experiment-node"><a class="anchor" href="#truethe-experiment-node"></a>3.3.6. The <em>experiment</em> node</h4>
-<div class="admonitionblock warning">
+<div class="paragraph">
+<p><code>/3worlds/<strong>experiment</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
+</div>
+<div class="paragraph">
+<p>This node and its sub-tree describe the experimental design to run using a given <em>model</em> and external data sets. Typically, il will tell <code>ModelRunner</code> how many simulations should be run, possibly varying some parameters of the model according to some plan, where data should be read and saved. The name is used to differentiate simulation experiments in a meaningful way.</p>
+</div>
+<div class="paragraph">
+<p>The default, simplest, simulation experiment is just to run a single simulation of the <em>baseline</em> model.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>experiment</code>:</p>
+</div>
+<div class="hdlist">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<td class="hdlist1">
+<code>nReplicates</code>
 </td>
-<td class="content">
-This part is still under construction
+<td class="hdlist2">
+<p>The number of times all elementary treatments must be replicated. Use this only if there is an internal source of variation in simulations, like random numbers. Otherwise all simulations will be strictly identical.</p>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p><code>/3worlds/<strong>experiment</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><em>Cross-links for</em> <code>experiment</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>baseLine &#8594; system:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link points to a model setup (<a href="#truethe-system-node">Section 3.3.2</a>) that will be used as a <em>base line</em> simulation. A base line simulation is the equivalent of a control in a real experiment, i.e. a reference case that serves as a basis to which other treatments are compared. Often, the base line is the setup for which data is available to compare simulation outputs to.</p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="truesimulation-duration"><a class="anchor" href="#truesimulation-duration"></a>Simulation duration</h5>
+<div class="paragraph">
+<p><code>/3worlds/experiment/<strong>timePeriod</strong></code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>This node and its sub-tree describe the experimental design to run using a given <em>model</em> and external data sets. Typically, il will tell <code>ModelRunner</code> how many simulations should be run, possibly varying some parameters of the model according to some plan. The name is used to differentiate simulation experiments in a meaningful way. <strong>TODO[It will appear in output directory names ?]</strong>.</p>
+<p>The duration of a particular simulation is specified using a <code>timePeriod</code> node.</p>
 </div>
 <div class="paragraph">
-<p>The <code><strong>experiment</strong></code> node must have a cross-reference edge labelled <code><strong>baseLine</strong></code> {1}  to an <code><strong>ecology</strong></code> node. The model configuration contained in this <code><strong>ecology</strong></code> sub-tree will be used as the reference, "base line" simulation in the experiment - similar to a control treatment in a real-world experiment.</p>
+<p><strong>[TO DO: sort out the conflict between this and the stopping conditions]</strong></p>
 </div>
 <div class="paragraph">
-<p>The default, simplest, simulation experiment is just to run a single simulation of the baseLine model.</p>
+<p><em>Properties for</em> <code>timePeriod</code></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>start</code>
+</td>
+<td class="hdlist2">
+<p>The starting time of a simulation in <code>timeLine</code> shortest time units.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>end</code>
+</td>
+<td class="hdlist2">
+<p>The ending time of a simulation in <code>timeLine</code> shortest time units.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Both properties are optional. If none is set, the simulation will start at time 0 and run indefinitely.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>timePeriod</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>stopOn &#8594; stoppingCondition:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dd>
+<p>This link tells how to stop the simulation in case no <code>end</code> property is given.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The stopping condition has the priority over the <code>end</code> property.
+<strong> TO DO: check this</strong>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueexperimental-design"><a class="anchor" href="#trueexperimental-design"></a>Experimental design</h5>
+<div class="paragraph">
+<p><code>/3worlds/experiment/<strong>design</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
+</div>
+<div class="paragraph">
+<p>An experimental design specifies the method used to perform the simulations, e.g. number of replicate simulations, treatments as changes in parameter values or initial states, etc. An experimental design can be specified by using standard designs, or by passing a design description file.</p>
+</div>
+<div class="paragraph">
+<p>For more information on experimental designs for simulation experiments, we recommend reading the documentation of the R software <em>planor</em> and <em>mtk</em> packages (e.g. these packages could be used to generate design files for use in 3Worlds).</p>
+</div>
+<div class="paragraph">
+<p><strong>[TO DO: OpenMole integration]</strong></p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>design</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>type</code>
+</td>
+<td class="hdlist2">
+<p>This property specifies an experimental design for the simulation experiment. It only provides basic, standard experimental designs. For more elaborate or specialized designs, use an ad-hoc file description of the design (<code>file</code> property, <em>cf.</em> below)</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>singleRun</code>
+</td>
+<td class="hdlist2">
+<p>an experiment consisting of a single simulation run (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>crossFactorial</code>
+</td>
+<td class="hdlist2">
+<p>a cross-factorial experiment based on a limited set of parameter values (factors)</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>file</code>
+</td>
+<td class="hdlist2">
+<p>This property gives the name of an experimental design file <strong>TODO : expand on this description</strong></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueexperimental-treatments"><a class="anchor" href="#trueexperimental-treatments"></a>Experimental treatments</h5>
+<div class="sect5">
+<h6 id="truetreatments"><a class="anchor" href="#truetreatments"></a>Treatments</h6>
+<div class="paragraph">
+<p><code>/3worlds/experiment/<strong>treatment</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>An experimental treatment records a particular set of parameter values and initial state to run a simulation or a series of replicated simulations. It is the basic block of the experiment, just as in real-world experimentation.</p>
+</div>
+<div class="paragraph">
+<p>Treatements may be specified</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>in full detail: this is done by specifying more than one <code>system</code> nodes, each <code>system</code> being used for a different treatment;</p>
+</li>
+<li>
+<p>as (minor) changes relative to the experiment <code>baseLine</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>NB: not fully implemented yet</strong></p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truetreatments-as-changes-relative-to-baseline"><a class="anchor" href="#truetreatments-as-changes-relative-to-baseline"></a>Treatments as changes relative to <em>baseLine</em></h6>
+<div class="paragraph">
+<p><code>/3worlds/experiment/treatment/<strong>modelChange</strong></code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p><strong>NB: not fully implemented yet</strong></p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truemanaging-experiment-data"><a class="anchor" href="#truemanaging-experiment-data"></a>Managing experiment data</h5>
+<div class="sect5">
+<h6 id="trueinputs-datasource"><a class="anchor" href="#trueinputs-datasource"></a>Inputs: <em>dataSource</em></h6>
+<div class="paragraph">
+<p><code>/3worlds/experiment/<strong>dataSource</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>This node describes a source of data to use to instantiate a model: name of the data source, access method, etc.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>dataSource</code></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>file</code>
+</td>
+<td class="hdlist2">
+<p>A valid data file name</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>subclass</code>
+</td>
+<td class="hdlist2">
+<p>A data format to use to read that file</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>CsvFileLoader</code>
+</td>
+<td class="hdlist2">
+<p><a href="https://en.wikipedia.org/wiki/Comma-separated_values">comma separated value</a> <code>.csv</code> text file</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>OdfFileLoader</code>
+</td>
+<td class="hdlist2">
+<p><a href="https://en.wikipedia.org/wiki/OpenDocument">OpenDocument</a> <code>.ods</code> spreadsheet</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Additional properties when</em> <code>subclass = CsvFileLoader</code></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>separator</code>
+</td>
+<td class="hdlist2">
+<p>the field separator used for this <code>.csv</code> file (default: tabulation <code>"\t"</code>)</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Additional properties when</em> <code>subclass = OdfFileLoader</code></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>sheet</code>
+</td>
+<td class="hdlist2">
+<p>the name of the spreadsheet to load from this <code>.ods</code> file (different spreadsheets in the same <code>.ods</code> file must be specified as different <code>dataSource</code> nodes). If this property is absent or not set, the first spreadsheet will be loaded.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Additional properties when</em> <code>subclass = CsvFileLoader</code>, <code>OdfFileLoader</code></p>
+</div>
+<div class="paragraph">
+<p><code>.csv</code> and <code>.ods</code> file formats both assume the data come in 2 dimensional tables with cross-references between the tables. Table columns must match parameter and driver field or table names. Table rows must match species, stage or system component instances.</p>
+</div>
+<div class="paragraph">
+<p>The following rules must be respected when preparing the data files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The data must not contain any missing value or structural empty cells.</p>
+</li>
+<li>
+<p>Empty lines are permitted (they are skipped).</p>
+</li>
+<li>
+<p>Text data must not be quoted.</p>
+</li>
+<li>
+<p>The first data line of any file or spreadsheet must contain column headers. They must match field names as defined under the <code>dataDefinition</code> node (<a href="#truethe-datadefinition-node">Section 3.3.5</a>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>[TO DO how to handle data hierarchy - DataLabels. cf file configuration-dataIO.adoc for other properties as this is going to change in reimplementation]</strong></p>
+</div>
+<div class="paragraph">
+<p><em>Additional sub-tree when</em> <code>class = CsvFileLoader</code>, <code>OdfFileLoader</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/dataIO/dataSource/<strong>read</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>This node specifies that a particular parameter/driver must be read from the file/spreadsheet. The <em>name</em> property of the <code>read</code> node must match the parameter/driver name to read. By default, when no <code>read</code> node is present, <em>all</em> parameters/drivers found in the file/spreadsheet will be read. Use <code>read</code> nodes to restrict the number of columns to read in a data source.</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/dataIO/dataSource/<strong>dim</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>This node is used when reading data into tables (<a href="#truetable">Section 3.3.5.2.2</a>). The node name must be an integer matching the dimension declared in a table under the <code>dataDefinition</code> node. It must then have the following property:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>col</code>
+</td>
+<td class="hdlist2">
+<p>header of the column containing the index values for this dimension.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When <code>dim</code> nodes are present, the index values contained in the dimension columns specified in <code>col</code> are used to fill a table within the same 3Worlds data structure.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="trueexample-of-a-datasource-specification"><a class="anchor" href="#trueexample-of-a-datasource-specification"></a>Example of a <em>dataSource</em> specification</h6>
+<div class="paragraph">
+<p><strong>[TO DO: refactor this example when data sources are reimplemented - this example no longer holds]</strong></p>
+</div>
+<div class="paragraph">
+<p>This <code>.csv</code> file:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dim_1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fecundity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mortality</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dispersal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.01</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.56</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.02</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.01</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.001</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.03</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">population</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">site</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>with the following specifications:</p>
+</div>
+<div id="fig-data-source-example" class="imageblock text-center">
+<div class="content">
+<img src="example-data-source.png" alt="example data source">
+</div>
+<div class="title">Figure 10. Example of a data source configuration.</div>
+</div>
+<div class="paragraph">
+<p>will result in the instantiation of a single parameter set with species='site', stage='population', and data contained in an 10-cell array of records with 3 fields, fecundity, mortality and dispersal.</p>
+</div>
+<div class="paragraph">
+<p>How?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>property <code>idSpecies</code> states that the column labelled 'site' is the species identifier (last column of the csv file).</p>
+</li>
+<li>
+<p>property <code>idStage</code> states that the column labelled 'stage' is the stage identifier (first column of the csv file).</p>
+</li>
+<li>
+<p>since there is no <code>idComponent</code> property, it means this file contains stage parameter data.</p>
+</li>
+<li>
+<p>node <code>dim</code> with <code>name</code>=1 specifies that the data to be read go into a table</p>
+</li>
+<li>
+<p>property <code>col</code> states that the column labelled <code>dim_1</code> contains the indices for dimension 1 of the table.</p>
+</li>
+<li>
+<p>the <code>read</code> nodes specify that the columns labelled 'fecundity', 'dispersal' and 'mortality' are to be read. Notice that these nodes were not required, since the default behaviour would have caused all these columns to be read anyway.</p>
+</li>
+<li>
+<p>finally, the 10 different lines with different table indices (CAUTION: the indices start at 0 for 3Worlds table data structures) will all go into the same parameter set since only one (species name, stage name) pair is given here. Hence only one stage parameter set is instantiated.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="trueoutputs-datasink"><a class="anchor" href="#trueoutputs-datasink"></a>Outputs: <em>dataSink</em></h6>
+<div class="paragraph">
+<p><code>/3worlds/experiment/<strong>dataSink</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>This node describes a 'sink' where data resulting from simulation output is to be stored for later processing by other software.</p>
+</div>
+<div class="paragraph">
+<p><strong>[Not yet implemented]</strong></p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>dataSink</code></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>file</code>
+</td>
+<td class="hdlist2">
+<p>A valid data file name</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>dataSink</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>source &#8594; dataTracker:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link the origin of the data to save into the sink. Usually, a data tracker (<a href="#truedata-tracking">Section 3.3.4.3</a>)</p>
+</dd>
+</dl>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -3570,28 +4525,372 @@ This part is still under construction
 <p><code>/3worlds/<strong>userInterface</strong>:&lt;<em>name</em>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
-<p>This node and its sub-tree specifies the look of the <code>ModelRunner</code> user interface. <code>ModelRunner</code> is highly configurable and can show many graphs during a simulation run, for example as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.</p>
+<p>This node and its sub-tree specifies the look of the <code>ModelRunner</code> user interface. <code>ModelRunner</code> is highly configurable and can show many graphs during a simulation run, as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.</p>
+</div>
+<div class="paragraph">
+<p><strong>[HERE: refactor this part]</strong></p>
+</div>
+<div class="paragraph">
+<p>3Worlds provides a series of interface <em>widgets</em>, i.e. graphical ojects that can be assembled to yield a usable <strong>g</strong>raphical <strong>u</strong>ser <strong>i</strong>nterface (GUI). Examples of widgets are: a window to display time series graphs, or XY maps, or simulation control buttons, or progress bars, etc&#8230;&#8203; The basic <code>ModelRunner</code> GUI just provides places where to put widgets: a <em>tool bar</em>, a <em>status bar</em>, four <em>quadrants</em>, and <em>tabs</em> within quadrants. <em>Widgets</em> can be placed inside the <em>tool bar</em>, the <em>status bar</em>, or <em>tabs</em>.</p>
+</div>
+<div id="fig-GUI-ModelRunner" class="imageblock text-center">
+<div class="content">
+<img src="GUI-ModelRunner.png" alt="GUI ModelRunner">
+</div>
+<div class="title">Figure 11. The ModelRunner graphical user interface.</div>
+</div>
+<div class="paragraph">
+<p><strong>TODO: improve this figure</strong></p>
+</div>
+<div class="sect4">
+<h5 id="truetool-bar"><a class="anchor" href="#truetool-bar"></a>Tool bar</h5>
+<div class="paragraph">
+<p><code>/3worlds/userInterface/<strong>toolBar</strong></code> {1}</p>
+</div>
+<div class="paragraph">
+<p>The tool bar (always present) appears at the top of the GUI. Widgets placed there will appear beside each other <strong>[in random order ?]</strong>. The tool bar is typically the place where to put (small) widgets that must always remain visible at all time (as e.g., the widget containing the simulation controller buttons).</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="truethe-hardware-node"><a class="anchor" href="#truethe-hardware-node"></a>3.3.8. The <em>hardware</em> node</h4>
-<div class="admonitionblock warning">
+<div class="sect4">
+<h5 id="truestatus-bar"><a class="anchor" href="#truestatus-bar"></a>Status bar</h5>
+<div class="paragraph">
+<p><code>/3worlds/userInterface/<strong>statusBar</strong></code> {0..1}</p>
+</div>
+<div class="paragraph">
+<p>The status bar, appearing at the bottom of the GUI <strong>[TODO: check this!]</strong>, is optional. It is meant to show quick information about the simulation run (like the current time step or the overall completion).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truetabs"><a class="anchor" href="#truetabs"></a>Tabs</h5>
+<div class="paragraph">
+<p><code>/3worlds/userInterface/<strong>tab</strong></code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>Tabs are placed within four quadrants. They are meant to host large widgets, typically output graphs and maps. Within a quadrant, tabs appear on top of each other, i.e. only the content of the top tab is visible. <strong>[NOTE: in the archetype there is no requirement for a name for tabs -  I suggest it should be a requirement that a tab has a name]</strong></p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>tab</code>:</p>
+</div>
+<div class="hdlist">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
+<td class="hdlist1">
+<code>quadrant</code>
 </td>
-<td class="content">
-This part is still under construction. The default settings should be used.
+<td class="hdlist2">
+<p>The ThreeWorlds user interface now has four areas where tabs can be placed. Each user <code>Tab</code> must have a property to specify in which quadrant it is to be added. <strong>TODO : fix this description</strong></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>TopLeftPanel</code>
+</td>
+<td class="hdlist2">
+<p>top left quadrant of the  ModelRunner  UI (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>TopRightPanel</code>
+</td>
+<td class="hdlist2">
+<p>top right quadrant of the  ModelRunner  UI</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>BottomLeftPanel</code>
+</td>
+<td class="hdlist2">
+<p>bottom left quadrant of the  ModelRunner UI</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>BottomRightPanel</code>
+</td>
+<td class="hdlist2">
+<p>bottom right quadrant of the ModelRunner  UI</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>ToolbarTop</code>
+</td>
+<td class="hdlist2">
+<p>Toolbar at the top of the ModelRunner UI</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>ToolbarBottom</code>
+</td>
+<td class="hdlist2">
+<p>Toolbar at the bottom  of the ModelRunner UI</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>layout</code>
+</td>
+<td class="hdlist2">
+<p>Javafx layouts. Remove Swing constants when we are finished with Swing. There is no equivalent of Desktop in Swing - MDI is considered obsolete. It may turn out that we have to provide much more sophisticated options than this -  <strong>TODO : fix this description</strong></p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>GridPane</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong> (default value)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>AnchorPane</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>FlowPane</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>BorderPane</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>HBox</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>VBox</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>StackPane</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>TabPane</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>TilePane</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>Accordion</code>
+</td>
+<td class="hdlist2">
+<p><strong>TODO : fix this description</strong></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truewidgets"><a class="anchor" href="#truewidgets"></a>Widgets</h5>
+<div class="paragraph">
+<p><code>/3worlds/userInterface/&#8230;&#8203;/<strong>widget</strong></code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>Widgets are the interesting part of the GUI configuration since they do the real work. A widget may be placed inside the <code>toolBar</code>, <code>statusBar</code>, or any <code>tab</code>.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>widget</code></p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>order</code>
+</td>
+<td class="hdlist2">
+<p>An integer <strong>[what&#8217;s it used for?]</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>class</code>
+</td>
+<td class="hdlist2">
+<p>A widget class</p>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><em>possible values</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>TimeDisplayWidgetfx</code>
+</td>
+<td class="hdlist2">
+<p>display simulation time</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>SimpleSimulationControlWidgetfx</code>
+</td>
+<td class="hdlist2">
+<p>control a single simulation</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>TimeSeriesPlotWidgetfx</code>
+</td>
+<td class="hdlist2">
+<p>plot time series output</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>LabelValuePair</code>
+</td>
+<td class="hdlist2">
+<p><strong>???</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>SingleGridWidget</code>
+</td>
+<td class="hdlist2">
+<p><strong>???</strong></p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p><code>/3worlds/<strong>hardware</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
+<p><em>Cross-links for</em> <code>widget</code>:</p>
 </div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>dataListener &#8594; dataTracker:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
+<dd>
+<p>This link tells the widget where to get the data from.</p>
+</dd>
+</dl>
+</div>
+<div class="sect5">
+<h6 id="truetime-display"><a class="anchor" href="#truetime-display"></a>Time display</h6>
 <div class="paragraph">
-<p>This node and its sub-tree specifies how the experiment should be distributed on available harware. <strong>At the time of writing, only deployment to a single computer can be done</strong>.</p>
+<p><em>Cross-links for</em> <code>TimeDisplayWidgetfx</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>timeListener &#8594; engine:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells the widget where to get the time values from.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truesimulation-control"><a class="anchor" href="#truesimulation-control"></a>Simulation control</h6>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>SimpleSimulationControlWidgetfx</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>stateMachineListener &#8594; engine:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells the widget which engine it is going to control.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="trueplotting-time-series-data"><a class="anchor" href="#trueplotting-time-series-data"></a>Plotting time series data</h6>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>TimeSeriesPlotWidgetfx</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>stateMachineListener &#8594; engine:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells the widget where to get simulation status information (e.g. when the simulation is over, reset, paused, etc.)</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truevalue-pair-widget"><a class="anchor" href="#truevalue-pair-widget"></a>[Value pair widget]</h6>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>LabelValuePair</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>stateMachineListener &#8594; engine:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells the widget where to get simulation status information (e.g. when the simulation is over, reset, paused, etc.)</p>
+</dd>
+</dl>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3786,7 +5085,7 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 <div id="footer">
 <div id="footer-text">
 Version 1.3<br>
-Last updated 2021-04-06 16:57:51 +0200
+Last updated 2021-04-07 16:48:06 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

@@ -80,43 +80,28 @@ include::configuration-ecosystem-dynamics.adoc[]
 
 ==== The _dataDefinition_ node 
 
-`/3worlds/*dataDefinition*` {1..*}
+`/3worlds/*dataDefinition*` {1}
 
+This node and its sub-tree contains the detailed specifications of descriptors used in a model. This information is used by 3Worlds to generate java code for the data structures that will be used in simulations of this particular model. These data structures are then made available to descendants of 3Worlds functions (<<configuration-ecosystem-dynamics.adoc#truefunction>>) that users will edit and modify to describe their particular model.
 
-WARNING: *Old version of documentation after this line - dont read.*
-
-This node and its sub-tree contains specifications for automatic code generation needed to implement a particular model. Most of its nodes have cross-references to nodes of the `*ecology*` sub-tree. The multiplicity allows users to organise their code specifications into meaningful units
-
-// include::configuration-dataDefinition.adoc[]
+include::configuration-dataDefinition.adoc[]
 
 ==== The _experiment_ node
 
-WARNING: This part is still under construction
+`/3worlds/*experiment*:<[underline]##__name__##>` {1}
 
-`/3worlds/*experiment*:<[underline]##__name__##>` {1..*}
+This node and its sub-tree describe the experimental design to run using a given _model_ and external data sets. Typically, il will tell `ModelRunner` how many simulations should be run, possibly varying some parameters of the model according to some plan, where data should be read and saved. The name is used to differentiate simulation experiments in a meaningful way. 
 
-This node and its sub-tree describe the experimental design to run using a given _model_ and external data sets. Typically, il will tell `ModelRunner` how many simulations should be run, possibly varying some parameters of the model according to some plan. The name is used to differentiate simulation experiments in a meaningful way. *TODO[It will appear in output directory names ?]*.
+The default, simplest, simulation experiment is just to run a single simulation of the _baseline_ model.
 
-The `*experiment*` node must have a cross-reference edge labelled `*baseLine*` {1}  to an `*ecology*` node. The model configuration contained in this `*ecology*` sub-tree will be used as the reference, "base line" simulation in the experiment - similar to a control treatment in a real-world experiment.
-
-The default, simplest, simulation experiment is just to run a single simulation of the baseLine model.
-
-// include::configuration-experiment.adoc[]
+include::configuration-experiment.adoc[]
 
 ==== The _userInterface_ node
 
 `/3worlds/*userInterface*:<__name__>` {1}
 
-This node and its sub-tree specifies the look of the `ModelRunner` user interface. `ModelRunner` is highly configurable and can show many graphs during a simulation run, for example as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.
+This node and its sub-tree specifies the look of the `ModelRunner` user interface. `ModelRunner` is highly configurable and can show many graphs during a simulation run, as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.
 
-// include::configuration-gui.adoc[]
-
-==== The _hardware_ node
-
-WARNING: This part is still under construction. The default settings should be used.
-
-`/3worlds/*hardware*:<[underline]##__name__##>` {1..*}
-
-This node and its sub-tree specifies how the experiment should be distributed on available harware. **At the time of writing, only deployment to a single computer can be done**.
+include::configuration-gui.adoc[]
 
 

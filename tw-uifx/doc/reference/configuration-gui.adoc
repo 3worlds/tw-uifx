@@ -1,3 +1,6 @@
+
+*[HERE: refactor this part]*
+
 3Worlds provides a series of interface _widgets_, i.e. graphical ojects that can be assembled to yield a usable **g**raphical **u**ser **i**nterface (GUI). Examples of widgets are: a window to display time series graphs, or XY maps, or simulation control buttons, or progress bars, etc... The basic `ModelRunner` GUI just provides places where to put widgets: a _tool bar_, a _status bar_, four _quadrants_, and _tabs_ within quadrants. _Widgets_ can be placed inside the _tool bar_, the _status bar_, or _tabs_.
 
 [#fig-GUI-ModelRunner]

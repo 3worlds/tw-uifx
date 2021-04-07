@@ -220,8 +220,8 @@ The life cycle has two categories, _seedling_ and __adult__, and three transitio
 
 ===== The representation of space
 
-Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a library of different spaces for this need.
-Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations.
+Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a library of different spaces for this need (<<true3worlds-library-of-spaces>>).
+Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations (see <<configuration-ecosystem-dynamics.adoc#trueprocess>>).
 
 ====== Space and spatial indexing
 
@@ -237,7 +237,7 @@ _Cross-links for_ `space`:
 This link tells which descriptors are used as coordinates to locate system components in this space. This link has a required property `rank` which tells to which dimension of space a coordinate refers to. For example, you may set to 1 the rank of the _x_ field and to 2 the rank of the _y_ field if you want your 2D space coordinates to be _x_ and __y__, in this order.
 
 `useRNG -> rng:<__name__>` {0..1}::
-Points to the random number generator channel to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.
+Points to the random number generator channel (<<configuration-dataDefinition.adoc#truerandom-number-channels>>) to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.
 
 ====== 3Worlds library of spaces
 
@@ -330,7 +330,7 @@ _Properties for_ `initFunction`:
 _Cross-links for_ `initFunction`:
 
 `useRNG -> rng:<__name__>` {0..1}::
-Points to the random number generator channel to use in this function. If unset, the default random number channel is used.
+Points to the random number generator channel (<<configuration-dataDefinition.adoc#truerandom-number-channels>>) to use in this function. If unset, the default random number channel is used.
 
 A second method to set descriptor values is to import data from an external source. This is done by defining a `dataSource` (cf. **REF**) and linking a `component`, `group`, `lifeCycle` or `system` to it:
 

@@ -1,0 +1,60 @@
+===== The descriptor tree
+
+Every _system component_ (<<configuration-ecosystem-structure.adoc#truethe-specification-of-ecological-entities-system-components>>) of 3Worlds potentially holds four kinds of descriptors (<<configuration-ecosystem-structure.adoc#truecategory>>). Each of these (__drivers__, __decorators__, _constants_ and __automatic variables__) is a _tree_ of two kinds of data structures: __records__ and __tables__. Records contain __fields__, i.e. atomic (i.e. not breakable into smaller parts) pieces of data of different types (numbers, character strings, logical values), each field having a name to access its value (i.e. field = (name,value) pair). Tables are multi-dimensional arrays of values of the same atomic type. 
+
+The data tree is constructed by allowing records to contain tables as fields (but not records), and by allowing tables to contain records all made of the same fields (but not tables) instead of atomic types. This gives end-user modellers great flexibility to organise their data into elaborate structures.
+
+====== Record
+
+`/3worlds/dataDefinition/*record*:<[underline]##__name__##>` {0..*}
+
+`/3worlds/.../table/*record*:<[underline]##__name__##>` {0..*}
+
+A _record_ is a data structure made of _fields_ (=(name,value) pairs) or __tables__ that represent the _descriptors_ of a _category_ of __components__. All descriptor trees must start with a record as their root. The record name will be turned into a java class name by the 3Worlds code generator for use in end-user code. A record may be nested in a __table__. 
+
+IMPORTANT: A record cannot be empty, i.e. it *must* have at least one child node (field or table), see below.
+
+===== Field
+
+`/3worlds/.../record/*field*:<[underline]##__name__##>` {0..*}
+
+A _field_ is an atomic piece of data accessed by its name within a record.
+
+include::ArchetypeDoc-field.adoc[]
+
+====== Dimensioner
+
+`/3worlds/dataDefinition/*dimensioner*:<[underline]##__name__##>` {0..*}
+
+A _dimensioner_ is used to define the number of entries in a table.
+
+_Properties for_ `dimensioner`:
+
+[horizontal]
+`size`:: The number of table cells in this dimension. 
+
+====== Table
+
+`/3worlds/.../record/*table*:<[underline]##__name__##>` {0..*}
+
+A table is a multi-dimensional data structure containing either atomic data types or __records__, all of the same type.
+
+include::ArchetypeDoc-table.adoc[]
+
+IMPORTANT: These properties are not needed when the table is a table of records (cf. above).
+
+_Cross links for_ `table`:
+
+`sizedBy -> dimensioner:<__name__>` {1..*}::
+This link sets one dimension of a table to be of the length found in the dimensioner `size` property. The required property `rank` in the `sizedBy` edge tells the rank of the dimension. All `sizedBy` links of a table should have a different rank, in increasing order starting from 0 to the number of dimensions -1.
+
+===== Random number channels
+
+`/3worlds/dataDefinition/*rng*:<[underline]##__name__##>` {0..*}
+
+Simulation models make extensive use of random numbers to make decisions on components (e.g. decision to delete a component or to create new ones). 3Worlds defines random number channels, that can be attached to specific functions (<<configuration-ecosystem-dynamics.adoc#truefunction>>). These channels can be held constant by using the same seed in a series of simulations, thus enabling to conduct factorial experiments controlling for a source of random numbers or another.
+
+include::ArchetypeDoc-rng.adoc[]
+
+NOTE: If no random number channel is specified, 3Worlds uses a single default channel with algorithm `XSRANDOM`, seedSource `PSEUDO` and resetTime `NEVER`.
+
