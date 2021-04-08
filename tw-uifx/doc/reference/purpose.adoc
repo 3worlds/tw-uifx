@@ -49,8 +49,8 @@ enables the comparison of system structures and simulation trajectories, and can
 an ecological modeller can conceive of.
 
 *3Worlds* builds upon more than thirty years of experience of its developers in ecosystem and complex system modelling and simulation. Over this time, we have reached the conclusion that: (1) robust concepts
-are fundamental for building sound software; (2) some problems that appear over and over again in the life of a
-simulation modellers often have well-established solutions, sometimes in other scientific fields; and (3) complex
+are fundamental for building sound software; (2) some problems, that appear over and over again in the life of a
+simulation modeller, often have well-established solutions, sometimes in other scientific fields; and (3) complex
 systems are more easily managed and understood when designed within a sound framework. 
 
 Many of the ideas we use are already available, it's just a matter of making them work together, and *3Worlds* is our best attempt to do so! 
@@ -69,7 +69,7 @@ Fundamentally, *3Worlds* is designed as a framework for __individual-based model
 
 Ecosystems are commonly considered as _complex systems_, without much agreement on what this concept means. Complex systems are usually assumed to possess __emergent properties__; again, with little agreement on what this means. We argued in Gignoux et al. (2017) that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems _hierarchical systems_ and assumed that they can be ideally represented with a __dynamic graph__.
 
-According to https://en.wikipedia.org/wiki/Graph_theory[graph theory], a _graph_ is a mathematical object comprising a set of _nodes_, a set of _edges_ linking these nodes defined in an __incidence function__ (<<fig-what-is-a-graph>>). A _dynamic_ graph (Harary & Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.
+According to https://en.wikipedia.org/wiki/Graph_theory[graph theory], a _graph_ is a mathematical construct comprising a set of _nodes_, a set of _edges_ linking these nodes defined in an __incidence function__ (<<fig-what-is-a-graph>>). A _dynamic_ graph (Harary & Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.
 
 [[fig-what-is-a-graph]]
 .A mathematical graph, showing both the usual mathematical terms and the vocabulary used in 3Worlds. The incidence function defines edges between nodes. Edges can be directed (with arrows) or undirected.
@@ -88,17 +88,17 @@ In an IBM, every individual differs from all others. But it is common practice t
 
 In a dynamic graph, categories are used to specify common descriptors to groups of components (e.g. a plant species average growth rate, an animal cohort survival rate, ...) and functions that operate on a group of components of the same category. They are also used to specify which _type of relation_ is possible between components of different categories.
 
-This category concept is similar in many ways to the class concept used in the http://uml.org/what-is-uml.htm[UML] language and in  https://en.wikipedia.org/wiki/Object-oriented_programming[object oriented programming] . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in *3Worlds*.
+This category concept is similar in many ways to the class concept used in the http://uml.org/what-is-uml.htm[UML] language and in  https://en.wikipedia.org/wiki/Object-oriented_programming[object oriented programming]. Categories can be nested, and can be exclusive of each other or not, that is, something can belong to one category of a set of caterories but not others within the same set e.g you can be _ephemeral_ or _persistant_ but not both. They are central to the organisation and execution of a simulation in *3Worlds*.
 
 ==== Time with simultaneous events
 
-Because ecosystems are both biological and physical systems, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<<fig-3w-main-loop>>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the _autonomy_ of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint. 
+Because ecosystems have both biological and physical characteristics, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<<fig-3w-main-loop>>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the _autonomy_ of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint. 
 
 [[fig-3w-main-loop]]
 .The time model of 3Worlds. The overall dynamics of a system is computed as X(t+dt) = f(X(t)) where X represents the state of all system components, t is time and f is the function (or rather, the set of functions) used to compute the change over the time interval dt.
 image::state-change-loop.svg[align="center"]
 
-Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. *3Worlds* provides three types of _time model_ that can be used in interaction: '__clock__' models using a constant time step, __event-driven __time models where time events trigger computations that can generate further events in the future, and _scenarios_ where the list of events determines when computations are to be made. Time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.
+Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. in *3Worlds*, time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used. *3Worlds* provides three types of _time model_ that can be used in interaction: '__clock__' models using a constant time step, __event-driven __time models where time events trigger computations that can generate further events in the future, and _scenarios_ where the list of events determines when computations are to be made. 
 
 ==== Space as a mediator for interactions
 
@@ -114,7 +114,7 @@ The community of ecological scientists has been developing an impressively large
 
 With *3Worlds*, we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programming techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used _automatic code generation_ to ensure that researchers need only edit one code file to build a simulator for their particular model. We used a _graph editor_ to build the configuration and organise the data required for a particular study. In *3Worlds* therefore, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written. None of this prevents the modeller from using software libraries, either their own or from a third party, to extend their coding capabilities.
 
-When designing a model, it is important to get quick visual feedback of how the system behaves when one changes equations or their implementation. *3Worlds* comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to the needs of the researcher.
+When designing a model, it is important to get quick visual feedback system behaviour when one changes equations or their implementation. *3Worlds* comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to the needs of the researcher.
 
 ==== Model comparison: graphs can be compared
 
@@ -124,7 +124,7 @@ Climate change modelling relies on 19 major general circulation models (GCMs) al
 
 ==== Problem upscaling
 
-Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in _simulation experiments_. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologically relevant, publishable results.
+Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in _simulation experiments_. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which gives insight and publishable results.
 
 IBMs are often stochastic, as population rates translate into probabilities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on drawing random numbers. As a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.
 
