@@ -120,7 +120,7 @@ When designing a model, it is important to get quick visual feedback of how the 
 
 Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they all yield different results. This is expected given the size of their code, but what is troubling is that nobody is able to trace within the code where the differences come from  (Lim & Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models is represented in computer code, which are very difficult to compare for any but the simplest of models.
 
-*3Worlds* is an attempt to solve this issue _in the future_ (there is nothing we can do for past model codes). If models are developed within the standard framework of *3Worlds*, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.
+*3Worlds* is an attempt to solve this issue _for the future_ (there is nothing we can do for past model code). If models are developed within the standard framework of *3Worlds*, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.
 
 ==== Problem upscaling
 
