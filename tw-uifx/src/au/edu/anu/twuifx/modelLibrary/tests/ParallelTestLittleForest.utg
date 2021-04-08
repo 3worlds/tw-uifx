@@ -5,70 +5,21 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 31 08:46:34 AEDT 2021
 // TREE
 3worlds ParallelTestLittleForest
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"Jacques Gignoux","Ian D. Davies"))
-	built-by = java.lang.String(ian (30 Mar. 2021))
+	built-by = java.lang.String(ian (8 Apr. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"jacques.gignoux@upmc.fr"))
 	precis = java.lang.String(A simplistic individual based forest model to test the use of groups)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	version = java.lang.String(demo)
-	predefined *categories*
-		categorySet *organisation*
-			category *assemblage*
-			category *atomic*
-		record AVEphemeral
-			field birthDate
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field age
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.0)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-		record AVPopulation
-			field count
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nRemoved
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-			field nAdded
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				units = java.lang.String(#)
-		categorySet *systemElements*
-			category *life cycle*
-			category *group*
-			category *relation*
-			category *component*
-			category *arena*
-		categorySet *lifespan*
-			category *ephemeral*
-			category *permanent*
 	dataDefinition dDef
-		record par
+		record treedec
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(par)
-			field gmax
-				description = java.lang.String(relative growth rate)
-				interval = fr.ens.biologie.generic.utils.Interval(]0.0,+∞[)
-				precision = java.lang.Double(0.01)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String(kg yr-1)
-			field pmor
-				description = java.lang.String(death probability)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0[)
-				precision = java.lang.Double(0.01)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String()
-			field fec
-				description = java.lang.String(per capita fecundity)
+			generatedClassName = java.lang.String(treedec)
+			field neighBm
+				description = java.lang.String(total biomass in neighbourhood)
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
-				precision = java.lang.Double(0.1)
+				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String(# yr-1)
+				units = java.lang.String(kg)
 		record treeCst
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(treeCst)
@@ -102,26 +53,160 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 31 08:46:34 AEDT 2021
 				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(m)
-		record treedec
+		record par
 			dynamic = java.lang.Boolean(false)
-			generatedClassName = java.lang.String(treedec)
-			field neighBm
-				description = java.lang.String(total biomass in neighbourhood)
+			generatedClassName = java.lang.String(par)
+			field fec
+				description = java.lang.String(per capita fecundity)
 				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.1)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(# yr-1)
+			field pmor
+				description = java.lang.String(death probability)
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0[)
 				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
-				units = java.lang.String(kg)
+				units = java.lang.String()
+			field gmax
+				description = java.lang.String(relative growth rate)
+				interval = fr.ens.biologie.generic.utils.Interval(]0.0,+∞[)
+				precision = java.lang.Double(0.01)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String(kg yr-1)
+	userInterface gui
+		top top
+			widget ctrl
+				order = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
+			widget timer
+				order = java.lang.Integer(1)
+				sender = java.lang.Integer(0)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ProgressWidget1)
+		tab tab1
+			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+			widget map
+				nViews = java.lang.Integer(2)
+				order = java.lang.Integer(1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceWidget1)
+			container cont1
+				order = java.lang.Integer(0)
+				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
+				container cont2
+					order = java.lang.Integer(0)
+					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+					widget tbl biomass
+						order = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
+					widget tbl spp count
+						nSenders = java.lang.Integer(2)
+						order = java.lang.Integer(1)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
+				container cont3
+					order = java.lang.Integer(1)
+					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
+					widget neigh biomass
+						maxAxes = java.lang.Integer(4)
+						order = java.lang.Integer(1)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
+					widget spp count
+						maxAxes = java.lang.Integer(2)
+						nSenders = java.lang.Integer(2)
+						order = java.lang.Integer(0)
+						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
 	experiment expt
 		nReplicates = java.lang.Integer(2)
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
+	predefined *categories*
+		categorySet *organisation*
+			category *atomic*
+			category *assemblage*
+		categorySet *systemElements*
+			category *arena*
+			category *component*
+			category *relation*
+			category *life cycle*
+			category *group*
+		record AVPopulation
+			field nRemoved
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field count
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+			field nAdded
+				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				units = java.lang.String(#)
+		record AVEphemeral
+			field birthDate
+				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+			field age
+				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				precision = java.lang.Double(0.0)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
+				units = java.lang.String()
+		categorySet *lifespan*
+			category *permanent*
+			category *ephemeral*
 	system sys1
 		constantClass = java.lang.String(code.sys1.generated.Global)
-		initFunction Init1
-			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-			userClassName = java.lang.String(code.sys1.generated.Init1)
-			snippet snpt7
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalCnt.neighRadius = 10.0;"))
+		structure struc1
+			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
+			relationType neighbour
+				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
+			groupType species
+				constantClass = java.lang.String(code.sys1.generated.Par)
+				group Quercus
+					constantValues initCnts2
+						fec = java.lang.Double(0.1)
+						gmax = java.lang.Double(0.2)
+						pmor = java.lang.Double(0.05)
+				group Carpinus
+					constantValues initCnts1
+						fec = java.lang.Double(0.4)
+						gmax = java.lang.Double(0.15)
+						pmor = java.lang.Double(0.1)
+				componentType treeIndividual
+					constantClass = java.lang.String(code.sys1.generated.TreeCst)
+					decoratorClass = java.lang.String(code.sys1.generated.Treedec)
+					driverClass = java.lang.String(code.sys1.generated.Drv)
+					lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
+					mobile = java.lang.Boolean(false)
+					relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+					initFunction InitTree
+						type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+						userClassName = java.lang.String(code.sys1.generated.InitTree)
+						snippet snpt8
+							javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.x = random.nextDouble()*1000;","		focalCnt.y = random.nextDouble()*1000;"))
+					component cmp1
+						nInstances = java.lang.Integer(50)
+						variableValues initVars1
+							biomass = java.lang.Double(4.0)
+					component cmp2
+						nInstances = java.lang.Integer(50)
+						variableValues initVars2
+							biomass = java.lang.Double(3.0)
+			space space1
+				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
+				guardAreaWidth = java.lang.Double(0.0)
+				observationWindow = fr.cnrs.iees.uit.space.BoxImpl([[0.0,0.0],[150.0,100.0]])
+				precision = java.lang.Double(0.01)
+				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
+				units = java.lang.String(m)
+				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
+				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,150.0])
+			categorySet plants
+				category tree
+					constantClass = java.lang.String(Tree_Cnt)
+					decoratorClass = java.lang.String(Tree_Dec)
+					driverClass = java.lang.String(Tree_Drv)
 		dynamics sim1
 			timeline tmLn1
 				longestTimeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
@@ -133,22 +218,6 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 31 08:46:34 AEDT 2021
 					nTimeUnits = java.lang.Integer(1)
 					subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.timer.ClockTimer)
 					timeUnit = fr.cnrs.iees.twcore.constants.TimeUnits(YEAR)
-					process p4
-						dataTracker trk1
-							sampleSize = java.lang.String(ALL)
-							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
-					process p3
-						function FindNeighbours
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
-							userClassName = java.lang.String(code.sys1.generated.FindNeighbours)
-							snippet snpt6
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return squaredEuclidianDistance(x,y,other_x,other_y)<searchRadius*searchRadius;"))
-					process p2
-						function ResourceDemand
-							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
-							userClassName = java.lang.String(code.sys1.generated.ResourceDemand)
-							snippet snpt5
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		otherDec.neighBm += biomass;"))
 					process p1
 						function Growth
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
@@ -177,144 +246,75 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 31 08:46:34 AEDT 2021
 							statistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean,se,N})
 							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
 							tableStatistics = fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet({mean})
-		structure struc1
-			fixedPoints = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([1]0.0))
-			space space1
-				borderType = fr.cnrs.iees.twcore.constants.BorderListType(([4]"wrap","wrap","wrap","wrap"))
-				guardAreaWidth = java.lang.Double(0.0)
-				observationWindow = fr.cnrs.iees.uit.space.BoxImpl([[0.0,0.0],[150.0,100.0]])
-				precision = java.lang.Double(0.01)
-				type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
-				units = java.lang.String(m)
-				x-limits = fr.ens.biologie.generic.utils.Interval([0.0,100.0])
-				y-limits = fr.ens.biologie.generic.utils.Interval([0.0,150.0])
-			categorySet plants
-				category tree
-					constantClass = java.lang.String(Tree_Cnt)
-					decoratorClass = java.lang.String(Tree_Dec)
-					driverClass = java.lang.String(Tree_Drv)
-			groupType species
-				constantClass = java.lang.String(code.sys1.generated.Par)
-				group Carpinus
-					constantValues initCnts1
-						fec = java.lang.Double(0.4)
-						gmax = java.lang.Double(0.15)
-						pmor = java.lang.Double(0.1)
-				group Quercus
-					constantValues initCnts2
-						fec = java.lang.Double(0.1)
-						gmax = java.lang.Double(0.2)
-						pmor = java.lang.Double(0.05)
-				componentType treeIndividual
-					constantClass = java.lang.String(code.sys1.generated.TreeCst)
-					decoratorClass = java.lang.String(code.sys1.generated.Treedec)
-					driverClass = java.lang.String(code.sys1.generated.Drv)
-					lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
-					mobile = java.lang.Boolean(false)
-					relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-					initFunction InitTree
-						type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
-						userClassName = java.lang.String(code.sys1.generated.InitTree)
-						snippet snpt8
-							javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		focalCnt.x = random.nextDouble()*1000;","		focalCnt.y = random.nextDouble()*1000;"))
-					component cmp2
-						nInstances = java.lang.Integer(50)
-						variableValues initVars2
-							biomass = java.lang.Double(3.0)
-					component cmp1
-						nInstances = java.lang.Integer(50)
-						variableValues initVars1
-							biomass = java.lang.Double(4.0)
-			relationType neighbour
-				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-	userInterface gui
-		top top
-			widget timer
-				order = java.lang.Integer(1)
-				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ProgressWidget1)
-			widget ctrl
-				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
-		tab tab1
-			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-			container cont1
-				order = java.lang.Integer(0)
-				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
-				container cont3
-					order = java.lang.Integer(1)
-					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-					widget neigh biomass
-						maxAxes = java.lang.Integer(4)
-						order = java.lang.Integer(1)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
-					widget spp count
-						maxAxes = java.lang.Integer(2)
-						nSenders = java.lang.Integer(2)
-						order = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeSeriesWidget1)
-				container cont2
-					order = java.lang.Integer(0)
-					orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
-					widget tbl biomass
-						order = java.lang.Integer(0)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
-					widget tbl spp count
-						nSenders = java.lang.Integer(2)
-						order = java.lang.Integer(1)
-						subclass = java.lang.String(au.edu.anu.twuifx.widgets.TableWidget1)
-			widget map
-				nViews = java.lang.Integer(2)
-				order = java.lang.Integer(1)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceWidget1)
+					process p2
+						function ResourceDemand
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
+							userClassName = java.lang.String(code.sys1.generated.ResourceDemand)
+							snippet snpt5
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		otherDec.neighBm += biomass;"))
+					process p3
+						function FindNeighbours
+							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
+							userClassName = java.lang.String(code.sys1.generated.FindNeighbours)
+							snippet snpt6
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		return squaredEuclidianDistance(x,y,other_x,other_y)<neighRadius*neighRadius;"))
+					process p4
+						dataTracker trk1
+							sampleSize = java.lang.String(ALL)
+							subclass = java.lang.String(au.edu.anu.twcore.ecosystem.runtime.tracking.DataTracker0D)
+		initFunction Init1
+			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
+			userClassName = java.lang.String(code.sys1.generated.Init1)
+			snippet snpt7
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"		focalCnt.neighRadius = 10.0;"))
 
 // CROSS-LINKS
 [widget:neigh biomass] trackSeries trks6 [dataTracker:trk2]
 [component:cmp2] instanceOf instOf2 [group:Carpinus]
 [component:cmp1] instanceOf instOf1 [group:Quercus]
+[dataTracker:trk1] trackComponent trks3 [groupType:species]
 [dataTracker:trk1] trackField trks4 [field:count]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[dataTracker:trk1] trackComponent trks3 [groupType:species]
 [dataTracker:trk2] trackComponent trks8 [group:Quercus]
 [dataTracker:trk2] trackField trks7 [field:neighBm]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
-[category:tree] constants cnsts2 [record:treeCst]
 [category:tree] decorators decs1 [record:treedec]
+[category:tree] constants cnsts2 [record:treeCst]
 [category:tree] drivers drvs1 [record:drv]
-[system:sys1] belongsTo bt3 [category:*permanent*]
-[system:sys1] belongsTo bt2 [category:*assemblage*]
 [system:sys1] belongsTo bt1 [category:*arena*]
+[system:sys1] belongsTo bt2 [category:*assemblage*]
+[system:sys1] belongsTo bt3 [category:*permanent*]
 [category:*group*] constants cnts1 [record:par]
-[process:p1] appliesTo aplyTo2 [category:tree]
-[process:p1] dependsOn depsOn2 [process:p2]
 [process:p1] appliesTo aplyTo1 [category:*component*]
+[process:p1] appliesTo aplyTo2 [category:tree]
 [process:p1] inSpace in2 [space:space1]
 	searchRadius = java.lang.Double(20.0)
-[process:p2] dependsOn depsOn1 [process:p3]
+[process:p1] dependsOn depsOn2 [process:p2]
 [process:p2] appliesTo aplyTo3 [relationType:neighbour]
+[process:p2] dependsOn depsOn1 [process:p3]
 [process:p3] appliesTo aplyTo4 [relationType:neighbour]
 [process:p3] inSpace in1 [space:space1]
 	searchRadius = java.lang.Double(20.0)
-[process:p4] appliesTo aplyTo6 [category:*assemblage*]
 [process:p4] appliesTo aplyTo5 [category:*group*]
+[process:p4] appliesTo aplyTo6 [category:*assemblage*]
 [widget:tbl spp count] trackSeries trks9 [dataTracker:trk1]
-[relationType:neighbour] fromCategory from1 [category:tree]
 [relationType:neighbour] toCategory to1 [category:tree]
+[relationType:neighbour] fromCategory from1 [category:tree]
 [widget:timer] trackTime trks1 [dynamics:sim1]
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [widget:map] trackSpace trks2 [space:space1]
 [widget:spp count] trackSeries trks5 [dataTracker:trk1]
 [category:*arena*] constants cnsts1 [record:global]
-[componentType:treeIndividual] belongsTo bt7 [category:*ephemeral*]
-[componentType:treeIndividual] belongsTo bt6 [category:*component*]
-[componentType:treeIndividual] belongsTo bt5 [category:*atomic*]
 [componentType:treeIndividual] belongsTo bt4 [category:tree]
+[componentType:treeIndividual] belongsTo bt5 [category:*atomic*]
+[componentType:treeIndividual] belongsTo bt6 [category:*component*]
+[componentType:treeIndividual] belongsTo bt7 [category:*ephemeral*]
 [groupType:species] belongsTo bt10 [category:*permanent*]
-[groupType:species] belongsTo bt9 [category:*group*]
 [groupType:species] belongsTo bt8 [category:*assemblage*]
+[groupType:species] belongsTo bt9 [category:*group*]
 [widget:tbl biomass] trackSeries trks10 [dataTracker:trk2]
-[space:space1] coordinate x1 [field:x]
-	rank = java.lang.Integer(0)
 [space:space1] coordinate y1 [field:y]
 	rank = java.lang.Integer(3)
+[space:space1] coordinate x1 [field:x]
+	rank = java.lang.Integer(0)
