@@ -54,7 +54,7 @@ _Cross-links_ for `system`:
 This link tells to which categories the system node belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited.The categories targets of these links must be specific to the system, i.e. no `componentType`, `groupType` or `lifeCycleType` should refer (`belongTo` cross-link) to any of them.
 
 `belongsTo -> category:*arena*` {1}::
-This link to the predefined category `\*arena*` is required in all models. The arena is 'the place where things happen', i.e. it describes the part of the system where components interact. If no components are modelled, then it is the system.
+This link to the predefined category `\*arena*` is required in all models (<<truethe-predefined-sub-tree>>). The arena is 'the place where things happen', i.e. it describes the part of the system where components interact. If no components are modelled, then it is the system.
 
 `belongsTo -> category:*atomic*|\*assemblage*` {1}::
 This link to either the predefined category `\*atomic*` or `\*assemblage*` is required in all models. Only if the system is very simple (no components, no groups, no life cycles) should `\*atomic*` be selected. It means the system has no further subdivision. In any other case (i.e. as long as there is a structure sub-tree), the system should be an `\*assemblage*`. Assemblages have three automatic variables: the system size (number of components) `count`, the number of new components added during last time step `nAdded`, and the number of components deleted during the last time step `nRemoved`.
@@ -104,4 +104,37 @@ This node and its sub-tree specifies the look of the `ModelRunner` user interfac
 
 include::configuration-gui.adoc[]
 
+==== The _predefined_ sub-tree
+
+`/3worlds/**predefined:\*categories***` {1}
+
+This sub-tree is not editable. It specifies predefined categories, relation types and automatic variables that are used in any 3Worlds model in assocation with particular objects in the simulator. During the setup of a configuration, ModelMaker will sometimes request you to link some of your nodes to items found in this hierarchy.
+
+Predefined categories are grouped in 3 ``categorySet``s:
+
+* `\*systemElements*` represent hierarchical levels in the system:
+** `\*arena*` is a category attached to the whole system
+** `\*component*` is a category attached to any system component
+** `\*group*` is a category attached to any group of system components
+** `\*life cycle*` is a category attached to any life cycle
+** `\*relation*` is currently not in use
+
+* `\*organisation*` represent levels of organisation in the system:
+** `nRemoved`, the number of components added to the population during the last simulation step
+** `\*assemblage*` is a category attached to populations of components. Members of this category have the following automatic variables:
+*** `count`, the population size
+*** `nAdded`, the number of components added to the population during the last simulation step
+*** `nRemoved`, the number of components removed from the population during the last simulation step
+** `\*atomic*` is a category attached to elementary (atomic) components that cannot be further divided
+
+* `\*lifespan*` represent the lifespan of a component in the system:
+** `\*permanent*`, is a category for components that stay forever
+** `\*ephemeral*`, is a category for components that can be created or deleted during a simulation.Members of this category have the following automatic variables:
+*** `age`, the age of the component
+*** `birthDate`, the simulation time when this component was created.
+
+There are two predefined relation types:
+
+* `\*parentTo*: \*component* -> \*component*` may be used to relate a component to its offspring, i.e. it enables to track genealogic links between components (<<configuration-ecosystem-dynamics.adoc#truefunction>>).
+* `\*returnsTo*: \*component* -> \*component*` is not yet in use.
 

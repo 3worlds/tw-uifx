@@ -447,8 +447,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="email2" class="email"><a href="mailto:ian.davies@anu.edu.au">ian.davies@anu.edu.au</a></span><br>
 <span id="author3" class="author">Shayne R. Flint</span><br>
 <span id="email3" class="email"><a href="mailto:shayne.flint@anu.edu.au">shayne.flint@anu.edu.au</a></span><br>
-<span id="revnumber">version 1.3,</span>
-<span id="revdate">1 April 2021</span>
+<span id="revnumber">version 1.4,</span>
+<span id="revdate">8 April 2021</span>
 <br><span id="revremark"></span>
 </div>
 <div id="toc" class="toc2">
@@ -477,10 +477,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truebasics-what-you-must-know-before-starting">2.1. Basics - what you must know before starting</a></li>
 <li><a href="#trueprerequisites">2.2. Prerequisites</a></li>
 <li><a href="#truerunning-modelmaker">2.3. Running ModelMaker</a></li>
-<li><a href="#truesetting-up-a-java-development-environment-for-the-user-code">2.4. Setting up a java development environment for the user code</a>
+<li><a href="#truesetting-up-a-java-development-environment-for-the-user-code">2.4. Setting up a Java development environment for the user code</a>
 <ul class="sectlevel3">
-<li><a href="#truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds">2.4.1. Setting up an eclipse <em>i</em>ntegrated <em>d</em>evelopment <em>e</em>nvironment (IDE) for 3Worlds</a></li>
-<li><a href="#truerunning-modelmaker-from-eclipse">2.4.2. Running ModelMaker from eclipse</a></li>
+<li><a href="#truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds">2.4.1. Setting up the Eclipse Integrated Development Environment (IDE) for 3Worlds</a></li>
+<li><a href="#truerunning-modelmaker-from-eclipse">2.4.2. Running ModelMaker from Eclipse</a></li>
 <li><a href="#truelinking-user-code-with-model-configuration">2.4.3. Linking user code with model configuration</a></li>
 <li><a href="#truedebugging-and-testing-user-code">2.4.4. Debugging and testing user code</a></li>
 </ul>
@@ -506,6 +506,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truethe-datadefinition-node">3.3.5. The <em>dataDefinition</em> node</a></li>
 <li><a href="#truethe-experiment-node">3.3.6. The <em>experiment</em> node</a></li>
 <li><a href="#truethe-userinterface-node">3.3.7. The <em>userInterface</em> node</a></li>
+<li><a href="#truethe-predefined-sub-tree">3.3.8. The <em>predefined</em> sub-tree</a></li>
 </ul>
 </li>
 <li><a href="#truedeveloping-and-testing-model-code">3.4. Developing and testing model code</a>
@@ -535,7 +536,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>by <strong>Jacques Gignoux</strong>, <strong>Ian D. Davies</strong> &amp; <strong>Shayne R. Flint</strong></p>
 </div>
 <div class="paragraph">
-<p>Version: <strong>1.3</strong> (1 April 2021)</p>
+<p>Version: <strong>1.4</strong> (8 April 2021)</p>
 </div>
 </div>
 </div>
@@ -549,17 +550,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 one physical system”</em> A. G. Tanlsey (1935).</p>
 </div>
 <div class="paragraph">
-<p>Ecosystems, as first proposed by Arthur Tansley (1935), have both <em>physical</em> and <em>biological</em> aspects. They comprise
-the physics of energy and chemical stocks and flows and the biology of living things with a fleeting existence. They are made from and return to the physical world
-(dust to dust, ashes to ashes), are part of it and at one and the same time, they constitute an entire new world
-where concepts such as reproduction, social interaction, communication and life cycle dominate. To this day, reconciling these two aspects remains a key problem in ecosystem
-studies: How does an energy flux translate into a number of living individuals or in a higher biodiversity?
-How might the reproduction strategy of the beaver affect river hydrology and the regional water budget?
-How might social interactions (society) affect the frequency of hurricanes (e.g. climate change)?
+<p>Ecosystems, as first proposed by Arthur Tansley (1935), have both physical and biological aspects. They comprise not only energy and chemical stocks and flows but also living things that are born, reproduce and die, exhibiting particular behaviours over the course of their existence. They are made from and return to the physical world, are part of it and at the same time, constitute a domain where terms such as reproduction, social interaction, communication and life cycle have meaning.</p>
+</div>
+<div class="paragraph">
+<p>To this day, reconciling these two aspects, where the physical is articulated in SI units and the biological in descriptive terms (e. g. heterotroph, shade-tolerant, obligate seeder), remains a key problem in ecosystem studies: How does an energy flux translate into a number of living individuals or in a higher biodiversity? How might a particular reproduction strategy affect river hydrology and the regional water budget (e. g. the beaver)? How do social interactions affect the frequency of hurricanes (e. g. climate change)?
 <strong>3Worlds</strong> aims at providing <em>a tool for building simulations that couple the physical and biological aspects of ecosystems</em>.</p>
 </div>
 <div class="paragraph">
-<p>In our view, existing tools focus too much on one or other of these aspects. For example, dynamic models based on differential equations and can only represent reproduction and growth using metaphors for continuous physical quantities (e.g. matrix population models). Multi-agent systems (MAS), on the other hand, model social interactions well but pose difficulties in balancing mass or energy budgets.</p>
+<p>It is our view that existing tools focus predominantly on one or other of these aspects. For example, dynamic models based on differential equations and can only represent reproduction and growth using metaphors for continuous physical quantities (e.g. matrix population models). Multi-agent systems (MAS), on the other hand, model social interactions well but pose difficulties in balancing mass or energy budgets.</p>
 </div>
 <div class="paragraph">
 <p>In addition to this physical and biological duality, ecosystems are '<em>multi-scale</em>' (cf. an extensive discussion on
@@ -605,8 +603,8 @@ an ecological modeller can conceive of.</p>
 </div>
 <div class="paragraph">
 <p><strong>3Worlds</strong> builds upon more than thirty years of experience of its developers in ecosystem and complex system modelling and simulation. Over this time, we have reached the conclusion that: (1) robust concepts
-are fundamental for building sound software; (2) some problems that appear over and over again in the life of a
-simulation modellers often have well-established solutions, sometimes in other scientific fields; and (3) complex
+are fundamental for building sound software; (2) some problems, that appear over and over again in the life of a
+simulation modeller, often have well-established solutions, sometimes in other scientific fields; and (3) complex
 systems are more easily managed and understood when designed within a sound framework.</p>
 </div>
 <div class="paragraph">
@@ -633,7 +631,7 @@ systems are more easily managed and understood when designed within a sound fram
 <p>Ecosystems are commonly considered as <em>complex systems</em>, without much agreement on what this concept means. Complex systems are usually assumed to possess <em>emergent properties</em>; again, with little agreement on what this means. We argued in Gignoux et al. (2017) that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems <em>hierarchical systems</em> and assumed that they can be ideally represented with a <em>dynamic graph</em>.</p>
 </div>
 <div class="paragraph">
-<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical object comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes defined in an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Figure 1</a>). A <em>dynamic</em> graph (Harary &amp; Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
+<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical construct comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes defined in an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Figure 1</a>). A <em>dynamic</em> graph (Harary &amp; Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
 </div>
 <div id="fig-what-is-a-graph" class="imageblock text-center">
 <div class="content">
@@ -660,13 +658,13 @@ systems are more easily managed and understood when designed within a sound fram
 <p>In a dynamic graph, categories are used to specify common descriptors to groups of components (e.g. a plant species average growth rate, an animal cohort survival rate, &#8230;&#8203;) and functions that operate on a group of components of the same category. They are also used to specify which <em>type of relation</em> is possible between components of different categories.</p>
 </div>
 <div class="paragraph">
-<p>This category concept is similar in many ways to the class concept used in the <a href="http://uml.org/what-is-uml.htm">UML</a> language and in  <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented programming</a> . Categories can be nested, and can be exclusive of each other or not. They are central to the organisation and execution of a simulation in <strong>3Worlds</strong>.</p>
+<p>This category concept is similar in many ways to the class concept used in the <a href="http://uml.org/what-is-uml.htm">UML</a> language and in  <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented programming</a>. Categories can be nested, and can be exclusive of each other or not, that is, something can belong to one category of a set of caterories but not others within the same set e.g you can be <em>ephemeral</em> or <em>persistant</em> but not both. They are central to the organisation and execution of a simulation in <strong>3Worlds</strong>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truetime-with-simultaneous-events"><a class="anchor" href="#truetime-with-simultaneous-events"></a>1.2.4. Time with simultaneous events</h4>
 <div class="paragraph">
-<p>Because ecosystems are both biological and physical systems, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<a href="#fig-3w-main-loop">Figure 3</a>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the <em>autonomy</em> of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint.</p>
+<p>Because ecosystems have both biological and physical characteristics, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<a href="#fig-3w-main-loop">Figure 3</a>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the <em>autonomy</em> of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint.</p>
 </div>
 <div id="fig-3w-main-loop" class="imageblock text-center">
 <div class="content">
@@ -675,7 +673,7 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="title">Figure 3. The time model of 3Worlds. The overall dynamics of a system is computed as X(t+dt) = f(X(t)) where X represents the state of all system components, t is time and f is the function (or rather, the set of functions) used to compute the change over the time interval dt.</div>
 </div>
 <div class="paragraph">
-<p>Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. <strong>3Worlds</strong> provides three types of <em>time model</em> that can be used in interaction: '<em>clock</em>' models using a constant time step, <em>event-driven </em>time models where time events trigger computations that can generate further events in the future, and <em>scenarios</em> where the list of events determines when computations are to be made. Time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used.</p>
+<p>Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. in <strong>3Worlds</strong>, time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used. <strong>3Worlds</strong> provides three types of <em>time model</em> that can be used in interaction: '<em>clock</em>' models using a constant time step, <em>event-driven </em>time models where time events trigger computations that can generate further events in the future, and <em>scenarios</em> where the list of events determines when computations are to be made.</p>
 </div>
 </div>
 <div class="sect3">
@@ -699,7 +697,7 @@ systems are more easily managed and understood when designed within a sound fram
 <p>With <strong>3Worlds</strong>, we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programming techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used <em>automatic code generation</em> to ensure that researchers need only edit one code file to build a simulator for their particular model. We used a <em>graph editor</em> to build the configuration and organise the data required for a particular study. In <strong>3Worlds</strong> therefore, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written. None of this prevents the modeller from using software libraries, either their own or from a third party, to extend their coding capabilities.</p>
 </div>
 <div class="paragraph">
-<p>When designing a model, it is important to get quick visual feedback of how the system behaves when one changes equations or their implementation. <strong>3Worlds</strong> comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to the needs of the researcher.</p>
+<p>When designing a model, it is important to get quick visual feedback system behaviour when one changes equations or their implementation. <strong>3Worlds</strong> comes with a library of user-interface objects (graphs, maps, time series) that can be freely assembled to adapt outputs to the needs of the researcher.</p>
 </div>
 </div>
 <div class="sect3">
@@ -708,13 +706,13 @@ systems are more easily managed and understood when designed within a sound fram
 <p>Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they all yield different results. This is expected given the size of their code, but what is troubling is that nobody is able to trace within the code where the differences come from  (Lim &amp; Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models is represented in computer code, which are very difficult to compare for any but the simplest of models.</p>
 </div>
 <div class="paragraph">
-<p><strong>3Worlds</strong> is an attempt to solve this issue <em>in the future</em> (there is nothing we can do for past model codes). If models are developed within the standard framework of <strong>3Worlds</strong>, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.</p>
+<p><strong>3Worlds</strong> is an attempt to solve this issue <em>for the future</em> (there is nothing we can do for past model code). If models are developed within the standard framework of <strong>3Worlds</strong>, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="trueproblem-upscaling"><a class="anchor" href="#trueproblem-upscaling"></a>1.2.8. Problem upscaling</h4>
 <div class="paragraph">
-<p>Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in <em>simulation experiments</em>. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which will produce ecologically relevant, publishable results.</p>
+<p>Developing a simulator is only a small part of the ecological modelling exercise: once the simulator is ready, it is used as a real ecosystem in <em>simulation experiments</em>. Designing and running such experiments is a very important part of the job - if not the most important, as it is the one which gives insight and publishable results.</p>
 </div>
 <div class="paragraph">
 <p>IBMs are often stochastic, as population rates translate into probabilities at the individual level: e.g., the code has to decide which individuals to delete to satisfy a mortality rate of 10%. This is usually based on drawing random numbers. As a result, every simulation is different even when using identical parameters, and an asymptotic behaviour of the system can only be obtained by running multiple simulations. Fortunately, this is easily parallelized with modern computers.</p>
@@ -805,11 +803,11 @@ This execution is called a <em>simulation experiment</em>.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Creating a model involves creating a configuration with <code>ModelMaker</code> and developing some associated java code to specify details particular to your model.
-To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclipse</a> programming software (freeware). Later versions of 3Worlds may support other packages, but at the time of writing, 3Worlds will only work with <a href="https://www.eclipse.org/downloads/">eclipse</a>.</p>
+<p>Creating a model involves creating a configuration with <code>ModelMaker</code> and developing some associated Java code to specify details particular to your model.
+To do this, you must use the <a href="https://www.eclipse.org/downloads/">Eclipse</a> programming software (freeware). Later versions of 3Worlds may support other packages, but at the time of writing, 3Worlds will only work with <a href="https://www.eclipse.org/downloads/">eclipse</a>.</p>
 </div>
 <div class="paragraph">
-<p><code>ModelMaker</code> will generate java code for data structures specific to a model (based on the configuration file you have developed) and <em>template</em> java code for each process you have defined. These process templates are where you enter programming code to implement your model. You only need to write  code for your processes and for model initialisation. All else is managed by 3Worlds.</p>
+<p><code>ModelMaker</code> will generate Java code for data structures specific to a model (based on the configuration file you have developed) and <em>template</em> java code for each process you have defined. These process templates are where you enter programming code to implement your model. You only need to write  code for your processes and for model initialisation. All else is managed by 3Worlds.</p>
 </div>
 <div class="paragraph">
 <p>3Worlds is written in <a href="https://en.wikipedia.org/wiki/Java_(programming_language)">java</a>, which makes it OS-independent. It can be run on MacOS, Linux or Windows computers.</p>
@@ -818,28 +816,18 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclips
 <div class="sect2">
 <h3 id="trueprerequisites"><a class="anchor" href="#trueprerequisites"></a>2.2. Prerequisites</h3>
 <div class="paragraph">
-<p>You must have the following software installed on your computer prior to install 3Worlds:</p>
+<p>You will need the following software installed on your computer before installing 3Worlds:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>java JDK (<strong>J</strong>ava <strong>D</strong>evelopment <strong>K</strong>it), version 11 or greater (<a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">oracle</a> or <a href="http://openjdk.java.net/">open</a> version)</p>
+<p>Java JDK (<strong>J</strong>ava <strong>D</strong>evelopment <strong>K</strong>it), version 11 or greater (<a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">Oracle</a> or <a href="http://openjdk.java.net/">open</a> version)</p>
 </li>
 <li>
-<p>java fx (graphical user interface library for java: <a href="http://www.oracle.com/technetwork/java/javase/overview/javafx-overview-2158620.html">oracle</a> or <a href="http://openjdk.java.net/projects/openjfx/">open</a> version)</p>
+<p>Java fx (graphical user interface library for java: <a href="http://www.oracle.com/technetwork/java/javase/overview/javafx-overview-2158620.html">Oracle</a> or <a href="http://openjdk.java.net/projects/openjfx/">open</a> version)</p>
 </li>
 <li>
-<p>an <a href="https://www.eclipse.org/downloads/">eclipse</a> java code development environment. You must:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>install <a href="https://www.eclipse.org/downloads/">eclipse</a></p>
-</li>
-<li>
-<p>install the <a href="https://www.eclipse.org/efxclipse/install.html">e(fx)clipse plugin</a> required to use javafx</p>
-</li>
-</ul>
-</div>
+<p>an <a href="https://www.eclipse.org/downloads/">Eclipse</a> Java development environment and add the  <a href="https://www.eclipse.org/efxclipse/install.html">e(fx)clipse plugin</a> required for Javafx</p>
 </li>
 </ul>
 </div>
@@ -858,7 +846,7 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">eclips
 <p>Double-click on <code>modelMaker.jar</code>. This should launch the ModelMaker application.</p>
 </li>
 <li>
-<p>If this does not work, open a terminal and type <code>java -jar modelMaker.jar</code>. This should launch the ModelMaker application.</p>
+<p>If this doesn&#8217;t work, open a terminal and type <code>java -jar modelMaker.jar</code>. This should launch the ModelMaker application.</p>
 </li>
 </ol>
 </div>
@@ -879,11 +867,11 @@ This way of launching 3Worlds is sensitive to the relative location of <code>mod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">java -cp .3w/tw-dep.jar au.edu.anu.twuifx.mm.Main</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">java -cp .3w/tw-dep.jar au.edu.anu.twuifx.mm.MMmain</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The last is the preferred method as any errors that may arise will appear in the terminal window.</p>
+<p>It is preferable to run the software from a terminal window. This way, any errors that may arise will be displayed.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -892,29 +880,29 @@ This way of launching 3Worlds is sensitive to the relative location of <code>mod
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-to develop your model-specific code, you will need to setup a java development environment as shown in section <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Setting up Java</a>.
+to develop your model-specific code, you will need to setup a Java development environment as shown in section <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Setting up Java</a>.
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect2">
-<h3 id="truesetting-up-a-java-development-environment-for-the-user-code"><a class="anchor" href="#truesetting-up-a-java-development-environment-for-the-user-code"></a>2.4. Setting up a java development environment for the user code</h3>
+<h3 id="truesetting-up-a-java-development-environment-for-the-user-code"><a class="anchor" href="#truesetting-up-a-java-development-environment-for-the-user-code"></a>2.4. Setting up a Java development environment for the user code</h3>
 <div class="sect3">
-<h4 id="truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds"><a class="anchor" href="#truesetting-up-an-eclipse-integrated-development-environment-ide-for-3worlds"></a>2.4.1. Setting up an eclipse <em>i</em>ntegrated <em>d</em>evelopment <em>e</em>nvironment (IDE) for 3Worlds</h4>
+<h4 id="truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds"><a class="anchor" href="#truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds"></a>2.4.1. Setting up the Eclipse Integrated Development Environment (IDE) for 3Worlds</h4>
 <div class="paragraph">
-<p>This assumes you have downloaded <code>UserCodeRunner.java</code> and <code>tw-dep.jar</code>.</p>
+<p>This assumes you have downloaded <code>tw-dep.jar</code>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>If not yet done, install <a href="https://www.eclipse.org/downloads/">eclipse</a> (don&#8217;t forget <a href="https://www.eclipse.org/efxclipse/install.html">e(fx)clipse</a>!)</p>
+<p>If not yet done, install <a href="https://www.eclipse.org/downloads/">Eclipse</a> (don&#8217;t forget <a href="https://www.eclipse.org/efxclipse/install.html">e(fx)clipse</a>!)</p>
 </li>
 <li>
-<p>Create at <em>workspace</em> (= a working directory for eclipse - eclipse will ask for it when launched). e.g., <em>&lt;my_workspace&gt;</em></p>
+<p>Create at <em>workspace</em> (a working directory for Eclipse - Eclipse will ask for it when launched). e.g., <em>&lt;my_workspace&gt;</em></p>
 </li>
 <li>
-<p>Within eclipse, create a <em>project</em>:</p>
+<p>Within Eclipse, create a <em>project</em>:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -930,38 +918,7 @@ to develop your model-specific code, you will need to setup a java development e
 </div>
 </li>
 <li>
-<p>Import <code>UserCodeRunner.java</code> in the project:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Select menu <code>File &#8594; Import</code>; this opens a dialog box</p>
-</li>
-<li>
-<p>In the dialog box, select <code>general &gt; File System</code></p>
-</li>
-<li>
-<p>Click the <code>next</code> button</p>
-</li>
-<li>
-<p>Click on the <code>Browse</code> button to select the directory where <code>UserCodeRunner.java</code> is located</p>
-</li>
-<li>
-<p>Select the proper file in the list</p>
-</li>
-<li>
-<p>Select <code>/src</code> as the destination location in the project</p>
-</li>
-<li>
-<p>Click the <code>Finish</code> button</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><code>UserCodeRunner.java</code> should now appear as the unique member of a <code>default</code> package, with a compile error message attached to it.</p>
-</div>
-</li>
-<li>
-<p>Update libraries required by the project:</p>
+<p>Import 3Worlds dependencies:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -974,6 +931,9 @@ to develop your model-specific code, you will need to setup a java development e
 <p>Select the <code>Libraries</code> tab</p>
 </li>
 <li>
+<p>Select <code>ClassPath</code></p>
+</li>
+<li>
 <p>Click on the <code>Add external JARs&#8230;&#8203;</code> button; this open a file selection dialog box</p>
 </li>
 <li>
@@ -984,17 +944,14 @@ to develop your model-specific code, you will need to setup a java development e
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p><code>UserCodeRunner.java</code> should now have no compile errors.</p>
-</div>
 </li>
 </ol>
 </div>
 </div>
 <div class="sect3">
-<h4 id="truerunning-modelmaker-from-eclipse"><a class="anchor" href="#truerunning-modelmaker-from-eclipse"></a>2.4.2. Running ModelMaker from eclipse</h4>
+<h4 id="truerunning-modelmaker-from-eclipse"><a class="anchor" href="#truerunning-modelmaker-from-eclipse"></a>2.4.2. Running ModelMaker from Eclipse</h4>
 <div class="paragraph">
-<p>ModelMaker can be run as a standalone application, or from eclipse since it is included in the <code>tw-dep.jar</code> library required to develop the user code.</p>
+<p>ModelMaker can be run from Eclipse or as a standalone application since it is included in the <code>tw-dep.jar</code> library required to develop the user code.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1008,10 +965,10 @@ to develop your model-specific code, you will need to setup a java development e
 <p>In the dialog box, type <em>Main</em></p>
 </li>
 <li>
-<p>In the list of matching items, select <code>Main - au.edu.anu.twuifx.mm</code> and click <code>OK</code></p>
+<p>In the list of matching items, select <code>Main - au.edu.anu.twuifx.MMmain</code> and click <code>OK</code></p>
 </li>
 <li>
-<p>If a dialog box appears warning for errors, click <code>Proceed</code>. This launches the ModelMaker application</p>
+<p>If warning errors appear, click <code>Proceed</code>. This launches the ModelMaker application</p>
 </li>
 </ul>
 </div>
@@ -1034,7 +991,7 @@ to develop your model-specific code, you will need to setup a java development e
 <p>select <code>Preferences &#8594; Java Project &#8594; Connect&#8230;&#8203;</code>. This opens a dialog box with a file selector</p>
 </li>
 <li>
-<p>select the root directory of the <em>eclipse</em> project as created above (e.g. <em>&lt;my_workspace&gt;</em>/<em>&lt;my_project&gt;</em>)</p>
+<p>select the root directory of the <em>Eclipse</em> project as created above (e.g. <em>&lt;my_workspace&gt;</em>/<em>&lt;my_project&gt;</em>)</p>
 </li>
 </ul>
 </div>
@@ -1044,7 +1001,7 @@ When you want to edit your code in eclipse, you must first <strong>refresh</stro
 </div>
 </li>
 <li>
-<p>In eclipse,</p>
+<p>In Eclipse,</p>
 <div class="ulist">
 <ul>
 <li>
@@ -1068,7 +1025,7 @@ When you want to edit your code in eclipse, you must first <strong>refresh</stro
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You don&#8217;t <strong>have</strong> to do this. We provide it as a facility if you want to run ModelMaker from eclipse rather than directly for some profound reason of your own.
+You don&#8217;t <strong>have</strong> to do this. We provide it as a facility if you want to run ModelMaker from eclipse rather than directly for some reason of your own.
 </td>
 </tr>
 </table>
@@ -1077,16 +1034,19 @@ You don&#8217;t <strong>have</strong> to do this. We provide it as a facility if
 <div class="sect3">
 <h4 id="truedebugging-and-testing-user-code"><a class="anchor" href="#truedebugging-and-testing-user-code"></a>2.4.4. Debugging and testing user code</h4>
 <div class="paragraph">
-<p>The user code, first generated by <code>ModelMaker</code> and further edited by the user, can be run using <code>UserCodeRunner.java</code>.
-It requires two command line arguments (we assume that you know how to setup and run a <code>Run Configuration</code> in eclipse):</p>
+<p>The user code, first generated by <code>ModelMaker</code> and further edited by the user, can be run using <code>UserCodeRunner.java</code>. This class can be found in the <code>default</code> src directory and was created when linking this project with the 3Worlds project (cf above).
+It requires three command line arguments (we assume that you know how to setup and run a <code>Run Configuration</code> in Eclipse):</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
+<p>an instance number (more about this later); leave this at '0' for now.</p>
+</li>
+<li>
 <p>the name of the directory of the 3Worlds project as created by <code>ModelMaker</code> (e.g. <em>project_test_model9_2019-09-05-08-50-20-458</em>). This project directory is located under the <code>.3w</code> directory automatically created by <code>ModelMaker</code> as its working directory</p>
 </li>
 <li>
-<p>the name of the model configuration file in this directory (e.g. <em>test_model_9.ugt</em>)</p>
+<p>some optional settings to switch on debugging logs.</p>
 </li>
 </ul>
 </div>
@@ -1100,7 +1060,7 @@ It requires two command line arguments (we assume that you know how to setup and
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Further edits and modifications of the configuration can be made in <code>ModelMaker</code>, but do not forget to keep the eclipse project content synchronized with the ModelMaker project by refreshing the eclipse project as often as necessary.
+Further edits and modifications of the configuration can be made in <code>ModelMaker</code>, but don&#8217;t forget to keep the Eclipse project content synchronized with the ModelMaker project by refreshing the Eclipse project as often as necessary.
 </td>
 </tr>
 </table>
@@ -1163,7 +1123,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="sect3">
 <h4 id="truewith-cross-links"><a class="anchor" href="#truewith-cross-links"></a>3.1.2. &#8230;&#8203;with cross-links</h4>
 <div class="paragraph">
-<p>Actually, the 3Worlds configuration is not stritcly hierarchical (<a href="#fig-configuration-tree2">Figure 5</a>): according to their role in <code>ModelRunner</code>, some configuration <em>nodes</em> need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference <em>edges</em> to be defined, that overlay with the strict hierarchical structure of the tree. As a result fo these cross links, the whole configuration is a <em>graph</em> rather than a tree.</p>
+<p>Actually, the 3Worlds configuration is not strictly hierarchical (<a href="#fig-configuration-tree2">Figure 5</a>): according to their role in <code>ModelRunner</code>, some configuration <em>nodes</em> need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference <em>edges</em> to be defined, that overlay with the strict hierarchical structure of the tree. As a result of these cross links, the whole configuration is a <em>graph</em> rather than a tree.</p>
 </div>
 <div id="fig-configuration-tree2" class="imageblock text-center">
 <div class="content">
@@ -1346,7 +1306,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*arena*</code> {1}</dt>
 <dd>
-<p>This link to the predefined category <code>*arena*</code> is required in all models. The arena is 'the place where things happen', i.e. it describes the part of the system where components interact. If no components are modelled, then it is the system.</p>
+<p>This link to the predefined category <code>*arena*</code> is required in all models (<a href="#truethe-predefined-sub-tree">Section 3.3.8</a>). The arena is 'the place where things happen', i.e. it describes the part of the system where components interact. If no components are modelled, then it is the system.</p>
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*atomic*|*assemblage*</code> {1}</dt>
 <dd>
@@ -1426,7 +1386,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <p>A category may be defined with no drivers, decorators or constants.</p>
 </div>
 <div class="paragraph">
-<p>There are <em>predefined categories</em> in 3Worlds under the node <code>/3worlds/<strong>predefined</strong></code>, used to specify particular components of the system. They will be explained in time.</p>
+<p>There are <em>predefined categories</em> in 3Worlds under the node <code>/3worlds/<strong>predefined</strong></code> (<a href="#truethe-predefined-sub-tree">Section 3.3.8</a>), used to specify particular components of the system. They will be explained in time.</p>
 </div>
 </div>
 <div class="sect5">
@@ -2106,7 +2066,7 @@ Technically, space could just be treated as a component related to other compone
 <div class="sect4">
 <h5 id="truethe-setup-of-an-initial-state-for-a-simulation"><a class="anchor" href="#truethe-setup-of-an-initial-state-for-a-simulation"></a>The setup of an initial state for a simulation</h5>
 <div class="paragraph">
-<p>To run a simulation, an initial population of system component, group, life cycle, and system <em>instances</em> must be constructed from their respective <em>types</em> (e.g. <code>groupType</code>, <code>componentType</code>, etc.). They constitute the <em>initial state</em> of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific <em>function</em> (<code>setInitialState</code>, see <a href="#truefunction">Section 3.3.4.2.2</a>), or through external data files listed as <em>data sources</em><strong>[TO DO: cross ref to data source]</strong>.</p>
+<p>To run a simulation, an initial population of system component, group, life cycle, and system <em>instances</em> must be constructed from their respective <em>types</em> (e.g. <code>groupType</code>, <code>componentType</code>, etc.). They constitute the <em>initial state</em> of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific <em>function</em> (<code>setInitialState</code>, see <a href="#truefunction">Section 3.3.4.2.2</a>), or through external data files listed as <em>data sources</em> (<a href="#trueinputs-datasource">Section 3.3.6.4.1</a>).</p>
 </div>
 <div class="sect5">
 <h6 id="truecomponent"><a class="anchor" href="#truecomponent"></a>Component</h6>
@@ -2220,7 +2180,7 @@ Technically, space could just be treated as a component related to other compone
 </dl>
 </div>
 <div class="paragraph">
-<p>A second method to set descriptor values is to import data from an external source. This is done by defining a <code>dataSource</code> (cf. <strong>REF</strong>) and linking a <code>component</code>, <code>group</code>, <code>lifeCycle</code> or <code>system</code> to it:</p>
+<p>A second method to set descriptor values is to import data from an external source. This is done by defining a <code>dataSource</code> (<a href="#trueinputs-datasource">Section 3.3.6.4.1</a>) and linking a <code>component</code>, <code>group</code>, <code>lifeCycle</code> or <code>system</code> to it:</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>component</code>, <code>group</code>, <code>lifeCycle</code>, and <code>system</code></p>
@@ -3080,7 +3040,7 @@ The <code>relateToDecision</code> function has a special status among relation p
 <code>relateToProduct</code>
 </td>
 <td class="hdlist2">
-<p>A logical value (<code>false</code> by default) which tells to establish a permanent <code>parentTo</code> relation (defined in the <code>predefined</code> sub-tree:<strong>CROSSREF needed</strong>) between a parent component and its offspring created by calling <code>createOtherDecision</code>.</p>
+<p>A logical value (<code>false</code> by default) which tells to establish a permanent <code>parentTo</code> relation (defined in the <code>predefined</code> sub-tree:<a href="#truethe-predefined-sub-tree">Section 3.3.8</a>) between a parent component and its offspring created by calling <code>createOtherDecision</code>.</p>
 </td>
 </tr>
 </table>
@@ -4528,45 +4488,81 @@ The stopping condition has the priority over the <code>end</code> property.
 <p>This node and its sub-tree specifies the look of the <code>ModelRunner</code> user interface. <code>ModelRunner</code> is highly configurable and can show many graphs during a simulation run, as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.</p>
 </div>
 <div class="paragraph">
-<p><strong>[HERE: refactor this part]</strong></p>
+<p>3Worlds provides a series of interface <em>widgets</em>, i.e. graphical objects that can be used to design a <strong>G</strong>raphical <strong>U</strong>ser <strong>I</strong>nterface (GUI). Examples of widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc&#8230;&#8203; The basic <code>ModelRunner</code> GUI just provides places to put widgets: a <em>top</em>, a <em>bottom</em> and any number of <em>tabs</em>. Any number of widgets can be placed within these (<a href="#fig-example-gui">Figure 11</a>).</p>
 </div>
-<div class="paragraph">
-<p>3Worlds provides a series of interface <em>widgets</em>, i.e. graphical ojects that can be assembled to yield a usable <strong>g</strong>raphical <strong>u</strong>ser <strong>i</strong>nterface (GUI). Examples of widgets are: a window to display time series graphs, or XY maps, or simulation control buttons, or progress bars, etc&#8230;&#8203; The basic <code>ModelRunner</code> GUI just provides places where to put widgets: a <em>tool bar</em>, a <em>status bar</em>, four <em>quadrants</em>, and <em>tabs</em> within quadrants. <em>Widgets</em> can be placed inside the <em>tool bar</em>, the <em>status bar</em>, or <em>tabs</em>.</p>
-</div>
-<div id="fig-GUI-ModelRunner" class="imageblock text-center">
+<div id="fig-example-gui" class="imageblock text-center">
 <div class="content">
-<img src="GUI-ModelRunner.png" alt="GUI ModelRunner">
+<img src="example-gui.svg" alt="example gui">
 </div>
 <div class="title">Figure 11. The ModelRunner graphical user interface.</div>
 </div>
-<div class="paragraph">
-<p><strong>TODO: improve this figure</strong></p>
-</div>
 <div class="sect4">
-<h5 id="truetool-bar"><a class="anchor" href="#truetool-bar"></a>Tool bar</h5>
+<h5 id="truetop"><a class="anchor" href="#truetop"></a>Top</h5>
 <div class="paragraph">
-<p><code>/3worlds/userInterface/<strong>toolBar</strong></code> {1}</p>
+<p><code>/3worlds/userInterface/<strong>top</strong>:&lt;<em>name</em>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
-<p>The tool bar (always present) appears at the top of the GUI. Widgets placed there will appear beside each other <strong>[in random order ?]</strong>. The tool bar is typically the place where to put (small) widgets that must always remain visible at all time (as e.g., the widget containing the simulation controller buttons).</p>
+<p>The <em>top</em> is a tool bar. Widgets placed here will appear beside each other in an order specified in <code>ModelMaker</code> properties (<em>Order</em>). The top is typically the place where to put (small) widgets that must always remain accessible (e.g., simulation control buttons). Checks are made by <code>ModelMaker</code> to ensure only small widgets are placed here (<a href="#fig-example-gui">Figure 11</a>).</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="truestatus-bar"><a class="anchor" href="#truestatus-bar"></a>Status bar</h5>
+<h5 id="truebottom"><a class="anchor" href="#truebottom"></a>Bottom</h5>
 <div class="paragraph">
-<p><code>/3worlds/userInterface/<strong>statusBar</strong></code> {0..1}</p>
+<p><code>/3worlds/userInterface/<strong>bottom</strong>:&lt;<em>name</em>&gt;</code> {0..1}</p>
 </div>
 <div class="paragraph">
-<p>The status bar, appearing at the bottom of the GUI <strong>[TODO: check this!]</strong>, is optional. It is meant to show quick information about the simulation run (like the current time step or the overall completion).</p>
+<p>The <em>bottom</em> is a status bar. It has the same constraints as the <em>top</em>. Widgets such as a progress bar can be placed here if desired (<a href="#fig-example-gui">Figure 11</a>).</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="truetabs"><a class="anchor" href="#truetabs"></a>Tabs</h5>
+<h5 id="truetabs-and-containers"><a class="anchor" href="#truetabs-and-containers"></a>Tabs and containers</h5>
 <div class="paragraph">
-<p><code>/3worlds/userInterface/<strong>tab</strong></code> {0..*}</p>
+<p><code>/3worlds/userInterface/<strong>tab</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>Tabs are placed within four quadrants. They are meant to host large widgets, typically output graphs and maps. Within a quadrant, tabs appear on top of each other, i.e. only the content of the top tab is visible. <strong>[NOTE: in the archetype there is no requirement for a name for tabs -  I suggest it should be a requirement that a tab has a name]</strong></p>
+<p><code>/3worlds/userInterface/tab/<strong>container</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/userInterface/&#8230;&#8203;/container/<strong>container</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>There can be any number of <em>Tabs</em> and each <em>Tab</em> can contain any number of widgets through the use of <em>containers</em>. <em>Tabs</em> are intended for large widgets such as charts and maps. Since only one tab is visible at a time when the model is run, large GUIs can be assembled without the constraints imposed by window size (<a href="#fig-example-gui">Figure 11</a>).
+<em>Tab</em> contents are structured as a binary tree made of a combination of widgets or containers of widgets. A <em>Tab</em> can have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>One or two widgets;</p>
+</li>
+<li>
+<p>One widget and one container; or,</p>
+</li>
+<li>
+<p>Two containers.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Containers have the same constraints as tabs - i.e. each container can have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>One or two widgets;</p>
+</li>
+<li>
+<p>One widget and one container; or,</p>
+</li>
+<li>
+<p>Two containers.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Widgets can be leaf nodes in this binary tree i.e you can&#8217;t have a container or tab that contains nothing.</p>
+</div>
+<div class="paragraph">
+<p>The widget/container pairs in this binary tree can be arranged vertically or horizontally. This allows all possible arrangements of widgets in the GUI.</p>
 </div>
 <div class="paragraph">
 <p><em>Properties for</em> <code>tab</code>:</p>
@@ -4575,10 +4571,10 @@ The stopping condition has the priority over the <code>end</code> property.
 <table>
 <tr>
 <td class="hdlist1">
-<code>quadrant</code>
+<code>orientation</code>
 </td>
 <td class="hdlist2">
-<p>The ThreeWorlds user interface now has four areas where tabs can be placed. Each user <code>Tab</code> must have a property to specify in which quadrant it is to be added. <strong>TODO : fix this description</strong></p>
+<p>This property specifies the way widgets and containers are placed: side by side or on top of each other</p>
 <div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
@@ -4588,50 +4584,18 @@ The stopping condition has the priority over the <code>end</code> property.
 <table>
 <tr>
 <td class="hdlist1">
-<code>TopLeftPanel</code>
+<code>horizontal</code>
 </td>
 <td class="hdlist2">
-<p>top left quadrant of the  ModelRunner  UI (default value)</p>
+<p>Display panel is split by a vertical spliter into two panels, first on left and second on right (default value)</p>
 </td>
 </tr>
 <tr>
 <td class="hdlist1">
-<code>TopRightPanel</code>
+<code>vertical</code>
 </td>
 <td class="hdlist2">
-<p>top right quadrant of the  ModelRunner  UI</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>BottomLeftPanel</code>
-</td>
-<td class="hdlist2">
-<p>bottom left quadrant of the  ModelRunner UI</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>BottomRightPanel</code>
-</td>
-<td class="hdlist2">
-<p>bottom right quadrant of the ModelRunner  UI</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>ToolbarTop</code>
-</td>
-<td class="hdlist2">
-<p>Toolbar at the top of the ModelRunner UI</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>ToolbarBottom</code>
-</td>
-<td class="hdlist2">
-<p>Toolbar at the bottom  of the ModelRunner UI</p>
+<p>Display panel is split by a horizontal spliter into two panels, first above second</p>
 </td>
 </tr>
 </table>
@@ -4640,118 +4604,63 @@ The stopping condition has the priority over the <code>end</code> property.
 </div>
 </td>
 </tr>
-<tr>
-<td class="hdlist1">
-<code>layout</code>
-</td>
-<td class="hdlist2">
-<p>Javafx layouts. Remove Swing constants when we are finished with Swing. There is no equivalent of Desktop in Swing - MDI is considered obsolete. It may turn out that we have to provide much more sophisticated options than this -  <strong>TODO : fix this description</strong></p>
-<div class="sidebarblock">
-<div class="content">
+</table>
+</div>
 <div class="paragraph">
-<p><em>possible values</em>:</p>
+<p><em>Properties for</em> <code>container</code>:</p>
 </div>
 <div class="hdlist">
 <table>
 <tr>
 <td class="hdlist1">
-<code>GridPane</code>
+<code>orientation</code>
 </td>
 <td class="hdlist2">
-<p><strong>TODO : fix this description</strong> (default value)</p>
+<p>This property specifies the way widgets and containers are placed: side by side or on top of each other</p>
 </td>
 </tr>
 <tr>
 <td class="hdlist1">
-<code>AnchorPane</code>
+<code>order</code>
 </td>
 <td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>FlowPane</code>
-</td>
-<td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>BorderPane</code>
-</td>
-<td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>HBox</code>
-</td>
-<td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>VBox</code>
-</td>
-<td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>StackPane</code>
-</td>
-<td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>TabPane</code>
-</td>
-<td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>TilePane</code>
-</td>
-<td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>Accordion</code>
-</td>
-<td class="hdlist2">
-<p><strong>TODO : fix this description</strong></p>
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
+<p>Rank of placement in its container (smaller value: to the left/top; larger: to the right/bottom)</p>
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect4">
+<h5 id="trueheadless-ui"><a class="anchor" href="#trueheadless-ui"></a>Headless UI</h5>
+<div class="paragraph">
+<p><code>/3worlds/userInterface/<strong>headless</strong></code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>If you want to run a simulation unattended, you may not need a GUI at all. Instead you may want the simulation to begin immediately and use widgets to write data to disk. Such widgets are call <code>Headless</code>. All headless widgets are children of the <code>gui:Headless:</code> node.</p>
+</div>
+</div>
+<div class="sect4">
 <h5 id="truewidgets"><a class="anchor" href="#truewidgets"></a>Widgets</h5>
 <div class="paragraph">
-<p><code>/3worlds/userInterface/&#8230;&#8203;/<strong>widget</strong></code> {0..*}</p>
+<p><code>/3worlds/userInterface/top/<strong>widget</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>Widgets are the interesting part of the GUI configuration since they do the real work. A widget may be placed inside the <code>toolBar</code>, <code>statusBar</code>, or any <code>tab</code>.</p>
+<p><code>/3worlds/userInterface/bottom/<strong>widget</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p><em>Properties for</em> <code>widget</code></p>
+<p><code>/3worlds/userInterface/tab/<strong>widget</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/userInterface/&#8230;&#8203;/container/<strong>widget</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/userInterface/headless/<strong>widget</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
+</div>
+<div class="paragraph">
+<p>Widgets are the interesting part of the GUI configuration as they provide feedback and control of a simulation. A widget may be added as a child of <code>top</code>, <code>botton</code>, <code>tab</code>, <code>container</code>  or <code>headless</code>  nodes.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>widget</code>:</p>
 </div>
 <div class="hdlist">
 <table>
@@ -4760,12 +4669,12 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>order</code>
 </td>
 <td class="hdlist2">
-<p>An integer <strong>[what&#8217;s it used for?]</strong></p>
+<p>Rank of placement in its container (smaller value: to the left/top; larger: to the right/bottom)</p>
 </td>
 </tr>
 <tr>
 <td class="hdlist1">
-<code>class</code>
+<code>subclass</code>
 </td>
 <td class="hdlist2">
 <p>A widget class</p>
@@ -4778,42 +4687,106 @@ The stopping condition has the priority over the <code>end</code> property.
 <table>
 <tr>
 <td class="hdlist1">
-<code>TimeDisplayWidgetfx</code>
+<code>ControlWidget1</code>
 </td>
 <td class="hdlist2">
-<p>display simulation time</p>
+<p>A simple simulator controller with run/pause, step and reset buttons. Meaningless for multiple parallel simulations. Fits in <code>top</code> and <code>bottom</code></p>
 </td>
 </tr>
 <tr>
 <td class="hdlist1">
-<code>SimpleSimulationControlWidgetfx</code>
+<code>ControlWidget2</code>
 </td>
 <td class="hdlist2">
-<p>control a single simulation</p>
+<p>As control widget 1, plus displays stopping condition. Meaningless for multiple parallel simulations. Fits in <code>top</code> and <code>bottom</code></p>
 </td>
 </tr>
 <tr>
 <td class="hdlist1">
-<code>TimeSeriesPlotWidgetfx</code>
+<code>ControlWidget3</code>
 </td>
 <td class="hdlist2">
-<p>plot time series output</p>
+<p>As control widget 2, plus displays a time series plot of simulation completion. Use this to control multiple parallel simulations. Only fits in <code>tab</code> and <code>container</code></p>
 </td>
 </tr>
 <tr>
 <td class="hdlist1">
-<code>LabelValuePair</code>
+<code>ProgressWidget1</code>
 </td>
 <td class="hdlist2">
-<p><strong>???</strong></p>
+<p>A simple display of simulation time (average time for multiple simulations) and stopping condition. Fits in <code>top</code> and <code>bottom</code></p>
 </td>
 </tr>
 <tr>
 <td class="hdlist1">
-<code>SingleGridWidget</code>
+<code>ProgressWidget2</code>
 </td>
 <td class="hdlist2">
-<p><strong>???</strong></p>
+<p>A bar graph of simulation completion. Only fits in <code>tab</code> and <code>container</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>TimeseriesWidget1</code>
+</td>
+<td class="hdlist2">
+<p>A graph of <em>x<sub>i</sub></em> = <em>f</em>(<em>t</em>), where <em>x<sub>i</sub></em> are component descriptors and t is time. Only fits in <code>tab</code> and <code>container</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>ScatterplotWidget1</code>
+</td>
+<td class="hdlist2">
+<p>A graph of <em>y</em> = <em>f</em>(<em>x</em>) where <em>x</em> and <em>y</em> are two descriptors of a component. Only fits in <code>tab</code> and <code>container</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>SpaceWidget1</code>
+</td>
+<td class="hdlist2">
+<p>A map of a space (<a href="#truethe-representation-of-space">Section 3.3.3.3</a>). Only fits in <code>tab</code> and <code>container</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>TableWidget1</code>
+</td>
+<td class="hdlist2">
+<p>A table of number values <em>x<sub>i</sub></em>(<em>t</em>), for debugging. Only fits in <code>tab</code> and <code>container</code></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>MatrixWidget1</code>
+</td>
+<td class="hdlist2">
+<p><strong>not yet implemented</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>GraphWidget1</code>
+</td>
+<td class="hdlist2">
+<p>A display of the system graph <strong>not yet implemented</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>HLSimpleTimeSeriesWidget</code>
+</td>
+<td class="hdlist2">
+<p>As <code>TimeseriesWidget1</code>, but for headless simulations</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>HLSimpleControlWidget</code>
+</td>
+<td class="hdlist2">
+<p>As <code>ControlWidget1</code>, but for headless simulations</p>
 </td>
 </tr>
 </table>
@@ -4824,78 +4797,258 @@ The stopping condition has the priority over the <code>end</code> property.
 </tr>
 </table>
 </div>
+<div class="sect5">
+<h6 id="trueadditional-properties-for-widget-sub-classes"><a class="anchor" href="#trueadditional-properties-for-widget-sub-classes"></a>Additional properties for widget sub-classes</h6>
 <div class="paragraph">
-<p><em>Cross-links for</em> <code>widget</code>:</p>
+<p><em>for</em> <code>ControlWidget2</code> <em>and</em> <code>ControlWidget3</code>:</p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>dataListener &#8594; dataTracker:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
-<dd>
-<p>This link tells the widget where to get the data from.</p>
-</dd>
-</dl>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>sender</code>
+</td>
+<td class="hdlist2">
+<p>Index of the simulator instance to control</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>for</em> <code>ProgressWidget1</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>refreshRate</code>
+</td>
+<td class="hdlist2">
+<p>The display refresh rate in ms <strong>[TO DO: Ian, please explain]</strong></p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>for</em> <code>TimeSeriesWidget1</code> <em>and</em> <code>TableWidget1</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>firstSender</code>
+</td>
+<td class="hdlist2">
+<p><strong>[TO DO: Ian, please explain]</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>nSenders</code>
+</td>
+<td class="hdlist2">
+<p><strong>[TO DO: Ian, please explain]</strong></p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>for</em> <code>TimeSeriesWidget1</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>maxAxes</code>
+</td>
+<td class="hdlist2">
+<p><strong>[TO DO: Ian, please explain]</strong></p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>bufferSize</code>
+</td>
+<td class="hdlist2">
+<p>Number of time intervals to plot on the time axis, e.g. a value of 100 will display times 900-1000 when reaching time 1000</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>for</em> <code>SpaceWidget1</code>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>nViews</code>
+</td>
+<td class="hdlist2">
+<p><strong>[TO DO: Ian, please explain]</strong></p>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect5">
-<h6 id="truetime-display"><a class="anchor" href="#truetime-display"></a>Time display</h6>
+<h6 id="trueadditional-cross-links-for-widget-sub-classes"><a class="anchor" href="#trueadditional-cross-links-for-widget-sub-classes"></a>Additional cross-links for widget sub-classes</h6>
 <div class="paragraph">
-<p><em>Cross-links for</em> <code>TimeDisplayWidgetfx</code>:</p>
+<p><em>for</em> <code>ControlWidget2</code>, <code>ControlWidget3</code>, <code>ProgressWidget1</code>  <em>and</em> <code>ProgressWidget2</code>:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>timeListener &#8594; engine:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dt class="hdlist1"><code>trackTime &#8594; dynamics:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells the widget where to get the time values from.</p>
+<p>This link tells the widget which simulator it is going to control</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><em>for</em> <code>TimeSeriesWidget1</code>, <code>TableWidget1</code> <em>and</em>  <code>HLSimpleTimeSeriesWidget</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>trackSeries &#8594; dataTracker:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells the widget which <code>dataTracker</code> it receives its data from</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><em>for</em> <code>SpaceWidget1</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>trackSpace &#8594; space:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells the widget which space it receives its data from</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p><em>for</em> <code>GraphWidget1</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>trackSystem &#8594; system:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
+<dd>
+<p>This link tells the widget which system it receives its data from</p>
 </dd>
 </dl>
 </div>
 </div>
-<div class="sect5">
-<h6 id="truesimulation-control"><a class="anchor" href="#truesimulation-control"></a>Simulation control</h6>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truethe-predefined-sub-tree"><a class="anchor" href="#truethe-predefined-sub-tree"></a>3.3.8. The <em>predefined</em> sub-tree</h4>
 <div class="paragraph">
-<p><em>Cross-links for</em> <code>SimpleSimulationControlWidgetfx</code>:</p>
+<p><code>/3worlds/<strong>predefined:*categories</strong>*</code> {1}</p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>stateMachineListener &#8594; engine:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells the widget which engine it is going to control.</p>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect5">
-<h6 id="trueplotting-time-series-data"><a class="anchor" href="#trueplotting-time-series-data"></a>Plotting time series data</h6>
 <div class="paragraph">
-<p><em>Cross-links for</em> <code>TimeSeriesPlotWidgetfx</code>:</p>
+<p>This sub-tree is not editable. It specifies predefined categories, relation types and automatic variables that are used in any 3Worlds model in assocation with particular objects in the simulator. During the setup of a configuration, ModelMaker will sometimes request you to link some of your nodes to items found in this hierarchy.</p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>stateMachineListener &#8594; engine:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells the widget where to get simulation status information (e.g. when the simulation is over, reset, paused, etc.)</p>
-</dd>
-</dl>
-</div>
-</div>
-<div class="sect5">
-<h6 id="truevalue-pair-widget"><a class="anchor" href="#truevalue-pair-widget"></a>[Value pair widget]</h6>
 <div class="paragraph">
-<p><em>Cross-links for</em> <code>LabelValuePair</code>:</p>
+<p>Predefined categories are grouped in 3 <code>categorySet</code>s:</p>
 </div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>stateMachineListener &#8594; engine:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
-<dd>
-<p>This link tells the widget where to get simulation status information (e.g. when the simulation is over, reset, paused, etc.)</p>
-</dd>
-</dl>
+<div class="ulist">
+<ul>
+<li>
+<p><code>*systemElements*</code> represent hierarchical levels in the system:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>*arena*</code> is a category attached to the whole system</p>
+</li>
+<li>
+<p><code>*component*</code> is a category attached to any system component</p>
+</li>
+<li>
+<p><code>*group*</code> is a category attached to any group of system components</p>
+</li>
+<li>
+<p><code>*life cycle*</code> is a category attached to any life cycle</p>
+</li>
+<li>
+<p><code>*relation*</code> is currently not in use</p>
+</li>
+</ul>
 </div>
+</li>
+<li>
+<p><code>*organisation*</code> represent levels of organisation in the system:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>nRemoved</code>, the number of components added to the population during the last simulation step</p>
+</li>
+<li>
+<p><code>*assemblage*</code> is a category attached to populations of components. Members of this category have the following automatic variables:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>count</code>, the population size</p>
+</li>
+<li>
+<p><code>nAdded</code>, the number of components added to the population during the last simulation step</p>
+</li>
+<li>
+<p><code>nRemoved</code>, the number of components removed from the population during the last simulation step</p>
+</li>
+</ul>
 </div>
+</li>
+<li>
+<p><code>*atomic*</code> is a category attached to elementary (atomic) components that cannot be further divided</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>*lifespan*</code> represent the lifespan of a component in the system:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>*permanent*</code>, is a category for components that stay forever</p>
+</li>
+<li>
+<p><code>*ephemeral*</code>, is a category for components that can be created or deleted during a simulation.Members of this category have the following automatic variables:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>age</code>, the age of the component</p>
+</li>
+<li>
+<p><code>birthDate</code>, the simulation time when this component was created.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are two predefined relation types:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>*parentTo*: *component* &#8594; *component*</code> may be used to relate a component to its offspring, i.e. it enables to track genealogic links between components (<a href="#truefunction">Section 3.3.4.2.2</a>).</p>
+</li>
+<li>
+<p><code>*returnsTo*: *component* &#8594; *component*</code> is not yet in use.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="truedeveloping-and-testing-model-code"><a class="anchor" href="#truedeveloping-and-testing-model-code"></a>3.4. Developing and testing model code</h3>
+<div class="paragraph">
+<p><strong>TO DO refactor all this section</strong></p>
+</div>
 <div class="paragraph">
 <p>This section gives general rules to follow to successfully edit the generated <code>TwFunction</code>-descendant classes in order for your model to behave as you wish. Section <a href="#truesetting_up_a_java_development_environment_for_the_user_code">Setting up a user coding environment</a> describes how to link your ModelMaker session with an eclipse development enviromnent where you can edit the generated code. Section <a href="#truefunction">Function</a> describes all the options you can setup in <code>ModelMaker</code> to specify your function.</p>
 </div>
@@ -5084,8 +5237,8 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.3<br>
-Last updated 2021-04-07 16:48:06 +0200
+Version 1.4<br>
+Last updated 2021-04-08 16:00:00 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

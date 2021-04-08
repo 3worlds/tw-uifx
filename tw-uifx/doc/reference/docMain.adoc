@@ -12,7 +12,7 @@
 
 = 3Worlds user manual
 Jacques Gignoux <jacques.gignoux@upmc.fr>; Ian D. Davies <ian.davies@anu.edu.au>; Shayne R. Flint <shayne.flint@anu.edu.au>
-v1.3, 1 April 2021:
+v1.4, 8 April 2021:
 
 by *{author}*, *{author_2}* & *{author_3}*
 
@@ -44,6 +44,8 @@ include::configuration-structure.adoc[]
 include::configuration-reference.adoc[]
  
 === Developing and testing model code
+
+*TO DO refactor all this section*
 
 include::user-coding-reference.adoc[]
 

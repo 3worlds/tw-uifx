@@ -1,30 +1,30 @@
+3Worlds provides a series of interface _widgets_, i.e. graphical objects that can be used to design a **G**raphical **U**ser **I**nterface (GUI). Examples of widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc... The basic `ModelRunner` GUI just provides places to put widgets: a _top_, a _bottom_ and any number of _tabs_. Any number of widgets can be placed within these (<<fig-example-gui>>).
 
-*[HERE: refactor this part]*
-
-3Worlds provides a series of interface _widgets_, i.e. graphical objects that can be used to design a **G**raphical **U**ser **I**nterface (GUI). Examples of widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc... The basic `ModelRunner` GUI just provides places to put widgets: a _top_, a _bottom_ and any number of _tabs_. Any number of widgets can be placed within these.
-
-[#fig-GUI-ModelRunner]
+[[fig-example-gui]]
 .The ModelRunner graphical user interface.
-image::GUI-ModelRunner.png[align="center"]
-*TODO: improve this figure*
+image::example-gui.svg[align="center"]
 
 ===== Top
 
-`/3worlds/userInterface/*toolBar*` {1}
+`/3worlds/userInterface/*top*:<__name__>` {1}
 
-The _top_ is a tool bar. Widgets placed here will appear beside each other in an order specified in ModelMaker properties (_Order_). The top is typically the place where to put (small) widgets that must always remain accessible (e.g., simulation control buttons). Checks are made by ModelMaker to ensure only small widgets are placed here.
+The _top_ is a tool bar. Widgets placed here will appear beside each other in an order specified in `ModelMaker` properties (_Order_). The top is typically the place where to put (small) widgets that must always remain accessible (e.g., simulation control buttons). Checks are made by `ModelMaker` to ensure only small widgets are placed here (<<fig-example-gui>>).
 
 ===== Bottom
 
-`/3worlds/userInterface/*statusBar*` {0..1}
+`/3worlds/userInterface/*bottom*:<__name__>` {0..1}
 
-The _bottom_ is a status bar. It has the same constraints as the _top_. Widgets such as a progress bar can be placed here if desired.
+The _bottom_ is a status bar. It has the same constraints as the _top_. Widgets such as a progress bar can be placed here if desired (<<fig-example-gui>>).
 
-===== Tabs
+===== Tabs and containers
 
-`/3worlds/userInterface/*tab*` {0..*}
+`/3worlds/userInterface/*tab*:<__name__>` {0..*}
 
-There can be any number of _Tabs_ and each _Tab_ can contain any number of widgets through the use of _containers_. _Tabs_ are intended for large widgets such as charts and maps. Since only one tab is visible at a time when the model is run, large GUIs can be assembled without the constraints imposed by window size. 
+`/3worlds/userInterface/tab/*container*:<__name__>` {0..*}
+
+`/3worlds/userInterface/.../container/*container*:<__name__>` {0..*}
+
+There can be any number of _Tabs_ and each _Tab_ can contain any number of widgets through the use of _containers_. _Tabs_ are intended for large widgets such as charts and maps. Since only one tab is visible at a time when the model is run, large GUIs can be assembled without the constraints imposed by window size (<<fig-example-gui>>). 
 _Tab_ contents are structured as a binary tree made of a combination of widgets or containers of widgets. A _Tab_ can have:
 
 * One or two widgets;
@@ -43,63 +43,97 @@ The widget/container pairs in this binary tree can be arranged vertically or hor
 
 include::ArchetypeDoc-tab.adoc[]
 
-==== Headless UI
+include::ArchetypeDoc-container.adoc[]
+
+===== Headless UI
+
+`/3worlds/userInterface/*headless*` {0..*}
 
 If you want to run a simulation unattended, you may not need a GUI at all. Instead you may want the simulation to begin immediately and use widgets to write data to disk. Such widgets are call `Headless`. All headless widgets are children of the `gui:Headless:` node.
 
 ===== Widgets
 
-`/3worlds/userInterface/.../*widget*` {0..*}
+`/3worlds/userInterface/top/*widget*:<__name__>` {0..*}
+
+`/3worlds/userInterface/bottom/*widget*:<__name__>` {0..*}
+
+`/3worlds/userInterface/tab/*widget*:<__name__>` {0..*}
+
+`/3worlds/userInterface/.../container/*widget*:<__name__>` {0..*}
+
+`/3worlds/userInterface/headless/*widget*:<__name__>` {0..*}
 
 Widgets are the interesting part of the GUI configuration as they provide feedback and control of a simulation. A widget may be added as a child of `top`, `botton`, `tab`, `container`  or `headless`  nodes.
 
-_Properties for_ `widget`
+include::ArchetypeDoc-widget.adoc[]
 
-[horizontal]
-`order`:: Determines the layout order of the widget within its parent node.
-`class`:: A widget class
+`subclass`:: A widget class
 +
 ****
 _possible values_:
 [horizontal]
-`TimeDisplayWidgetfx`:: display simulation time
-`SimpleSimulationControlWidgetfx`:: control a single simulation
-`TimeSeriesPlotWidgetfx`:: plot time series output
-`LabelValuePair`:: *???*
-`SingleGridWidget`:: *???*
+`ControlWidget1`:: A simple simulator controller with run/pause, step and reset buttons. Meaningless for multiple parallel simulations. Fits in `top` and `bottom`
+`ControlWidget2`:: As control widget 1, plus displays stopping condition. Meaningless for multiple parallel simulations. Fits in `top` and `bottom`
+`ControlWidget3`:: As control widget 2, plus displays a time series plot of simulation completion. Use this to control multiple parallel simulations. Only fits in `tab` and `container`
+`ProgressWidget1`:: A simple display of simulation time (average time for multiple simulations) and stopping condition. Fits in `top` and `bottom`
+`ProgressWidget2`:: A bar graph of simulation completion. Only fits in `tab` and `container`
+`TimeseriesWidget1`:: A graph of _x~i~_ = __f__(__t__), where _x~i~_ are component descriptors and t is time. Only fits in `tab` and `container`
+`ScatterplotWidget1`:: A graph of _y_ = __f__(__x__) where _x_ and _y_ are two descriptors of a component. Only fits in `tab` and `container`
+`SpaceWidget1`:: A map of a space (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>). Only fits in `tab` and `container`
+`TableWidget1`:: A table of number values __x~i~__(__t__), for debugging. Only fits in `tab` and `container`
+`MatrixWidget1`:: *not yet implemented*
+`GraphWidget1`:: A display of the system graph *not yet implemented*
+`HLSimpleTimeSeriesWidget`:: As `TimeseriesWidget1`, but for headless simulations
+`HLSimpleControlWidget`:: As `ControlWidget1`, but for headless simulations
 ****
 
-_Cross-links for_ `widget`:
+====== Additional properties for widget sub-classes
 
-`dataListener -> dataTracker:<[underline]##__name__##>` {0..*}::
-This link tells the widget where to get the data from.
+_for_ `ControlWidget2` _and_ `ControlWidget3`:
 
-====== Time display
+[horizontal]
+`sender`:: Index of the simulator instance to control
 
-_Cross-links for_ `TimeDisplayWidgetfx`:
+_for_ `ProgressWidget1`:
 
-`timeListener -> engine:<[underline]##__name__##>` {1}::
-This link tells the widget where to get the time values from.
+[horizontal]
+`refreshRate`:: The display refresh rate in ms *[TO DO: Ian, please explain]*
 
-====== Simulation control
+_for_ `TimeSeriesWidget1` _and_ `TableWidget1`:
 
-_Cross-links for_ `SimpleSimulationControlWidgetfx`:
+[horizontal]
+`firstSender`:: *[TO DO: Ian, please explain]*
+`nSenders`:: *[TO DO: Ian, please explain]*
 
-`stateMachineListener -> engine:<[underline]##__name__##>` {1}::
-This link tells the widget which engine it is going to control.
+_for_ `TimeSeriesWidget1`:
 
-====== Plotting time series data
+[horizontal]
+`maxAxes`:: *[TO DO: Ian, please explain]*
+`bufferSize`:: Number of time intervals to plot on the time axis, e.g. a value of 100 will display times 900-1000 when reaching time 1000
 
-_Cross-links for_ `TimeSeriesPlotWidgetfx`:
+_for_ `SpaceWidget1`:
 
-`stateMachineListener -> engine:<[underline]##__name__##>` {1}::
-This link tells the widget where to get simulation status information (e.g. when the simulation is over, reset, paused, etc.)
+[horizontal]
+`nViews`:: *[TO DO: Ian, please explain]*
 
-====== [Value pair widget]
+====== Additional cross-links for widget sub-classes
 
-_Cross-links for_ `LabelValuePair`:
+_for_ `ControlWidget2`, `ControlWidget3`, `ProgressWidget1`  _and_ `ProgressWidget2`:
 
-`stateMachineListener -> engine:<[underline]##__name__##>` {1}::
-This link tells the widget where to get simulation status information (e.g. when the simulation is over, reset, paused, etc.)
+`trackTime -> dynamics:<[underline]##__name__##>` {1}::
+This link tells the widget which simulator it is going to control
 
+_for_ `TimeSeriesWidget1`, `TableWidget1` _and_  `HLSimpleTimeSeriesWidget`:
 
+`trackSeries -> dataTracker:<[underline]##__name__##>` {1}::
+This link tells the widget which `dataTracker` it receives its data from
+
+_for_ `SpaceWidget1`:
+
+`trackSpace -> space:<[underline]##__name__##>` {1}::
+This link tells the widget which space it receives its data from
+
+_for_ `GraphWidget1`:
+
+`trackSystem -> system:<[underline]##__name__##>` {1}::
+This link tells the widget which system it receives its data from

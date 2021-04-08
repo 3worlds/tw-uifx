@@ -33,7 +33,7 @@ _Automatic variables_ do not need to be specified - because they are automatic.
 
 A category may be defined with no drivers, decorators or constants.
 
-There are _predefined categories_ in 3Worlds under the node `/3worlds/*predefined*`, used to specify particular components of the system. They will be explained in time.
+There are _predefined categories_ in 3Worlds under the node `/3worlds/*predefined*` (<<configuration-reference.adoc#truethe-predefined-sub-tree>>), used to specify particular components of the system. They will be explained in time.
 
 ====== CategorySet
 
@@ -272,7 +272,7 @@ _Additional properties for space type_ `SquareGrid`:
 
 ===== The setup of an initial state for a simulation
 
-To run a simulation, an initial population of system component, group, life cycle, and system _instances_ must be constructed from their respective _types_ (e.g. `groupType`, `componentType`, etc.). They constitute the _initial state_ of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific _function_ (`setInitialState`, see <<configuration-ecosystem-dynamics.adoc#truefunction>>), or through external data files listed as _data sources_**[TO DO: cross ref to data source]**.
+To run a simulation, an initial population of system component, group, life cycle, and system _instances_ must be constructed from their respective _types_ (e.g. `groupType`, `componentType`, etc.). They constitute the _initial state_ of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific _function_ (`setInitialState`, see <<configuration-ecosystem-dynamics.adoc#truefunction>>), or through external data files listed as _data sources_ (<<configuration-experiment.adoc#trueinputs-datasource>>).
 
 ====== Component
 
@@ -332,7 +332,7 @@ _Cross-links for_ `initFunction`:
 `useRNG -> rng:<__name__>` {0..1}::
 Points to the random number generator channel (<<configuration-dataDefinition.adoc#truerandom-number-channels>>) to use in this function. If unset, the default random number channel is used.
 
-A second method to set descriptor values is to import data from an external source. This is done by defining a `dataSource` (cf. **REF**) and linking a `component`, `group`, `lifeCycle` or `system` to it:
+A second method to set descriptor values is to import data from an external source. This is done by defining a `dataSource` (<<configuration-experiment.adoc#trueinputs-datasource>>) and linking a `component`, `group`, `lifeCycle` or `system` to it:
 
 _Cross-links for_ `component`, `group`, `lifeCycle`, and `system`
 

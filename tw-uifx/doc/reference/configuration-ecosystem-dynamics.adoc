@@ -163,7 +163,7 @@ Points to the random number generator channel (<<configuration-dataDefinition.ad
 _Additional properties when_ `function = createOtherDecision`:
 
 [horizontal]
-`relateToProduct`:: A logical value (`false` by default) which tells to establish a permanent `parentTo` relation (defined in the `predefined` sub-tree:**CROSSREF needed**) between a parent component and its offspring created by calling `createOtherDecision`.
+`relateToProduct`:: A logical value (`false` by default) which tells to establish a permanent `parentTo` relation (defined in the `predefined` sub-tree:<<configuration-reference.adoc#truethe-predefined-sub-tree>>) between a parent component and its offspring created by calling `createOtherDecision`.
 
 `/3worlds/.../function/*snippet*:<__name__>` {0..1}
 
