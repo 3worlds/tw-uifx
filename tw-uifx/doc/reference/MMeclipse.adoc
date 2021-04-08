@@ -1,51 +1,52 @@
 //[setting up java]
-=== Setting up a java development environment for the user code
+=== Setting up a Java development environment for the user code
 
-==== Setting up an eclipse __i__ntegrated __d__evelopment __e__nvironment (IDE) for 3Worlds
+==== Setting up the Eclipse Integrated Development Environment (IDE) for 3Worlds
 
-This assumes you have downloaded `UserCodeRunner.java` and `tw-dep.jar`.
+This assumes you have downloaded `tw-dep.jar`.
 
-. If not yet done, install https://www.eclipse.org/downloads/[eclipse] (don't forget https://www.eclipse.org/efxclipse/install.html[e(fx)clipse]!)
+. If not yet done, install https://www.eclipse.org/downloads/[Eclipse] (don't forget https://www.eclipse.org/efxclipse/install.html[e(fx)clipse]!)
 
-. Create at _workspace_ (= a working directory for eclipse - eclipse will ask for it when launched). e.g., _<my_workspace>_
+. Create at _workspace_ (a working directory for Eclipse - Eclipse will ask for it when launched). e.g., _<my_workspace>_
 
-. Within eclipse, create a _project_:
+. Within Eclipse, create a _project_:
 * Select menu `File -> New -> Java project`; this opens a dialog box 
 * In the dialog box, type a project name (e.g. _<my_project>_)
 * Click the `Finish` button
 
-. Import `UserCodeRunner.java` in the project:
-* Select menu `File -> Import`; this opens a dialog box 
-* In the dialog box, select `general > File System`
-* Click the `next` button
-* Click on the `Browse` button to select the directory where `UserCodeRunner.java` is located
-* Select the proper file in the list
-* Select `/src` as the destination location in the project
-* Click the `Finish` button
-
-+
-`UserCodeRunner.java` should now appear as the unique member of a `default` package, with a compile error message attached to it.
-
-. Update libraries required by the project:
+. Import 3Worlds dependencies:
 * Select menu `Project -> Properties`; this opens a dialog box 
 * In the dialog box, select `Java Build Path`
 * Select the `Libraries` tab
+* Select `ClassPath`
 * Click on the `Add external JARs...` button; this open a file selection dialog box
 * In the file selection dialog box, browse and select `tw-dep.jar`
 * Click the `Apply and Close` button
+
+// NB: UserCodeRunner is created when a 3w project is linked to a Java project - it is not 'imported' from anywhere
+//. Import `UserCodeRunner.java` in the project:
+//* Select menu `File -> Import`; this opens a dialog box 
+//* In the dialog box, select `general > File System`
+//* Click the `next` button
+//* Click on the `Browse` button to select the directory where `UserCodeRunner.java` is located
+//* Select the proper file in the list
+//* Select `/src` as the destination location in the project
+//* Click the `Finish` button
+//`UserCodeRunner.java` should now appear as the unique member of a `default` package, with a compile error message attached to it.
  
-+ 
-`UserCodeRunner.java` should now have no compile errors.
+//+ 
+//`UserCodeRunner.java` should now have no compile errors.
 
-==== Running ModelMaker from eclipse
 
-ModelMaker can be run as a standalone application, or from eclipse since it is included in the `tw-dep.jar` library required to develop the user code.
+==== Running ModelMaker from Eclipse
+
+ModelMaker can be run from Eclipse or as a standalone application since it is included in the `tw-dep.jar` library required to develop the user code.
 
 * In the `package explorer` window, expand the `Referenced libraries` entry
 * Right-click on the `tw-dep.jar` entry, select `Run as -> Java Application`. This opens a dialog box
 * In the dialog box, type _Main_
-* In the list of matching items, select `Main - au.edu.anu.twuifx.mm` and click `OK` 
-* If a dialog box appears warning for errors, click `Proceed`. This launches the ModelMaker application
+* In the list of matching items, select `Main - au.edu.anu.twuifx.MMmain` and click `OK` 
+* If warning errors appear, click `Proceed`. This launches the ModelMaker application
 
 ==== Linking user code with model configuration
 
@@ -54,27 +55,29 @@ This requires the following actions:
 . In ModelMaker,
 * create or open a _3Worlds_ project (`Projects` entry of the main menu)
 * select `Preferences -> Java Project -> Connect...`. This opens a dialog box with a file selector
-* select the root directory of the _eclipse_ project as created above (e.g. _<my_workspace>_/_<my_project>_) 
+* select the root directory of the _Eclipse_ project as created above (e.g. _<my_workspace>_/_<my_project>_) 
 
 +
 This operation tells `ModelMaker` to generate its code into the user java project.
 When you want to edit your code in eclipse, you must first *refresh* the eclipse project:
 
-. In eclipse,
+. In Eclipse,
 * select the project name at the very top of the `package explorer` window
 * right-click on it and select `Refresh`
 * or, alternatively: press the *F5* key
 
-NOTE: You don't *have* to do this. We provide it as a facility if you want to run ModelMaker from eclipse rather than directly for some profound reason of your own.
+NOTE: You don't *have* to do this. We provide it as a facility if you want to run ModelMaker from eclipse rather than directly for some reason of your own.
 
 ==== Debugging and testing user code
 
-The user code, first generated by `ModelMaker` and further edited by the user, can be run using `UserCodeRunner.java`.
-It requires two command line arguments (we assume that you know how to setup and run a `Run Configuration` in eclipse):
+The user code, first generated by `ModelMaker` and further edited by the user, can be run using `UserCodeRunner.java`. This class can be found in the `default` src directory and was created when linking this project with the 3Worlds project (cf above).
+It requires three command line arguments (we assume that you know how to setup and run a `Run Configuration` in Eclipse):
+
+* an instance number (more about this later); leave this at '0' for now.
 
 * the name of the directory of the 3Worlds project as created by `ModelMaker` (e.g. _project_test_model9_2019-09-05-08-50-20-458_). This project directory is located under the `.3w` directory automatically created by `ModelMaker` as its working directory
-* the name of the model configuration file in this directory (e.g. _test_model_9.ugt_)
+* some optional settings to switch on debugging logs.
  
 With this, the user code should be executed as a test simulation by `UserCodeRunner`.
 
-WARNING: Further edits and modifications of the configuration can be made in `ModelMaker`, but do not forget to keep the eclipse project content synchronized with the ModelMaker project by refreshing the eclipse project as often as necessary.
+WARNING: Further edits and modifications of the configuration can be made in `ModelMaker`, but don't forget to keep the Eclipse project content synchronized with the ModelMaker project by refreshing the Eclipse project as often as necessary.

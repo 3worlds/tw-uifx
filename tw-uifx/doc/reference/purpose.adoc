@@ -3,16 +3,12 @@
 _“Though the organisms may claim our primary interest, when we are trying to think fundamentally we cannot separate them from their special environment, with which they form
 one physical system”_ A. G. Tanlsey (1935). 
 
-Ecosystems, as first proposed by Arthur Tansley (1935), have both _physical_ and _biological_ aspects. They comprise
-the physics of energy and chemical stocks and flows and the biology of living things with a fleeting existence. They are made from and return to the physical world 
-(dust to dust, ashes to ashes), are part of it and at one and the same time, they constitute an entire new world
-where concepts such as reproduction, social interaction, communication and life cycle dominate. To this day, reconciling these two aspects remains a key problem in ecosystem 
-studies: How does an energy flux translate into a number of living individuals or in a higher biodiversity? 
-How might the reproduction strategy of the beaver affect river hydrology and the regional water budget? 
-How might social interactions (society) affect the frequency of hurricanes (e.g. climate change)? 
+Ecosystems, as first proposed by Arthur Tansley (1935), have both physical and biological aspects. They comprise not only energy and chemical stocks and flows but also living things that are born, reproduce and die, exhibiting particular behaviours over the course of their existence. They are made from and return to the physical world, are part of it and at the same time, constitute a domain where terms such as reproduction, social interaction, communication and life cycle have meaning.
+
+To this day, reconciling these two aspects, where the physical is articulated in SI units and the biological in descriptive terms (e. g. heterotroph, shade-tolerant, obligate seeder), remains a key problem in ecosystem studies: How does an energy flux translate into a number of living individuals or in a higher biodiversity? How might a particular reproduction strategy affect river hydrology and the regional water budget (e. g. the beaver)? How do social interactions affect the frequency of hurricanes (e. g. climate change)?
 *3Worlds* aims at providing _a tool for building simulations that couple the physical and biological aspects of ecosystems_.
 
-In our view, existing tools focus too much on one or other of these aspects. For example, dynamic models based on differential equations and can only represent reproduction and growth using metaphors for continuous physical quantities (e.g. matrix population models). Multi-agent systems (MAS), on the other hand, model social interactions well but pose difficulties in balancing mass or energy budgets.
+It is our view that existing tools focus predominantly on one or other of these aspects. For example, dynamic models based on differential equations and can only represent reproduction and growth using metaphors for continuous physical quantities (e.g. matrix population models). Multi-agent systems (MAS), on the other hand, model social interactions well but pose difficulties in balancing mass or energy budgets.
 
 In addition to this physical and biological duality, ecosystems are '_multi-scale_' (cf. an extensive discussion on
 this topic and other questions related to the ecosystem concept in Gignoux et al. 2011). Tansley's ecosystem definition

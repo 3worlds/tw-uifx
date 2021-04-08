@@ -29,7 +29,7 @@ Each node in the configuration has a particular meaning for `ModelRunner`: the c
 
 ==== ...with cross-links
 
-Actually, the 3Worlds configuration is not stritcly hierarchical (<<fig-configuration-tree2>>): according to their role in `ModelRunner`, some configuration _nodes_ need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference _edges_ to be defined, that overlay with the strict hierarchical structure of the tree. As a result fo these cross links, the whole configuration is a _graph_ rather than a tree.
+Actually, the 3Worlds configuration is not strictly hierarchical (<<fig-configuration-tree2>>): according to their role in `ModelRunner`, some configuration _nodes_ need to gather information from other parts of the configuration tree. This is done by allowing for some cross-reference _edges_ to be defined, that overlay with the strict hierarchical structure of the tree. As a result of these cross links, the whole configuration is a _graph_ rather than a tree.
 
 [#fig-configuration-tree2]
 .Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes (NB: not all cross-links are drawn)

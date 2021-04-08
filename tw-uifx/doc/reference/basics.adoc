@@ -13,9 +13,9 @@ This execution is called a _simulation experiment_.
 
 //image::jar-organisation.png[] // this image is too complicated for poor end-users
 
-Creating a model involves creating a configuration with `ModelMaker` and developing some associated java code to specify details particular to your model.
-To do this, you must use the https://www.eclipse.org/downloads/[eclipse] programming software (freeware). Later versions of 3Worlds may support other packages, but at the time of writing, 3Worlds will only work with https://www.eclipse.org/downloads/[eclipse].
+Creating a model involves creating a configuration with `ModelMaker` and developing some associated Java code to specify details particular to your model.
+To do this, you must use the https://www.eclipse.org/downloads/[Eclipse] programming software (freeware). Later versions of 3Worlds may support other packages, but at the time of writing, 3Worlds will only work with https://www.eclipse.org/downloads/[eclipse].
 
-`ModelMaker` will generate java code for data structures specific to a model (based on the configuration file you have developed) and _template_ java code for each process you have defined. These process templates are where you enter programming code to implement your model. You only need to write  code for your processes and for model initialisation. All else is managed by 3Worlds.
+`ModelMaker` will generate Java code for data structures specific to a model (based on the configuration file you have developed) and _template_ java code for each process you have defined. These process templates are where you enter programming code to implement your model. You only need to write  code for your processes and for model initialisation. All else is managed by 3Worlds.
 
 3Worlds is written in https://en.wikipedia.org/wiki/Java_(programming_language)[java], which makes it OS-independent. It can be run on MacOS, Linux or Windows computers.
