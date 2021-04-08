@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.deprecated;
 
 import java.util.ArrayList;
 import java.util.List;

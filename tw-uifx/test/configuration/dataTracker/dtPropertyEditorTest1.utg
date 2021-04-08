@@ -46,11 +46,11 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 02 09:41:00 AEDT 2019
 		top toolBar
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 			widget time
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ProgressWidget1)
 	experiment exp
 		timePeriod duration
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(9)

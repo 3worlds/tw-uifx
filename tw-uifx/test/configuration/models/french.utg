@@ -751,10 +751,10 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 		top toolBar
 			widget time
 				order = java.lang.Integer(1)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ProgressWidget1)
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 
 // CROSS-LINKS
 [category:trees] drivers drvs [record:treeDrv]

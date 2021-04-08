@@ -28,7 +28,7 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.deprecated;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
@@ -69,6 +69,7 @@ import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
  *
  * @date 29 Jan 2020
  */
+@Deprecated // TODO delete
 public class SimpleControlWidget2 extends ControllerAdapter
 		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 

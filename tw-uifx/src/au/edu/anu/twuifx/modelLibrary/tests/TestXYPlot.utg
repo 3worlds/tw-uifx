@@ -187,7 +187,7 @@ treegraph // saved by OmugiGraphExporter on Fri Feb 26 17:11:24 AEDT 2021
 		top top
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget xyplot

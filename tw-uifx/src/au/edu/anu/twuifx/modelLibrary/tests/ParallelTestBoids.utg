@@ -222,10 +222,10 @@ treegraph // saved by OmugiGraphExporter on Tue Mar 30 07:02:28 AEDT 2021
 			widget timer
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ProgressWidget1)
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 		tab space
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget playground

@@ -199,7 +199,7 @@ treegraph // saved by OmugiGraphExporter on Tue Nov 17 11:07:01 AEDT 2020
 			widget wgt1
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget2)
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget map

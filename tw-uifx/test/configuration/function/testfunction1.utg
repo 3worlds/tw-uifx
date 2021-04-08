@@ -84,7 +84,7 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 07 15:39:54 CET 2020
 				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget)
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 		tab tb1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			container cntnr2

@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.deprecated;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +77,7 @@ import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
  *       from and state.
  *
  */
+@Deprecated // TODO delete
 public class SimpleControlWidget1 extends ControllerAdapter implements WidgetGUI {
 	private Button btnRunPause;
 	private Button btnStep;

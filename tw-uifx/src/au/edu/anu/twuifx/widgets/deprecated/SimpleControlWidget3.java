@@ -28,7 +28,7 @@
  *                                                                        *
  **************************************************************************/
 
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.deprecated;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
@@ -80,6 +80,7 @@ import javafx.scene.layout.HBox;
  *       There is clearly an opportunity for a common ancestor for this and SCW1
  *       and perhaps SCW.
  */
+@Deprecated // TODO delete
 public class SimpleControlWidget3 extends StateMachineController
 		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 

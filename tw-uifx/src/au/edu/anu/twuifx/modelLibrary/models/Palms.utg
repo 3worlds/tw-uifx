@@ -654,11 +654,11 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 13:50:40 CET 2021
 			widget timer
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ProgressWidget1)
 			widget control
 				order = java.lang.Integer(0)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget2)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget2)
 		tab outputs
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget plot map

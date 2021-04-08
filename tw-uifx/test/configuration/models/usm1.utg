@@ -94,10 +94,10 @@ treegraph // saved by OmugiGraphExporter on Tue Mar 17 16:15:23 CET 2020
 			widget time
 				order = java.lang.Integer(1)
 				sender = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ProgressWidget1)
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 
 // CROSS-LINKS
 [process:burningProc] appliesTo aplyTo3 [relationType:burning]

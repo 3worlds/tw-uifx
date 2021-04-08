@@ -196,7 +196,7 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 17 15:36:26 CET 2021
 		top top
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 		tab srs
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget srsPop

@@ -66,7 +66,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 11 11:03:58 CET 2021
 		top top
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 	system sys1
 		decoratorClass = java.lang.String(code.sys1.generated.Climate)
 		dynamics sim1

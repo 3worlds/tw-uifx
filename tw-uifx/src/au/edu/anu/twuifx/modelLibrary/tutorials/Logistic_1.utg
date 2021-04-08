@@ -116,7 +116,7 @@ treegraph // saved by OmugiGraphExporter on Wed May 13 06:04:06 AEST 2020
 		top top
 			widget crtl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 		tab tab1
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			widget srsX

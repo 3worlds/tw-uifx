@@ -22,12 +22,12 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import javafx.scene.layout.BorderPane;
 
-public class SimpleGraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metadata> implements WidgetGUI {
+public class GraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metadata> implements WidgetGUI {
 	private final WidgetTrackingPolicy<TimeData> policy;
 	private final WidgetTimeFormatter timeFormatter;
 	private String widgetId;
 
-	public SimpleGraphWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	public GraphWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.RUNTIMEGRAPH);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();

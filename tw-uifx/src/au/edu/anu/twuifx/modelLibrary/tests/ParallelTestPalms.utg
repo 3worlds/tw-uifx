@@ -657,7 +657,7 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 24 17:58:34 AEDT 2021
 		top top
 			widget ctrl
 				order = java.lang.Integer(0)
-				subclass = java.lang.String(au.edu.anu.twuifx.widgets.SimpleControlWidget1)
+				subclass = java.lang.String(au.edu.anu.twuifx.widgets.ControlWidget1)
 		tab outputs
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
 			container cont1
@@ -665,7 +665,7 @@ treegraph // saved by OmugiGraphExporter on Wed Mar 24 17:58:34 AEDT 2021
 				orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(vertical)
 				widget time
 					order = java.lang.Integer(1)
-					subclass = java.lang.String(au.edu.anu.twuifx.widgets.TimeWidget2)
+					subclass = java.lang.String(au.edu.anu.twuifx.widgets.ProgressWidget2)
 				widget plot1
 					order = java.lang.Integer(2)
 					subclass = java.lang.String(au.edu.anu.twuifx.widgets.SpaceDWidget1)
