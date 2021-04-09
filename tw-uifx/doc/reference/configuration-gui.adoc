@@ -72,19 +72,30 @@ include::ArchetypeDoc-widget.adoc[]
 ****
 _possible values_:
 [horizontal]
-`ControlWidget1`:: A simple simulator controller with run/pause, step and reset buttons. Meaningless for multiple parallel simulations. Fits in `top` and `bottom`
-`ControlWidget2`:: As control widget 1, plus displays stopping condition. Meaningless for multiple parallel simulations. Fits in `top` and `bottom`
-`ControlWidget3`:: As control widget 2, plus displays a time series plot of simulation completion. Use this to control multiple parallel simulations. Only fits in `tab` and `container`
-`ProgressWidget1`:: A simple display of simulation time (average time for multiple simulations) and stopping condition. Fits in `top` and `bottom`
-`ProgressWidget2`:: A bar graph of simulation completion. Only fits in `tab` and `container`
-`TimeseriesWidget1`:: A graph of _x~i~_ = __f__(__t__), where _x~i~_ are component descriptors and t is time. Only fits in `tab` and `container`
-`ScatterplotWidget1`:: A graph of _y_ = __f__(__x__) where _x_ and _y_ are two descriptors of a component. Only fits in `tab` and `container`
-`SpaceWidget1`:: A map of a space (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>). Only fits in `tab` and `container`
-`TableWidget1`:: A table of number values __x~i~__(__t__), for debugging. Only fits in `tab` and `container`
-`MatrixWidget1`:: *not yet implemented*
-`GraphWidget1`:: A display of the system graph *not yet implemented*
-`HLSimpleTimeSeriesWidget`:: As `TimeseriesWidget1`, but for headless simulations
-`HLSimpleControlWidget`:: As `ControlWidget1`, but for headless simulations
+`ControlWidget1`:: A simple simulator controller with run/pause, step and reset buttons. Add as a child of a `top` or `bottom` node. A GUI definition can only have one controller.
+
+`ControlWidget2`:: As `ControlWidget1`, but also displays stopping condition and the time taken to complete each simulation step and the total simulation time. These timings are only accurate when deploying a single simulation. They are not accurate when deploying multiple simulations. This widget is best used when developing a model to check its performance. ControlWidget1 should be used otherwise.
+
+`ControlWidget3`:: As `ControlWidget2`, but displays a time series plot of simulation execution time. Add as a child of a `tab` or `container` node. 
+
+`ProgressWidget1`:: A simple display of simulation time (average time if deploying multiple simulations) and stopping condition. Add as a child of a `top` or `bottom` node.
+
+`ProgressWidget2`:: A bar graph of simulation progress intended for use when deploying multiple simulations. Add as a child of a `tab` or `container` node.
+
+`TimeseriesWidget1`:: A graph of _x~i~_ = __f__(__t__), where _x~i~_ are component descriptors and t is time.  Add as a child of a `tab` or `container` node. This widget uses the fast charting library from Chartfx. Data can be view as a table and exported to file.
+
+`ScatterplotWidget1`:: A graph of _y_ = __f__(__x__) where _x_ and _y_ are two descriptors of a component.  Add as a child of a `tab` or `container` node. This widget also uses the fast charting library from Chartfx.
+
+`SpaceWidget1`:: A map of a space (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>).  Add as a child of a `tab` or `container` node.
+`TableWidget1`:: A table of number values __x~i~__(__t__).  Add as a child of a `tab` or `container` node. This widget is intended for use when debugging as much of its function is duplicated in widgets using the Chartfx library.   Add as a child of a `tab` or `container` node. 
+
+`MatrixWidget1`:: A colour display of a 2-dimensional table. Add as a child of a `tab` or `container` node. *untested*
+
+`GraphWidget1`:: A display of the system graph. Add as a child of a `tab` or `container` node.  *not yet implemented*
+
+`HLSimpleTimeSeriesWidget`:: Saves time series data to a file. Add as a child of a `headless` node. 
+
+`HLSimpleControlWidget`:: As `ControlWidget1`, but for unattended simulations. Add as a child of a `headless` node.
 ****
 
 ====== Additional properties for widget sub-classes

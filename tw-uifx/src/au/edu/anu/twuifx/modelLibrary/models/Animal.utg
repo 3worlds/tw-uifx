@@ -5,7 +5,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 // TREE
 3worlds Animal
 	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	built-by = java.lang.String(ian (6 Apr. 2021))
+	built-by = java.lang.String(ian (8 Apr. 2021))
 	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
 	precis = java.lang.String(Preliminary testing of landscape animal model with local mating)
 	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
@@ -67,16 +67,27 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(m)
+		record gDecs
+			dynamic = java.lang.Boolean(false)
+			generatedClassName = java.lang.String(gDecs)
+			table N
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				units = java.lang.String()
 		record animalConsts
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(animalConsts)
 			field isFemale
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		dimensioner ydim
+			size = java.lang.Integer(100)
 		record animalDecs
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(animalDecs)
 			field pregnant
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+		dimensioner xdim
+			size = java.lang.Integer(100)
 		record gConsts
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(gConsts)
@@ -95,12 +106,17 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 				precision = java.lang.Double(1.0E-6)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
+			table K
+				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
+				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				units = java.lang.String()
 	experiment expt
 		nReplicates = java.lang.Integer(1)
 		design dsgn
 			type = fr.cnrs.iees.twcore.constants.ExperimentDesignType(singleRun)
 	system sys1
 		constantClass = java.lang.String(code.sys1.generated.GConsts)
+		decoratorClass = java.lang.String(code.sys1.generated.GDecs)
 		dynamics sim1
 			stoppingCondition stCd1
 				endTime = fr.cnrs.iees.twcore.constants.DateTimeType(100)
@@ -124,7 +140,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 								type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetOtherInitialState)
 								userClassName = java.lang.String(code.sys1.generated.Birth)
 								snippet snptBirth
-									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([10]"		// sex ratio 1:1","		otherCnt.isFemale = random.nextBoolean();","		// -ve exponential","		double distance = -meanDispersalDistance * Math.log(1 - random.nextDouble());","		double direction = random.nextDouble() * 6.28318530717959;","		double dx =distance * Math.cos(direction);","		double dy = distance * Math.sin(direction);","		otherDrv.x = x+dx;","		otherDrv.y = y+dy;","	"))
+									javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([20]"		// sex ratio 1:1","		otherCnt.isFemale = random.nextBoolean();","		// -ve exponential","		double distance = -meanDispersalDistance * Math.log(1 - random.nextDouble());","		double direction = random.nextDouble() * 6.28318530717959;","		double dx = distance * Math.cos(direction);","		double dy = distance * Math.sin(direction);","		otherDrv.x = x + dx;","		otherDrv.y = y + dy;","		int nx = N.size(0);","		int ny = N.size(1);","		int idxx = (int) (otherDrv.x / nx);","		int idxy = (int) (otherDrv.y / ny);","		// what can you do?! We need a space transformation (adaptor space to","		// table)","		if (idxx >= 0 && idxx < nx && idxy >= 0 && idxy < ny) {","			int n = N.getByInt(idxx, idxy)+1;","			N.setByInt(n , idxx, idxy);","		}",""))
 							snippet snptNBirths
 								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		if (isFemale && pregnant)","			return birthRate;","		return 0.0;"))
 					process mortality
@@ -132,7 +148,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(DeleteDecision)
 							userClassName = java.lang.String(code.sys1.generated.Death)
 							snippet snptDeath
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		if (age > 0)","			return decider.decide(deathRate);","		else","			return false;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([37]"		boolean die = false;","		int nx = N.size(0);","		int ny = N.size(1);","		int idxx = (int) (x / nx);","		int idxy = (int) (y / ny);","		// what can you do?! We need a space transformation (adaptor space to","		// table)","		boolean inRange = (idxx >= 0 && idxx < nx && idxy >= 0 && idxy < ny);","		int n = 0;","		if (inRange)","			n = N.getByInt(idxx, idxy);","		if (age > 0) {","			die = decider.decide(deathRate);","			if (die && inRange) {","				n = Math.max(0, n - 1);","				N.setByInt(n, idxx,idxy);","			}else if (!die && inRange) {","				int k = K.getByInt(idxx,idxy);","				if (k<n) {","					die = true;","					n= Math.max(0, n-1);","					N.setByInt(n, idxx,idxy);","				}","			}","		} else {","			if (inRange) {","				int k = K.getByInt(idxx,idxy);","				if (k<n) {","					die = true;","					n= Math.max(0, n-1);","					N.setByInt(n, idxx,idxy);","				}","			}","","		}","","		return die;"))
 					process courting
 						function FindMate
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(RelateToDecision)
@@ -144,7 +160,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
 							userClassName = java.lang.String(code.sys1.generated.Conceive)
 							snippet snptConceive
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		if (!isFemale) ","			otherDec.pregnant = true;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([2]"		if (!isFemale)","			otherDec.pregnant = true;"))
 					process global
 						dataTracker globalTracker
 							sampleSize = java.lang.String()
@@ -174,12 +190,12 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 					userClassName = java.lang.String(code.sys1.generated.AnimalInit)
 					snippet snptAnimalInit
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([7]"		// random bath dispersal","		// we don't know the box limits here!","		focalDrv.x = random.nextDouble()*1000;","		focalDrv.y =  random.nextDouble()*1000;","		// 1:1 sex ratio","		focalCnt.isFemale = random.nextBoolean();","		"))
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([7]"		// random bath dispersal","		// we don't know the box limits here!","		focalDrv.x = random.nextDouble() * 1000;","		focalDrv.y = random.nextDouble() * 1000;","		// 1:1 sex ratio","		focalCnt.isFemale = random.nextBoolean();",""))
 		initFunction GlobalInit
 			type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 			userClassName = java.lang.String(code.sys1.generated.GlobalInit)
 			snippet snptGlobalInit
-				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		focalCnt.deathRate = 1.0;","		focalCnt.birthRate = 2.05;","		focalCnt.meanDispersalDistance=100.0;"))
+				javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([4]"		focalCnt.deathRate = 1.0;","		focalCnt.birthRate = 2.05;","		focalCnt.meanDispersalDistance = 100.0;","		focalCnt.K.fillWith(10);"))
 	userInterface gui
 		top top
 			widget ctrl
@@ -217,6 +233,14 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [widget:ctrl] trackTime trks5 [dynamics:sim1]
 [process:global] dependsOn after4 [process:mortality]
 [process:global] appliesTo aplyTo3 [category:*assemblage*]
+[table:K] sizedBy szx1 [dimensioner:xdim]
+	rank = java.lang.Integer(0)
+[table:K] sizedBy szy1 [dimensioner:ydim]
+	rank = java.lang.Integer(1)
+[table:N] sizedBy szx2 [dimensioner:xdim]
+	rank = java.lang.Integer(0)
+[table:N] sizedBy szy2 [dimensioner:ydim]
+	rank = java.lang.Integer(1)
 [category:*assemblage*] autoVar auto [record:AVPopulation]
 [category:*ephemeral*] autoVar auto1 [record:AVEphemeral]
 [dataTracker:globalTracker] trackField trks4 [field:count]
@@ -229,6 +253,7 @@ treegraph // saved by OmugiGraphExporter on Thu Feb 11 11:13:21 AEDT 2021
 [componentType:animalType] belongsTo bt5 [category:*ephemeral*]
 [componentType:animalType] belongsTo bt4 [category:*component*]
 [category:*arena*] constants cnsts1 [record:gConsts]
+[category:*arena*] decorators decs2 [record:gDecs]
 [widget:srs] trackSeries trks2 [dataTracker:globalTracker]
 [process:mortality] appliesTo aplyTo5 [category:animalCat]
 [process:mortality] appliesTo aplyTo8 [category:*ephemeral*]
