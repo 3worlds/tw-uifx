@@ -227,8 +227,10 @@ class SceneGestures {
 
             if (event.getDeltaY() < 0)
                 scale /= delta;
-            else
+            else if (event.getDeltaY()>0)
                 scale *= delta;
+            else
+            	return;
 
             scale = clamp( scale, MIN_SCALE, MAX_SCALE);
 
