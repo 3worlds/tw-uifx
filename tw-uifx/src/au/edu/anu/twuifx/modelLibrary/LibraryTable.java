@@ -68,9 +68,8 @@ public enum LibraryTable {
 	Tut9("9 Headless(Logistic)", "Headless1", "LogisticHeadless.utg", LibraryType.Tutorial, TutorialsDummy.class), //
 	Tut10("10 Random number generators", "Rng1", "Rng_1.utg", LibraryType.Tutorial, TutorialsDummy.class), //
 	//
-	Model1("1 Animal", "Animal1","Animal.utg",LibraryType.Model, ModelsDummy.class), //
-	Model2("2 Palms","Palms1","Palms.utg",LibraryType.Model,ModelsDummy.class),//
-	Model3("3 Resproutch","Resproutch1","Resproutch.utg",LibraryType.Model,ModelsDummy.class),//
+	Model1("1 Palms","Palms1","Palms.utg",LibraryType.Model,ModelsDummy.class),//
+	Model2("2 Resproutch","Resproutch1","Resproutch.utg",LibraryType.Model,ModelsDummy.class),//
 	//
 	Test1 ("1 TestRelations","TestRelations1","TestRelations.utg",LibraryType.Test,TestsDummy.class),//
 	Test2 ("2 TestLifeCycle","TestLifeCycle1","TestLifeCycle.utg",LibraryType.Test,TestsDummy.class),//
@@ -80,6 +79,7 @@ public enum LibraryTable {
 	Test6 ("6 ParallelTest (Logistic)","Logistic1","ParallelTestLogistic.utg",LibraryType.Test,TestsDummy.class),//
 	Test7 ("7 ParallelTest (Boids)","Boids1","ParallelTestBoids.utg",LibraryType.Test,TestsDummy.class),//
 	Test8 ("8 ParallelTest (LittleForest)","LittleForest1","ParallelTestLittleForest.utg",LibraryType.Test,TestsDummy.class),//
+	Test9 ("9 Animal 1", "Animal1","Animal_1.utg",LibraryType.Test, TestsDummy.class), //
 	
 	;
 
