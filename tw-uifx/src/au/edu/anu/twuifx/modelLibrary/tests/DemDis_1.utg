@@ -120,11 +120,11 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 12 13:02:25 AEST 2021
 		record animalDecs
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(animalDecs)
-			field isPregnant
-				description = java.lang.String(true if pregnant this year)
-				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 			field isBurnt
 				description = java.lang.String(true if burnt this year)
+				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
+			field isPregnant
+				description = java.lang.String(true if pregnant this year)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		dimensioner xdim
 			size = java.lang.Integer(100)
@@ -234,7 +234,7 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 12 13:02:25 AEST 2021
 					type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(SetInitialState)
 					userClassName = java.lang.String(code.sys1.generated.InitDist)
 					snippet snptInitDist
-						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([38]"		String methodName = new Object() {}","	      .getClass()","	      .getEnclosingMethod()","	      .getName();","		System.out.println(methodName);","","		focalCnt.ifi = 50;","		focalCnt.simDuration = 1000;","		focalCnt.landscapeHeight = 1000.0;","		focalCnt.landscapeWidth = 1000.0;","		focalCnt.burnArea = 100.0 * 100.0;","","		// pre-calculate fire patterns","		double width = Math.sqrt(focalCnt.burnArea);","		double area = focalCnt.landscapeWidth * focalCnt.landscapeHeight;","		double areaToBurn = ((focalCnt.landscapeWidth * focalCnt.landscapeHeight) * focalCnt.simDuration)","				/ focalCnt.ifi;","		int totalFires = (int) Math.round(areaToBurn / focalCnt.burnArea);","		// build a list of disturbance maps by alg (or from file)","","		//		public static final Map<Integer, List<Rectangle2D>> fires = new HashMap<>();","","//		double sum = 0;","//		while (sum < areaToBurn) {","//			int year = random.nextInt((int) focalCnt.simDuration);","//			List<Rectangle2D> fireRects = fires.get(year);","//			if (!fires.containsKey(year)) {","//				fireRects = new ArrayList<>();","//				fires.put(year, fireRects);","//			}","//			double x = random.nextDouble() * (focalCnt.landscapeWidth - width);","//			double y = random.nextDouble() * (focalCnt.landscapeHeight - width);","//","//			Rectangle2D r = new Rectangle2D.Double(x, y, width, width);","//			fireRects.add(r);","//			sum += focalCnt.burnArea;","//		}",""))
+						javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([33]"		String methodName = new Object() {}","	      .getClass()","	      .getEnclosingMethod()","	      .getName();","		System.out.println(methodName);","//add this above for testing  public static final Map<Integer, List<Rectangle2D>> fires = new HashMap<>();","		focalCnt.ifi = 50;","		focalCnt.simDuration = 1000;","		focalCnt.landscapeHeight = 1000.0;","		focalCnt.landscapeWidth = 1000.0;","		focalCnt.burnArea = 100.0 * 100.0;","		// pre-calculate fire patterns","		double width = Math.sqrt(focalCnt.burnArea);","		double area = focalCnt.landscapeWidth * focalCnt.landscapeHeight;","		double areaToBurn = ((focalCnt.landscapeWidth * focalCnt.landscapeHeight) * focalCnt.simDuration)","				/ focalCnt.ifi;","		int totalFires = (int) Math.round(areaToBurn / focalCnt.burnArea);","		// build a list of disturbance maps by alg (or from file)","//		double sum = 0;","//		while (sum < areaToBurn) {","//			int year = random.nextInt((int) focalCnt.simDuration);","//			List<Rectangle2D> fireRects = fires.get(year);","//			if (!fires.containsKey(year)) {","//				fireRects = new ArrayList<>();","//				fires.put(year, fireRects);","//			}","//			double x = random.nextDouble() * (focalCnt.landscapeWidth - width);","//			double y = random.nextDouble() * (focalCnt.landscapeHeight - width);","//","//			Rectangle2D r = new Rectangle2D.Double(x, y, width, width);","//			fireRects.add(r);","//			sum += focalCnt.burnArea;","//		}"))
 			categorySet World
 				category distCat
 					constantClass = java.lang.String(DistCat_Cnt)
