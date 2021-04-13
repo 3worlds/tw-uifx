@@ -80,7 +80,7 @@ import javafx.scene.text.Font;
  *
  * @date 2 Sep 2019
  */
-public class MaxtrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata> implements WidgetGUI {
+public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata> implements WidgetGUI {
 
 	private Label lblName;
 	private Label lblXY;
@@ -112,9 +112,9 @@ public class MaxtrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
 
-	private static Logger log = Logging.getLogger(MaxtrixWidget1.class);
+	private static Logger log = Logging.getLogger(MatrixWidget1.class);
 
-	public MaxtrixWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	public MatrixWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM2);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimpleWidgetTrackingPolicy();
