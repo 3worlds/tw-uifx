@@ -1,4 +1,4 @@
-treegraph // saved by OmugiGraphExporter on Tue Apr 13 16:55:00 CEST 2021
+treegraph // saved by OmugiGraphExporter on Wed Apr 14 09:42:50 CEST 2021
 
 	edge_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
@@ -273,7 +273,7 @@ treegraph // saved by OmugiGraphExporter on Tue Apr 13 16:55:00 CEST 2021
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeOtherState)
 							userClassName = java.lang.String(code.sys1.generated.FireEffect)
 							snippet snpt6
-								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([3]"		otherDrv.bmS = 0.0;","		otherDrv.ht = 0.0;","		otherDrv.d = 0.0;"))
+								javaCode = au.edu.anu.rscs.aot.collections.tables.StringTable(([30]"		int nz = temperatureProfile.size(0);","		double regrowthHt = 0.0;","		double datz = 0.0;","		for (int i=0; i<nz; i++) {","			// position along stem","			double z = i*maxFlameHeight/nz;","			// diameter at z (parabola) in cm","			datz = sqrt(other_d*other_d-other_d*z/otherGroup_f);","			// lethal temperature at datz (in mm)","			double tletatdatz = (datz*10.0-otherGroup_lethalTempInt)/otherGroup_lethalTempSlp;","			// comparison to fire temperature","			if (tletatdatz<temperatureProfile.getByInt(i)) {","				regrowthHt = z;","				break;","			}","		}","		if (regrowthHt>0.0) {","			// stem volume left under regrowthHt","			double volleft = other_bmS/otherGroup_m-PI*datz*datz*regrowthHt/8;","			otherDrv.bmS = volleft*other_bmS;","//			// caution here: the volume left - a truncated paraboloid - is transformed into a paraboloid again.","//			otherDrv.ht = regrowthHt;","//			otherDrv.d = 0.0;","","		}","		else {","			otherDrv.bmS = 0.0;","//			otherDrv.ht = 0.0;","//			otherDrv.d = 0.0;","		}"))
 					process p2
 						function Ignition
 							type = fr.cnrs.iees.twcore.constants.TwFunctionTypes(ChangeState)
@@ -426,7 +426,13 @@ treegraph // saved by OmugiGraphExporter on Tue Apr 13 16:55:00 CEST 2021
 [dataTracker:trk1] trackField trks9 [field:flameHt]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trk1] trackComponent trks1 [component:fire1]
+[dataTracker:trk2] trackField trks10 [field:bmS]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trk2] trackField trks6 [field:ht]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trk2] trackField trks11 [field:bmL]
+	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
+[dataTracker:trk2] trackField trks12 [field:bmR]
 	index = fr.cnrs.iees.twcore.constants.TrackerType(([1]"null"))
 [dataTracker:trk2] trackComponent trks4 [component:bri]
 [category:treeSpecies] constants cnsts3 [record:treePar]
