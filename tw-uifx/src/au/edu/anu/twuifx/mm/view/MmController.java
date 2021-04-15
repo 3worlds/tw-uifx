@@ -124,7 +124,7 @@ import au.edu.anu.twuifx.mm.propertyEditors.intervalType.IntervalItem;
 import au.edu.anu.twuifx.mm.propertyEditors.populationType.PopTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
-import au.edu.anu.twuifx.modelLibrary.LibraryTable;
+//import au.edu.anu.twuifx.modelLibrary.LibraryTable;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import au.edu.anu.ymuit.util.CenteredZooming;
@@ -143,6 +143,7 @@ import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import fr.cnrs.iees.twcore.constants.TwFunctionTypes;
+import fr.cnrs.iees.twmodels.LibraryTable;
 import fr.cnrs.iees.uit.space.Box;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
@@ -336,6 +337,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// --------------------------- FXML Start ----------------------
 	@FXML
 	public void initialize() {
+		/** This class has all the housework for managing graph */
+		model = new MMModel(this);
+
 		cbNodeTextChoice.getItems().addAll(ElementDisplayText.values());
 		cbNodeTextChoice.getSelectionModel().select(ElementDisplayText.RoleName);
 		cbEdgeTextChoice.getItems().addAll(ElementDisplayText.values());
@@ -369,8 +373,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		/** add template entries to the "New" menu */
 		buildNewMenu();
 
-		/** This class has all the housework for managing graph */
-		model = new MMModel(this);
 
 		// build a toggle group for the verbosity level of archetype error
 		// messages
@@ -1124,7 +1126,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Menu muModels = new Menu("Model Library");
 		Menu muTests = new Menu("Test cases");
 		menuNew.getItems().addAll(muTemplates, muTutorials, muModels, muTests);
-		for (LibraryTable entry : LibraryTable.values()) {
+		for (LibraryTable entry : model.getLibrary()) {
 			MenuItem mi = new MenuItem(entry.displayName());
 			mi.setMnemonicParsing(false);
 			map.put(mi, entry);
