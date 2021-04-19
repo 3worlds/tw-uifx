@@ -31,6 +31,7 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -149,6 +150,30 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 			for (DataLabel dl : metadataTS.intNames())
 				makeChannels(dl, sender);
 		}
+
+		tableDataList.sort(new Comparator<WidgetTableData>() {
+
+			@Override
+			public int compare(WidgetTableData o1, WidgetTableData o2) {
+				String s1 = padDigits(o1.getLabel());
+				return padDigits(o1.getLabel()).compareTo(padDigits(o2.getLabel()));
+			}
+
+			String padDigits(String s) {
+				int st = s.indexOf("[");
+				int en = s.indexOf("]");
+				if (st >= 0 && en > st) {
+					String num = s.substring(st+1, en);
+					String padded = num;
+					while (padded.length() < 5)
+						padded = "0" + padded;
+					String result = s.replace("[" + num + "]", "[" + padded + "]");
+					return result;
+				} else
+					return s;
+			}
+		});
+
 		timeFormatter.onMetaDataMessage(msgMetadata);
 
 		table = new TableView<WidgetTableData>();
