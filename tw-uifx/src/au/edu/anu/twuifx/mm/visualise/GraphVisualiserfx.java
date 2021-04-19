@@ -288,7 +288,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		c.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY && !e.isControlDown()) {
 				dragNode = n;
-				e.consume();
+//				e.consume();
 			}
 
 		});
@@ -331,7 +331,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY && !e.isControlDown()) {
 				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this, recorder);
-//				e.consume();
+				e.consume();
 			} else if (e.getButton() == MouseButton.SECONDARY && e.isControlDown()) {
 				setLayoutNode(n);
 //				e.consume();
