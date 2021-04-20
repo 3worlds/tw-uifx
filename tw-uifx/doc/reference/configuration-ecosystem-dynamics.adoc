@@ -16,6 +16,13 @@ include::ArchetypeDoc-timeLine.adoc[]
 
 Ecological processes may be run following different times. A timer is a particular way of representing time in the simulator. Timers may differ in parameters, like e.g. two timers using different time steps; but they can also be radically different in their logic: e.g. clock-like ticking vs. event-driven simulation.
 
+.How do timers work?
+[#timer-howto]
+****
+Internally, each timer is an instance of the class `Timer`, which is able to return the next time where computation must be made according to its own logic. Every iteration of 3Worlds starts with the simulator asking all timers for their next time, then keeping all of those with the next time closest to last time, and executing them __in unpredictable order__. 3Worlds uses long integers to measure time internally, which means that simultaneous events are possible (times may be strictly equal). The finest time interval is given by `TimeLine.shortestTimeUnit`.
+****
+
+
 include::ArchetypeDoc-timer.adoc[]
 
 `subclass`:: the type of `timer` to use.
@@ -138,6 +145,17 @@ This link indicates that this process will make use of this space (<<configurati
 
 WARNING: Forgetting to set the value of `searchRadius` is a common source of unexpected behaviour in spatial models.
 
+.How do processes work?
+[#process-howto]
+****
+Internally, an instance of the `Process` class implements a '__for each__' loop on system components during an iteration step, as scheduled by its `Timer`. The order in which the components are processed in a loop is unpredictable (not fixed, nor random); the only safe assumption is to consider that they are all processed simultaneously.
+
+If the process applies to a list of categories, it is a single loop on all components belonging to these categories. This is the `ComponentProcess` sub-class.
+
+If it applies to a relation type, it is either (1) a double loop, possibly optimized by using a space, on components belonging to the 'from' list of categories of the relation type, and components belonging to the 'to' list of categories of the relation type (`SearchProcess` sub-class); or (2) a single loop on relations instances of its relation type (`RelationProcess` sub-class).
+
+In short: process = (parallel) loop on components within one time step.
+****
 
 ====== Function
 
@@ -170,6 +188,13 @@ _Additional properties when_ `function = createOtherDecision`:
 This node is used in 3Worlds tutorial and test models  to store the java code of functions (in its `javaCode` property). 
 
 CAUTION: We recommend not to use snippets, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming a field or table. If you use it, do it with caution.
+
+.How do functions work?
+[#function-howto]
+****
+Functions are called within the loop on components of their parent process.
+\[TODO: go on]
+****
 
 ====== Function consequences
 

@@ -33,7 +33,7 @@ include::MMstandalone.adoc[]
 
 include::MMeclipse.adoc[]
 
-== ModelMaker reference: creating and editing a model
+== Configuration reference: creating and editing a model with `ModelMaker`
 
 include::configuration-structure.adoc[]
 
@@ -53,7 +53,7 @@ include::user-coding-reference.adoc[]
 
 // include::data-input.adoc[]
 
-== ModelRunner reference: running a simulation experiment
+== Simulation reference: running a simulation experiment with `ModelRunner`
 
 === General concepts
 
@@ -69,5 +69,11 @@ include::user-coding-reference.adoc[]
 
 == Sample models and tutorials
 
-// include::tutorial1.adoc[]
+include::tutorial1.adoc[]
+
+include::tutorial2.adoc[]
+
+include::tutorial3.adoc[]
+
+include::tutorial4.adoc[]
 
