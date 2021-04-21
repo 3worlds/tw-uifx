@@ -154,6 +154,8 @@ If the process applies to a list of categories, it is a single loop on all compo
 
 If it applies to a relation type, it is either (1) a double loop, possibly optimized by using a space, on components belonging to the 'from' list of categories of the relation type, and components belonging to the 'to' list of categories of the relation type (`SearchProcess` sub-class); or (2) a single loop on relations instances of its relation type (`RelationProcess` sub-class).
 
+Processes of a same timer are run in any (= unpredictable) order unless explicitly ordered by the use of the `dependsOn` cross-link.
+
 In short: process = (parallel) loop on components within one time step.
 ****
 
@@ -192,8 +194,34 @@ CAUTION: We recommend not to use snippets, or only for simple models, since it m
 .How do functions work?
 [#function-howto]
 ****
-Functions are called within the loop on components of their parent process.
-\[TODO: go on]
+Functions are called within the loop on components of their parent process. The processing order of functions within their process is constant:
+
+* In a `ComponentProcess`:
+** execute all `changeState` functions
+** then, all `deleteDecision` functions,
+** then, all `createOtherDecision` functions,
+** then, all `changeCategoryDecision` functions,
+** then send data to all dataTrackers (see below:
+<<truedata-tracking>>)
+* In a `SearchProcess`:
+** execute all `relateToDecision` functions
+* In a `RelationProcess`
+** execute all `changeOtherState` functions
+** then, all `maintainRelationDecision` functions,
+** then, all `changeRelationState` functions
+
+The order of these computations does not matter for _driver_ descriptors, nor for component creation and deletion, because all the changes are postponed until after the process loop is over. For example, a component may in the same time step reproduce an die. The order may only matter for __decorators__, which are provided here as a convenience for complex computations.
+
+A way to make your model code efficient is to group functions run with the same timer in a single process, so that they are called in a single pass on components instead of many in case you use different processes. This assumes that your functions can be processed in any order without consequences on the outcome - which is not always true. If you need a precise ordering of function calls because, e.g. one of them requires that a decorator variable has been set by another, then you must place your functions in different processes linked by a `dependsOn` cross-link to tell which is computed first.
+
+At the end of all process loops (of all timers activated for the current time step):
+
+* all _decorators_ are set to zero;
+* the values of all _drivers_ are updated (i.e. values computed by functions are stored in a _next_ driver data structure, which now replaces the _current_ driver structure);
+* _components_ to be deleted and to be created as decided by `-Decision` functions, and _ephemeral_ relations to create/delete, are now inserted in the current list of components;
+* _automatic_ descriptors (e.g. component age, population numbers) are updated;
+* _spaces_ are updated according to changes in the component community;
+* _permanent_ relations between components are updated.
 ****
 
 ====== Function consequences
@@ -218,13 +246,19 @@ Some functions may imply consequences: for example, a decision to delete another
 
 Consequence functions have the same properties and cross-links as functions (cf. above).
 
+.How do consequence functions work?
+[#consequence-howto]
+****
+Internally, consequence functions are just functions which are called _immediately after_ their parent function. E.g., in a `ComponentProcess` loop on `deleteDecision` functions, each `deleteDecision` function is immediately followed by a call to its consequence `changeOtherState` function, if any.
+****
+
 ===== Data tracking
 
 `/3worlds/.../process/*dataTracker*:<__name__>` {0..*}
 
 Data trackers are used to get output from a simulation. This output can then be redirected either to graphic windows of `ModelRunner` or to a data file for later processing with other software. Using a data tracker is similar to what happens in the real world: you set a sensor into the system you want to monitor and wire it to a data logger which translates the signal into human-readable data. There are different kinds of data trackers according to the output format and the sampling method you want to use; and different ways of wiring these trackers to the simulated system and its components.
 
-A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget**[TO DO: crossref]**) linked to it. The frequency of data sending is determined by the _timer_ of the parent _process_ of the data tracker.
+A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget<<configuration-gui.adoc#truewidgets>>) linked to it. The frequency of data sending is determined by the _timer_ of the parent _process_ of the data tracker.
 
 IMPORTANT: A `dataTracker` node can only be specified in a _category process_, not in a __relation process__.
 

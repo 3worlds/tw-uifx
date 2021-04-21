@@ -82,9 +82,9 @@ _possible values_:
 
 `ProgressWidget2`:: A bar graph of simulation progress intended for use when deploying multiple simulations. Add this widget as a child of a `tab` or `container` node.
 
-`TimeseriesWidget1`:: A graph of _x~i~_ = __f__(__t__), where _x~i~_ are component descriptors and t is time.  Add as a child of a `tab` or `container` node. This widget uses the fast charting library from Chartfx. The widget has a number of additional facilites accessed by moving the mouse to the top of the chart display. Here, data can be viewed as a table and exported to file.
+`TimeseriesWidget1`:: A graph of _x~i~_ = __f__(__t__), where _x~i~_ are component descriptors and _t_ is time.  Add as a child of a `tab` or `container` node. This widget uses the fast charting library from https://github.com/GSI-CS-CO/chart-fx[Chartfx]. The widget has a number of additional facilites accessed by moving the mouse to the top of the chart display. Here, data can be viewed as a table and exported to file.
 
-`ScatterplotWidget1`:: A graph of _y_ = __f__(__x__) where _x_ and _y_ are two descriptors of a component.  Add as a child of a `tab` or `container` node. This widget also uses the fast charting library from Chartfx.
+`ScatterplotWidget1`:: A graph of _y_ = __f__(__x__) where _x_ and _y_ are two descriptors of a component.  Add as a child of a `tab` or `container` node. This widget also uses the fast charting library from https://github.com/GSI-CS-CO/chart-fx[Chartfx].
 
 `SpaceWidget1`:: A map of a space (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>).  Add as a child of a `tab` or `container` node.
 `TableWidget1`:: A table of number values __x~i~__(__t__).  Add as a child of a `tab` or `container` node. Add as a child of a `tab` or `container` node. 
@@ -105,13 +105,13 @@ Many widgets have settings which can be adjusted from the _Widget_ menu of _Mode
 _for_ `ProgressWidget1`:
 
 [horizontal]
-`refreshRate`:: (optional) The rate at which this widget updates its display (ms) (_default_ 250 ms). This property is for the purpose of efficency. Because this widget can display the average progress of a very large number of simulations (e.g 1 million parallel simulations), it would be very inefficient, not to mention uninformative, if the display was updated every time any one the simulators sent a message. 
+`refreshRate`:: (optional) The rate at which this widget updates its display (ms) (_default_ 250 ms). This property is for the purpose of efficency. Because this widget can display the average progress of a very large number of simulations (e.g 1 million parallel simulations), it would be very inefficient, not to mention uninformative, if the display was updated every time any one of the simulators sent a message. 
 
 _for_ `TimeSeriesWidget1` _and_ `TableWidget1`:
 
 [horizontal]
 `nSenders`:: (optional) The number of parallel simulators to display (_default_ 1). As noted, there can be far too many simulators to reasonably display their output. In such cases, this property limits that number to whatever you think you can handle.
-`firstSender`:: (optional) The lowest sender (simulator id) to display (_default_ 0). Output from simulators is shown for contiguosly number simulators. This property sets the lowest number from which to display _n_ simulator outputs.
+`firstSender`:: (optional) The lowest sender (simulator id) to display (_default_ 0). Output from simulators is shown for contiguously numbered simulators. This property sets the lowest number from which to display _n_ simulator outputs.
 
 _for_ `TimeSeriesWidget1`:
 
