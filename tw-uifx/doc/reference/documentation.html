@@ -487,7 +487,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#trueconfiguration-reference-creating-and-editing-a-model-with-modelmaker">3. Configuration reference: creating and editing a model with <code>ModelMaker</code></a>
+<li><a href="#trueconfiguration-reference-creating-and-editing-a-model-with-modelmaker">3. Configuration reference: creating and editing a model with ModelMaker</a>
 <ul class="sectlevel2">
 <li><a href="#truegeneral-concepts-structure-of-a-3worlds-configuration">3.1. General concepts: structure of a 3Worlds configuration</a>
 <ul class="sectlevel3">
@@ -518,7 +518,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truefeeding-the-model-with-data">3.5. Feeding the model with data</a></li>
 </ul>
 </li>
-<li><a href="#truesimulation-reference-running-a-simulation-experiment-with-modelrunner">4. Simulation reference: running a simulation experiment with <code>ModelRunner</code></a>
+<li><a href="#truesimulation-reference-running-a-simulation-experiment-with-modelrunner">4. Simulation reference: running a simulation experiment with ModelRunner</a>
 <ul class="sectlevel2">
 <li><a href="#truegeneral-concepts">4.1. General concepts</a></li>
 <li><a href="#trueusing-modelrunner-software-interface-and-functioning">4.2. Using ModelRunner: software interface and functioning</a></li>
@@ -1106,7 +1106,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </div>
 </div>
 <div class="sect1">
-<h2 id="trueconfiguration-reference-creating-and-editing-a-model-with-modelmaker"><a class="anchor" href="#trueconfiguration-reference-creating-and-editing-a-model-with-modelmaker"></a>3. Configuration reference: creating and editing a model with <code>ModelMaker</code></h2>
+<h2 id="trueconfiguration-reference-creating-and-editing-a-model-with-modelmaker"><a class="anchor" href="#trueconfiguration-reference-creating-and-editing-a-model-with-modelmaker"></a>3. Configuration reference: creating and editing a model with ModelMaker</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="truegeneral-concepts-structure-of-a-3worlds-configuration"><a class="anchor" href="#truegeneral-concepts-structure-of-a-3worlds-configuration"></a>3.1. General concepts: structure of a 3Worlds configuration</h3>
@@ -2934,6 +2934,9 @@ Forgetting to set the value of <code>searchRadius</code> is a common source of u
 <p>If it applies to a relation type, it is either (1) a double loop, possibly optimized by using a space, on components belonging to the 'from' list of categories of the relation type, and components belonging to the 'to' list of categories of the relation type (<code>SearchProcess</code> sub-class); or (2) a single loop on relations instances of its relation type (<code>RelationProcess</code> sub-class).</p>
 </div>
 <div class="paragraph">
+<p>Processes of a same timer are run in any (= unpredictable) order unless explicitly ordered by the use of the <code>dependsOn</code> cross-link.</p>
+</div>
+<div class="paragraph">
 <p>In short: process = (parallel) loop on components within one time step.</p>
 </div>
 </div>
@@ -3128,8 +3131,91 @@ We recommend not to use snippets, or only for simple models, since it may cause 
 <div class="content">
 <div class="title">How do functions work?</div>
 <div class="paragraph">
-<p>Functions are called within the loop on components of their parent process.
-\[TODO: go on]</p>
+<p>Functions are called within the loop on components of their parent process. The processing order of functions within their process is constant:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In a <code>ComponentProcess</code>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>execute all <code>changeState</code> functions</p>
+</li>
+<li>
+<p>then, all <code>deleteDecision</code> functions,</p>
+</li>
+<li>
+<p>then, all <code>createOtherDecision</code> functions,</p>
+</li>
+<li>
+<p>then, all <code>changeCategoryDecision</code> functions,</p>
+</li>
+<li>
+<p>then send data to all dataTrackers (see below:
+<a href="#truedata-tracking">Section 3.3.4.3</a>)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>In a <code>SearchProcess</code>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>execute all <code>relateToDecision</code> functions</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>In a <code>RelationProcess</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>execute all <code>changeOtherState</code> functions</p>
+</li>
+<li>
+<p>then, all <code>maintainRelationDecision</code> functions,</p>
+</li>
+<li>
+<p>then, all <code>changeRelationState</code> functions</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The order of these computations does not matter for <em>driver</em> descriptors, nor for component creation and deletion, because all the changes are postponed until after the process loop is over. For example, a component may in the same time step reproduce an die. The order may only matter for <em>decorators</em>, which are provided here as a convenience for complex computations.</p>
+</div>
+<div class="paragraph">
+<p>A way to make your model code efficient is to group functions run with the same timer in a single process, so that they are called in a single pass on components instead of many in case you use different processes. This assumes that your functions can be processed in any order without consequences on the outcome - which is not always true. If you need a precise ordering of function calls because, e.g. one of them requires that a decorator variable has been set by another, then you must place your functions in different processes linked by a <code>dependsOn</code> cross-link to tell which is computed first.</p>
+</div>
+<div class="paragraph">
+<p>At the end of all process loops (of all timers activated for the current time step):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>all <em>decorators</em> are set to zero;</p>
+</li>
+<li>
+<p>the values of all <em>drivers</em> are updated (i.e. values computed by functions are stored in a <em>next</em> driver data structure, which now replaces the <em>current</em> driver structure);</p>
+</li>
+<li>
+<p><em>components</em> to be deleted and to be created as decided by <code>-Decision</code> functions, and <em>ephemeral</em> relations to create/delete, are now inserted in the current list of components;</p>
+</li>
+<li>
+<p><em>automatic</em> descriptors (e.g. component age, population numbers) are updated;</p>
+</li>
+<li>
+<p><em>spaces</em> are updated according to changes in the component community;</p>
+</li>
+<li>
+<p><em>permanent</em> relations between components are updated.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -3206,6 +3292,14 @@ We recommend not to use snippets, or only for simple models, since it may cause 
 <div class="paragraph">
 <p>Consequence functions have the same properties and cross-links as functions (cf. above).</p>
 </div>
+<div id="consequence-howto" class="sidebarblock">
+<div class="content">
+<div class="title">How do consequence functions work?</div>
+<div class="paragraph">
+<p>Internally, consequence functions are just functions which are called <em>immediately after</em> their parent function. E.g., in a <code>ComponentProcess</code> loop on <code>deleteDecision</code> functions, each <code>deleteDecision</code> function is immediately followed by a call to its consequence <code>changeOtherState</code> function, if any.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -3217,7 +3311,7 @@ We recommend not to use snippets, or only for simple models, since it may cause 
 <p>Data trackers are used to get output from a simulation. This output can then be redirected either to graphic windows of <code>ModelRunner</code> or to a data file for later processing with other software. Using a data tracker is similar to what happens in the real world: you set a sensor into the system you want to monitor and wire it to a data logger which translates the signal into human-readable data. There are different kinds of data trackers according to the output format and the sampling method you want to use; and different ways of wiring these trackers to the simulated system and its components.</p>
 </div>
 <div class="paragraph">
-<p>A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget<strong>[TO DO: crossref]</strong>) linked to it. The frequency of data sending is determined by the <em>timer</em> of the parent <em>process</em> of the data tracker.</p>
+<p>A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget<a href="#truewidgets">Section 3.3.7.5</a>) linked to it. The frequency of data sending is determined by the <em>timer</em> of the parent <em>process</em> of the data tracker.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -3608,7 +3702,7 @@ A record cannot be empty, i.e. it <strong>must</strong> have at least one child 
 <code>Double</code>
 </td>
 <td class="hdlist2">
-<p>a single precision floating point number (4 10^-38 to 3.4 10^38) with 15 significant digits (default value)</p>
+<p>a double precision floating point number (4.9406564584124654 10^-324 to 1.7976931348623157 10^308, symmetric for negative numbers) with 16 significant digits (default value)</p>
 </td>
 </tr>
 <tr>
@@ -3632,7 +3726,7 @@ A record cannot be empty, i.e. it <strong>must</strong> have at least one child 
 <code>Float</code>
 </td>
 <td class="hdlist2">
-<p>a single precision floating point number (4 10^-38 to 3.4 10^38) with 6 significant digits</p>
+<p>a single precision floating point number (1.40239846 10^-45 to 3.40282347 10^38, symmetric for negative numbers) with 8 significant digits</p>
 </td>
 </tr>
 <tr>
@@ -4558,7 +4652,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <p>This node and its sub-tree specifies the look of the <code>ModelRunner</code> user interface. <code>ModelRunner</code> is highly configurable and can show many graphs during a simulation run, as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.</p>
 </div>
 <div class="paragraph">
-<p>3Worlds provides a series of interface <em>widgets</em>, i.e. graphical objects that can be used to design a <strong>G</strong>raphical <strong>U</strong>ser <strong>I</strong>nterface (GUI). Examples of widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc&#8230;&#8203; The basic <code>ModelRunner</code> GUI just provides places to put widgets: a <em>top</em>, a <em>bottom</em> and any number of <em>tabs</em>. Any number of widgets can be placed within these (<a href="#fig-example-gui">Figure 11</a>).</p>
+<p>3Worlds provides a series of <em>widgets</em>, i.e. classes that can manage output from the simulator and either show it graphically or perform some other non-graphic task (e.g. save data to disk). Examples of graphic widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc&#8230;&#8203; The basic <code>ModelRunner</code> GUI just provides places to place widgets: a <em>top</em>, a <em>bottom</em> and any number of <em>tabs</em>. Any number of widgets can be placed within these (<a href="#fig-example-gui">Figure 11</a>).</p>
 </div>
 <div id="fig-example-gui" class="imageblock text-center">
 <div class="content">
@@ -4572,7 +4666,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <p><code>/3worlds/userInterface/<strong>top</strong>:&lt;<em>name</em>&gt;</code> {1}</p>
 </div>
 <div class="paragraph">
-<p>The <em>top</em> is a tool bar. Widgets placed here will appear beside each other in an order specified in <code>ModelMaker</code> properties (<em>Order</em>). The top is typically the place where to put (small) widgets that must always remain accessible (e.g., simulation control buttons). Checks are made by <code>ModelMaker</code> to ensure only small widgets are placed here (<a href="#fig-example-gui">Figure 11</a>).</p>
+<p>This is a tool bar and appears at the top, just below the menu bar. Widgets placed here will appear beside each other in an order specified in <code>ModelMaker</code> properties (<em>Order</em>). The top is typically a place where small widgets are added that remain accessible no matter where other widgets are placed. Typically a controller or progress widgets are placed here. Checks are made by <code>ModelMaker</code> to ensure only small widgets can be placed here (<a href="#fig-example-gui">Figure 11</a>).</p>
 </div>
 </div>
 <div class="sect4">
@@ -4581,7 +4675,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <p><code>/3worlds/userInterface/<strong>bottom</strong>:&lt;<em>name</em>&gt;</code> {0..1}</p>
 </div>
 <div class="paragraph">
-<p>The <em>bottom</em> is a status bar. It has the same constraints as the <em>top</em>. Widgets such as a progress bar can be placed here if desired (<a href="#fig-example-gui">Figure 11</a>).</p>
+<p>The <em>bottom</em> is a status bar and appears at the bottom of the GUI. It has the same constraints as the <em>top</em>. Widgets such as a progress bar can be placed here if desired (<a href="#fig-example-gui">Figure 11</a>).</p>
 </div>
 </div>
 <div class="sect4">
@@ -4596,7 +4690,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <p><code>/3worlds/userInterface/&#8230;&#8203;/container/<strong>container</strong>:&lt;<em>name</em>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>There can be any number of <em>Tabs</em> and each <em>Tab</em> can contain any number of widgets through the use of <em>containers</em>. <em>Tabs</em> are intended for large widgets such as charts and maps. Since only one tab is visible at a time when the model is run, large GUIs can be assembled without the constraints imposed by window size (<a href="#fig-example-gui">Figure 11</a>).
+<p>There can be any number of <em>Tabs</em> and each <em>Tab</em> can contain any number of widgets through the use of <em>containers</em>. <em>Tabs</em> are intended for large widgets such as charts and maps. Since only one tab is visible at a time when the model is run, large GUIs can be assembled without the limits imposed by window size (<a href="#fig-example-gui">Figure 11</a>).
 <em>Tab</em> contents are structured as a binary tree made of a combination of widgets or containers of widgets. A <em>Tab</em> can have:</p>
 </div>
 <div class="ulist">
@@ -4629,7 +4723,7 @@ The stopping condition has the priority over the <code>end</code> property.
 </ul>
 </div>
 <div class="paragraph">
-<p>Widgets can be leaf nodes in this binary tree i.e you can&#8217;t have a container or tab that contains nothing.</p>
+<p>Only widgets can be leaf nodes in this binary tree i.e you can&#8217;t have a container or tab that contains nothing.</p>
 </div>
 <div class="paragraph">
 <p>The widget/container pairs in this binary tree can be arranged vertically or horizontally. This allows all possible arrangements of widgets in the GUI.</p>
@@ -4706,7 +4800,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <p><code>/3worlds/userInterface/<strong>headless</strong></code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>If you want to run a simulation unattended, you may not need a GUI at all. Instead you may want the simulation to begin immediately and use widgets to write data to disk. Such widgets are call <code>Headless</code>. All headless widgets are children of the <code>gui:Headless:</code> node.</p>
+<p>If you want to run a simulation unattended, you may not need a GUI at all. Instead, you may want the simulation to begin immediately and use widgets to write data to disk. Such widgets are call <code>Headless</code>. All headless widgets are children of the <code>gui:Headless:</code> node.</p>
 </div>
 </div>
 <div class="sect4">
@@ -4760,7 +4854,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>ControlWidget1</code>
 </td>
 <td class="hdlist2">
-<p>A simple simulator controller with run/pause, step and reset buttons. Add as a child of a <code>top</code> or <code>bottom</code> node. A GUI definition can only have one controller.</p>
+<p>A simple simulator controller with run/pause, step and reset buttons. Add this as a child of a <code>top</code> or <code>bottom</code> node. A GUI definition can only have one controller.</p>
 </td>
 </tr>
 <tr>
@@ -4768,7 +4862,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>ControlWidget2</code>
 </td>
 <td class="hdlist2">
-<p>As <code>ControlWidget1</code>, but also displays stopping condition and the time taken to complete each simulation step and the total simulation time. These timings are only accurate when deploying a single simulation. They are not accurate when deploying multiple simulations. This widget is best used when developing a model to check its performance. ControlWidget1 should be used otherwise.</p>
+<p>As for <code>ControlWidget1</code>, but also displays the stopping condition(s) and the time taken to complete each simulation step and the total simulation time. These timings are only accurate when deploying a single simulation. They are not accurate when deploying multiple simulations. Therefore, this widget is best used when developing a model to check its performance. Use ControlWidget1 otherwise.</p>
 </td>
 </tr>
 <tr>
@@ -4776,7 +4870,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>ControlWidget3</code>
 </td>
 <td class="hdlist2">
-<p>As <code>ControlWidget2</code>, but displays a time series plot of simulation execution time. Add as a child of a <code>tab</code> or <code>container</code> node.</p>
+<p>As for <code>ControlWidget2</code>, but displays a time series plot of simulation execution time. Add this widget as a child of a <code>tab</code> or <code>container</code> node.</p>
 </td>
 </tr>
 <tr>
@@ -4784,7 +4878,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>ProgressWidget1</code>
 </td>
 <td class="hdlist2">
-<p>A simple display of simulation time (average time if deploying multiple simulations) and stopping condition. Add as a child of a <code>top</code> or <code>bottom</code> node.</p>
+<p>A simple display of simulation time (average time if deploying multiple simulations) and stopping condition. Add this widget as a child of a <code>top</code> or <code>bottom</code> node.</p>
 </td>
 </tr>
 <tr>
@@ -4792,7 +4886,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>ProgressWidget2</code>
 </td>
 <td class="hdlist2">
-<p>A bar graph of simulation progress intended for use when deploying multiple simulations. Add as a child of a <code>tab</code> or <code>container</code> node.</p>
+<p>A bar graph of simulation progress intended for use when deploying multiple simulations. Add this widget as a child of a <code>tab</code> or <code>container</code> node.</p>
 </td>
 </tr>
 <tr>
@@ -4800,7 +4894,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>TimeseriesWidget1</code>
 </td>
 <td class="hdlist2">
-<p>A graph of <em>x<sub>i</sub></em> = <em>f</em>(<em>t</em>), where <em>x<sub>i</sub></em> are component descriptors and t is time.  Add as a child of a <code>tab</code> or <code>container</code> node. This widget uses the fast charting library from Chartfx. Data can be view as a table and exported to file.</p>
+<p>A graph of <em>x<sub>i</sub></em> = <em>f</em>(<em>t</em>), where <em>x<sub>i</sub></em> are component descriptors and <em>t</em> is time.  Add as a child of a <code>tab</code> or <code>container</code> node. This widget uses the fast charting library from <a href="https://github.com/GSI-CS-CO/chart-fx">Chartfx</a>. The widget has a number of additional facilites accessed by moving the mouse to the top of the chart display. Here, data can be viewed as a table and exported to file.</p>
 </td>
 </tr>
 <tr>
@@ -4808,7 +4902,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>ScatterplotWidget1</code>
 </td>
 <td class="hdlist2">
-<p>A graph of <em>y</em> = <em>f</em>(<em>x</em>) where <em>x</em> and <em>y</em> are two descriptors of a component.  Add as a child of a <code>tab</code> or <code>container</code> node. This widget also uses the fast charting library from Chartfx.</p>
+<p>A graph of <em>y</em> = <em>f</em>(<em>x</em>) where <em>x</em> and <em>y</em> are two descriptors of a component.  Add as a child of a <code>tab</code> or <code>container</code> node. This widget also uses the fast charting library from <a href="https://github.com/GSI-CS-CO/chart-fx">Chartfx</a>.</p>
 </td>
 </tr>
 <tr>
@@ -4824,7 +4918,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>TableWidget1</code>
 </td>
 <td class="hdlist2">
-<p>A table of number values <em>x<sub>i</sub></em>(<em>t</em>).  Add as a child of a <code>tab</code> or <code>container</code> node. This widget is intended for use when debugging as much of its function is duplicated in widgets using the Chartfx library.   Add as a child of a <code>tab</code> or <code>container</code> node.</p>
+<p>A table of number values <em>x<sub>i</sub></em>(<em>t</em>).  Add as a child of a <code>tab</code> or <code>container</code> node. Add as a child of a <code>tab</code> or <code>container</code> node.</p>
 </td>
 </tr>
 <tr>
@@ -4848,7 +4942,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>HLSimpleTimeSeriesWidget</code>
 </td>
 <td class="hdlist2">
-<p>Saves time series data to a file. Add as a child of a <code>headless</code> node.</p>
+<p>Saves time series data to a file. Add as a child of a <code>headless</code> node.  <strong>untested</strong></p>
 </td>
 </tr>
 <tr>
@@ -4867,23 +4961,11 @@ The stopping condition has the priority over the <code>end</code> property.
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Many widgets have settings which can be adjusted from the <em>Widget</em> menu of <em>ModelRunner</em>. These settings are automatically saved to a preferences file when <em>ModelRunner</em> is closed thus preserving the look and feel of the interface between uses.</p>
+</div>
 <div class="sect5">
 <h6 id="trueadditional-properties-for-widget-sub-classes"><a class="anchor" href="#trueadditional-properties-for-widget-sub-classes"></a>Additional properties for widget sub-classes</h6>
-<div class="paragraph">
-<p><em>for</em> <code>ControlWidget2</code> <em>and</em> <code>ControlWidget3</code>:</p>
-</div>
-<div class="hdlist">
-<table>
-<tr>
-<td class="hdlist1">
-<code>sender</code>
-</td>
-<td class="hdlist2">
-<p>Index of the simulator instance to control</p>
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p><em>for</em> <code>ProgressWidget1</code>:</p>
 </div>
@@ -4894,7 +4976,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>refreshRate</code>
 </td>
 <td class="hdlist2">
-<p>The display refresh rate in ms <strong>[TO DO: Ian, please explain]</strong></p>
+<p>(optional) The rate at which this widget updates its display (ms) (<em>default</em> 250 ms). This property is for the purpose of efficency. Because this widget can display the average progress of a very large number of simulations (e.g 1 million parallel simulations), it would be very inefficient, not to mention uninformative, if the display was updated every time any one of the simulators sent a message.</p>
 </td>
 </tr>
 </table>
@@ -4906,18 +4988,18 @@ The stopping condition has the priority over the <code>end</code> property.
 <table>
 <tr>
 <td class="hdlist1">
-<code>firstSender</code>
+<code>nSenders</code>
 </td>
 <td class="hdlist2">
-<p><strong>[TO DO: Ian, please explain]</strong></p>
+<p>(optional) The number of parallel simulators to display (<em>default</em> 1). As noted, there can be far too many simulators to reasonably display their output. In such cases, this property limits that number to whatever you think you can handle.</p>
 </td>
 </tr>
 <tr>
 <td class="hdlist1">
-<code>nSenders</code>
+<code>firstSender</code>
 </td>
 <td class="hdlist2">
-<p><strong>[TO DO: Ian, please explain]</strong></p>
+<p>(optional) The lowest sender (simulator id) to display (<em>default</em> 0). Output from simulators is shown for contiguously numbered simulators. This property sets the lowest number from which to display <em>n</em> simulator outputs.</p>
 </td>
 </tr>
 </table>
@@ -4932,7 +5014,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>maxAxes</code>
 </td>
 <td class="hdlist2">
-<p><strong>[TO DO: Ian, please explain]</strong></p>
+<p>Sets the maximum number of <em>y</em> axes to display on the chart. As this widget can show time series for any number of variables, it is important to assign them to their own axis. However, if you have so too many outputs the chart will be all axes and no data. There, the number of axes can be constrained with this property.</p>
 </td>
 </tr>
 <tr>
@@ -4940,7 +5022,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>bufferSize</code>
 </td>
 <td class="hdlist2">
-<p>Number of time intervals to plot on the time axis, e.g. a value of 100 will display times 900-1000 when reaching time 1000</p>
+<p>Number of time intervals to plot on the time axis, e.g. a value of 100 will display times 900-1000 when reaching time 1000. That is, what you see is a rolling buffer of data.</p>
 </td>
 </tr>
 </table>
@@ -4955,7 +5037,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>nViews</code>
 </td>
 <td class="hdlist2">
-<p><strong>[TO DO: Ian, please explain]</strong></p>
+<p>This widget records data produced from any number of simulators. However, its often unreasonable to view every one of what may be a very large number. However, being able to visually compare independent parallel simulations is useful. This setting allow more than one (at the moment this is unlimited) view. A drop-down list for each view allows you to select which data set to display.</p>
 </td>
 </tr>
 </table>
@@ -4970,7 +5052,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <dl>
 <dt class="hdlist1"><code>trackTime &#8594; dynamics:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells the widget which simulator it is going to control</p>
+<p>This link identifies the <em>dynamics</em> system the widget is listening to.</p>
 </dd>
 </dl>
 </div>
@@ -4981,7 +5063,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <dl>
 <dt class="hdlist1"><code>trackSeries &#8594; dataTracker:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells the widget which <code>dataTracker</code> it receives its data from</p>
+<p>This link identifies the <code>dataTracker</code> the widget is listening to.</p>
 </dd>
 </dl>
 </div>
@@ -4992,7 +5074,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <dl>
 <dt class="hdlist1"><code>trackSpace &#8594; space:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells the widget which space it receives its data from</p>
+<p>This link identifies the <code>space</code> the widget is listening to.</p>
 </dd>
 </dl>
 </div>
@@ -5003,7 +5085,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <dl>
 <dt class="hdlist1"><code>trackSystem &#8594; system:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells the widget which system it receives its data from</p>
+<p>This link identifies the <code>system</code> the widget is listening to</p>
 </dd>
 </dl>
 </div>
@@ -5276,7 +5358,7 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 </div>
 </div>
 <div class="sect1">
-<h2 id="truesimulation-reference-running-a-simulation-experiment-with-modelrunner"><a class="anchor" href="#truesimulation-reference-running-a-simulation-experiment-with-modelrunner"></a>4. Simulation reference: running a simulation experiment with <code>ModelRunner</code></h2>
+<h2 id="truesimulation-reference-running-a-simulation-experiment-with-modelrunner"><a class="anchor" href="#truesimulation-reference-running-a-simulation-experiment-with-modelrunner"></a>4. Simulation reference: running a simulation experiment with ModelRunner</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="truegeneral-concepts"><a class="anchor" href="#truegeneral-concepts"></a>4.1. General concepts</h3>
@@ -7119,7 +7201,7 @@ else
 <div id="footer">
 <div id="footer-text">
 Version 1.4<br>
-Last updated 2021-04-20 17:04:16 +0200
+Last updated 2021-04-21 11:06:46 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
