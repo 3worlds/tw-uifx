@@ -140,7 +140,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	private static final double labelFontSize = 9.5;
 	private static final double axisFontSize = 13.0;
 	private static final double nodeRadius = 7.0;
-	private static final double lineWidth = 1.0;
+	private static final double lineWidth = 2.0;
 	private static final double paperSize = 500.0;
 
 	private Bounds spaceBounds;
