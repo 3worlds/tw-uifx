@@ -89,7 +89,7 @@ public class WidgetTimeFormatter implements Widget {
 			LocalDateTime presentDate = TimeUtil.longToDate(time, smallest);
 			return presentDate.format(TimeUtil.getGregorianFormat(smallest));
 		} else {
-			return (TimeUtil.formatExactTimeScales(time, units));
+			return TimeUtil.formatExactTimeScales(time, units);
 		}
 	}
 
@@ -105,8 +105,9 @@ public class WidgetTimeFormatter implements Widget {
 			if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0)
 				units.add(allowed);
 
+		// NB // smallest to largest
 		units.sort((first, second) -> {
-			return second.compareTo(first);
+			return first.compareTo(second);
 		});
 
 	}
