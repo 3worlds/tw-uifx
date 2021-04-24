@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
@@ -61,6 +62,7 @@ public class WidgetTimeFormatter implements Widget {
 	private TimeUnits largest;
 	private TimeScaleType timeScale;
 	private List<TimeUnits> units;
+//	private SortedSet<TimeUnits> units;
 	private Long startTime;
 
 	/*
@@ -99,16 +101,16 @@ public class WidgetTimeFormatter implements Widget {
 		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
 		DateTimeType dtt = (DateTimeType) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
 		startTime = dtt.getDateTime();
-		units = new ArrayList<>();
-		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
-		for (TimeUnits allowed : allowable)
-			if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0)
-				units.add(allowed);
-
-		// NB // smallest to largest
-		units.sort((first, second) -> {
-			return first.compareTo(second);
-		});
+		units = new ArrayList<>(timeScale.validTimeUnits(smallest,largest));
+//		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
+//		for (TimeUnits allowed : allowable)
+//			if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0)
+//				units.add(allowed);
+//
+//		// NB // smallest to largest
+//		units.sort((first, second) -> {
+//			return first.compareTo(second);
+//		});
 
 	}
 

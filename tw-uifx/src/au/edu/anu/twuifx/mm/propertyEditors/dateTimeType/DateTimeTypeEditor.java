@@ -117,6 +117,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 			forbidden.add(TimeUnits.WEEK);
 			forbidden.add(TimeUnits.MILLISECOND);
 		}
+		// TODO we should be able to use units = new ArrayList<>(dtItem.getTimeScaleType().validTimeUnits(smallest,largest));
 		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
 		if (dtItem.getTimeScaleType().equals(TimeScaleType.MONO_UNIT))
 			for (TimeUnits unit : validUnits)
