@@ -339,7 +339,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			bar1.setSpacing(5);
 			bar2.setSpacing(5);
 
-			bar1.getChildren().addAll(new Label("Simulator"), cmbxSender, new Label("Time"), lblTime);
+			bar1.getChildren().addAll(new Label("Simulator"), cmbxSender, new Label("Tracker time"), lblTime);
 			topBar.getChildren().addAll(lblItem);
 			container.setTop(topBar);
 			zoomTarget = new BorderPane();
