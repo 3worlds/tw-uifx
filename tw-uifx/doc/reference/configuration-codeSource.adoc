@@ -1,3 +1,6 @@
+
+// DEPRECATED 27/4/2021
+
 ===== Specifying data structures
 
 The versatility of 3Worlds resides in the possibility to _generate_ any relevant data structure: based on simple specifications described here, `ModelMaker` will generate java classes implementing the data structures that will be interfaced with user-written code describing ecological processes.

@@ -45,8 +45,6 @@ include::configuration-reference.adoc[]
  
 === Developing and testing model code
 
-*TO DO refactor all this section*
-
 include::user-coding-reference.adoc[]
 
 === Feeding the model with data

@@ -1,39 +1,157 @@
-This section gives general rules to follow to successfully edit the generated `TwFunction`-descendant classes in order for your model to behave as you wish. Section <<truesetting_up_a_java_development_environment_for_the_user_code,Setting up a user coding environment>> describes how to link your ModelMaker session with an eclipse development enviromnent where you can edit the generated code. Section <<truefunction,Function>> describes all the options you can setup in `ModelMaker` to specify your function.
+A model of an ecological system in 3Worlds consists in a _configuration file_ constructed with the `ModelMaker` application (<<trueconfiguration-reference-creating-and-editing-a-model-with-modelmaker>>) and _java code files_ that must be edited by the end-user, here a modeller. Some basic knowledge of https://en.wikiversity.org/wiki/Java_Programming/Introduction[java] is required before going on here.
 
-All the generated function classes look like this:
+==== Generated code: the __model main class__
 
-[source,java]
+During the specification of a model, ModelMaker generates java classes meant to be further edited in order to implement the specific behaviours imagined by the modeller. Among these classes, one is meant to be edited; the others are interface code, that you can see as 'glueing' code between the 3Worlds main code and the user-defined one. The file to be edited is named after the 3Worlds root node of the specification file (<<configuration-reference.adoc#truethe-3worlds-node>>): e.g., if your 3Worlds node has the name `myModel`, the java file to edit will be called `MyModel.java`. In what follows, we call it the __model main class__.
+
+This section gives general rules to follow to successfully edit the generated _model main class_ in order for your model to behave as you wish. <<MMeclipse.adoc#truesetting-up-a-java-development-environment-for-the-user-code>> describes how to link your `ModelMaker` session with an eclipse development enviromnent where you can edit the generated _model main class_. It is important to read about  <<configuration-ecosystem-dynamics#truefunction,functions>> before starting writing your code, in order to master all the options you can setup in `ModelMaker` to specify your function.
+
+For each `function` node of the specification, you will find one static method with the same name in the _model main class_. For example, the 'IDHClock' tutorial (<<tutorial4.adoc#truetutorial-4-elaborating-the-model-structure-testing-the-intermediate-disturbance-hypothesis>>) specifies 3 functions, 2 initFunctions and 2 data trackers (<<fig-idhClock-functions>>).
+
+[#fig-idhClock-functions]
+.The functions defined in the model of the IDHClock tutorial.
+image::fig-functions-IDH.png[align="center"]
+
+This generates a _model main class_ with corresponding methods (code stripped of its javadoc comments):
+
+[source%nowrap,java]
 ----
-package system1;
+package code.sys1;
 
-import au.edu.anu.rscs.aot.collections.tables.*;
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
-import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
+import static java.lang.Math.*;
+import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
+import au.edu.anu.twcore.ecosystem.runtime.biology.DecisionFunction;
+import java.util.Random;
+import code.sys1.generated.*;
+// Hey, model developer! You may add your own imports here as needed
 
-/*
-[... some big comment...]
-* Class Function1
-* Model "system1" -  - Mon Sep 23 09:05:33 CEST 2019
-* CAUTION: Edit this template but do not change class declaration.
-*/
+public interface IdhClock1 {
 
-public class Function1 extends ChangeStateFunction {
+	public static void distEffectsComm(
+		double t,                             // current time
+		double dt,                            // current time step
+		int count,                            // whole system autoVar count (#) ϵ[0..*]
+		int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+		int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+		double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_x,                  // other component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DistEffectsComm.OtherDrv otherDrv,    // next drivers for other component 
+		double other_div,                     // other component decorators  ± 0.0 ϵ]-∞,+∞[
+		DistEffectsComm.OtherDec otherDec,    // new decorators for other component 
+		DoubleTable other_K,                  // other component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_alpha,              // other component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_r,                  // other component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+		Random random) {                      // random number generator
+	// distEffectsComm ---- Code insert Begin-->
+	// distEffectsComm ---- Code insert End----<
+	}
 
-	@Override
-	public void changeState(double t, double dt, SystemComponent focal) {
-		// INSERT YOUR CODE HERE
+	public static boolean distOccurrence(
+		double t,                             // current time
+		double dt,                            // current time step
+		int count,                            // whole system autoVar count (#) ϵ[0..*]
+		int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+		int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+		double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_x,                  // other component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+		double other_div,                     // other component decorators  ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_K,                  // other component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_alpha,              // other component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_r,                  // other component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+		Random random,                        // random number generator
+		DecisionFunction decider) {           // decision function
+	// distOccurrence ---- Code insert Begin-->
+	// distOccurrence ---- Code insert End----<
+	}
+
+	public static void initDist(
+		double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		InitDist.FocalCnt focalCnt,           // new constants for focal component 
+		Random random) {                      // random number generator
+	// initDist ---- Code insert Begin-->
+	// initDist ---- Code insert End----<
+	}
+
+	public static void commGrowth(
+		double t,                             // current time
+		double dt,                            // current time step
+		int count,                            // whole system autoVar count (#) ϵ[0..*]
+		int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+		int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+		DoubleTable x,                        // focal component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+		CommGrowth.FocalDrv focalDrv,         // next drivers for focal component 
+		double div,                           // focal component decorators  ± 0.0 ϵ]-∞,+∞[
+		CommGrowth.FocalDec focalDec,         // new decorators for focal component 
+		DoubleTable K,                        // focal component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable alpha,                    // focal component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable r,                        // focal component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+		Random random) {                      // random number generator
+	// commGrowth ---- Code insert Begin-->
+	// commGrowth ---- Code insert End----<
+	}
+
+	public static void initComm(
+		DoubleTable x,                        // focal component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+		InitComm.FocalDrv focalDrv,           // next drivers for focal component 
+		double div,                           // focal component decorators  ± 0.0 ϵ]-∞,+∞[
+		DoubleTable K,                        // focal component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable alpha,                    // focal component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable r,                        // focal component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+		InitComm.FocalCnt focalCnt,           // new constants for focal component 
+		Random random) {                      // random number generator
+	// initComm ---- Code insert Begin-->
+	// initComm ---- Code insert End----<
 	}
 
 }
 ----
 
-In this example, "**system1**" was the name given to the `system` node, while "**Function1**" was the name given to the `function` node. The `type` property set for the `function` was "**ChangeState**", as shown by the generated code. Other function types would have caused the generation of different methods in the class.
+In this example, you can see that:
 
-==== generic method arguments
+* the package name `code.sys1` is constructed from the name of the `system` node (<<fig-idhClock-functions>>);
+* the interface name `IdhClock1` is constructed from the name of the `3Worlds` node (<<fig-idhClock-functions>>);
+* each method name is constructed from a matching `function` or `initFunction` node (<<fig-idhClock-functions>>).
+* the argument lists are partly constructed from the `categories` the `process` declaring the `function` applies to;
+* the comments documenting the method arguments are constructed from the `field` or `table` node properties (`description`, `precision`, `interval`, `units`, etc.).
 
-All generated methods share the following arguments:
+When ModelRunner is launched on the IDHClock tutorial model, it will include the generated `IdhClock1` class and call each of its methods for all system components they are dealing with as specified in the model configuration file.
 
-* the first and second argument are _the current time_ _**t**_ and __current time step **dt**__, passed by the simulator as double values in units of the `timeModel` of the parent `process` of the `function`.
+As you can see in this example, the body of each method is empty, only containing two comments:
+
+[source,java]
+----
+	// initComm ---- Code insert Begin-->
+	// initComm ---- Code insert End----<
+----
+These are the __code insertion markers__. The user-defined code must be inserted between these two lines.
+
+WARNING: Never remove the __code insertion markers__ as they are used by 3Worlds when using code <<configuration-ecosystem-dynamics.adoc#truefunction,snippets>>.
+
+
+As _model main class_ is a java __**interface**__, all data is passed as arguments to its static methods. As you can see in the example above, there may be many arguments. If you look closely, you will see that these arguments match the _descriptors_ that were attached to the _categories_ to which the _processes_ apply. All this information is provided in the _model main class_ as javadoc comments. For example, the javadoc comment of the `commGrowth` method above produces this output:
+
+image::fig-javadoc-idhclock.png[align="center"]
+
+This comment recalls the categories to which the `commGrowth` method applies, which timer it follows and which time units it uses, and any other useful information like precedence between methods as specified by `dependsOn` cross-links between processes.
+
+Finally, the __model main class__ itself has a general javadoc description that gives some information about how to insert useful code into its methods:
+
+image::fig-javadoc-idhclock2.png[align="center"]
+
+==== __Model main class__ method arguments
+
+The list of arguments of each method is defined by its <<configuration-ecosystem-dynamics.adoc#truefunction,function type>>, the organisation level to which it applies (system, life cycle, group or component), the categories or relation types it applies to, and the user-defined data structures attached to these.
+
+* the first and second argument are _the current time_ _**t**_ and __current time step **dt**__, passed by the simulator as double values in units of the `timeModel` of the parent `process` of the `function`. 
+
++
+CAUTION: In the case of multiple timers, for `ClockTimers`, the current time step may be different from the timer's `dt` property because it is the time since last simulator iteration, which may have been triggered by a different timer.
+
+**[HERE]**
+
 
 * For all function types which process applies to categories (`appliesTo ->  category`), i.e. `ChangeCategoryDecision`, `ChangeState`, `DeleteDecision`, `CreateOtherDecision`, there is an additional argument, the system component which will be affected by the computations, called __focal__.
 

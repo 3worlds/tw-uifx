@@ -1,6 +1,6 @@
 ===== The descriptor tree
 
-Every _system component_ (<<configuration-ecosystem-structure.adoc#truethe-specification-of-ecological-entities-system-components>>) of 3Worlds potentially holds four kinds of descriptors (<<configuration-ecosystem-structure.adoc#truecategory>>). Each of these (__drivers__, __decorators__, _constants_ and __automatic variables__) is a _tree_ of two kinds of data structures: __records__ and __tables__. Records contain __fields__, i.e. atomic (i.e. not breakable into smaller parts) pieces of data of different types (numbers, character strings, logical values), each field having a name to access its value (i.e. field = (name,value) pair). Tables are multi-dimensional arrays of values of the same atomic type. 
+Every <<configuration-ecosystem-structure.adoc#truethe-specification-of-ecological-entities-system-components,_system component_>> of 3Worlds potentially holds four kinds of  <<configuration-ecosystem-structure.adoc#truecategory,_descriptors_>>. Each of these (__drivers__, __decorators__, _constants_ and __automatic variables__) is a _tree_ of two kinds of data structures: __records__ and __tables__. Records contain __fields__, i.e. atomic (i.e. not breakable into smaller parts) pieces of data of different types (numbers, character strings, logical values), each field having a name to access its value (i.e. field = (name,value) pair). Tables are multi-dimensional arrays of values of the same atomic type. 
 
 The data tree is constructed by allowing records to contain tables as fields (but not records), and by allowing tables to contain records all made of the same fields (but not tables) instead of atomic types. This gives end-user modellers great flexibility to organise their data into elaborate structures.
 
@@ -52,7 +52,7 @@ This link sets one dimension of a table to be of the length found in the dimensi
 
 `/3worlds/dataDefinition/*rng*:<[underline]##__name__##>` {0..*}
 
-Simulation models make extensive use of random numbers to make decisions on components (e.g. decision to delete a component or to create new ones). 3Worlds defines random number channels, that can be attached to specific functions (<<configuration-ecosystem-dynamics.adoc#truefunction>>). These channels can be held constant by using the same seed in a series of simulations, thus enabling to conduct factorial experiments controlling for a source of random numbers or another.
+Simulation models make extensive use of random numbers to make decisions on components (e.g. decision to delete a component or to create new ones). 3Worlds defines random number channels, that can be attached to specific <<configuration-ecosystem-dynamics.adoc#truefunction,functions>>. These channels can be held constant by using the same seed in a series of simulations, thus enabling to conduct factorial experiments controlling for a source of random numbers or another.
 
 include::ArchetypeDoc-rng.adoc[]
 

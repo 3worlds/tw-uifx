@@ -1,8 +1,13 @@
-3Worlds provides a series of _widgets_, i.e. classes that can manage output from the simulator and either show it graphically or perform some other non-graphic task (e.g. save data to disk). Examples of graphic widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc... The basic `ModelRunner` GUI just provides places to place widgets: a _top_, a _bottom_ and any number of _tabs_. Any number of widgets can be placed within these (<<fig-example-gui>>).
+3Worlds provides a series of _widgets_, i.e. classes that can manage output from the simulator and either show it graphically or perform some other non-graphic task (e.g. save data to disk). Examples of graphic widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc... The basic `ModelRunner` GUI just provides places to place widgets: a _top_, a _bottom_ and any number of _tabs_. Any number of widgets can be placed within these (<<fig-example-gui>>,<<fig-example-gui-tree>>).
 
 [[fig-example-gui]]
 .The ModelRunner graphical user interface.
 image::example-gui.svg[align="center"]
+
+[[fig-example-gui-tree]]
+.The configuration sub-tree specifying the GUI of <<fig-example-gui>>.
+image::fig-gui-example-tree.png[align="center"]
+
 
 ===== Top
 
@@ -86,7 +91,7 @@ _possible values_:
 
 `ScatterplotWidget1`:: A graph of _y_ = __f__(__x__) where _x_ and _y_ are two descriptors of a component.  Add as a child of a `tab` or `container` node. This widget also uses the fast charting library from https://github.com/GSI-CS-CO/chart-fx[Chartfx].
 
-`SpaceWidget1`:: A map of a space (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>).  Add as a child of a `tab` or `container` node.
+`SpaceWidget1`:: A map of a  <<configuration-ecosystem-structure.adoc#truethe-representation-of-space,space>>.  Add as a child of a `tab` or `container` node.
 `TableWidget1`:: A table of number values __x~i~__(__t__).  Add as a child of a `tab` or `container` node. Add as a child of a `tab` or `container` node. 
 
 `MatrixWidget1`:: A colour display of a 2-dimensional table. Add as a child of a `tab` or `container` node. *untested*

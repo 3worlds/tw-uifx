@@ -18,4 +18,4 @@ java -cp .3w/tw-dep.jar au.edu.anu.twuifx.mm.MMmain
 It is preferable to run the software from a terminal window. This way, any errors that may arise will be displayed.
 // I think we could supply a bash shell and a windows .bat file to handle this - Ian
 
-NOTE: to develop your model-specific code, you will need to setup a Java development environment as shown in section <<truesetting-up-a-java-development-environment-for-the-user-code,Setting up Java>>. 
+NOTE: to develop your model-specific code, you will need to setup a Java development environment as shown in  <<truesetting-up-a-java-development-environment-for-the-user-code>>. 

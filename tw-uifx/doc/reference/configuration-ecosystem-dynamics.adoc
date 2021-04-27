@@ -1,6 +1,6 @@
 ===== The representation of time
 
-Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called processes) to either `Categories` (<<configuration-ecosystem-structure.adoc#truecategory>>) or ``relationType``s (<<configuration-ecosystem-structure.adoc#truerelationtype>>). Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.
+Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called <<trueprocess,processes>>) to either  <<configuration-ecosystem-structure.adoc#truecategory,categories>> or <<configuration-ecosystem-structure.adoc#truerelationtype,relation types>>. Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.
 
 ====== Time line
 
@@ -22,9 +22,12 @@ Ecological processes may be run following different times. A timer is a particul
 Internally, each timer is an instance of the class `Timer`, which is able to return the next time where computation must be made according to its own logic. Every iteration of 3Worlds starts with the simulator asking all timers for their next time, then keeping all of those with the next time closest to last time, and executing them __in unpredictable order__. 3Worlds uses long integers to measure time internally, which means that simultaneous events are possible (times may be strictly equal). The finest time interval is given by `TimeLine.shortestTimeUnit`.
 ****
 
+// now deprecated - because only valid for clock timer
+// include::ArchetypeDoc-timer.adoc[]
 
-include::ArchetypeDoc-timer.adoc[]
+_Properties for_ `timer`:
 
+[horizontal]
 `subclass`:: the type of `timer` to use.
 +
 ****
@@ -39,20 +42,25 @@ _possible values_:
 _Additional properties when_ `class = ClockTimer`
 
 [horizontal]
+`timeUnit`:: the base time unit used by this timer. _cf._ `timeLine.shortestTimeUnit` for the valid values of this property
+
+`nTimeUnits`:: the number of base time units in the time unit of this model (__e.g.__, a model may have a 2 year time unit)
+
 `dt`:: The constant time increment used in this `ClockTimer`, expressed as an integer number of `timer` base unit (=`timer.nTimeUnits` × `timer.timeUnit`). For example, if the `timer` has `timeUnit` = `DAY` and `nTimeUnits` = 3, `dt` is expressed in units of 3 days (e.g. `dt` = 2 means the time increment is 6 days).
 +
 WARNING: if calendar time is used (`timeLine.scale` = `GREGORIAN`), then `dt` will sometimes not be constant (e.g. if `dt` = 2 `MONTH`, `dt` will vary in duration between 59 and 62 days according to the exact date).
 
-_Additional sub-tree when_ `class = EventTimer`
+`offset`:: In some cases it is desirable to offset a `ClockTimer` relative to another one running at the same time step, for example to be certain of their order of execution or to simulate cyclic phenomena (e.g. seasons). The timer will start after `offset` × `timeUnit` units, where `offset` is a fraction between 0.0 and 1.0.
 
-`/3worlds/system/dynamics/timeLine/timer/*eventQueue*:<[underline]##__name__##>` {1}
+_Additional cross-links when_ `class = EventTimer`
 
-An `EventTimer` maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.
+An `EventTimer` maintains a queue of time events that gets populated by user-defined ecological <<truefunction,functions>>. This way, future events depend on the dynamics of the system. Functions that can populate an event queue will have an `EventQueue` argument in their heading, usable to create future time events. Events must set a time in the future, i.e. their time must be larger than current time.
 
-_Cross-links for_ `eventQueue`
+`fedBy -> initFunction:<[underline]##__name__##>` {1}::
+This link is used to set the first event of an `EventTimer` at simulation start, hence from an <<configuration-ecosystem-structure.adoc#truesetting-decriptor-values,`initFunction`>>. Without this initial event, the timer will never start. More than one event can be created here.
 
-`populatedBy -> function:<[underline]##__name__##>` {1..*}::
-These links indicate which ecological processes will populate the event queue with time events.
+`fedBy -> function:<[underline]##__name__##>` {0..*}::
+These links indicate which functions can populate the event queue with time events. Multiple events can be created here.
 
 ====== Simulation stopping condition
 
@@ -87,7 +95,7 @@ Compound stopping condition: simulation stops when _all_ of the elementary stopp
 _Additional properties when_ `class = SimpleStoppingCondition`
 
 [horizontal]
-`endTime`:: The time at which the simulation will stop, in time line `shortestTimeUnits`.
+`duration`:: The duration of the simulation beyond time line `timeOrigin`, in time line `shortestTimeUnits`.
 
 _Additional cross-links when_ `class = ValueStoppingCondition`, `InRangeStoppingCondition`,  `OutRangeStoppingCondition`
 
@@ -123,7 +131,7 @@ Changes in a _system component_ through time may be of different kinds: changes 
 
 `/3worlds/system/dynamics/timeLine/timer/*process*:<[underline]##__name__##>` {1..*}
 
-_Processes_ are used in 3Worlds to compute change in _system components_. Each process acts on system components of a particular group of categories (cf. <<purpose.adoc#truecategories>>, <<configuration-ecosystem-structure.adoc#truesystem-component>>) and is scheduled by a particular timer (<<truetimers>>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (times). A `process` is run according to its parent `timer`.
+_Processes_ are used in 3Worlds to compute change in <<configuration-ecosystem-structure.adoc#truesystem-component,_system components_>>. Each process acts on system components of a particular group of <<purpose.adoc#truecategories,categories>> and is scheduled by a particular <<truetimers,timer>>. Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (times). A `process` is run according to its parent `timer`.
 
 _Cross-links for_ `process`
 
@@ -139,7 +147,7 @@ IMPORTANT: A process *must* apply either to categories (__category process__) or
 `dependsOn -> process:<[underline]##__name__##>` {0..*}::
 This link tells that the process must be activated _after_ the processes targeted by the links. Use this link to organize computations when there are dependencies between them.
 `inSpace -> space:<[underline]##__name__##>` {0..1}::
-This link indicates that this process will make use of this space (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>) for its optimisation of neighbour searches. Use this link when you want fast search for candidates to establish a relation, i.e. in association with the `relateToDecision` function. The required property `searchRadius` in the `inSpace` link tells to which _maximal_ distance candidates for establishing a relation must be searched. 3Worlds will only present components at a shorter distance than `searchRadius` (possibly none) to the `relateToDecision` function. A value of zero means the algorithm searches for the closest neighbour only (possibly more than one if all exactly at the same distance), whatever its distance to the focal component.
+This link indicates that this process will make use of this  <<configuration-ecosystem-structure.adoc#truethe-representation-of-space,space>> for its optimisation of neighbour searches. Use this link when you want fast search for candidates to establish a relation, i.e. in association with the `relateToDecision` function. The required property `searchRadius` in the `inSpace` link tells to which _maximal_ distance candidates for establishing a relation must be searched. 3Worlds will only present components at a shorter distance than `searchRadius` (possibly none) to the `relateToDecision` function. A value of zero means the algorithm searches for the closest neighbour only (possibly more than one if all exactly at the same distance), whatever its distance to the focal component.
 
 // NB it may make sense to have a different property for handling the number of neighbours to search for, ie 1 returns the closest neighbour, 2 the 2 closest, etc.
 
@@ -173,17 +181,17 @@ CAUTION: The name of a function must be a valid java class name, starting with a
 
 include::ArchetypeDoc-function.adoc[]
 
-IMPORTANT: The `relateToDecision` function has a special status among relation processes as it is used to establish a relation, whereas all other functions for relation processes use an already established relation. As a result, a process parent to a `relateToDecision` function cannot be parent to any other type of function. For computation efficiency, it is recommended to associate a _space_ (<<configuration-ecosystem-structure.adoc#truethe-representation-of-space>>) to the process parent to a `relateToDecision` function.
+IMPORTANT: The `relateToDecision` function has a special status among relation processes as it is used to establish a relation, whereas all other functions for relation processes use an already established relation. As a result, a process parent to a `relateToDecision` function cannot be parent to any other type of function. For computation efficiency, it is recommended to associate a <<configuration-ecosystem-structure.adoc#truethe-representation-of-space,_space_>> to the process parent to a `relateToDecision` function.
 
 _Cross-links for_ `function`:
 
 `useRNG -> rng:<__name__>` {0..1}::
-Points to the random number generator channel (<<configuration-dataDefinition.adoc#truerandom-number-channels>>) to use in this function. If unset, the default random number channel is used.
+Points to the <<configuration-dataDefinition.adoc#truerandom-number-channels,random number generator channel>> to use in this function. If unset, the default random number channel is used.
 
 _Additional properties when_ `function = createOtherDecision`:
 
 [horizontal]
-`relateToProduct`:: A logical value (`false` by default) which tells to establish a permanent `parentTo` relation (defined in the `predefined` sub-tree:<<configuration-reference.adoc#truethe-predefined-sub-tree>>) between a parent component and its offspring created by calling `createOtherDecision`.
+`relateToProduct`:: A logical value (`false` by default) which tells to establish a permanent `parentTo` relation (defined in the `predefined` sub-tree: <<configuration-reference.adoc#truethe-predefined-sub-tree>>) between a parent component and its offspring created by calling `createOtherDecision`.
 
 `/3worlds/.../function/*snippet*:<__name__>` {0..1}
 
@@ -201,8 +209,7 @@ Functions are called within the loop on components of their parent process. The 
 ** then, all `deleteDecision` functions,
 ** then, all `createOtherDecision` functions,
 ** then, all `changeCategoryDecision` functions,
-** then send data to all dataTrackers (see below:
-<<truedata-tracking>>)
+** then send data to all <<truedata-tracking,data trackers>>
 * In a `SearchProcess`:
 ** execute all `relateToDecision` functions
 * In a `RelationProcess`
@@ -258,7 +265,7 @@ Internally, consequence functions are just functions which are called _immediate
 
 Data trackers are used to get output from a simulation. This output can then be redirected either to graphic windows of `ModelRunner` or to a data file for later processing with other software. Using a data tracker is similar to what happens in the real world: you set a sensor into the system you want to monitor and wire it to a data logger which translates the signal into human-readable data. There are different kinds of data trackers according to the output format and the sampling method you want to use; and different ways of wiring these trackers to the simulated system and its components.
 
-A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget<<configuration-gui.adoc#truewidgets>>) linked to it. The frequency of data sending is determined by the _timer_ of the parent _process_ of the data tracker.
+A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a <<configuration-gui.adoc#truewidgets,widget>>) linked to it. The frequency of data sending is determined by the _timer_ of the parent _process_ of the data tracker.
 
 IMPORTANT: A `dataTracker` node can only be specified in a _category process_, not in a __relation process__.
 
@@ -316,6 +323,6 @@ _Properties for_ `trackField` _and_ `trackTable` __cross-links__:
 . an empty index string `[]`, or no index string, means that the whole table (all cells) is to be tracked.
 
 +
-The descriptors may be elaborate hierarchical data structure which include a table at some level (<<configuration-dataDefinition.adoc#truethe-descriptor-tree>>). For each table in this hierarchy, an index `String` as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.
+The descriptors may be elaborate <<configuration-dataDefinition.adoc#truethe-descriptor-tree,hierarchical data structure>> which include a table at some level. For each table in this hierarchy, an index `String` as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.
 
 *[TO DO: a few examples]*

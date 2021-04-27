@@ -181,7 +181,7 @@ This link tells which system component type is the result of the recruitment.
 NOTE: multiple targets are possible from the same category, i.e. a component of a category may recruit to different categories. E.g., a bee larva can recruit to a worker or a queen.
 
 `effectedBy -> process:<__name__>` {1}::
-This link tells which ecological process is used to compute the recruitment. This process must implement exactly one `ChangeCategoryDecision` function (<<configuration-ecosystem-dynamics.adoc#truefunction>>).
+This link tells which ecological process is used to compute the recruitment. This process must implement exactly one  <<configuration-ecosystem-dynamics.adoc#truefunction,`ChangeCategoryDecision`>> function.
 
 ====== Reproduction
 
@@ -200,7 +200,7 @@ This link tells which system component type is the result of the reproduction.
 NOTE: multiple targets are possible from the same category, i.e. a component of a category may produce components of different categories. E.g., a tree can produce seedlings through sexual reproduction and root suckers through vegetative reproduction.
 
 `effectedBy -> process:<__name__>` {1}::
-This link tells which ecological process is used to compute the production of new system components. This process must implement exactly one `CreateOtherDecision` function (<<configuration-ecosystem-dynamics.adoc#truefunction>>).
+This link tells which ecological process is used to compute the production of new system components. This process must implement exactly one  <<configuration-ecosystem-dynamics.adoc#truefunction,`CreateOtherDecision`>> function.
 
 ====== Example of a life cycle specification
 
@@ -220,8 +220,8 @@ The life cycle has two categories, _seedling_ and __adult__, and three transitio
 
 ===== The representation of space
 
-Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a library of different spaces for this need (<<true3worlds-library-of-spaces>>).
-Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations (see <<configuration-ecosystem-dynamics.adoc#trueprocess>>).
+Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a <<true3worlds-library-of-spaces,library>> of different spaces for this need.
+Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations (see <<configuration-ecosystem-dynamics.adoc#trueprocess,process>>).
 
 ====== Space and spatial indexing
 
@@ -237,7 +237,7 @@ _Cross-links for_ `space`:
 This link tells which descriptors are used as coordinates to locate system components in this space. This link has a required property `rank` which tells to which dimension of space a coordinate refers to. For example, you may set to 1 the rank of the _x_ field and to 2 the rank of the _y_ field if you want your 2D space coordinates to be _x_ and __y__, in this order.
 
 `useRNG -> rng:<__name__>` {0..1}::
-Points to the random number generator channel (<<configuration-dataDefinition.adoc#truerandom-number-channels>>) to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.
+Points to the <<configuration-dataDefinition.adoc#truerandom-number-channels,random number generator channel>> to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.
 
 ====== 3Worlds library of spaces
 
@@ -272,7 +272,7 @@ _Additional properties for space type_ `SquareGrid`:
 
 ===== The setup of an initial state for a simulation
 
-To run a simulation, an initial population of system component, group, life cycle, and system _instances_ must be constructed from their respective _types_ (e.g. `groupType`, `componentType`, etc.). They constitute the _initial state_ of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific _function_ (`setInitialState`, see <<configuration-ecosystem-dynamics.adoc#truefunction>>), or through external data files listed as _data sources_ (<<configuration-experiment.adoc#trueinputs-datasource>>).
+To run a simulation, an initial population of system component, group, life cycle, and system _instances_ must be constructed from their respective _types_ (e.g. `groupType`, `componentType`, etc.). They constitute the _initial state_ of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific <<configuration-ecosystem-dynamics.adoc#truefunction,_function_>> (`setInitialState`), or through external data files listed as <<configuration-experiment.adoc#trueinputs-datasource, _data sources_>>.
 
 ====== Component
 
@@ -325,14 +325,14 @@ A first method to set descriptor values is to define a `setInitialState` functio
 _Properties for_ `initFunction`:
 
 [horizontal]
-`type`:: The type of function used: only `setInitialState` is possible (cf. <<configuration-ecosystem-dynamics.adoc#truefunction>> for more detail on function types) .
+`type`:: The type of function used: only <<configuration-ecosystem-dynamics.adoc#truefunction,`setInitialState`>> is possible.
 
 _Cross-links for_ `initFunction`:
 
 `useRNG -> rng:<__name__>` {0..1}::
-Points to the random number generator channel (<<configuration-dataDefinition.adoc#truerandom-number-channels>>) to use in this function. If unset, the default random number channel is used.
+Points to the <<configuration-dataDefinition.adoc#truerandom-number-channels,random number generator channel>> to use in this function. If unset, the default random number channel is used.
 
-A second method to set descriptor values is to import data from an external source. This is done by defining a `dataSource` (<<configuration-experiment.adoc#trueinputs-datasource>>) and linking a `component`, `group`, `lifeCycle` or `system` to it:
+A second method to set descriptor values is to import data from an external source. This is done by defining a  <<configuration-experiment.adoc#trueinputs-datasource,`dataSource`>> and linking a `component`, `group`, `lifeCycle` or `system` to it:
 
 _Cross-links for_ `component`, `group`, `lifeCycle`, and `system`
 

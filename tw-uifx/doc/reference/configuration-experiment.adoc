@@ -119,7 +119,7 @@ This node specifies that a particular parameter/driver must be read from the fil
 
 `/3worlds/dataIO/dataSource/*dim*:<[underline]##__name__##>` {0..*}
 
-This node is used when reading data into tables (<<configuration-dataDefinition.adoc#truetable>>). The node name must be an integer matching the dimension declared in a table under the `dataDefinition` node. It must then have the following property:
+This node is used when reading data into <<configuration-dataDefinition.adoc#truetable,tables>>. The node name must be an integer matching the dimension declared in a table under the `dataDefinition` node. It must then have the following property:
 
 [horizontal]
 `col`:: header of the column containing the index values for this dimension.
@@ -182,4 +182,4 @@ _Properties for_ `dataSink`
 _Cross-links for_ `dataSink`:
 
 `source -> dataTracker:<[underline]##__name__##>` {1}::
-This link the origin of the data to save into the sink. Usually, a data tracker (<<configuration-ecosystem-dynamics.adoc#truedata-tracking>>)
+This link the origin of the data to save into the sink. Usually, a  <<configuration-ecosystem-dynamics.adoc#truedata-tracking,data tracker>>

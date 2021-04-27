@@ -82,7 +82,7 @@ include::configuration-ecosystem-dynamics.adoc[]
 
 `/3worlds/*dataDefinition*` {1}
 
-This node and its sub-tree contains the detailed specifications of descriptors used in a model. This information is used by 3Worlds to generate java code for the data structures that will be used in simulations of this particular model. These data structures are then made available to descendants of 3Worlds functions (<<configuration-ecosystem-dynamics.adoc#truefunction>>) that users will edit and modify to describe their particular model.
+This node and its sub-tree contains the detailed specifications of descriptors used in a model. This information is used by 3Worlds to generate java code for the data structures that will be used in simulations of this particular model. These data structures are then made available to descendants of 3Worlds  <<configuration-ecosystem-dynamics.adoc#truefunction,functions>> that users will edit and modify to describe their particular model.
 
 include::configuration-dataDefinition.adoc[]
 
@@ -135,6 +135,6 @@ Predefined categories are grouped in 3 ``categorySet``s:
 
 There are two predefined relation types:
 
-* `\*parentTo*: \*component* -> \*component*` may be used to relate a component to its offspring, i.e. it enables to track genealogic links between components (<<configuration-ecosystem-dynamics.adoc#truefunction>>).
+* `\*parentTo*: \*component* -> \*component*` may be used to relate a component to its offspring, i.e. it enables to track genealogic links between components (see the `CreateOtherDecision` <<configuration-ecosystem-dynamics.adoc#truefunction,function>>).
 * `\*returnsTo*: \*component* -> \*component*` is not yet in use.
 

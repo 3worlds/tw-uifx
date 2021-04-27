@@ -511,8 +511,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#truedeveloping-and-testing-model-code">3.4. Developing and testing model code</a>
 <ul class="sectlevel3">
-<li><a href="#truegeneric-method-arguments">3.4.1. generic method arguments</a></li>
-<li><a href="#truegeneric-method-fields">3.4.2. generic method fields</a></li>
+<li><a href="#truegenerated-code-the-model-main-class">3.4.1. Generated code: the <em>model main class</em></a></li>
+<li><a href="#truemodel-main-class-method-arguments">3.4.2. <em>Model main class</em> method arguments</a></li>
+<li><a href="#truegeneric-method-fields">3.4.3. generic method fields</a></li>
 </ul>
 </li>
 <li><a href="#truefeeding-the-model-with-data">3.5. Feeding the model with data</a></li>
@@ -916,7 +917,7 @@ This way of launching 3Worlds is sensitive to the relative location of <code>mod
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-to develop your model-specific code, you will need to setup a Java development environment as shown in section <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Setting up Java</a>.
+to develop your model-specific code, you will need to setup a Java development environment as shown in  <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a>.
 </td>
 </tr>
 </table>
@@ -1697,7 +1698,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <dl>
 <dt class="hdlist1"><code>effectedBy &#8594; process:&lt;<em>name</em>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells which ecological process is used to compute the recruitment. This process must implement exactly one <code>ChangeCategoryDecision</code> function (<a href="#truefunction">Section 3.3.4.2.2</a>).</p>
+<p>This link tells which ecological process is used to compute the recruitment. This process must implement exactly one  <a href="#truefunction"><code>ChangeCategoryDecision</code></a> function.</p>
 </dd>
 </dl>
 </div>
@@ -1741,7 +1742,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <dl>
 <dt class="hdlist1"><code>effectedBy &#8594; process:&lt;<em>name</em>&gt;</code> {1}</dt>
 <dd>
-<p>This link tells which ecological process is used to compute the production of new system components. This process must implement exactly one <code>CreateOtherDecision</code> function (<a href="#truefunction">Section 3.3.4.2.2</a>).</p>
+<p>This link tells which ecological process is used to compute the production of new system components. This process must implement exactly one  <a href="#truefunction"><code>CreateOtherDecision</code></a> function.</p>
 </dd>
 </dl>
 </div>
@@ -1774,8 +1775,8 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="sect4">
 <h5 id="truethe-representation-of-space"><a class="anchor" href="#truethe-representation-of-space"></a>The representation of space</h5>
 <div class="paragraph">
-<p>Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a library of different spaces for this need (<a href="#true3worlds-library-of-spaces">Section 3.3.3.3.2</a>).
-Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations (see <a href="#trueprocess">Section 3.3.4.2.1</a>).</p>
+<p>Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a <a href="#true3worlds-library-of-spaces">library</a> of different spaces for this need.
+Technically, space could just be treated as a component related to other components through particular relations. But since many optimal algorithms have been coded to handle particular aspects of space in relation to other entities, we use space as a kind of container for system components optimized for various operations such as searches for partners for establishing relations (see <a href="#trueprocess">process</a>).</p>
 </div>
 <div class="sect5">
 <h6 id="truespace-and-spatial-indexing"><a class="anchor" href="#truespace-and-spatial-indexing"></a>Space and spatial indexing</h6>
@@ -2020,7 +2021,7 @@ Technically, space could just be treated as a component related to other compone
 </dd>
 <dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
 <dd>
-<p>Points to the random number generator channel (<a href="#truerandom-number-channels">Section 3.3.5.3</a>) to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.</p>
+<p>Points to the <a href="#truerandom-number-channels">random number generator channel</a> to use with this space (e.g., to generate random locations). If unset, the default random number channel is used.</p>
 </dd>
 </dl>
 </div>
@@ -2102,7 +2103,7 @@ Technically, space could just be treated as a component related to other compone
 <div class="sect4">
 <h5 id="truethe-setup-of-an-initial-state-for-a-simulation"><a class="anchor" href="#truethe-setup-of-an-initial-state-for-a-simulation"></a>The setup of an initial state for a simulation</h5>
 <div class="paragraph">
-<p>To run a simulation, an initial population of system component, group, life cycle, and system <em>instances</em> must be constructed from their respective <em>types</em> (e.g. <code>groupType</code>, <code>componentType</code>, etc.). They constitute the <em>initial state</em> of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific <em>function</em> (<code>setInitialState</code>, see <a href="#truefunction">Section 3.3.4.2.2</a>), or through external data files listed as <em>data sources</em> (<a href="#trueinputs-datasource">Section 3.3.6.4.1</a>).</p>
+<p>To run a simulation, an initial population of system component, group, life cycle, and system <em>instances</em> must be constructed from their respective <em>types</em> (e.g. <code>groupType</code>, <code>componentType</code>, etc.). They constitute the <em>initial state</em> of a simulation. The initial state is kept in memory by the simulator, and is re-loaded at every simulator reset prior to a new simulation run. To set descriptor values in initial instances, two methods are possible: through the use of a specific <a href="#truefunction"><em>function</em></a> (<code>setInitialState</code>), or through external data files listed as <a href="#trueinputs-datasource"><em>data sources</em></a>.</p>
 </div>
 <div class="sect5">
 <h6 id="truecomponent"><a class="anchor" href="#truecomponent"></a>Component</h6>
@@ -2199,7 +2200,7 @@ Technically, space could just be treated as a component related to other compone
 <code>type</code>
 </td>
 <td class="hdlist2">
-<p>The type of function used: only <code>setInitialState</code> is possible (cf. <a href="#truefunction">Section 3.3.4.2.2</a> for more detail on function types) .</p>
+<p>The type of function used: only <a href="#truefunction"><code>setInitialState</code></a> is possible.</p>
 </td>
 </tr>
 </table>
@@ -2211,12 +2212,12 @@ Technically, space could just be treated as a component related to other compone
 <dl>
 <dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
 <dd>
-<p>Points to the random number generator channel (<a href="#truerandom-number-channels">Section 3.3.5.3</a>) to use in this function. If unset, the default random number channel is used.</p>
+<p>Points to the <a href="#truerandom-number-channels">random number generator channel</a> to use in this function. If unset, the default random number channel is used.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>A second method to set descriptor values is to import data from an external source. This is done by defining a <code>dataSource</code> (<a href="#trueinputs-datasource">Section 3.3.6.4.1</a>) and linking a <code>component</code>, <code>group</code>, <code>lifeCycle</code> or <code>system</code> to it:</p>
+<p>A second method to set descriptor values is to import data from an external source. This is done by defining a  <a href="#trueinputs-datasource"><code>dataSource</code></a> and linking a <code>component</code>, <code>group</code>, <code>lifeCycle</code> or <code>system</code> to it:</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>component</code>, <code>group</code>, <code>lifeCycle</code>, and <code>system</code></p>
@@ -2243,7 +2244,7 @@ Technically, space could just be treated as a component related to other compone
 <div class="sect4">
 <h5 id="truethe-representation-of-time"><a class="anchor" href="#truethe-representation-of-time"></a>The representation of time</h5>
 <div class="paragraph">
-<p>Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called processes) to either <code>Categories</code> (<a href="#truecategory">Section 3.3.3.1.1</a>) or <code>relationType</code>s (<a href="#truerelationtype">Section 3.3.3.1.3</a>). Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.</p>
+<p>Simulation is about mimicking the dynamics of a real system. Here, dynamics is specified by attaching particular behaviours (called <a href="#trueprocess">processes</a>) to either  <a href="#truecategory">categories</a> or <a href="#truerelationtype">relation types</a>. Processes may act at a different rhythm or rate in nature, so we need to have a great flexibility in the way time is represented.</p>
 </div>
 <div class="sect5">
 <h6 id="truetime-line"><a class="anchor" href="#truetime-line"></a>Time line</h6>
@@ -2560,6 +2561,14 @@ Technically, space could just be treated as a component related to other compone
 <p>The longest time unit used in this model. <em>cf.</em> <code>shortestTimeUnit</code> for valid values</p>
 </td>
 </tr>
+<tr>
+<td class="hdlist1">
+<code>timeOrigin</code>
+</td>
+<td class="hdlist2">
+<p>The value of time at simulation start, either as a long (number of <code>shortestTimeUnit</code>) or as a date; 0 by default.</p>
+</td>
+</tr>
 </table>
 </div>
 </div>
@@ -2584,30 +2593,6 @@ Technically, space could just be treated as a component related to other compone
 </div>
 <div class="hdlist">
 <table>
-<tr>
-<td class="hdlist1">
-<code>timeUnit</code>
-</td>
-<td class="hdlist2">
-<p>the base time unit used by this model. <em>cf.</em> <code>timeLine.shortestTimeUnit</code> for the valid values of this property</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>nTimeUnits</code>
-</td>
-<td class="hdlist2">
-<p>the number of base time units in the time unit of this model (<em>e.g.</em>, a model may have a 2 year time unit)</p>
-</td>
-</tr>
-<tr>
-<td class="hdlist1">
-<code>runAtTimeZero</code>
-</td>
-<td class="hdlist2">
-<p>whether model state must be computed at time origin, <em>i.e.</em> before simulation start</p>
-</td>
-</tr>
 <tr>
 <td class="hdlist1">
 <code>subclass</code>
@@ -2660,6 +2645,22 @@ Technically, space could just be treated as a component related to other compone
 <table>
 <tr>
 <td class="hdlist1">
+<code>timeUnit</code>
+</td>
+<td class="hdlist2">
+<p>the base time unit used by this timer. <em>cf.</em> <code>timeLine.shortestTimeUnit</code> for the valid values of this property</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>nTimeUnits</code>
+</td>
+<td class="hdlist2">
+<p>the number of base time units in the time unit of this model (<em>e.g.</em>, a model may have a 2 year time unit)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
 <code>dt</code>
 </td>
 <td class="hdlist2">
@@ -2678,25 +2679,31 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 </div>
 </td>
 </tr>
+<tr>
+<td class="hdlist1">
+<code>offset</code>
+</td>
+<td class="hdlist2">
+<p>In some cases it is desirable to offset a <code>ClockTimer</code> relative to another one running at the same time step, for example to be certain of their order of execution or to simulate cyclic phenomena (e.g. seasons). The timer will start after <code>offset</code> × <code>timeUnit</code> units, where <code>offset</code> is a fraction between 0.0 and 1.0.</p>
+</td>
+</tr>
 </table>
 </div>
 <div class="paragraph">
-<p><em>Additional sub-tree when</em> <code>class = EventTimer</code></p>
+<p><em>Additional cross-links when</em> <code>class = EventTimer</code></p>
 </div>
 <div class="paragraph">
-<p><code>/3worlds/system/dynamics/timeLine/timer/<strong>eventQueue</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</p>
-</div>
-<div class="paragraph">
-<p>An <code>EventTimer</code> maintains a queue of time events that gets populated by ecological processes. Time events are stored in this queue based on their date and activated by the simulator following time order.</p>
-</div>
-<div class="paragraph">
-<p><em>Cross-links for</em> <code>eventQueue</code></p>
+<p>An <code>EventTimer</code> maintains a queue of time events that gets populated by user-defined ecological <a href="#truefunction">functions</a>. This way, future events depend on the dynamics of the system. Functions that can populate an event queue will have an <code>EventQueue</code> argument in their heading, usable to create future time events. Events must set a time in the future, i.e. their time must be larger than current time.</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>populatedBy &#8594; function:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</dt>
+<dt class="hdlist1"><code>fedBy &#8594; initFunction:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>These links indicate which ecological processes will populate the event queue with time events.</p>
+<p>This link is used to set the first event of an <code>EventTimer</code> at simulation start, hence from an <a href="#truesetting-decriptor-values"><code>initFunction</code></a>. Without this initial event, the timer will never start. More than one event can be created here.</p>
+</dd>
+<dt class="hdlist1"><code>fedBy &#8594; function:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
+<dd>
+<p>These links indicate which functions can populate the event queue with time events. Multiple events can be created here.</p>
 </dd>
 </dl>
 </div>
@@ -2769,10 +2776,10 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <table>
 <tr>
 <td class="hdlist1">
-<code>endTime</code>
+<code>duration</code>
 </td>
 <td class="hdlist2">
-<p>The time at which the simulation will stop, in time line <code>shortestTimeUnits</code>.</p>
+<p>The duration of the simulation beyond time line <code>timeOrigin</code>, in time line <code>shortestTimeUnits</code>.</p>
 </td>
 </tr>
 </table>
@@ -2865,7 +2872,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <p><code>/3worlds/system/dynamics/timeLine/timer/<strong>process</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p><em>Processes</em> are used in 3Worlds to compute change in <em>system components</em>. Each process acts on system components of a particular group of categories (cf. <a href="#truecategories">Section 1.2.3</a>, <a href="#truesystem-component">Section 3.3.3.2.1</a>) and is scheduled by a particular timer (<a href="#truetimers">Section 3.3.4.1.2</a>). Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (times). A <code>process</code> is run according to its parent <code>timer</code>.</p>
+<p><em>Processes</em> are used in 3Worlds to compute change in <a href="#truesystem-component"><em>system components</em></a>. Each process acts on system components of a particular group of <a href="#truecategories">categories</a> and is scheduled by a particular <a href="#truetimers">timer</a>. Processes contain user-defined code that represents ecological processes. This gives 3Worlds its versatility: one can mix in a single model completely different ecological entities (system components of different categories), implement any ecological process depending on user needs, and put them to work on different time scales (times). A <code>process</code> is run according to its parent <code>timer</code>.</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>process</code></p>
@@ -2905,7 +2912,7 @@ A process <strong>must</strong> apply either to categories (<em>category process
 </dd>
 <dt class="hdlist1"><code>inSpace &#8594; space:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dd>
-<p>This link indicates that this process will make use of this space (<a href="#truethe-representation-of-space">Section 3.3.3.3</a>) for its optimisation of neighbour searches. Use this link when you want fast search for candidates to establish a relation, i.e. in association with the <code>relateToDecision</code> function. The required property <code>searchRadius</code> in the <code>inSpace</code> link tells to which <em>maximal</em> distance candidates for establishing a relation must be searched. 3Worlds will only present components at a shorter distance than <code>searchRadius</code> (possibly none) to the <code>relateToDecision</code> function. A value of zero means the algorithm searches for the closest neighbour only (possibly more than one if all exactly at the same distance), whatever its distance to the focal component.</p>
+<p>This link indicates that this process will make use of this  <a href="#truethe-representation-of-space">space</a> for its optimisation of neighbour searches. Use this link when you want fast search for candidates to establish a relation, i.e. in association with the <code>relateToDecision</code> function. The required property <code>searchRadius</code> in the <code>inSpace</code> link tells to which <em>maximal</em> distance candidates for establishing a relation must be searched. 3Worlds will only present components at a shorter distance than <code>searchRadius</code> (possibly none) to the <code>relateToDecision</code> function. A value of zero means the algorithm searches for the closest neighbour only (possibly more than one if all exactly at the same distance), whatever its distance to the focal component.</p>
 </dd>
 </dl>
 </div>
@@ -3078,7 +3085,7 @@ The name of a function must be a valid java class name, starting with an upperca
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-The <code>relateToDecision</code> function has a special status among relation processes as it is used to establish a relation, whereas all other functions for relation processes use an already established relation. As a result, a process parent to a <code>relateToDecision</code> function cannot be parent to any other type of function. For computation efficiency, it is recommended to associate a <em>space</em> (<a href="#truethe-representation-of-space">Section 3.3.3.3</a>) to the process parent to a <code>relateToDecision</code> function.
+The <code>relateToDecision</code> function has a special status among relation processes as it is used to establish a relation, whereas all other functions for relation processes use an already established relation. As a result, a process parent to a <code>relateToDecision</code> function cannot be parent to any other type of function. For computation efficiency, it is recommended to associate a <a href="#truethe-representation-of-space"><em>space</em></a> to the process parent to a <code>relateToDecision</code> function.
 </td>
 </tr>
 </table>
@@ -3090,7 +3097,7 @@ The <code>relateToDecision</code> function has a special status among relation p
 <dl>
 <dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
 <dd>
-<p>Points to the random number generator channel (<a href="#truerandom-number-channels">Section 3.3.5.3</a>) to use in this function. If unset, the default random number channel is used.</p>
+<p>Points to the <a href="#truerandom-number-channels">random number generator channel</a> to use in this function. If unset, the default random number channel is used.</p>
 </dd>
 </dl>
 </div>
@@ -3104,7 +3111,7 @@ The <code>relateToDecision</code> function has a special status among relation p
 <code>relateToProduct</code>
 </td>
 <td class="hdlist2">
-<p>A logical value (<code>false</code> by default) which tells to establish a permanent <code>parentTo</code> relation (defined in the <code>predefined</code> sub-tree:<a href="#truethe-predefined-sub-tree">Section 3.3.8</a>) between a parent component and its offspring created by calling <code>createOtherDecision</code>.</p>
+<p>A logical value (<code>false</code> by default) which tells to establish a permanent <code>parentTo</code> relation (defined in the <code>predefined</code> sub-tree: <a href="#truethe-predefined-sub-tree">Section 3.3.8</a>) between a parent component and its offspring created by calling <code>createOtherDecision</code>.</p>
 </td>
 </tr>
 </table>
@@ -3152,8 +3159,7 @@ We recommend not to use snippets, or only for simple models, since it may cause 
 <p>then, all <code>changeCategoryDecision</code> functions,</p>
 </li>
 <li>
-<p>then send data to all dataTrackers (see below:
-<a href="#truedata-tracking">Section 3.3.4.3</a>)</p>
+<p>then send data to all <a href="#truedata-tracking">data trackers</a></p>
 </li>
 </ul>
 </div>
@@ -3311,7 +3317,7 @@ We recommend not to use snippets, or only for simple models, since it may cause 
 <p>Data trackers are used to get output from a simulation. This output can then be redirected either to graphic windows of <code>ModelRunner</code> or to a data file for later processing with other software. Using a data tracker is similar to what happens in the real world: you set a sensor into the system you want to monitor and wire it to a data logger which translates the signal into human-readable data. There are different kinds of data trackers according to the output format and the sampling method you want to use; and different ways of wiring these trackers to the simulated system and its components.</p>
 </div>
 <div class="paragraph">
-<p>A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a widget<a href="#truewidgets">Section 3.3.7.5</a>) linked to it. The frequency of data sending is determined by the <em>timer</em> of the parent <em>process</em> of the data tracker.</p>
+<p>A data tracker will record values of descriptors (except constants) of a sample of system components or groups, or of the system itself and send them to any listener (usually a <a href="#truewidgets">widget</a>) linked to it. The frequency of data sending is determined by the <em>timer</em> of the parent <em>process</em> of the data tracker.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -3619,7 +3625,7 @@ the trackField or trackTable cross-links must be refer to fields or tables prese
 </ol>
 </div>
 <div class="paragraph">
-<p>The descriptors may be elaborate hierarchical data structure which include a table at some level (<a href="#truethe-descriptor-tree">Section 3.3.5.1</a>). For each table in this hierarchy, an index <code>String</code> as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.</p>
+<p>The descriptors may be elaborate <a href="#truethe-descriptor-tree">hierarchical data structure</a> which include a table at some level. For each table in this hierarchy, an index <code>String</code> as described above must be given in the index property, in a comma-separated list, e.g.: [0:2|0],[4,6] means that index [0:2|0] should be used for the top-level table of the descriptor, and index [4,6] for the bottom-level table.</p>
 </div>
 </td>
 </tr>
@@ -3636,12 +3642,12 @@ the trackField or trackTable cross-links must be refer to fields or tables prese
 <p><code>/3worlds/<strong>dataDefinition</strong></code> {1}</p>
 </div>
 <div class="paragraph">
-<p>This node and its sub-tree contains the detailed specifications of descriptors used in a model. This information is used by 3Worlds to generate java code for the data structures that will be used in simulations of this particular model. These data structures are then made available to descendants of 3Worlds functions (<a href="#truefunction">Section 3.3.4.2.2</a>) that users will edit and modify to describe their particular model.</p>
+<p>This node and its sub-tree contains the detailed specifications of descriptors used in a model. This information is used by 3Worlds to generate java code for the data structures that will be used in simulations of this particular model. These data structures are then made available to descendants of 3Worlds  <a href="#truefunction">functions</a> that users will edit and modify to describe their particular model.</p>
 </div>
 <div class="sect4">
 <h5 id="truethe-descriptor-tree"><a class="anchor" href="#truethe-descriptor-tree"></a>The descriptor tree</h5>
 <div class="paragraph">
-<p>Every <em>system component</em> (<a href="#truethe-specification-of-ecological-entities-system-components">Section 3.3.3.2</a>) of 3Worlds potentially holds four kinds of descriptors (<a href="#truecategory">Section 3.3.3.1.1</a>). Each of these (<em>drivers</em>, <em>decorators</em>, <em>constants</em> and <em>automatic variables</em>) is a <em>tree</em> of two kinds of data structures: <em>records</em> and <em>tables</em>. Records contain <em>fields</em>, i.e. atomic (i.e. not breakable into smaller parts) pieces of data of different types (numbers, character strings, logical values), each field having a name to access its value (i.e. field = (name,value) pair). Tables are multi-dimensional arrays of values of the same atomic type.</p>
+<p>Every <a href="#truethe-specification-of-ecological-entities-system-components"><em>system component</em></a> of 3Worlds potentially holds four kinds of  <a href="#truecategory"><em>descriptors</em></a>. Each of these (<em>drivers</em>, <em>decorators</em>, <em>constants</em> and <em>automatic variables</em>) is a <em>tree</em> of two kinds of data structures: <em>records</em> and <em>tables</em>. Records contain <em>fields</em>, i.e. atomic (i.e. not breakable into smaller parts) pieces of data of different types (numbers, character strings, logical values), each field having a name to access its value (i.e. field = (name,value) pair). Tables are multi-dimensional arrays of values of the same atomic type.</p>
 </div>
 <div class="paragraph">
 <p>The data tree is constructed by allowing records to contain tables as fields (but not records), and by allowing tables to contain records all made of the same fields (but not tables) instead of atomic types. This gives end-user modellers great flexibility to organise their data into elaborate structures.</p>
@@ -3943,7 +3949,7 @@ These properties are not needed when the table is a table of records (cf. above)
 <p><code>/3worlds/dataDefinition/<strong>rng</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>Simulation models make extensive use of random numbers to make decisions on components (e.g. decision to delete a component or to create new ones). 3Worlds defines random number channels, that can be attached to specific functions (<a href="#truefunction">Section 3.3.4.2.2</a>). These channels can be held constant by using the same seed in a series of simulations, thus enabling to conduct factorial experiments controlling for a source of random numbers or another.</p>
+<p>Simulation models make extensive use of random numbers to make decisions on components (e.g. decision to delete a component or to create new ones). 3Worlds defines random number channels, that can be attached to specific <a href="#truefunction">functions</a>. These channels can be held constant by using the same seed in a series of simulations, thus enabling to conduct factorial experiments controlling for a source of random numbers or another.</p>
 </div>
 <div class="paragraph">
 <p><em>Properties for</em> <code>rng</code>:</p>
@@ -4436,7 +4442,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <p><code>/3worlds/dataIO/dataSource/<strong>dim</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>This node is used when reading data into tables (<a href="#truetable">Section 3.3.5.2.2</a>). The node name must be an integer matching the dimension declared in a table under the <code>dataDefinition</code> node. It must then have the following property:</p>
+<p>This node is used when reading data into <a href="#truetable">tables</a>. The node name must be an integer matching the dimension declared in a table under the <code>dataDefinition</code> node. It must then have the following property:</p>
 </div>
 <div class="hdlist">
 <table>
@@ -4636,7 +4642,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <dl>
 <dt class="hdlist1"><code>source &#8594; dataTracker:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>This link the origin of the data to save into the sink. Usually, a data tracker (<a href="#truedata-tracking">Section 3.3.4.3</a>)</p>
+<p>This link the origin of the data to save into the sink. Usually, a  <a href="#truedata-tracking">data tracker</a></p>
 </dd>
 </dl>
 </div>
@@ -4652,13 +4658,19 @@ The stopping condition has the priority over the <code>end</code> property.
 <p>This node and its sub-tree specifies the look of the <code>ModelRunner</code> user interface. <code>ModelRunner</code> is highly configurable and can show many graphs during a simulation run, as help when debugging a new model; or only show a progress bar to improve computing performance when running a big simulation experiment.</p>
 </div>
 <div class="paragraph">
-<p>3Worlds provides a series of <em>widgets</em>, i.e. classes that can manage output from the simulator and either show it graphically or perform some other non-graphic task (e.g. save data to disk). Examples of graphic widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc&#8230;&#8203; The basic <code>ModelRunner</code> GUI just provides places to place widgets: a <em>top</em>, a <em>bottom</em> and any number of <em>tabs</em>. Any number of widgets can be placed within these (<a href="#fig-example-gui">Figure 11</a>).</p>
+<p>3Worlds provides a series of <em>widgets</em>, i.e. classes that can manage output from the simulator and either show it graphically or perform some other non-graphic task (e.g. save data to disk). Examples of graphic widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc&#8230;&#8203; The basic <code>ModelRunner</code> GUI just provides places to place widgets: a <em>top</em>, a <em>bottom</em> and any number of <em>tabs</em>. Any number of widgets can be placed within these (<a href="#fig-example-gui">Figure 11</a>,<a href="#fig-example-gui-tree">Figure 12</a>).</p>
 </div>
 <div id="fig-example-gui" class="imageblock text-center">
 <div class="content">
 <img src="example-gui.svg" alt="example gui">
 </div>
 <div class="title">Figure 11. The ModelRunner graphical user interface.</div>
+</div>
+<div id="fig-example-gui-tree" class="imageblock text-center">
+<div class="content">
+<img src="fig-gui-example-tree.png" alt="fig gui example tree">
+</div>
+<div class="title">Figure 12. The configuration sub-tree specifying the GUI of <a href="#fig-example-gui">Figure 11</a>.</div>
 </div>
 <div class="sect4">
 <h5 id="truetop"><a class="anchor" href="#truetop"></a>Top</h5>
@@ -4910,7 +4922,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>SpaceWidget1</code>
 </td>
 <td class="hdlist2">
-<p>A map of a space (<a href="#truethe-representation-of-space">Section 3.3.3.3</a>).  Add as a child of a <code>tab</code> or <code>container</code> node.</p>
+<p>A map of a  <a href="#truethe-representation-of-space">space</a>.  Add as a child of a <code>tab</code> or <code>container</code> node.</p>
 </td>
 </tr>
 <tr>
@@ -5187,7 +5199,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <div class="ulist">
 <ul>
 <li>
-<p><code>*parentTo*: *component* &#8594; *component*</code> may be used to relate a component to its offspring, i.e. it enables to track genealogic links between components (<a href="#truefunction">Section 3.3.4.2.2</a>).</p>
+<p><code>*parentTo*: *component* &#8594; *component*</code> may be used to relate a component to its offspring, i.e. it enables to track genealogic links between components (see the <code>CreateOtherDecision</code> <a href="#truefunction">function</a>).</p>
 </li>
 <li>
 <p><code>*returnsTo*: *component* &#8594; *component*</code> is not yet in use.</p>
@@ -5199,52 +5211,221 @@ The stopping condition has the priority over the <code>end</code> property.
 <div class="sect2">
 <h3 id="truedeveloping-and-testing-model-code"><a class="anchor" href="#truedeveloping-and-testing-model-code"></a>3.4. Developing and testing model code</h3>
 <div class="paragraph">
-<p><strong>TO DO refactor all this section</strong></p>
+<p>A model of an ecological system in 3Worlds consists in a <em>configuration file</em> constructed with the <code>ModelMaker</code> application (<a href="#trueconfiguration-reference-creating-and-editing-a-model-with-modelmaker">Section 3</a>) and <em>java code files</em> that must be edited by the end-user, here a modeller. Some basic knowledge of <a href="https://en.wikiversity.org/wiki/Java_Programming/Introduction">java</a> is required before going on here.</p>
+</div>
+<div class="sect3">
+<h4 id="truegenerated-code-the-model-main-class"><a class="anchor" href="#truegenerated-code-the-model-main-class"></a>3.4.1. Generated code: the <em>model main class</em></h4>
+<div class="paragraph">
+<p>During the specification of a model, ModelMaker generates java classes meant to be further edited in order to implement the specific behaviours imagined by the modeller. Among these classes, one is meant to be edited; the others are interface code, that you can see as 'glueing' code between the 3Worlds main code and the user-defined one. The file to be edited is named after the 3Worlds root node of the specification file (<a href="#truethe-3worlds-node">Section 3.3.1</a>): e.g., if your 3Worlds node has the name <code>myModel</code>, the java file to edit will be called <code>MyModel.java</code>. In what follows, we call it the <em>model main class</em>.</p>
 </div>
 <div class="paragraph">
-<p>This section gives general rules to follow to successfully edit the generated <code>TwFunction</code>-descendant classes in order for your model to behave as you wish. Section <a href="#truesetting_up_a_java_development_environment_for_the_user_code">Setting up a user coding environment</a> describes how to link your ModelMaker session with an eclipse development enviromnent where you can edit the generated code. Section <a href="#truefunction">Function</a> describes all the options you can setup in <code>ModelMaker</code> to specify your function.</p>
+<p>This section gives general rules to follow to successfully edit the generated <em>model main class</em> in order for your model to behave as you wish. <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a> describes how to link your <code>ModelMaker</code> session with an eclipse development enviromnent where you can edit the generated <em>model main class</em>. It is important to read about  <a href="#truefunction">functions</a> before starting writing your code, in order to master all the options you can setup in <code>ModelMaker</code> to specify your function.</p>
 </div>
 <div class="paragraph">
-<p>All the generated function classes look like this:</p>
+<p>For each <code>function</code> node of the specification, you will find one static method with the same name in the <em>model main class</em>. For example, the 'IDHClock' tutorial (<a href="#truetutorial-4-elaborating-the-model-structure-testing-the-intermediate-disturbance-hypothesis">Section 5.4</a>) specifies 3 functions, 2 initFunctions and 2 data trackers (<a href="#fig-idhClock-functions">Figure 13</a>).</p>
+</div>
+<div id="fig-idhClock-functions" class="imageblock text-center">
+<div class="content">
+<img src="fig-functions-IDH.png" alt="fig functions IDH">
+</div>
+<div class="title">Figure 13. The functions defined in the model of the IDHClock tutorial.</div>
+</div>
+<div class="paragraph">
+<p>This generates a <em>model main class</em> with corresponding methods (code stripped of its javadoc comments):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package system1;
+<pre class="highlightjs highlight nowrap"><code data-lang="java" class="language-java hljs">package code.sys1;
 
-import au.edu.anu.rscs.aot.collections.tables.*;
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
-import au.edu.anu.twcore.ecosystem.runtime.biology.ChangeStateFunction;
+import static java.lang.Math.*;
+import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
+import au.edu.anu.twcore.ecosystem.runtime.biology.DecisionFunction;
+import java.util.Random;
+import code.sys1.generated.*;
+// Hey, model developer! You may add your own imports here as needed
 
-/*
-[... some big comment...]
-* Class Function1
-* Model "system1" -  - Mon Sep 23 09:05:33 CEST 2019
-* CAUTION: Edit this template but do not change class declaration.
-*/
+public interface IdhClock1 {
 
-public class Function1 extends ChangeStateFunction {
+	public static void distEffectsComm(
+		double t,                             // current time
+		double dt,                            // current time step
+		int count,                            // whole system autoVar count (#) ϵ[0..*]
+		int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+		int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+		double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_x,                  // other component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DistEffectsComm.OtherDrv otherDrv,    // next drivers for other component
+		double other_div,                     // other component decorators  ± 0.0 ϵ]-∞,+∞[
+		DistEffectsComm.OtherDec otherDec,    // new decorators for other component
+		DoubleTable other_K,                  // other component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_alpha,              // other component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_r,                  // other component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+		Random random) {                      // random number generator
+	// distEffectsComm ---- Code insert Begin--&gt;
+	// distEffectsComm ---- Code insert End----&lt;
+	}
 
-	@Override
-	public void changeState(double t, double dt, SystemComponent focal) {
-		// INSERT YOUR CODE HERE
+	public static boolean distOccurrence(
+		double t,                             // current time
+		double dt,                            // current time step
+		int count,                            // whole system autoVar count (#) ϵ[0..*]
+		int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+		int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+		double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_x,                  // other component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+		double other_div,                     // other component decorators  ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_K,                  // other component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_alpha,              // other component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable other_r,                  // other component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+		Random random,                        // random number generator
+		DecisionFunction decider) {           // decision function
+	// distOccurrence ---- Code insert Begin--&gt;
+	// distOccurrence ---- Code insert End----&lt;
+	}
+
+	public static void initDist(
+		double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+		InitDist.FocalCnt focalCnt,           // new constants for focal component
+		Random random) {                      // random number generator
+	// initDist ---- Code insert Begin--&gt;
+	// initDist ---- Code insert End----&lt;
+	}
+
+	public static void commGrowth(
+		double t,                             // current time
+		double dt,                            // current time step
+		int count,                            // whole system autoVar count (#) ϵ[0..*]
+		int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+		int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+		DoubleTable x,                        // focal component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+		CommGrowth.FocalDrv focalDrv,         // next drivers for focal component
+		double div,                           // focal component decorators  ± 0.0 ϵ]-∞,+∞[
+		CommGrowth.FocalDec focalDec,         // new decorators for focal component
+		DoubleTable K,                        // focal component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable alpha,                    // focal component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable r,                        // focal component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+		Random random) {                      // random number generator
+	// commGrowth ---- Code insert Begin--&gt;
+	// commGrowth ---- Code insert End----&lt;
+	}
+
+	public static void initComm(
+		DoubleTable x,                        // focal component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+		InitComm.FocalDrv focalDrv,           // next drivers for focal component
+		double div,                           // focal component decorators  ± 0.0 ϵ]-∞,+∞[
+		DoubleTable K,                        // focal component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable alpha,                    // focal component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+		DoubleTable r,                        // focal component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+		InitComm.FocalCnt focalCnt,           // new constants for focal component
+		Random random) {                      // random number generator
+	// initComm ---- Code insert Begin--&gt;
+	// initComm ---- Code insert End----&lt;
 	}
 
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In this example, "<strong>system1</strong>" was the name given to the <code>system</code> node, while "<strong>Function1</strong>" was the name given to the <code>function</code> node. The <code>type</code> property set for the <code>function</code> was "<strong>ChangeState</strong>", as shown by the generated code. Other function types would have caused the generation of different methods in the class.</p>
+<p>In this example, you can see that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the package name <code>code.sys1</code> is constructed from the name of the <code>system</code> node (<a href="#fig-idhClock-functions">Figure 13</a>);</p>
+</li>
+<li>
+<p>the interface name <code>IdhClock1</code> is constructed from the name of the <code>3Worlds</code> node (<a href="#fig-idhClock-functions">Figure 13</a>);</p>
+</li>
+<li>
+<p>each method name is constructed from a matching <code>function</code> or <code>initFunction</code> node (<a href="#fig-idhClock-functions">Figure 13</a>).</p>
+</li>
+<li>
+<p>the argument lists are partly constructed from the <code>categories</code> the <code>process</code> declaring the <code>function</code> applies to;</p>
+</li>
+<li>
+<p>the comments documenting the method arguments are constructed from the <code>field</code> or <code>table</code> node properties (<code>description</code>, <code>precision</code>, <code>interval</code>, <code>units</code>, etc.).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When ModelRunner is launched on the IDHClock tutorial model, it will include the generated <code>IdhClock1</code> class and call each of its methods for all system components they are dealing with as specified in the model configuration file.</p>
+</div>
+<div class="paragraph">
+<p>As you can see in this example, the body of each method is empty, only containing two comments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">	// initComm ---- Code insert Begin--&gt;
+	// initComm ---- Code insert End----&lt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These are the <em>code insertion markers</em>. The user-defined code must be inserted between these two lines.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Never remove the <em>code insertion markers</em> as they are used by 3Worlds when using code <a href="#truefunction">snippets</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As <em>model main class</em> is a java <em><strong>interface</strong></em>, all data is passed as arguments to its static methods. As you can see in the example above, there may be many arguments. If you look closely, you will see that these arguments match the <em>descriptors</em> that were attached to the <em>categories</em> to which the <em>processes</em> apply. All this information is provided in the <em>model main class</em> as javadoc comments. For example, the javadoc comment of the <code>commGrowth</code> method above produces this output:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="fig-javadoc-idhclock.png" alt="fig javadoc idhclock">
+</div>
+</div>
+<div class="paragraph">
+<p>This comment recalls the categories to which the <code>commGrowth</code> method applies, which timer it follows and which time units it uses, and any other useful information like precedence between methods as specified by <code>dependsOn</code> cross-links between processes.</p>
+</div>
+<div class="paragraph">
+<p>Finally, the <em>model main class</em> itself has a general javadoc description that gives some information about how to insert useful code into its methods:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="fig-javadoc-idhclock2.png" alt="fig javadoc idhclock2">
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="truegeneric-method-arguments"><a class="anchor" href="#truegeneric-method-arguments"></a>3.4.1. generic method arguments</h4>
+<h4 id="truemodel-main-class-method-arguments"><a class="anchor" href="#truemodel-main-class-method-arguments"></a>3.4.2. <em>Model main class</em> method arguments</h4>
 <div class="paragraph">
-<p>All generated methods share the following arguments:</p>
+<p>The list of arguments of each method is defined by its <a href="#truefunction">function type</a>, the organisation level to which it applies (system, life cycle, group or component), the categories or relation types it applies to, and the user-defined data structures attached to these.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>the first and second argument are <em>the current time</em> <em><strong>t</strong></em> and <em>current time step <strong>dt</strong></em>, passed by the simulator as double values in units of the <code>timeModel</code> of the parent <code>process</code> of the <code>function</code>.</p>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+In the case of multiple timers, for <code>ClockTimers</code>, the current time step may be different from the timer&#8217;s <code>dt</code> property because it is the time since last simulator iteration, which may have been triggered by a different timer.
+</td>
+</tr>
+</table>
+</div>
 </li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>[HERE]</strong></p>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p>For all function types which process applies to categories (<code>appliesTo &#8594;  category</code>), i.e. <code>ChangeCategoryDecision</code>, <code>ChangeState</code>, <code>DeleteDecision</code>, <code>CreateOtherDecision</code>, there is an additional argument, the system component which will be affected by the computations, called <em>focal</em>.</p>
 </li>
@@ -5255,7 +5436,7 @@ public class Function1 extends ChangeStateFunction {
 </div>
 </div>
 <div class="sect3">
-<h4 id="truegeneric-method-fields"><a class="anchor" href="#truegeneric-method-fields"></a>3.4.2. generic method fields</h4>
+<h4 id="truegeneric-method-fields"><a class="anchor" href="#truegeneric-method-fields"></a>3.4.3. generic method fields</h4>
 <div class="paragraph">
 <p>In addition to these arguments, every function class has a protected field called <code>localContext</code> that contain contextual data that may be used in computations. The local context data consist in:</p>
 </div>
@@ -7201,7 +7382,7 @@ else
 <div id="footer">
 <div id="footer-text">
 Version 1.4<br>
-Last updated 2021-04-21 11:06:46 +0200
+Last updated 2021-04-27 16:51:41 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

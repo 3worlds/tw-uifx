@@ -1,3 +1,8 @@
+
+// DEPRECATED but there is still info in there to put into experiment file
+
+// 27/4/2021
+
 ===== Data _sources_
 
 When an important amount of data must be imported at the beginning of a simulation, the direct input of data through the <<trueusing-em-load-em-to-directly-input-data-from-modelmaker,load>> node becomes impractical. The <<truethe-setup-of-an-initial-state-for-a-simulation,loadFrom>> cross-links to `dataSource` nodes enables one to import data from external files.
