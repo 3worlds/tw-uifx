@@ -15,16 +15,18 @@ The specification graph is both a tree and a directed graph. Aside from the root
 ==== Installation
 
 Installing _ModelMaker_ is very simple: create a directory called `.3w` in your home directory and copy `tw-dep.jar` to it. Then copy `modelMaker.jar` to your home directory. To start _modelMaker_, open a terminal and type: `java -jar modelMaker.jar`. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system.
-Note: To compile models, the Java Development Kit (JDK) must be installed on your computer. 
+Note: To compile your own models, the Java Development Kit (JDK) must be installed on your computer. 
 
 ==== Creating a new 3Worlds project
 
 . Start _ModelMaker_ as above. If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
  
 . Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
-. When prompted enter 'Tut1' (first letter uppercase). A single node called  `3Worlds:Tut1` now appears centred in the _Graph display_.
+. When prompted enter 'Tut1' (first letter uppercase). A small graph of 7 nodes appears in the graph window.
 
-This node will be the _root_ of a graph that forms the model specifications. All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is a unique identifier. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.
+ FIGURE1 BLANK TEMPLATE
+
+The black node (`3worlds:Tut1`) is the _root_ of a graph that forms the model specifications. All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is a unique identifier. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles. The graph is divided into colour-coded sub-trees where different aspects of the specifications are defined.
 
 At this stage you can try out a few basic edit operations:
 
@@ -34,17 +36,17 @@ At this stage you can try out a few basic edit operations:
 
 - Pan the drawing surface by dragging with the left-mouse button anywhere outside a node (assuming the drawing area is larger than the display);
 
-- Change the node and text size with the controls at the bottom of the display; and,
+- Change the node and text size with the _element size_ slider in the tool bar; and,
 
-- See a range of edit options for this particular node by right-clicking on it to display a local popup menu. It is via these popup menus that the graph is constructed.
+- See a range of edit options for any particular node by right-clicking on it to display a local popup menu. It is via these popup menus that the graph is constructed.
 
 A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
 At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It's here that values are entered for the properties of nodes and edges created in the following steps. 
 
-At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. By default, the property '`build-by`' is filled out with your computer login name and the creation date of the project.
+At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. If click on the root node and select the _Selected Properties_ editor and additional non-editable property is shown call '`build-by`'. This property is filled out with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the _Selected Properties_ editor but for brevity, not the _Properties_ editor. 
 
-At the bottom and right-hand side of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.
+Also in the tool bar at the top of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose. TODO FINISH THESE
 
 ===== Directory structure
 
@@ -82,30 +84,30 @@ The logistic equation we implement is: _x(t+1) = rx(t)(1-x(t)_. Though simple, i
 
 From here on and throughout these tutorials, parameters are called _constants_ (data that does not change over the course of a simulation) and state variables are called _drivers_ (data that drives the simulation from one time to the next).
 
-. Right-click on the root node (`3worlds:Tut1`) and select `New node -> dataDefinition` from the popup menu. You're then prompted for a name. The default name is `dDef`. Accept this and click `ok`. The mouse pointer immediately becomes a cross-hair: _ModelMaker_ is asking where to place this node. Move to some place within the graph display and left-click the mouse. 
+. Right-click on the data definition node (`dataDefinition:dDef`) (pale red) and select `New node -> record` from the popup menu. You're then prompted for a name. The default name is `rec1`. Change this to 'cnsts' (constants) and click `ok`. The mouse pointer immediately becomes a cross-hair: _ModelMaker_ is asking where to place this node. Move to some place within the graph display and left-click the mouse. 
 
-You can name nodes and edges anything you like but accepting the recommended names and edges will make these tutorials easier to follow. _ModelMaker_ will prevent naming nodes or edges with duplicate names.
-
-The `dataDefinition:dDef` node appears (pale red) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. The lines are thin at the parent end and thick at the child end indicating that `3worlds:Tut1` is the parent of `dataDefinition:dDef`.
+You can name nodes and edges anything you like but accepting the recommended names and edges will make these tutorials easier to follow. Note that _ModelMaker_ will prevent naming nodes or edges with duplicate names.
 
 All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and selecting a child to create from the available options provided by the popup menu. The items in this menu vary according to the possibilities allowed by the _archetype_. This is one way _ModelMaker_ ensures the developing configuration conforms with the _archetype_, greatly simplifying an otherwise complex workflow.
 
 [start = 2]
-. Create a `record` node as a child of `dataDefinition:dDef` and name it 'cnsts'.
-
 . Create a `field` node as child of `record:cnsts`, name it 'r' and when prompted, set its type as `Double`.
 
 All `fields` (and later `tables`) must be children of some `record`. 
 
-[start = 4]
+[start = 3]
 
-. Create another `record` as child of `dataDefinition:dDef` and name it 'drvs'.
+. Create another `record` as child of `dataDefinition:dDef` and name it 'drvs' (drivers).
 
 . Create a `field` node as child of `record:drvs`, name it 'x' and again set the type to `Double`.
 
 Note that the names 'drvs' and 'cnsts' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
 
-This is all the data required for this tutorial.  The task to add a `dataDefinition` node has now gone and three tasks remain.
+This is all the data required for this tutorial.  The task list has now grown to 7 because the roles of this data needs to be defined. 
+ 
+You can tidy up the graph display by clicking the `L` button (re-apply layout) in the tool bar.
+ 
+ FIGURE 2 dDefSubTree
 
 ===== Dynamics
 
@@ -431,4 +433,3 @@ That's the end of this tutorial. Recreate this project at anytime from the main 
 ==== Next
 
 The next tutorial (Tutorial 2) will demonstrate linking this project to an IDE and adding some Java program code.
-
