@@ -2,7 +2,7 @@
 
 ==== Introduction 
 
-This tutorial explains the procedure for developing and running a simulation with _ModelMaker_. We start by using a simple logistic equation as a test case and gradually introduce more capabilities over the course of these tutorials as we explore the full range of modelling features available.
+This tutorial explains the procedure for developing and running a simulation with _ModelMaker_. We start by using a simple https://en.wikipedia.org/wiki/Logistic_map[logistic growth model] as a test case and gradually introduce more capabilities over the course of these tutorials as we explore the full range of modelling features available.
 
 In _3Worlds_, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their respective properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as soon as the specifications are complete and Java code has been written to define the behaviour of the functions you have specified.
 
@@ -15,7 +15,8 @@ The specification graph is both a tree and a directed graph. Aside from the root
 ==== Installation
 
 Installing _ModelMaker_ is very simple: create a directory called `.3w` in your home directory and copy `tw-dep.jar` to it. Then copy `modelMaker.jar` to your home directory. To start _modelMaker_, open a terminal and type: `java -jar modelMaker.jar`. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system.
-Note: To compile your own models, the Java Development Kit (JDK) must be installed on your computer. 
+
+CAUTION: To compile your own models, the Java Development Kit (<<trueprerequisites,JDK>>) must be installed on your computer. 
 
 ==== Creating a new 3Worlds project
 

@@ -6,7 +6,7 @@ During the specification of a model, ModelMaker generates java classes meant to 
 
 This section gives general rules to follow to successfully edit the generated _model main class_ in order for your model to behave as you wish. <<MMeclipse.adoc#truesetting-up-a-java-development-environment-for-the-user-code>> describes how to link your `ModelMaker` session with an eclipse development enviromnent where you can edit the generated _model main class_. It is important to read about  <<configuration-ecosystem-dynamics#truefunction,functions>> before starting writing your code, in order to master all the options you can setup in `ModelMaker` to specify your function.
 
-For each `function` node of the specification, you will find one static method with the same name in the _model main class_. For example, the 'IDHClock' tutorial (<<tutorial4.adoc#truetutorial-4-elaborating-the-model-structure-testing-the-intermediate-disturbance-hypothesis>>) specifies 3 functions, 2 initFunctions and 2 data trackers (<<fig-idhClock-functions>>).
+For each `function` node of the specification, you will find one static method with the same name in the _model main class_. For example, the **IDHClock** tutorial (<<tutorial4.adoc#truetutorial-4-elaborating-the-model-structure-testing-the-intermediate-disturbance-hypothesis>>) specifies 3 functions, 2 initFunctions and 2 data trackers (<<fig-idhClock-functions>>).
 
 [#fig-idhClock-functions]
 .The functions defined in the model of the IDHClock tutorial.
@@ -143,19 +143,159 @@ image::fig-javadoc-idhclock2.png[align="center"]
 
 ==== __Model main class__ method arguments
 
-The list of arguments of each method is defined by its <<configuration-ecosystem-dynamics.adoc#truefunction,function type>>, the organisation level to which it applies (system, life cycle, group or component), the categories or relation types it applies to, and the user-defined data structures attached to these.
+The list of arguments of each method is defined by its <<configuration-ecosystem-dynamics.adoc#truefunction,function type>>, the organisation level to which it applies (system, life cycle, group or component), the categories or relation types it applies to, and the user-defined data structures attached to these. Some arguments are read-only, others are writeable so that computation output can be passed back to the 3Worlds main code.
 
-* the first and second argument are _the current time_ _**t**_ and __current time step **dt**__, passed by the simulator as double values in units of the `timeModel` of the parent `process` of the `function`. 
+===== Read-only arguments
+
+====== Arguments present for all _functions_ and _initFunctions_
+
+[horizontal]
+`random`:: The <<configuration-dataDefinition.adoc#truerandom-number-channels,random number generator channel>> associated to this function. For details of how to use an instance of class `java.util.Random`, see the https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Random.html[javadoc] for this class. Most of the time, you will be calling `random.nextDouble()` which returns a random double value between 0.0 and 1.0.
+
+====== Arguments present for all _functions_ but not for _initFunctions_
+
+[horizontal]
+`t`:: the _current time_ passed by the simulator as a double value in units of the `timer` of the parent `process` of the `function`.
+`dt`:: the __current time step__, passed by the simulator as a double value in units of the `timer` of the parent `process` of the `function`. 
 
 +
 CAUTION: In the case of multiple timers, for `ClockTimers`, the current time step may be different from the timer's `dt` property because it is the time since last simulator iteration, which may have been triggered by a different timer.
 
-**[HERE]**
+====== Arguments present for all _'decision' functions_
 
+'Decision' functions are: `ChangeCategoryDecision`, `DeleteDecision`, `CreateOtherDecision`, `RelateToDecision` and `MaintainRelationDecision`. They all return a result that is a decision: a number of components to create (`CreateOtherDecision`), the name of a category (`ChangeCategoryDecision`), or a boolean (all others).
 
-* For all function types which process applies to categories (`appliesTo ->  category`), i.e. `ChangeCategoryDecision`, `ChangeState`, `DeleteDecision`, `CreateOtherDecision`, there is an additional argument, the system component which will be affected by the computations, called __focal__.
+[horizontal]
+`decider`:: This argument of class `DecisionFunction` **[TODO: ref to javadoc]** is provided as a helper for transforming probabilities into decisions. This class comprises only one method `decide(...)` which given a probability, returns a `boolean`. More precisely: it returns `true` with the probability passed as argument, ie `decider.decide(0.7)` will return `true` in 7 calls out of 10. It uses the function random number generator (the `random` argument) to make the decision. Technically, this is the realisation of a https://en.wikipedia.org/wiki/Bernoulli_distribution[Bernouilli distribution].
+`selector`:: This argument is only present for the `ChangeCategoryDecision` function type. The `SelectionFunction` class **[TODO: ref to javadoc]**, of which it is an instance, only has one method `select(...)` which, given a list of weights __w__, returns an integer _i_ with probability __w__[__i__]/Σ__~i~____w__[__j__], i.e. a realisation of a single trial of a https://en.wikipedia.org/wiki/Multinomial_distribution[multinomial distribution].
+`recruit`:: This argument is only present for the `ChangeCategoryDecision` function type. The `RecruitFunction` class **[TODO: ref to javadoc]**, of which it is an instance, has one method `transition(...)` which returns a category name (`String`), or `null` if the component does not change category. It's argument is either a `boolean` or an `int`, typically the result of a call to `selector.select(...)` or `decider.decide(...)`. Example of use:
 
-* For all function types which process applies to relations (`appliesTo ->  relationType`), i.e. `ChangeOtherCategoryDecision`, `ChangeOtherState`, `DeleteOtherDecision`, `ChangeRelationState`, `MaintainRelationDecision`, and for `RelateToDecision`, there  is another additional argument, a second system component, the one at the other end of the relation starting from __focal__, called __other__.
++
+[source%nowrap,java]
+----
+public static String recruitSeedling(
+    double group_recruitRate,
+    ...
+    Random random,                        // random number generator
+    DecisionFunction decider,             // decision function
+    SelectionFunction selector,           // selection function
+    RecruitFunction recruit) {            // recruitment function
+    
+    return recruit.transition(decider.decide(group_recruitRate));
+}
+----
+
+====== Arguments that represent a component in function types which process applies to categories
+
+These function types are `ChangeCategoryDecision`, `ChangeState`, `DeleteDecision`, `CreateOtherDecision`, and `SetInitialState`.
+
+Internally, the system component which is the target of such functions is called _focal_.
+
+The argument list will contain all the fields and tables declared in the root record of the descriptors (drivers, automatic variables, constants and decorators) of the _focal_ component. The argument comments will indicate that these arguments are descriptors of the _focal_ component, as in this example from the *IDHClock* tutorial for a function of type `SetInitialState`:
+
+[source%nowrap,java]
+----
+public static void initComm(
+    DoubleTable x,                        // focal component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+    double div,                           // focal component decorators  ± 0.0 ϵ]-∞,+∞[
+    DoubleTable K,                        // focal component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable alpha,                    // focal component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable r,                        // focal component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+    Random random) {                      // random number generator
+    ...
+}
+----
+
+====== Arguments that represent the two components of a relation in function types which process applies to relation types
+
+These function types are `ChangeOtherState`, `ChangeRelationState`, `MaintainRelationDecision`, `RelateToDecision`, and `SetOtherInitialState`.
+
+These functions apply to a pair of components linked by a relation. The first of these components (the one at the 'from' end of the relation) is called _focal_, as before. The second tone (the one at the 'to' end of the relation) is called _other_.
+
+To distinguish the descriptors of _other_ from those of _focal_ (since these might belong to the same categories and hence have the same descriptors), all the descriptors of _other_ are prefixed with 'other_', as in this example from the *IDHClock* tutorial for a function of `ChangeOtherState` type:
+
+[source%nowrap,java]
+----
+public static void distEffectsComm(
+    double t,                             // current time
+    double dt,                            // current time step
+    double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+    double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_x,                  // other component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+    double other_div,                     // other component decorators  ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_K,                  // other component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_alpha,              // other component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_r,                  // other component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+    Random random) {                      // random number generator    ...
+}
+----
+
+====== Arguments that represent the local context of a component
+
+The local context of a component is the part of the system it always sees. The dynamic graph of a simulated system in 3Worlds *always* has:
+
+* an object representing the whole system,  called the _arena_ ('the place where things happen': https://doi.org/10.1007%2Fs10021-011-9466-2[Gignoux et al. 2011]). As 3Worlds uses a dynamic graph to represent the whole system (<<purpose.adoc#truethe-complex-system-as-a-dynamic-graph>>), this object actually represents the whole graph.
+
+And it *may* have the following other kinds of nodes:
+
+* many objects representing the individual entities of the system, which are nodes in the dynamic graph and are just called __components__.
+* objects that represent the common properties of a group of components, which are called __groups__.
+* objects that represent the transitions that can occur during the life of a component, and are therefore called __life cycles__.
+
+All these objects may belong to _categories_ and have __descriptors__, and as a consequence can be passed to _functions_ of a _process_ referencing their categories.
+
+With regard to processes and functions, these objects are treated like components, except they cannot establish __relations__; only true components can. This limits the set of functions compatible with them: groups, life cycles and the arena can only be affected by `ChangeState`,
+`SetInitialState` and `CreateOtherDecision` (not life cycles) function types. When these functions apply to the categories of a `group`, `lifeCycle` or `Arena` object, they are treated as components above, i.e. they become the _focal 'component'_ of the user-defined methods.
+
+The arena, groups and life cycles play a particular role in the dynamic graph, as indicated by their names. They also have implicit, 'ontological' relations with system components: a component always know about its group, life cycle, and arena because they describe part of its own behaviour. As such, they are always accessible as arguments in the function calls of any component.
+
+Just as for the _other_ component above, the descriptors of arena, life cycles and groups are prefixed when they appear in a method argument list, with a comment giving more information on the argument, as in this example from the *Palms* show-case model for a function of `CreateOtherDecision` type:
+
+[source%nowrap,java]
+----
+public static double reproduction(
+    double t,                             // current time
+    double dt,                            // current time step
+    int count,                            // whole system autoVar count (#) ϵ[0..*]
+    int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+    int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+    int lifeCycle_count,                  // focal life cycle autoVar count (#) ϵ[0..*]
+    int lifeCycle_nAdded,                 // focal life cycle autoVar nAdded (#) ϵ[0..*]
+    int lifeCycle_nRemoved,               // focal life cycle autoVar nRemoved (#) ϵ[0..*]
+    int group_count,                      // focal group autoVar count (#) ϵ[0..*]
+    int group_nAdded,                     // focal group autoVar nAdded (#) ϵ[0..*]
+    int group_nRemoved,                   // focal group autoVar nRemoved (#) ϵ[0..*]
+    double group_aGinc,                   // focal group constants adult BudHeight growth coefficient (m yr-1) ± 0.01 ϵ[0.0,+∞[
+    double group_aPdead,                  // focal group constants Mortality : int ± 0.01 ϵ[0.0,1.0]
+    double group_deadNbLeaves,            // focal group constants Mortality : nbf slope ± 0.01 ϵ[0.0,1.0]
+    double group_decay,                   // focal group constants decay ± 0.0 ϵ]-∞,+∞[
+    double group_dis,                     // focal group constants dispersal parameter ± 0.001 ϵ[0.0,1.0]
+    double group_fec,                     // focal group constants fecundity * # leaves ± 0.1 ϵ[0.0,+∞[
+    double group_jPdNNeg,                 // focal group constants Adult P(dN=-1) ± 0.01 ϵ[0.0,1.0]
+    double group_remanence,               // focal group constants seedling remanenc (y) ± 0.0 ϵ]-∞,+∞[
+    double group_slrec0,                  // focal group constants rect els to sls alive ± 0.01 ϵ[0.0,1.0]
+    double group_slrec1,                  // focal group constants rect els to sls dead ± 0.01 ϵ[0.0,1.0]
+    double budHt,                         // focal component currentState  ± 0.0 ϵ]-∞,+∞[
+    int dead,                             // focal component currentState dead ϵ[MIN_INTEGER..*]
+    double nELSeedlings,                  // focal component currentState Nb. EL seedlings ± 0.0 ϵ[0.0,+∞[
+    int nleaves,                          // focal component currentState nleaves ϵ[0..*]
+    double neighbourhoodIndexAdults,      // focal component decorators neighbourhoodIndexAdults ± 0.01 ϵ]-∞,+∞[
+    double neighbourhoodIndexJuveniles,   // focal component decorators neighbourhoodIndexJuveniles ± 0.0 ϵ]-∞,+∞[
+    double neighbourhoodIndexMounds,      // focal component decorators neighbourhoodIndexMounds ± 0.0 ϵ]-∞,+∞[
+    double neighbourhoodIndexTrees,       // focal component decorators neighbourhoodIndexTrees ± 0.0 ϵ]-∞,+∞[
+    boolean sex,                          // focal component constants female?
+    double x,                             // focal component constants x spatial coordinate (m) ± 0.1 ϵ[0.0,300.0]
+    double y,                             // focal component constants y spatial coordinate (m) ± 0.1 ϵ[0.0,300.0]
+    Random random,                        // random number generator
+    DecisionFunction decider) {           // decision function
+    ...
+}
+----
+
+*[HERE]*
+
+===== Writeable arguments and method return values
+
 
 ==== generic method fields
 

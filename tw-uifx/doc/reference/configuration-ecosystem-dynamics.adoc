@@ -54,7 +54,7 @@ WARNING: if calendar time is used (`timeLine.scale` = `GREGORIAN`), then `dt` wi
 
 _Additional cross-links when_ `class = EventTimer`
 
-An `EventTimer` maintains a queue of time events that gets populated by user-defined ecological <<truefunction,functions>>. This way, future events depend on the dynamics of the system. Functions that can populate an event queue will have an `EventQueue` argument in their heading, usable to create future time events. Events must set a time in the future, i.e. their time must be larger than current time.
+An `EventTimer` maintains a queue of time events that gets populated by user-defined ecological <<truefunction,functions>>. This way, future events depend on the dynamics of the system. Functions that can populate an event queue will have an `EventQueue` argument in their heading, usable to create future time events. Events must set a time in the future, i.e. their time must be larger than current time. Event times are always expressed in ``Timeline.shortestTimeUnit``s in an `EventTimer`.
 
 `fedBy -> initFunction:<[underline]##__name__##>` {1}::
 This link is used to set the first event of an `EventTimer` at simulation start, hence from an <<configuration-ecosystem-structure.adoc#truesetting-decriptor-values,`initFunction`>>. Without this initial event, the timer will never start. More than one event can be created here.
