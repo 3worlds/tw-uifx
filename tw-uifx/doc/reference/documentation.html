@@ -2693,7 +2693,7 @@ if calendar time is used (<code>timeLine.scale</code> = <code>GREGORIAN</code>),
 <p><em>Additional cross-links when</em> <code>class = EventTimer</code></p>
 </div>
 <div class="paragraph">
-<p>An <code>EventTimer</code> maintains a queue of time events that gets populated by user-defined ecological <a href="#truefunction">functions</a>. This way, future events depend on the dynamics of the system. Functions that can populate an event queue will have an <code>EventQueue</code> argument in their heading, usable to create future time events. Events must set a time in the future, i.e. their time must be larger than current time.</p>
+<p>An <code>EventTimer</code> maintains a queue of time events that gets populated by user-defined ecological <a href="#truefunction">functions</a>. This way, future events depend on the dynamics of the system. Functions that can populate an event queue will have an <code>EventQueue</code> argument in their heading, usable to create future time events. Events must set a time in the future, i.e. their time must be larger than current time. Event times are always expressed in <code>Timeline.shortestTimeUnit</code>s in an <code>EventTimer</code>.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -5222,7 +5222,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <p>This section gives general rules to follow to successfully edit the generated <em>model main class</em> in order for your model to behave as you wish. <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a> describes how to link your <code>ModelMaker</code> session with an eclipse development enviromnent where you can edit the generated <em>model main class</em>. It is important to read about  <a href="#truefunction">functions</a> before starting writing your code, in order to master all the options you can setup in <code>ModelMaker</code> to specify your function.</p>
 </div>
 <div class="paragraph">
-<p>For each <code>function</code> node of the specification, you will find one static method with the same name in the <em>model main class</em>. For example, the 'IDHClock' tutorial (<a href="#truetutorial-4-elaborating-the-model-structure-testing-the-intermediate-disturbance-hypothesis">Section 5.4</a>) specifies 3 functions, 2 initFunctions and 2 data trackers (<a href="#fig-idhClock-functions">Figure 13</a>).</p>
+<p>For each <code>function</code> node of the specification, you will find one static method with the same name in the <em>model main class</em>. For example, the <strong>IDHClock</strong> tutorial (<a href="#truetutorial-4-elaborating-the-model-structure-testing-the-intermediate-disturbance-hypothesis">Section 5.4</a>) specifies 3 functions, 2 initFunctions and 2 data trackers (<a href="#fig-idhClock-functions">Figure 13</a>).</p>
 </div>
 <div id="fig-idhClock-functions" class="imageblock text-center">
 <div class="content">
@@ -5400,12 +5400,43 @@ Never remove the <em>code insertion markers</em> as they are used by 3Worlds whe
 <div class="sect3">
 <h4 id="truemodel-main-class-method-arguments"><a class="anchor" href="#truemodel-main-class-method-arguments"></a>3.4.2. <em>Model main class</em> method arguments</h4>
 <div class="paragraph">
-<p>The list of arguments of each method is defined by its <a href="#truefunction">function type</a>, the organisation level to which it applies (system, life cycle, group or component), the categories or relation types it applies to, and the user-defined data structures attached to these.</p>
+<p>The list of arguments of each method is defined by its <a href="#truefunction">function type</a>, the organisation level to which it applies (system, life cycle, group or component), the categories or relation types it applies to, and the user-defined data structures attached to these. Some arguments are read-only, others are writeable so that computation output can be passed back to the 3Worlds main code.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>the first and second argument are <em>the current time</em> <em><strong>t</strong></em> and <em>current time step <strong>dt</strong></em>, passed by the simulator as double values in units of the <code>timeModel</code> of the parent <code>process</code> of the <code>function</code>.</p>
+<div class="sect4">
+<h5 id="trueread-only-arguments"><a class="anchor" href="#trueread-only-arguments"></a>Read-only arguments</h5>
+<div class="sect5">
+<h6 id="truearguments-present-for-all-functions-and-initfunctions"><a class="anchor" href="#truearguments-present-for-all-functions-and-initfunctions"></a>Arguments present for all <em>functions</em> and <em>initFunctions</em></h6>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>random</code>
+</td>
+<td class="hdlist2">
+<p>The <a href="#truerandom-number-channels">random number generator channel</a> associated to this function. For details of how to use an instance of class <code>java.util.Random</code>, see the <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Random.html">javadoc</a> for this class. Most of the time, you will be calling <code>random.nextDouble()</code> which returns a random double value between 0.0 and 1.0.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truearguments-present-for-all-functions-but-not-for-initfunctions"><a class="anchor" href="#truearguments-present-for-all-functions-but-not-for-initfunctions"></a>Arguments present for all <em>functions</em> but not for <em>initFunctions</em></h6>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>t</code>
+</td>
+<td class="hdlist2">
+<p>the <em>current time</em> passed by the simulator as a double value in units of the <code>timer</code> of the parent <code>process</code> of the <code>function</code>.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>dt</code>
+</td>
+<td class="hdlist2">
+<p>the <em>current time step</em>, passed by the simulator as a double value in units of the <code>timer</code> of the parent <code>process</code> of the <code>function</code>.</p>
 <div class="admonitionblock caution">
 <table>
 <tr>
@@ -5418,21 +5449,202 @@ In the case of multiple timers, for <code>ClockTimers</code>, the current time s
 </tr>
 </table>
 </div>
-</li>
-</ul>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truearguments-present-for-all-decision-functions"><a class="anchor" href="#truearguments-present-for-all-decision-functions"></a>Arguments present for all <em>'decision' functions</em></h6>
+<div class="paragraph">
+<p>'Decision' functions are: <code>ChangeCategoryDecision</code>, <code>DeleteDecision</code>, <code>CreateOtherDecision</code>, <code>RelateToDecision</code> and <code>MaintainRelationDecision</code>. They all return a result that is a decision: a number of components to create (<code>CreateOtherDecision</code>), the name of a category (<code>ChangeCategoryDecision</code>), or a boolean (all others).</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>decider</code>
+</td>
+<td class="hdlist2">
+<p>This argument of class <code>DecisionFunction</code> <strong>[TODO: ref to javadoc]</strong> is provided as a helper for transforming probabilities into decisions. This class comprises only one method <code>decide(&#8230;&#8203;)</code> which given a probability, returns a <code>boolean</code>. More precisely: it returns <code>true</code> with the probability passed as argument, ie <code>decider.decide(0.7)</code> will return <code>true</code> in 7 calls out of 10. It uses the function random number generator (the <code>random</code> argument) to make the decision. Technically, this is the realisation of a <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">Bernouilli distribution</a>.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>selector</code>
+</td>
+<td class="hdlist2">
+<p>This argument is only present for the <code>ChangeCategoryDecision</code> function type. The <code>SelectionFunction</code> class <strong>[TODO: ref to javadoc]</strong>, of which it is an instance, only has one method <code>select(&#8230;&#8203;)</code> which, given a list of weights <em>w</em>, returns an integer <em>i</em> with probability <em>w</em>[<em>i</em>]/Σ<em><sub>i</sub></em><em>w</em>[<em>j</em>], i.e. a realisation of a single trial of a <a href="https://en.wikipedia.org/wiki/Multinomial_distribution">multinomial distribution</a>.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>recruit</code>
+</td>
+<td class="hdlist2">
+<p>This argument is only present for the <code>ChangeCategoryDecision</code> function type. The <code>RecruitFunction</code> class <strong>[TODO: ref to javadoc]</strong>, of which it is an instance, has one method <code>transition(&#8230;&#8203;)</code> which returns a category name (<code>String</code>), or <code>null</code> if the component does not change category. It&#8217;s argument is either a <code>boolean</code> or an <code>int</code>, typically the result of a call to <code>selector.select(&#8230;&#8203;)</code> or <code>decider.decide(&#8230;&#8203;)</code>. Example of use:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="java" class="language-java hljs">public static String recruitSeedling(
+    double group_recruitRate,
+    ...
+    Random random,                        // random number generator
+    DecisionFunction decider,             // decision function
+    SelectionFunction selector,           // selection function
+    RecruitFunction recruit) {            // recruitment function
+
+    return recruit.transition(decider.decide(group_recruitRate));
+}</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truearguments-that-represent-a-component-in-function-types-which-process-applies-to-categories"><a class="anchor" href="#truearguments-that-represent-a-component-in-function-types-which-process-applies-to-categories"></a>Arguments that represent a component in function types which process applies to categories</h6>
+<div class="paragraph">
+<p>These function types are <code>ChangeCategoryDecision</code>, <code>ChangeState</code>, <code>DeleteDecision</code>, <code>CreateOtherDecision</code>, and <code>SetInitialState</code>.</p>
 </div>
 <div class="paragraph">
-<p><strong>[HERE]</strong></p>
+<p>Internally, the system component which is the target of such functions is called <em>focal</em>.</p>
+</div>
+<div class="paragraph">
+<p>The argument list will contain all the fields and tables declared in the root record of the descriptors (drivers, automatic variables, constants and decorators) of the <em>focal</em> component. The argument comments will indicate that these arguments are descriptors of the <em>focal</em> component, as in this example from the <strong>IDHClock</strong> tutorial for a function of type <code>SetInitialState</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="java" class="language-java hljs">public static void initComm(
+    DoubleTable x,                        // focal component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+    double div,                           // focal component decorators  ± 0.0 ϵ]-∞,+∞[
+    DoubleTable K,                        // focal component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable alpha,                    // focal component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable r,                        // focal component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+    Random random) {                      // random number generator
+    ...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truearguments-that-represent-the-two-components-of-a-relation-in-function-types-which-process-applies-to-relation-types"><a class="anchor" href="#truearguments-that-represent-the-two-components-of-a-relation-in-function-types-which-process-applies-to-relation-types"></a>Arguments that represent the two components of a relation in function types which process applies to relation types</h6>
+<div class="paragraph">
+<p>These function types are <code>ChangeOtherState</code>, <code>ChangeRelationState</code>, <code>MaintainRelationDecision</code>, <code>RelateToDecision</code>, and <code>SetOtherInitialState</code>.</p>
+</div>
+<div class="paragraph">
+<p>These functions apply to a pair of components linked by a relation. The first of these components (the one at the 'from' end of the relation) is called <em>focal</em>, as before. The second tone (the one at the 'to' end of the relation) is called <em>other</em>.</p>
+</div>
+<div class="paragraph">
+<p>To distinguish the descriptors of <em>other</em> from those of <em>focal</em> (since these might belong to the same categories and hence have the same descriptors), all the descriptors of <em>other</em> are prefixed with 'other_', as in this example from the <strong>IDHClock</strong> tutorial for a function of <code>ChangeOtherState</code> type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="java" class="language-java hljs">public static void distEffectsComm(
+    double t,                             // current time
+    double dt,                            // current time step
+    double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+    double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_x,                  // other component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+    double other_div,                     // other component decorators  ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_K,                  // other component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_alpha,              // other component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_r,                  // other component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+    Random random) {                      // random number generator    ...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="truearguments-that-represent-the-local-context-of-a-component"><a class="anchor" href="#truearguments-that-represent-the-local-context-of-a-component"></a>Arguments that represent the local context of a component</h6>
+<div class="paragraph">
+<p>The local context of a component is the part of the system it always sees. The dynamic graph of a simulated system in 3Worlds <strong>always</strong> has:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>For all function types which process applies to categories (<code>appliesTo &#8594;  category</code>), i.e. <code>ChangeCategoryDecision</code>, <code>ChangeState</code>, <code>DeleteDecision</code>, <code>CreateOtherDecision</code>, there is an additional argument, the system component which will be affected by the computations, called <em>focal</em>.</p>
-</li>
-<li>
-<p>For all function types which process applies to relations (<code>appliesTo &#8594;  relationType</code>), i.e. <code>ChangeOtherCategoryDecision</code>, <code>ChangeOtherState</code>, <code>DeleteOtherDecision</code>, <code>ChangeRelationState</code>, <code>MaintainRelationDecision</code>, and for <code>RelateToDecision</code>, there  is another additional argument, a second system component, the one at the other end of the relation starting from <em>focal</em>, called <em>other</em>.</p>
+<p>an object representing the whole system,  called the <em>arena</em> ('the place where things happen': <a href="https://doi.org/10.1007%2Fs10021-011-9466-2">Gignoux et al. 2011</a>). As 3Worlds uses a dynamic graph to represent the whole system (<a href="#truethe-complex-system-as-a-dynamic-graph">Section 1.2.2</a>), this object actually represents the whole graph.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>And it <strong>may</strong> have the following other kinds of nodes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>many objects representing the individual entities of the system, which are nodes in the dynamic graph and are just called <em>components</em>.</p>
+</li>
+<li>
+<p>objects that represent the common properties of a group of components, which are called <em>groups</em>.</p>
+</li>
+<li>
+<p>objects that represent the transitions that can occur during the life of a component, and are therefore called <em>life cycles</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All these objects may belong to <em>categories</em> and have <em>descriptors</em>, and as a consequence can be passed to <em>functions</em> of a <em>process</em> referencing their categories.</p>
+</div>
+<div class="paragraph">
+<p>With regard to processes and functions, these objects are treated like components, except they cannot establish <em>relations</em>; only true components can. This limits the set of functions compatible with them: groups, life cycles and the arena can only be affected by <code>ChangeState</code>,
+<code>SetInitialState</code> and <code>CreateOtherDecision</code> (not life cycles) function types. When these functions apply to the categories of a <code>group</code>, <code>lifeCycle</code> or <code>Arena</code> object, they are treated as components above, i.e. they become the <em>focal 'component'</em> of the user-defined methods.</p>
+</div>
+<div class="paragraph">
+<p>The arena, groups and life cycles play a particular role in the dynamic graph, as indicated by their names. They also have implicit, 'ontological' relations with system components: a component always know about its group, life cycle, and arena because they describe part of its own behaviour. As such, they are always accessible as arguments in the function calls of any component.</p>
+</div>
+<div class="paragraph">
+<p>Just as for the <em>other</em> component above, the descriptors of arena, life cycles and groups are prefixed when they appear in a method argument list, with a comment giving more information on the argument, as in this example from the <strong>Palms</strong> show-case model for a function of <code>CreateOtherDecision</code> type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="java" class="language-java hljs">public static double reproduction(
+    double t,                             // current time
+    double dt,                            // current time step
+    int count,                            // whole system autoVar count (#) ϵ[0..*]
+    int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+    int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+    int lifeCycle_count,                  // focal life cycle autoVar count (#) ϵ[0..*]
+    int lifeCycle_nAdded,                 // focal life cycle autoVar nAdded (#) ϵ[0..*]
+    int lifeCycle_nRemoved,               // focal life cycle autoVar nRemoved (#) ϵ[0..*]
+    int group_count,                      // focal group autoVar count (#) ϵ[0..*]
+    int group_nAdded,                     // focal group autoVar nAdded (#) ϵ[0..*]
+    int group_nRemoved,                   // focal group autoVar nRemoved (#) ϵ[0..*]
+    double group_aGinc,                   // focal group constants adult BudHeight growth coefficient (m yr-1) ± 0.01 ϵ[0.0,+∞[
+    double group_aPdead,                  // focal group constants Mortality : int ± 0.01 ϵ[0.0,1.0]
+    double group_deadNbLeaves,            // focal group constants Mortality : nbf slope ± 0.01 ϵ[0.0,1.0]
+    double group_decay,                   // focal group constants decay ± 0.0 ϵ]-∞,+∞[
+    double group_dis,                     // focal group constants dispersal parameter ± 0.001 ϵ[0.0,1.0]
+    double group_fec,                     // focal group constants fecundity * # leaves ± 0.1 ϵ[0.0,+∞[
+    double group_jPdNNeg,                 // focal group constants Adult P(dN=-1) ± 0.01 ϵ[0.0,1.0]
+    double group_remanence,               // focal group constants seedling remanenc (y) ± 0.0 ϵ]-∞,+∞[
+    double group_slrec0,                  // focal group constants rect els to sls alive ± 0.01 ϵ[0.0,1.0]
+    double group_slrec1,                  // focal group constants rect els to sls dead ± 0.01 ϵ[0.0,1.0]
+    double budHt,                         // focal component currentState  ± 0.0 ϵ]-∞,+∞[
+    int dead,                             // focal component currentState dead ϵ[MIN_INTEGER..*]
+    double nELSeedlings,                  // focal component currentState Nb. EL seedlings ± 0.0 ϵ[0.0,+∞[
+    int nleaves,                          // focal component currentState nleaves ϵ[0..*]
+    double neighbourhoodIndexAdults,      // focal component decorators neighbourhoodIndexAdults ± 0.01 ϵ]-∞,+∞[
+    double neighbourhoodIndexJuveniles,   // focal component decorators neighbourhoodIndexJuveniles ± 0.0 ϵ]-∞,+∞[
+    double neighbourhoodIndexMounds,      // focal component decorators neighbourhoodIndexMounds ± 0.0 ϵ]-∞,+∞[
+    double neighbourhoodIndexTrees,       // focal component decorators neighbourhoodIndexTrees ± 0.0 ϵ]-∞,+∞[
+    boolean sex,                          // focal component constants female?
+    double x,                             // focal component constants x spatial coordinate (m) ± 0.1 ϵ[0.0,300.0]
+    double y,                             // focal component constants y spatial coordinate (m) ± 0.1 ϵ[0.0,300.0]
+    Random random,                        // random number generator
+    DecisionFunction decider) {           // decision function
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>[HERE]</strong></p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truewriteable-arguments-and-method-return-values"><a class="anchor" href="#truewriteable-arguments-and-method-return-values"></a>Writeable arguments and method return values</h5>
+
 </div>
 </div>
 <div class="sect3">
@@ -5569,7 +5781,7 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 <div class="sect3">
 <h4 id="trueintroduction"><a class="anchor" href="#trueintroduction"></a>5.1.1. Introduction</h4>
 <div class="paragraph">
-<p>This tutorial explains the procedure for developing and running a simulation with <em>ModelMaker</em>. We start by using a simple logistic equation as a test case and gradually introduce more capabilities over the course of these tutorials as we explore the full range of modelling features available.</p>
+<p>This tutorial explains the procedure for developing and running a simulation with <em>ModelMaker</em>. We start by using a simple <a href="https://en.wikipedia.org/wiki/Logistic_map">logistic growth model</a> as a test case and gradually introduce more capabilities over the course of these tutorials as we explore the full range of modelling features available.</p>
 </div>
 <div class="paragraph">
 <p>In <em>3Worlds</em>, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their respective properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as soon as the specifications are complete and Java code has been written to define the behaviour of the functions you have specified.</p>
@@ -5587,8 +5799,19 @@ If there are &gt;1 possible descendant categories, the <code>nNew(&#8230;&#8203;
 <div class="sect3">
 <h4 id="trueinstallation"><a class="anchor" href="#trueinstallation"></a>5.1.2. Installation</h4>
 <div class="paragraph">
-<p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>.3w</code> in your home directory and copy <code>tw-dep.jar</code> to it. Then copy <code>modelMaker.jar</code> to your home directory. To start <em>modelMaker</em>, open a terminal and type: <code>java -jar modelMaker.jar</code>. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system.
-Note: To compile models, the Java Development Kit (JDK) must be installed on your computer.</p>
+<p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>.3w</code> in your home directory and copy <code>tw-dep.jar</code> to it. Then copy <code>modelMaker.jar</code> to your home directory. To start <em>modelMaker</em>, open a terminal and type: <code>java -jar modelMaker.jar</code>. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+To compile your own models, the Java Development Kit (<a href="#trueprerequisites">JDK</a>) must be installed on your computer.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -5602,12 +5825,17 @@ Note: To compile models, the Java Development Kit (JDK) must be installed on you
 <p>Create a new project (<code>Main menu: Projects &#8594; New &#8594; Templates &#8594; Blank</code>)</p>
 </li>
 <li>
-<p>When prompted enter 'Tut1' (first letter uppercase). A single node called  <code>3Worlds:Tut1</code> now appears centred in the <em>Graph display</em>.</p>
+<p>When prompted enter 'Tut1' (first letter uppercase). A small graph of 7 nodes appears in the graph window.</p>
+<div class="literalblock">
+<div class="content">
+<pre>FIGURE1 BLANK TEMPLATE</pre>
+</div>
+</div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>This node will be the <em>root</em> of a graph that forms the model specifications. All nodes are identified by a <em>label:name</em> pair. The <em>label</em> is the type of node, representing its role, while the <em>name</em> is a unique identifier. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles.</p>
+<p>The black node (<code>3worlds:Tut1</code>) is the <em>root</em> of a graph that forms the model specifications. All nodes are identified by a <em>label:name</em> pair. The <em>label</em> is the type of node, representing its role, while the <em>name</em> is a unique identifier. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles. The graph is divided into colour-coded sub-trees where different aspects of the specifications are defined.</p>
 </div>
 <div class="paragraph">
 <p>At this stage you can try out a few basic edit operations:</p>
@@ -5624,10 +5852,10 @@ Note: To compile models, the Java Development Kit (JDK) must be installed on you
 <p>Pan the drawing surface by dragging with the left-mouse button anywhere outside a node (assuming the drawing area is larger than the display);</p>
 </li>
 <li>
-<p>Change the node and text size with the controls at the bottom of the display; and,</p>
+<p>Change the node and text size with the <em>element size</em> slider in the tool bar; and,</p>
 </li>
 <li>
-<p>See a range of edit options for this particular node by right-clicking on it to display a local popup menu. It is via these popup menus that the graph is constructed.</p>
+<p>See a range of edit options for any particular node by right-clicking on it to display a local popup menu. It is via these popup menus that the graph is constructed.</p>
 </li>
 </ul>
 </div>
@@ -5638,10 +5866,10 @@ Note: To compile models, the Java Development Kit (JDK) must be installed on you
 <p>At the top-left of the main window are the two property editors - <em>Properties</em> and <em>Selected Properties</em>.  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It&#8217;s here that values are entered for the properties of nodes and edges created in the following steps.</p>
 </div>
 <div class="paragraph">
-<p>At this stage, there are five properties under the section <code>Tut1</code>.  These are properties of the root node (<code>3worlds:Tut1</code>) intended to provide a limited amount of documentation for this project. By default, the property &#8216;build-by&#8217; is filled out with your computer login name and the creation date of the project.</p>
+<p>At this stage, there are five properties under the section <code>Tut1</code>.  These are properties of the root node (<code>3worlds:Tut1</code>) intended to provide a limited amount of documentation for this project. If click on the root node and select the <em>Selected Properties</em> editor and additional non-editable property is shown call &#8216;build-by&#8217;. This property is filled out with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the <em>Selected Properties</em> editor but for brevity, not the <em>Properties</em> editor.</p>
 </div>
 <div class="paragraph">
-<p>At the bottom and right-hand side of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.</p>
+<p>Also in the tool bar at the top of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose. TODO FINISH THESE</p>
 </div>
 <div class="sect4">
 <h5 id="truedirectory-structure"><a class="anchor" href="#truedirectory-structure"></a>Directory structure</h5>
@@ -5713,24 +5941,18 @@ Note: To compile models, the Java Development Kit (JDK) must be installed on you
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Right-click on the root node (<code>3worlds:Tut1</code>) and select <code>New node &#8594; dataDefinition</code> from the popup menu. You&#8217;re then prompted for a name. The default name is <code>dDef</code>. Accept this and click <code>ok</code>. The mouse pointer immediately becomes a cross-hair: <em>ModelMaker</em> is asking where to place this node. Move to some place within the graph display and left-click the mouse.</p>
+<p>Right-click on the data definition node (<code>dataDefinition:dDef</code>) (pale red) and select <code>New node &#8594; record</code> from the popup menu. You&#8217;re then prompted for a name. The default name is <code>rec1</code>. Change this to 'cnsts' (constants) and click <code>ok</code>. The mouse pointer immediately becomes a cross-hair: <em>ModelMaker</em> is asking where to place this node. Move to some place within the graph display and left-click the mouse.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>You can name nodes and edges anything you like but accepting the recommended names and edges will make these tutorials easier to follow. <em>ModelMaker</em> will prevent naming nodes or edges with duplicate names.</p>
-</div>
-<div class="paragraph">
-<p>The <code>dataDefinition:dDef</code> node appears (pale red) connected by a green line to the root node (black). Green lines indicate a parent-child relationship between nodes. The lines are thin at the parent end and thick at the child end indicating that <code>3worlds:Tut1</code> is the parent of <code>dataDefinition:dDef</code>.</p>
+<p>You can name nodes and edges anything you like but accepting the recommended names and edges will make these tutorials easier to follow. Note that <em>ModelMaker</em> will prevent naming nodes or edges with duplicate names.</p>
 </div>
 <div class="paragraph">
 <p>All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and selecting a child to create from the available options provided by the popup menu. The items in this menu vary according to the possibilities allowed by the <em>archetype</em>. This is one way <em>ModelMaker</em> ensures the developing configuration conforms with the <em>archetype</em>, greatly simplifying an otherwise complex workflow.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="2">
-<li>
-<p>Create a <code>record</code> node as a child of <code>dataDefinition:dDef</code> and name it 'cnsts'.</p>
-</li>
 <li>
 <p>Create a <code>field</code> node as child of <code>record:cnsts</code>, name it 'r' and when prompted, set its type as <code>Double</code>.</p>
 </li>
@@ -5740,9 +5962,9 @@ Note: To compile models, the Java Development Kit (JDK) must be installed on you
 <p>All <code>fields</code> (and later <code>tables</code>) must be children of some <code>record</code>.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="4">
+<ol class="arabic" start="3">
 <li>
-<p>Create another <code>record</code> as child of <code>dataDefinition:dDef</code> and name it 'drvs'.</p>
+<p>Create another <code>record</code> as child of <code>dataDefinition:dDef</code> and name it 'drvs' (drivers).</p>
 </li>
 <li>
 <p>Create a <code>field</code> node as child of <code>record:drvs</code>, name it 'x' and again set the type to <code>Double</code>.</p>
@@ -5753,7 +5975,15 @@ Note: To compile models, the Java Development Kit (JDK) must be installed on you
 <p>Note that the names 'drvs' and 'cnsts' don&#8217;t imply any meaning to the specifications - they&#8217;re just names. Their <em>roles</em> as drivers and constants will be defined later.</p>
 </div>
 <div class="paragraph">
-<p>This is all the data required for this tutorial.  The task to add a <code>dataDefinition</code> node has now gone and three tasks remain.</p>
+<p>This is all the data required for this tutorial.  The task list has now grown to 7 because the roles of this data needs to be defined.</p>
+</div>
+<div class="paragraph">
+<p>You can tidy up the graph display by clicking the <code>L</code> button (re-apply layout) in the tool bar.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>FIGURE 2 dDefSubTree</pre>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -7382,7 +7612,7 @@ else
 <div id="footer">
 <div id="footer-text">
 Version 1.4<br>
-Last updated 2021-04-27 16:51:41 +0200
+Last updated 2021-04-28 16:57:54 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
