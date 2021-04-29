@@ -116,6 +116,8 @@ In this example, you can see that:
 * each method name is constructed from a matching `function` or `initFunction` node (<<fig-idhClock-functions>>).
 * the argument lists are partly constructed from the `categories` the `process` declaring the `function` applies to;
 * the comments documenting the method arguments are constructed from the `field` or `table` node properties (`description`, `precision`, `interval`, `units`, etc.).
++
+NOTE: Do not neglect these metadata: coding errors due to discrepancies in measurement units between equations are frequent and yield wrong computation results that are difficult to trace. Most publicly available model code does not document the units, and hence is not easily re-usable.
 
 When ModelRunner is launched on the IDHClock tutorial model, it will include the generated `IdhClock1` class and call each of its methods for all system components they are dealing with as specified in the model configuration file.
 
@@ -128,7 +130,7 @@ As you can see in this example, the body of each method is empty, only containin
 ----
 These are the __code insertion markers__. The user-defined code must be inserted between these two lines.
 
-WARNING: Never remove the __code insertion markers__ as they are used by 3Worlds when using code <<configuration-ecosystem-dynamics.adoc#truefunction,snippets>>.
+WARNING: Never remove the __code insertion markers__ as they are used by 3Worlds when using code <<configuration-ecosystem-dynamics.adoc#truefunction,snippets>> (as in all tutorial and test models).
 
 
 As _model main class_ is a java __**interface**__, all data is passed as arguments to its static methods. As you can see in the example above, there may be many arguments. If you look closely, you will see that these arguments match the _descriptors_ that were attached to the _categories_ to which the _processes_ apply. All this information is provided in the _model main class_ as javadoc comments. For example, the javadoc comment of the `commGrowth` method above produces this output:
@@ -210,7 +212,7 @@ public static void initComm(
 
 These function types are `ChangeOtherState`, `ChangeRelationState`, `MaintainRelationDecision`, `RelateToDecision`, and `SetOtherInitialState`.
 
-These functions apply to a pair of components linked by a relation. The first of these components (the one at the 'from' end of the relation) is called _focal_, as before. The second tone (the one at the 'to' end of the relation) is called _other_.
+These functions apply to a pair of components linked by a relation. The first of these components (the one at the 'from' end of the relation) is called _focal_, as before. The second one (the one at the 'to' end of the relation) is called _other_.
 
 To distinguish the descriptors of _other_ from those of _focal_ (since these might belong to the same categories and hence have the same descriptors), all the descriptors of _other_ are prefixed with 'other_', as in this example from the *IDHClock* tutorial for a function of `ChangeOtherState` type:
 
@@ -234,20 +236,20 @@ public static void distEffectsComm(
 
 The local context of a component is the part of the system it always sees. The dynamic graph of a simulated system in 3Worlds *always* has:
 
-* an object representing the whole system,  called the _arena_ ('the place where things happen': https://doi.org/10.1007%2Fs10021-011-9466-2[Gignoux et al. 2011]). As 3Worlds uses a dynamic graph to represent the whole system (<<purpose.adoc#truethe-complex-system-as-a-dynamic-graph>>), this object actually represents the whole graph.
+* an object representing the whole system,  called the _arena_ ('the place where things happen': https://doi.org/10.1007%2Fs10021-011-9466-2[Gignoux et al. 2011]). As 3Worlds uses a dynamic graph to represent the whole system (<<purpose.adoc#truethe-complex-system-as-a-dynamic-graph>>), this object actually represents the whole graph. It matches the <<configuration-reference.adoc#truethe-system-node,__system__>> node in the configuration graph of the `.ugt` file.
 
-And it *may* have the following other kinds of nodes:
+And it *may* (0..* multiplicity) have the following other kinds of nodes:
 
-* many objects representing the individual entities of the system, which are nodes in the dynamic graph and are just called __components__.
-* objects that represent the common properties of a group of components, which are called __groups__.
-* objects that represent the transitions that can occur during the life of a component, and are therefore called __life cycles__.
+* objects representing the individual entities of the system, which are nodes in the dynamic graph and are just called <<configuration-ecosystem-structure.adoc#truesystem-components,__components__>>.
+* objects that represent the common properties of a group of components, which are called <<configuration-ecosystem-structure.adoc#truecomponent-groups,__groups__>>.
+* objects that represent the transitions that can occur during the life of a component, and are therefore called <<configuration-ecosystem-structure.adoc#true-life-cycle,__life cycles__>>.
 
-All these objects may belong to _categories_ and have __descriptors__, and as a consequence can be passed to _functions_ of a _process_ referencing their categories.
+These four types of objects may belong to _categories_ and have __descriptors__, and as a consequence can be passed to _functions_ of a _process_ referencing their categories.
 
 With regard to processes and functions, these objects are treated like components, except they cannot establish __relations__; only true components can. This limits the set of functions compatible with them: groups, life cycles and the arena can only be affected by `ChangeState`,
-`SetInitialState` and `CreateOtherDecision` (not life cycles) function types. When these functions apply to the categories of a `group`, `lifeCycle` or `Arena` object, they are treated as components above, i.e. they become the _focal 'component'_ of the user-defined methods.
+`SetInitialState` and `CreateOtherDecision` (not life cycles) function types. When these functions apply to the categories of a `group`, `lifeCycle` or `Arena` object, they are treated as components above, i.e. they become the _focal_ 'component' of the user-defined methods.
 
-The arena, groups and life cycles play a particular role in the dynamic graph, as indicated by their names. They also have implicit, 'ontological' relations with system components: a component always know about its group, life cycle, and arena because they describe part of its own behaviour. As such, they are always accessible as arguments in the function calls of any component.
+The arena, groups and life cycles play a particular role in the dynamic graph, as indicated by their names. They also have implicit, 'ontological' relations with system components: a component always knows about its group, life cycle, and arena because they describe part of its own behaviour. As such, they are always accessible as arguments in the function calls of any component.
 
 Just as for the _other_ component above, the descriptors of arena, life cycles and groups are prefixed when they appear in a method argument list, with a comment giving more information on the argument, as in this example from the *Palms* show-case model for a function of `CreateOtherDecision` type:
 
@@ -292,53 +294,119 @@ public static double reproduction(
 }
 ----
 
-*[HERE]*
+The code generator decides which arguments must be made available to a method based on this hierarchy: **arena > life cycle > group > component**. When the method applies to a component, then all four hierarchical levels are accessible; when it applies to a group, only arena and life cycle descriptors are available, and the group arguments are treated as the __focal__ 'component'.
+
+====== Space data
+
+When a space is attached to a <<configuration-ecosystem-dynamics.adoc#trueprocess,process>> through a `inSpace` cross-link, the following argument is added to the method list:
+
+[horizontal]
+`limits`:: The limits of the space used with this process. This is an immutable object of class `Box` *[TO DO: link to javadoc]*. It returns the coordinates of the lower and upper ends of the space in all its dimensions through the `limits.lowerBound(int i)` and `limits.upperBounds(int i)` methods, where `i` is the dimension index.
 
 ===== Writeable arguments and method return values
 
+User-defined functions are meant to modify the state of the graph, which technically means induce changes in descriptor values and creation/deletion of graph elements, namely components and relations. This cannot be done with read-only arguments.
 
-==== generic method fields
+====== Method return values
 
-In addition to these arguments, every function class has a protected field called `localContext` that contain contextual data that may be used in computations. The local context data consist in:
+<<truearguments-present-for-all-decision-functions,Decision functions>> all have return values that are interpreted as follows:
 
-** __ecosystem__-level data, i.e. ecosystem population data (= number [source,]
-+
+[width="100%",options="header",cols="1,1,3"]
+|===
+|function type | return type | return value
+|`ChangeCategoryDecision`|`String`|`null` or a new `Category`
+|`DeleteDecision`|`boolean`|`true` if _focal_ is to be deleted
+|`CreateOtherDecision`|`double`|the number of new components to create; the decimal part is interpreted as a probability to create an extra component.
+|`RelateToDecision`|`boolean`|`true` if _other_ is to be related to _focal_
+|`MaintainRelationDecision`|`boolean`|`true` if the existing relation between _focal_ and _other_ is maintained
+|===
+
+They all have <<truearguments-present-for-all-decision-functions,read-only helper arguments>>. Example from the *IDHClock* tutorial for a `RelateToDecision` function:
+
+[source%nowrap,java]
 ----
-focalContext.ecosystemPopulationData
-focalContext.ecosystemName
+public static boolean distOccurrence(
+    double t,                             // current time
+    double dt,                            // current time step
+    ...
+    double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+    ...
+    Random random,                        // random number generator
+    DecisionFunction decider) {           // decision function
+    // distOccurrence ---- Code insert Begin-->
+    return decider.decide(1.0/freq);
+    // distOccurrence ---- Code insert End----<
+}
+
 ----
 
-** __life cycle__-level data, i.e. life cycle parameters, population data, and name:
-+
+
+====== Method writeable arguments
+
+Change/Set-State functions have the following writeable arguments as output:
+
+[width="100%",options="header",cols="1,3"]
+|===
+|function type | writeable arguments
+|`setInitialState`|_focal_ constants & drivers
+.2+|`changeState`|_focal_ drivers & decorators
+   |decorators of __arena__, _life cycle_ & _group_
+|`setOtherInitialState` |_other_ drivers & constants
+.2+|`ChangeOtherState` |_other_ drivers & decorators
+   |decorators of __arena__, _life cycle_, _group_, _other life cycle_ & _other group_
+.3+|`ChangeRelationState`| _focal_ drivers & decorators
+   |_other_ drivers & decorators
+   |decorators of __arena__, _life cycle_, _group_, _other life cycle_ & _other group_
+|===
+
+These arguments appear in the argument list as specific inner classes instances with self-explained names: `focalDrv`, `focalCnt`, `focalDec`, `groupDec`, `groupCnt`, `arenaDrv`, `otherGroupDrv`, etc... Each of these arguments will contain the same fields as the original data structure it comes from. Any value set in these arguments will be carried back to the component when the method returns. For example, this is the generated code from the *IDHClock* tutorial for a function of type `ChangeOtherState`:
+
+[source%nowrap,java]
 ----
-focalContext.lifeCycleParameters
-focalContext.lifeCyclePopulationData
-focalContext.lifeCycleName
+public static void distEffectsComm(
+    double t,                             // current time
+    double dt,                            // current time step
+    int count,                            // whole system autoVar count (#) ϵ[0..*]
+    int nAdded,                           // whole system autoVar nAdded (#) ϵ[0..*]
+    int nRemoved,                         // whole system autoVar nRemoved (#) ϵ[0..*]
+    double freq,                          // focal component constants  ± 0.0 ϵ]-∞,+∞[
+    double inten,                         // focal component constants  ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_x,                  // other component drivers population size dim = [40] ± 0.0 ϵ]-∞,+∞[
+    DistEffectsComm.OtherDrv otherDrv,    // next drivers for other component 
+    double other_div,                     // other component decorators  ± 0.0 ϵ]-∞,+∞[
+    DistEffectsComm.OtherDec otherDec,    // new decorators for other component 
+    DoubleTable other_K,                  // other component constants carrying capacity dim = [40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_alpha,              // other component constants interspecific competition coefficient dim = [40,40] ± 0.0 ϵ]-∞,+∞[
+    DoubleTable other_r,                  // other component constants growth rate dim = [40] ± 0.0 ϵ]-∞,+∞[
+    Random random) {                      // random number generator
+    ...
+}
 ----
 
-** __group__-level data, i.e. group parameters, population data, and name. A group represents here components sharing the same categories and same parameter set (eg _species_ characteristics for living organisms).
-+
+In this example, the writeable arguments are `otherDrv` and `otherDec`. Both of them are of ad-hoc inner classes defined in the generated sub-directory of the eclipse project for **IDHClock** (file `DistEffectsComm.java`):
+
+[source%nowrap,java]
 ----
-focalContext.groupParameters
-focalContext.groupPopulationData
-focalContext.groupCycleName
+public class OtherDec {
+    public double div;
+}
+
+public class OtherDrv {
+    public DoubleTable x;
+}
 ----
 
-`PopulationData` has 3 accessible fields: `count`, `nremoved` and `nAdded`.
+Here, to set the `div` field of the _other_ decorators to 3.2, simply write `otherDec.div=3.2;` in your method code. 
+
+CAUTION: As you can see above, the writeable arguments are also present as read-only arguments.
+
+You may also have noticed in the example above that the comment besides `otherDec` is `// *new* decorators for other component`, while that besides `otherDrv` is `// *next* drivers for other component`. What does this mean? Well, this is just a reminder that decorators and drivers are not handled in the same way by 3Worlds (cf. <<configuration-ecosystem-structure.adoc#truecategory,categories>>): 
+
+* *Decorator values* are only valid within a time step and are immediately changed, which means that any method writing a decorator value will change it for all other methods called during the same time step. Hence the '**new**' adjective.
+
+* *Driver values* are carried over to the next time step, and thus are subject to a synchronized modification. To keep all component states consistent, the read-only argument for drivers store the values that were set at the previous time step, i.e. they represent the _current_ state of all components. When a modification of their value is computed, it is stored in the proper writeable argument that will be copied into a separate driver state representing the _next_ state of the component. _This makes sure that all components within a time step are viewed by each other in the same, consistent state._ It is only after all methods on all components of the current time step have been called that 3Worlds will replace the _current_ driver state with the _next_ driver state. Hence the '**next**' adjective.
+
+WARNING: Forgetting about the difference of treatment between _decorators_ and _drivers_ can be the source of *major* but difficult to detect computation errors. Always know what you do!
 
 
-**TODO** update this
 
-* The `changeState(...)` method of the `ChangeState` and `ChangeRelationState` function types, and the `changeOtherState(...)` method of the `ChangeOtherState` function type,  are expected to compute changes in state variables of the _focal_ component or relation *[NB: this is not yet implemented for relations]*, or the _other_ component in the case of the `ChangeOtherState` function. The state variables are found in `focal.currentState()`, a read-only set of values, and new values may be computed into `focal.nextState()`.
-
-* The `delete(...)` method of the `DeleteDecision` and `DeleteOtherDecision` must return a `boolean` value. If `true` is returned, this will trigger the removal of the _focal_ (for `DeleteDecision`) or _other_ component (for `DeleteOtherDecision`). 
-
-TIP: In all `...Decision` functions except `CreateOtherDecision`, a helper method called `decide(double proba)` is available. This method will return true with probability `proba` and can be used to return a boolean result based on a probability computation. This method uses the in-built <<a,random stream facility>> of 3Worlds.
-
-* The `nNew(...)` method of the `CreateOtherDecision` function takes an extra argument called `newType`, which is the category name of the newly created component, as per the life cycle. `nNew(...)` returns a number of new components to create as a decimal number (`double`): the _integral part_ directly translates into a number of new components, while the _decimal part_ is used as a probability of an extra new component. This way, very low fecundity probabilities can be simulated.
-
-TIP: If there are >1 possible descendant categories, the `nNew(...)` method will be called as many times, with the `newType` parameter changing accordingly. The `nNew(...)` method must be prepared to handle multiple choices in such case (for example with a `switch` statement).
-
-* The `changeCategory(...)` method of the `ChangeCategoryDecision` and `ChangeOtherCategoryDecision` function types returns a category name (`String`), that of the new recruit. This name must be consistent with the life cycle information. After the function is executed, the  _focal_ (for `ChangeCategoryDecision`) or the _other_ (for `ChangeOtherCategoryDecision`) component is recruited to its new category.
-
-* The `maintainRelation(...)` method of the `MaintainRelationDecision` and the `relate(...)` method of the `RelateToDecision` both return a `boolean` value. If `true` is returned, the relation is maintained/set between the two components, otherwise it is removed/not set.**[TODO: a lot to add when indexers come in]**

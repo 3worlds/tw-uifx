@@ -1,4 +1,4 @@
-3Worlds provides a series of _widgets_, i.e. classes that can manage output from the simulator and either show it graphically or perform some other non-graphic task (e.g. save data to disk). Examples of graphic widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc... The basic `ModelRunner` GUI just provides places to place widgets: a _top_, a _bottom_ and any number of _tabs_. Any number of widgets can be placed within these (<<fig-example-gui>>,<<fig-example-gui-tree>>).
+3Worlds provides a series of _widgets_, i.e. classes that can manage output from the simulator and either show it graphically or perform some other non-graphic task (e.g. save data to disk). Examples of graphic widgets are: time series or scatter plots, simulation control buttons, progress bars, maps etc... The basic `ModelRunner` GUI just provides places to place widgets: a _top_, a _bottom_ and any number of _tabs_. Any number of widgets can be placed within these (<<fig-example-gui>>, <<fig-example-gui-tree>>).
 
 [[fig-example-gui]]
 .The ModelRunner graphical user interface.
