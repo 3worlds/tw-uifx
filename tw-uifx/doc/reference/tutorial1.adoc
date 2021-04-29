@@ -23,7 +23,7 @@ CAUTION: To compile your own models, the Java Development Kit (<<trueprerequisit
 . Start _ModelMaker_ as above. If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
  
 . Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
-. When prompted enter 'Tut1' (first letter uppercase). A small graph of 7 nodes appears in the graph window.
+. When prompted enter 'Tut1' (first letter uppercase). A small graph of seven nodes appears in the graph window.
 
  FIGURE1 BLANK TEMPLATE
 
@@ -39,15 +39,15 @@ At this stage you can try out a few basic edit operations:
 
 - Change the node and text size with the _element size_ slider in the tool bar; and,
 
-- See a range of edit options for any particular node by right-clicking on it to display a local popup menu. It is via these popup menus that the graph is constructed.
+- Right-click on a node to see a display a pop-up menu of edit options for that particular node. It is via these popup menus that the graph is constructed.
 
 A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
 At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It's here that values are entered for the properties of nodes and edges created in the following steps. 
 
-At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. If click on the root node and select the _Selected Properties_ editor and additional non-editable property is shown call '`build-by`'. This property is filled out with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the _Selected Properties_ editor but for brevity, not the _Properties_ editor. 
+At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. If click on the root node and then select the _Selected Properties_ editor, an additional non-editable property is shown call '`built-by`'. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the _Selected Properties_ editor but for brevity, not in the _Properties_ editor. 
 
-Also in the tool bar at the top of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose. TODO FINISH THESE
+Also in the tool bar at the top of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.
 
 ===== Directory structure
 
@@ -81,7 +81,7 @@ For the most part, these tutorials will proceed in this order and leave defining
 
 ===== Data definition
 
-The logistic equation we implement is: _x(t+1) = rx(t)(1-x(t)_. Though simple, it has interesting chaotic behaviour for values of _r_ between 3.7 and 4.0. All we need do for the data definition section is to define the parameter _r_ and the state variable _x_. 
+The logistic equation we will implement is: _x(t+1) = rx(t)(1-x(t)_. Though simple, it has interesting chaotic behaviour for values of _r_ between 3.7 and 4.0. All we need do for the data definition section is to define the parameter _r_ and the state variable _x_. 
 
 From here on and throughout these tutorials, parameters are called _constants_ (data that does not change over the course of a simulation) and state variables are called _drivers_ (data that drives the simulation from one time to the next).
 
@@ -104,7 +104,7 @@ All `fields` (and later `tables`) must be children of some `record`.
 
 Note that the names 'drvs' and 'cnsts' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
 
-This is all the data required for this tutorial.  The task list has now grown to 7 because the roles of this data needs to be defined. 
+This is all the data required for this tutorial.  The task list has now grown to seven because the roles of this data remains to be defined. 
  
 You can tidy up the graph display by clicking the `L` button (re-apply layout) in the tool bar.
  
@@ -116,29 +116,16 @@ The `dynamics` sub-tree specifies how the modelled system will evolve over time.
 
 In the present case, the main task is to call the logistic equation a set number of times and present the result from each time step to the equation at the next time step. 
 
-The `dynamics` sub-tree is a child of the `system` node - the root of the modelled system that defines both its dynamics and its structure. To begin defining the system dynamics, create a `system` node and then a `dynamics` node as its child.
+The `dynamics` sub-tree (lime green) is a child of the `system` node - the root of the modelled system that defines both its dynamics and its structure. These nodes are already present in the "Blank" template we started with.
+The `dynamics` node is the specification of a type of simulator. There can be many simulators (instances) of this specification running in parallel depending on the experimental design. 
 
-. Right-click on the root node (`3worlds:Tut1`) and select `New node -> system` from the popup menu. 
+A dynamics system must have a common definition of the time scale. There are ten different types of time scale available: all of them exact sub-divisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial. 
 
-The addition of the `system` node has removed one task (to add a `system`) and added four more. One of these tasks is to add a `dynamics` node.
+TO HERE!!!
 
-[start = 2]
-
-. Add a `dynamics` node as a child of `system:sys1`.
-
-This node (lime green) is the root of the dynamics sub-tree and when the specifications are run, this node is the specification of a type of simulator. There can be many simulators of this specification running in parallel depending on the experimental design.
-
-In the `dynamics` sub-tree, we now proceed to create `timeline`, `timer`, `process` and `function` nodes.
-
-[start =3]
-
-. From the `dynamics` node create a `timeline`. The timeline defines the type of time scale used in this dynamics sub-tree. 
-
-There are ten different types of time scale available: all of them exact sub-divisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is `ARBITRARY` which is fine for this tutorial. 
 
 There is now a new task to add a `timer` node to the `timeline`.
 
-[start = 4]
 
 . Create a `timer` as a child of `timeline`. Here an extra prompt appears asking for the class of the timer: {`ClockTimer`, `EventTimer`, `ScenarioTimer`}. Select `ClockTimer`. This timer class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularities such as leap years are managed. 
 
