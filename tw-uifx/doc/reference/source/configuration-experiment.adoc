@@ -151,7 +151,7 @@ with the following specifications:
 
 [#fig-data-source-example]
 .Example of a data source configuration.
-image::example-data-source.png[align="center"]
+image::configuration-experimentIMG/example-data-source.png[align="center"]
 
 will result in the instantiation of a single parameter set with species='site', stage='population', and data contained in an 10-cell array of records with 3 fields, fecundity, mortality and dispersal.
 

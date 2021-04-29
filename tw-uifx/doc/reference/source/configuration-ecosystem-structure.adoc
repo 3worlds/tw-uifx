@@ -73,7 +73,7 @@ On this diagram (generated with `ModelMaker`), hierarchical links are in green a
 
 [#fig-category-example]
 .Example of a configuration with category sets, categories and relations
-image::example-category.png[align="center"]
+image::configuration-ecosystem-structureIMG/example-category.png[align="center"]
 
 In this example, a _plant_ can be a _C3 tree_ but cannot be simultaneously a _grass_ and a _forb_. Similarly, an _animal_ cannot be both _herbivore_ and _carnivore_. The _predation_ relation links an _animal_ of any kind (the prey) to a _carnivore_ (its predator). A member of category _plant_ will have two driver variables, _height_ and _leaf area_. A member of category _tree_ will have three driver variables, _height_, _leaf area_ and _DBH_, as it inherits all the properties of the _plant_ category in which it is nested.
 
@@ -208,13 +208,13 @@ This life cycle:
 
 [#fig-life-cycle-example]
 .Example of a life cycle
-image::example-life-cycle.svg[align="center"]
+image::configuration-ecosystem-structureIMG/example-life-cycle.svg[align="center"]
 
 is specified with this graph:
 
 [#fig-life-cycle-config-example]
 .Example of a life cycle configuration
-image::example-life-cycle.png[align="center"]
+image::configuration-ecosystem-structureIMG/example-life-cycle.png[align="center"]
 
 The life cycle has two categories, _seedling_ and __adult__, and three transitions: a _recruit_ transition called __recruitment__, effected by the function __Recruit__, and two _produce_ transitions, effected by the functions _Seed_ and __Sprout__.
 

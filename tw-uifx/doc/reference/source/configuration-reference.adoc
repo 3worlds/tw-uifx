@@ -35,7 +35,7 @@ All these properties appear in the about box of `ModelRunner` and are saved in t
 
 [#fig-root-example]
 .The base tree of any 3Worlds configuration
-image::example-root.png[align="center"]
+image::configuration-referenceIMG/example-root.png[align="center"]
 
 
 ==== The _system_ node

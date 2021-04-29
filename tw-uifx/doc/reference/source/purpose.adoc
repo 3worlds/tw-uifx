@@ -73,14 +73,14 @@ According to https://en.wikipedia.org/wiki/Graph_theory[graph theory], a _graph_
 
 [[fig-what-is-a-graph]]
 .A mathematical graph, showing both the usual mathematical terms and the vocabulary used in 3Worlds. The incidence function defines edges between nodes. Edges can be directed (with arrows) or undirected.
-image::graph.svg[align="center"]
+image::purposeIMG/graph.svg[align="center"]
 
 
 With the addition of _descriptors_ (e.g. numbers with a specific meaning: <<fig-graph-descriptors>>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define _functions_ that can modify nodes and edges and their descriptors, the graph becomes dynamic. A *3Worlds* simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to the user's particular application. Nodes are called _system components_, edges __system relations__, and descriptors __properties__.
 
 [[fig-graph-descriptors]]
 .An example of graph descriptors (redrawn from Gignoux et al. 2017).
-image::graph-with-descriptors.svg[align="center]
+image::purposeIMG/graph-with-descriptors.svg[align="center]
 
 ==== Categories
 
@@ -96,7 +96,7 @@ Because ecosystems have both biological and physical characteristics, they not o
 
 [[fig-3w-main-loop]]
 .The time model of 3Worlds. The overall dynamics of a system is computed as X(t+dt) = f(X(t)) where X represents the state of all system components, t is time and f is the function (or rather, the set of functions) used to compute the change over the time interval dt.
-image::state-change-loop.svg[align="center"]
+image::purposeIMG/state-change-loop.svg[align="center"]
 
 Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. in *3Worlds*, time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used. *3Worlds* provides three types of _time model_ that can be used in interaction: '__clock__' models using a constant time step, __event-driven __time models where time events trigger computations that can generate further events in the future, and _scenarios_ where the list of events determines when computations are to be made. 
 

@@ -2,11 +2,11 @@
 
 [[fig-example-gui]]
 .The ModelRunner graphical user interface.
-image::example-gui.svg[align="center"]
+image::configuration-guiIMG/example-gui.svg[align="center"]
 
 [[fig-example-gui-tree]]
 .The configuration sub-tree specifying the GUI of <<fig-example-gui>>.
-image::fig-gui-example-tree.png[align="center"]
+image::configuration-guiIMG/fig-gui-example-tree.png[align="center"]
 
 
 ===== Top
