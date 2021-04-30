@@ -380,8 +380,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		rb1.setTooltip(getFastToolTip("Display requried actions only"));
 		rb2.setTooltip(getFastToolTip("Display actions and specification constraints"));
 		rb3.setTooltip(getFastToolTip("Display all message info"));
-		allElementsPropertySheet.setTooltip(getFastToolTip("All editable properties for currently displayed nodes and edges"));
-		nodePropertySheet.setTooltip(getFastToolTip("All properties for currently selected node and its out-edges"));
+//		allElementsPropertySheet.setTooltip(getFastToolTip("All editable properties for currently displayed nodes and edges"));
+//		nodePropertySheet.setTooltip(getFastToolTip("All properties for currently selected node and its out-edges"));
 		/** Set a handler to refresh the Open menu items when selected */
 		menuOpen.addEventHandler(Menu.ON_SHOWING, event -> updateOpenProjectsMenu(menuOpen));
 
