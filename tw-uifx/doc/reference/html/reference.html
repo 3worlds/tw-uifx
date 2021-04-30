@@ -513,6 +513,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#truegenerated-code-the-model-main-class">3.4.1. Generated code: the <em>model main class</em></a></li>
 <li><a href="#truemodel-main-class-method-arguments">3.4.2. <em>Model main class</em> method arguments</a></li>
+<li><a href="#trueusing-space-in-user-code">3.4.3. Using <em>space</em> in user code</a></li>
+<li><a href="#trueaccessing-complex-data-structure">3.4.4. Accessing complex data structure</a></li>
 </ul>
 </li>
 <li><a href="#truefeeding-the-model-with-data">3.5. Feeding the model with data</a></li>
@@ -5218,7 +5220,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <p>During the specification of a model, ModelMaker generates java classes meant to be further edited in order to implement the specific behaviours imagined by the modeller. Among these classes, one is meant to be edited; the others are interface code, that you can see as 'glueing' code between the 3Worlds main code and the user-defined one. The file to be edited is named after the 3Worlds root node of the specification file (<a href="#truethe-3worlds-node">Section 3.3.1</a>): e.g., if your 3Worlds node has the name <code>myModel</code>, the java file to edit will be called <code>MyModel.java</code>. In what follows, we call it the <em>model main class</em>.</p>
 </div>
 <div class="paragraph">
-<p>This section gives general rules to follow to successfully edit the generated <em>model main class</em> in order for your model to behave as you wish. <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a> describes how to link your <code>ModelMaker</code> session with an eclipse development enviromnent where you can edit the generated <em>model main class</em>. It is important to read about  <a href="#truefunction">functions</a> before starting writing your code, in order to master all the options you can setup in <code>ModelMaker</code> to specify your function.</p>
+<p>This section gives general rules to follow to successfully edit the generated <em>model main class</em> in order for your model to behave as you wish. <a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a> describes how to link your <code>ModelMaker</code> session with an eclipse development environment where you can edit the generated <em>model main class</em>. It is important to read about  <a href="#truefunction">functions</a> before starting writing your code, in order to master all the options you can setup in <code>ModelMaker</code> to specify your function.</p>
 </div>
 <div class="paragraph">
 <p>For each <code>function</code> node of the specification, you will find one static method with the same name in the <em>model main class</em>. For example, the <strong>IDHClock</strong> tutorial (<a href="#truetutorial-4-elaborating-the-model-structure-testing-the-intermediate-disturbance-hypothesis">Section 5.4</a>) specifies 3 functions, 2 initFunctions and 2 data trackers (<a href="#fig-idhClock-functions">Figure 13</a>).</p>
@@ -5875,6 +5877,71 @@ Forgetting about the difference of treatment between <em>decorators</em> and <em
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="trueusing-space-in-user-code"><a class="anchor" href="#trueusing-space-in-user-code"></a>3.4.3. Using <em>space</em> in user code</h4>
+<div class="paragraph">
+<p>3Worlds assumes that an ecosystem representation can require a detailed description of zero, one or <em>many</em> <a href="#truethe-representation-of-space">spaces</a> (<a href="https://doi.org/10.1007%2Fs10021-011-9466-2">Gignoux et al. 2011</a>) - depending on the question addressed. It further assumes that a given space is best designed to suit the needs of one particular process, in other words, there is a 1..* relation between a space and various processes (a space can be used by many processes, but a process only uses one space). The relation between a process and a space is specified with the <code>inSpace</code> cross-link (see <a href="#trueprocess">processes</a>).</p>
+</div>
+<div class="paragraph">
+<p>Spaces are used:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>to <em>locate</em> system components and help <em>compute geometric quantities</em> within their space. This is done by passing spatial data as arguments to all functions of a process having an <code>inSpace</code> link to a space (ie the <a href="#truespace-data">limits</a> argument). A component location in its space is given by the value of specific driver or constant descriptors (see <a href="#truespace-and-spatial-indexing">cross-links for space</a>). Any change in these coordinates will result in a movement of the component into this space.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When component coordinates get out of the space limits, the selected <a href="#truespace-and-spatial-indexing"><em>edge effect correction</em></a> rules apply and will either result in the return of the component within space limits or its exclusion from the model. This is done internally by 3Worlds just after the user method call, so that you don&#8217;t need to bother if your computed coordinates get out of range.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>to optimise the search of candidate components to establish a relation with a <code>RelateToDecision</code> function. This is an old computing problem: how to find closest neighbours in a geometric space <em>efficiently</em>? It has been solved long ago by using <a href="https://en.wikipedia.org/wiki/K-d_tree">Kd-trees</a>. Kd-trees are the most efficient algorithms to find nearest neighbours (<em>O(log(n)</em> time). In continuous spaces (cf. <a href="#true3worlds-library-of-spaces">space library</a>), 3Worlds uses Kd-trees to search for closest neighbour first to establish relations. Depending on the property defined in the <code>inSpace</code> cross-link (<code>searchRadius</code> or <code>searchNeighbours</code>) 3Worlds will either present:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>the list of all components found within <code>searchRadius</code> space units of the <em>focal</em> component; or</p>
+</li>
+<li>
+<p>the list of the <code>searchNeighbours</code> first closest components found around the <em>focal</em> component;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>...to the <code>RelateToDecisionFunction</code>. In other words, the use of the space will restrict the number of candidates for establishing a relation by looping only on those <em>others</em> which are close enough to <em>focal</em>, using two different search methods.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Whenever you have to search for items to construct relations, associate a space to your process, it will make computations far more efficient.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueaccessing-complex-data-structure"><a class="anchor" href="#trueaccessing-complex-data-structure"></a>3.4.4. Accessing complex data structure</h4>
+<div class="paragraph">
+<p>The code generated by <code>ModelMaker</code> also comprise specific data structure classes for component, group, life cycle and arena descriptors. These classes are put in the <code>generated</code> sub-directory of the project <code>code/&lt;system-name&gt;/</code> directory in the user-defined java project. Have a look at these files (but do not edit them!) to understand how to access data in complex hierarchical structures.</p>
+</div>
+<div class="paragraph">
+<p>In all cases, those data structures have getters and setters for fields and tables that use the name of the field as method name. For example, if <code>x</code> is a field in record <code>B</code>, it will be accessed as <code>B.x()</code> and set with <code>B.x(value)</code>.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="truefeeding-the-model-with-data"><a class="anchor" href="#truefeeding-the-model-with-data"></a>3.5. Feeding the model with data</h3>
@@ -5957,17 +6024,22 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 <p>Create a new project (<code>Main menu: Projects &#8594; New &#8594; Templates &#8594; Blank</code>)</p>
 </li>
 <li>
-<p>When prompted enter 'Tut1' (first letter uppercase). A small graph of seven nodes appears in the graph window.</p>
+<p>When prompted enter 'Tut1' (first letter upper case). A small graph of seven nodes appears in the graph window.</p>
 <div class="literalblock">
 <div class="content">
-<pre>FIGURE1 BLANK TEMPLATE</pre>
+<pre> [#fig-blankTemplate]
+.The 'Blank' template starting configuration graph.
+image::tutorial1IMG/fig-blank-template.png[align="center"]</pre>
 </div>
 </div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>The black node (<code>3worlds:Tut1</code>) is the <em>root</em> of a graph that forms the model specifications. All nodes are identified by a <em>label:name</em> pair. The <em>label</em> is the type of node, representing its role, while the <em>name</em> is a unique identifier. A few node types, of which the root node is one, must have names beginning with an uppercase letter. These nodes are used to generate Java classes when the simulation compiles. The graph is divided into colour-coded sub-trees where different aspects of the specifications are defined.</p>
+<p>The black node (<code>3worlds:Tut1</code>) is the <em>root</em> of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined.</p>
+</div>
+<div class="paragraph">
+<p>All nodes are identified by a <em>label:name</em> pair. The <em>label</em> is the type of node, representing its role, while the <em>name</em> is a unique identifier. A few node types, of which the root node is one, must have names beginning with an upper case letter. These nodes are used to generate Java classes when the simulation compiles.</p>
 </div>
 <div class="paragraph">
 <p>At this stage you can try out a few basic edit operations:</p>
@@ -5989,16 +6061,33 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 <li>
 <p>Right-click on a node to see a display a pop-up menu of edit options for that particular node. It is via these popup menus that the graph is constructed.</p>
 </li>
+<li>
+<p>While holding the <code>shift</code> key, left-click on a node to see just this node and its nearest neighbours. What constitutes 'nearest' is set by the 'path len.' control in the tool bar.</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
 <p>A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change.</p>
 </div>
+<div class="literalblock">
+<div class="content">
+<pre> [#fig-blankTemplateTaskList]
+.The initial list of tasks after creating a 'Blank' template.
+image::tutorial1IMG/fig-blank-template-task-list.png[align="center"]</pre>
+</div>
+</div>
 <div class="paragraph">
 <p>At the top-left of the main window are the two property editors - <em>Properties</em> and <em>Selected Properties</em>.  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It&#8217;s here that values are entered for the properties of nodes and edges created in the following steps.</p>
 </div>
 <div class="paragraph">
-<p>At this stage, there are five properties under the section <code>Tut1</code>.  These are properties of the root node (<code>3worlds:Tut1</code>) intended to provide a limited amount of documentation for this project. If click on the root node and then select the <em>Selected Properties</em> editor, an additional non-editable property is shown call &#8216;built-by&#8217;. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the <em>Selected Properties</em> editor but for brevity, not in the <em>Properties</em> editor.</p>
+<p>At this stage, there are five properties under the section <code>Tut1</code>.  These are properties of the root node (<code>3worlds:Tut1</code>) intended to provide a limited amount of documentation for this project. If click on the root node and then select the <em>Selected Properties</em> editor, an additional non-editable property is shown call &#8216;built-by&#8217;. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the <em>Selected Properties</em> editor but for brevity, not in the <em>Properties</em> editor. Two icons at the top of the <em>Properties</em> editor allow you to display properties by category (by sub-tree) or by name. When this last option is selected, all editable properties are display in one list.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre> [#fig-blankTemplateProperties]
+.The initial list of editable properties after creating a 'Blank' template. Properties are displayed here by name.
+image::tutorial1IMG/fig-blank-template-initial-properties.png[align="center"]</pre>
+</div>
 </div>
 <div class="paragraph">
 <p>Also in the tool bar at the top of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.</p>
@@ -6114,7 +6203,9 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>FIGURE 2 dDefSubTree</pre>
+<pre> [#fig-ddef-subtree]
+.Defining constant `r` and driver `x` within the data definition sub-tree.
+image::tutorial1IMG/fig-ddef-subtree.png[align="center"]</pre>
 </div>
 </div>
 </div>
@@ -7718,7 +7809,7 @@ else
 <div id="footer">
 <div id="footer-text">
 Version 1.5<br>
-Last updated 2021-04-29 15:45:01 +0200
+Last updated 2021-04-30 12:05:11 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
