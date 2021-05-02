@@ -734,7 +734,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void onPaneKeyReleased(KeyEvent event) {
-		System.out.println("KEY RELEASED: " + event.isShiftDown());
+//		System.out.println("KEY RELEASED: " + event.isShiftDown());
 
 	}
 

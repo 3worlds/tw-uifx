@@ -43,7 +43,7 @@ public class MMmain {
 			+ "default logging level, class:level.";
 
 	public static void main(String[] args) {
-		System.out.println("Current language: "+System.getProperty("user.language"));
+//		System.out.println("Current language: "+System.getProperty("user.language"));
 
 		// Flaky I know but...
 		ProjectJarGenerator.mainClass = au.edu.anu.twuifx.mr.MRmain.class.getName();
