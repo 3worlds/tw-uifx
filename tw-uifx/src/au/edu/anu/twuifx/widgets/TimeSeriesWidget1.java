@@ -204,6 +204,8 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		}
 
 		int nItems = metadataTS.doubleNames().size() + metadataTS.intNames().size();
+		if (nItems==0)
+			throw new TwuifxException("No numeric items have been defined for '"+widgetId+"'.");
 		int nModifiers = 0;
 		if (sas != null)
 			nModifiers += sas.values().size();
