@@ -25,7 +25,7 @@ CAUTION: To compile your own models, the Java Development Kit (<<trueprerequisit
 . Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
 . When prompted enter 'Tut1' (first letter upper case). A small graph of seven nodes appears in the graph window.
 
- [#fig-blankTemplate]
+[#fig-blankTemplate]
 .The 'Blank' template starting configuration graph.
 image::tutorial1IMG/fig-blank-template.png[align="center"]
 
@@ -49,7 +49,7 @@ At this stage you can try out a few basic edit operations:
 
 A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
- [#fig-blankTemplateTaskList]
+[#fig-blankTemplateTaskList]
 .The initial list of tasks after creating a 'Blank' template.
 image::tutorial1IMG/fig-blank-template-task-list.png[align="center"]
 
@@ -57,7 +57,7 @@ At the top-left of the main window are the two property editors - _Properties_ a
 
 At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. If click on the root node and then select the _Selected Properties_ editor, an additional non-editable property is shown call '`built-by`'. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the _Selected Properties_ editor but for brevity, not in the _Properties_ editor. Two icons at the top of the _Properties_ editor allow you to display properties by category (by sub-tree) or by name. When this last option is selected, all editable properties are display in one list.
 
- [#fig-blankTemplateProperties]
+[#fig-blankTemplateProperties]
 .The initial list of editable properties after creating a 'Blank' template. Properties are displayed here by name.
 image::tutorial1IMG/fig-blank-template-initial-properties.png[align="center"]
 
@@ -123,7 +123,7 @@ This is all the data required for this tutorial.  The task list has now grown to
  
 You can tidy up the graph display by clicking the `L` button (re-apply layout) in the tool bar.
  
- [#fig-ddef-subtree]
+[#fig-ddef-subtree]
 .Defining constant `r` and driver `x` within the data definition sub-tree.
 image::tutorial1IMG/fig-ddef-subtree.png[align="center"]
 
