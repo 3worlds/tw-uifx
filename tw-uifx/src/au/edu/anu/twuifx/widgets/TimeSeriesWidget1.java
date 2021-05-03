@@ -78,6 +78,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
+import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -178,7 +179,12 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		getUserPreferences();
 
 		timeFormatter.onMetaDataMessage(msgMetadata);
-		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+		TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
+		if (msgMetadata.properties().hasProperty(P_TIMEMODEL_OFFSET.key())) {
+			TimeScaleType tst = (TimeScaleType) msgMetadata.properties().getPropertyValue(P_TIMELINE_SCALE.key());
+			timeUnit = TimeScaleType.getPrev(tst, timeUnit);
+		}
+			
 		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
 
