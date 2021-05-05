@@ -75,10 +75,10 @@ import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.DateTimeType;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
-import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -96,6 +96,7 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Window;
 
 /**
@@ -106,8 +107,6 @@ import javafx.stage.Window;
  *       S * Displays 1..* time series lines: one set for each selected
  *       simulator (default sender = 0)
  * 
- *       TODO: Rename to TimeSeriesWidget1 and delete SimpleTimeSeriesWidget
- *       (and update tutorials);
  */
 public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private String widgetId;
@@ -125,6 +124,8 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 	private WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
+
+	private Label trackerTime;
 
 	public TimeSeriesWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
@@ -158,19 +159,6 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		}
 	}
 
-	/*-*
-	 * Sender: 0 dataLabel: community>mean
-	Sender: 0 dataLabel: community>sum
-	0:mean>x[0][1.0, 0.25]
-	0:mean>x[1][1.0, 0.25]
-	0:mean>x[2][1.0, 0.25]
-	0:mean>x[3][1.0, 0.25]
-	0:sum>x[0][1.0, 0.25]
-	0:sum>x[1][1.0, 0.25]
-	0:sum>x[2][1.0, 0.25]
-	0:sum>x[3][1.0, 0.25]
-	
-	 */
 	@Override
 	public Object getUserInterfaceContainer() {
 		/* 3) called third after metadata */
@@ -179,16 +167,17 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		getUserPreferences();
 
 		timeFormatter.onMetaDataMessage(msgMetadata);
-		TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_TU.key());
-		if (msgMetadata.properties().hasProperty(P_TIMEMODEL_OFFSET.key())) {
-			TimeScaleType tst = (TimeScaleType) msgMetadata.properties().getPropertyValue(P_TIMELINE_SCALE.key());
-			timeUnit = TimeScaleType.getPrev(tst, timeUnit);
-		}
-			
+//		TimeScaleType tst = (TimeScaleType) msgMetadata.properties().getPropertyValue(P_TIMELINE_SCALE.key());
+		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
+
 		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
 
 		final BorderPane content = new BorderPane();
+		HBox topContent = new HBox();
+		content.setTop(topContent);
+		trackerTime = new Label();
+		topContent.getChildren().addAll(new Label("Tracker time: "), trackerTime);
 
 		sas = null;
 		if (msgMetadata.properties().hasProperty(P_DATATRACKER_STATISTICS.key()))
@@ -204,8 +193,8 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		}
 
 		int nItems = metadataTS.doubleNames().size() + metadataTS.intNames().size();
-		if (nItems==0)
-			throw new TwuifxException("No numeric items have been defined for '"+widgetId+"'.");
+		if (nItems == 0)
+			throw new TwuifxException("No numeric items have been defined for '" + widgetId + "'.");
 		int nModifiers = 0;
 		if (sas != null)
 			nModifiers += sas.values().size();
@@ -265,8 +254,8 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 				}
 			}
 		});
-		
-		final DefaultNumericAxis xAxis = new DefaultNumericAxis("Tracker time: ", timeUnitName);
+
+		final DefaultNumericAxis xAxis = new DefaultNumericAxis("time: ", timeUnitName);
 		xAxis.setAutoRangeRounding(false);
 		xAxis.setTickLabelRotation(45);
 		xAxis.invertAxis(false);
@@ -283,8 +272,8 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		senderDataSetMap.get(0).values();
 		int nSims = senderDataSetMap.size();
 		int nSeriesPerSim = senderDataSetMap.get(0).size();
-		int nSeries = nSims*nSeriesPerSim;
-		
+		int nSeries = nSims * nSeriesPerSim;
+
 		if (nSeries <= 100)
 			chart.getPlugins().add(new TableViewer());
 //		causes  concurrent modification error at times.
@@ -305,6 +294,13 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 	public void onStatusMessage(State state) {
 //		4) Called 4th after UI construction - this is only in the UI thread the first time it's called
 		if (isSimulatorState(state, waiting)) {
+
+			Platform.runLater(() -> {
+				DateTimeType dtt = (DateTimeType) msgMetadata.properties()
+						.getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
+				trackerTime.setText(timeFormatter.getTimeText(dtt.getDateTime()));
+			});
+			
 			for (Renderer r : chart.getRenderers())
 				for (DataSet d : r.getDatasets()) {
 					CircularDoubleErrorDataSet cdds = (CircularDoubleErrorDataSet) d;
@@ -324,9 +320,10 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 	private void processDataMessage(Output0DData data) {
 		final Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(data.sender());
 		final int sender = data.sender();
-//		System.out.println("Sender: " + sender + " dataLabel: " + data.itemLabel());
 
 		Platform.runLater(() -> {
+
+			trackerTime.setText(timeFormatter.getTimeText(data.time()));
 
 			CircularDoubleErrorDataSet dontTouch = dataSetMap.values().iterator().next();
 
