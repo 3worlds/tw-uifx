@@ -16,20 +16,20 @@ The specification graph is both a tree and a directed graph. Aside from the root
 
 Installing _ModelMaker_ is very simple: create a directory called `.3w` in your home directory and copy `tw-dep.jar` to it. Then copy `modelMaker.jar` to your home directory. To start _modelMaker_, open a terminal and type: `java -jar modelMaker.jar`. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system.
 
-CAUTION: To compile your own models, the Java Development Kit (<<trueprerequisites,JDK>>) must be installed on your computer. 
+NOTE: To compile your own models, the Java Development Kit (<<trueprerequisites,JDK>>) must be installed on your computer. 
 
 ==== Creating a new 3Worlds project
 
 . Start _ModelMaker_ as above. If you haven't read any other _3Worlds_ documentation, reading "About ModelMaker" from the main menu (`Help -> About`) will provide some preliminary context.
  
 . Create a new project (`Main menu: Projects -> New -> Templates -> Blank`)
-. When prompted enter 'Tut1' (first letter upper case). A small graph of seven nodes appears in the graph window.
+. When prompted enter 'Tut1' (first letter upper case). A small graph of nine nodes appears in the graph window.
 
-[#fig-blankTemplate]
-.The 'Blank' template starting configuration graph.
-image::tutorial1IMG/fig-blank-template.png[align="center"]
+[#fig-blank-template]
+.The appearance of _ModelMaker_ after creating a new project from the 'Blank' template.
+image::tutorial1IMG/fig-blank-mm.png[align="center"]
 
-The black node (`3worlds:Tut1`) is the _root_ of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined. 
+The black node (`3worlds:Tut1`) is the _root_ of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined (<<fig-blank-template>>). 
 
 All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is a unique identifier. A few node types, of which the root node is one, must have names beginning with an upper case letter. These nodes are used to generate Java classes when the simulation compiles.
 
@@ -41,34 +41,29 @@ At this stage you can try out a few basic edit operations:
 
 - Pan the drawing surface by dragging with the left-mouse button anywhere outside a node (assuming the drawing area is larger than the display);
 
-- Change the node and text size with the _element size_ slider in the tool bar; and,
+- Change the node and text size with the _element size_ slider in the tool bar;
 
-- Right-click on a node to see a display a pop-up menu of edit options for that particular node. It is via these popup menus that the graph is constructed.
+- Right-click on a node to see a display a pop-up menu of edit options for that particular node. It is via these popup menus that the graph is constructed; and,
 
 - While holding the `shift` key, left-click on a node to see just this node and its nearest neighbours. What constitutes 'nearest' is set by the 'path len.' control in the tool bar.
 
-A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
+A list of tasks remaining to be completed appears at the bottom-left of the main window (<<fig-blank-template>>). This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change. 
 
-[#fig-blankTemplateTaskList]
-.The initial list of tasks after creating a 'Blank' template.
-image::tutorial1IMG/fig-blank-template-task-list.png[align="center"]
+At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_ (<<fig-blank-template>>).  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It's here that values are entered for the properties of nodes and edges created in the following steps. 
 
-At the top-left of the main window are the two property editors - _Properties_ and _Selected Properties_.  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It's here that values are entered for the properties of nodes and edges created in the following steps. 
-
-At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. If click on the root node and then select the _Selected Properties_ editor, an additional non-editable property is shown call '`built-by`'. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the _Selected Properties_ editor but for brevity, not in the _Properties_ editor. Two icons at the top of the _Properties_ editor allow you to display properties by category (by sub-tree) or by name. When this last option is selected, all editable properties are display in one list.
-
-[#fig-blankTemplateProperties]
-.The initial list of editable properties after creating a 'Blank' template. Properties are displayed here by name.
-image::tutorial1IMG/fig-blank-template-initial-properties.png[align="center"]
-
+At this stage, there are five properties under the section `Tut1`.  These are properties of the root node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. If you click on the root node and then select the _Selected Properties_ editor tab, an additional non-editable property is shown call '`built-by`'. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the _Selected Properties_ editor but for brevity, not in the _Properties_ editor. Two icons at the top of the _Properties_ editor allow you to display properties by category (by sub-tree) or by name. When this last option is selected, all editable properties are display in one list.
 
 Also in the tool bar at the top of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.
 
 ===== Directory structure
 
-All projects are located within the 3Worlds root directory called `.3w`. The dot indicates a hidden directory. To see these files you may need to do what ever is required by your operating system to show hidden files. 
+All projects are located within the 3Worlds root directory called `.3w`. The dot indicates a hidden directory. To see these files you may need to do what ever is required by your operating system to show hidden files (<<fig-tut1-dir>>). 
 
-The `.3w` directory contains a Jar file called `tw-dep.jar`. This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
+[#fig-tut1-dir]
+.The initial directory structure of after creating a new project from the 'Blank' template. Later, after all tasks have been completed and the model is deployed, another sub-directory is added for run-time files.
+image::tutorial1IMG/fig-tut1-dir.png[align="center"]
+
+The `.3w` directory contains a Jar file called `tw-dep.jar` (<<fig-tut1-dir>>). This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
 
 Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project directory begins with the key word `project`, followed by the name of the project you entered (`Tut1` in this case) and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to inadvertently overwrite a project. 
 
@@ -81,24 +76,26 @@ Inside this directory are a number of text files:
 
 All these files are text files and you can open and inspect them with a simple text editor. However, as they are written by _modelMaker_ you should _avoid editing them directly as this will likely cause problems for your project_. 
 
-On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by _ModelMaker_ (apart from the _undo-redo_ data). However, if you delete the entire `.3w` directory you will have to restore `tw-dep.jar` from backup.
+On the other hand, you can delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by _ModelMaker_ (apart from the _undo-redo_ history). However, if you delete the entire `.3w` directory you will have to restore `tw-dep.jar` from backup.
 
 
 ==== Creating the specifications
 
-Having created `Tut1`, the task list shows four nodes are required. This list can be dealt with in any order but in general, a logical approach is to build the specifications as follows: 
+Having created `Tut1`, the task list shows two nodes are required (<<fig-blank-template>>). This list can be dealt with in any order but in general, a logical approach is to build the specifications as follows: 
 
 ... *data definition*: the data structures required;
 ... *dynamics*: define how the modelled system evolves over time.
 ... *structure*: define the organisation of components - their roles and relationships. 
 
-For the most part, these tutorials will proceed in this order and leave defining the simulation's *user interface* and *experiment* design until last. Each of these sections are organised as colour-coded sub-trees of the graph.
+For the most part, these tutorials will proceed in this order and leave defining the simulation's *user interface* and *experiment* design until last. Each of these sections are organised as colour-coded sub-trees of the graph. In fact, the Blank template has provide a minimum specification for the *experiment* sub-tree (a single run of the model) and  the *user interface* (a simulation controller).
 
 ===== Data definition
 
 The logistic equation we will implement is: _x(t+1) = rx(t)(1-x(t)_. Though simple, it has interesting chaotic behaviour for values of _r_ between 3.7 and 4.0. All we need do for the data definition section is to define the parameter _r_ and the state variable _x_. 
 
 From here on and throughout these tutorials, parameters are called _constants_ (data that does not change over the course of a simulation) and state variables are called _drivers_ (data that drives the simulation from one time to the next).
+
+Note that at this stage, the task list says nothing about adding anything to the *data definition* sub-tree. This is because it is possible to define a model without data. Nevertheless, once data is defined, various actions will be required and displayed in the task list, to correctly define its use.
 
 . Right-click on the data definition node (`dataDefinition:dDef`) (pale red) and select `New node -> record` from the popup menu. You're then prompted for a name. The default name is `rec1`. Change this to 'cnsts' (constants) and click `ok`. The mouse pointer immediately becomes a cross-hair: _ModelMaker_ is asking where to place this node. Move to some place within the graph display and left-click the mouse. 
 
