@@ -801,6 +801,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onEdgeDeleted() {
 		initialisePropertySheets();
 	}
+	
+	@Override
+	public void onRootNameChange() {
+		initialisePropertySheets();		
+	}
 
 	@Override
 	public void onNodeDeleted() {
@@ -1496,5 +1501,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		else
 			trafficLight.fillProperty().set(Color.RED);
 	}
+
 
 }
