@@ -9,11 +9,11 @@ The equation has three _constants_ and one _driver_; all of which are tables:
 - _K_: carrying capacity
 - _r_: growth rate
 - _alpha_: inter-specific competition coefficient; and,
-- _x_: population size (driver). 
+- _x_: population size (a driver). 
 
 ==== Specifications
 
-Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a system which is _permanent_, _atomic_, belongs to the _arena_, has a 'clock' timer driving a single process and function, a simple experimental design and a minimal user interface.
+Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a basic structure, dynamics and a minimal user interface.
 
 . Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project 'Tut3'.
 
@@ -24,7 +24,11 @@ image::tutorial3IMG/fig-simple-clock-template.png[align="center"]
 
 ===== Data definition
 
-Data is defined through the recursive use of tables and records: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records. Tables can have any number of dimensions.
+Data is defined through the recursive use of records and tables: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records. Tables can have any number of dimensions.
+
+[#fig-records-tables]
+.Data is defined through the recursive use of records and tables. A definition begins with a record. Leaf nodes of the resulting graph must be either Fields or Tables that define a standard Java type (element) such as Double, Integer etc.
+image::tutorial3IMG/fig-records-tables.png[align="center"]
 
 There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for _alpha_, a 1-dimensional table for  _r_ and _K_ and another 1-dimensional table for the population _x_.
 
@@ -36,7 +40,7 @@ There is usually more than one way of defining the data for any model. For the C
 
 . Create a second `table` as child of `record:cnsts`, name it 'r' and choose `dataElementType` and then set its type to `Double`.
 
-. Create a second `table` as child of `record:cnsts`, name it 'K' and choose `dataElementType` and then set its type to `Double`.
+. Create a third `table` as child of `record:cnsts`, name it 'K' and choose `dataElementType` and then set its type to `Double`.
 
 . Create a  `table` as child of `record:drvs`, name it 'x', choose `dataElementType` and set its type to `Double`.
 
@@ -161,7 +165,7 @@ There is a default random number generator (RNG) available to all functions. In 
 _ModelMaker_ has two types of RNG classes in addition to the standard Java RNG. These two are faster and produce streams of higher quality than the standard Java RNG. There are also various ways of seeding RNGs to ensure their uniqueness and to help with debugging.  
 
 
-'growth`:
+`growth`:
 
 [source,Java]
 -----------------
