@@ -8,14 +8,19 @@ The equation has three _constants_ and one _driver_; all of which are tables:
 
 - _K_: carrying capacity
 - _r_: growth rate
-- _alpha_: interspecific competition coefficient; and a driver,
-- _x_: population size. 
+- _alpha_: inter-specific competition coefficient; and,
+- _x_: population size (driver). 
 
 ==== Specifications
 
-Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a system which is _permanent_, _atomic_, belongs to the _arena_, has a 'clock' timer driving a single process and function, a simple experimental design and a basic user interface.
+Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a system which is _permanent_, _atomic_, belongs to the _arena_, has a 'clock' timer driving a single process and function, a simple experimental design and a minimal user interface.
 
 . Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project 'Tut3'.
+
+[#fig-simple-clock-template]
+.The appearance of _ModelMaker_ after creating a new project from the 'SimpleClock' template.
+image::tutorial3IMG/fig-simple-clock-template.png[align="center"]
+
 
 ===== Data definition
 
@@ -26,8 +31,6 @@ There is usually more than one way of defining the data for any model. For the C
 [start = 2]
 
 . Collapse all sub-trees from the root node and then expand `dataDefinition:dDef`.
-
-. Delete `record:decs`. This record was provided by the template and is not needed here.
 
 . Create a `table` as a child of `record:cnsts`, name it 'alpha', choose `dataElementType` and then set its type to `Double` (the default).
 
@@ -41,30 +44,39 @@ To complete the definition, we must set the table dimensions and indexing order 
 
 Only one dimensioner is needed: the number of species. This is done by creating a single `dimensioner` node to be associated with all these tables.
 
-[start = 8]
+[start = 7]
 
 . Create a `dimensioner` as a child of `dataDefinition:dtDef` and name it 'nspp' (number of species).
 
 A new task appears in the task list saying the 'size' property must be greater than zero.
 
-[start = 9]
+[start = 8]
 
 . Click on `dimensioner:nspp` and go to the `Selected properties` tab. Set a value of `npp#size` to 4 (four species).
-
-Finally, locate the `description` property for each of these tables and add the text from the introduction above. This text, together with other property meta-data such as `range` and `units`, appears as part of the Java documentation when generating Java code from _ModelMaker_. These descriptions are also used when generating the ODD document.
-
-There are now four tasks in the task list indicating we have yet to associate the dimensioner with the four tables. _K_, _r_ and _x_ have one dimension and _alpha_ has two.
-
-[start = 10]
+[start = 9]
 . Right-click on each table node in turn and select `New edge -> dimensioner:nspp`. Repeat this for `table:alpha` to get the second dimension.
 
 Now set the rank order for the indexing of `table:alpha`.
 
-[start = 11]
+[start = 10]
 
 . Click on `table:alpha` and examine its properties in the `Selected properties` editor.
 
 . Set the value of one of its rank properties to 1 - it doesn't matter which.
+
+[#fig-data-definition]
+.The `dataDefinition` specifications for Tutorial 3: three tables of one dimension and one of two dimensions ('alpha'). This size of each table is the same so only one `dimensioner` is required.
+image::tutorial3IMG/fig-data-definition.png[align="center"]
+
+
+Finally, add some meta-data to each table. This meta-data assists in documenting your Java source code and ODD documentation. Many nodes have optional properties. One such optional property is `description` for tables and fields. 
+
+[start =12]
+. Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property. 
+
+[#fig-description-property-option]
+.Adding a `description` property to the table 'K'.
+image::tutorial3IMG/fig-description-property-option.png[align="center"]
 
 ===== Dynamics
 
@@ -73,11 +85,13 @@ Although the task list is now empty (i.e. the specifications are now deployable)
 
 . Expand the `system.sys1` sub-tree from the root node and re-apply the layout.
 
-. Right-click on `Function:F`, select `Rename node` and name it 'Growth'. If the prompt is unresponsive, remember to begin the name with an upper case letter.
+. Right-click on `Function:F1`, select `Rename node` and name it 'Growth'. If the prompt is unresponsive, remember to begin the name with an upper case letter.
 
-. Create a `dataTracker` as a child of `process:p` and select `DataTrackerD0` as the type (the default).
+. Create a `dataTracker` as a child of `process:p1` and select `DataTrackerD0` as the type (the default).
 
 . Create an edge from the data tracker to _x_: `trackTable -> table:x`.
+
+SOMETHING Wrong with queries HERE
 
 There are now two tasks in the list, one about 'indexing' and the other asking which 'component' to track. As with the previous tutorials, the component to track is the `system.sys1` node.
 
