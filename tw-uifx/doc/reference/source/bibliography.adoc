@@ -1,0 +1,45 @@
+[#Bousquet2004]
+Bousquet, F., & Le Page, C. (2004). Multi-agent simulations and ecosystem management: a review. __Ecological Modelling__, 176:313–332. https://doi.org/10.1016/j.ecolmodel.2004.01.011
+
+[#Coquillard1997]
+Coquillard, P., & Hill, D. (1997). __Modélisation et simulation d’écosystèmes. Des modèles déterministes aux simulations à événements discrets__. Masson, Paris.
+
+[#Flint2006]
+Flint, S. R. (2006). _Aspect-Oriented Thinking - An approach to bridging the disciplinary divides_. PhD, Australian National University.
+
+[#Gignoux2011]
+Gignoux, J., I.D. Davies, S.R. Flint, & J.D. Zucker (2011). The Ecosystem in Practice: Interest and 
+Problems of an Old Definition for Constructing Ecological Models. _Ecosystems_ 14: 1039‑54. https://doi.org/10.1007/s10021-011-9466-2.
+
+[#Gignoux2017]
+Gignoux, J., G. Chérel, I.D. Davies, S.R. Flint, & E. Lateltin (2017). Emergence and Complex Systems: The 
+Contribution of Dynamic Graph Theory. _Ecological Complexity_ 31: 34‑49. https://doi.org/10.1016/j.ecocom.2017.02.006.
+
+[#Grimm2005]
+Grimm, V., & Railsback, S. (2005). __Individual-based modelling and ecology__. Princeton University Press.
+
+[#Grimm2010]
+Grimm V, Berger U, DeAngelis DL, Polhill JG, Giske J, Railsback SF (2010) The ODD protocol: A review and first update. _Ecological Modelling_ 221:2760–2768.
+
+[#Harary1997]
+Harary, F., & Gupta, G. (1997). Dynamic graph models. __Mathematical and Computer Modelling__, 25(7), 79–87. https://doi.org/10.1016/S0895-7177(97)00050-2
+
+[#Lim2009]
+Lim, W. H., & Roderick, M. L. (2009). _An atlas of the global water cycle based on the IPCC AR4 climate models._ ANU E Press.
+
+[#Melilo1995]
+Melilo, J. M., Borchers, J., Chaney, J., Fisher, H., Fox, S., Haxeltine, A., Janetos, A., Kicklighter, D. C., Kittel, T. G. F., McGuire, A. D., McKeown, R., Neilson, R., Nemani, R., Ojima, D. S., Painter, T., Pan, Y., Parton, W. J., Pierce, L., Pitelka, L., … Woodward, F. I. (1995). Vegetation/ecosystem modeling and analysis project: comparing biogeography and biogeochemistry models in a continental-scale study of terrestrial ecosystem responses to climate change and CO~2~ doubling. __Global Biogeochemical Cycles__, 9(4), 407–437.
+
+[#Parton1988]
+Parton, W., Stewart, J., & Cole, C. (1988). Dynamics of C,N, P and S in grassland soils: a model. __Biogeochemistry__, 5, 109–131.
+
+[#Roxburgh2004]
+Roxburgh, S. H., Barrett, D. J., Berry, S. L., Carter, J. O., Davies, I. D., Gifford, R. M., Kirschbaum, M. U. E., McBeth, B. P., Noble, I. R., Parton, W. G., Raupach, M. R., & Roderick, M. L. (2004). A critical overview of model estimates of net primary productivity for the Australian continent. __Functional Plant Biology__, 31(11), 1043–1059.
+
+[#Tansley1935]
+Tansley, A G. (1935). The use and abuse of vegetational concepts and terms. _Ecology_ 16: 284‑307.
+
+[#Zucker2003]
+Zucker, J.D. (2003). A Grounded Theory of Abstraction in Artificial Intelligence. _Philosophical Transactions of 
+the Royal Society B: Biological Sciences_ 358: 1293‑1309. https://doi.org/10.1098/rstb.2003.1308.
+
