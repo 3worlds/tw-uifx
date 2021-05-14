@@ -228,7 +228,7 @@ We are now in a position to define the _role_ of the `system` node (a.k.a. `comp
 . Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*atomic*`.
 
 [#fig-system-role]
-.The specification of the system component in belonging to the three categories: _permanent_; _atomic_; and, _arena_.
+.The specification of the system component in belonging to the three categories; _permanent_, _atomic_ and _arena_.
 image::tutorial1IMG/fig-system-role.png[align="center"]
 
 The system's role of belonging to the _atomic_, _permanent_ and _arena_ categories is indicated by three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` in the tool bar, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongsTo category:*arena*`.
@@ -263,7 +263,7 @@ image::tutorial1IMG/fig-deploy1.png[align="center"]
 
 . Right-click the root node and select 'Collapse -> predefined:*categories*'.
 . Again, right-click the root node and select 'Expand -> experiment:expt' and 'UserInterface:gui'.
-. Reapply the layout (*L*).
+. Re-apply the layout (*L*).
 . Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run-time application: _ModelRunner_ (cf. <<truesimulation-reference-running-a-simulation-experiment-with-modelrunner>> for a full reference). 
 
 At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. This is the `ControlWidget1` shown in the figure above that was included by default in the 'Blank' template. The _run_ button becomes a _pause_ button while running and the _stop_ button resets the simulator to it's starting state. 
@@ -415,13 +415,11 @@ Finally, you can of course move a node anywhere within the graph window.
  
 As an exercise if you wish, try displaying just the nodes with _cross-links_ using the SpringGraph layout (*L4*). This is a common way to look at just the _cross-link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant _parent-child_ relationships make useful additions to the ODD appendix.
 
-[#fig-edge-only]
-.A view of the specification graph for Tutorial 1 showing only relevant _cross-links_ using using the Spring layout (*L4*).
-image::tutorial1IMG/fig-edge-only.png[align="center"]
+[#fig-links-only]
+.A view of the specification graph for Tutorial 1 showing only relevant _cross-links_ using the Spring layout (*L4*).
+image::tutorial1IMG/fig-links-only.png[align="center"]
 
-// Ian: this image file is missing in the tutorial1IMG subdir
-
-That's the end of this tutorial. Recreate this project at anytime from the main menu (`Project -> New -> Tutorials -> 1 Logistic`).
+That's the end of this tutorial. Recreate this project at any time from the main menu (`Project -> New -> Tutorials -> 1 Logistic`).
 
 ==== Next
 
