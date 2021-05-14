@@ -6,8 +6,8 @@ This tutorial introduces the use of tables in _ModelMaker_ by implementing a mul
 
 The equation has three _constants_ and one _driver_; all of which are tables:
 
-- _K_: carrying capacity
-- _r_: growth rate
+- _K_: carrying capacity;
+- _r_: growth rate;
 - _alpha_: inter-specific competition coefficient; and,
 - _x_: population size (a driver). 
 
@@ -94,8 +94,6 @@ Although the task list is now empty (i.e. the specifications are now deployable)
 . Create a `dataTracker` as a child of `process:p1` and select `DataTrackerD0` as the type (the default).
 
 . Create an edge from the data tracker to _x_: `trackTable -> table:x`.
-
-SOMETHING Wrong with queries HERE
 
 There are now two tasks in the list, one about 'indexing' and the other asking which 'component' to track. As with the previous tutorials, the component to track is the `system.sys1` node.
 
