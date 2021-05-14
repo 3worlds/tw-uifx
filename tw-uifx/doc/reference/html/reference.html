@@ -447,8 +447,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="email2" class="email"><a href="mailto:ian.davies@anu.edu.au">ian.davies@anu.edu.au</a></span><br>
 <span id="author3" class="author">Shayne R. Flint</span><br>
 <span id="email3" class="email"><a href="mailto:shayne.flint@anu.edu.au">shayne.flint@anu.edu.au</a></span><br>
-<span id="revnumber">version 1.5,</span>
-<span id="revdate">29 April 2021</span>
+<span id="revnumber">version 1.6,</span>
+<span id="revdate">14 May 2021</span>
 <br><span id="revremark"></span>
 </div>
 <div id="toc" class="toc2">
@@ -564,6 +564,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
+<li><a href="#truebibliography">Bibliography</a></li>
 </ul>
 </div>
 </div>
@@ -574,7 +575,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>by <strong>Jacques Gignoux</strong>, <strong>Ian D. Davies</strong> &amp; <strong>Shayne R. Flint</strong></p>
 </div>
 <div class="paragraph">
-<p>Version: <strong>1.5</strong> (29 April 2021)</p>
+<p>Version: <strong>1.6</strong> (14 May 2021)</p>
 </div>
 </div>
 </div>
@@ -585,10 +586,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="truewhy-another-simulation-environment-for-ecology"><a class="anchor" href="#truewhy-another-simulation-environment-for-ecology"></a>1.1. Why another simulation environment for ecology?</h3>
 <div class="paragraph">
 <p><em>“Though the organisms may claim our primary interest, when we are trying to think fundamentally we cannot separate them from their special environment, with which they form
-one physical system”</em> A. G. Tanlsey (1935).</p>
+one physical system”</em> A. G. <a href="#Tabsley1935">Tanlsey (1935)</a>.</p>
 </div>
 <div class="paragraph">
-<p>Ecosystems, as first proposed by Arthur Tansley (1935), have both physical and biological aspects. They comprise not only energy and chemical stocks and flows but also living things that are born, reproduce and die, exhibiting particular behaviours over the course of their existence. They are made from and return to the physical world, are part of it and at the same time, constitute a domain where terms such as reproduction, social interaction, communication and life cycle have meaning.</p>
+<p>Ecosystems, as first proposed by Arthur <a href="#Tansley1935">Tansley (1935)</a>, have both physical and biological aspects. They comprise not only energy and chemical stocks and flows but also living things that are born, reproduce and die, exhibiting particular behaviours over the course of their existence. They are made from and return to the physical world, are part of it and at the same time, constitute a domain where terms such as reproduction, social interaction, communication and life cycle have meaning.</p>
 </div>
 <div class="paragraph">
 <p>To this day, reconciling these two aspects, where the physical is articulated in SI units and the biological in descriptive terms (e. g. heterotroph, shade-tolerant, obligate seeder), remains a key problem in ecosystem studies: How does an energy flux translate into a number of living individuals or in a higher biodiversity? How might a particular reproduction strategy affect river hydrology and the regional water budget (e. g. the beaver)? How do social interactions affect the frequency of hurricanes (e. g. climate change)?
@@ -599,7 +600,7 @@ one physical system”</em> A. G. Tanlsey (1935).</p>
 </div>
 <div class="paragraph">
 <p>In addition to this physical and biological duality, ecosystems are '<em>multi-scale</em>' (cf. an extensive discussion on
-this topic and other questions related to the ecosystem concept in Gignoux et al. 2011). Tansley&#8217;s ecosystem definition
+this topic and other questions related to the ecosystem concept in <a href="#Gignoux2011">Gignoux et al. 2011</a>). Tansley&#8217;s ecosystem definition
 applies equally well to the whole biosphere as to a single bacteria in a drop of water. Currently, there is no
 software enabling one to consider ecosystems at such different spatial and temporal scales within the same
 conceptual framework. A second aim of <strong>3Worlds</strong> is to fill this gap. If the ecosystem concept is robust enough, and
@@ -609,7 +610,7 @@ to design a conceptually sound and consistent computing framework to deal with a
 <div class="paragraph">
 <p>However, changing the scale of a model is not just a matter of changing spatio-temporal resolution.
 It also involves the level of detail of the representations used in the model, something which has been formalized
-in <em>abstraction theory</em> (Zucker 2003): the more detailed a model, the less abstract it is. The question arises then as to what level of detail should we model our system to capture its important behaviour? How does changing scale (in this
+in <em>abstraction theory</em> (<a href="#Zucker2003">Zucker 2003</a>): the more detailed a model, the less abstract it is. The question arises then as to what level of detail should we model our system to capture its important behaviour? How does changing scale (in this
  broadest sense) effect model outcomes? There can be no general answer to this question beyond trial and error. This makes the possibility
  to test and compare different representations of the same system at different scales an essential feature of
  any software dealing with ecosystems. <strong>3Worlds</strong> provides <em>great flexibility in ecosystem representation</em>
@@ -618,7 +619,7 @@ in <em>abstraction theory</em> (Zucker 2003): the more detailed a model, the les
 and variables relevant to their study.</p>
 </div>
 <div class="paragraph">
-<p>How is this flexibility compatible with the strong conceptual backbone? <strong>3Worlds</strong> uses <em>aspect-oriented thinking (AOT)</em> (Flint 2006), a method to build complex systems (e.g.
+<p>How is this flexibility compatible with the strong conceptual backbone? <strong>3Worlds</strong> uses <em>aspect-oriented thinking (AOT)</em> (<a href="#Flint2006">Flint 2006</a>), a method to build complex systems (e.g.
 software) from independent areas of knowledge. We have designed an <em>archetype</em> of what we believe constitutes an
 ecosystem&#8201;&#8212;&#8201;a recursive and multi-scale system of interacting entities. We use an implementation of AOT to ensure
 that any user-defined representation of an ecosystem complies with the archetype. This guarantees that, despite a
@@ -630,9 +631,9 @@ or spatial scale affect projections?  How does adding or removing sub-systems ch
 <em>Models developed in <strong>3Worlds</strong> are always comparable</em>,  unlike many large model intercomparison exercises where the models are independently developed without reference to any common structuring principals.</p>
 </div>
 <div class="paragraph">
-<p>The ecosystem is a recursive concept (Gignoux et al. 2011): ecosystems can be nested. Parts of an ecosystem can
-be studied as ecosystems themselves. We use the concept of a hierarchical system, formalized as a graph (Gignoux et
-al. 2017) to implement this idea. In <strong>3Worlds</strong>, <em>the modelled ecosystem is a graph</em> where nodes represent relevant
+<p>The ecosystem is a recursive concept (<a href="#Gignoux2001">Gignoux et al. 2011</a>): ecosystems can be nested. Parts of an ecosystem can
+be studied as ecosystems themselves. We use the concept of a hierarchical system, formalized as a graph (<a href="#Gignoux2017">Gignoux et
+al. 2017</a>) to implement this idea. In <strong>3Worlds</strong>, <em>the modelled ecosystem is a graph</em> where nodes represent relevant
 entities: individuals, populations, climate, soil, area, &#8230;&#8203;; and edges represent relations between these entities.
 These relations can be of any kind, including a hierarchical relation describing the complex nesting of sub-systems.
 This provides an elegant solution to the apparent complexity of ecosystems: it allows for various types of <em>emergence</em>,
@@ -657,7 +658,7 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="sect3">
 <h4 id="trueindividual-based-models"><a class="anchor" href="#trueindividual-based-models"></a>1.2.1. Individual based models</h4>
 <div class="paragraph">
-<p>Fundamentally, <strong>3Worlds</strong> is designed as a framework for <em>individual-based models</em> (IBMs: Grimm &amp; Railsback 2005). IBMs, like multi-agent systems (MASs: Bousquet &amp; Lepage 2004), assume that some important properties of complex systems (like ecosystems and human societies) cannot be understood without representing the detailed behaviour of every individual in the system. In an IBM, a list of 'individuals' (called 'agents' in MASs) is kept in memory, and their interactions through various functions yield the dynamics of the whole system over time. Individuals can come and go, which means that their list is constantly changing in size.</p>
+<p>Fundamentally, <strong>3Worlds</strong> is designed as a framework for <em>individual-based models</em> (IBMs: <a href="#Grimm2005">Grimm &amp; Railsback 2005</a>). IBMs, like multi-agent systems (MASs: <a href="#Bousquet2004">Bousquet &amp; Lepage 2004</a>), assume that some important properties of complex systems (like ecosystems and human societies) cannot be understood without representing the detailed behaviour of every individual in the system. In an IBM, a list of 'individuals' (called 'agents' in MASs) is kept in memory, and their interactions through various functions yield the dynamics of the whole system over time. Individuals can come and go, which means that their list is constantly changing in size.</p>
 </div>
 <div class="paragraph">
 <p>3Worlds simulates a <em>system</em> made of interacting <em>system components</em>, which are equivalent to the individuals or agents of IBMs and MASs. If required by a simple application, the 3Worlds <em>system</em> can be reduced to zero components, just as in any system dynamics application; but this is not the use 3Worlds has been designed for, and other more specialised software may be more adapted for this use case.</p>
@@ -666,10 +667,10 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="sect3">
 <h4 id="truethe-complex-system-as-a-dynamic-graph"><a class="anchor" href="#truethe-complex-system-as-a-dynamic-graph"></a>1.2.2. The complex system as a dynamic graph</h4>
 <div class="paragraph">
-<p>Ecosystems are commonly considered as <em>complex systems</em>, without much agreement on what this concept means. Complex systems are usually assumed to possess <em>emergent properties</em>; again, with little agreement on what this means. We argued in Gignoux et al. (2017) that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems <em>hierarchical systems</em> and assumed that they can be ideally represented with a <em>dynamic graph</em>.</p>
+<p>Ecosystems are commonly considered as <em>complex systems</em>, without much agreement on what this concept means. Complex systems are usually assumed to possess <em>emergent properties</em>; again, with little agreement on what this means. We argued in <a href="#Gignoux2017">Gignoux et al. (2017)</a> that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems <em>hierarchical systems</em> and assumed that they can be ideally represented with a <em>dynamic graph</em>.</p>
 </div>
 <div class="paragraph">
-<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical construct comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes defined in an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Figure 1</a>). A <em>dynamic</em> graph (Harary &amp; Gupta 1997) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
+<p>According to <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>, a <em>graph</em> is a mathematical construct comprising a set of <em>nodes</em>, a set of <em>edges</em> linking these nodes defined in an <em>incidence function</em> (<a href="#fig-what-is-a-graph">Figure 1</a>). A <em>dynamic</em> graph (<a href="#Harary1997">Harary &amp; Gupta 1997</a>) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.</p>
 </div>
 <div id="fig-what-is-a-graph" class="imageblock text-center">
 <div class="content">
@@ -684,7 +685,7 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="content">
 <img src="../source/purposeIMG/graph-with-descriptors.svg" alt="graph with descriptors">
 </div>
-<div class="title">Figure 2. An example of graph descriptors (redrawn from Gignoux et al. 2017).</div>
+<div class="title">Figure 2. An example of graph descriptors (redrawn from <a href="#Gignoux2017">Gignoux et al. 2017</a>).</div>
 </div>
 </div>
 <div class="sect3">
@@ -717,19 +718,19 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="sect3">
 <h4 id="truespace-as-a-mediator-for-interactions"><a class="anchor" href="#truespace-as-a-mediator-for-interactions"></a>1.2.5. Space as a mediator for interactions</h4>
 <div class="paragraph">
-<p>IBMs are often 'spatialized', which means they include some representation of the physical space in which organisms of an ecosystem interact. We argued in Gignoux et al. (2011) that space is not a requirement of the ecosystem definition, but rather an optional feature. Besides the usual 3-dimensional space, we called the place where organisms interact in an ecosystem the <em>arena</em>, i.e. the place where things happen and where a public (of ecological modellers) is watching them. This does not mean an Euclidian (or any other kind of) space must be associated with the ecosystem representation. Using a dynamic graph is sufficient.</p>
+<p>IBMs are often 'spatialized', which means they include some representation of the physical space in which organisms of an ecosystem interact. We argued in <a href="#Gignoux2011">Gignoux et al. (2011)</a> that space is not a requirement of the ecosystem definition, but rather an optional feature. Besides the usual 3-dimensional space, we called the place where organisms interact in an ecosystem the <em>arena</em>, i.e. the place where things happen and where a public (of ecological modellers) is watching them. This does not mean an Euclidian (or any other kind of) space must be associated with the ecosystem representation. Using a dynamic graph is sufficient.</p>
 </div>
 <div class="paragraph">
 <p>However, it is often the case that explicitly considering space in a model is necessary for computing ecological interactions. In most ecological process models, there are actually implicit assumptions about space and how it affects organism interactions. For example, seed dispersal in plants is easily computed in a 2-dimensional space where the location of seeds depends on that of parent plants and some simple distance law; water flow in a catchment relies on a 2-dimensional space plus an elevation of ground surface to some x and y resolution; competition between individual trees in a forest assume a vertical distribution of leaves depicted with varying degrees of detail.</p>
 </div>
 <div class="paragraph">
-<p>Following Gignoux et al. (2011), we optionally provide predefined spatial representations to include in a simulator. Different spaces can be used within a single simulator, depending on the needs of the process computations. They are associated with optimal search algorithms (e.g. Kd-trees) that speed up the search of components with which to form dynamic relations.</p>
+<p>Following <a href="#Gignoux2011">Gignoux et al. (2011)</a>, we optionally provide predefined spatial representations to include in a simulator. Different spaces can be used within a single simulator, depending on the needs of the process computations. They are associated with optimal search algorithms (e.g. Kd-trees) that speed up the search of components with which to form dynamic relations.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truemodelling-made-easy"><a class="anchor" href="#truemodelling-made-easy"></a>1.2.6. Modelling made easy</h4>
 <div class="paragraph">
-<p>The community of ecological scientists has been developing an impressively large number of models, yet most of them are poorly designed in terms of programming, as ecologists are not necessarily software engineers. Ecosystem simulators are among the most complex programs (Coquillard &amp; Hill 1997). They require high programming skills and constitute a huge investment in time, which makes their production slow and hazardous. As a result, once built, they tend to be used beyond their initial domain of application (e.g. the overuse and abuse of the CENTURY model: Parton et al. 1988), issues of provenance and repeatability are rarely addressed, shedding some doubt on the discipline as a whole.</p>
+<p>The community of ecological scientists has been developing an impressively large number of models, yet most of them are poorly designed in terms of programming, as ecologists are not necessarily software engineers. Ecosystem simulators are among the most complex programs (<a href="#Coquillard1997">Coquillard &amp; Hill 1997</a>). They require high programming skills and constitute a huge investment in time, which makes their production slow and hazardous. As a result, once built, they tend to be used beyond their initial domain of application (e.g. the overuse and abuse of the CENTURY model: <a href="#Parton1988">Parton et al. 1988</a>), issues of provenance and repeatability are rarely addressed, shedding some doubt on the discipline as a whole.</p>
 </div>
 <div class="paragraph">
 <p>With <strong>3Worlds</strong>, we wanted to provide a simulation platform for ecosystem modelling using state-of-the-art concepts and algorithms, and sound programming techniques (e.g. systematic code testing, separated concerns), so that ecological modellers can concentrate on the ecological part of the problem and forget about the computer science part. We used <em>automatic code generation</em> to ensure that researchers need only edit one code file to build a simulator for their particular model. We used a <em>graph editor</em> to build the configuration and organise the data required for a particular study. In <strong>3Worlds</strong> therefore, an ecosystem model only requires two files: a specification file organised as a graph, and a computer code file where all relevant ecological processes are written. None of this prevents the modeller from using software libraries, either their own or from a third party, to extend their coding capabilities.</p>
@@ -741,7 +742,7 @@ systems are more easily managed and understood when designed within a sound fram
 <div class="sect3">
 <h4 id="truemodel-comparison-graphs-can-be-compared"><a class="anchor" href="#truemodel-comparison-graphs-can-be-compared"></a>1.2.7. Model comparison: graphs can be compared</h4>
 <div class="paragraph">
-<p>Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they all yield different results. This is expected given the size of their code, but what is troubling is that nobody is able to trace within the code where the differences come from  (Lim &amp; Roderick 2009). This problem arises again and again in the modelling literature (e.g. Melilo et al. 1995; Roxburgh et al. 2004). The ultimate reason for this impossibility is that all the knowledge invested into these huge models is represented in computer code, which are very difficult to compare for any but the simplest of models.</p>
+<p>Climate change modelling relies on 19 major general circulation models (GCMs) all based on the same equations. When run with identical datasets (initial data plus forcings), they all yield different results. This is expected given the size of their code, but what is troubling is that nobody is able to trace within the code where the differences come from  (<a href="#Lim2009">Lim &amp; Roderick 2009</a>). This problem arises again and again in the modelling literature (e.g. <a href="#Melilo1995">Melilo et al. 1995</a>; <a href="#Roxburgh2004">Roxburgh et al. 2004</a>). The ultimate reason for this impossibility is that all the knowledge invested into these huge models is represented in computer code, which are very difficult to compare for any but the simplest of models.</p>
 </div>
 <div class="paragraph">
 <p><strong>3Worlds</strong> is an attempt to solve this issue <em>for the future</em> (there is nothing we can do for past model code). If models are developed within the standard framework of <strong>3Worlds</strong>, the only thing that needs to be compared among models is their specification file (a graph) and their code file - hundreds to thousands of lines, not more. Everything else is equal. In theory this should facilitate model comparison.</p>
@@ -763,51 +764,6 @@ systems are more easily managed and understood when designed within a sound fram
 <h4 id="trueportability-and-performance"><a class="anchor" href="#trueportability-and-performance"></a>1.2.9. Portability and performance</h4>
 <div class="paragraph">
 <p><strong>3Worlds</strong> is written in Java to ensure portability between all operating systems. Its code has been carefully optimised, although generality inevitably comes with some performance cost.</p>
-</div>
-<div class="paragraph">
-<p><strong>Cited references:</strong></p>
-</div>
-<div class="paragraph">
-<p>Bousquet, F., &amp; Le Page, C. (2004). Multi-agent simulations and ecosystem management: a review. <em>Ecological Modelling</em>, 176:313–332. <a href="https://doi.org/10.1016/j.ecolmodel.2004.01.011" class="bare">https://doi.org/10.1016/j.ecolmodel.2004.01.011</a></p>
-</div>
-<div class="paragraph">
-<p>Coquillard, P., &amp; Hill, D. (1997). <em>Modélisation et simulation d’écosystèmes. Des modèles déterministes aux simulations à événements discrets</em>. Masson, Paris.</p>
-</div>
-<div class="paragraph">
-<p>Flint, S. R. (2006). <em>Aspect-Oriented Thinking - An approach to bridging the disciplinary divides</em>. PhD, Australian National University.</p>
-</div>
-<div class="paragraph">
-<p>Gignoux, J., I.D. Davies, S.R. Flint, &amp; J.D. Zucker (2011). The Ecosystem in Practice: Interest and
-Problems of an Old Definition for Constructing Ecological Models. <em>Ecosystems</em> 14: 1039‑54. <a href="https://doi.org/10.1007/s10021-011-9466-2" class="bare">https://doi.org/10.1007/s10021-011-9466-2</a>.</p>
-</div>
-<div class="paragraph">
-<p>Gignoux, J., G. Chérel, I.D. Davies, S.R. Flint, &amp; E. Lateltin (2017). Emergence and Complex Systems: The
-Contribution of Dynamic Graph Theory. <em>Ecological Complexity</em> 31: 34‑49. <a href="https://doi.org/10.1016/j.ecocom.2017.02.006" class="bare">https://doi.org/10.1016/j.ecocom.2017.02.006</a>.</p>
-</div>
-<div class="paragraph">
-<p>Grimm, V., &amp; Railsback, S. (2005). <em>Individual-based modelling and ecology</em>. Princeton University Press.</p>
-</div>
-<div class="paragraph">
-<p>Harary, F., &amp; Gupta, G. (1997). Dynamic graph models. <em>Mathematical and Computer Modelling</em>, 25(7), 79–87. <a href="https://doi.org/10.1016/S0895-7177(97)00050-2" class="bare">https://doi.org/10.1016/S0895-7177(97)00050-2</a></p>
-</div>
-<div class="paragraph">
-<p>Lim, W. H., &amp; Roderick, M. L. (2009). <em>An atlas of the global water cycle based on the IPCC AR4 climate models.</em> ANU E Press.</p>
-</div>
-<div class="paragraph">
-<p>Melilo, J. M., Borchers, J., Chaney, J., Fisher, H., Fox, S., Haxeltine, A., Janetos, A., Kicklighter, D. C., Kittel, T. G. F., McGuire, A. D., McKeown, R., Neilson, R., Nemani, R., Ojima, D. S., Painter, T., Pan, Y., Parton, W. J., Pierce, L., Pitelka, L., … Woodward, F. I. (1995). Vegetation/ecosystem modeling and analysis project: comparing biogeography and biogeochemistry models in a continental-scale study of terrestrial ecosystem responses to climate change and CO<sub>2</sub> doubling. <em>Global Biogeochemical Cycles</em>, 9(4), 407–437.</p>
-</div>
-<div class="paragraph">
-<p>Parton, W., Stewart, J., &amp; Cole, C. (1988). Dynamics of C,N, P and S in grassland soils: a model. <em>Biogeochemistry</em>, 5, 109–131.</p>
-</div>
-<div class="paragraph">
-<p>Roxburgh, S. H., Barrett, D. J., Berry, S. L., Carter, J. O., Davies, I. D., Gifford, R. M., Kirschbaum, M. U. E., McBeth, B. P., Noble, I. R., Parton, W. G., Raupach, M. R., &amp; Roderick, M. L. (2004). A critical overview of model estimates of net primary productivity for the Australian continent. <em>Functional Plant Biology</em>, 31(11), 1043–1059.</p>
-</div>
-<div class="paragraph">
-<p>Tansley, A G. (1935). The use and abuse of vegetational concepts and terms. <em>Ecology</em> 16: 284‑307.</p>
-</div>
-<div class="paragraph">
-<p>Zucker, J.D. (2003). A Grounded Theory of Abstraction in Artificial Intelligence. <em>Philosophical Transactions of
-the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https://doi.org/10.1098/rstb.2003.1308" class="bare">https://doi.org/10.1098/rstb.2003.1308</a>.</p>
 </div>
 </div>
 </div>
@@ -5992,7 +5948,7 @@ Whenever you have to search for items to construct relations, associate a space 
 <p>While this process greatly accelerates model development, a more important aim is to provide a firm basis for model comparison. As all models developed with <em>ModelMaker</em> must comply with the <em>archetype</em>, structural differences become apparent when comparing specifications. That is, while you can construct any model, the design, being constrained by the <em>archetype</em>, will not be arbitrary. Of course, this is not the only difference between models. The code for each function defined by the specifications will be particular but at least these differences are encapsulated at specific places in the model implementation.</p>
 </div>
 <div class="paragraph">
-<p>The specification graph is both a tree and a directed graph. Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as <em>cross-links</em> to distinguish them from edges that represent <em>parent-child</em> relationships.</p>
+<p>The specification graph is both a tree and a directed graph (<a href="#truegeneral-concepts-structure-of-a-3worlds-configuration">Section 3.1</a>). Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as <em>cross-links</em> to distinguish them from edges that represent <em>parent-child</em> relationships.</p>
 </div>
 </div>
 <div class="sect3">
@@ -6000,14 +5956,14 @@ Whenever you have to search for items to construct relations, associate a space 
 <div class="paragraph">
 <p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>.3w</code> in your home directory and copy <code>tw-dep.jar</code> to it. Then copy <code>modelMaker.jar</code> to your home directory. To start <em>modelMaker</em>, open a terminal and type: <code>java -jar modelMaker.jar</code>. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system.</p>
 </div>
-<div class="admonitionblock caution">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-To compile your own models, the Java Development Kit (<a href="#trueprerequisites">JDK</a>) must be installed on your computer.
+To compile your own models, the Java Development Kit (JDK)  must be installed on your computer (<a href="#trueprerequisites">Section 2.2</a>).
 </td>
 </tr>
 </table>
@@ -6024,18 +5980,18 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 <p>Create a new project (<code>Main menu: Projects &#8594; New &#8594; Templates &#8594; Blank</code>)</p>
 </li>
 <li>
-<p>When prompted enter 'Tut1' (first letter upper case). A small graph of seven nodes appears in the graph window.</p>
+<p>When prompted enter 'Tut1' (first letter upper case). A small graph of nine nodes appears in the graph window.</p>
 </li>
 </ol>
 </div>
-<div id="fig-blankTemplate" class="imageblock text-center">
+<div id="fig-blank-template" class="imageblock text-center">
 <div class="content">
-<img src="../source/tutorial1IMG/fig-blank-template.png" alt="fig blank template">
+<img src="../source/tutorial1IMG/fig-blank-mm.png" alt="fig blank mm">
 </div>
-<div class="title">Figure 14. The 'Blank' template starting configuration graph.</div>
+<div class="title">Figure 14. The appearance of <em>ModelMaker</em> after creating a new project from the 'Blank' template.</div>
 </div>
 <div class="paragraph">
-<p>The black node (<code>3worlds:Tut1</code>) is the <em>root</em> of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined.</p>
+<p>The black node (<code>3worlds:Tut1</code>) is the <em>root</em> of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined (<a href="#fig-blank-template">Figure 14</a>, <a href="#trueconfiguration-options-reference">Section 3.3</a>).</p>
 </div>
 <div class="paragraph">
 <p>All nodes are identified by a <em>label:name</em> pair. The <em>label</em> is the type of node, representing its role, while the <em>name</em> is a unique identifier. A few node types, of which the root node is one, must have names beginning with an upper case letter. These nodes are used to generate Java classes when the simulation compiles.</p>
@@ -6055,47 +6011,38 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 <p>Pan the drawing surface by dragging with the left-mouse button anywhere outside a node (assuming the drawing area is larger than the display);</p>
 </li>
 <li>
-<p>Change the node and text size with the <em>element size</em> slider in the tool bar; and,</p>
+<p>Change the node and text size with the <em>element size</em> slider in the tool bar;</p>
 </li>
 <li>
-<p>Right-click on a node to see a display a pop-up menu of edit options for that particular node. It is via these popup menus that the graph is constructed.</p>
+<p>Right-click on a node to see a display a pop-up menu of edit options for that particular node. It is via these popup menus that the graph is constructed; and,</p>
 </li>
 <li>
-<p>While holding the <code>shift</code> key, left-click on a node to see just this node and its nearest neighbours. What constitutes 'nearest' is set by the 'path len.' control in the tool bar.</p>
+<p>While holding down the <code>shift</code> key, left-click on a node to see just this node and its nearest neighbours. What constitutes 'nearest' is set by the 'path len.' control in the tool bar.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>A list of tasks remaining to be completed appears at the bottom-left of the main window. This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change.</p>
-</div>
-<div id="fig-blankTemplateTaskList" class="imageblock text-center">
-<div class="content">
-<img src="../source/tutorial1IMG/fig-blank-template-task-list.png" alt="fig blank template task list">
-</div>
-<div class="title">Figure 15. The initial list of tasks after creating a 'Blank' template.</div>
+<p>A list of tasks remaining to be completed appears at the bottom-left of the main window (<a href="#fig-blank-template">Figure 14</a>). This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change.</p>
 </div>
 <div class="paragraph">
-<p>At the top-left of the main window are the two property editors - <em>Properties</em> and <em>Selected Properties</em>.  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It&#8217;s here that values are entered for the properties of nodes and edges created in the following steps.</p>
+<p>At the top-left of the main window are the two property editors - <em>Properties</em> and <em>Selected Properties</em> (<a href="#fig-blank-template">Figure 14</a>).  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It&#8217;s here that values are entered for the properties of nodes and edges created in the following steps.</p>
 </div>
 <div class="paragraph">
-<p>At this stage, there are five properties under the section <code>Tut1</code>.  These are properties of the root node (<code>3worlds:Tut1</code>) intended to provide a limited amount of documentation for this project. If click on the root node and then select the <em>Selected Properties</em> editor, an additional non-editable property is shown call &#8216;built-by&#8217;. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the <em>Selected Properties</em> editor but for brevity, not in the <em>Properties</em> editor. Two icons at the top of the <em>Properties</em> editor allow you to display properties by category (by sub-tree) or by name. When this last option is selected, all editable properties are display in one list.</p>
-</div>
-<div id="fig-blankTemplateProperties" class="imageblock text-center">
-<div class="content">
-<img src="../source/tutorial1IMG/fig-blank-template-initial-properties.png" alt="fig blank template initial properties">
-</div>
-<div class="title">Figure 16. The initial list of editable properties after creating a 'Blank' template. Properties are displayed here by name.</div>
-</div>
-<div class="paragraph">
-<p>Also in the tool bar at the top of the graph display are a number of controls that will be explained below. Float the mouse over these controls to see a hint as to their purpose.</p>
+<p>At this stage, there are five properties under the section <code>Tut1</code>.  These are properties of the root node (<code>3worlds:Tut1</code>) intended to provide a limited amount of documentation for this project. If you click on the root node and then select the <em>Selected Properties</em> editor tab, an additional non-editable property is shown call &#8216;built-by&#8217;. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the <em>Selected Properties</em> editor but for brevity, not in the <em>Properties</em> editor. Two icons at the top of the <em>Properties</em> editor allow you to display properties by category (by sub-tree) or by name. When this last option is selected, all editable properties are display in one list.</p>
 </div>
 <div class="sect4">
 <h5 id="truedirectory-structure"><a class="anchor" href="#truedirectory-structure"></a>Directory structure</h5>
 <div class="paragraph">
-<p>All projects are located within the 3Worlds root directory called <code>.3w</code>. The dot indicates a hidden directory. To see these files you may need to do what ever is required by your operating system to show hidden files.</p>
+<p>All projects are located within the 3Worlds root directory called <code>.3w</code>. The dot indicates a hidden directory. To see these files you may need to do what ever is required by your operating system to show hidden files (<a href="#fig-tut1-dir">Figure 15</a>).</p>
+</div>
+<div id="fig-tut1-dir" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-tut1-dir.png" alt="fig tut1 dir">
+</div>
+<div class="title">Figure 15. The initial directory structure of after creating a new project from the 'Blank' template. Later, after all tasks have been completed and the model is deployed, another sub-directory is added for run-time files.</div>
 </div>
 <div class="paragraph">
-<p>The <code>.3w</code> directory contains a Jar file called <code>tw-dep.jar</code>. This file contains all dependent libraries for <em>3Worlds</em>. It&#8217;s a good idea to keep a backup of this file.</p>
+<p>The <code>.3w</code> directory contains a Jar file called <code>tw-dep.jar</code> (<a href="#fig-tut1-dir">Figure 15</a>). This file contains all dependent libraries for <em>3Worlds</em>. It&#8217;s a good idea to keep a backup of this file.</p>
 </div>
 <div class="paragraph">
 <p>Within <code>.3w</code> there is now a sub-directory called something like <code>project_Tut1_2020-06-07-01-47-44-708</code>. Every project directory begins with the key word <code>project</code>, followed by the name of the project you entered (<code>Tut1</code> in this case) and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to inadvertently overwrite a project.</p>
@@ -6123,38 +6070,41 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 <p>All these files are text files and you can open and inspect them with a simple text editor. However, as they are written by <em>modelMaker</em> you should <em>avoid editing them directly as this will likely cause problems for your project</em>.</p>
 </div>
 <div class="paragraph">
-<p>On the other hand, you can safely delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by <em>ModelMaker</em> (apart from the <em>undo-redo</em> data). However, if you delete the entire <code>.3w</code> directory you will have to restore <code>tw-dep.jar</code> from backup.</p>
+<p>On the other hand, you can delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by <em>ModelMaker</em> (apart from the <em>undo-redo</em> history). However, if you delete the entire <code>.3w</code> directory you will have to restore <code>tw-dep.jar</code> from backup.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truecreating-the-specifications"><a class="anchor" href="#truecreating-the-specifications"></a>5.1.4. Creating the specifications</h4>
 <div class="paragraph">
-<p>Having created <code>Tut1</code>, the task list shows four nodes are required. This list can be dealt with in any order but in general, a logical approach is to build the specifications as follows:</p>
+<p>Having created <code>Tut1</code>, the task list shows two actions are required (<a href="#fig-blank-template">Figure 14</a>). These tasks can be dealt with in any order but in general, a logical approach is to build the specifications as follows:</p>
 </div>
 <div class="olist lowerroman">
 <ol class="lowerroman" type="i">
 <li>
-<p><strong>data definition</strong>: the data structures required;</p>
+<p><strong>data definition</strong>: the data structures required (cf. <a href="#truethe-datadefinition-node">Section 3.3.5</a> for full reference);</p>
 </li>
 <li>
-<p><strong>dynamics</strong>: define how the modelled system evolves over time.</p>
+<p><strong>dynamics</strong>: define how the modelled system evolves over time (cf. <a href="#truethe-systemdynamics-node">Section 3.3.4</a> for full reference).</p>
 </li>
 <li>
-<p><strong>structure</strong>: define the organisation of components - their roles and relationships.</p>
+<p><strong>structure</strong>: define the organisation of components - their roles and relationships (cf. <a href="#truethe-systemstructure-node">Section 3.3.3</a> for full reference).</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>For the most part, these tutorials will proceed in this order and leave defining the simulation&#8217;s <strong>user interface</strong> and <strong>experiment</strong> design until last. Each of these sections are organised as colour-coded sub-trees of the graph.</p>
+<p>For the most part, these tutorials will proceed in this order and leave defining the simulation&#8217;s <strong>user interface</strong> (<a href="#truethe-userinterface-node">Section 3.3.7</a>) and <strong>experiment</strong> design (<a href="#truethe-experiment-node">Section 3.3.6</a>) until last. In fact, the Blank template has provide a minimum specification for the <strong>experiment</strong> sub-tree (a single run of the model) and  the <strong>user interface</strong> (a simulation controller).</p>
 </div>
 <div class="sect4">
 <h5 id="truedata-definition"><a class="anchor" href="#truedata-definition"></a>Data definition</h5>
 <div class="paragraph">
-<p>The logistic equation we will implement is: <em>x(t+1) = rx(t)(1-x(t)</em>. Though simple, it has interesting chaotic behaviour for values of <em>r</em> between 3.7 and 4.0. All we need do for the data definition section is to define the parameter <em>r</em> and the state variable <em>x</em>.</p>
+<p>The logistic equation we will implement is: <em>x(t+1) = rx(t)(1-x(t))</em>. Though simple, it has interesting chaotic behaviour for values of <em>r</em> between 3.7 and 4.0. All we need do for the data definition section is to define the parameter <em>r</em> and the state variable <em>x</em>.</p>
 </div>
 <div class="paragraph">
 <p>From here on and throughout these tutorials, parameters are called <em>constants</em> (data that does not change over the course of a simulation) and state variables are called <em>drivers</em> (data that drives the simulation from one time to the next).</p>
+</div>
+<div class="paragraph">
+<p>Note that at this stage, the task list says nothing about adding anything to the <strong>data definition</strong> sub-tree. This is because it is possible to define a model without data. Nevertheless, once data is defined, various actions will be required and displayed in the task list, to correctly define its use.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -6193,7 +6143,7 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 <p>Note that the names 'drvs' and 'cnsts' don&#8217;t imply any meaning to the specifications - they&#8217;re just names. Their <em>roles</em> as drivers and constants will be defined later.</p>
 </div>
 <div class="paragraph">
-<p>This is all the data required for this tutorial.  The task list has now grown to seven because the roles of this data remains to be defined.</p>
+<p>This is all the data required for this tutorial.  The task list has now grown to four because the roles of this data remains undefined.</p>
 </div>
 <div class="paragraph">
 <p>You can tidy up the graph display by clicking the <code>L</code> button (re-apply layout) in the tool bar.</p>
@@ -6202,7 +6152,7 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 <div class="content">
 <img src="../source/tutorial1IMG/fig-ddef-subtree.png" alt="fig ddef subtree">
 </div>
-<div class="title">Figure 17. Defining constant <code>r</code> and driver <code>x</code> within the data definition sub-tree.</div>
+<div class="title">Figure 16. Defining constant <code>r</code> and driver <code>x</code> within the data definition sub-tree.</div>
 </div>
 </div>
 <div class="sect4">
@@ -6218,57 +6168,67 @@ To compile your own models, the Java Development Kit (<a href="#trueprerequisite
 The <code>dynamics</code> node is the specification of a type of simulator. There can be many simulators (instances) of this specification running in parallel depending on the experimental design.</p>
 </div>
 <div class="paragraph">
-<p>A dynamics system must have a common definition of the time scale. There are ten different types of time scale available: all of them exact sub-divisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The default is <code>ARBITRARY</code> which is fine for this tutorial.</p>
+<p>A dynamic system must have a single definition of the <a href="#truetime-line">time scale</a>. There are ten different types of time scale available: all of them define exact sub-divisions of time except for the <code>GREGORIAN</code> scale type which implements the standard Gregorian calendar. The 'Blank' template has already defined a <code>timeline</code> with an <code>ARBITRARY</code> time scale which is sufficient for this tutorial.</p>
 </div>
 <div class="paragraph">
-<p>TO HERE!!!</p>
-</div>
-<div class="paragraph">
-<p>There is now a new task to add a <code>timer</code> node to the <code>timeline</code>.</p>
+<p>In the task list is an action asking that a <code>timer</code> be added to <code>timeline:tmLn1</code>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Create a <code>timer</code> as a child of <code>timeline</code>. Here an extra prompt appears asking for the class of the timer: {<code>ClockTimer</code>, <code>EventTimer</code>, <code>ScenarioTimer</code>}. Select <code>ClockTimer</code>. This timer class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularities such as leap years are managed.</p>
+<p>Create a <a href="#truetimers"><code>timer</code></a> as a child of <code>timeline</code>. Here an extra prompt appears asking for the class of the timer: {<code>ClockTimer</code>, <code>EventTimer</code>, <code>ScenarioTimer</code>}. Select <code>ClockTimer</code>. This timer class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularities such as leap years are managed.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>There is now a new type of task indicating that a property value for the new timer is incorrect: <code>[Property] ['[Property:dt=0]' does not satisfy '[Property 'dt=0' must be within [1.0; 9.223372036854776E18].]']</code>. This just means the value of <code>dt</code> (delta time) must be &gt;= 1.</p>
+<p>Two new tasks have been added to the task list indicating that <code>dt</code> and <code>nTimeunits</code> must be greater than 1.0.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="5">
+<ol class="arabic" start="2">
 <li>
-<p>In the property editor, change <code>tmr1#dt</code> to 1, whereupon a new task appears saying the same thing for <code>tmr1#nTimeUnits</code> so set that to 1 as well.</p>
+<p>In the property editor, locate these two properties (properties of <code>timer:tmr1</code>) and set them to 1.0.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p><code>dt</code> is the time unit size and <code>nTimeUnits</code> is the number of time units per simulation step. There are 22 time unit types available ranging from microseconds to millennia. The current default value of <code>UNSPECIFIED</code> is fine for this tutorial - here time is just a sequence of steps.</p>
+<p>Clock timers use their own time units to count time. The time unit is specified by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>timeUnit</code> property, which tells in which measurement unit time is to be expressed. There are 22 time unit types available ranging from microseconds to millennia, and  constrained by the choice of the time scale. The current default value of <code>UNSPECIFIED</code> is fine for this tutorial, as here time is just a sequence of steps;</p>
+</li>
+<li>
+<p><code>nTimeUnits</code>, i.e. the number of measurement units per timer unit - for example, a timer could use '2 days' as its basic time unit. It means that an elementary time tick in this timer represents 2 days, so (time = 11) means 22 days, etc. It is the finest <em>grain</em> at which time can be measured with this timer. In this tutorial, 1 is fine as we simply use a sequence of steps.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Finally, <code>dt</code> is the number of time <em>grains</em> per time step. Here, 1 will do. This tutorial runs with time steps of 1 unspecified unit, i.e just simple ticks.</p>
 </div>
 <div class="paragraph">
 <p>Note that a model can have any number of <code>timers</code> using any of the available time steps and time units as long as the time units selected are compatible with the parent <code>timeline</code>. The task messages will indicate if this is not the case. Because the specifications allow for more than one system, it follows there can be many dynamics sub-trees, each with their own time system.</p>
 </div>
 <div class="paragraph">
-<p>A new task has been posted requiring a <code>process</code> node.</p>
+<p>There is currently a task asking that a <code>process</code> be added to <code>timer:tmr1</code>.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="6">
+<ol class="arabic" start="3">
 <li>
-<p>Create a process node as child of <code>timer:tmr1</code>.</p>
+<p>Create a <a href="#trueprocess"><code>process</code></a> node as child of <code>timer:tmr1</code>.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>A <code>process</code> defines a set of computations acting on model components driven at the rate of the parent <code>timer</code>. A <code>component</code> is defined as a unit of simulation. It can be any physical or biology entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).</p>
+<p>A <code>process</code> defines a set of computations acting on model components driven at the rate of the parent <code>timer</code>. A <code>component</code> is defined as a unit of simulation. It can be any physical or biological entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).</p>
 </div>
 <div class="paragraph">
 <p>Processes can be composed of any number of functions of various types (much more on this later). We need just one function to implement the logistic equation - a <code>ChangeState</code> function that takes the current state of a component and calculates the next state.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="7">
+<ol class="arabic" start="4">
 <li>
-<p>Create a <code>function</code> as a child of <code>process:p1</code>, name it <code>Chaos</code> and select <code>ChangeState</code> as its type.</p>
+<p>Create a <a href="#truefunction"><code>function</code></a> as a child of <code>process:p1</code>, name it <code>Chaos</code> and select <code>ChangeState</code> as its type.</p>
 </li>
 </ol>
 </div>
@@ -6279,7 +6239,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p><em>ModelMaker</em> can link to an Integrated Development Environment (IDE) such as <em>Eclipse</em>, to write code for these functions. However, in this tutorial the funcion is only one line of code and we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="8">
+<ol class="arabic" start="5">
 <li>
 <p>Create a <code>snippet</code> node as a child of <code>function:Chaos</code>.</p>
 </li>
@@ -6293,7 +6253,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="sect4">
 <h5 id="truestructure"><a class="anchor" href="#truestructure"></a>Structure</h5>
 <div class="paragraph">
-<p>The <code>structure</code> sub-tree describes how the modelled system is organised into separate <code>components</code> playing particular roles. In an elaborate model, there can be many <code>components</code> but in the present case, we need only one, and for convenience, the <code>system</code> node can act as this single <code>component</code> without the necessity of actually creating a <code>component</code> within a <code>structure</code> sub-tree.</p>
+<p>At this time, the task list displays four actions. All of these actions relate to the structure of the model. The <code>structure</code> sub-tree describes how the modelled system is organised into separate <code>components</code> playing particular roles. In an elaborate model, there can be many <code>components</code> but in the present case, we need only one, and for convenience, the <code>system</code> node can act as this single <code>component</code> without the necessity of actually creating a <code>component</code> within a <code>structure</code> sub-tree.</p>
 </div>
 <div class="paragraph">
 <p>Here, the component&#8217;s <em>role</em> will be defined as:</p>
@@ -6310,7 +6270,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>systemElements: <em>arena</em>.</p>
 </li>
 <li>
-<p>Uses <em>r</em> as a constant and <em>x</em> as a driver; and,</p>
+<p>Using <em>r</em> as a constant and <em>x</em> as a driver; and,</p>
 </li>
 <li>
 <p><code>process:p1</code> applies to it.</p>
@@ -6318,19 +6278,19 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </ul>
 </div>
 <div class="paragraph">
-<p>The component is <em>permanent</em> because it doesn&#8217;t die; it&#8217;s  <em>atomic</em> simply because it is a single indivisable component and it belongs to the <em>arena</em>. No matter how many components a model has, exactly one of them must belong to the <em>arena</em> category, a unique top level component - it&#8217;s more or less a global component accessible to all other components.</p>
+<p>The component is <em>permanent</em> because it doesn&#8217;t die; it&#8217;s  <em>atomic</em> simply because it is a single indivisable component; and, it belongs to something called the <em>arena</em>. The <em>arena</em> is  a unique top level component - it&#8217;s more or less a global component accessible to all other components. No matter how many components a model has, exactly one of them must belong to the <em>arena</em> category,</p>
 </div>
 <div class="paragraph">
-<p>While this is complicated for such a simple function, later tutorials will show how this arrangement can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components.</p>
+<p>While this is complicated for such a simple model, later tutorials will show how this arrangement can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components.</p>
 </div>
 <div class="paragraph">
-<p>To create this role, we use nodes of the type <code>categorySet</code> and <code>category</code>. A <code>categorySet</code> is a set of mutually exclusive categories. By that we mean a <code>component</code> can only be associated with one category of a given categorySet. So for example <em>permanent</em> and <em>ephemeral</em>  are two categories within a set called <em>lifespan</em> and obviously, a component can only be one or the other. Categories and CategorySets are recursive: a CategerySet contains Categories and Categories can contain CategorySets without limit.</p>
+<p>To create this role, we use nodes of the type <code>categorySet</code> and <code>category</code>. A <code>categorySet</code> is a set of mutually exclusive categories. By that we mean a <code>component</code> can only be associated with one category of a given categorySet. So for example <em>permanent</em> and <em>ephemeral</em>  are two categories within a set called <em>lifespan</em> and clearly, a component can only be one or the other. Categories and CategorySets are recursive: a CategorySet contains Categories and Categories can contain CategorySets without limit.</p>
 </div>
 <div class="paragraph">
 <p>Apart from the <code>system</code> node doubling as a <code>component</code>, an additional convenience is provided: a sub-tree of predefined category sets and categories. We use these nodes to define the role described above. To see this sub-tree:</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="8">
+<ol class="arabic">
 <li>
 <p>Right-click on the root node and select <code>Collapse &#8594; All</code>.</p>
 </li>
@@ -6349,7 +6309,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>There are two <code>record</code> nodes within this sub-tree for default handling of average population and ephemeral data. Since the single component used here will be neither of these we can ignore this section:</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="11">
+<ol class="arabic" start="4">
 <li>
 <p>Right-click on <code>predefined:*categories*</code> and collapse both the <code>AVPopulation</code> and <code>AVEphemeral</code> sub-trees.</p>
 </li>
@@ -6359,111 +6319,86 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </ol>
 </div>
 <div class="paragraph">
-<p>We are now in a position to define the <em>role</em> of the <code>system</code> node (a.k.a. <code>component</code> in this case).</p>
+<p>We are now in a position to define the <em>role</em> of the <code>system</code> node (a.k.a. <code>component</code> in this case). The <code>system</code> node always belongs to the <code>arena</code> and <code>permanent</code> categories. This has already been done by the 'Blank' template. It just remains to make the system <code>atomic</code>.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="13">
-<li>
-<p>Right-click on <code>system:sys1</code> and select <code>New edge &#8594; belongsTo &#8594; category:*arena*</code>.</p>
-</li>
+<ol class="arabic" start="6">
 <li>
 <p>Right-click on <code>system:sys1</code> and select <code>New edge &#8594; belongsTo &#8594; category:*atomic*</code>.</p>
 </li>
-<li>
-<p>Right-click on <code>system:sys1</code> and select <code>New edge &#8594; belongsTo &#8594; category:*permanent*</code>.</p>
-</li>
 </ol>
 </div>
-<div class="paragraph">
-<p>The above edits have created three <em>cross-link</em> edges. All <em>cross-links</em> are red - thin at the <em>start node</em> and thick at the <em>end node</em>. Unlike parent-child links, they have names. Generally, the names of <em>cross links</em> are not much use. They can be hidden by selecting the drop-down list <code>E text</code> at the bottom of the Graph display, and selecting <code>Role</code>. The relationship can be read as, for example: <code>system:sys1 belongsTo category:*arena*</code>.</p>
+<div id="fig-system-role" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-system-role.png" alt="fig system role">
+</div>
+<div class="title">Figure 17. The specification of the system component in belonging to the three categories: <em>permanent</em>; <em>atomic</em>; and, <em>arena</em>.</div>
 </div>
 <div class="paragraph">
-<p>Finally, we need to apply <code>process:p</code> to a category - in this case, the <em>arena</em>.</p>
+<p>The system&#8217;s role of belonging to the <em>atomic</em>, <em>permanent</em> and <em>arena</em> categories is indicated by three <em>cross-link</em> edges. All <em>cross-links</em> are red - thin at the <em>start node</em> and thick at the <em>end node</em>. Unlike parent-child links, they have names. Generally, the names of <em>cross links</em> are not much use. They can be hidden by selecting the drop-down list <code>E text</code> in the tool bar, and selecting <code>Role</code>. The relationship can be read as, for example: <code>system:sys1 belongsTo category:*arena*</code>.</p>
+</div>
+<div class="paragraph">
+<p>Now we need to apply <code>process:p</code> to a category - in this case, the <em>arena</em> (see the task list).</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="16">
+<ol class="arabic" start="7">
 <li>
 <p>Right-click on <code>process:p1</code> and select <code>New edge &#8594; appliesTo &#8594; category:*arena*</code>.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>We have yet to relate <code>system:sys1</code> to '<em>x</em>' and '<em>r</em>'. We&#8217;ll leave that for now until it&#8217;s needed.</p>
-</div>
-<div class="paragraph">
-<p>There are now two tasks remaining in the task list: the experimental design and the user interface.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="trueexperiment-sub-tree"><a class="anchor" href="#trueexperiment-sub-tree"></a>Experiment sub-tree</h5>
-<div class="paragraph">
-<p>We now specify the simplest possible experiment: a single run of the model.</p>
+<p>We have yet to relate <code>system:sys1</code> to the driver '<em>x</em>' and the constant '<em>r</em>'.  These are global data and therefore are defined as part of the <code>arena</code>.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic">
+<ol class="arabic" start="8">
 <li>
-<p>Collpase the <code>predefined</code> sub-tree from the root node and re-apply the layout.</p>
+<p>Right-click on <code>category:*arena*</code> and select 'New edge &#8594; constants&#8594;record:cnsts'.</p>
 </li>
 <li>
-<p>Create an <code>experiment</code> as a child of the root.</p>
-</li>
-<li>
-<p>Create a <code>design</code> as a child of <code>experiment:expt</code> and when prompted, select the <code>type</code> property.</p>
+<p>Right-click again on <code>category:*arena*</code> and select 'New edge &#8594; drivers&#8594;record:drvs'.</p>
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>Experimental designs can take many forms including predefined types such as <code>crossFactorial</code> or designs read from a file. For now we just use a predefined <code>type</code> with its default value of <code>singleRun</code>.</p>
+<div id="fig-arena" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-arena.png" alt="fig arena">
 </div>
-</div>
-<div class="sect4">
-<h5 id="trueuser-interface-sub-tree"><a class="anchor" href="#trueuser-interface-sub-tree"></a>User interface sub-tree</h5>
-<div class="paragraph">
-<p>The minimum requirement for a user interface is a controller widget: something that can start and stop a simulation. Of course, we&#8217;ll also need to display the value of <em>x</em> with, say, a time series chart. This can be added later after trying out the simulator.</p>
+<div class="title">Figure 18. The specification of the constants and drivers for the <em>arena</em>, a category to which the only componenet in this tutorial (aka <code>system:sys1</code>) belongs.</div>
 </div>
 <div class="paragraph">
-<p>Simulations can also run without any <em>graphical</em> user interface - they still must have a user interface but it need not be visible. This situation is called a 'headless' simulator and can be used on unsupervised systems or systems where a user interface is not possible.</p>
-</div>
-<div class="paragraph">
-<p>When the simulation is run, its graphical user interface has optionally, a toolbar at the top, a status bar at the bottom and any number of tabs containing any number of widgets. The controller must be placed either in the toolbar or status bar. Here we place it in the toolbar.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Collapse <code>experiment:expt</code> from the root node (we are finished with this sub-tree).</p>
-</li>
-<li>
-<p>Create a <code>userInterface</code> as a child of the root.</p>
-</li>
-<li>
-<p>Create a <code>top</code> as a child of <code>userInterface:gui</code>.</p>
-</li>
-<li>
-<p>Create a <code>widget</code> as a child of <code>top:top1</code>, name it 'ctrl' and select <code>SimpleControlWidget1</code> from the drop-down list as its class.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The model specifications now comply with the archetype and the code has compiled. Save your work (<code>Ctrl+s</code>) and the task list will be empty. The <strong>Deploy</strong> button is now enabled and the traffic light has changed from red to green (bottom left corner of <em>ModelMaker</em>).</p>
-</div>
-<div class="paragraph">
-<p>In addition, the <strong>Document</strong> button has been enabled. Clicking this button generates an ODD template (Overview, Design concepts and Details) (<code>Tut1.odt</code>), an established standard for documenting simulation models. This file can be generated anytime the specifications are valid. When you&#8217;re statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model.</p>
-</div>
-<div class="paragraph">
-<p>NB: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.</p>
+<p>Save your work (<code>Ctrl+s</code>) and the task list will be empty indicating the simulation is ready to deploy.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="truedeployment-launching-modelrunner"><a class="anchor" href="#truedeployment-launching-modelrunner"></a>Deployment: launching <em>ModelRunner</em></h5>
+<div class="paragraph">
+<p>Before deploying the simulation, it&#8217;s useful to display the overall specifications by hiding the predefined sub-tree and showing the experiment and user interface sub-trees.</p>
+</div>
+<div id="fig-deploy1" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-deploy1.png" alt="fig deploy1">
+</div>
+<div class="title">Figure 19. A view of the specification graph showing principal nodes of interest.</div>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Click the <code>Deploy</code> button. <em>ModelMaker</em> now launches <em>ModelRunner</em> to start the run-time application: <em>ModelRunner</em>.</p>
+<p>Right-click the root node and select 'Collapse &#8594; predefined:*categories*'.</p>
+</li>
+<li>
+<p>Again, right-click the root node and select 'Expand &#8594; experiment:expt' and 'UserInterface:gui'.</p>
+</li>
+<li>
+<p>Reapply the layout (<strong>L</strong>).</p>
+</li>
+<li>
+<p>Click the <code>Deploy</code> button. <em>ModelMaker</em> now launches <em>ModelRunner</em> to start the run-time application: <em>ModelRunner</em> (cf. <a href="#truesimulation-reference-running-a-simulation-experiment-with-modelrunner">Section 4</a> for a full reference).</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>At the top of <em>ModelRunner</em> are some control buttons to start, step and stop the simulation. This is the <code>SimpleControlWidget1</code> we added above in step 4. The <em>run</em> button becomes a <em>pause</em> button while running and the <em>stop</em> button resets the simulator to its starting state.</p>
+<p>At the top of <em>ModelRunner</em> are some control buttons to start, step and stop the simulation. This is the <code>ControlWidget1</code> shown in the figure above that was included by default in the 'Blank' template. The <em>run</em> button becomes a <em>pause</em> button while running and the <em>stop</em> button resets the simulator to it&#8217;s starting state.</p>
 </div>
 <div class="paragraph">
 <p>However, as expected, there&#8217;s nothing to see so the next step is to add a time series widget. This is an optional requirement so the task list didn&#8217;t complain about this.</p>
@@ -6475,15 +6410,22 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>To add a time series for <em>x</em>:</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="2">
+<ol class="arabic" start="5">
 <li>
 <p>Quit <em>ModelRunner</em> and return to <em>ModelMaker</em>.</p>
 </li>
 <li>
 <p>Create a <code>tab</code> node from the  <code>userInterface:gui</code> node.</p>
 </li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A <code>tab</code> is a container that can contain either widgets or other containers. The task list indicates this now asking that one of these be added.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
 <li>
-<p>Create a <code>widget</code> node from <code>tab:tab1</code>, name it 'srsx' and select <code>SimpleTimeSeriesWidget</code> from the drop-down list.</p>
+<p>Create a <code>widget</code> node from <code>tab:tab1</code>, name it 'srsx' and select <code>TimeSeriesWidget1</code> from the drop-down list.</p>
 </li>
 </ol>
 </div>
@@ -6494,101 +6436,29 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>For this widget to receive values of <em>x</em>, something must post values of <em>x</em> to the widget at the same rate as the <code>Chaos</code> function is executed. This is the job of a <code>dataTracker</code> and it properly belongs in the <code>dynamics</code> sub-tree.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="5">
+<ol class="arabic" start="8">
 <li>
-<p>Create a <code>dataTracker</code> as a child of <code>process:p1</code> and choose <code>DataTrackerD0</code> as it class. This class of data tracker is suitable for scalar data such as <em>x</em>.</p>
+<p>Create a <code>dataTracker</code> as a child of <code>process:p1</code> and choose <code>DataTracker0D</code> as it class. This class of data tracker is suitable for scalar data such as <em>x</em>.</p>
 </li>
 <li>
 <p>Create an edge from the <code>dataTracker</code> to <em>x</em> by selecting <code>New edge &#8594; trackField - &gt; field:x</code>.</p>
 </li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Visually, something different happened this time: the edge appeared and then faded away. This is a gesture to indicate that the edge was created but since the end node is not visible (this would be the case if you we following these steps exactly), it fades away to keep the graph display neat and tidy.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
 <li>
 <p>Create an edge from <code>widget:srsx</code> to the new data tracker.</p>
 </li>
 <li>
-<p>Create an edge from <code>dataTracker:trk1</code> to a <code>component</code> i.e in this case <code>system.sys1</code>. A data tracker must not only track some data but also the <code>component</code> that uses this data. However, from the task list it can be seen that <em>x</em> and <em>r</em> are not part of the <em>role</em> defined for <code>system.sys1</code>. To do this, we categorise <em>x</em> as a <em>driver</em> and <em>r</em> as a <em>constant</em>. The appropriate category belonging to <code>system:sys1</code> is the <code>category:*arena*</code>. Before doing this we can tidy up the display and practice a little fiddling with the collapse/expand functions by showing just the nodes required to define the roles of <em>x</em> and <em>r</em>:</p>
+<p>Create an edge from <code>dataTracker:trk1</code> to a <code>component</code> i.e in this case <code>system.sys1</code>. A data tracker must not only track some data but also the <code>component</code> that uses this data.</p>
 </li>
 <li>
-<p>Collapse all sub-trees from the root node.</p>
-</li>
-<li>
-<p>Expand the <code>predefined:*categories*</code> sub-tree.</p>
-</li>
-<li>
-<p>Collapse <code>All</code> from the <code>predefined:*categories*</code> sub-tree.</p>
-</li>
-<li>
-<p>Expand <code>categorySet:*systemElements*</code> from <code>predefined:*categories*</code> node.</p>
-</li>
-<li>
-<p>Collapse <code>All</code> from <code>categorySet:*systemElements*</code>.</p>
-</li>
-<li>
-<p>Expand <code>category:*arena*</code> from <code>categorySet:*systemElements*</code></p>
-</li>
-<li>
-<p>Finally, expand <code>dataDefinition:dDef</code> from the root node and re-apply the layout.</p>
+<p>Save the graph (<code>Ctrl+s</code>) and click the 'Deploy' button again.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>To create the <em>roles</em> for <em>x</em> and <em>r</em>:</p>
+<p>The display is still uninteresting because we haven&#8217;t set an initial value for <em>x</em> or parameterised <em>r</em>. This can be done in a number of ways but for this tutorial we will add an initialisation function and a code snippet.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>From <code>category:*arena*</code> select <code>New edge &#8594; constants &#8594; record:r</code></p>
-</li>
-<li>
-<p>Again from <code>category:*arena*</code> select <code>New edge &#8594; drivers &#8594; record:x</code></p>
-</li>
-<li>
-<p>Save the graph (<code>Ctrl+s</code>).</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The task list should be empty and the simulation can be re-deployed. You can re-generate the ODD again if you wish.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="truestopping-conditions"><a class="anchor" href="#truestopping-conditions"></a>Stopping conditions</h5>
-<div class="paragraph">
-<p>If you examine the graph and all its properties, you may notice that there is no indication as to how long the simulation should run. This means that when we run it we should expect it to continue indefinitely. You may or may not want this. If your model contains an unconstrained exponential function, it may eventually crash unless your code takes measures to handle this. You can add a variety of simple or complicated stopping conditions to the <code>dynamics</code> node. These will be discussed in later tutorials.</p>
-</div>
-<div class="paragraph">
-<p>When we first ran this model it had no output. Now that we have a time series chart, displaying data of unlimited length will make the <em>ModelRunner</em> fairly unresponsive. If you press the run button and then the stop or pause button of the controller, it may take a while for the model to actually stop running. So for now, it&#8217;s best to test the simulation with the <code>Step</code> button.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="6">
-<li>
-<p>Deploy <em>ModelRunner</em> (saving first if prompted)</p>
-</li>
-<li>
-<p>Click the <code>step</code> button a few times. A time series of zeros is shown.</p>
-</li>
-<li>
-<p>Click the <code>run</code> button twice in rapid succession. The time (x axis) now reads approximately 30,000 or so depending on the speed of your computer.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The display is still uninteresting because we haven&#8217;t set an initial value for <em>x</em> or parameterised <em>r</em>. This can be done in a number of ways but for this tutorial we will add an initialisation function and a code snippet. We will also include a <code>stoppingCondition</code>.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="9">
-<li>
-<p>Quit <em>ModelRunner</em> and return to <em>ModelMaker</em>.</p>
-</li>
-<li>
-<p>Collapse all sub-trees from the root node and expand just the <code>system:sys1</code> sub-tree.</p>
-</li>
+<ol class="arabic" start="13">
 <li>
 <p>Create an <code>initFunction</code> as a child of <code>system:sys1</code>. As <code>system:sys1</code> is the only component in the specifications, it is the node requiring initialisation of <em>x</em> and <em>r</em>.</p>
 </li>
@@ -6613,11 +6483,45 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="paragraph">
 <p>If you make a typo, the task list will show the details of the compile error.</p>
 </div>
+<div id="fig-javaCode" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-javaCode.png" alt="fig javaCode">
+</div>
+<div class="title">Figure 20. Entering Java code snippet for the <code>initFunction</code> (for the <code>system:sys1</code> component) in the property editor.</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truestopping-conditions"><a class="anchor" href="#truestopping-conditions"></a>Stopping conditions</h5>
+<div class="paragraph">
+<p>If you examine the graph and all its properties, you may notice that there is no indication as to how long the simulation should run. This means that when we run it we should expect it to continue indefinitely. You may or may not want this. If your model contains an unconstrained exponential function, it may eventually crash unless your code takes measures to handle this. You can add a variety of simple or complicated stopping conditions to the <code>dynamics</code> node. These will be discussed in later tutorials.</p>
+</div>
+<div class="paragraph">
+<p>When we first ran this model it had no output. Now that we have a time series chart, displaying data of unlimited length will make the <em>ModelRunner</em> fairly unresponsive because the simulator has little to do but the UI must update the graph continuously. Note: the <code>TimeSeriesWidget1</code> displays data in a rolling buffer. The default buffer size is 1,000 data points.</p>
+</div>
+<div class="paragraph">
+<p>If you press the run button and then the stop or pause button of the controller, it may take a while for the model to actually stop running. So for now, it&#8217;s best to test the simulation with the <code>Step</code> button.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="16">
+<li>
+<p>Deploy <em>ModelRunner</em> (saving first if prompted)</p>
+</li>
+<li>
+<p>Click the <code>step</code> button a few times. A time series of zeros is shown.</p>
+</li>
+<li>
+<p>Click the <code>run</code> button twice in rapid succession. The time (x axis) now reads approximately 30,000 or so depending on the speed of your computer.</p>
+</li>
+</ol>
+</div>
 <div class="paragraph">
 <p>To complete this tutorial, add a simple stopping condition:</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="14">
+<ol class="arabic" start="19">
+<li>
+<p>Close <em>ModelRunner</em> and return to <em>ModelMaker</em>.</p>
+</li>
 <li>
 <p>Create a <code>stoppingCondition</code> as a child of <code>dynamics:sim1</code>. When prompted, select <code>SimpleStoppingCondition</code> from the drop-down list.</p>
 </li>
@@ -6629,6 +6533,46 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </li>
 </ol>
 </div>
+<div id="fig-final-specification" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-final-specification.png" alt="fig final specification">
+</div>
+<div class="title">Figure 21. The specification graph for Tutorial 1.</div>
+</div>
+<div id="fig-tut1-MR" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-tut1-MR.png" alt="fig tut1 MR">
+</div>
+<div class="title">Figure 22. The appearence of <em>ModelRunner</em> while running Tutorial 1.</div>
+</div>
+<div class="paragraph">
+<p>You can now generate documentation for this model from <em>ModelRunner</em>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="23">
+<li>
+<p>From <em>ModelRunner</em> select 'About &#8594; Create documentation' from the main menu.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This creates  an ODD template (Overview, Design concepts and Details) (<code>Tut1.odt</code>), an established standard for documenting simulation models. This file can be generated anytime the specifications are valid. When you&#8217;re statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory:</p>
+</div>
+<div class="paragraph">
+<p><code>~/.3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt</code>.</p>
+</div>
+<div class="paragraph">
+<p>Most word processors can read this standard format, native to LibreOffice, including Microsoft Word.</p>
+</div>
+<div id="fig-ODD1" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-ODD1.png" alt="fig ODD1">
+</div>
+<div class="title">Figure 23. A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from <a href="#Grimm2010">Grimm et al. (2010)</a> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the <code>precis</code> property of the root node.</div>
+</div>
+<div class="paragraph">
+<p>NB: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -6637,7 +6581,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>An aspect of <em>ModelMaker</em> we have only touched on so far, is the graph layout system.</p>
 </div>
 <div class="paragraph">
-<p>While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges. The advantage in using a graph is that the huge number of options possible can be constrained by context. For example, to have a dynamic <code>process</code>, it makes sense that it&#8217;s associated with a particular <code>timer</code>, that other processes working at the same rate are associated with the same <code>timer</code> and that all timers are coordinated by the one <code>timeline</code>. The user interface for problems such as this would be very error-prone if presented say, as a series of dialog boxes.</p>
+<p>While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges. The advantage in presenting the specifications as a graph is that the huge number of options possible can be constrained by context. For example, to have a dynamic <code>process</code>, it makes sense that it&#8217;s associated with a particular <code>timer</code>, that other processes working at the same rate are associated with the same <code>timer</code> and that all timers are coordinated by the one <code>timeline</code>. The user interface for problems such as this would be very error-prone if presented say, as a series of dialog boxes.</p>
 </div>
 <div class="paragraph">
 <p><em>ModelMaker</em> has a number of features to help arrange the graph display. These fall into three categories: arranging, hiding and resizing.</p>
@@ -6649,13 +6593,19 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Two of the Tree methods produce a radial layout. These are best suited to examining nodes that have many children such as a record with many fields.</p>
 </div>
 <div class="paragraph">
-<p>All Tree methods allow selecting any node as the root of the tree. This is achieved from the popup menu of each node. When the 're-apply layout' button is pressed ('<strong>L</strong>') while using a Tree method, the root of the tree becomes the root of the graph (<code>3worlds:Tut1</code>).</p>
+<p>All Tree methods allow selecting any node as the root of the tree (<code>Ctrl right-click</code>) on any node. The selectded node will have a black circle around it and its name will appear in the tool bar. The graph is rearranged after re-applying the layout ('<strong>L</strong>').</p>
+</div>
+<div id="fig-new-root" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-new-root.png" alt="fig new root">
+</div>
+<div class="title">Figure 24. Tutorial 1 specification graph using <code>system:sys1</code> as the display root.</div>
 </div>
 <div class="paragraph">
-<p>When a project is first created, the default layout is an <strong>orderedTree</strong>. To change to other layouts, use the local popup menu for any node. This layout persists for repeated applications of the layout function until another is chosen.</p>
+<p>When a project is first created, the default layout is an <strong>orderedTree</strong>. To change to other layouts, use buttons in the tool bar (<strong>L1, L2, L3, L4</strong>). This layout persists for repeated applications of the layout (<strong>L</strong>) button until another is chosen.</p>
 </div>
 <div class="paragraph">
-<p>You can add a random displacement to nodes to help prevent node and edge text overlapping. This setting is applied whenever the layout is re-applied.</p>
+<p>You can add a random displacement to nodes to help prevent node and edge text overlapping (<strong>Jitter</strong> from the tool bar). This setting is applied whenever the layout is re-applied.</p>
 </div>
 <div class="paragraph">
 <p>Finally, you can of course move a node anywhere within the graph window.</p>
@@ -6678,13 +6628,10 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p><strong>&gt;|</strong> Move all isolated nodes to one side (after re-applying the layout)</p>
 </li>
 <li>
-<p><strong>Show neighbourhood</strong>:  With this feature, you can choose to show only nodes within a given path distance from a selected node.</p>
-</li>
-<li>
-<p><strong>A</strong>: Show all nodes. That is, undo the above operation.</p>
-</li>
-<li>
 <p>change the node and edge names by hiding or showing either or both roles and names with the <code>N-text</code> and <code>E-text</code> drop-down lists.</p>
+</li>
+<li>
+<p>Hold down the <code>Shift</code> key while moving the mouse over any node. This highlights this node and any neighbours within the <strong>path length</strong>. The path length can be set from the tool bar. The default is '1'.</p>
 </li>
 </ul>
 </div>
@@ -6708,26 +6655,13 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </ul>
 </div>
 <div class="paragraph">
-<p>As an exercise if you wish, try displaying just the nodes with <em>cross-links</em> using the SpringGraph layout. This is a common way to look at just the <em>cross-link</em> relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant <em>parent-child</em> relationships make useful additions to the ODD appendix.</p>
+<p>As an exercise if you wish, try displaying just the nodes with <em>cross-links</em> using the SpringGraph layout (<strong>L4</strong>). This is a common way to look at just the <em>cross-link</em> relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant <em>parent-child</em> relationships make useful additions to the ODD appendix.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Expand all sub-trees from the root node.</p>
-</li>
-<li>
-<p>Collapse <code>record:AVPopulation</code> and <code>record:AVEphemeral</code> from <code>predefined:*categories*</code> (these edges are irrelevant here).</p>
-</li>
-<li>
-<p>Hide all parent-child lines ('<strong>&lt;</strong>').</p>
-</li>
-<li>
-<p>Set isolated nodes to be moved to one side when layout is next applied ('<strong>&gt;|</strong>').</p>
-</li>
-<li>
-<p>Right-click on any node and select <code>Apply layout &#8594; SpringGraph</code>.</p>
-</li>
-</ol>
+<div id="fig-edge-only" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-edge-only.png" alt="fig edge only">
+</div>
+<div class="title">Figure 25. A view of the specification graph for Tutorial 1 showing only relevant <em>cross-links</em> using using the Spring layout (<strong>L4</strong>).</div>
 </div>
 <div class="paragraph">
 <p>That&#8217;s the end of this tutorial. Recreate this project at anytime from the main menu (<code>Project &#8594; New &#8594; Tutorials &#8594; 1 Logistic</code>).</p>
@@ -6756,7 +6690,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>In <em>Eclipse</em>, create an new Java project and name it <code>tut2</code> (first letter lowercase).</p>
+<p>In <em>Eclipse</em>, create an new Java project and name it <code>tut2</code> (first letter lower case).</p>
 </li>
 <li>
 <p>Right-click on the new project and select  <code>properties &#8594; Java Build Path</code>.</p>
@@ -6829,7 +6763,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="sect3">
 <h4 id="truewriting-java-code"><a class="anchor" href="#truewriting-java-code"></a>5.2.4. Writing Java code</h4>
 <div class="paragraph">
-<p>In the <code>src</code> folder of <code>tut2</code>, you&#8217;ll now find a new package called <code>code</code> and <code>code.sys1</code>. These have been generated by <em>ModelMaker</em> upon linking. In the <code>code</code> package is a Java file with the same name as the 3Worlds project: <code>Tut2.java</code>. This single class is where you add all your code. The other classes in <code>code.sys1</code> are not intended to be edited. If you do edit these, your edits will be overwritten whenever the specifications are edited in <em>ModelMaker</em>.</p>
+<p>In the <code>src</code> folder of <code>tut2</code>, you&#8217;ll now find a new package called <code>code</code> and <code>code.sys1</code>. These have been generated by <em>ModelMaker</em> upon linking. In the <code>code</code> package is a Java file with the same name as the 3Worlds project: <code>Tut2.java</code>. This single class is where you add all your code. The other classes in the <code>generated</code> package are not intended to be edited. If you do edit these, your edits will be overwritten whenever the specifications are edited in <em>ModelMaker</em>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -6879,10 +6813,10 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Because these two methods are mapped to this generated file from the specifications created in <em>ModelMaker</em>, it follows that changes to the specifications may result in changes to these methods. So the question arises, how does <em>ModelMaker</em> manage this without losing the Java code you write?</p>
 </div>
 <div class="paragraph">
-<p>If there have been changes to the number, name or type of <code>function</code> used in the specification, changes to anything in the <code>dataDefinition</code> sub-tree, or changes to the <em>roles</em> of <code>components</code>, <em>ModelMaker</em> will back up your old file as a text file with a unique name (e.g <code>_Tut2_1.txt</code>,<code>_Tut2_2.txt</code> etc&#8230;&#8203;) within the current java package. This way you can copy and paste you code back to the proper place. Otherwise _ModelMaker_ will never overwrite this file.</p>
+<p>If there have been changes to the number, name or type of <code>function</code> used in the specification, changes to anything in the <code>dataDefinition</code> sub-tree, or changes to the <em>roles</em> of <code>components</code>, <em>ModelMaker</em> will back up your old file as a text file with a unique name (e.g <code>_Tut2_1.txt</code>,<code>_Tut2_2.txt</code> etc&#8230;&#8203;) within the current java package. This way you can copy and paste you code back to the proper place. Otherwise <em>ModelMaker</em> will never overwrite this file.</p>
 </div>
 <div class="paragraph">
-<p>When <em>ModelMaker</em> searches for differences between previous and current versions of this Java file, it will ignore any comments and import statements and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themselves.</p>
+<p>When <em>ModelMaker</em> searches for differences between previous and current versions of this Java file, it will ignore any comments, import statements and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themselves.</p>
 </div>
 <div class="paragraph">
 <p>If the task list is empty, you can now execute the specifications by deploying them from <em>ModelMaker</em>.</p>
@@ -6893,7 +6827,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="olist arabic">
 <ol class="arabic" start="2">
 <li>
-<p>Open a terminal, change to your project directory and enter the following text: <code>java -jar Tut1.jar</code></p>
+<p>Open a terminal, change to your project directory and enter the following text: <code>java -jar Tut2.jar</code></p>
 </li>
 </ol>
 </div>
@@ -6906,7 +6840,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Once the specifications are valid (i.e no tasks in the task list) you can quit <em>ModelMaker</em> and debug your code from the IDE.</p>
 </div>
 <div class="paragraph">
-<p>In the default package of the linked java project (<code>tut2</code>) is a java file called <code>UserCodeRunner.java</code>. This was created the first time you linked the project made with <em>ModelMaker</em> to the Java project. By placing breakpoints in the methods you added to <code>Tut2.java</code> above, you can debug by running from this <code>main</code> class. The correct args have already been provided.</p>
+<p>In the default package of the linked java project (<code>tut2</code>) is a java file called <code>UserCodeRunner.java</code>. This was created the first time you linked the project made with <em>ModelMaker</em> to the Java project. By placing breakpoints in the methods you added to <code>Tut2.java</code> above, you can debug by running from this <code>main</code> class. The correct command-line arguments have already been provided.</p>
 </div>
 </div>
 </div>
@@ -6922,7 +6856,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="sect3">
 <h4 id="trueintroduction-3"><a class="anchor" href="#trueintroduction-3"></a>5.3.1. Introduction</h4>
 <div class="paragraph">
-<p>This tutorial introduces the use of tables in <em>ModelMaker</em> by implementing a multi-species competitive Lotka-Volterra equation (CLV).</p>
+<p>This tutorial introduces the use of tables in <em>ModelMaker</em> by implementing a multi-species <a href="https://en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations">competitive Lotka-Volterra equation</a> (CLV).</p>
 </div>
 <div class="paragraph">
 <p>The equation has three <em>constants</em> and one <em>driver</em>; all of which are tables:</p>
@@ -6930,16 +6864,30 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="ulist">
 <ul>
 <li>
-<p><em>K</em>: carrying capacity</p>
+<p>constants:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>K</em>: carrying capacity;</p>
 </li>
 <li>
-<p><em>r</em>: growth rate</p>
+<p><em>r</em>: growth rate;</p>
 </li>
 <li>
-<p><em>alpha</em>: interspecific competition coefficient; and a driver,</p>
+<p><em>alpha</em>: inter-specific competition coefficient;</p>
 </li>
+</ul>
+</div>
+</li>
+<li>
+<p>driver:</p>
+<div class="ulist">
+<ul>
 <li>
 <p><em>x</em>: population size.</p>
+</li>
+</ul>
+</div>
 </li>
 </ul>
 </div>
@@ -6947,7 +6895,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="sect3">
 <h4 id="truespecifications-2"><a class="anchor" href="#truespecifications-2"></a>5.3.2. Specifications</h4>
 <div class="paragraph">
-<p>Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. <em>ModelMaker</em> provides a library of model templates for common model patterns such this. One of these, the <code>SimpleClock</code> template, has already defined a system which is <em>permanent</em>, <em>atomic</em>, belongs to the <em>arena</em>, has a 'clock' timer driving a single process and function, a simple experimental design and a basic user interface.</p>
+<p>Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. <em>ModelMaker</em> provides a library of model templates for common model patterns such this. One of these, the <code>SimpleClock</code> template, has already defined a basic structure, dynamics and a minimal user interface.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -6956,10 +6904,22 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </li>
 </ol>
 </div>
+<div id="fig-simple-clock-template" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial3IMG/fig-simple-clock-template.png" alt="fig simple clock template">
+</div>
+<div class="title">Figure 26. The appearance of <em>ModelMaker</em> after creating a new project from the 'SimpleClock' template.</div>
+</div>
 <div class="sect4">
 <h5 id="truedata-definition-2"><a class="anchor" href="#truedata-definition-2"></a>Data definition</h5>
 <div class="paragraph">
-<p>Data is defined through the recursive use of tables and records: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records. Tables can have any number of dimensions.</p>
+<p>Data is defined through the recursive use of records and tables: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records. Tables can have any number of dimensions.</p>
+</div>
+<div id="fig-records-tables" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial3IMG/fig-records-tables.svg" alt="fig records tables">
+</div>
+<div class="title">Figure 27. Data is defined through the recursive use of records and tables. A definition begins with a record. Leaf nodes of the resulting graph must be either Fields or Tables that define a standard Java type (element) such as Double, Integer etc.</div>
 </div>
 <div class="paragraph">
 <p>There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for <em>alpha</em>, a 1-dimensional table for  <em>r</em> and <em>K</em> and another 1-dimensional table for the population <em>x</em>.</p>
@@ -6970,16 +6930,13 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Collapse all sub-trees from the root node and then expand <code>dataDefinition:dDef</code>.</p>
 </li>
 <li>
-<p>Delete <code>record:decs</code>. This record was provided by the template and is not needed here.</p>
-</li>
-<li>
 <p>Create a <code>table</code> as a child of <code>record:cnsts</code>, name it 'alpha', choose <code>dataElementType</code> and then set its type to <code>Double</code> (the default).</p>
 </li>
 <li>
 <p>Create a second <code>table</code> as child of <code>record:cnsts</code>, name it 'r' and choose <code>dataElementType</code> and then set its type to <code>Double</code>.</p>
 </li>
 <li>
-<p>Create a second <code>table</code> as child of <code>record:cnsts</code>, name it 'K' and choose <code>dataElementType</code> and then set its type to <code>Double</code>.</p>
+<p>Create a third <code>table</code> as child of <code>record:cnsts</code>, name it 'K' and choose <code>dataElementType</code> and then set its type to <code>Double</code>.</p>
 </li>
 <li>
 <p>Create a  <code>table</code> as child of <code>record:drvs</code>, name it 'x', choose <code>dataElementType</code> and set its type to <code>Double</code>.</p>
@@ -6993,7 +6950,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Only one dimensioner is needed: the number of species. This is done by creating a single <code>dimensioner</code> node to be associated with all these tables.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="8">
+<ol class="arabic" start="7">
 <li>
 <p>Create a <code>dimensioner</code> as a child of <code>dataDefinition:dtDef</code> and name it 'nspp' (number of species).</p>
 </li>
@@ -7003,20 +6960,10 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>A new task appears in the task list saying the 'size' property must be greater than zero.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="9">
+<ol class="arabic" start="8">
 <li>
 <p>Click on <code>dimensioner:nspp</code> and go to the <code>Selected properties</code> tab. Set a value of <code>npp#size</code> to 4 (four species).</p>
 </li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Finally, locate the <code>description</code> property for each of these tables and add the text from the introduction above. This text, together with other property meta-data such as <code>range</code> and <code>units</code>, appears as part of the Java documentation when generating Java code from <em>ModelMaker</em>. These descriptions are also used when generating the ODD document.</p>
-</div>
-<div class="paragraph">
-<p>There are now four tasks in the task list indicating we have yet to associate the dimensioner with the four tables. <em>K</em>, <em>r</em> and <em>x</em> have one dimension and <em>alpha</em> has two.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="10">
 <li>
 <p>Right-click on each table node in turn and select <code>New edge &#8594; dimensioner:nspp</code>. Repeat this for <code>table:alpha</code> to get the second dimension.</p>
 </li>
@@ -7026,7 +6973,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Now set the rank order for the indexing of <code>table:alpha</code>.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="11">
+<ol class="arabic" start="10">
 <li>
 <p>Click on <code>table:alpha</code> and examine its properties in the <code>Selected properties</code> editor.</p>
 </li>
@@ -7034,6 +6981,28 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Set the value of one of its rank properties to 1 - it doesn&#8217;t matter which.</p>
 </li>
 </ol>
+</div>
+<div id="fig-data-definition" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial3IMG/fig-data-definition.png" alt="fig data definition">
+</div>
+<div class="title">Figure 28. The <code>dataDefinition</code> specifications for Tutorial 3: three tables of one dimension and one of two dimensions ('alpha'). This size of each table is the same so only one <code>dimensioner</code> is required.</div>
+</div>
+<div class="paragraph">
+<p>Finally, add some meta-data to each table. This meta-data assists in documenting your Java source code and ODD documentation. Many nodes have optional properties. One such optional property is <code>description</code> for tables and fields.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="12">
+<li>
+<p>Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property.</p>
+</li>
+</ol>
+</div>
+<div id="fig-description-property-option" class="imageblock text-center">
+<div class="content">
+<img src="../source/tutorial3IMG/fig-description-property-option.png" alt="fig description property option">
+</div>
+<div class="title">Figure 29. Adding a <code>description</code> property to the table 'K'.</div>
 </div>
 </div>
 <div class="sect4">
@@ -7047,10 +7016,10 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Expand the <code>system.sys1</code> sub-tree from the root node and re-apply the layout.</p>
 </li>
 <li>
-<p>Right-click on <code>Function:F</code>, select <code>Rename node</code> and name it 'Growth'. If the prompt is unresponsive, remember to begin the name with an upper case letter.</p>
+<p>Right-click on <code>Function:F1</code>, select <code>Rename node</code> and name it 'Growth'. If the prompt is unresponsive, remember to begin the name with an upper case letter.</p>
 </li>
 <li>
-<p>Create a <code>dataTracker</code> as a child of <code>process:p</code> and select <code>DataTrackerD0</code> as the type (the default).</p>
+<p>Create a <code>dataTracker</code> as a child of <code>process:p1</code> and select <code>DataTrackerD0</code> as the type (the default).</p>
 </li>
 <li>
 <p>Create an edge from the data tracker to <em>x</em>: <code>trackTable &#8594; table:x</code>.</p>
@@ -7079,7 +7048,7 @@ The prompt shows the range of this table - here [0:3] being 4 elements. We can s
 </ol>
 </div>
 <div class="paragraph">
-<p>This indexing will provide four data outputs. Indexing statements can select any number of contiguous or discontiguous table elements. The syntax is the same as that found in the 'R` statisical software.</p>
+<p>This indexing will provide four data outputs. Indexing statements can select any number of contiguous or discontiguous table elements. The <a href="#data-tracking">syntax</a> is similar to that found in the <a href="https://www.r-project.org/"><strong>R</strong> statisical software</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -7096,15 +7065,15 @@ The prompt shows the range of this table - here [0:3] being 4 elements. We can s
 <p>Add a <code>tab</code> as a child of <code>userInterface:gui</code>.</p>
 </li>
 <li>
-<p>Add a <code>widget</code> as a child of <code>tab:tab1</code>, name it 'srsx' and select <code>SimpleTimeSeriesWidget</code> as the widget class.</p>
+<p>Add a <code>widget</code> as a child of <code>tab:tab1</code>, name it 'srsx' and select <code>TimeseriesWidget1</code> as the widget class.</p>
 </li>
 <li>
-<p>Add a second <code>widget</code> as a child of <code>tab:tab1</code>, name it 'tblx' and select <code>SimpleDM0Widget</code>.</p>
+<p>Add a second <code>widget</code> as a child of <code>tab:tab1</code>, name it 'tblx' and select <code>TableWidget1</code>.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>Both these widgets are compatible with this data tracker class: the <code>SimpleTimeSeriesWidget</code> produces a chart while the <code>SimpleDM0Widget</code> displays the data as a continuously updated table. The task list requires these widgets to be connected to a data tracker.</p>
+<p>Both these widgets are compatible with this data tracker class: the <code>TimeseriesWidget1</code> produces a chart while the <code>TableWidget1</code> displays the data as a continuously updated table. The task list requires these widgets to be connected to a data tracker.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="5">
@@ -7152,7 +7121,7 @@ for (int i = 0;i&lt;x.size(0); i++)
 </div>
 </div>
 <div class="paragraph">
-<p>The above method simply initialises the equation constants: growth rate (<em>r</em>), carrying capacity (<em>K</em>) and the interspecific competition coefficient (<em>alpha</em>)to random values and the population size (<em>x</em>) to 0.2.</p>
+<p>The above method simply initialises the equation constants: growth rate (<em>r</em>), carrying capacity (<em>K</em>) and the interspecific competition coefficient (<em>alpha</em>) to random values and the population size (<em>x</em>) to 0.2.</p>
 </div>
 <div class="paragraph">
 <p>There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNGs into groups. For example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality.</p>
@@ -7161,7 +7130,7 @@ for (int i = 0;i&lt;x.size(0); i++)
 <p><em>ModelMaker</em> has two types of RNG classes in addition to the standard Java RNG. These two are faster and produce streams of higher quality than the standard Java RNG. There are also various ways of seeding RNGs to ensure their uniqueness and to help with debugging.</p>
 </div>
 <div class="paragraph">
-<p>'growth`:</p>
+<p><code>growth</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7801,11 +7770,61 @@ else
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="truebibliography"><a class="anchor" href="#truebibliography"></a>Bibliography</h2>
+<div class="sectionbody">
+<div id="Bousquet2004" class="paragraph">
+<p>Bousquet, F., &amp; Le Page, C. (2004). Multi-agent simulations and ecosystem management: a review. <em>Ecological Modelling</em>, 176:313–332. <a href="https://doi.org/10.1016/j.ecolmodel.2004.01.011" class="bare">https://doi.org/10.1016/j.ecolmodel.2004.01.011</a></p>
+</div>
+<div id="Coquillard1997" class="paragraph">
+<p>Coquillard, P., &amp; Hill, D. (1997). <em>Modélisation et simulation d’écosystèmes. Des modèles déterministes aux simulations à événements discrets</em>. Masson, Paris.</p>
+</div>
+<div id="Flint2006" class="paragraph">
+<p>Flint, S. R. (2006). <em>Aspect-Oriented Thinking - An approach to bridging the disciplinary divides</em>. PhD, Australian National University.</p>
+</div>
+<div id="Gignoux2011" class="paragraph">
+<p>Gignoux, J., I.D. Davies, S.R. Flint, &amp; J.D. Zucker (2011). The Ecosystem in Practice: Interest and
+Problems of an Old Definition for Constructing Ecological Models. <em>Ecosystems</em> 14: 1039‑54. <a href="https://doi.org/10.1007/s10021-011-9466-2" class="bare">https://doi.org/10.1007/s10021-011-9466-2</a>.</p>
+</div>
+<div id="Gignoux2017" class="paragraph">
+<p>Gignoux, J., G. Chérel, I.D. Davies, S.R. Flint, &amp; E. Lateltin (2017). Emergence and Complex Systems: The
+Contribution of Dynamic Graph Theory. <em>Ecological Complexity</em> 31: 34‑49. <a href="https://doi.org/10.1016/j.ecocom.2017.02.006" class="bare">https://doi.org/10.1016/j.ecocom.2017.02.006</a>.</p>
+</div>
+<div id="Grimm2005" class="paragraph">
+<p>Grimm, V., &amp; Railsback, S. (2005). <em>Individual-based modelling and ecology</em>. Princeton University Press.</p>
+</div>
+<div id="Grimm2010" class="paragraph">
+<p>Grimm V, Berger U, DeAngelis DL, Polhill JG, Giske J, Railsback SF (2010) The ODD protocol: A review and first update. <em>Ecological Modelling</em> 221:2760–2768.</p>
+</div>
+<div id="Harary1997" class="paragraph">
+<p>Harary, F., &amp; Gupta, G. (1997). Dynamic graph models. <em>Mathematical and Computer Modelling</em>, 25(7), 79–87. <a href="https://doi.org/10.1016/S0895-7177(97)00050-2" class="bare">https://doi.org/10.1016/S0895-7177(97)00050-2</a></p>
+</div>
+<div id="Lim2009" class="paragraph">
+<p>Lim, W. H., &amp; Roderick, M. L. (2009). <em>An atlas of the global water cycle based on the IPCC AR4 climate models.</em> ANU E Press.</p>
+</div>
+<div id="Melilo1995" class="paragraph">
+<p>Melilo, J. M., Borchers, J., Chaney, J., Fisher, H., Fox, S., Haxeltine, A., Janetos, A., Kicklighter, D. C., Kittel, T. G. F., McGuire, A. D., McKeown, R., Neilson, R., Nemani, R., Ojima, D. S., Painter, T., Pan, Y., Parton, W. J., Pierce, L., Pitelka, L., … Woodward, F. I. (1995). Vegetation/ecosystem modeling and analysis project: comparing biogeography and biogeochemistry models in a continental-scale study of terrestrial ecosystem responses to climate change and CO<sub>2</sub> doubling. <em>Global Biogeochemical Cycles</em>, 9(4), 407–437.</p>
+</div>
+<div id="Parton1988" class="paragraph">
+<p>Parton, W., Stewart, J., &amp; Cole, C. (1988). Dynamics of C,N, P and S in grassland soils: a model. <em>Biogeochemistry</em>, 5, 109–131.</p>
+</div>
+<div id="Roxburgh2004" class="paragraph">
+<p>Roxburgh, S. H., Barrett, D. J., Berry, S. L., Carter, J. O., Davies, I. D., Gifford, R. M., Kirschbaum, M. U. E., McBeth, B. P., Noble, I. R., Parton, W. G., Raupach, M. R., &amp; Roderick, M. L. (2004). A critical overview of model estimates of net primary productivity for the Australian continent. <em>Functional Plant Biology</em>, 31(11), 1043–1059.</p>
+</div>
+<div id="Tansley1935" class="paragraph">
+<p>Tansley, A G. (1935). The use and abuse of vegetational concepts and terms. <em>Ecology</em> 16: 284‑307.</p>
+</div>
+<div id="Zucker2003" class="paragraph">
+<p>Zucker, J.D. (2003). A Grounded Theory of Abstraction in Artificial Intelligence. <em>Philosophical Transactions of
+the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https://doi.org/10.1098/rstb.2003.1308" class="bare">https://doi.org/10.1098/rstb.2003.1308</a>.</p>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.5<br>
-Last updated 2021-05-03 10:03:15 +0200
+Version 1.6<br>
+Last updated 2021-05-14 15:51:55 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

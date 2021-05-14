@@ -10,13 +10,14 @@ As you construct the graph, _ModelMaker_ is constantly checking and providing fe
 
 While this process greatly accelerates model development, a more important aim is to provide a firm basis for model comparison. As all models developed with _ModelMaker_ must comply with the _archetype_, structural differences become apparent when comparing specifications. That is, while you can construct any model, the design, being constrained by the _archetype_, will not be arbitrary. Of course, this is not the only difference between models. The code for each function defined by the specifications will be particular but at least these differences are encapsulated at specific places in the model implementation.
 
-The specification graph is both a tree and a directed graph. Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships.
+The specification graph is both a tree and a directed graph (<<truegeneral-concepts-structure-of-a-3worlds-configuration>>). Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as _cross-links_ to distinguish them from edges that represent _parent-child_ relationships.
+
 
 ==== Installation
 
 Installing _ModelMaker_ is very simple: create a directory called `.3w` in your home directory and copy `tw-dep.jar` to it. Then copy `modelMaker.jar` to your home directory. To start _modelMaker_, open a terminal and type: `java -jar modelMaker.jar`. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system.
 
-NOTE: To compile your own models, the Java Development Kit (<<trueprerequisites,JDK>>) must be installed on your computer. 
+NOTE: To compile your own models, the Java Development Kit (JDK)  must be installed on your computer (<<trueprerequisites>>). 
 
 ==== Creating a new 3Worlds project
 
@@ -29,7 +30,7 @@ NOTE: To compile your own models, the Java Development Kit (<<trueprerequisites,
 .The appearance of _ModelMaker_ after creating a new project from the 'Blank' template.
 image::tutorial1IMG/fig-blank-mm.png[align="center"]
 
-The black node (`3worlds:Tut1`) is the _root_ of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined (<<fig-blank-template>>). 
+The black node (`3worlds:Tut1`) is the _root_ of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined (<<fig-blank-template>>, <<trueconfiguration-options-reference>>). 
 
 All nodes are identified by a _label:name_ pair. The _label_ is the type of node, representing its role, while the _name_ is a unique identifier. A few node types, of which the root node is one, must have names beginning with an upper case letter. These nodes are used to generate Java classes when the simulation compiles.
 
@@ -81,15 +82,15 @@ On the other hand, you can delete project directories at any time if you wish. I
 
 Having created `Tut1`, the task list shows two actions are required (<<fig-blank-template>>). These tasks can be dealt with in any order but in general, a logical approach is to build the specifications as follows: 
 
-... *data definition*: the data structures required;
-... *dynamics*: define how the modelled system evolves over time.
-... *structure*: define the organisation of components - their roles and relationships. 
+... *data definition*: the data structures required (cf. <<truethe-datadefinition-node>> for full reference);
+... *dynamics*: define how the modelled system evolves over time (cf. <<truethe-systemdynamics-node>> for full reference).
+... *structure*: define the organisation of components - their roles and relationships (cf. <<truethe-systemstructure-node>> for full reference). 
 
-For the most part, these tutorials will proceed in this order and leave defining the simulation's *user interface* and *experiment* design until last. In fact, the Blank template has provide a minimum specification for the *experiment* sub-tree (a single run of the model) and  the *user interface* (a simulation controller).
+For the most part, these tutorials will proceed in this order and leave defining the simulation's *user interface* (<<truethe-userinterface-node>>) and *experiment* design (<<truethe-experiment-node>>) until last. In fact, the Blank template has provide a minimum specification for the *experiment* sub-tree (a single run of the model) and  the *user interface* (a simulation controller).
 
 ===== Data definition
 
-The logistic equation we will implement is: _x(t+1) = rx(t)(1-x(t)_. Though simple, it has interesting chaotic behaviour for values of _r_ between 3.7 and 4.0. All we need do for the data definition section is to define the parameter _r_ and the state variable _x_. 
+The logistic equation we will implement is: _x(t+1) = rx(t)(1-x(t))_. Though simple, it has interesting chaotic behaviour for values of _r_ between 3.7 and 4.0. All we need do for the data definition section is to define the parameter _r_ and the state variable _x_. 
 
 From here on and throughout these tutorials, parameters are called _constants_ (data that does not change over the course of a simulation) and state variables are called _drivers_ (data that drives the simulation from one time to the next).
 
@@ -131,11 +132,11 @@ In the present case, the main task is to call the logistic equation a set number
 The `dynamics` sub-tree (lime green) is a child of the `system` node - the root of the modelled system that defines both its dynamics and its structure. These nodes are already present in the "Blank" template we started with.
 The `dynamics` node is the specification of a type of simulator. There can be many simulators (instances) of this specification running in parallel depending on the experimental design. 
 
-A dynamic system must have a single definition of the time scale. There are ten different types of time scale available: all of them exact sub-divisions of time except for the Gregorian scale type which implements the standard Gregorian calendar. The 'Blank' template has already defined a `timeline` with an `ARBITRARY` time scale which is sufficient for this tutorial. 
+A dynamic system must have a single definition of the <<truetime-line,time scale>>. There are ten different types of time scale available: all of them define exact sub-divisions of time except for the `GREGORIAN` scale type which implements the standard Gregorian calendar. The 'Blank' template has already defined a `timeline` with an `ARBITRARY` time scale which is sufficient for this tutorial. 
 
 In the task list is an action asking that a `timer` be added to `timeline:tmLn1`.
 
-. Create a `timer` as a child of `timeline`. Here an extra prompt appears asking for the class of the timer: {`ClockTimer`, `EventTimer`, `ScenarioTimer`}. Select `ClockTimer`. This timer class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularities such as leap years are managed. 
+. Create a <<truetimers,`timer`>> as a child of `timeline`. Here an extra prompt appears asking for the class of the timer: {`ClockTimer`, `EventTimer`, `ScenarioTimer`}. Select `ClockTimer`. This timer class increments time by a constant step during simulation, unless the timeline uses a Gregorian scale in which case irregularities such as leap years are managed. 
 
 Two new tasks have been added to the task list indicating that `dt` and `nTimeunits` must be greater than 1.0.
 
@@ -143,7 +144,13 @@ Two new tasks have been added to the task list indicating that `dt` and `nTimeun
 
 . In the property editor, locate these two properties (properties of `timer:tmr1`) and set them to 1.0.
 
-`dt` is the time unit size and `nTimeUnits` is the number of time units per simulation step. There are 22 time unit types available ranging from microseconds to millennia. The current default value of `UNSPECIFIED` is fine for this tutorial - here time is just a sequence of steps. 
+Clock timers use their own time units to count time. The time unit is specified by: 
+
+* the `timeUnit` property, which tells in which measurement unit time is to be expressed. There are 22 time unit types available ranging from microseconds to millennia, and  constrained by the choice of the time scale. The current default value of `UNSPECIFIED` is fine for this tutorial, as here time is just a sequence of steps; 
+
+* `nTimeUnits`, i.e. the number of measurement units per timer unit - for example, a timer could use '2 days' as its basic time unit. It means that an elementary time tick in this timer represents 2 days, so (time = 11) means 22 days, etc. It is the finest _grain_ at which time can be measured with this timer. In this tutorial, 1 is fine as we simply use a sequence of steps.
+
+Finally, `dt` is the number of time _grains_ per time step. Here, 1 will do. This tutorial runs with time steps of 1 unspecified unit, i.e just simple ticks.
 
 Note that a model can have any number of `timers` using any of the available time steps and time units as long as the time units selected are compatible with the parent `timeline`. The task messages will indicate if this is not the case. Because the specifications allow for more than one system, it follows there can be many dynamics sub-trees, each with their own time system.
 
@@ -151,15 +158,15 @@ There is currently a task asking that a `process` be added to `timer:tmr1`.
 
 [start = 3]
 
-. Create a process node as child of `timer:tmr1`. 
+. Create a <<trueprocess,`process`>> node as child of `timer:tmr1`. 
 
-A `process` defines a set of computations acting on model components driven at the rate of the parent `timer`. A `component` is defined as a unit of simulation. It can be any physical or biology entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).
+A `process` defines a set of computations acting on model components driven at the rate of the parent `timer`. A `component` is defined as a unit of simulation. It can be any physical or biological entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).
 
 Processes can be composed of any number of functions of various types (much more on this later). We need just one function to implement the logistic equation - a `ChangeState` function that takes the current state of a component and calculates the next state.
 
 [start = 4]
 
-. Create a `function` as a child of `process:p1`, name it `Chaos` and select `ChangeState` as its type.
+. Create a <<truefunction,`function`>> as a child of `process:p1`, name it `Chaos` and select `ChangeState` as its type.
 
 
 The function type can't be changed after creating node, so if you make a mistake, delete and recreate it (`Delete` from the popup menu or `Undo` from the main menu).
@@ -194,7 +201,7 @@ The component is _permanent_ because it doesn't die; it's  _atomic_ simply becau
 
 While this is complicated for such a simple model, later tutorials will show how this arrangement can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
 
-To create this role, we use nodes of the type `categorySet` and `category`. A `categorySet` is a set of mutually exclusive categories. By that we mean a `component` can only be associated with one category of a given categorySet. So for example _permanent_ and _ephemeral_  are two categories within a set called _lifespan_ and clearly, a component can only be one or the other. Categories and CategorySets are recursive: a CategerySet contains Categories and Categories can contain CategorySets without limit. 
+To create this role, we use nodes of the type `categorySet` and `category`. A `categorySet` is a set of mutually exclusive categories. By that we mean a `component` can only be associated with one category of a given categorySet. So for example _permanent_ and _ephemeral_  are two categories within a set called _lifespan_ and clearly, a component can only be one or the other. Categories and CategorySets are recursive: a CategorySet contains Categories and Categories can contain CategorySets without limit. 
 
 Apart from the `system` node doubling as a `component`, an additional convenience is provided: a sub-tree of predefined category sets and categories. We use these nodes to define the role described above. To see this sub-tree:
 
@@ -222,7 +229,7 @@ We are now in a position to define the _role_ of the `system` node (a.k.a. `comp
 
 [#fig-system-role]
 .The specification of the system component in belonging to the three categories: _permanent_; _atomic_; and, _arena_.
-image::tutorial1IMG/fig-system.role.png[align="center"]
+image::tutorial1IMG/fig-system-role.png[align="center"]
 
 The system's role of belonging to the _atomic_, _permanent_ and _arena_ categories is indicated by three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` in the tool bar, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongsTo category:*arena*`.
 
@@ -257,7 +264,7 @@ image::tutorial1IMG/fig-deploy1.png[align="center"]
 . Right-click the root node and select 'Collapse -> predefined:*categories*'.
 . Again, right-click the root node and select 'Expand -> experiment:expt' and 'UserInterface:gui'.
 . Reapply the layout (*L*).
-. Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run-time application: _ModelRunner_. 
+. Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run-time application: _ModelRunner_ (cf. <<truesimulation-reference-running-a-simulation-experiment-with-modelrunner>> for a full reference). 
 
 At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. This is the `ControlWidget1` shown in the figure above that was included by default in the 'Blank' template. The _run_ button becomes a _pause_ button while running and the _stop_ button resets the simulator to it's starting state. 
 
@@ -284,7 +291,7 @@ For this widget to receive values of _x_, something must post values of _x_ to t
 
 [start = 8]
 
-. Create a `dataTracker` as a child of `process:p1` and choose `DataTrackerD0` as it class. This class of data tracker is suitable for scalar data such as _x_.
+. Create a `dataTracker` as a child of `process:p1` and choose `DataTracker0D` as it class. This class of data tracker is suitable for scalar data such as _x_.
 
 . Create an edge from the `dataTracker` to _x_ by selecting `New edge -> trackField - > field:x`. 
 
@@ -359,12 +366,14 @@ This creates  an ODD template (Overview, Design concepts and Details) (`Tut1.odt
 Most word processors can read this standard format, native to LibreOffice, including Microsoft Word.
 
 [#fig-ODD1]
-.A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from Grimms et al 2011 (ref?) with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node.
+.A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from <<bibliography.adoc#Grimm2010,Grimm et al. (2010)>> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node.
 image::tutorial1IMG/fig-ODD1.png[align="center"]
 
-NB: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.  
+NB: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.
 
 ==== Graph layouts
+
+// Ian: Shouldnt this section be moved to the reference, section 3.2 ?
 
 An aspect of _ModelMaker_ we have only touched on so far, is the graph layout system.
 
@@ -410,6 +419,7 @@ As an exercise if you wish, try displaying just the nodes with _cross-links_ usi
 .A view of the specification graph for Tutorial 1 showing only relevant _cross-links_ using using the Spring layout (*L4*).
 image::tutorial1IMG/fig-edge-only.png[align="center"]
 
+// Ian: this image file is missing in the tutorial1IMG subdir
 
 That's the end of this tutorial. Recreate this project at anytime from the main menu (`Project -> New -> Tutorials -> 1 Logistic`).
 

@@ -2,14 +2,16 @@
 
 ==== Introduction 
 
-This tutorial introduces the use of tables in _ModelMaker_ by implementing a multi-species competitive Lotka-Volterra equation (CLV).
+This tutorial introduces the use of tables in _ModelMaker_ by implementing a multi-species https://en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations[competitive Lotka-Volterra equation] (CLV).
 
 The equation has three _constants_ and one _driver_; all of which are tables:
 
-- _K_: carrying capacity
-- _r_: growth rate
-- _alpha_: inter-specific competition coefficient; and,
-- _x_: population size (a driver). 
+* constants:
+- _K_: carrying capacity;
+- _r_: growth rate;
+- _alpha_: inter-specific competition coefficient;
+* driver:
+- _x_: population size. 
 
 ==== Specifications
 
@@ -28,7 +30,7 @@ Data is defined through the recursive use of records and tables: records can con
 
 [#fig-records-tables]
 .Data is defined through the recursive use of records and tables. A definition begins with a record. Leaf nodes of the resulting graph must be either Fields or Tables that define a standard Java type (element) such as Double, Integer etc.
-image::tutorial3IMG/fig-records-tables.png[align="center"]
+image::tutorial3IMG/fig-records-tables.svg[align="center"]
 
 There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for _alpha_, a 1-dimensional table for  _r_ and _K_ and another 1-dimensional table for the population _x_.
 
@@ -95,7 +97,7 @@ Although the task list is now empty (i.e. the specifications are now deployable)
 
 . Create an edge from the data tracker to _x_: `trackTable -> table:x`.
 
-SOMETHING Wrong with queries HERE
+// TODO: SOMETHING Wrong with queries HERE. Probably due to Datatrackers for tables being only half baked
 
 There are now two tasks in the list, one about 'indexing' and the other asking which 'component' to track. As with the previous tutorials, the component to track is the `system.sys1` node.
 
@@ -110,7 +112,7 @@ As we are using a scalar data tracker (`DataTrackerD0`) to follow a table, we mu
 . Click on `dataTracker:trk1` and in the _Selected properites_ tab, edit the `trks#index` property by clicking the editor button (*...*). 
 The prompt shows the range of this table - here [0:3] being 4 elements. We can select any or all of these elements. For now choose all of them ('[0:3]'). Check the validity of the entered expression with the 'validate' button. 
 
-This indexing will provide four data outputs. Indexing statements can select any number of contiguous or discontiguous table elements. The syntax is the same as that found in the 'R` statisical software.
+This indexing will provide four data outputs. Indexing statements can select any number of contiguous or discontiguous table elements. The <<data-tracking,syntax>> is similar to that found in the https://www.r-project.org/[**R** statisical software].
 
 ===== User interface
 
@@ -120,11 +122,11 @@ We can now add some additional widgets to the user interface as the template pro
 
 . Add a `tab` as a child of `userInterface:gui`.
 
-. Add a `widget` as a child of `tab:tab1`, name it 'srsx' and select `SimpleTimeSeriesWidget` as the widget class.
+. Add a `widget` as a child of `tab:tab1`, name it 'srsx' and select `TimeseriesWidget1` as the widget class.
 
-. Add a second `widget` as a child of `tab:tab1`, name it 'tblx' and select `SimpleDM0Widget`.
+. Add a second `widget` as a child of `tab:tab1`, name it 'tblx' and select `TableWidget1`.
 
-Both these widgets are compatible with this data tracker class: the `SimpleTimeSeriesWidget` produces a chart while the `SimpleDM0Widget` displays the data as a continuously updated table. The task list requires these widgets to be connected to a data tracker. 
+Both these widgets are compatible with this data tracker class: the `TimeseriesWidget1` produces a chart while the `TableWidget1` displays the data as a continuously updated table. The task list requires these widgets to be connected to a data tracker. 
 
 [start = 5]
 
@@ -158,7 +160,7 @@ for (int i = 0;i<x.size(0); i++)
     focalDrv.x.setByInt(0.2, i);
 -----------------
 
-The above method simply initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_)to random values and the population size (_x_) to 0.2. 
+The above method simply initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_) to random values and the population size (_x_) to 0.2. 
 
 There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNGs into groups. For example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality.
 
