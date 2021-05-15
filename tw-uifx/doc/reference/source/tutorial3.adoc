@@ -162,7 +162,7 @@ for (int i = 0;i<x.size(0); i++)
 
 The above method simply initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_) to random values and the population size (_x_) to 0.2. 
 
-There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNGs into groups. For example, one RNG can be assigned to functions of a particuar type such as those effecting reproduction or mortality.
+There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNGs into groups. For example, one RNG can be assigned to functions of a particular type such as those effecting reproduction or mortality.
 
 _ModelMaker_ has two types of RNG classes in addition to the standard Java RNG. These two are faster and produce streams of higher quality than the standard Java RNG. There are also various ways of seeding RNGs to ensure their uniqueness and to help with debugging.  
 
