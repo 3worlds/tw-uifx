@@ -101,16 +101,11 @@ Although the task list is now empty (i.e. the specifications are now deployable)
 
 There are now two tasks in the list, one about 'indexing' and the other asking which 'component' to track. As with the previous tutorials, the component to track is the `system.sys1` node.
 
-[start = 4]
+[start = 5]
 
 . Create the edge `trackComponent -> system:sys1` from the data tracker node.
 
-As we are using a scalar data tracker (`DataTrackerD0`) to follow a table, we must specify which elements of `table:x` to track. Indexing is a property of the edge between data tracker and the table. Edge properties appear in the property list of nodes that are at the start of the edge (thin line) - in this case `dataTracker:trk1`.
-
-[start = 5]
-
-. Click on `dataTracker:trk1` and in the _Selected properites_ tab, edit the `trks#index` property by clicking the editor button (*...*). 
-The prompt shows the range of this table - here [0:3] being 4 elements. We can select any or all of these elements. For now choose all of them ('[0:3]'). Check the validity of the entered expression with the 'validate' button. 
+As we are using a scalar data tracker (`DataTrackerD0`) to follow a table, we can specify which elements of the table to track. If we want to track all elements of the table, we need do nothing as a blank entry for the `trks#index` property assumes this. Indexing is a property of the edge between data tracker and the table. Edge properties appear in the property list of nodes that are at the start of the edge (thin line) - in this case `dataTracker:trk1`.
 
 This indexing will provide four data outputs. Indexing statements can select any number of contiguous or discontiguous table elements. The <<data-tracking,syntax>> is similar to that found in the https://www.r-project.org/[**R** statisical software].
 
@@ -131,8 +126,17 @@ Both these widgets are compatible with this data tracker class: the `TimeseriesW
 [start = 5]
 
 . Right-click on each of these widgets in turn and select `New edge -> trackSeries -> dataTracker:trks`.
+. Set the property `tblx#order` to '1' to arrange their positions in _ModelRunner_ as srsx on the left (`order` = 0) and tblx to the right (`order`=1).
 
 Save the specifications (`Ctrl+s`) and they're now ready to run. The next step is to create a Java project to write the 'Growth' and 'Init1' functions, the latter having been provided by the `SimpleClock` template we started this tutorial with. 
+
+[#fig-tree]
+.Tree graph of the final specifiation graph for Tutorial 3.
+image::tutorial3IMG/fig-tree.png[align="center"]
+
+[#fig-links]
+.Cross-links of the final specifiation graph for Tutorial 3.
+image::tutorial3IMG/fig-links.png[align="center"]
 
 ===== Link to a Java project
 
@@ -183,8 +187,15 @@ for (int i = 0; i < dxdt.length; i++)
     focalDrv.x.setByInt(x.getByInt(i) + dxdt[i] * dt * integrationStep, i);
 -----------------
 
+[#fig-javaDoc]
+.Example of the generated javaDoc for the `growth` function of Tutorial 3. The figure assumes correct meta-data has been added to the definitions of `K, r, alpha` and `x`.
+image::tutorial3IMG/fig-javaDoc.png[align="center"]
+
 The model is now ready to run. However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.
 
+[#fig-tut3-MR]
+._ModelRunner_ executing Tutorial 3. Note that the property `tab1#orientation` has be set to `vertical` is this figure. This displays the time series graph above the table.
+image::tutorial3IMG/fig-tut3-MR.png[align="center"]
 
 ==== Next
 
