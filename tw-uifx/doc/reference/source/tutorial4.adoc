@@ -12,7 +12,7 @@ Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials`
 
 ===== Data definition
 
-Data is divided into three classes in the _3Worlds archetype_:
+Data can play on of three _roles_ in the _3Worlds archetype_:
 
 ... _constants_ (cnsts), 
 
@@ -20,7 +20,7 @@ Data is divided into three classes in the _3Worlds archetype_:
 
 ... _decorators_ (decs). 
 
-Thus far we have only made use of _drivers_ and _constants_. _Decorators_ are values derived in some way from the other two. They are set to zero at the beginning of each time step. In this tutorial we add a species diversity index as a  _decorator_, derived from relative abundance of each species.
+Thus far we have only made use of data as _drivers_ and _constants_. _Decorators_ are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. In this tutorial we add a species diversity index as a  _decorator_, derived from relative abundance of each species.
 
 . Collapse all nodes except for the `dataDefinition` sub-tree, hide the _cross-links_ ('*X*'), and re-apply the layout ('*L*').
 
@@ -28,7 +28,7 @@ Thus far we have only made use of _drivers_ and _constants_. _Decorators_ are va
 
 . Add a `field` as a child of `record:decs`, name it 'div' (diversity index) of type `Double`.
 
-As noted previously, these names are just for clarity - they don't impose a _role_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. The _role_ is formally defined when these records are later collected together within a `category` that `belongsTo` a `component`. While building the data definition, task messages will begin to accumulate until we build the model structure that will define the use of these data.
+As noted previously, these names are just for clarity - they don't impose their roles as _drivers_, _constants_ or _decorators_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. Their _role_ will later be formally defined by a relationship with a `category`. While building the data definition, expect task messages to accumulate until these roles have been defined.
 
 We now define some data for the simple disturbance model: frequency and intensity.
 
@@ -46,7 +46,7 @@ The records carried over from the previous tutorial should now be given better n
 
 . Re-apply the layout and the nodes should now be arranged in a more sensible order.
 
-Fill out the meta-data properties with at least the description of the data as these descriptions will be incorporated in the comments of the generated Java code (i.e. add the optional property `description` to the new data nodes).
+Fill out the meta-data properties with at least the description and range of the data as this information will be incorporated in the comments of the generated Java code (i.e. add the optional property `description` to the new data nodes).
 
 [start = 8]
 
