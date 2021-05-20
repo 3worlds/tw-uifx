@@ -1,6 +1,10 @@
 [#Bousquet2004]
 Bousquet, F., & Le Page, C. (2004). Multi-agent simulations and ecosystem management: a review. __Ecological Modelling__, 176:313–332. https://doi.org/10.1016/j.ecolmodel.2004.01.011
 
+[#Connell1978]
+Connell, J.H. (1978). Diversity in tropical rain forests and coral reefs - high diversity of trees and corals is maintained only in a nonequilibrium state. _Science_ 199:1302–1310
+
+
 [#Coquillard1997]
 Coquillard, P., & Hill, D. (1997). __Modélisation et simulation d’écosystèmes. Des modèles déterministes aux simulations à événements discrets__. Masson, Paris.
 

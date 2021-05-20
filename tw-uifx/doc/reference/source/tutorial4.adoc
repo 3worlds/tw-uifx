@@ -2,17 +2,17 @@
 
 ==== Introduction
 
-In this tutorial we add a disturbance to effect a community of species modelled with the competitive Lotka-Volterra equation (CLV) from Tutorial 3. This model could be used to examine the Intermediate Disturbance Hypothesis (IDH). 
+In this tutorial we add a disturbance to effect a community of species modelled with the competitive Lotka-Volterra equation (CLV) from Tutorial 3. This model could be used to examine the Intermediate Disturbance Hypothesis (IDH: <<Connell1978, Connell, 1978>>). 
 
 ==== Specifications
 
 Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials` menu as a starting point.
 
-. Create a new project from on `Tutorials -> 2 LotkaVolterra` and name it 'Tut4'.
+. Create a new project from `Tutorials -> 2 LotkaVolterra` and name it 'Tut4'.
 
 ===== Data definition
 
-Data can play on of three _roles_ in the _3Worlds archetype_:
+Data can play one of three _roles_ in the _3Worlds archetype_:
 
 ... _constants_ (cnsts), 
 
@@ -53,7 +53,7 @@ Fill out the meta-data properties with at least the description and range of the
 . Add the following descriptions to the new data definitions properties:
 
 - `freq#description`: 'average return time'
-- `inten#description:`'% population decrease'
+- `inten#description:` '% population decrease'
 - `div#description:` 'Shannon diversity index'
 
 For simplicity, we define intensity as a constant rather than a driver.
@@ -66,7 +66,7 @@ That's all the data needed for this tutorial. We can now specify the system dyna
 
 ===== Dynamics
 
-In this section we add two additional functions: one to initiate a disturbance and second to apply the disturbance to the community.
+In this section we add two additional functions: one to initiate a disturbance and a second to apply the disturbance to the community.
 
 . Collapse all sub-trees and expand `system:sys1`.
 
