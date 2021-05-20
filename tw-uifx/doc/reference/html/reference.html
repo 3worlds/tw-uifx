@@ -7220,7 +7220,7 @@ for (int i = 0; i &lt; dxdt.length; i++)
 <p><em>constants</em> (cnsts),</p>
 </li>
 <li>
-<p><em>drivers</em> (drvs) and</p>
+<p><em>drivers</em> (drvs) or</p>
 </li>
 <li>
 <p><em>decorators</em> (decs).</p>
@@ -7244,7 +7244,7 @@ for (int i = 0; i &lt; dxdt.length; i++)
 </ol>
 </div>
 <div class="paragraph">
-<p>As noted previously, these names are just for clarity - they don&#8217;t impose their roles as <em>drivers</em>, <em>constants</em> or <em>decorators</em>. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. Their <em>role</em> will later be formally defined by a relationship with a <code>category</code>. While building the data definition, expect task messages to accumulate until these roles have been defined.</p>
+<p>As noted previously, these names are just for clarity - they don&#8217;t impose their roles as <em>drivers</em>, <em>constants</em> or <em>decorators</em>. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. Their role will later be formally defined by a relationship with a <code>category</code> which we create when building the <code>structure</code> specifications. While building the data definition, expect task messages to accumulate until these roles have been defined.</p>
 </div>
 <div class="paragraph">
 <p>We now define some data for the simple disturbance model: frequency and intensity.</p>
@@ -7288,7 +7288,7 @@ for (int i = 0; i &lt; dxdt.length; i++)
 <p><code>inten#description:</code> '% population decrease'</p>
 </li>
 <li>
-<p><code>div#description:</code> 'Shannon diversity index'</p>
+<p><code>div#description:</code> 'Shannon&#8217;s diversity index'</p>
 </li>
 </ul>
 </div>
@@ -7448,35 +7448,8 @@ for (int i = 0; i &lt; dxdt.length; i++)
 <div class="paragraph">
 <p><code>system:sys1</code>, in aliasing as a <code>componentType</code>, must now be redefined as an <code>assemblage</code> with no functions or data associated with it.</p>
 </div>
-<div class="paragraph">
-<p>First, arrange the graph display so only relevant parts are displayed. These instructions are as tedious to write as they are to follow, but its worth it.</p>
-</div>
 <div class="olist arabic">
-<ol class="arabic" start="7">
-<li>
-<p>Collapse all nodes to the root node.</p>
-</li>
-<li>
-<p>Expand all nodes from the root node.</p>
-</li>
-<li>
-<p>Collapse <code>experiment:expt</code> and <code>userInterface:gui</code> sub-trees to the root.</p>
-</li>
-<li>
-<p>Collapse <code>dimensioner:nspp</code> to <code>dataDefinition:dDef</code>.</p>
-</li>
-<li>
-<p>If you want, you can collapse all <code>fields</code> and <code>tables</code> into their respective tables.</p>
-</li>
-<li>
-<p>Collapse <code>record:AVPopulation</code> and <code>record:AVEphemeral</code> to <code>predefined:*categories*</code>.</p>
-</li>
-<li>
-<p>Collapse <code>category:*group*</code>, <code>category:*space*</code>, <code>category:*relation*</code> and <code>category:*lifecycle*</code> to <code>categorySet:*systemElements*</code>.</p>
-</li>
-<li>
-<p>Collapse <code>dynamics:sim1</code> from <code>system.sys1</code>.</p>
-</li>
+<ol class="arabic">
 <li>
 <p>Re-apply the layout.</p>
 </li>
@@ -7875,7 +7848,7 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 <div id="footer">
 <div id="footer-text">
 Version 1.6<br>
-Last updated 2021-05-20 16:37:13 +0200
+Last updated 2021-05-20 17:22:11 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
