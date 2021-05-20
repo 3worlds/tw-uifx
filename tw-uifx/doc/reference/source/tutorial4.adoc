@@ -16,7 +16,7 @@ Data can play on of three _roles_ in the _3Worlds archetype_:
 
 ... _constants_ (cnsts), 
 
-... _drivers_ (drvs) and 
+... _drivers_ (drvs) or 
 
 ... _decorators_ (decs). 
 
@@ -28,7 +28,7 @@ Thus far we have only made use of data as _drivers_ and _constants_. _Decorators
 
 . Add a `field` as a child of `record:decs`, name it 'div' (diversity index) of type `Double`.
 
-As noted previously, these names are just for clarity - they don't impose their roles as _drivers_, _constants_ or _decorators_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. Their _role_ will later be formally defined by a relationship with a `category`. While building the data definition, expect task messages to accumulate until these roles have been defined.
+As noted previously, these names are just for clarity - they don't impose their roles as _drivers_, _constants_ or _decorators_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. Their role will later be formally defined by a relationship with a `category` which we create when building the `structure` specifications. While building the data definition, expect task messages to accumulate until these roles have been defined.
 
 We now define some data for the simple disturbance model: frequency and intensity.
 
@@ -54,7 +54,7 @@ Fill out the meta-data properties with at least the description and range of the
 
 - `freq#description`: 'average return time'
 - `inten#description:`'% population decrease'
-- `div#description:` 'Shannon diversity index'
+- `div#description:` 'Shannon's diversity index'
 
 For simplicity, we define intensity as a constant rather than a driver.
 
@@ -148,25 +148,25 @@ Before proceeding to the definition of the _roles_ of these component types, we 
 
 `system:sys1`, in aliasing as a `componentType`, must now be redefined as an `assemblage` with no functions or data associated with it. 
 
-First, arrange the graph display so only relevant parts are displayed. These instructions are as tedious to write as they are to follow, but its worth it.
+//First, arrange the graph display so only relevant parts are displayed. These instructions are as tedious to write as they are to follow, but its worth it.
 
-[start = 7]
+//[start = 7]
 
-. Collapse all nodes to the root node.
+//. Collapse all nodes to the root node.
 
-. Expand all nodes from the root node.
+//. Expand all nodes from the root node.
 
-. Collapse `experiment:expt` and `userInterface:gui` sub-trees to the root.
+//. Collapse `experiment:expt` and `userInterface:gui` sub-trees to the root.
 
-. Collapse `dimensioner:nspp` to `dataDefinition:dDef`.
+//. Collapse `dimensioner:nspp` to `dataDefinition:dDef`.
 
-. If you want, you can collapse all `fields` and `tables` into their respective tables.
+//. If you want, you can collapse all `fields` and `tables` into their respective tables.
 
-. Collapse `record:AVPopulation` and `record:AVEphemeral` to `predefined:*categories*`.
+//. Collapse `record:AVPopulation` and `record:AVEphemeral` to `predefined:*categories*`.
 
-. Collapse `category:*group*`, `category:*space*`, `category:*relation*` and `category:*lifecycle*` to `categorySet:*systemElements*`.
+//. Collapse `category:*group*`, `category:*space*`, `category:*relation*` and `category:*lifecycle*` to `categorySet:*systemElements*`.
 
-. Collapse `dynamics:sim1` from `system.sys1`.
+//. Collapse `dynamics:sim1` from `system.sys1`.
 
 . Re-apply the layout.
 
