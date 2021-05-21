@@ -23,6 +23,10 @@ This node is the root of any 3Worlds configuration file (<<fig-root-example>>). 
 
 _Properties for_ `3worlds`
 
+[#fig-root-example]
+.The base tree of any 3Worlds configuration
+image::configuration-referenceIMG/example-root.png[align="center",role="thumb",float="right",width=400]
+
 [horizontal]
 `authors`:: The list of this project author names.
 `contacts`:: The list of the author contacts (e.g. e-mail addresses), in the same order as the author names (1-1 match).
@@ -32,11 +36,6 @@ _Properties for_ `3worlds`
 `version`:: A user-defined version identifier for this project.
 
 All these properties appear in the about box of `ModelRunner` and are saved in the ODD file describing the model.
-
-[#fig-root-example]
-.The base tree of any 3Worlds configuration
-image::configuration-referenceIMG/example-root.png[align="center"]
-
 
 ==== The _system_ node
 

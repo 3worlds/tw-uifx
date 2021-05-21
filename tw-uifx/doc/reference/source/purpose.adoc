@@ -69,18 +69,17 @@ Fundamentally, *3Worlds* is designed as a framework for __individual-based model
 
 Ecosystems are commonly considered as _complex systems_, without much agreement on what this concept means. Complex systems are usually assumed to possess __emergent properties__; again, with little agreement on what this means. We argued in <<bibliography.adoc#Gignoux2017,Gignoux et al. (2017)>> that the only common feature of all definitions of emergence is that emergence can only appear in systems with a 'macro-state' and 'micro-states'. We called such systems _hierarchical systems_ and assumed that they can be ideally represented with a __dynamic graph__.
 
-According to https://en.wikipedia.org/wiki/Graph_theory[graph theory], a _graph_ is a mathematical construct comprising a set of _nodes_, a set of _edges_ linking these nodes defined in an __incidence function__ (<<fig-what-is-a-graph>>). A _dynamic_ graph (<<bibliography.adoc#Harary1997,Harary & Gupta 1997>>) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.
-
 [[fig-what-is-a-graph]]
-.A mathematical graph, showing both the usual mathematical terms and the vocabulary used in 3Worlds. The incidence function defines edges between nodes. Edges can be directed (with arrows) or undirected.
-image::purposeIMG/graph.svg[align="center"]
+.A mathematical graph, showing both the usual pass:[<br/>] mathematical terms and the vocabulary used in 3Worlds. pass:[<br/>] The incidence function defines edges between nodes. Edges pass:[<br/>]can be directed (with arrows) or undirected.
+image::purposeIMG/graph.svg[float="left",align="center",role="thumb"]
 
+According to https://en.wikipedia.org/wiki/Graph_theory[graph theory], a _graph_ is a mathematical construct comprising a set of _nodes_, a set of _edges_ linking these nodes defined in an __incidence function__ (<<fig-what-is-a-graph>>). A _dynamic_ graph (<<bibliography.adoc#Harary1997,Harary & Gupta 1997>>) is a graph where these three components (the sets of nodes, edges, and the incidence function) can change over time.
 
 With the addition of _descriptors_ (e.g. numbers with a specific meaning: <<fig-graph-descriptors>>) to nodes and edges, we can use the graph nodes as the individuals of our IBM, and the graph edges give a concrete existence to the interactions between those nodes. If we define _functions_ that can modify nodes and edges and their descriptors, the graph becomes dynamic. A *3Worlds* simulation runs a dynamic graph where nodes, edges, descriptors, functions can be adapted to the user's particular application. Nodes are called _system components_, edges __system relations__, and descriptors __properties__.
 
 [[fig-graph-descriptors]]
 .An example of graph descriptors (redrawn from <<bibliography.adoc#Gignoux2017,Gignoux et al. 2017>>).
-image::purposeIMG/graph-with-descriptors.svg[align="center]
+image::purposeIMG/graph-with-descriptors.svg[width="80%",align="center",role="thumb"]
 
 ==== Categories
 
@@ -92,11 +91,11 @@ This category concept is similar in many ways to the class concept used in the h
 
 ==== Time with simultaneous events
 
-Because ecosystems have both biological and physical characteristics, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<<fig-3w-main-loop>>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the _autonomy_ of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint. 
-
 [[fig-3w-main-loop]]
-.The time model of 3Worlds. The overall dynamics of a system is computed as X(t+dt) = f(X(t)) where X represents the state of all system components, t is time and f is the function (or rather, the set of functions) used to compute the change over the time interval dt.
-image::purposeIMG/state-change-loop.svg[align="center"]
+.The time model of 3Worlds. The overall dynamics of a system is pass:[<br/>] computed as X(t+dt) = f(X(t)) where X represents the state of all system pass:[<br/>] components, t is time and f is the function (or rather, the set of functions) pass:[<br/>] used to compute the change over the time interval dt.
+image::purposeIMG/state-change-loop.svg[align="center", role="thumb",width="500", float="right"]
+
+Because ecosystems have both biological and physical characteristics, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<<fig-3w-main-loop>>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the _autonomy_ of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint. 
 
 Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. in *3Worlds*, time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used. *3Worlds* provides three types of _time model_ that can be used in interaction: '__clock__' models using a constant time step, __event-driven __time models where time events trigger computations that can generate further events in the future, and _scenarios_ where the list of events determines when computations are to be made. 
 

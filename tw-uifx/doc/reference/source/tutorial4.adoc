@@ -60,7 +60,7 @@ For simplicity, we define intensity as a constant rather than a driver.
 
 [#fig-tut4-data-definition]
 .The data definition sub-tree for Tutorial 4. Tree layout algorithms sort nodes in alphabetical order. Keeping this in mind when naming nodes can help keep your specifications in a particular order.
-image::tutorial4IMG/fig-tut4-data-definition.png[align="center"]
+image::tutorial4IMG/fig-tut4-data-definition.png[align="center",role="thumb"]
 
 That's all the data needed for this tutorial. We can now specify the system dynamics.
 
@@ -117,7 +117,7 @@ At this time, `dataTracker:trk1` is set to track `system.sys`. There will be no 
 
 [#fig-tut4-dynamics]
 .The system dynamics sub-tree for Tutorial 4. .
-image::tutorial4IMG/fig-tut4-dynamics.png[align="center"]
+image::tutorial4IMG/fig-tut4-dynamics.png[align="center",role="thumb"]
 
 That's all that's required in this section. The task list indicates that the new processes must belong to some categories. To do that we need to move on to the structure of the specifications.
 
@@ -267,7 +267,7 @@ This is also an initialisation function associated with the `system:sys1` node. 
 
 [#fig-tut4-structure]
 .The structure sub-tree for Tutorial 4. .
-image::tutorial4IMG/fig-tut4-structure.png[align="center"]
+image::tutorial4IMG/fig-tut4-structure.png[align="center",role="thumb",width=800]
 
 That's all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.
 

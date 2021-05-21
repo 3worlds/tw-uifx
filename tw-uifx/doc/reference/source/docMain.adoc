@@ -1,8 +1,13 @@
 // Asciidoctor syntax: https://asciidoctor.org/docs/user-manual
+
 // to generate a nice pdf: install asciidoctor-pdf (https://github.com/asciidoctor/asciidoctor-pdf)
+
 // then run: asciidoctor-pdf docMain.adoc
+
 // to generate an odt: first generate an html using asciidoctor: asciidoctor -b html -o documentation.html docMain.adoc
+
 // then convert to odt using pandoc: pandoc -s -f html -t odt -o documentation.odt documentation.html
+
 // (has problems with svg images)
 :sectnums:
 :sectanchors:
@@ -19,47 +24,57 @@ by *{author}*, *{author_2}* & *{author_3}*
 
 Version: *{revnumber}* ({revdate})
 
-
+[.text-justify]
 == Purpose and motivation
 
 include::purpose.adoc[]
 
+[.text-justify]
 == Getting started - download and installation 
 
 include::getting-started.adoc[]
 
+[.text-justify]
 == Configuration reference: creating and editing a model with ModelMaker
 
 include::configuration-structure.adoc[]
 
+[.text-justify]
 === Using ModelMaker: software interface and functioning
 
 *TO DO*: step-by-step description of using the user interface. With screenshots.
 
 include::configuration-reference.adoc[]
  
+[.text-justify]
 === Developing and testing model code
 
 include::user-coding-reference.adoc[]
 
+[.text-justify]
 === Feeding the model with data
 
 // include::data-input.adoc[]
 
+[.text-justify]
 == Simulation reference: running a simulation experiment with ModelRunner
 
+[.text-justify]
 === General concepts
 
 *TODO*
 
+[.text-justify]
 === Using ModelRunner: software interface and functioning
 
 *TODO*
 
+[.text-justify]
 === Getting output from a simulation experiment
 
 *TODO*
 
+[.text-justify]
 == Sample models and tutorials
 
 include::tutorial1.adoc[]
@@ -71,9 +86,8 @@ include::tutorial3.adoc[]
 include::tutorial4.adoc[]
 
 :sectnums!:
+[.text-justify]
 == Bibliography
 :sectnums:
-
-
 
 include::bibliography.adoc[]

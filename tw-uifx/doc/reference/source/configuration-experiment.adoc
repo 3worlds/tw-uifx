@@ -149,6 +149,8 @@ This `.csv` file:
 
 with the following specifications: 
 
+// TODO: redraw this image
+
 [#fig-data-source-example]
 .Example of a data source configuration.
 image::configuration-experimentIMG/example-data-source.png[align="center"]

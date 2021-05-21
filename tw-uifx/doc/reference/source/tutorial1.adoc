@@ -28,7 +28,7 @@ NOTE: To compile your own models, the Java Development Kit (JDK)  must be instal
 
 [#fig-blank-template]
 .The appearance of _ModelMaker_ after creating a new project from the 'Blank' template.
-image::tutorial1IMG/fig-blank-mm.png[align="center"]
+image::tutorial1IMG/fig-blank-mm.png[align="center",role="thumb"]
 
 The black node (`3worlds:Tut1`) is the _root_ of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined (<<fig-blank-template>>, <<trueconfiguration-options-reference>>). 
 
@@ -59,8 +59,8 @@ At this stage, there are five properties under the section `Tut1`.  These are pr
 All projects are located within the 3Worlds root directory called `.3w`. The dot indicates a hidden directory. To see these files you may need to do what ever is required by your operating system to show hidden files (<<fig-tut1-dir>>). 
 
 [#fig-tut1-dir]
-.The initial directory structure of after creating a new project from the 'Blank' template. Later, after all tasks have been completed and the model is deployed, another sub-directory is added for run-time files.
-image::tutorial1IMG/fig-tut1-dir.png[role=left]
+.The initial directory structure pass:[<br/>] after creating a new project from the 'Blank' pass:[<br/>] template. Later, after all tasks have been pass:[<br/>] completed and the model is deployed, another pass:[<br/>] sub-directory is added for run-time files.
+image::tutorial1IMG/fig-tut1-dir.png[role="thumb",align="center",float="right"]
 
 The `.3w` directory contains a Jar file called `tw-dep.jar` (<<fig-tut1-dir>>). This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
 
@@ -111,7 +111,11 @@ All `fields` (and later `tables`) must be children of some `record`.
 
 . Create another `record` as child of `dataDefinition:dDef` and name it 'drvs' (drivers).
 
-. Create a `field` node as child of `record:drvs`, name it 'x' and again set the type to `Double`.
+. Create a `field` node as child of `record:drvs`, name it 'x' and again set the type to `Double` (<<fig-ddef-subtree>>).
+
+[#fig-ddef-subtree]
+.Defining constant `r` and driver `x` pass:[<br/>] within the data definition sub-tree.
+image::tutorial1IMG/fig-ddef-subtree.png[align="center",width=300,float="left",role="thumb"]
 
 Note that the names 'drvs' and 'cnsts' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
 
@@ -119,10 +123,6 @@ This is all the data required for this tutorial.  The task list has now grown to
  
 You can tidy up the graph display by clicking the `L` button (re-apply layout) in the tool bar.
  
-[#fig-ddef-subtree]
-.Defining constant `r` and driver `x` within the data definition sub-tree.
-image::tutorial1IMG/fig-ddef-subtree.png[role=left]
-
 ===== Dynamics
 
 The `dynamics` sub-tree specifies how the modelled system will evolve over time. It determines the temporal order of function calls, their type, the conditions under which the simulation will stop and what and when data will be tracked for output. 
@@ -221,17 +221,21 @@ There are two `record` nodes within this sub-tree for default handling of averag
 
 . Right-click on the root node, expand the `system` and re-apply the layout.
 
+[#fig-system-role]
+.The specification of the system component in belonging pass:[<br/>] to the three categories; _permanent_, _atomic_ and _arena_.
+image::tutorial1IMG/fig-system-role.png[align="center",role="thumb",width=500,float="right"]
+
 We are now in a position to define the _role_ of the `system` node (a.k.a. `component` in this case). The `system` node always belongs to the `arena` and `permanent` categories. This has already been done by the 'Blank' template. It just remains to make the system `atomic`.
 
 [start = 6]
 
 . Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*atomic*`.
 
-[#fig-system-role]
-.The specification of the system component in belonging to the three categories; _permanent_, _atomic_ and _arena_.
-image::tutorial1IMG/fig-system-role.png[align="center"]
+The system's role of belonging to the _atomic_, _permanent_ and _arena_ categories is indicated by three _cross-link_ edges (<<fig-system-role>>). All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` in the tool bar, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongsTo category:*arena*`.
 
-The system's role of belonging to the _atomic_, _permanent_ and _arena_ categories is indicated by three _cross-link_ edges. All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` in the tool bar, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongsTo category:*arena*`.
+[#fig-arena]
+.The specification of the constants and drivers for the _arena_, pass:[<br/>] a category to which the only component in this tutorial (aka pass:[<br/>] `system:sys1`) belongs.
+image::tutorial1IMG/fig-arena.png[align="center",width=550,float="right",role="thumb"]
 
 Now we need to apply `process:p` to a category - in this case, the _arena_ (see the task list).
 
@@ -243,12 +247,8 @@ We have yet to relate `system:sys1` to the driver '_x_' and the constant '_r_'. 
 
 [start = 8]
 
-. Right-click on `category:*arena*` and select 'New edge -> constants->record:cnsts'.
-. Right-click again on `category:*arena*` and select 'New edge -> drivers->record:drvs'.
-
-[#fig-arena]
-.The specification of the constants and drivers for the _arena_, a category to which the only componenet in this tutorial (aka `system:sys1`) belongs.
-image::tutorial1IMG/fig-arena.png[align="center"]
+. Right-click on `category:*arena*` and select `New edge -> constants -> record:cnsts`.
+. Right-click again on `category:*arena*` and select `New edge -> drivers -> record:drvs` (<<fig-arena>>).
 
 Save your work (`Ctrl+s`) and the task list will be empty indicating the simulation is ready to deploy.
 
@@ -259,11 +259,11 @@ Before deploying the simulation, it's useful to display the overall specificatio
 
 [#fig-deploy1]
 .A view of the specification graph showing principal nodes of interest.
-image::tutorial1IMG/fig-deploy1.png[align="center"]
+image::tutorial1IMG/fig-deploy1.png[align="center",role="thumb"]
 
 . Right-click the root node and select 'Collapse -> predefined:*categories*'.
 . Again, right-click the root node and select 'Expand -> experiment:expt' and 'UserInterface:gui'.
-. Re-apply the layout (*L*).
+. Re-apply the layout (*L*) (<<fig-deploy1>>).
 . Click the `Deploy` button. _ModelMaker_ now launches _ModelRunner_ to start the run-time application: _ModelRunner_ (cf. <<truesimulation-reference-running-a-simulation-experiment-with-modelrunner>> for a full reference). 
 
 At the top of _ModelRunner_ are some control buttons to start, step and stop the simulation. This is the `ControlWidget1` shown in the figure above that was included by default in the 'Blank' template. The _run_ button becomes a _pause_ button while running and the _stop_ button resets the simulator to it's starting state. 
@@ -302,21 +302,23 @@ For this widget to receive values of _x_, something must post values of _x_ to t
 . Save the graph (`Ctrl+s`) and click the 'Deploy' button again. 
 
 The display is still uninteresting because we haven't set an initial value for _x_ or parameterised _r_. This can be done in a number of ways but for this tutorial we will add an initialisation function and a code snippet.
+
+[#fig-javaCode]
+.Entering Java code snippet for the `initFunction` (for the pass:[<br/>] `system:sys1` component) in the property editor.
+image::tutorial1IMG/fig-javaCode.png[align="center",float="left"]
+
 [start = 13]
 
 . Create an `initFunction` as a child of `system:sys1`. As `system:sys1` is the only component in the specifications, it is the node requiring initialisation of _x_ and _r_.
 
 . Create a `snippet` as a child of `initFunction:Init1`.
 
-. Enter the following two lines in the `snpt2#javaCode` property:
+. Enter the following two lines in the `snpt2#javaCode` property (<<fig-javaCode>>):
   ... `focalDrv.x = 0.001;`
   ... `focalCnt.r = 3.7;`
 
 If you make a typo, the task list will show the details of the compile error.
 
-[#fig-javaCode]
-.Entering Java code snippet for the `initFunction` (for the `system:sys1` component) in the property editor.
-image::tutorial1IMG/fig-javaCode.png[role=left]
 
 ===== Stopping conditions 
 
@@ -341,13 +343,13 @@ To complete this tutorial, add a simple stopping condition:
 
 . Create a `stoppingCondition` as a child of `dynamics:sim1`. When prompted, select `SimpleStoppingCondition` from the drop-down list.
 
-. Select this new node and in the properties editor, set the value of `stCd1#endTime` to 100.
+. Select this new node and in the properties editor, set the value of `stCd1#endTime` to 100 (<<fig-final-specification>>).
 
-. Save, re-deploy and run the simulation. You'll now see a time series of the chaos function of 100 time steps.
+. Save, re-deploy and run the simulation. You'll now see a time series of the chaos function of 100 time steps (<<fig-tut1-MR>>).
 
 [#fig-final-specification]
 .The specification graph for Tutorial 1.
-image::tutorial1IMG/fig-final-specification.png[align="center"]
+image::tutorial1IMG/fig-final-specification.png[align="center",role="thumb"]
 
 [#fig-tut1-MR]
 .The appearence of _ModelRunner_ while running Tutorial 1.
@@ -367,7 +369,7 @@ Most word processors can read this standard format, native to LibreOffice, inclu
 
 [#fig-ODD1]
 .A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from <<bibliography.adoc#Grimm2010,Grimm et al. (2010)>> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node.
-image::tutorial1IMG/fig-ODD1.png[align="center"]
+image::tutorial1IMG/fig-ODD1.png[align="center",role="thumb",width=850]
 
 NB: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.
 
@@ -389,7 +391,7 @@ All Tree methods allow selecting any node as the root of the tree (`Ctrl right-c
 
 [#fig-new-root]
 .Tutorial 1 specification graph using `system:sys1` as the display root.
-image::tutorial1IMG/fig-new-root.png[align="center"]
+image::tutorial1IMG/fig-new-root.png[align="center",role="thumb"]
 
 When a project is first created, the default layout is an *orderedTree*. To change to other layouts, use buttons in the tool bar (*L1, L2, L3, L4*). This layout persists for repeated applications of the layout (*L*) button until another is chosen.
 
@@ -417,7 +419,7 @@ As an exercise if you wish, try displaying just the nodes with _cross-links_ usi
 
 [#fig-links-only]
 .A view of the specification graph for Tutorial 1 showing only relevant _cross-links_ using the Spring layout (*L4*).
-image::tutorial1IMG/fig-links-only.png[align="center"]
+image::tutorial1IMG/fig-links-only.png[align="center",role="thumb"]
 
 That's the end of this tutorial. Recreate this project at any time from the main menu (`Project -> New -> Tutorials -> 1 Logistic`).
 

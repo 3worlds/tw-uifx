@@ -19,7 +19,7 @@ The _root node_ of a configuration is always labelled `3worlds`.
 
 [#fig-configuration-tree]
 .Tree structure of a simulation experiment configuration in 3Worlds
-image::configuration-structureIMG/dsl-tree3.svg[align="center"]
+image::configuration-structureIMG/dsl-tree3.svg[align="center",role="thumb"]
 
 The configuration tree is stored in a file in a specially designed text format, ending with the extension `.ugt` or `.twg`. Such files are produced by `ModelMaker` and can then be exchanged and imported into `ModelMaker` via the `Projects -> Import...` menu entry. Their format is human-readable, but they must *never* be edited with another software than `ModelMaker` - *the risk is to corrupt all your configuration* and be unable to run it (or even edit it with `ModelMaker` again).
 
@@ -33,7 +33,7 @@ Actually, the 3Worlds configuration is not strictly hierarchical (<<fig-configur
 
 [#fig-configuration-tree2]
 .Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes (NB: not all cross-links are drawn)
-image::configuration-structureIMG/dsl-tree3links.svg[align="center"]
+image::configuration-structureIMG/dsl-tree3links.svg[align="center",role="thumb"]
 
 _Edges_ representing cross links have a _label_, _name_, and may have _properties_ just as _nodes_ do. The detailed meaning of all cross-reference _edges_ and their _properties_ is described in <<configuration-reference.adoc#trueconfiguration-options-reference>>.
 

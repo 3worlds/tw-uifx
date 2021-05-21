@@ -26,11 +26,11 @@ image::tutorial3IMG/fig-simple-clock-template.png[align="center"]
 
 ===== Data definition
 
-Data is defined through the recursive use of records and tables: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records. Tables can have any number of dimensions.
-
 [#fig-records-tables]
-.Data is defined through the recursive use of records and tables. A definition begins with a record. Leaf nodes of the resulting graph must be either Fields or Tables that define a standard Java type (element) such as Double, Integer etc.
-image::tutorial3IMG/fig-records-tables.svg[role=left,width=125,height=72]
+.Data is defined through the recursive use of pass:[<br/>] records and tables. A definition begins with a record. pass:[<br/>] Leaf nodes of the resulting graph must be either Fields pass:[<br/>] or Tables that define a standard Java type (element) pass:[<br/>] such as Double, Integer etc.
+image::tutorial3IMG/fig-records-tables.svg[role="thumb", width=400,float="right",align="center"]
+
+Data is defined through the recursive use of records and tables: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records (<<fig-records-tables>>). Tables can have any number of dimensions.
 
 There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for _alpha_, a 1-dimensional table for  _r_ and _K_ and another 1-dimensional table for the population _x_.
 
@@ -72,17 +72,17 @@ Now set the rank order for the indexing of `table:alpha`.
 
 [#fig-data-definition]
 .The `dataDefinition` specifications for Tutorial 3: three tables of one dimension and one of two dimensions ('alpha'). This size of each table is the same so only one `dimensioner` is required.
-image::tutorial3IMG/fig-data-definition.png[align="center"]
+image::tutorial3IMG/fig-data-definition.png[align="center",role="thumb"]
 
+[#fig-description-property-option]
+.Adding a `description` pass:[<br/>] property to the table 'K'.
+image::tutorial3IMG/fig-description-property-option.png[float="right",align="center"]
 
 Finally, add some meta-data to each table. This meta-data assists in documenting your Java source code and ODD documentation. Many nodes have optional properties. One such optional property is `description` for tables and fields. 
 
 [start =12]
 . Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property. 
 
-[#fig-description-property-option]
-.Adding a `description` property to the table 'K'.
-image::tutorial3IMG/fig-description-property-option.png[role=left]
 
 ===== Dynamics
 
@@ -130,11 +130,11 @@ Save the specifications (`Ctrl+s`) and they're now ready to run. The next step i
 
 [#fig-tree]
 .Tree graph of the final specifiation graph for Tutorial 3.
-image::tutorial3IMG/fig-tree.png[align="center"]
+image::tutorial3IMG/fig-tree.png[align="center",role="thumb"]
 
 [#fig-links]
 .Cross-links of the final specifiation graph for Tutorial 3.
-image::tutorial3IMG/fig-links.png[align="center"]
+image::tutorial3IMG/fig-links.png[align="center",role="thumb"]
 
 ===== Link to a Java project
 
@@ -187,7 +187,7 @@ for (int i = 0; i < dxdt.length; i++)
 
 [#fig-javaDoc]
 .Example of the generated javaDoc for the `growth` function of Tutorial 3. The figure assumes correct meta-data has been added to the definitions of `K, r, alpha` and `x`.
-image::tutorial3IMG/fig-javaDoc.png[align="center"]
+image::tutorial3IMG/fig-javaDoc.png[align="center",role="thumb"]
 
 The model is now ready to run. However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.
 
