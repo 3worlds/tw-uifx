@@ -20,7 +20,7 @@ Data can play one of three _roles_ in the _3Worlds archetype_:
 
 ... _decorators_ (decs). 
 
-Thus far we have only made use of data as _drivers_ and _constants_. _Decorators_ are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. In this tutorial we add a species diversity index as a  _decorator_, derived from relative abundance of each species.
+Thus far we have only made use of data as _drivers_ and _constants_. The third role, _Decorators_, are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. In this tutorial we add a species diversity index as a  _decorator_, derived from relative abundance of each species.
 
 . Collapse all nodes except for the `dataDefinition` sub-tree, hide the _cross-links_ ('*X*'), and re-apply the layout ('*L*').
 
@@ -68,7 +68,7 @@ That's all the data needed for this tutorial. We can now specify the system dyna
 
 In this section we add two additional functions: one to initiate a disturbance and a second to apply the disturbance to the community.
 
-. Collapse all sub-trees and expand `system:sys1`.
+. Collapse the `dataDefinition` sub-tree and expand `system:sys1`.
 
 . Create a `process` as child of `timer:clock1` and name it 'p1DistOcc`.
 
@@ -94,19 +94,26 @@ If a disturbance occurs, `function:DistEffectComm` will implement the consequenc
 
 This implies an order of execution of these three functions. As all these functions are driven by the same `timer` and therefore occur simultaneously, it means we must make the calling order explicit. To do this we add a `dependsOn` edge between the relevant processes.
 
-First, set `process:p2DistEffectComm` to depend on `process:p1DistOcc`.
+First, show the _cross-links_ and set `process:p2DistEffectComm` to depend on `process:p1DistOcc`.
 
 [start=8]
+. Show the _cross-links_ (*X*).
 
 . Right-click on `process:p2DistEffectComm` and select `New edge -> dependsOn -> process:p1DistOcc`.
 
-To force the disturbance effects to take place before the community growth, make `process:p3CommGrowth` depend on `process:p2DistEffectComm`.
+To force the disturbance effects to take place _before_ the community growth, make `process:p3CommGrowth` depend on `process:p2DistEffectComm`.
 
 [start = 9]
 
 . Right-click on `process:p3CommGrowth` and select `New edge -> dependsOn -> process:p2DistEffectComm`.
 
 After re-applying the layout (assuming a Tree layout is in use), it's clear why these process names were prefixed by p1, p2 and p3.
+
+At this time, `dataTracker:trk1` is set to track `system.sys`. There will be no global data to track in this model as there was in the previous Lotki-Volterra so we should remove this edge.
+
+[start = 10]
+
+. Right-click on `dataTracker:trk` and select 'Delete edge -> trackComponent ->system.sys1'.
 
 [#fig-tut4-dynamics]
 .The system dynamics sub-tree for Tutorial 4. .
@@ -128,9 +135,13 @@ Recall from the previous tutorial, that `system:sys1` is acting as a single comp
 
 ... has `process:p1` applied to it.
 
-The _arena_ is a special category. It must exist in every specification. Any data associated with it (_constants_, _drivers_ and _decorators_) is available to all `functions`: the data is global. 
+
+
+The _arena_ is a special category. It must exist in every specification. Any data associated with it (_constants_, _drivers_ and _decorators_) is available to all `functions`: the data is global. The system (`system:sys1`) was also being tracked by the data tracker. This relationship was removed above because 'x', the population being tracked, will now be part of a category related to the community component of the model i.e 'x' will no longer be global data.
 
 The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define the association between the disturbance and the effected community.
+
+. Right-click on 'system.sys1` and collapse the `dynamics:sim` sub-tree.
 
 . Create a `structure` as child of `system:sys1`.
 
@@ -168,11 +179,11 @@ Before proceeding to the definition of the _roles_ of these component types, we 
 
 //. Collapse `dynamics:sim1` from `system.sys1`.
 
-. Re-apply the layout.
+//. Re-apply the layout.
 
 Redefine the _role_ of `system:sys1` as an `assemblage`.
 
-[start = 16]
+[start = 8]
 
 . Right-click on `system:sys1` and select `Delete edge -> belongsTo -> category:*atomic*`.
 
@@ -180,7 +191,8 @@ Redefine the _role_ of `system:sys1` as an `assemblage`.
 
 Remove the data associated with the _arena_.
 
-[start = 18]
+[start = 10]
+. Right-click on the root node (`3worlds:Tut4'), expand the `predefined:*categories*` and re-apply the layout. 
 
 . Right-click on `category:*arena*` and select `Delete edge -> drivers -> record:commDrvs`.
 
@@ -188,9 +200,9 @@ Remove the data associated with the _arena_.
 
 `system:sys` is now defined as simply a _permanent assemblage_ belonging to the _arena_.
 
-Now define a `categorySet` to partition data between the disturbance and community. Category sets contain mutually exclusive categories: something can belong to one or the other but not both. Since disturbance and community is all there is in this model, this is the 'world' of the model so this seems a reasonable name for this set of categories. 
+Now define a `categorySet` to partition data between the disturbance and community. Category sets contain mutually exclusive categories: something can belong to one or the other but not both. Since disturbance and community is all there is in this model, this is the 'world' of the model so this seems a reasonable name for this set of categories i.e the 'world' comprises a community and a disturbance category: something can belong to one or other of these but not both. 
 
-[start = 20]
+[start = 13]
 
 . Create a `categorySet` as child of `structure:struc1` and name it 'world'.
 
@@ -200,7 +212,7 @@ Now define a `categorySet` to partition data between the disturbance and communi
 
 Define the data for these new categories.
 
-[start = 23]
+[start = 16]
 
 . Right-click on `category:commCat` and create the following edges:
 
@@ -215,7 +227,7 @@ Define the data for these new categories.
 
 Now define the _roles_ of the new component types for the community and disturbance. Both belong to the  _permanent_, _atomic_, and _component_ categories and accesses data through their respective categories.
 
-[start = 25]
+[start = 18]
 
 . Right-click on `componentType:commType` and create `belongsTo` edges to `category:*permanent*`,`category:*atomic*`,`category:*component*` and `category:commCat`. 
 
@@ -223,7 +235,9 @@ Now define the _roles_ of the new component types for the community and disturba
 
 Now define the relation between disturbance and the community.
 
-[start = 27]
+[start = 20]
+
+. Create a realtionType as a child of `structure:struc1'.
 
 . Right-click on `relationType:distEffectComm` and create edges:
 
@@ -233,7 +247,7 @@ Now define the relation between disturbance and the community.
 
 Finally, add initialisation functions for the disturbance and community component types:
 
-[start = 28]
+[start = 22]
 
 . Create an `initFunction` as child of `componentType:commType` and name it 'InitComm'.
 
@@ -241,63 +255,48 @@ Finally, add initialisation functions for the disturbance and community componen
 
 . Delete `initFunction:Init`. This was carried over from Tutorial 3 as its no longer needed.
 
+This is also an initialisation function associated with the `system:sys1` node. This is left over from the previous Lotka-Volterra model and can be deleted.
+
+[start = 25]
+
+. Right-click on `system:sys1` and select 'Delete tree ->initFunction:Init1'.
+
 [#fig-tut4-structure]
 .The structure sub-tree for Tutorial 4. .
 image::tutorial4IMG/fig-tut4-structure.png[align="center"]
 
-That's all that is required in this section. To finish up, we now need to connect various various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.
+That's all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.
 
 ===== Relations between sub-trees
 
 Currently, `process:p3CommGrowth` is applied to `category:*arena*`. We want re-apply this process to `category:commCat`.
 
-. Expand `dynamics:sim1` from `system:sys1` and re-apply the layout.
+. Expand `dynamics:sim1` from `system:sys1`.
+
+. Expand `predefined:*categories*` from the root node and re-apply the layout.
+
+. Show _cross-links_ (*X*).
 
 . Delete the `appliesTo` edge between `process:p3CommGrowth` and `category:*arena*` and re-apply it by creating an `appliesTo` edge to `category:commCat`.
 
-The task list now has two tasks: to connect both disturbance processes to either a `category` or a `relationType`.
+The task list now has three tasks: one about the data tracker and two to connect both disturbance processes to either a `category` or a `relationType`.
 
-[start = 3]
+[start = 5]
 
 . Create `appliesTo` edges from both `process:procDistEffects` and `process:procDistOccurrence` to `relationType:distEffectComm`.
 
-We have inherited a data tracker from the previous tutorial that tracks the population _x_. We need a second data tracker to follow the species diversity index 'div'. But first we need to ensure the data tracker of _x_ is tracking the correct `component`. Currently, it's tracking `system:sys1` (*and not complaining!*),
+[start = 6]
 
-. Delete the edge from `dataTracker:trk1` to `system:sys1`.
+The population _x_ is now part of the `commCat` category. 
 
 . Create a `trackComponent` edge from `dataTracker:trk1` to `component:comm`.
 
-. Create a `dataTracker` as child of `process:procCommGrowth` and select the default type `DataTrackerD0`.
 
-. Create a `trackField` edge from `dataTracker:trk2` to `field:div`.
-
-. Create a `trackComponent` edge from `dataTracker:trk2` to `component:comm`.
+We also need to track the species diversity index 'div'. 
 
 
-===== User interface
+. Create a `trackField` edge from `dataTracker:trk1` to `field:div`.
 
-The specifications have inherited a controller, time series and table for _x_ from the previous tutorial. We just need one more time series to view the species diversity index ('div'). We can take this opportunity to learn more about defining the simulator's user interface.
-The `tab` node can contain upto two widgets or two containers that in turn can contain widgets (or a combination of both). What we need then is:
-
-.. tab
-... table widget
-...    container
-.... srs x widget
-.... srs diversity widget
-
-This means we need to insert a `container` and set the `widget:srsx` and the new `widget:srsdiv` as children of it. We don't need to delete them and their edges. Instead, we can delete the parent-child link, insert a container and re-establish the parent-child links.
-
-. Expand the `userInterface:gui` sub-tree from the root and re-apply the layout.
-
-. Right-click on `tab:tab1` and select `Delete child edge -> widget:srsx`.
-
-. Create a `container` as child of `tab:tab1`.
-
-. Create a new child edge from `container:cont1` to `widget:srsx`.
-
-. Create a new `widget` as child of `container:cont1`, name it 'srsdiv' and select its class as `SimpleTimeSeriesWIdget`.
-
-. Create a `trackSeries` edge  from `widget:srsdiv` to `dataTracker:trk2`.
 
 The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we'll just add code snippets but if you prefer, you can create a java project and add the code there instead.
 
@@ -371,9 +370,9 @@ else
 `function:DistEffectsComm`:
 [source, Java]
 ---------------------
-for (int i = 0; i < x.size(); i++)
-	if (x.getByInt(i) > K.getByInt(i) * inten / 100000.0)
-		otherDrv.x.setByInt(otherDrv.x.getByInt(i) * K.getByInt(i) * inten / 100000.0, i);
+		for (int i = 0; i < other_x.size(); i++)
+			if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)
+				otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
 ---------------------
 
 

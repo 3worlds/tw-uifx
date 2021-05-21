@@ -53,7 +53,7 @@ In the `src` folder of `tut2`, you'll now find a new package called `code` and `
 
 [#fig-tut2-java-project]
 .The package structure in Eclipse after linking Tutorial 2 to a Java project.
-image::tutorial2IMG/fig-tut2-java-project.png[align="center"]
+image::tutorial2IMG/fig-tut2-java-project.png[role=left]
 
 . Open `Tut2.java` in the _Eclipse_ editor.
 

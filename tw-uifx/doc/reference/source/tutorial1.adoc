@@ -60,7 +60,7 @@ All projects are located within the 3Worlds root directory called `.3w`. The dot
 
 [#fig-tut1-dir]
 .The initial directory structure of after creating a new project from the 'Blank' template. Later, after all tasks have been completed and the model is deployed, another sub-directory is added for run-time files.
-image::tutorial1IMG/fig-tut1-dir.png[align="center"]
+image::tutorial1IMG/fig-tut1-dir.png[role=left]
 
 The `.3w` directory contains a Jar file called `tw-dep.jar` (<<fig-tut1-dir>>). This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
 
@@ -121,7 +121,7 @@ You can tidy up the graph display by clicking the `L` button (re-apply layout) i
  
 [#fig-ddef-subtree]
 .Defining constant `r` and driver `x` within the data definition sub-tree.
-image::tutorial1IMG/fig-ddef-subtree.png[align="center"]
+image::tutorial1IMG/fig-ddef-subtree.png[role=left]
 
 ===== Dynamics
 
@@ -316,7 +316,7 @@ If you make a typo, the task list will show the details of the compile error.
 
 [#fig-javaCode]
 .Entering Java code snippet for the `initFunction` (for the `system:sys1` component) in the property editor.
-image::tutorial1IMG/fig-javaCode.png[align="center"]
+image::tutorial1IMG/fig-javaCode.png[role=left]
 
 ===== Stopping conditions 
 

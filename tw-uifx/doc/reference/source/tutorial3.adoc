@@ -30,7 +30,7 @@ Data is defined through the recursive use of records and tables: records can con
 
 [#fig-records-tables]
 .Data is defined through the recursive use of records and tables. A definition begins with a record. Leaf nodes of the resulting graph must be either Fields or Tables that define a standard Java type (element) such as Double, Integer etc.
-image::tutorial3IMG/fig-records-tables.svg[align="center"]
+image::tutorial3IMG/fig-records-tables.svg[role=left,width=125,height=72]
 
 There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for _alpha_, a 1-dimensional table for  _r_ and _K_ and another 1-dimensional table for the population _x_.
 
@@ -82,7 +82,7 @@ Finally, add some meta-data to each table. This meta-data assists in documenting
 
 [#fig-description-property-option]
 .Adding a `description` property to the table 'K'.
-image::tutorial3IMG/fig-description-property-option.png[align="center"]
+image::tutorial3IMG/fig-description-property-option.png[role=left]
 
 ===== Dynamics
 
@@ -96,8 +96,6 @@ Although the task list is now empty (i.e. the specifications are now deployable)
 . Create a `dataTracker` as a child of `process:p1` and select `DataTrackerD0` as the type (the default).
 
 . Create an edge from the data tracker to _x_: `trackTable -> table:x`.
-
-// TODO: SOMETHING Wrong with queries HERE. Probably due to Datatrackers for tables being only half baked
 
 There are now two tasks in the list, one about 'indexing' and the other asking which 'component' to track. As with the previous tutorials, the component to track is the `system.sys1` node.
 
