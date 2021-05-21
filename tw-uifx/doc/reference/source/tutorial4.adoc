@@ -68,7 +68,7 @@ That's all the data needed for this tutorial. We can now specify the system dyna
 
 In this section we add two additional functions: one to initiate a disturbance and a second to apply the disturbance to the community.
 
-. Collapse the `dataDefinition` sub-tree and expand `system:sys1`.
+. Collapse the `dataDefinition` sub-tree and expand `system:community`.
 
 . Create a `process` as child of `timer:clock1` and name it 'p1DistOcc`.
 
@@ -103,7 +103,7 @@ First, show the _cross-links_ and set `process:p2DistEffectComm` to depend on `p
 
 To force the disturbance effects to take place _before_ the community growth, make `process:p3CommGrowth` depend on `process:p2DistEffectComm`.
 
-[start = 9]
+[start = 10]
 
 . Right-click on `process:p3CommGrowth` and select `New edge -> dependsOn -> process:p2DistEffectComm`.
 
@@ -111,9 +111,9 @@ After re-applying the layout (assuming a Tree layout is in use), it's clear why 
 
 At this time, `dataTracker:trk1` is set to track `system.sys`. There will be no global data to track in this model as there was in the previous Lotki-Volterra so we should remove this edge.
 
-[start = 10]
+[start = 11]
 
-. Right-click on `dataTracker:trk` and select 'Delete edge -> trackComponent ->system.sys1'.
+. Right-click on `dataTracker:trk` and select 'Delete edge -> trackComponent ->system.community'.
 
 [#fig-tut4-dynamics]
 .The system dynamics sub-tree for Tutorial 4. .
@@ -140,6 +140,10 @@ Recall from the previous tutorial, that `system:sys1` is acting as a single comp
 The _arena_ is a special category. It must exist in every specification. Any data associated with it (_constants_, _drivers_ and _decorators_) is available to all `functions`: the data is global. The system (`system:sys1`) was also being tracked by the data tracker. This relationship was removed above because 'x', the population being tracked, will now be part of a category related to the community component of the model i.e 'x' will no longer be global data.
 
 The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define the association between the disturbance and the effected community.
+
+Because of the new stucture we will now specifiy, the name 'community' for the 'system' node will be misleading. In the Lotka-Volterra model, the system node was the only structure required and so 'community' was a reasonable choice. For now though we should rename this node to its default: 'sys1'.
+
+. Right-click on 'system.community` and rename it `sys1`.
 
 . Right-click on 'system.sys1` and collapse the `dynamics:sim` sub-tree.
 
