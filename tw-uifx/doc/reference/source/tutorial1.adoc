@@ -361,60 +361,41 @@ You can now generate documentation for this model from _ModelRunner_.
 
 . From _ModelRunner_ select 'About -> Create documentation' from the main menu. 
 
-This creates  an ODD template (Overview, Design concepts and Details) (`Tut1.odt`), an established standard for documenting simulation models. This file can be generated anytime the specifications are valid. When you're statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory:
+This creates  an ODD template (Overview, Design concepts and Details) (`Tut1.odt`), an established standard for documenting simulation models. This file can be generated any time from _ModelRunner_. When you're statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <<fig-dir-post-run>>:
 
 `~/.3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt`.
 
 Most word processors can read this standard format, native to LibreOffice, including Microsoft Word.
 
+NOTE: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated. 
+
 [#fig-ODD1]
 .A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from <<bibliography.adoc#Grimm2010,Grimm et al. (2010)>> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node.
 image::tutorial1IMG/fig-ODD1.png[align="center",role="thumb",width=850]
 
-NB: If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.
+
+[#fig-dir-post-run]
+.The directory structure after deploying pass:[<br/>]_ModelRunner_ and creating the ODD pass:[<br/>] documentation.
+image::tutorial1IMG/fig-dir-post-run.png[align="center",width=313,float="right",role="thumb"]
+
+Once the specifications have been compiled without errors and deployed and the documentation generated, a number of files will have been created <<fig-dir-post-run>>:
+
+... `local/java/code/`: This directory contains the generated Java code. The entire model is contained within the `Tut1.java` class.
+
+... `Tut1.jar`: A stand-alone jar of the model that can be run independently of _ModelMaker_ (*ref?*).
+
+... `runTime/MR.xml`: A preferences file for _ModelRunner_. These settings are saved whenever _ModelRunner_ quits so it will have the same appearance between successive uses.
+
+... `runTime/Tut1.odt`: This is the documentation file generated in the previous steps.
 
 ==== Graph layouts
-
-// Ian: Shouldnt this section be moved to the reference, section 3.2 ?
 
 An aspect of _ModelMaker_ we have only touched on so far, is the graph layout system.
 
 While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges. The advantage in presenting the specifications as a graph is that the huge number of options possible can be constrained by context. For example, to have a dynamic `process`, it makes sense that it's associated with a particular `timer`, that other processes working at the same rate are associated with the same `timer` and that all timers are coordinated by the one `timeline`. The user interface for problems such as this would be very error-prone if presented say, as a series of dialog boxes.
 
-_ModelMaker_ has a number of features to help arrange the graph display. These fall into three categories: arranging, hiding and resizing.
+_ModelMaker_ has a number of features to help arrange the graph display. Please refer to (*REF*).
 
-*Arranging*: There are four (five planned) layout algorithms currently available in _ModelMaker_ of which three make use of the tree structure of the graph to arrange nodes and one is a 'Spring' based algorithms which treat all edges alike, be they _parent-child_ or _cross-link_ edges. Tree methods are ideal for examining the parent-child structure while the last two are better suited to examining relations between nodes. Tree methods are deterministic while Spring methods are not. Thus, Tree methods are better for maintaining your orientation to the graph but have the disadvantage of not arranging cross-link edges clearly. Spring methods do a better job of this but the resulting arrangement can change with each application of the layout.
-
-Two of the Tree methods produce a radial layout. These are best suited to examining nodes that have many children such as a record with many fields.
-
-All Tree methods allow selecting any node as the root of the tree (`Ctrl right-click`) on any node. The selectded node will have a black circle around it and its name will appear in the tool bar. The graph is rearranged after re-applying the layout ('*L*').
-
-[#fig-new-root]
-.Tutorial 1 specification graph using `system:sys1` as the display root.
-image::tutorial1IMG/fig-new-root.png[align="center",role="thumb"]
-
-When a project is first created, the default layout is an *orderedTree*. To change to other layouts, use buttons in the tool bar (*L1, L2, L3, L4*). This layout persists for repeated applications of the layout (*L*) button until another is chosen.
-
-You can add a random displacement to nodes to help prevent node and edge text overlapping (*Jitter* from the tool bar). This setting is applied whenever the layout is re-applied.
-
-Finally, you can of course move a node anywhere within the graph window. 
-
-*Information hiding*: The following operations can help to hide temporally irrelevent information:
-
-- *collapse/expand*: You can hide or show sub-trees from any node from its local popup menu. In addition, all properties of collapsed sub-trees and removed from the property editor;
-- *X* Show/hide cross-link edges. 
-- *<* Show/hide parent-child edges.
-- *>|* Move all isolated nodes to one side (after re-applying the layout)
-- change the node and edge names by hiding or showing either or both roles and names with the `N-text` and `E-text` drop-down lists.
-- Hold down the `Shift` key while moving the mouse over any node. This highlights this node and any neighbours within the *path length*. The path length can be set from the tool bar. The default is '1'.
-
-*Resizing*:
-
-- *Zoom*: Zoom in and out in the graph window with the mouse pointer as the focus point (`Ctrl - mouse wheel`)
-- *Pan*: If the drawing surface is larger than the window, you can drag the drawing surface of the graph window (left click outside a node)
-- *Node Size*
-- *Font size*
- 
 As an exercise if you wish, try displaying just the nodes with _cross-links_ using the SpringGraph layout (*L4*). This is a common way to look at just the _cross-link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant _parent-child_ relationships make useful additions to the ODD appendix.
 
 [#fig-links-only]

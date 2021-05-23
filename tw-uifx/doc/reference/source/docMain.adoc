@@ -42,7 +42,10 @@ include::configuration-structure.adoc[]
 [.text-justify]
 === Using ModelMaker: software interface and functioning
 
-*TO DO*: step-by-step description of using the user interface. With screenshots.
+include::using-ModelMaker.adoc[]
+
+[.text-justify]
+=== Configuration options: reference
 
 include::configuration-reference.adoc[]
  

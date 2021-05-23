@@ -289,7 +289,7 @@
                         <Separator orientation="VERTICAL" />
                         <VBox alignment="CENTER">
                            <children>
-                              <Slider fx:id="sldrElements" disable="true" max="1.8" min="0.2" scaleY="0.75" showTickMarks="true" value="1.0" />
+                              <Slider fx:id="sldrElements" disable="true" max="3.0" min="0.2" scaleY="0.75" showTickMarks="true" value="1.0" />
                               <Label text="Taille de l'élément">
                                  <font>
                                     <Font size="10.0" />
