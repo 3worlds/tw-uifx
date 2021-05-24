@@ -6,20 +6,20 @@
 .The appearance of _ModelMaker_ displaying an example project.
 image::using-modelmakerIMG/fig-modelmaker.png[align="center"]
 
-TODO: topics
+//TODO: topics
 
- - mouse-keyboard options 6(1highlight, 2drag pane, 3drag node, 4popup, 5local graph, 6display root).
- - popup 14 (1new node, 2new edge, 3new child edge, 4expand, 5collapse,6delete node, 7delete edge, 8delete child edge, 9delete sub-tree,10optional properties, 11rename node, 12rename edge, 13import sub-tree, 14export sub-tree)
- - regions (graph display and tool bar) 
- - tool bar:10 (4 layouts, re-apply, x, <, >|, Path len, jitter, Node text, edge text, element size)
- - Property editors (list/category, search, all props, selected props)
- - Message pane (actions, details, debug)
- - compile and deploy
+// - mouse-keyboard options 6(1highlight, 2drag pane, 3drag node, 4popup, 5local graph, 6display root).
+// - popup 14 (1new node, 2new edge, 3new child edge, 4expand, 5collapse,6delete node, 7delete edge, 8delete child edge, 9delete sub-tree,10optional properties, 11rename node, 12rename edge, 13import sub-tree, 14export sub-tree)
+ //- regions (graph display and tool bar) 
+// - tool bar:10 (4 layouts, re-apply, x, <, >|, Path len, jitter, Node text, edge text, element size)
+// - Property editors (list/category, search, all props, selected props)
+// - Message pane (actions, details, debug)
+// - compile and deploy
 
 
-The user interface of _ModelMaker_ has the traditional main menu bar, a variety of mouse/keyboard operations and three regions for the construction of model specifications <<fig-modelmaker>>:
+_ModelMaker_ has the traditional main menu bar, a variety of mouse/keyboard operations and three regions for the construction of a graph of the model specifications <<fig-modelmaker>>:
 
-. Right-hand side: The graph display for constructing the model specifications. 
+. Right-hand side: The graph display for constructing the model specifications graph. 
 . Top left: Property editors for node and edge properties. 
 . Bottom left: A message pane for displaying actions that are required to ensure the specifications are valid. 
 
@@ -70,7 +70,7 @@ image::using-modelmakerIMG/fig-menu-edit.png[role="thumb",align="center",float="
 
 ====== undo/redo
 
-Redo or undo most edit operations. Collapse and Expand sub-trees (*ref*) are not included in this system. The undo/redo system creates temporary history files during a session. These are deleted when the project is closed.
+Re-do or un-do most edit operations. Collapse and Expand sub-trees operations (*ref*) are not included in this system. The undo/redo system creates temporary history files during a session. These are deleted when the project is closed.
 
 
 ====== import snippets
@@ -79,12 +79,11 @@ When a project is linked to a Java project (*ref*), method code from Java can be
 
 ====== clear snippets
 
-Clears and Java code in the configurations `snippet#javaCode` property. Functions with return values will have default return values added to prevent compile errors.
-
+Clears and Java code in the configuration's `snippet#javaCode` property. Functions with return values will have default return values added to prevent compile errors.
 
 ====== Java project
 
-Allows connecting to or discontecting from an external Java project. When connecting to a Java project, the java project must have imported `tw-dep.jar` as an external jar to it's class path (*ref*). Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this main class to debug your model code. If the specifications are valid, a main Java class is created with the same name as used for the 3Worlds project when it was first created. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported.
+Allows connecting to or disconnecting from an external Java project. When connecting to a Java project, the java project must have imported `tw-dep.jar` as an external jar to it's class path (*ref*). Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this main class to debug your model code. If the specifications are valid, a main Java class is created with the same name as that used for the 3Worlds project when it was first created. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported.
 
 If the creation times of Java source files and their associated class files become inconsistent, a message to this effect will appear in the *message pane*. In such cases, refresh or clean the Java project.
 
@@ -94,15 +93,15 @@ NOTE: Use 'Refresh` to keep _ModelMaker_ and the Java project consistent.
 
 ===== Help
 
-At the time of writing, _ModelMaker_ does not include an integrated help system.
+At the time of writing, _ModelMaker_ does not include an integrated help system.(*we can just open a browser window with the html file*)
 
 ====== About ModelMaker
 
-A dialog with a succinct description of the purpose of _ModelMaker_. If you're using _ModelMaker_ for the first time, it's a good idea to at least read this information. 
+A dialog with a succinct description of the purpose of _ModelMaker_. If you're using _ModelMaker_ for the first time, it's a good idea to at least read this overview. 
 
 ==== Graph display
 
-Construction takes place by adding (or removing) nodes and edges (_cross-links_) using the pop-up menus (right-click on any node). The options available in the pop-up menus are particular to the selected node. Above the graph display is a tool bar to enable various display options.
+TODO: Construction takes place by adding (or removing) nodes and edges (_cross-links_) using the pop-up menus (right-click on any node). The options available in the pop-up menus are particular to the selected node. Above the graph display is a tool bar to enable various display options.
 
 ==== Property editors
 
@@ -111,6 +110,8 @@ There are two property editors: one for all editable properties of the currently
 ==== Message pane
 
 Compilation takes place after every edit so there is rarely any need to click the compile button.
+
+TODO: etc....Pasted here from tutorial 1.
 
 While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges. The advantage in presenting the specifications as a graph is that the huge number of options possible can be constrained by context. For example, to have a dynamic `process`, it makes sense that it's associated with a particular `timer`, that other processes working at the same rate are associated with the same `timer` and that all timers are coordinated by the one `timeline`. The user interface for problems such as this would be very error-prone if presented say, as a series of dialog boxes.
 
