@@ -52,7 +52,7 @@ Imports a tree-graph file from disk (*.utg). Imports are only possible if the tr
 
 ====== Save
 
-Saves the configuration graph and it's layout file (layout.utg) to disk. (*Prob - can't call a project 'Layout'!*)
+Saves the configuration graph and it's layout file (.layout.utg) to disk.
 
 ====== Save as
 
