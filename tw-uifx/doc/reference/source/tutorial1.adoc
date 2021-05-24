@@ -69,7 +69,7 @@ Within `.3w` there is now a sub-directory called something like `project_Tut1_20
 Inside this directory are a number of text files:
 
 ... `Tut1.utg` is the model configuration graph we're constructing;
-... `layout.utg` contains information used to display the graph;
+... `.layout.utg` contains information used to display the graph;
 ... `MM.xml` contains the session's preference settings.
 ... `__StateA1` and sequences of similarly named files are temporary files to support the program's undo/redo editing operations. These files are created during a session and deleted when the session ends.  
 
