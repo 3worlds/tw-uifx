@@ -429,16 +429,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		ML_NEW_EDGE/*          */("New edge"), // spec
 		ML_NEW_CHILD_LINK/*    */("New child edge"), // spec
 		// --------------------------------------------
-		ML_IMPORT_TREE/*       */("Import tree"), // spec
-		ML_EXPORT_TREE/*       */("Export tree"), // spec
-		ML_EXPAND/*            */("Expand"), // config
-		ML_COLLAPSE/*          */("Collapse"), // config
+		ML_IMPORT_TREE/*       */("Import sub-tree"), // spec
+		ML_EXPORT_TREE/*       */("Export sub-tree"), // spec
+		ML_EXPAND/*            */("Expand sub-tree"), // config
+		ML_COLLAPSE/*          */("Collapse sub-tree"), // config
 		// --------------------------------------------
 		ML_RENAME_NODE /*      */("Rename node"), // config
 		ML_RENAME_EDGE/*       */("Rename edge"), // config
 		ML_DELETE_EDGE/*       */("Delete edge"), // config
 		ML_DELETE_CHILD_EDGE/* */("Delete child edge"), // config
-		ML_DELETE_TREE/*-      */("Delete tree"), // config
+		ML_DELETE_TREE/*-      */("Delete sub-tree"), // config
 		ML_DELETE_NODE/*       */("Delete node"), // config
 		ML_OPTIONAL_PROPS/*    */("Optional properties..."), // config & spec
 		// --------------------------------------------

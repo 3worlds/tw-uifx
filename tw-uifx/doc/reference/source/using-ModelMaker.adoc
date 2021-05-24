@@ -3,18 +3,106 @@
 === Using ModelMaker: software interface and functioning
 
 [#fig-modelmaker]
-._ModelMaker_ displaying an example project.
+.The appearance of _ModelMaker_ displaying an example project.
 image::using-modelmakerIMG/fig-modelmaker.png[align="center"]
 
-The user interface of _ModelMaker_ is divided into three main areas <<fig-modelmaker>>:
-. Right-hand side: The graph display. This is where the specification graph is constructed. 
+TODO: topics
+
+ - mouse-keyboard options 6(1highlight, 2drag pane, 3drag node, 4popup, 5local graph, 6display root).
+ - popup 14 (1new node, 2new edge, 3new child edge, 4expand, 5collapse,6delete node, 7delete edge, 8delete child edge, 9delete sub-tree,10optional properties, 11rename node, 12rename edge, 13import sub-tree, 14export sub-tree)
+ - regions (graph display and tool bar) 
+ - tool bar:10 (4 layouts, re-apply, x, <, >|, Path len, jitter, Node text, edge text, element size)
+ - Property editors (list/category, search, all props, selected props)
+ - Message pane (actions, details, debug)
+ - compile and deploy
+
+
+The user interface of _ModelMaker_ has the traditional main menu bar, a variety of mouse/keyboard operations and three regions for the construction of model specifications <<fig-modelmaker>>:
+
+. Right-hand side: The graph display for constructing the model specifications. 
 . Top left: Property editors for node and edge properties. 
 . Bottom left: A message pane for displaying actions that are required to ensure the specifications are valid. 
+
+The main window title will be that of the currently open project and any linked Java project associated with it (*ref*). Whenever the specifications are edited, an asterisk is prefixed to the window title and cleared on saving.
+
+==== Main menu
+
+===== Project
+
+====== New
+
+[#fig-menu-new]
+.Options for creating a new project.
+image::using-modelmakerIMG/fig-menu-new.png[role="thumb",align="center",float="right"]
+
+Creates a new project from either a library of templates, tutorials, models or test cases <<fig-menu-new>>. You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project sucessfully compiles.  A sub-directory with the name and creation date will be created under `.3w`.
+Once created, the project name and it's creation date will appear in the window title and the project root node will be the name entered in the prompt. _ModelMaker_ will automatically compile the project and list any actions required in the *message pane*.
+
+====== Open
+
+[#fig-menu-open]
+.The Open project menu choice.
+image::using-modelmakerIMG/fig-menu-new.png[role="thumb",align="center",float="right"]
+
+Open any project currently in the `.3w` directory <<fig-open-menu>>. Projects are listed in alphabetical order. If the currently open project is unsaved, as 'save' dialog will appear.
+
+====== Import
+
+Imports a tree-graph file from disk (*.utg). Imports are only possible if the tree-graph has a single root. You will be prompted for a unique name for the import.
+
+====== Save
+
+Saves the configuration graph and it's layout file (layout.utg) to disk. (*Prob - can't call a project 'Layout'!*)
+
+====== Save as
+
+Saves the project under a new name in a new directory within `3w`.
+
+====== Exit
+
+Exits _ModelMaker_ after a prompting to save any unsaved work. On exiting, a project specific preferences file is saved (`MM.xls') automatically recording the current appearance of _ModelMaker_.
+
+===== Edit
+
+[#fig-menu-edit]
+.The edit menu choice.
+image::using-modelmakerIMG/fig-menu-edit.png[role="thumb",align="center",float="right"]
+
+====== undo/redo
+
+Redo or undo most edit operations. Collapse and Expand sub-trees (*ref*) are not included in this system. The undo/redo system creates temporary history files during a session. These are deleted when the project is closed.
+
+
+====== import snippets
+
+When a project is linked to a Java project (*ref*), method code from Java can be imported into any `snippet` nodes (*ref*) in the specifications. If such code references dependencies, the _ModelMaker_ compiler will show errors in the *message pane*. To avoid these errors but keep the snippet, add comment markers in the imported snippet to avoid these dependencies and prevent the compile errors. (*this may change*).
+
+====== clear snippets
+
+Clears and Java code in the configurations `snippet#javaCode` property. Functions with return values will have default return values added to prevent compile errors.
+
+
+====== Java project
+
+Allows connecting to or discontecting from an external Java project. When connecting to a Java project, the java project must have imported `tw-dep.jar` as an external jar to it's class path (*ref*). Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this main class to debug your model code. If the specifications are valid, a main Java class is created with the same name as used for the 3Worlds project when it was first created. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported.
+
+If the creation times of Java source files and their associated class files become inconsistent, a message to this effect will appear in the *message pane*. In such cases, refresh or clean the Java project.
+
+NOTE: To compile your own models, the Java Development Kit (JDK)  must be installed on your computer (<<trueprerequisites>>). 
+
+NOTE: Use 'Refresh` to keep _ModelMaker_ and the Java project consistent. 
+
+===== Help
+
+At the time of writing, _ModelMaker_ does not include an integrated help system.
+
+====== About ModelMaker
+
+A dialog with a succinct description of the purpose of _ModelMaker_. If you're using _ModelMaker_ for the first time, it's a good idea to at least read this information. 
 
 ==== Graph display
 
 Construction takes place by adding (or removing) nodes and edges (_cross-links_) using the pop-up menus (right-click on any node). The options available in the pop-up menus are particular to the selected node. Above the graph display is a tool bar to enable various display options.
-
 
 ==== Property editors
 

@@ -176,12 +176,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private ToggleButton tglSideline;
 
-//	@FXML
-//	private ToggleButton tglNeighbourhood;
-
-//	@FXML
-//	private Button btnSelectAll;
-
 	@FXML
 	private BorderPane rootPane;
 
@@ -214,9 +208,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	private Circle trafficLight;
-
-//	@FXML
-//	private Button btnDocument;
 
 	@FXML
 	private SplitPane splitPane1;
@@ -804,6 +795,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	
 	@Override
 	public void onRootNameChange() {
+		setLayoutRoot(null);
 		initialisePropertySheets();		
 	}
 
@@ -927,10 +919,16 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public VisualNode setLayoutRoot(VisualNode newRoot) {
 		VisualNode oldRoot = layoutRoot;
 		layoutRoot = newRoot;
+		if (layoutRoot == null) {
+			for (VisualNode root : visualGraph.roots())
+				if (root.cClassId().equals(N_ROOT.label()))
+				layoutRoot = root;
+		}
 		if (layoutRoot != null)
 			txfLayoutRoot.setText(layoutRoot.getConfigNode().toShortString());
-		else
+		else {
 			txfLayoutRoot.setText("");
+		}
 		return oldRoot;
 	}
 
