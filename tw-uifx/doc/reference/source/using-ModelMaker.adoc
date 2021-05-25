@@ -6,24 +6,13 @@
 .The appearance of _ModelMaker_ displaying an example project.
 image::using-modelmakerIMG/fig-modelmaker.png[align="center"]
 
-//TODO: topics
-
-// - mouse-keyboard options 6(1highlight, 2drag pane, 3drag node, 4popup, 5local graph, 6display root).
-// - popup 14 (1new node, 2new edge, 3new child edge, 4expand, 5collapse,6delete node, 7delete edge, 8delete child edge, 9delete sub-tree,10optional properties, 11rename node, 12rename edge, 13import sub-tree, 14export sub-tree)
- //- regions (graph display and tool bar) 
-// - tool bar:10 (4 layouts, re-apply, x, <, >|, Path len, jitter, Node text, edge text, element size)
-// - Property editors (list/category, search, all props, selected props)
-// - Message pane (actions, details, debug)
-// - compile and deploy
-
-
 _ModelMaker_ has the traditional main menu bar, a variety of mouse/keyboard operations and three regions for the construction of a graph of the model specifications <<fig-modelmaker>>:
 
-. Right-hand side: The graph display for constructing the model specifications graph. 
-. Top left: Property editors for node and edge properties. 
-. Bottom left: A message pane for displaying actions that are required to ensure the specifications are valid. 
+. Right-hand side: The *Graph display* window and associated tool bar for constructing the model specifications graph. 
+. Top left: *Property editors* for node and edge properties. 
+. Bottom left: A *Message pane* to display actions that are required to ensure the specifications are valid. 
 
-The main window title will be that of the currently open project and any linked Java project associated with it (*ref*). Whenever the specifications are edited, an asterisk is prefixed to the window title and cleared on saving.
+The main window title is the currently open project and any linked Java project associated with it (*3Worlds project <o-o-o> Java Project*). Whenever the specifications are edited, an asterisk is prefixed to the window title and cleared upon saving.
 
 ==== Main menu
 
@@ -35,8 +24,8 @@ The main window title will be that of the currently open project and any linked 
 .Options for creating a new project.
 image::using-modelmakerIMG/fig-menu-new.png[role="thumb",align="center",float="right"]
 
-Creates a new project from either a library of templates, tutorials, models or test cases <<fig-menu-new>>. You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project sucessfully compiles.  A sub-directory with the name and creation date will be created under `.3w`.
-Once created, the project name and it's creation date will appear in the window title and the project root node will be the name entered in the prompt. _ModelMaker_ will automatically compile the project and list any actions required in the *message pane*.
+Creates a new project from either a library of *Templates*, *Tutorials*, *Model library* or *Test cases* <<fig-menu-new>>. You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project successfully compiles.  A sub-directory with the name and creation date will be created under `.3w`.
+Once created, the project name and its creation date appear in the window title and the graph root node name is that entered at the prompt. _ModelMaker_ will automatically compile the project and list any actions required in the *message pane*.
 
 ====== Open
 
@@ -44,23 +33,25 @@ Once created, the project name and it's creation date will appear in the window 
 .The Open project menu choice.
 image::using-modelmakerIMG/fig-menu-new.png[role="thumb",align="center",float="right"]
 
-Open any project currently in the `.3w` directory <<fig-open-menu>>. Projects are listed in alphabetical order. If the currently open project is unsaved, as 'save' dialog will appear.
+Open any project currently in the `.3w` directory <<fig-open-menu>>. Projects are listed in alphabetical order.
 
 ====== Import
 
 Imports a tree-graph file from disk (*.utg). Imports are only possible if the tree-graph has a single root. You will be prompted for a unique name for the import.
 
+NOTE: Tree-graphs with more than one root cannot be imported.
+
 ====== Save
 
-Saves the configuration graph and it's layout file (.layout.utg) to disk.
+Saves the configuration graph and it's associated layout file (.layout.utg) to disk.
 
 ====== Save as
 
-Saves the project under a new name in a new directory within `3w`.
+Saves the project under a new name in a new directory within `3w`. If the project was linked to a Java project, the new project will maintain this link and generate a new Java file with this name.
 
 ====== Exit
 
-Exits _ModelMaker_ after a prompting to save any unsaved work. On exiting, a project specific preferences file is saved (`MM.xls') automatically recording the current appearance of _ModelMaker_.
+Exits _ModelMaker_ after a prompting to save any unsaved work. On exiting, a project specific preferences file is saved (`MM.xls') automatically, recording the current appearance of _ModelMaker_.
 
 ===== Edit
 
@@ -70,30 +61,31 @@ image::using-modelmakerIMG/fig-menu-edit.png[role="thumb",align="center",float="
 
 ====== undo/redo
 
-Re-do or un-do most edit operations. Collapse and Expand sub-trees operations (*ref*) are not included in this system. The undo/redo system creates temporary history files during a session. These are deleted when the project is closed.
-
+Re-do or un-do most edit operations. Collapse and Expand sub-trees operations are not included in this system. The undo/redo system creates temporary history files during a session. These are deleted when the project is closed.
 
 ====== import snippets
 
-When a project is linked to a Java project (*ref*), method code from Java can be imported into any `snippet` nodes (*ref*) in the specifications. If such code references dependencies, the _ModelMaker_ compiler will show errors in the *message pane*. To avoid these errors but keep the snippet, add comment markers in the imported snippet to avoid these dependencies and prevent the compile errors. (*this may change*).
+When a project is linked to a Java project, method code from Java can be imported into any `snippet` nodes in the specifications. If this code references dependencies, _ModelMaker_ will show compile errors in the *message pane*. To avoid these errors but keep the snippet, add comment markers in the imported snippet to avoid these dependencies and prevent the compile errors. (*TODO: this may change*).
 
 ====== clear snippets
 
-Clears and Java code in the configuration's `snippet#javaCode` property. Functions with return values will have default return values added to prevent compile errors.
+Clears the Java code in the configuration's `snippet#javaCode` property. Functions with return values will have default return values added to prevent compile errors.
 
 ====== Java project
 
-Allows connecting to or disconnecting from an external Java project. When connecting to a Java project, the java project must have imported `tw-dep.jar` as an external jar to it's class path (*ref*). Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this main class to debug your model code. If the specifications are valid, a main Java class is created with the same name as that used for the 3Worlds project when it was first created. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported.
+Allows connecting to or disconnecting from an external Java project. When connecting to a Java project, the java project must have imported `tw-dep.jar` as an external jar to its class path. Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported for this purpose.
 
 If the creation times of Java source files and their associated class files become inconsistent, a message to this effect will appear in the *message pane*. In such cases, refresh or clean the Java project.
 
 NOTE: To compile your own models, the Java Development Kit (JDK)  must be installed on your computer (<<trueprerequisites>>). 
 
-NOTE: Use 'Refresh` to keep _ModelMaker_ and the Java project consistent. 
+NOTE: Use 'Refresh` to keep _ModelMaker_ and the Java project synchronized. 
 
 ===== Help
 
-At the time of writing, _ModelMaker_ does not include an integrated help system.(*we can just open a browser window with the html file*)
+====== Manual
+
+Displays this user manual in a browser. *TODO*
 
 ====== About ModelMaker
 
@@ -101,47 +93,125 @@ A dialog with a succinct description of the purpose of _ModelMaker_. If you're u
 
 ==== Graph display
 
-TODO: Construction takes place by adding (or removing) nodes and edges (_cross-links_) using the pop-up menus (right-click on any node). The options available in the pop-up menus are particular to the selected node. Above the graph display is a tool bar to enable various display options.
+Construction of the model specification graph takes place in the *Graph display* window by adding or removing nodes and edges (_cross-links_). Above the graph display is a tool bar to enable various display options. <<fig-graph-display-window>>.
+
+[#fig-graph-display-window]
+.The Graph display window and tool bar. The graph is both a Tree graph and a directed network graph. The tree graph is shown with green parent-child links. The directed network graph is shown with red, named links.
+image::using-modelmakerIMG/fig-graph-display-window.png[align="center"]
+
+The graph is both a tree graph (with a single root) and a directed network graph. The tree structure is shown with green parent-child links with a thickened end at the child node. The directed network graph is shown with red, named links with a thickened end at the 'end node'.
+
+Node colours are based on a schema that, for the most part,  colours all nodes within a sub-tree the same. The colours are not editable.
+
+===== Tool bar
+. Layout selection: The four radio buttons (*L1, L2, L3, L4*) select one of four layout algorithms:
+... *L1* - ordered tree. The nodes are listed vertically in alphabetical order.
+... *L2* - radial tree. The radius decreases as the path distance from the root node increases.
+... *L3* - radial tree. The radius remains constant. 
+... *L4* - spring graph. A force directed layout. Parent-child edges (green) and treated in the same way as _cross-links_ (red).
+. Layout options
+... *L*: Applies the current layout options.
+... *X*: Toggles the _cross-links_.
+... *<*: Toggles the parent-child links.
+... *>|*: Moves any isolated nodes to the right-hand side of the window.
+... *Current layout root*: The name of the node used for the display root of the graph. The default is the black 3worlds node. This can be changed by right-clicking on any node while holding down the `Ctrl` key. The display root node is also indicated by a black circle. This option only applies to tree layouts.
+
+. Miscellaneous
+... *Path len.*: Sets the path length when the view local graph option is selected. This is selected by moving the mouse over a node while holding down the `Shift` key.
+... *Jitter*: Sets the amount of random displacement of a node when applying a layout. This is useful to separate text and/or lines drawn over each other.
+
+. Text options:
+... *Node text*: Display the node label and name or any combination of the two including no text.
+... *Edge text*: Display the edge label and name or any combination of the two including no text.
+
+. *Element size*: Increases or decreases the size of all nodes, edges and text in the display.
+
+===== Keyboard and mouse functions
+
+// - mouse-keyboard options (2drag pane, 3drag node, 4popup, 5local graph, 6display root).
+... *Pan*: Drag the mouse anywhere other than on a node to pan the graph drawing surface. This assumes the display size is larger than the window.
+... *Drag node*: Right-click on any node to change its position. Nodes are shown in red when the mouse passes over them.
+... *Show local graph*: Hold down the `Shift` key while moving the mouse over a node. The path length for this feature is set in the tool bar.
+... *Show node properties*: Left-click on any node to display its properties in the _Selected properties_ property editor.
+... *Zoom*: Hold down the `Ctrl` key while moving the mouse wheel to zoom in and out of the display.
+... *Pop-up edit menu*: Right-click on any node to see the edit options for that node.
+
+===== Pup-up edit options
+
+This menu is the princple way in which the specification graph is constructed <<fig-popup>>. Note that the `predefined:*catoregories*` sub-tree cannot be edited except for any 'in-nodes' that may be allowed from outside this sub-tree.
+
+[#fig-popup]
+.The pup-up menu. Available options depend on the node selected.
+image::using-modelmakerIMG/fig-menu-edit.png[role="thumb",align="center",float="right"]
+
+... *New node*: Displays a list of valid node labels that can be children of this node.
+... *New edge*: Displays a list of valid edges (_cross-links) from this node to another existing node.
+... *New child edge*: Displays a list of (parentless) nodes that can be valid children of this node.
+...*Expand sub-tree*: Displays a list of sub-trees that can be expanded from this node. After expanding, any properties of these nodes and edges will appear in the property editor.
+...*Collapse sub-tree*: Displays a list of sub-trees that can be collapsed from this node. After collapsing, any properties of these nodes and edges will be removed from the property editor.
+... *Delete node*: Deletes this node. The `3Worlds` root node cannot be deleted.
+... *Delete edge*: Displays a list of 'out-edges' from this node that can be deleted.
+... *Delete child edge*: Displays a list of child nodes that can be orphaned. Note that the specifications are not valid until all child nodes have parents.
+... *Optional properties*: Displays a dialog with any optional properties that can be added or removed from this node.
+... *Rename node*: Change the node name to some other unqiue name. The name of the root node cannot be changed.
+... *Rename edge*: Displays a list of 'out-edges' whose name can be changed to some other unqiue name. 
+... *Import sub-tree*: Displays a list of valid child node labels that can form the root of a sub-tree read from file.
+... *Export sub-tree*: Displays a list of the current child nodes of this node that can be exported to file.
 
 ==== Property editors
 
-There are two property editors: one for all editable properties of the currently displayed nodes and edges; and a second for all properties of a selected node (left-click on any node).
+There are two property editors available on separate tabs: one (_Properties_) displays all _editable_ properties of the currently displayed nodes and edges; and a second (_Selected properties_) shows _all_ properties of a selected node (left-click on any node) <<fig-properties-selected>>.
+
+The _Properties_ editor has two buttons; one to display properties by category <<fig-properties-category>> (in this case this means by sub-tree) and the other to display properties by name <<fig-properties-all>>. There is also a search field that can be used to show only those properties that match the search text.
+
+Properties are only shown for nodes that are currently visible (not collapsed) in the graph.
+
+[#fig-properties-all]
+.Property editor showing properties listed by name.
+image::using-modelmakerIMG/fig-properties-all.png[role="thumb",align="center",float="right"]
+
+[#fig-properties-category]
+.Property editor showing properties listed by category.
+image::using-modelmakerIMG/fig-properties-category.png[role="thumb",align="center",float="right"]
+
+[#fig-properties-selected]
+.Property editor showing only properties of a selected node (here a `TimeLine`).
+image::using-modelmakerIMG/fig-properties-selected.png[role="thumb",align="center",float="right"]
+
 
 ==== Message pane
 
-Compilation takes place after every edit so there is rarely any need to click the compile button.
+The *message pane* displays information about what is required to make the model specifications valid. It grows and shrinks during construction depending on the state of the graph. Information is presented in three levels of increasing amounts of information: action, details and debug. Generally, the 'action' level is all that is required.
+This messages are displayed in alphabetical order of the Action text no matter what the display level. At the bottom of the *message pane* are two buttons described at the end of this section.
 
-TODO: etc....Pasted here from tutorial 1.
+... *Action*: This level indicates what action must be taken for the specifications to comply with the 3Worlds archetype. Its format is: a) the message category (usually *[Node]*, *[Edge]* or *[Property]*); b) the target (the label:name of a node or edge or a property name) and the action message <<fig-msg-actions>>.
 
-While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges. The advantage in presenting the specifications as a graph is that the huge number of options possible can be constrained by context. For example, to have a dynamic `process`, it makes sense that it's associated with a particular `timer`, that other processes working at the same rate are associated with the same `timer` and that all timers are coordinated by the one `timeline`. The user interface for problems such as this would be very error-prone if presented say, as a series of dialog boxes.
+[#fig-msg-actions]
+.Message pane displaying Action messages.
+image::using-modelmakerIMG/fig-msg-actions.png[role="thumb",align="center",float="right"]
 
-_ModelMaker_ has a number of features to help arrange the graph display. These fall into three categories: arranging, hiding and resizing.
+... *Details*: This level shows the action message and the specification constraint that is unsatisfied at the current time. The information provided varies with the message but in general include <<fig-msg-details>>:
 
-*Arranging*: There are four (five planned) layout algorithms currently available in _ModelMaker_ of which three make use of the tree structure of the graph to arrange nodes and one is a 'Spring' based algorithms which treat all edges alike, be they _parent-child_ or _cross-link_ edges. Tree methods are ideal for examining the parent-child structure while the last is better suited to examining relations between nodes. Tree methods are deterministic while Spring methods are not. Thus, Tree methods are better for maintaining your orientation to the graph but have the disadvantage of not arranging cross-link edges clearly. Spring methods do a better job of this but the resulting arrangement can change with each application of the layout.
+.... Message number. Messages are always displayed in alphabetical order of the Action text no matter what the display level. 
+.... The action message: usually in the form of "Do this or that".
+.... The specification constraint: usually in the form of "Expected this but found that".
+.... The Java class of the query issuing the message.
+.... The node in the 3Worlds archetype that defines the application of this query class.
+.... The target element (node, edge, property or some other item class)
 
-Two of the Tree methods produce a radial layout. These are best suited to examining nodes that have many children such as a record with many fields.
+[#fig-msg-details]
+.Message pane displaying Details messages.
+image::using-modelmakerIMG/fig-msg-details.png[role="thumb",align="center",float="right"]
 
-All Tree methods allow selecting any node as the root of the tree (`Ctrl right-click`) on any node. The selected node will have a black circle around it and its name will appear in the tool bar. The graph is rearranged after re-applying the layout ('*L*').
+... *Debug*: This level shows all information available for this message including a detailed description of the target and archetype elements. It is rarely informative unless you are a contributor to the development of 3Worlds <<fig-msg-debug>>.
+
+[#fig-msg-debug]
+.Message pane displaying Debug messages.
+image::using-modelmakerIMG/fig-msg-debug.png[role="thumb",align="center",float="right"]
 
 
-When a project is first created, the default layout is an *orderedTree*. To change to other layouts, use buttons in the tool bar (*L1, L2, L3, L4*). This layout persists for repeated applications of the layout (*L*) button until another is chosen.
+===== Compile and Deploy
 
-You can add a random displacement to nodes to help prevent node and edge text overlapping (*Jitter* from the tool bar). This setting is applied whenever the layout is re-applied.
+... *Compile*: Checks the specification graph against the archetype and compiles the Java code. This process takes place in the background anytime the graph is edited. Therefore, there is rarely any need to click the compile button.
 
-Finally, you can of course move a node anywhere within the graph window. 
-
-*Information hiding*: The following operations can help to hide temporally irrelevent information:
-
-- *collapse/expand*: You can hide or show sub-trees from any node from its local popup menu. In addition, all properties of collapsed sub-trees and removed from the property editor;
-- *X* Show/hide cross-link edges. 
-- *<* Show/hide parent-child edges.
-- *>|* Move all isolated nodes to one side (after re-applying the layout)
-- change the node and edge names by hiding or showing either or both roles and names with the `N-text` and `E-text` drop-down lists.
-- Hold down the `Shift` key while moving the mouse over any node. This highlights this node and any neighbours within the *path length*. The path length can be set from the tool bar. The default is '1'.
-
-*Resizing*:
-
-- *Zoom*: Zoom in and out in the graph window with the mouse pointer as the focus point (`Ctrl - mouse wheel`)
-- *Pan*: If the drawing surface is larger than the window, you can drag the drawing surface of the graph window (left click outside a node)
-- *Node Size*
-- *Font size*
+... *Deploy*: This button is enabled (traffic light is green) whenever there are no messages in the *message pane*. When clicked, _ModelRunner_ is launched to run the model with the specified experment desgin.
