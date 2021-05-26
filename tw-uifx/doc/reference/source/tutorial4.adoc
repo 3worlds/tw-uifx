@@ -10,17 +10,22 @@ Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials`
 
 . Create a new project from `Tutorials -> 2 LotkaVolterra` and name it 'Tut4'.
 
+As the title suggests, in this tutorial we are elaborating the model structure. The Lotka-Volterra model has the simplest of structures: so simple that its `System` node can be named `community`. In the model we are developing here, this name would be misleading since we will have not only a 'community' but also a 'disturbance'. Therefore it will be clearer if we change the name of the system node back to its default: `sys1`.
+
+[start = 2]
+
+. Right-click on `system:community` and rename 'community' to the default name 'sys1'.
+
+
 ===== Data definition
 
 Data can play one of three _roles_ in the _3Worlds archetype_:
 
-... _constants_ (cnsts), 
+... _constants_, 
+... _drivers_, or
+... _decorators_. 
 
-... _drivers_ (drvs) or 
-
-... _decorators_ (decs). 
-
-Thus far we have only made use of data as _drivers_ and _constants_. The third role, _Decorators_, are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. In this tutorial we add a species diversity index as a  _decorator_, derived from relative abundance of each species.
+Thus far we have only made use of data as _drivers_ and _constants_. The third role, _decorators_, are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. In this tutorial we add a species diversity index as a  _decorator_, derived from relative abundance of each species.
 
 . Collapse all nodes except for the `dataDefinition` sub-tree, hide the _cross-links_ ('*X*'), and re-apply the layout ('*L*').
 
@@ -28,7 +33,7 @@ Thus far we have only made use of data as _drivers_ and _constants_. The third r
 
 . Add a `field` as a child of `record:decs`, name it 'div' (diversity index) of type `Double`.
 
-As noted previously, these names are just for clarity - they don't impose their roles as _drivers_, _constants_ or _decorators_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles to keep things organised. Their role will later be formally defined by a relationship with a `category` which we create when building the `structure` specifications. While building the data definition, expect task messages to accumulate until these roles have been defined.
+As noted previously, these names are just for clarity - they don't impose their roles as _drivers_, _constants_ or _decorators_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles just for clarity. Their role will later be formally defined by a relationship with a `category` which we create when building the `structure` specifications. While building the data definition, expect task messages to accumulate until these roles have been defined.
 
 We now define some data for the simple disturbance model: frequency and intensity.
 
@@ -62,7 +67,12 @@ For simplicity, we define intensity as a constant rather than a driver.
 .The data definition sub-tree for Tutorial 4. Tree layout algorithms sort nodes in alphabetical order. Keeping this in mind when naming nodes can help keep your specifications in a particular order.
 image::tutorial4IMG/fig-tut4-data-definition.png[align="center",role="thumb"]
 
-That's all the data needed for this tutorial. We can now specify the system dynamics.
+To display an xy plot of diversity by time since disturbance, we can add a driver to the commDrvs record to record this.
+
+[start = 9]
+. Create a `field` of type `Double` as a child of `record:commDrvs`, add the `description` property and enter 'Time since disturbance' for the property value.
+
+That's all the data needed for now. We can now specify the system dynamics.
 
 ===== Dynamics
 
@@ -141,11 +151,7 @@ The _arena_ is a special category. It must exist in every specification. Any dat
 
 The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define the association between the disturbance and the effected community.
 
-Because of the new stucture we will now specifiy, the name 'community' for the 'system' node will be misleading. In the Lotka-Volterra model, the system node was the only structure required and so 'community' was a reasonable choice. For now though we should rename this node to its default: 'sys1'.
-
-. Right-click on 'system.community` and rename it `sys1`.
-
-. Right-click on 'system.sys1` and collapse the `dynamics:sim` sub-tree.
+. Right-click on `system.sys1` and collapse the `dynamics:sim` sub-tree.
 
 . Create a `structure` as child of `system:sys1`.
 
@@ -162,28 +168,6 @@ Because of the new stucture we will now specifiy, the name 'community' for the '
 Before proceeding to the definition of the _roles_ of these component types, we should redefine the _role_ of `system:sys1` that we inherited from Tutorial 3 when starting this project.
 
 `system:sys1`, in aliasing as a `componentType`, must now be redefined as an `assemblage` with no functions or data associated with it. 
-
-//First, arrange the graph display so only relevant parts are displayed. These instructions are as tedious to write as they are to follow, but its worth it.
-
-//[start = 7]
-
-//. Collapse all nodes to the root node.
-
-//. Expand all nodes from the root node.
-
-//. Collapse `experiment:expt` and `userInterface:gui` sub-trees to the root.
-
-//. Collapse `dimensioner:nspp` to `dataDefinition:dDef`.
-
-//. If you want, you can collapse all `fields` and `tables` into their respective tables.
-
-//. Collapse `record:AVPopulation` and `record:AVEphemeral` to `predefined:*categories*`.
-
-//. Collapse `category:*group*`, `category:*space*`, `category:*relation*` and `category:*lifecycle*` to `categorySet:*systemElements*`.
-
-//. Collapse `dynamics:sim1` from `system.sys1`.
-
-//. Re-apply the layout.
 
 Redefine the _role_ of `system:sys1` as an `assemblage`.
 
