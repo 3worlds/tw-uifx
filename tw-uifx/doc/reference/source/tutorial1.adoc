@@ -60,7 +60,7 @@ All projects are located within the 3Worlds root directory called `.3w`. The dot
 
 [#fig-tut1-dir]
 .The initial directory structure pass:[<br/>] after creating a new project from the 'Blank' pass:[<br/>] template. Later, after all tasks have been pass:[<br/>] completed and the model is deployed, another pass:[<br/>] sub-directory is added for run-time files.
-image::tutorial1IMG/fig-tut1-dir.png[role="thumb",align="center",float="right"]
+image::tutorial1IMG/fig-tut1-dir.png[role="thumb",align="left",float="right"]
 
 The `.3w` directory contains a Jar file called `tw-dep.jar` (<<fig-tut1-dir>>). This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
 
@@ -115,7 +115,7 @@ All `fields` (and later `tables`) must be children of some `record`.
 
 [#fig-ddef-subtree]
 .Defining constant `r` and driver `x` pass:[<br/>] within the data definition sub-tree.
-image::tutorial1IMG/fig-ddef-subtree.png[align="center",width=300,float="left",role="thumb"]
+image::tutorial1IMG/fig-ddef-subtree.png[align="left",width=300,float="left",role="thumb"]
 
 Note that the names 'drvs' and 'cnsts' don't imply any meaning to the specifications - they're just names. Their _roles_ as drivers and constants will be defined later. 
 
@@ -223,7 +223,7 @@ There are two `record` nodes within this sub-tree for default handling of averag
 
 [#fig-system-role]
 .The specification of the system component in belonging pass:[<br/>] to the three categories; _permanent_, _atomic_ and _arena_.
-image::tutorial1IMG/fig-system-role.png[align="center",role="thumb",width=500,float="right"]
+image::tutorial1IMG/fig-system-role.png[align="left",role="thumb",width=500,float="right"]
 
 We are now in a position to define the _role_ of the `system` node (a.k.a. `component` in this case). The `system` node always belongs to the `arena` and `permanent` categories. This has already been done by the 'Blank' template. It just remains to make the system `atomic`.
 
@@ -235,7 +235,7 @@ The system's role of belonging to the _atomic_, _permanent_ and _arena_ categori
 
 [#fig-arena]
 .The specification of the constants and drivers for the _arena_, pass:[<br/>] a category to which the only component in this tutorial (aka pass:[<br/>] `system:sys1`) belongs.
-image::tutorial1IMG/fig-arena.png[align="center",width=550,float="right",role="thumb"]
+image::tutorial1IMG/fig-arena.png[align="left",width=550,float="right",role="thumb"]
 
 Now we need to apply `process:p` to a category - in this case, the _arena_ (see the task list).
 
@@ -259,7 +259,7 @@ Before deploying the simulation, it's useful to display the overall specificatio
 
 [#fig-deploy1]
 .A view of the specification graph showing principal nodes of interest.
-image::tutorial1IMG/fig-deploy1.png[align="center",role="thumb"]
+image::tutorial1IMG/fig-deploy1.png[align="left",role="thumb"]
 
 . Right-click the root node and select 'Collapse -> predefined:*categories*'.
 . Again, right-click the root node and select 'Expand -> experiment:expt' and 'UserInterface:gui'.
@@ -349,7 +349,7 @@ To complete this tutorial, add a simple stopping condition:
 
 [#fig-final-specification]
 .The specification graph for Tutorial 1.
-image::tutorial1IMG/fig-final-specification.png[align="center",role="thumb"]
+image::tutorial1IMG/fig-final-specification.png[align="left",role="thumb"]
 
 [#fig-tut1-MR]
 .The appearence of _ModelRunner_ while running Tutorial 1.
@@ -371,12 +371,12 @@ NOTE: If you edit the file without making a copy, those edits will be lost whene
 
 [#fig-ODD1]
 .A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from <<bibliography.adoc#Grimm2010,Grimm et al. (2010)>> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node.
-image::tutorial1IMG/fig-ODD1.png[align="center",role="thumb",width=850]
+image::tutorial1IMG/fig-ODD1.png[align="left",role="thumb",width=850]
 
 
 [#fig-dir-post-run]
 .The directory structure after deploying pass:[<br/>]_ModelRunner_ and creating the ODD pass:[<br/>] documentation.
-image::tutorial1IMG/fig-dir-post-run.png[align="center",width=313,float="right",role="thumb"]
+image::tutorial1IMG/fig-dir-post-run.png[align="left",width=313,float="right",role="thumb"]
 
 Once the specifications have been compiled without errors and deployed and the documentation generated, a number of files will have been created <<fig-dir-post-run>>:
 
@@ -400,7 +400,7 @@ As an exercise if you wish, try displaying just the nodes with _cross-links_ usi
 
 [#fig-links-only]
 .A view of the specification graph for Tutorial 1 showing only relevant _cross-links_ using the Spring layout (*L4*).
-image::tutorial1IMG/fig-links-only.png[align="center",role="thumb"]
+image::tutorial1IMG/fig-links-only.png[align="left",role="thumb"]
 
 That's the end of this tutorial. Recreate this project at any time from the main menu (`Project -> New -> Tutorials -> 1 Logistic`).
 

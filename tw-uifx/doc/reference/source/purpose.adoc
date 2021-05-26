@@ -1,7 +1,7 @@
 === Why another simulation environment for ecology?
 
 _“Though the organisms may claim our primary interest, when we are trying to think fundamentally we cannot separate them from their special environment, with which they form
-one physical system”_ A. G. <<bibliography.adoc#Tabsley1935,Tanlsey (1935)>>. 
+one physical system”_ A. G. <<bibliography.adoc#Tansley1935,Tanlsey (1935)>>. 
 
 Ecosystems, as first proposed by Arthur <<bibliography.adoc#Tansley1935,Tansley (1935)>>, have both physical and biological aspects. They comprise not only energy and chemical stocks and flows but also living things that are born, reproduce and die, exhibiting particular behaviours over the course of their existence. They are made from and return to the physical world, are part of it and at the same time, constitute a domain where terms such as reproduction, social interaction, communication and life cycle have meaning.
 

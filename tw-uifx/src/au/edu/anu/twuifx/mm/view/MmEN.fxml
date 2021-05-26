@@ -102,6 +102,7 @@
                </items></Menu>
             <Menu mnemonicParsing="false" text="Help">
               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onShowReference" text="Reference manual" />
                 <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="About ModelMaker" />
               </items>
             </Menu>

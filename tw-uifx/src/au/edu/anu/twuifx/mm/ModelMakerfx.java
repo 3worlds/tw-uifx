@@ -51,6 +51,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+
 import javafx.stage.Stage;
 
 /**
@@ -86,9 +87,6 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		});
 	}
 
-//	private boolean checkArchetype = false;
-
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		/**
@@ -105,18 +103,10 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
 		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
 		GraphState.addListener(controller);
-		//setDefaultFrameSize();
 		mainStage.show();
-		//Logging.setLogLevel(Level.INFO, MMModel.class);
 
 	}
 
-//	private void setDefaultFrameSize() {
-//		mainStage.setWidth(DefaultWindowSettings.getWidth());
-//		mainStage.setHeight(DefaultWindowSettings.getHeight());
-//		mainStage.setX(DefaultWindowSettings.getX());
-//		mainStage.setY(DefaultWindowSettings.getY());
-//	}
 
 	@Override
 	public void stop() {
@@ -128,7 +118,6 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	public static void main(String[] args) {
 		System.out.println("Before 'launch(args)'");
 		launch(args);
-		// System.out.println("OK");
 	}
 
 }

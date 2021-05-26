@@ -147,6 +147,8 @@ import fr.cnrs.iees.twmodels.LibraryTable;
 import fr.cnrs.iees.uit.space.Box;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
@@ -378,7 +380,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		/** add template entries to the "New" menu */
 		buildNewMenu();
-
 
 		// build a toggle group for the verbosity level of archetype error
 		// messages
@@ -729,6 +730,27 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
+	@FXML
+	void onShowReference(ActionEvent event) {
+		Dialog<ButtonType> dlg = new Dialog<>();
+		dlg.initOwner((Window) Dialogs.owner());
+		dlg.setTitle("3Worlds reference");
+		
+		dlg.setResizable(true);
+		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(done);
+		
+		final WebView browser = new WebView();
+		final WebEngine webEngine = browser.getEngine();
+		webEngine.load(this.getClass().getResource("reference.html").toString());
+		ScrollPane scrollPane = new ScrollPane();
+	    scrollPane.setContent(browser);
+	    dlg.getDialogPane().setContent(scrollPane);
+	    scrollPane.setFitToWidth(true);
+	    scrollPane.setFitToHeight(true);
+	    dlg.show();
+	}
+
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
@@ -792,11 +814,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onEdgeDeleted() {
 		initialisePropertySheets();
 	}
-	
+
 	@Override
 	public void onRootNameChange() {
 		setLayoutRoot(null);
-		initialisePropertySheets();		
+		initialisePropertySheets();
 	}
 
 	@Override
@@ -922,7 +944,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		if (layoutRoot == null) {
 			for (VisualNode root : visualGraph.roots())
 				if (root.cClassId().equals(N_ROOT.label()))
-				layoutRoot = root;
+					layoutRoot = root;
 		}
 		if (layoutRoot != null)
 			txfLayoutRoot.setText(layoutRoot.getConfigNode().toShortString());
@@ -1499,6 +1521,5 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		else
 			trafficLight.fillProperty().set(Color.RED);
 	}
-
 
 }
