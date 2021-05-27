@@ -75,6 +75,8 @@ Inside this directory are a number of text files:
 
 All these files are text files and you can open and inspect them with a simple text editor. However, as they are written by _modelMaker_ you should _avoid editing them directly as this will likely cause problems for your project_. 
 
+NOTE: Editing any project graph files (*.utg) with a text editor is likely to corrupt the project. 
+
 On the other hand, you can delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by _ModelMaker_ (apart from the _undo-redo_ history). However, if you delete the entire `.3w` directory you will have to restore `tw-dep.jar` from backup.
 
 

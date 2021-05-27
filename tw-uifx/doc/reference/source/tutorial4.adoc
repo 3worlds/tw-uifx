@@ -2,7 +2,7 @@
 
 ==== Introduction
 
-In this tutorial we add a disturbance to effect a community of species modelled with the competitive Lotka-Volterra equation (CLV) from Tutorial 3. This model could be used to examine the Intermediate Disturbance Hypothesis (IDH: <<Connell1978, Connell, 1978>>). 
+In this tutorial we add a disturbance to effect a community of species modelled with the competitive Lotka-Volterra equation (CLV) from Tutorial 3. This model could then be used to examine the Intermediate Disturbance Hypothesis (IDH: <<Connell1978, Connell, 1978>>). 
 
 ==== Specifications
 
@@ -10,7 +10,7 @@ Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials`
 
 . Create a new project from `Tutorials -> 2 LotkaVolterra` and name it 'Tut4'.
 
-As the title suggests, in this tutorial we are elaborating the model structure. The Lotka-Volterra model has the simplest of structures: so simple that its `System` node can be named `community`. In the model we are developing here, this name would be misleading since we will have not only a 'community' but also a 'disturbance'. Therefore it will be clearer if we change the name of the system node back to its default: `sys1`.
+As the tutorial title suggests, we will be _elaborating_ the model structure. The Lotka-Volterra model has the simplest of structures: so simple that its `System` node can be named `community`. In the model we are developing here, this name would be misleading since we will have not only a 'community' but also a 'disturbance' (i.e. the system node will no longer be 'atomic' but an 'assemblage'). Therefore it will be clearer if we change the name of the system node back to its bland default: `sys1`.
 
 [start = 2]
 
@@ -19,13 +19,13 @@ As the title suggests, in this tutorial we are elaborating the model structure. 
 
 ===== Data definition
 
-Data can play one of three _roles_ in the _3Worlds archetype_:
+Data can play one of three _roles_ in the _3Worlds archetype_; as:
 
 ... _constants_, 
 ... _drivers_, or
 ... _decorators_. 
 
-Thus far we have only made use of data as _drivers_ and _constants_. The third role, _decorators_, are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. In this tutorial we add a species diversity index as a  _decorator_, derived from relative abundance of each species.
+Thus far we have only made use of data as _drivers_ and _constants_. The third role, _decorators_, are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. A species diversity index will be necessary and is be one such case being derived from relative abundance of each species ('x[]').
 
 . Collapse all nodes except for the `dataDefinition` sub-tree, hide the _cross-links_ ('*X*'), and re-apply the layout ('*L*').
 
@@ -33,7 +33,9 @@ Thus far we have only made use of data as _drivers_ and _constants_. The third r
 
 . Add a `field` as a child of `record:decs`, name it 'div' (diversity index) of type `Double`.
 
-As noted previously, these names are just for clarity - they don't impose their roles as _drivers_, _constants_ or _decorators_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles just for clarity. Their role will later be formally defined by a relationship with a `category` which we create when building the `structure` specifications. While building the data definition, expect task messages to accumulate until these roles have been defined.
+As noted previously, these names are just for clarity - they don't impose their roles as _drivers_, _constants_ or _decorators_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles just for clarity. Their role will later be formally defined by a relationship with a `category` which we create when building the `structure` specifications. 
+
+While building the data definition, expect task messages to accumulate until these roles have been defined.
 
 We now define some data for the simple disturbance model: frequency and intensity.
 
@@ -44,6 +46,8 @@ We now define some data for the simple disturbance model: frequency and intensit
 . Add two fields to this record, both of type `Double` called 'freq' and 'inten' respectively. 
 
 The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order the trees alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We should also prefix all the data associated with the CLV with 'comm' (community).
+
+NOTE: Tree layout algorithms order nodes in alphabetical order. Consider this behaviour when choosing node names. 
 
 [start = 6]
 
@@ -64,7 +68,7 @@ Fill out the meta-data properties with at least the description and range of the
 For simplicity, we define intensity as a constant rather than a driver.
 
 [#fig-tut4-data-definition]
-.The data definition sub-tree for Tutorial 4. Tree layout algorithms sort nodes in alphabetical order. Keeping this in mind when naming nodes can help keep your specifications in a particular order.
+.The data definition sub-tree for Tutorial 4. Tree layout algorithms sort nodes in alphabetical order. Keeping this in mind when naming nodes can help keep your specifications in useful order.
 image::tutorial4IMG/fig-tut4-data-definition.png[align="center",role="thumb"]
 
 To display an xy plot of diversity by time since disturbance, we can add a driver to the commDrvs record to record this.
@@ -72,13 +76,19 @@ To display an xy plot of diversity by time since disturbance, we can add a drive
 [start = 9]
 . Create a `field` of type `Double` as a child of `record:commDrvs`, add the `description` property and enter 'Time since disturbance' for the property value.
 
-That's all the data needed for now. We can now specify the system dynamics.
+That's all the data needed for this model. We can now specify the system dynamics.
 
 ===== Dynamics
 
 In this section we add two additional functions: one to initiate a disturbance and a second to apply the disturbance to the community.
 
-. Collapse the `dataDefinition` sub-tree and expand `system:community`.
+Before proceeding, some explanations are required to make sense of the following steps. Ignoring `dataTrackers` for the moment, a `process` can have one or more `functions`. However, the relationships (_cross_links_) between the model's dynamics, data and structure are defined at the level of `processes` not `functions`. If we don't care what order the functions are called in, and they all apply to the same data and structural elements, then we need only one process to contain all the functions. However, this is not the case here. The three functions: community growth, disturbance occurrence, and disturbance effects, must have access to different data, components and component relationships. Specifically, whether or not a disturbance is to occur depends only on disturbance data (in this model). Also order is important: it must come before disturbance effects are applied to the community. The disturbance effects applies to a relationship: that between the disturbance and the community. The growth of the community only depends on community data (the Lotka-Volterra equation). In addition, we make the decision (in this model) that the disturbance can only occur after the growth of the community, mimicking a late growing season disturbance.
+
+// NOTE ABOUT THIS: for relateToDecision function: must be the only one type of function in its process
+
+We will prefix the names of `processes` in such a way that the layout algorithm will place them in execution order. 
+
+. Collapse the `dataDefinition` sub-tree and expand `system:sys1`.
 
 . Create a `process` as child of `timer:clock1` and name it 'p1DistOcc`.
 
@@ -111,7 +121,7 @@ First, show the _cross-links_ and set `process:p2DistEffectComm` to depend on `p
 
 . Right-click on `process:p2DistEffectComm` and select `New edge -> dependsOn -> process:p1DistOcc`.
 
-To force the disturbance effects to take place _before_ the community growth, make `process:p3CommGrowth` depend on `process:p2DistEffectComm`.
+To force the disturbance effects to take place _before_ the community growth (i.e. a late growing season disturbance), make `process:p3CommGrowth` depend on `process:p2DistEffectComm`.
 
 [start = 10]
 
@@ -119,11 +129,11 @@ To force the disturbance effects to take place _before_ the community growth, ma
 
 After re-applying the layout (assuming a Tree layout is in use), it's clear why these process names were prefixed by p1, p2 and p3.
 
-At this time, `dataTracker:trk1` is set to track `system.sys`. There will be no global data to track in this model as there was in the previous Lotki-Volterra so we should remove this edge.
+At this time, `dataTracker:trk1` is set to track `system.sys1`. There will be no global data to track in this model as there was in the previous Lotki-Volterra so we should remove this edge.
 
 [start = 11]
 
-. Right-click on `dataTracker:trk` and select 'Delete edge -> trackComponent ->system.community'.
+. Right-click on `dataTracker:trk` and select 'Delete edge -> trackComponent ->system.sys1'.
 
 [#fig-tut4-dynamics]
 .The system dynamics sub-tree for Tutorial 4. .
@@ -145,8 +155,6 @@ Recall from the previous tutorial, that `system:sys1` is acting as a single comp
 
 ... has `process:p1` applied to it.
 
-
-
 The _arena_ is a special category. It must exist in every specification. Any data associated with it (_constants_, _drivers_ and _decorators_) is available to all `functions`: the data is global. The system (`system:sys1`) was also being tracked by the data tracker. This relationship was removed above because 'x', the population being tracked, will now be part of a category related to the community component of the model i.e 'x' will no longer be global data.
 
 The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define the association between the disturbance and the effected community.
@@ -167,7 +175,7 @@ The _role_ of a `component` is defined by its `componentType`. We'll need two `C
 
 Before proceeding to the definition of the _roles_ of these component types, we should redefine the _role_ of `system:sys1` that we inherited from Tutorial 3 when starting this project.
 
-`system:sys1`, in aliasing as a `componentType`, must now be redefined as an `assemblage` with no functions or data associated with it. 
+The node `system:sys1`, in aliasing as a `componentType`, must now be redefined as an `assemblage` with no functions or data associated with it. 
 
 Redefine the _role_ of `system:sys1` as an `assemblage`.
 
@@ -180,13 +188,13 @@ Redefine the _role_ of `system:sys1` as an `assemblage`.
 Remove the data associated with the _arena_.
 
 [start = 10]
-. Right-click on the root node (`3worlds:Tut4'), expand the `predefined:*categories*` and re-apply the layout. 
+. Right-click on the root node (`3worlds:Tut4`), expand the `predefined:*categories*` and re-apply the layout. 
 
 . Right-click on `category:*arena*` and select `Delete edge -> drivers -> record:commDrvs`.
 
 . Right-click again on  `category:*arena*` and select `Delete edge -> constants -> record:commCnsts`.
 
-`system:sys` is now defined as simply a _permanent assemblage_ belonging to the _arena_.
+The node `system:sys` is now defined as simply a _permanent assemblage_ belonging to the _arena_.
 
 Now define a `categorySet` to partition data between the disturbance and community. Category sets contain mutually exclusive categories: something can belong to one or the other but not both. Since disturbance and community is all there is in this model, this is the 'world' of the model so this seems a reasonable name for this set of categories i.e the 'world' comprises a community and a disturbance category: something can belong to one or other of these but not both. 
 
@@ -225,7 +233,7 @@ Now define the relation between disturbance and the community.
 
 [start = 20]
 
-. Create a realtionType as a child of `structure:struc1'.
+. Create a realtionType as a child of `structure:struc1`.
 
 . Right-click on `relationType:distEffectComm` and create edges:
 
@@ -241,11 +249,9 @@ Finally, add initialisation functions for the disturbance and community componen
 
 . Create an `initFunction` as child of `componentType:distType` and name it 'InitDist'.
 
-. Delete `initFunction:Init`. This was carried over from Tutorial 3 as its no longer needed.
+There is also an initialisation function associated with the `system:sys1` node. This was left over from the previous Lotka-Volterra model and can be deleted.
 
-This is also an initialisation function associated with the `system:sys1` node. This is left over from the previous Lotka-Volterra model and can be deleted.
-
-[start = 25]
+[start = 24]
 
 . Right-click on `system:sys1` and select 'Delete tree ->initFunction:Init1'.
 
@@ -286,7 +292,7 @@ We also need to track the species diversity index 'div'.
 . Create a `trackField` edge from `dataTracker:trk1` to `field:div`.
 
 
-The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we'll just add code snippets but if you prefer, you can create a java project and add the code there instead.
+The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we'll just add code snippets but if you prefer, you can create a java project and add the code there instead (*ref tut2*).
 
 ===== Java code
 
