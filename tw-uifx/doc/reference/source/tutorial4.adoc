@@ -74,7 +74,7 @@ image::tutorial4IMG/fig-tut4-data-definition.png[align="center",role="thumb"]
 To display an xy plot of diversity by time since disturbance, we can add a driver to the commDrvs record to record this.
 
 [start = 9]
-. Create a `field` of type `Double` as a child of `record:commDrvs`, add the `description` property and enter 'Time since disturbance' for the property value.
+. Create a `field` of type `Double` as a child of `record:commDrvs` and name it 'tsd'. Add the `description` property and enter 'Time since disturbance' for the property value.
 
 That's all the data needed for this model. We can now specify the system dynamics.
 
@@ -82,7 +82,7 @@ That's all the data needed for this model. We can now specify the system dynamic
 
 In this section we add two additional functions: one to initiate a disturbance and a second to apply the disturbance to the community.
 
-Before proceeding, some explanations are required to make sense of the following steps. Ignoring `dataTrackers` for the moment, a `process` can have one or more `functions`. However, the relationships (_cross_links_) between the model's dynamics, data and structure are defined at the level of `processes` not `functions`. If we don't care what order the functions are called in, and they all apply to the same data and structural elements, then we need only one process to contain all the functions. However, this is not the case here. The three functions: community growth, disturbance occurrence, and disturbance effects, must have access to different data, components and component relationships. Specifically, whether or not a disturbance is to occur depends only on disturbance data (in this model). Also order is important: it must come before disturbance effects are applied to the community. The disturbance effects applies to a relationship: that between the disturbance and the community. The growth of the community only depends on community data (the Lotka-Volterra equation). In addition, we make the decision (in this model) that the disturbance can only occur after the growth of the community, mimicking a late growing season disturbance.
+Before proceeding, some explanations are required to make sense of the following steps. Ignoring `dataTrackers` for the moment, a `process` can have one or more `functions`. However, the relationships (_cross_links_) between the model's dynamics, data and structure are defined at the level of `processes` not `functions`. If we don't care what order the functions are called in, and they all apply to the same data and structural elements, then we need only one process to contain all the functions. However, this is not the case here. The three functions: community growth, disturbance occurrence, and disturbance effects, must have access to different data, components and component relationships. Specifically, whether or not a disturbance is to occur depends only on disturbance data (in this model). Also order is important: it must come before disturbance effects are applied to the community. The disturbance effects applies to a relationship: that of the disturbance and the community. The growth of the community only depends on community data (the Lotka-Volterra equation). In addition, we make the decision (in this model) that the disturbance can only occur after the growth of the community, mimicking a late growing season disturbance.
 
 // NOTE ABOUT THIS: for relateToDecision function: must be the only one type of function in its process
 
@@ -106,7 +106,7 @@ The name the growth process and function should now be changed to something more
 
 . Rename `function:Growth` to `function:CommGrowth`.
 
-The function `function:CommGrowth` will perform the same task as it did in the previous tutorial: calculate the next state of _x_ from its current state. 
+The function `function:CommGrowth` will perform the same task as it did in the previous tutorial: calculate the next state of _x_ from its current state. At the same time we can calculate the diversity index and increment a counter to record the time since the last disturbance.
 
 The function `function:DistOcc`, a `RelateToDecision` function, will decide if a disturbance is to occur or not. If it returns _true_, a relation will be formed between the, yet to be specified, disturbance and community categories. 
 
@@ -133,7 +133,7 @@ At this time, `dataTracker:trk1` is set to track `system.sys1`. There will be no
 
 [start = 11]
 
-. Right-click on `dataTracker:trk` and select 'Delete edge -> trackComponent ->system.sys1'.
+. Right-click on `dataTracker:trk` and select `Delete edge -> trackComponent ->system.sys1`.
 
 [#fig-tut4-dynamics]
 .The system dynamics sub-tree for Tutorial 4. .
@@ -273,7 +273,7 @@ Currently, `process:p3CommGrowth` is applied to `category:*arena*`. We want re-a
 
 . Delete the `appliesTo` edge between `process:p3CommGrowth` and `category:*arena*` and re-apply it by creating an `appliesTo` edge to `category:commCat`.
 
-The task list now has three tasks: one about the data tracker and two to connect both disturbance processes to either a `category` or a `relationType`.
+The task list now has three tasks: one about the data tracker and two asking to connect both disturbance processes to either a `category` or a `relationType`.
 
 [start = 5]
 
@@ -348,27 +348,32 @@ for (int i = 0; i < focalDrv.x.size(0); i++)
 	if (focalDrv.x.getByInt(i) > 0.0)
 		focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);
 
+// increment 'time since disturbance'
+focalDrv.tsd = tsd +1;
 -----------------
 
 `function:DistOccurrence`:
 [source, Java]
 --------------------
-double proba = 1.0 / freq;
-if (random.nextDouble() < proba)
+if (random.nextDouble() < 1.0 / freq)
 	return true;
 else
 	return false;
-
 --------------------
 
 `function:DistEffectsComm`:
 [source, Java]
 ---------------------
-		for (int i = 0; i < other_x.size(); i++)
-			if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)
-				otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
+// reset time since disturbance
+otherDrv.tsd = 0;
+for (int i = 0; i < other_x.size(); i++)
+	if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)
+		otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
 ---------------------
 
+==== User interface
+
+There are two things that would be useful to show: allow for a large number of species and therefore show 'x' and 'div' in separate charts; and display an xy plot of 'tsd' by 'div'.
 
 ==== Next
 
