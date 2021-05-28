@@ -10,7 +10,7 @@ Begin this tutorial using the Lotka-Volterra specifications from the `Tutorials`
 
 . Create a new project from `Tutorials -> 2 LotkaVolterra` and name it 'Tut4'.
 
-As the tutorial title suggests, we will be _elaborating_ the model structure. The Lotka-Volterra model has the simplest of structures: so simple that its `System` node can be named `community`. In the model we are developing here, this name would be misleading since we will have not only a 'community' but also a 'disturbance' (i.e. the system node will no longer be 'atomic' but an 'assemblage'). Therefore it will be clearer if we change the name of the system node back to its bland default: `sys1`.
+As the tutorial title suggests, we will be _elaborating_ the model structure. The Lotka-Volterra model has the simplest of structures: so simple that its `System` node can be named `community`. In the model we are developing here, this name would be misleading since we will have not only a 'community' but also a 'disturbance' (i.e. the system node will no longer be 'atomic' but an 'assemblage'). Therefore it will be clearer if we change the name of the system node back to its nondescript default name of `sys1`.
 
 [start = 2]
 
@@ -25,15 +25,17 @@ Data can play one of three _roles_ in the _3Worlds archetype_; as:
 ... _drivers_, or
 ... _decorators_. 
 
-Thus far we have only made use of data as _drivers_ and _constants_. The third role, _decorators_, are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. A species diversity index will be necessary and is be one such case being derived from relative abundance of each species ('x[]').
+Thus far we have only made use of data as _drivers_ and _constants_. The third role, _decorators_, are values derived in some way from the other two. Importantly, they are re-initialised at the beginning of each time step. We need a species diversity index and this is a good example of a _decorator_ being derived from relative abundance of each species ('x[n]').
+
+NOTE: _Decorators_ are re-initialised (zero, false, null etc.) at the start of each time step.
 
 . Collapse all nodes except for the `dataDefinition` sub-tree, hide the _cross-links_ ('*X*'), and re-apply the layout ('*L*').
 
 . Add a new `record` as a child of `dataDefinition:dDef` and name it 'decs'.
 
-. Add a `field` as a child of `record:decs`, name it 'div' (diversity index) of type `Double`.
+. Add a `field` as a child of `record:decs`, name it 'di' (diversity index) of type `Double`.
 
-As noted previously, these names are just for clarity - they don't impose their roles as _drivers_, _constants_ or _decorators_. You can name a node any thing you like as long as the names are unique. Here, the records are named to indicate their intended roles just for clarity. Their role will later be formally defined by a relationship with a `category` which we create when building the `structure` specifications. 
+As noted previously, these names are just for clarity: they don't impose roles as _drivers_, _constants_ or _decorators_. Here, the records are named to indicate their intended roles just for clarity. Their role will later be formally defined by a relationship with a `category` which we create when building the `structure` specifications. 
 
 While building the data definition, expect task messages to accumulate until these roles have been defined.
 
@@ -45,9 +47,9 @@ We now define some data for the simple disturbance model: frequency and intensit
 
 . Add two fields to this record, both of type `Double` called 'freq' and 'inten' respectively. 
 
-The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order the trees alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We should also prefix all the data associated with the CLV with 'comm' (community).
+The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order children alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We should also prefix all the data associated with the CLV with 'comm' (community).
 
-NOTE: Tree layout algorithms order nodes in alphabetical order. Consider this behaviour when choosing node names. 
+NOTE: Tree layout algorithms sort child nodes in alphabetical order. Consider this behaviour when choosing node names. 
 
 [start = 6]
 
@@ -55,26 +57,34 @@ NOTE: Tree layout algorithms order nodes in alphabetical order. Consider this be
 
 . Re-apply the layout and the nodes should now be arranged in a more sensible order.
 
-Fill out the meta-data properties with at least the description and range of the data as this information will be incorporated in the comments of the generated Java code (i.e. add the optional property `description` to the new data nodes).
+To display an xy plot of diversity by time since disturbance, we can add a driver to the commDrvs record to record this.
 
 [start = 8]
+. Create a `field` of type `Double` as a child of `record:commDrvs` and name it 'tsd'. 
+
+Fill out the meta-data properties with at least the description, range and units if relevant. This information will be incorporated in the comments of the generated Java code (i.e. add the optional property `description` to the new data nodes).
+
+[start = 9]
 
 . Add the following descriptions to the new data definitions properties:
 
 - `freq#description`: 'average return time'
-- `inten#description:` '% population decrease'
-- `div#description:` 'Shannon's diversity index'
+- `inten#description`: '% population decrease'
+- `di#description`: 'Shannon's diversity index'
+- `tsd#description`: 'Time since disturbance' 
 
-For simplicity, we define intensity as a constant rather than a driver.
+Finally, change the number of species in the model to a larger value.
+
+[start = 10]
+. Set the value of `nspp#size` to 40.
+
+For simplicity, we have defined `inten` as a constant rather than a driver.
 
 [#fig-tut4-data-definition]
 .The data definition sub-tree for Tutorial 4. Tree layout algorithms sort nodes in alphabetical order. Keeping this in mind when naming nodes can help keep your specifications in useful order.
 image::tutorial4IMG/fig-tut4-data-definition.png[align="center",role="thumb"]
 
-To display an xy plot of diversity by time since disturbance, we can add a driver to the commDrvs record to record this.
 
-[start = 9]
-. Create a `field` of type `Double` as a child of `record:commDrvs` and name it 'tsd'. Add the `description` property and enter 'Time since disturbance' for the property value.
 
 That's all the data needed for this model. We can now specify the system dynamics.
 
@@ -129,11 +139,17 @@ To force the disturbance effects to take place _before_ the community growth (i.
 
 After re-applying the layout (assuming a Tree layout is in use), it's clear why these process names were prefixed by p1, p2 and p3.
 
-At this time, `dataTracker:trk1` is set to track `system.sys1`. There will be no global data to track in this model as there was in the previous Lotki-Volterra so we should remove this edge.
+At this time, `dataTracker:trk1` is set to track the component `system.sys1`. There will be no global data to track in this model as there was in the previous Lotki-Volterra so we should remove this edge.
 
 [start = 11]
 
 . Right-click on `dataTracker:trk` and select `Delete edge -> trackComponent ->system.sys1`.
+
+Finally, because there will be no global data in this model, `system:sys` will not need an initialisation function. Therefore we can delete this sub-tree.
+
+[start = 12] 
+. Right-click on `system:sys` and select `Delete sub-tree -> initFunction:Init1.
+
 
 [#fig-tut4-dynamics]
 .The system dynamics sub-tree for Tutorial 4. .
@@ -177,8 +193,6 @@ Before proceeding to the definition of the _roles_ of these component types, we 
 
 The node `system:sys1`, in aliasing as a `componentType`, must now be redefined as an `assemblage` with no functions or data associated with it. 
 
-Redefine the _role_ of `system:sys1` as an `assemblage`.
-
 [start = 8]
 
 . Right-click on `system:sys1` and select `Delete edge -> belongsTo -> category:*atomic*`.
@@ -194,11 +208,13 @@ Remove the data associated with the _arena_.
 
 . Right-click again on  `category:*arena*` and select `Delete edge -> constants -> record:commCnsts`.
 
+. Right-click on the root node and collapse `predefined:*categories*` and re-apply the layout.
+
 The node `system:sys` is now defined as simply a _permanent assemblage_ belonging to the _arena_.
 
 Now define a `categorySet` to partition data between the disturbance and community. Category sets contain mutually exclusive categories: something can belong to one or the other but not both. Since disturbance and community is all there is in this model, this is the 'world' of the model so this seems a reasonable name for this set of categories i.e the 'world' comprises a community and a disturbance category: something can belong to one or other of these but not both. 
 
-[start = 13]
+[start = 14]
 
 . Create a `categorySet` as child of `structure:struc1` and name it 'world'.
 
@@ -220,20 +236,27 @@ Define the data for these new categories.
 
 . Right-click on `category:commDist` and select `New edge -> constants -> record:distCnsts`.
 
+. Expand the `dataDefinition:dDef` sub-tree, toggle the _cross-links_ to confirm you have done the links as above.
 
 Now define the _roles_ of the new component types for the community and disturbance. Both belong to the  _permanent_, _atomic_, and _component_ categories and accesses data through their respective categories.
 
 [start = 18]
 
-. Right-click on `componentType:commType` and create `belongsTo` edges to `category:*permanent*`,`category:*atomic*`,`category:*component*` and `category:commCat`. 
+. Right-click on `componentType:commType` and create `belongsTo` edges to:
+... `category:*permanent*`,
+... `category:*atomic*`,
+... `category:*component*` and 
+... `category:commCat`. 
 
-. Right-click on `componentType:distType` and create `belongsTo` edges to `category:*permanent*`,`category:*atomic*`,`category:*component*` and `category:distCat`. 
+. Right-click on `componentType:distType` and create `belongsTo` edges to:
+... `category:*permanent*`,
+... `category:*atomic*`,
+... `category:*component*` and 
+... `category:distCat`. 
 
 Now define the relation between disturbance and the community.
 
 [start = 20]
-
-. Create a realtionType as a child of `structure:struc1`.
 
 . Right-click on `relationType:distEffectComm` and create edges:
 
@@ -249,11 +272,6 @@ Finally, add initialisation functions for the disturbance and community componen
 
 . Create an `initFunction` as child of `componentType:distType` and name it 'InitDist'.
 
-There is also an initialisation function associated with the `system:sys1` node. This was left over from the previous Lotka-Volterra model and can be deleted.
-
-[start = 24]
-
-. Right-click on `system:sys1` and select 'Delete tree ->initFunction:Init1'.
 
 [#fig-tut4-structure]
 .The structure sub-tree for Tutorial 4. .
@@ -273,30 +291,18 @@ Currently, `process:p3CommGrowth` is applied to `category:*arena*`. We want re-a
 
 . Delete the `appliesTo` edge between `process:p3CommGrowth` and `category:*arena*` and re-apply it by creating an `appliesTo` edge to `category:commCat`.
 
-The task list now has three tasks: one about the data tracker and two asking to connect both disturbance processes to either a `category` or a `relationType`.
+The task list now has two tasks asking to connect both disturbance processes to either a `category` or a `relationType`.
 
 [start = 5]
 
-. Create `appliesTo` edges from both `process:procDistEffects` and `process:procDistOccurrence` to `relationType:distEffectComm`.
-
-[start = 6]
-
-The population _x_ is now part of the `commCat` category. 
-
-. Create a `trackComponent` edge from `dataTracker:trk1` to `component:comm`.
-
-
-We also need to track the species diversity index 'div'. 
-
-
-. Create a `trackField` edge from `dataTracker:trk1` to `field:div`.
+. Create `appliesTo` edges from both `process:p2DistEffects` and `process:p1DistOccurrence` to `relationType:distEffectComm`.
 
 
 The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we'll just add code snippets but if you prefer, you can create a java project and add the code there instead (*ref tut2*).
 
 ===== Java code
 
-. Add a `snippet` to each of the three`functions` and two `initFunctions` in the specifications. Add the following code to the `JavaCode` property of each snippet:
+. Add a `snippet` to each of the three `functions` and two `initFunctions` in the specifications. Add the following code to the `JavaCode` property of each snippet:
 
 `function:InitComm`:
 
@@ -343,16 +349,17 @@ for (int i = 0; i < dxdt.length; i++)
 double xtot = 0.0;
 for (int i = 0; i < focalDrv.x.size(0); i++)
 	xtot += focalDrv.x.getByInt(i);
-focalDec.div = 0.0;
+
+// di has be re-initialised to 0.0;
 for (int i = 0; i < focalDrv.x.size(0); i++)
 	if (focalDrv.x.getByInt(i) > 0.0)
-		focalDec.div -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);
+		focalDec.di -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);
 
 // increment 'time since disturbance'
 focalDrv.tsd = tsd +1;
 -----------------
 
-`function:DistOccurrence`:
+`function:DistOcc`:
 [source, Java]
 --------------------
 if (random.nextDouble() < 1.0 / freq)
@@ -373,7 +380,24 @@ for (int i = 0; i < other_x.size(); i++)
 
 ==== User interface
 
-There are two things that would be useful to show: allow for a large number of species and therefore show 'x' and 'div' in separate charts; and display an xy plot of 'tsd' by 'div'.
+We now need to modify the user interface used by the previous model (Tut3) to display `di` and `tsd`.
+We are simulating 40 species so their abundance `x[n]` are best placed in a separate time series chart and 'di' in another. In addition we need an xy plot of 'di` by `tsd`.
+For this we need two additional `dataTrackers`.
+
+. For clarity, rename `dataTracker:trk1` to `dataTracker:trkx`.
+. Create another `dataTracker`, as a child of `process:p3CommGrowth`, name it 'trkdi' and select `DataTrackerD0` to follow this scalar value.
+. Right-click on `dataTracker:trkdi` and select `Add edge -> trackField -> field:di`.
+. Right-click again on `dataTracker:trkdi` and select `Add edge -> trackComponent -> component:comm`.
+
+Now create a data tracker for `di` and `tsd` as an xy pair.
+
+[start = 5]
+. Create another `dataTracker`, as a child of `process:p3CommGrowth`, name it 'trkditds' and select `DataTrackerXY`.
+. Right-click on `dataTracker:trkditsd` and select `Add edge -> trackField -> field:di`.
+. Right-click on `dataTracker:trkditsd` and select `Add edge -> trackField -> field:tsd`.
+. Right-click again on `dataTracker:trkditsd` and select `Add edge -> trackComponent -> component:comm`.
+
+TODO UI
 
 ==== Next
 
