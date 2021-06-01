@@ -397,7 +397,32 @@ Now create a data tracker for `di` and `tsd` as an xy pair.
 . Right-click on `dataTracker:trkditsd` and select `Add edge -> trackField -> field:tsd`.
 . Right-click again on `dataTracker:trkditsd` and select `Add edge -> trackComponent -> component:comm`.
 
-TODO UI
+Now create the widgets to listen to these data trackers. First we delete the table widget inherited from the previous tutorial and then add time series and scatter plot widgets.
+
+[start = 9]
+. Collapse all sub-trees and expand the `userInterface` sub-tree.
+. Right-click on `widget:population table` and select `Delete node`.
+. Create a new `container` as a child of `tab:tab1`.
+
+`Containers` form a binary tree of `widgets`. Each `container` can contain one or two `widgets` or one or two `containers` or a combination of both with a limit of two. These binary trees must end in a `widget` as a leaf node (i.e. you can't have empty `containers`).  The `tab` node also behaves as a `container` and the same rules apply. However, you can have as many `tabs` as you like with the proviso that only one tab is visible at a time in the _ModelRunner_ interface.
+
+[start = 12]
+. Add a `widget` as a child of `container:cont1`, name it 'srsdi' and select `TimeseriesWidget1` as its class.
+. Add another `widget` as a  child of `container:cont1`, name it `plottdsdi` and select `ScatterPlotWidget1` as its class.
+
+Set these `widgets` to track the appropriate `dataTrackers`.
+
+[start = 14]
+. From `widget:srsdi`, add a `trackSeries` edge to `dataTracker:trkdi`.
+. From `widget:plottsddi`, add a `trackSeries` edge to `dataTracker:trktsddi`.
+
+All that remains now is to arrange the widgets in the _ModelRunner_ interface. Between each pair of widgets/containers is a divider which can be moved as required. You can specify the pairs to be divided horizontally or vertically and the order of the pairs (left/right or top/bottom).
+
+[#fig-tut4-user-interface]
+.The user-interface sub-tree for Tutorial 4. .
+image::tutorial4IMG/fig-tut4-user-interface.png[align="center",role="thumb",width=800]
+
+TODO Doesn't work!
 
 ==== Next
 

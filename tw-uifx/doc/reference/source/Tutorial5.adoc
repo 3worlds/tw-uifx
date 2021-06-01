@@ -2,14 +2,12 @@
 
 ==== Introduction
 
-TODO: update using previous event driven model
-
-Many processes in nature are described as 'event driven': something that happens when an evolving condition reaches some state. For example, in arid environments, reproduction may be episodic with organisms remaining dormant for many years until significant rainfall occurs; an epidemic may occur when a population reaches a certain density or bushfires might be triggered from natural or anthropogenic sources.
+Many processes in nature are episodic or 'event driven': something that happens when an evolving condition reaches some state. For example, in arid environments, reproduction may be episodic with organisms remaining dormant for many years until significant rainfall occurs; an epidemic may occur when a population reaches a certain density or bushfires might be triggered from natural or anthropogenic sources.
 
 The previous tutorials have used a clock timer to drive the simulation dynamics. In essence, a clock timer simply issues regular time events autonomously, at intervals determined by its properties – its time step. 
 An event timer, on the other hand, is not autonomous. It drives its child processes through events posted from somewhere else for some time in the future. That 'somewhere else' entails other functions that determine when those circumstances have arisen.
 
-In this tutorial, based on Tutorial 4, we show how to drive disturbance from... 
+In this tutorial, based on Tutorial 4, we show how to drive disturbance from and event timer while leaving community growth to remain driven by a regular clock timer. 
 
 There can be any number of event timers in a specification and each timer can be driven by any number of functions posting events at any time in the future. This design allows specifying very complex causal chains.
 

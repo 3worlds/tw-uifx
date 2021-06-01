@@ -31,7 +31,7 @@ Once created, the project name and its creation date appear in the window title 
 
 [#fig-menu-open]
 .The Open project menu choice.
-image::using-modelmakerIMG/fig-menu-new.png[role="thumb",align="left",float="right"]
+image::using-modelmakerIMG/fig-menu-open.png[role="thumb",align="left",float="right"]
 
 Open any project currently in the `.3w` directory <<fig-open-menu>>. Projects are listed in alphabetical order.
 
@@ -136,13 +136,13 @@ Node colours are based on a schema that, for the most part,  colours all nodes w
 ... *Zoom*: Hold down the `Ctrl` key while moving the mouse wheel to zoom in and out of the display.
 ... *Pop-up edit menu*: Right-click on any node to see the edit options for that node.
 
-===== Pup-up edit options
+===== Pop-up edit options
 
 This menu is the princple way in which the specification graph is constructed <<fig-popup>>. Note that the `predefined:*catoregories*` sub-tree cannot be edited except for any 'in-nodes' that may be allowed from outside this sub-tree.
 
 [#fig-popup]
-.The pup-up menu. Available options depend on the node selected.
-image::using-modelmakerIMG/fig-menu-edit.png[role="thumb",align="left",float="right"]
+.The pop-up menu. Available options depend on the node selected.
+image::using-modelmakerIMG/fig-menu-popup.png[role="thumb",align="left",float="right"]
 
 ... *New node*: Displays a list of valid node labels that can be children of this node.
 ... *New edge*: Displays a list of valid edges (_cross-links_) from this node to another existing node.
@@ -167,30 +167,27 @@ The _Properties_ editor has two buttons; one to display properties by category <
 Properties are only shown for nodes that are currently visible (not collapsed) in the graph.
 
 [#fig-properties-all]
-.Property editor showing properties listed by name.
-image::using-modelmakerIMG/fig-properties-all.png[role="thumb",align="left",float="right"]
+.Property editor showing pass:[<br/> properties listed by name.
+image::using-modelmakerIMG/fig-properties-all.png[role="thumb",align="left",float="left"]
 
 [#fig-properties-category]
-.Property editor showing properties listed by category.
+.Property editor showing pass:[<br/> properties listed by category.
 image::using-modelmakerIMG/fig-properties-category.png[role="thumb",align="left",float="right"]
 
 [#fig-properties-selected]
-.Property editor showing only properties of a selected node (here a `TimeLine`).
-image::using-modelmakerIMG/fig-properties-selected.png[role="thumb",align="left",float="right"]
+.Property editor showing only pass:[<br/> properties of a selected node (here a `TimeLine`).
+image::using-modelmakerIMG/fig-properties-selected.png[align="center"]
 
 
 ==== Message pane
 
 The *message pane* displays information about what is required to make the model specifications valid. It grows and shrinks during construction depending on the state of the graph. Information is presented in three levels of detail: action, details and debug. Generally, the 'action' level is all that is required.
+
 Messages are displayed in alphabetical order of the Action text no matter what the display level. At the bottom of the *message pane* are two buttons described at the end of this section.
 
-... *Action*: This level indicates what action must be taken for the specifications to comply with the 3Worlds archetype. Its format is: a) the message category (usually *[Node]*, *[Edge]* or *[Property]*); b) the target (the label:name of a node or edge or a property name) and the action message <<fig-msg-actions>>.
+... *Action*: This level indicates what action must be taken for the specifications to comply with the 3Worlds archetype. Its format is: a) the message category (usually *[Node]*, *[Edge]* or *[Property]*); b) the target (the label:name of a node or edge or a property name) and the action message <<fig-msg-formatss>>.
 
-[#fig-msg-actions]
-.Message pane displaying Action messages.
-image::using-modelmakerIMG/fig-msg-actions.png[role="thumb",align="left",float="right"]
-
-... *Details*: This level shows the action message and the specification constraint that is unsatisfied. The information provided varies with the message but in general include <<fig-msg-details>>:
+... *Details*: This level shows the action message and the specification constraint that is unsatisfied. The information provided varies with the message but in general include <<fig-msg-formats>>:
 
 .... Message number. Messages are always displayed in alphabetical order of the Action text no matter what the display level. 
 .... The action message: usually in the form of "Do this or that".
@@ -199,15 +196,12 @@ image::using-modelmakerIMG/fig-msg-actions.png[role="thumb",align="left",float="
 .... The node in the 3Worlds archetype that defines the application of this query class.
 .... The target element (node, edge, property or some other item class)
 
-[#fig-msg-details]
-.Message pane displaying Details messages.
-image::using-modelmakerIMG/fig-msg-details.png[role="thumb",align="left",float="right"]
 
-... *Debug*: This level shows all information available for this message including a detailed description of the target and archetype elements. It is rarely informative unless you are a contributor to the development of 3Worlds <<fig-msg-debug>>.
+... *Debug*: This level shows all information available for this message including a detailed description of the target and archetype elements. It is rarely informative unless you are a contributor to the development of 3Worlds <<fig-msg-formats>>.
 
-[#fig-msg-debug]
-.Message pane displaying Debug messages.
-image::using-modelmakerIMG/fig-msg-debug.png[role="thumb",align="left",float="right"]
+[#fig-msg-formats]
+.Message pane displaying three different message formats.
+image::using-modelmakerIMG/fig-msg-formats.png[align="center"]
 
 
 ===== Compile and Deploy
