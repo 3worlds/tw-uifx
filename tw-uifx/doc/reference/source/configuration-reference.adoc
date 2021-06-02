@@ -1,7 +1,3 @@
-:xrefstyle: short
-
-=== Configuration options: reference
-
 In this section, 
 
 * node and edge labels are indicated in `*bold*`
