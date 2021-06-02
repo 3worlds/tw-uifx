@@ -104,25 +104,27 @@ We will prefix the names of `processes` in such a way that the layout algorithm 
 
 . Create a `function` as child of `process:p1DistOcc` and name it 'DistOcc' and set its type as `RelateToDecision`.
 
-. Create a second `process` as child of `timer:clock1` and name it 'p2DistEffectComm'.
+. Create a second `process` as child of `timer:clock1` and name it 'p3DistEffectComm'.
 
-. Create a `function` as child of `process:p2DistEffectComm`, name it 'DistEffectComm' and set its type to `ChangeOtherState`.
+. Create a `function` as child of `process:p3DistEffectComm`, name it 'DistEffectComm' and set its type to `ChangeOtherState`.
 
 The name the growth process and function should now be changed to something more appropriate:
 
 [start = 6]
 
-. Rename `process:p1` to `process:p3CommGrowth`.
+. Rename `process:p1` to `process:p2CommGrowth`.
 
 . Rename `function:Growth` to `function:CommGrowth`.
 
 The function `function:CommGrowth` will perform the same task as it did in the previous tutorial: calculate the next state of _x_ from its current state. At the same time we can calculate the diversity index and increment a counter to record the time since the last disturbance.
 
-The function `function:DistOcc`, a `RelateToDecision` function, will decide if a disturbance is to occur or not. If it returns _true_, a relation will be formed between the, yet to be specified, disturbance and community categories. 
+The function `function:DistOcc`, a `RelateToDecision` function, will decide if a disturbance is to occur. If it returns _true_, a relation will be formed between the, yet to be specified, disturbance and community categories. 
 
-If a disturbance occurs, `function:DistEffectComm` will implement the consequences of the disturbance on the community.
+If a disturbance occurs, `function:DistEffectComm` will implement the consequences of the disturbance on the community *but at the next time step*.
 
-This implies an order of execution of these three functions. As all these functions are driven by the same `timer` and therefore occur simultaneously, it means we must make the calling order explicit. To do this we add a `dependsOn` edge between the relevant processes.
+NOTE: All methods read the data of this time step and write to data of the next time step. That is, always be mindful that _State(t+1) = f(State(t)_.
+
+As a reminder of this ordering, we have prefixed the process that creates the temporary (ephemeral) relation between disturbance and the community with 'p1' so that the layout (if using a _Tree_ layout) will display processes in a sensible order. 
 
 First, show the _cross-links_ and set `process:p2DistEffectComm` to depend on `process:p1DistOcc`.
 
@@ -131,11 +133,11 @@ First, show the _cross-links_ and set `process:p2DistEffectComm` to depend on `p
 
 . Right-click on `process:p2DistEffectComm` and select `New edge -> dependsOn -> process:p1DistOcc`.
 
-To force the disturbance effects to take place _before_ the community growth (i.e. a late growing season disturbance), make `process:p3CommGrowth` depend on `process:p2DistEffectComm`.
+To force the disturbance effects to take place _after_ the community growth (i.e. a late growing season disturbance), make `process:p2DistEffectComm` depend on `p2CommGrowth`.
 
 [start = 10]
 
-. Right-click on `process:p3CommGrowth` and select `New edge -> dependsOn -> process:p2DistEffectComm`.
+. Right-click on `process:p3DistEffectComm` and select `New edge -> dependsOn -> process:p2CommGrowth`.
 
 After re-applying the layout (assuming a Tree layout is in use), it's clear why these process names were prefixed by p1, p2 and p3.
 
@@ -361,7 +363,8 @@ for (int i = 0; i < focalDrv.x.size(0); i++)
 		focalDec.di -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);
 
 // increment 'time since disturbance'
-focalDrv.tsd = tsd +1;
+// use focalDrv.tsd not tsd as the order of calling of this method and DistEffectsComm could be altered
+focalDrv.tsd = focalDrv.tsd +1;
 -----------------
 
 `function:DistOcc`:
@@ -385,7 +388,7 @@ for (int i = 0; i < other_x.size(); i++)
 
 ==== User interface
 
-We now need to modify the user interface used by the previous model (Tut3) to display `di` and `tsd`.
+We now need to modify the user interface employed by the previous model (Tut3) to display `di` and `tsd`.
 We are simulating 40 species so their abundance `x[n]` are best placed in a separate time series chart and 'di' in another. In addition we need an xy plot of 'di` by `tsd`.
 For this we need two additional `dataTrackers`.
 
