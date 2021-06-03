@@ -357,7 +357,7 @@ double xtot = 0.0;
 for (int i = 0; i < focalDrv.x.size(0); i++)
 	xtot += focalDrv.x.getByInt(i);
 
-// di has be re-initialised to 0.0;
+focalDec.di=0.0;
 for (int i = 0; i < focalDrv.x.size(0); i++)
 	if (focalDrv.x.getByInt(i) > 0.0)
 		focalDec.di -= (focalDrv.x.getByInt(i) / xtot) * log(focalDrv.x.getByInt(i) / xtot);
@@ -373,17 +373,26 @@ focalDrv.tsd = focalDrv.tsd +1;
 if (random.nextDouble() < 1.0 / freq)
 	return true;
 else
-	return false;
+    return false;
 --------------------
 
 `function:DistEffectsComm`:
 [source, Java]
 ---------------------
-// reset time since disturbance
-otherDrv.tsd = 0;
 for (int i = 0; i < other_x.size(); i++)
-	if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0)
-		otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
+    if (other_x.getByInt(i) > other_K.getByInt(i) * inten / 100000.0) {
+	    otherDrv.x.setByInt(otherDrv.x.getByInt(i) * other_K.getByInt(i) * inten / 100000.0, i);
+		// reset time since disturbance
+		otherDrv.tsd = 0;
+	}
+// compute diversity
+double xtot = 0.0;
+for (int i = 0; i < other_x.size(0); i++)
+    xtot += other_x.getByInt(i);
+other_di = 0.0;
+    for (int i = 0; i < other_x.size(0); i++)
+		if (other_x.getByInt(i) > 0.0)
+			other_di -= (other_x.getByInt(i) / xtot) * log(other_x.getByInt(i) / xtot);
 ---------------------
 
 ==== User interface
@@ -416,13 +425,13 @@ Now create the widgets to listen to these data trackers. First we delete the tab
 
 [start = 12]
 . Add a `widget` as a child of `container:cont1`, name it 'srsdi' and select `TimeseriesWidget1` as its class.
-. Add another `widget` as a  child of `container:cont1`, name it `plottdsdi` and select `ScatterPlotWidget1` as its class.
+. Add another `widget` as a  child of `container:cont1`, name it 'diversity time since dist'  or something similar, and select `ScatterPlotWidget1` as its class.
 
 Set these `widgets` to track the appropriate `dataTrackers`.
 
 [start = 14]
 . From `widget:srsdi`, add a `trackSeries` edge to `dataTracker:trkdi`.
-. From `widget:plottsddi`, add a `trackSeries` edge to `dataTracker:trktsddi`.
+. From `widget:diversity time since dist`, add a `trackSeries` edge to `dataTracker:trktsddi`.
 
 All that remains now is to arrange the widgets in the _ModelRunner_ interface. Between each pair of widgets/containers is a divider which can be moved as required. You can specify the pairs to be divided horizontally or vertically and the order of the pairs (left/right or top/bottom).
 
@@ -430,7 +439,17 @@ All that remains now is to arrange the widgets in the _ModelRunner_ interface. B
 .The user-interface sub-tree for Tutorial 4. .
 image::tutorial4IMG/fig-tut4-user-interface.png[align="center",role="thumb",width=800]
 
-TODO Doesn't work!
+[#fig-tut4-modelrunner]
+.The user-interface sub-tree for Tutorial 4. .
+image::tutorial4IMG/fig-tut4-modelrunner.png[align="center"]
+
+The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in _ModelRunner_.
+
+[#fig-tut4-xyplot-dlg]
+.The user-interface sub-tree for Tutorial 4. .
+image::tutorial4IMG/fig-tut4-xyplot-dlg.png[align="right",role = "thumb"]
+
+*TODO not confident of this model - reversing order of Growth and Effects gives very different results*
 
 ==== Next
 

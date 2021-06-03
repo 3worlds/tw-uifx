@@ -63,7 +63,7 @@ Re-do or un-do most edit operations. Note that collapsing/expanding sub-tree ope
 
 ====== import snippets
 
-Enabled when a project is linked to a Java project. Imports method code from Java into any `snippet` nodes in the specifications. If this code references dependencies, _ModelMaker_ will show compile errors in the *message pane*. To avoid these errors but keep the snippet, add comment markers in the imported snippet to avoid these dependencies and prevent the compile errors. (*TODO: this may change*).
+Enabled when a project is linked to a Java project. This option imports method code from Java into any `snippet` nodes in the specifications. If this code references dependencies, _ModelMaker_ will show compile errors in the *message pane*. To avoid these errors but keep the snippet, add comment markers in the imported snippet to avoid these dependencies and prevent the compile errors. (*TODO: this may change*).
 
 ====== clear snippets
 
@@ -83,7 +83,7 @@ NOTE: Use 'Refresh` in the IDE to keep _ModelMaker_ and the Java project synchro
 
 ====== Reference manual
 
-Displays this user manual in a browser. *TODO*
+Displays this user manual in a browser. *TODO if we go ahead, we need to refactor paths of generated html and images to appropriate packages*
 
 ====== About ModelMaker
 
@@ -102,6 +102,11 @@ The graph is both a tree graph (with a single root) and a directed network graph
 Node colours are based on a schema that, for the most part,  colours all nodes within a sub-tree the same. The colours are not editable.
 
 ===== Tool bar
+
+[#fig-tool-bar]
+.Tool bar options for managing the graph display.
+image::using-modelmakerIMG/fig-tool-bar.png[align="center"]
+
 . Layout selection: The four radio buttons (*L1, L2, L3, L4*) select one of four layout algorithms:
 ... *L1* - ordered tree. The nodes are listed vertically in alphabetical order.
 ... *L2* - radial tree. The radius decreases as the path distance from the root node increases.
@@ -128,15 +133,15 @@ Node colours are based on a schema that, for the most part,  colours all nodes w
 
 // - mouse-keyboard options (2drag pane, 3drag node, 4popup, 5local graph, 6display root).
 ... *Pan*: Drag the mouse anywhere other than on a node to pan the graph drawing surface. This assumes the display size is larger than the window.
-... *Drag node*: Right-click on any node to change its position. Nodes are shown in red when the mouse passes over them.
+... *Drag node*: Left-click on any node to change its position. Nodes are shown in red when the mouse passes over them.
 ... *Show local graph*: Hold down the `Shift` key while moving the mouse over a node. The _path length_ for this feature is set in the tool bar.
-... *Show node properties*: Left-click on any node to display its properties in the _Selected properties_ property editor.
+... *Show node properties*: Right-click on any node to display its properties in the _Selected properties_ property editor.
 ... *Zoom*: Hold down the `Ctrl` key while moving the mouse wheel to zoom in and out of the display.
-... *Pop-up edit menu*: Right-click on any node to see the edit options for that node.
+... *Pop-up edit menu*: Right-click on any node to see the edit options available for that node.
 
 ===== Pop-up edit options
 
-This menu is the princple way in which the specification graph is constructed (<<fig-popup>>). Note that the `predefined:*catoregories*` sub-tree cannot be edited except for any 'in-edges' that may be allowed from outside this sub-tree.
+This menu is the principle way in which the specification graph is constructed (<<fig-popup>>). Note that the `predefined:*catoregories*` sub-tree cannot be edited except for any 'in-edges' that may be allowed from outside this sub-tree.
 
 [#fig-popup]
 .The pop-up menu. pass:[<br/>] Available options depend pass:[<br/>] on the node selected.
@@ -147,11 +152,11 @@ image::using-modelmakerIMG/fig-popup.png[role="thumb",align="left",float="right"
 ... *New child edge*: Displays a list of (parentless) nodes that can be valid children of this node.
 ... *Expand sub-tree*: Displays a list of sub-trees that can be expanded from this node. After expanding, any properties of these nodes and edges will appear in the property editor.
 ... *Collapse sub-tree*: Displays a list of sub-trees that can be collapsed from this node. After collapsing, any properties of these nodes and edges will be removed from the property editor.
-... *Delete node*: Deletes this node. The `3Worlds` root node cannot be deleted.
+... *Delete node*: Deletes this node. Note that the `3Worlds` root node cannot be deleted.
 ... *Delete edge*: Displays a list of 'out-edges' from this node that can be deleted.
 ... *Delete child edge*: Displays a list of child nodes that can be orphaned. Note that the specifications are not valid until all child nodes have parents.
 ... *Optional properties*: Displays a dialog with any optional properties that can be added or removed from this node.
-... *Rename node*: Changes the node name to some other unqiue name. The name of the root node cannot be changed.
+... *Rename node*: Changes the node name to some other unqiue name. Note that the name of the root node cannot be changed.
 ... *Rename edge*: Displays a list of 'out-edges' whose name can be changed to some other unqiue name. 
 ... *Import sub-tree*: Displays a list of valid child node labels that can form the root of a sub-tree read from file.
 ... *Export sub-tree*: Displays a list of the current child nodes of this node that can be exported to file as a sub-tree.
@@ -174,7 +179,7 @@ image::using-modelmakerIMG/fig-properties-category.png[role="thumb",align="left"
 
 The _Properties_ editor has two buttons; one to display properties by category (<<fig-properties-category>>; in this case this means by sub-tree) and the other to display properties by name (<<fig-properties-all>>). There is also a search field that can be used to show only those properties that match the search text.
 
-Properties are only shown for nodes that are currently visible (not collapsed) in the graph.
+Properties are only shown for nodes that are currently visible (expanded) in the graph.
 
 ==== Message pane
 
@@ -188,9 +193,9 @@ Messages are displayed in alphabetical order of the Action text no matter what t
 
 ... *Action*: This level indicates what action must be taken for the specifications to comply with the 3Worlds archetype. Its format is: a) the message category (usually *[Node]*, *[Edge]* or *[Property]*); b) the target (the label:name of a node or edge or a property name) and the action message (<<fig-msg-formats>>).
 
-... *Details*: This level shows the action message and the specification constraint that is unsatisfied. The information provided varies with the message but in general include (<<fig-msg-formats>>):
+... *Details*: This level shows the action message and the specification constraint that is unsatisfied. The information provided varies with the message but in general includes (<<fig-msg-formats>>):
 
-.... Message number. Messages are always displayed in alphabetical order of the Action text no matter what the display level. 
+.... Message number. As noted, the message order remains consistant no matter the display option. 
 .... The action message: usually in the form of "Do this or that".
 .... The specification constraint: usually in the form of "Expected this but found that".
 .... The Java class of the query issuing the message.
@@ -200,10 +205,8 @@ Messages are displayed in alphabetical order of the Action text no matter what t
 
 ... *Debug*: This level shows all information available for this message including a detailed description of the target and archetype elements. It is rarely informative unless you are a contributor to the development of 3Worlds (<<fig-msg-formats>>).
 
-
-
 ===== Compile and Deploy
 
-... *Compile*: Checks the specification graph against the archetype and compiles the Java code. This process takes place in the background anytime the graph is edited. Therefore, there is rarely any need to click the compile button.
+... *Compile*: Checks the specification graph against the archetype and compiles the Java code. This process takes place in the background any time the graph is edited. Therefore, there is rarely any need to click the compile button.
 
-... *Deploy*: This button is enabled (traffic light green) whenever the *message pane* is clear. When clicked, _ModelRunner_ is launched to run the model with the specified experment desgin.
+... *Deploy*: This button is enabled (traffic light green) whenever the *message pane* is clear. When clicked, _ModelRunner_ is launched to run the model with the specified experiment design.
