@@ -389,10 +389,10 @@ for (int i = 0; i < other_x.size(); i++)
 double xtot = 0.0;
 for (int i = 0; i < other_x.size(0); i++)
     xtot += other_x.getByInt(i);
-other_di = 0.0;
+otherDec.di = 0.0;
     for (int i = 0; i < other_x.size(0); i++)
 		if (other_x.getByInt(i) > 0.0)
-			other_di -= (other_x.getByInt(i) / xtot) * log(other_x.getByInt(i) / xtot);
+			otherDec.di -= (otherDrv.x.getByInt(i) / xtot) * log(otherDrv.x.getByInt(i) / xtot);
 ---------------------
 
 ==== User interface
@@ -449,7 +449,8 @@ The axis order of the xy plot 'diversity time since dist` can be set using the a
 .The user-interface sub-tree for Tutorial 4. .
 image::tutorial4IMG/fig-tut4-xyplot-dlg.png[align="right",role = "thumb"]
 
-*TODO not confident of this model - reversing order of Growth and Effects gives very different results*
+*TODO run this with dependsOn reversed and discuss*
+*TODO Warnings about reading for x vs focalDrv.x etc*
 
 ==== Next
 
