@@ -397,19 +397,19 @@ otherDec.di = 0.0;
 
 ==== User interface
 
-We now need to modify the user interface employed by the previous model (Tut3) to display `di` and `tsd`.
-We are simulating 40 species so their abundance `x[n]` are best placed in a separate time series chart and 'di' in another. In addition we need an xy plot of 'di` by `tsd`.
+We now need to modify the user interface, provided curtesy of the previous model (Tut3), to display `di` and `tsd`.
+We are simulating 40 species so their abundance (`x[n]`) is best placed in a separate time series chart and 'di' in another. In addition, we need an xy plot of `di` by `tsd`.
 For this we need two additional `dataTrackers`.
 
 . For clarity, rename `dataTracker:trk1` to `dataTracker:trkx`.
-. Create another `dataTracker`, as a child of `process:p3CommGrowth`, name it 'trkdi' and select `DataTrackerD0` to follow this scalar value.
+. Create another `dataTracker`, as a child of `process:p2CommGrowth`, name it 'trkdi' and select `DataTrackerD0` to follow this scalar value.
 . Right-click on `dataTracker:trkdi` and select `Add edge -> trackField -> field:di`.
 . Right-click again on `dataTracker:trkdi` and select `Add edge -> trackComponent -> component:comm`.
 
 Now create a data tracker for `di` and `tsd` as an xy pair.
 
 [start = 5]
-. Create another `dataTracker`, as a child of `process:p3CommGrowth`, name it 'trkditds' and select `DataTrackerXY`.
+. Create another `dataTracker`, as a child of `process:p2CommGrowth`, name it 'trkditds' and select `DataTrackerXY`.
 . Right-click on `dataTracker:trkditsd` and select `Add edge -> trackField -> field:di`.
 . Right-click on `dataTracker:trkditsd` and select `Add edge -> trackField -> field:tsd`.
 . Right-click again on `dataTracker:trkditsd` and select `Add edge -> trackComponent -> component:comm`.
@@ -421,7 +421,9 @@ Now create the widgets to listen to these data trackers. First we delete the tab
 . Right-click on `widget:population table` and select `Delete node`.
 . Create a new `container` as a child of `tab:tab1`.
 
-`Containers` form a binary tree of `widgets`. Each `container` can contain one or two `widgets` or one or two `containers` or a combination of both with a limit of two. These binary trees must end in a `widget` as a leaf node (i.e. you can't have empty `containers`).  The `tab` node also behaves as a `container` and the same rules apply. However, you can have as many `tabs` as you like with the proviso that only one tab is visible at a time in the _ModelRunner_ interface.
+`Containers` form a binary tree of `widgets`. Each `container` can contain one or two `widgets` or one or two `containers` or a combination of both with a limit of two. 
+These binary trees must end in a `widget` as a leaf node (i.e. you can't have empty `containers`).  The `tab` node also behaves as a `container` and the same rules apply. 
+However, you can have as many `tabs` but of course only one tab is visible at a time in the _ModelRunner_ interface.
 
 [start = 12]
 . Add a `widget` as a child of `container:cont1`, name it 'srsdi' and select `TimeseriesWidget1` as its class.
@@ -443,14 +445,15 @@ image::tutorial4IMG/fig-tut4-user-interface.png[align="center",role="thumb",widt
 .The user-interface sub-tree for Tutorial 4. .
 image::tutorial4IMG/fig-tut4-modelrunner.png[align="center"]
 
-The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in _ModelRunner_.
-
 [#fig-tut4-xyplot-dlg]
 .The user-interface sub-tree for Tutorial 4. .
-image::tutorial4IMG/fig-tut4-xyplot-dlg.png[align="right",role = "thumb"]
+image::tutorial4IMG/fig-tut4-xyplot-dlg.png[role="thumb",align="left",float="right"]
 
-*TODO run this with dependsOn reversed and discuss*
-*TODO Warnings about reading for x vs focalDrv.x etc*
+The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in _ModelRunner_ <<fig-tut3-xyplot>>.
+
+
+//*TODO run this with dependsOn reversed and discuss*
+//*TODO Warnings about reading for x vs focalDrv.x etc*
 
 ==== Next
 
