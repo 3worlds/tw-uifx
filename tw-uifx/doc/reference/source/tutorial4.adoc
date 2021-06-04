@@ -442,14 +442,20 @@ All that remains now is to arrange the widgets in the _ModelRunner_ interface. B
 image::tutorial4IMG/fig-tut4-user-interface.png[align="center",role="thumb",width=800]
 
 [#fig-tut4-modelrunner]
-.The user-interface sub-tree for Tutorial 4. .
+.Running Tutorial 4.
 image::tutorial4IMG/fig-tut4-modelrunner.png[align="center"]
 
+[#fig-tut4-user-interface-properties]
+.User-interface properties for Tutorial 4.
+image::tutorial4IMG/fig-tut4-user-interface-properties.png[role="thumb",align="left",float="right"]
+
 [#fig-tut4-xyplot-dlg]
-.The user-interface sub-tree for Tutorial 4. .
+.Scatter plot properties pass:[<br/>]editor in ModelRunner.
 image::tutorial4IMG/fig-tut4-xyplot-dlg.png[role="thumb",align="left",float="right"]
 
-The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in _ModelRunner_ <<fig-tut3-xyplot>>.
+The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in _ModelRunner_ <<fig-tut4-xyplot-dlg>>.
+
+The arrangement of widgets in the `tab` binary sub-tree is controlled by the `order` and `orientation` properties. <<fig-tut4-user-interface-properties>>
 
 
 //*TODO run this with dependsOn reversed and discuss*
