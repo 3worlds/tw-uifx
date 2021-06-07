@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.mm.visualise;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -471,7 +472,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		boolean collapsed = startNode.isCollapsed() || endNode.isCollapsed();
 //		double[] p1 = { line.getStartX(), line.getStartY() };
 //		double[] p2 = { line.getEndX(), line.getEndY() };
-		double distance = Distance.euclidianDistance(line.getStartX(),line.getStartY(),line.getEndX(),line.getEndY() );
+		double distance = Distance.euclidianDistance(line.getStartX(), line.getStartY(), line.getEndX(),
+				line.getEndY());
 		// or dy small (horizontal) and dx shorter than label??
 		if ((distance < (4 * nodeRadius.get())) | collapsed) {
 			text.visibleProperty().unbind();
@@ -916,7 +918,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onShowLocalGraph(VisualNode root, int pathLength) {
 		Set<VisualNode> visibleNodes = new HashSet<>();
-		traversal(root, 0, pathLength, visibleNodes);
+		traversal(parentLineVisibleProperty.getValue(), edgeLineVisibleProperty.getValue(), root, 0, pathLength, visibleNodes);
 		visibleNodes.add(root);
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 	}
@@ -933,7 +935,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void onHighlightLocalGraph(VisualNode root, int pathLength) {
 		Set<VisualNode> focusNodes = new HashSet<>();
-		traversal(root, 0, pathLength, focusNodes);
+		traversal(parentLineVisibleProperty.getValue(), edgeLineVisibleProperty.getValue(), root, 0, pathLength,
+				focusNodes);
 		focusNodes.add(root);
 		updateElementColour(focusNodes);
 	}
@@ -1053,35 +1056,43 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void traversal(VisualNode root, int depth, int pathLength, Set<VisualNode> nnNodes) {
+	private static void traversal(boolean treeVisible, boolean edgesVisible, VisualNode root, int depth, int pathLength,
+			Set<VisualNode> nnNodes) {
 		if (depth < pathLength) {
 			Set<VisualNode> nn = new HashSet<>();
 
-			VisualNode parent = root.getParent();
-			if (parent != null && !nnNodes.contains(parent))
-				nn.add(root.getParent());
+			if (treeVisible) {
+				VisualNode parent = root.getParent();
+				if (parent != null && !nnNodes.contains(parent))
+					nn.add(root.getParent());
 
-			for (VisualNode n : root.getChildren())
-				if (!n.isCollapsed())
-					if (!nnNodes.contains(n))
-						nn.add(n);
+				for (VisualNode n : root.getChildren())
+					if (!n.isCollapsed())
+						if (!nnNodes.contains(n))
+							nn.add(n);
+			}
+			
+			if (edgesVisible) {
+				Collection<VisualEdge> outEdges = (Collection<VisualEdge>) get(root.edges(Direction.OUT));
+				for (VisualEdge e : outEdges) {
+					VisualNode endNode = (VisualNode) e.endNode();
+					if (!endNode.isCollapsed())
+						if (!nnNodes.contains(endNode))
+							nn.add(endNode);
+				}
 
-			List<VisualNode> outNodes = (List<VisualNode>) get(root.edges(Direction.OUT), edgeListEndNodes());
-			for (VisualNode n : outNodes)
-				if (!n.isCollapsed())
-					if (!nnNodes.contains(n))
-						nn.add(n);
-
-			List<VisualNode> inNodes = (List<VisualNode>) get(root.edges(Direction.IN), edgeListStartNodes());
-			for (VisualNode n : inNodes)
-				if (!n.isCollapsed())
-					if (!nnNodes.contains(n))
-						nn.add(n);
-
+				Collection<VisualEdge> inEdges = (Collection<VisualEdge>) get(root.edges(Direction.IN));
+				for (VisualEdge e : inEdges) {
+					VisualNode startNode = (VisualNode) e.startNode();
+					if (!startNode.isCollapsed())
+						if (!nnNodes.contains(startNode))
+							nn.add(startNode);
+				}
+			}
 			nnNodes.addAll(nn);
 
 			for (VisualNode n : nn)
-				traversal(n, depth + 1, pathLength, nnNodes);
+				traversal(treeVisible, edgesVisible,n, depth + 1, pathLength, nnNodes);
 
 		}
 	}
