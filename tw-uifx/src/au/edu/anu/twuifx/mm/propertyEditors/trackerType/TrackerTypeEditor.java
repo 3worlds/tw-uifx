@@ -36,6 +36,7 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.IndexString;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.Record;
@@ -70,7 +71,7 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
  */
 public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
-	//private LabelButtonControl view;
+	// private LabelButtonControl view;
 	private List<Record> catRecords;
 	private ALDataEdge trackerEdge;
 	private TrackerType currentTT;
@@ -97,7 +98,6 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		edit();
 	}
 
-
 	private List<Record> getRootRecords() {
 		List<Record> result = new ArrayList<>();
 		TreeNode trackerNode = (TreeNode) trackerEdge.startNode();
@@ -108,9 +108,12 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 					selectZeroOrMany(hasTheLabel(ConfigurationEdgeLabels.E_APPLIESTO.label())), edgeListEndNodes());
 			for (TreeGraphDataNode category : categories) {
 				Record record = (Record) get(category.edges(Direction.OUT),
-						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())), endNode());
+						selectZeroOrOne(orQuery(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label()),
+								hasTheLabel(ConfigurationEdgeLabels.E_DECORATORS.label()))),
+						endNode());
 				if (record != null)
 					result.add(record);
+
 			}
 		}
 		return result;
@@ -137,7 +140,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
-		dlg.setTitle(trackerEdge.toShortString()+"#"+P_TRACKEDGE_INDEX.key());
+		dlg.setTitle(trackerEdge.toShortString() + "#" + P_TRACKEDGE_INDEX.key());
 		dlg.initOwner((Window) Dialogs.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
@@ -157,9 +160,8 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		}
 		hintText = hintText.substring(0, hintText.length() - 1);
 
-		grid.add(new Label(
-				"Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id() + " (range inclusive)"),
-				0, 0);
+		grid.add(new Label("Indexing for " + trackerEdge.endNode().classId() + ":" + trackerEdge.endNode().id()
+				+ " (range inclusive)"), 0, 0);
 
 		grid.add(new Label(hintText), 0, 1);
 		String s = "";
@@ -190,22 +192,16 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private static String illegalChars = "[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ(*&^$#@!?><~+=)/_]";
+	// why not legal chars?
 
-	private String validateEntry(String input, int[][] sizes) {
-
-		String[] parts = input.split(",");
-		if (parts.length != sizes.length) {
-			return parts.length + " terms entered but " + sizes.length + " required.";
-		}
-		for (int i = 0; i < parts.length; i++) {
-			try {
-				String test = parts[i].replaceAll(illegalChars, "");
-				if (!test.equals(parts[i]))
-					return parts[i] + " contains illegal characters.";
-				IndexString.stringToIndex(parts[i], sizes[i]);
-			} catch (Exception excpt) {
-				return excpt.getMessage();
-			}
+	private String validateEntry(String input, int[][] sizes) {		
+		String test = input.replaceAll(illegalChars, "");
+		if (!test.equals(input))
+			return input + " contains illegal characters.";
+		try {
+			IndexString.stringToIndex(test, sizes[0]);
+		} catch (Exception excpt) {
+			return excpt.getMessage();
 		}
 		return "";
 
