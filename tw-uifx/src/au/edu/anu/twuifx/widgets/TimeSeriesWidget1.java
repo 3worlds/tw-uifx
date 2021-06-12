@@ -62,6 +62,7 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.plugins.DataPointTooltip;
+import de.gsi.chart.plugins.EditAxis;
 import de.gsi.chart.plugins.TableViewer;
 import de.gsi.chart.plugins.Zoomer;
 import de.gsi.chart.renderer.ErrorStyle;
@@ -281,7 +282,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 //		not sure how this works?
 //		chart.getPlugins().add(new Panner());
 //		using this is a very confusing and perhaps buggy ui
-//		chart.getPlugins().add(new EditAxis());
+		chart.getPlugins().add(new EditAxis());
 		chart.setTitle("[#" + policy.toString() + "]" + widgetId);
 
 		content.setCenter(chart);

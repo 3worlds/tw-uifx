@@ -31,9 +31,11 @@ package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import java.text.DecimalFormat;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.Output2DData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
@@ -55,12 +57,25 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -68,12 +83,14 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Window;
 
 /**
  * @author Ian Davies
@@ -91,23 +108,11 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private Canvas canvas;
 	private ScrollPane scrollPane;
 	private PaletteTypes paletteType;
-	private Palette palette;
-	// private String formatString;
-	private double minValue;
-	private double maxValue;
-	private DecimalFormat formatter;
-	private int resolution;
-	private int decimalPlaces;
-	// private IntegerProperty resolutionProperty;
-	private ImageView paletteImageView;
 
 	private static double fontSize = 10;
 	private static Font font = Font.font("Verdana", fontSize);
-	private int mx;
-	private int my;
 
 	private Number[][] numbers;
-//	private int sender;
 	private String widgetId;
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
@@ -194,7 +199,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			for (int y = 0; y < mapHeight; y++) {
 				Color c = Color.TRANSPARENT;
 				if (numbers[x][y] != null) {
-					double v = (Double) numbers[x][y];
+					double v = numbers[x][y].doubleValue();
 					c = palette.getColour(v, minValue, maxValue);
 					gc.setStroke(c);
 					gc.setFill(c);
@@ -238,6 +243,15 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private static final String keyPalette = "palette";
 	private static final String keyMinValue = "minValue";
 	private static final String keyMaxValue = "maxValue";
+	
+	private Palette palette;
+	private double minValue;
+	private double maxValue;
+	private DecimalFormat formatter;
+	private int resolution;
+	private int decimalPlaces;
+	private ImageView paletteImageView;
+
 
 	@Override
 	public void putUserPreferences() {
@@ -246,16 +260,15 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
 		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
 		Preferences.putDouble(widgetId + keyResolution, resolution);
-		Preferences.putDouble(widgetId + keyDecimalPlaces, decimalPlaces);
+		Preferences.putInt(widgetId + keyDecimalPlaces, decimalPlaces);
 		Preferences.putDouble(widgetId + keyMinValue, minValue);
 		Preferences.putDouble(widgetId + keyMaxValue, maxValue);
-		Preferences.putString(widgetId + keyPalette, paletteType.name());
+		Preferences.putEnum(widgetId + keyPalette, paletteType);
 	}
 
 	@Override
 	public void getUserPreferences() {
-		paletteType = PaletteTypes
-				.valueOf(Preferences.getString(widgetId + keyPalette, PaletteTypes.getDefault().name()));
+		paletteType = (PaletteTypes)Preferences.getEnum(widgetId+keyPalette, PaletteTypes.BrownYellowGreen);
 		palette = paletteType.getPalette();
 		Image image = getLegend(10, 100);
 		paletteImageView.setImage(image);
@@ -345,15 +358,96 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		int x = (int) (e.getX() / resolution);
 		int y = (int) (e.getY() / resolution);
 		lblXY.setText("[" + x + "," + y + "]");
-		if (x < mx & y < my & x >= 0 & y >= 0)
+		if (x < numbers.length & y < numbers[0].length & x >= 0 & y >= 0)
 			lblValue.setText(formatter.format(numbers[x][y]));
 
 	}
 
 	@Override
 	public Object getMenuContainer() {
-		// TODO Auto-generated method stub
-		return null;
+		Menu mu = new Menu(widgetId);
+		MenuItem miEdit = new MenuItem("Edit...");
+		mu.getItems().add(miEdit);
+		miEdit.setOnAction(e -> edit());
+		return mu;
+	}
+
+	private static void addGridControl(String name, int row, int col, Node ctrl, GridPane grid) {
+		Label lbl = new Label(name);
+		grid.add(lbl, col, row);
+		grid.add(ctrl, col + 1, row);
+		GridPane.setHalignment(lbl, HPos.RIGHT);
+		GridPane.setHalignment(ctrl, HPos.LEFT);
+		GridPane.setValignment(ctrl, VPos.CENTER);
+	}
+
+	private void edit() {
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setTitle(widgetId);
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		dialog.initOwner((Window) Dialogs.owner());
+		GridPane content = new GridPane();
+		content.setVgap(5);
+		content.setHgap(3);
+		dialog.getDialogPane().setContent(content);
+		int row = 0;
+		int col = 0;
+
+		// -- Palette
+		ComboBox<PaletteTypes> cmbPalette = new ComboBox<>();
+		cmbPalette.getItems().addAll(PaletteTypes.values());
+		cmbPalette.getSelectionModel().select(paletteType);
+		addGridControl("Palette", row++, col, cmbPalette, content);
+
+		// -- minValue
+		TextField tfMinValue = new TextField(Double.toString(minValue));
+		tfMinValue.setMaxWidth(50);
+		tfMinValue.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		addGridControl("Minimum z", row++, col, tfMinValue, content);
+
+		// -- maxValue
+		TextField tfMaxValue = new TextField(Double.toString(maxValue));
+		tfMaxValue.setMaxWidth(50);
+		tfMaxValue.setTextFormatter(
+				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		addGridControl("Maximun z", row++, col, tfMaxValue, content);
+
+		// --- resolution
+		Spinner<Integer> spResolution = new Spinner<>();
+		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, resolution));
+		spResolution.setMaxWidth(100);
+		spResolution.setEditable(true);
+		addGridControl("Resolution", row++, col, spResolution, content);
+
+		// -- format
+		Spinner<Integer> spDP = new Spinner<>();
+		spDP.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, decimalPlaces));
+		spDP.setMaxWidth(100);
+		spDP.setEditable(true);
+		addGridControl("Decimal places", row++, col, spDP, content);
+
+		Optional<ButtonType> result = dialog.showAndWait();
+		if (result.get().equals(ok)) {
+			paletteType = cmbPalette.getValue();
+			palette = paletteType.getPalette();
+			resolution = spResolution.getValue();
+			decimalPlaces = spDP.getValue();
+			minValue = Double.parseDouble(tfMinValue.getText());
+			maxValue = Double.parseDouble(tfMaxValue.getText());
+			if (maxValue < minValue) {
+				double tmp = maxValue;
+				maxValue = minValue;
+				minValue = tmp;
+			}
+			Image image = getLegend(10, 100);
+			paletteImageView.setImage(image);
+			formatter = Decimals.getDecimalFormat(decimalPlaces);
+			lblLow.setText(formatter.format(minValue));
+			lblHigh.setText(formatter.format(maxValue));
+			dataToCanvas();
+		}
 	}
 
 }
