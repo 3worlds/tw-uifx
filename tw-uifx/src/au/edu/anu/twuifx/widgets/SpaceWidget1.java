@@ -932,9 +932,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		fontProperty = new SimpleObjectProperty<Font>(getSystemFont(axisFontSize));
 
 		// add a view for each item limited by nSenders;
-		GridPane displaysPane = new GridPane();
+		GridPane displayGrid = new GridPane();
 
-		centerContainer.setCenter(displaysPane);
+		centerContainer.setCenter(displayGrid);
 
 		int nSenders = policy.getDataMessageRange().getLast() - policy.getDataMessageRange().getFirst();
 		nViews = Math.min(nSenders, nViews);
@@ -947,7 +947,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			for (int c = 0; c < nCols; c++) {
 				SpDisplay d = new SpDisplay(display++, nSenders);
 				displays.add(d);
-				displaysPane.add(d.getContainer(), c, r);
+				displayGrid.add(d.getContainer(), c, r);
 				d.getContainer().setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
 			}
 		double rowSize = (1.0 / (double) nRows) * 100.0;
@@ -955,12 +955,12 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		for (int r = 0; r < nRows; r++) {
 			RowConstraints row1 = new RowConstraints();
 			row1.setPercentHeight(rowSize);
-			displaysPane.getRowConstraints().addAll(row1);
+			displayGrid.getRowConstraints().addAll(row1);
 		}
 		for (int c = 0; c < nCols; c++) {
 			ColumnConstraints col1 = new ColumnConstraints();
 			col1.setPercentWidth(colSize);
-			displaysPane.getColumnConstraints().addAll(col1);
+			displayGrid.getColumnConstraints().addAll(col1);
 		}
 
 //		HBox statusBar = new HBox();

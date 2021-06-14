@@ -31,6 +31,10 @@ package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -44,7 +48,7 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
-import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import au.edu.anu.ymuit.ui.colour.Palette;
@@ -81,11 +85,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -100,36 +105,38 @@ import javafx.stage.Window;
 public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata> implements WidgetGUI {
 
 	private Label lblName;
-	private Label lblXY;
-	private Label lblValue;
 	private Label lblHigh;
 	private Label lblLow;
-	private AnchorPane zoomTarget;
-	private Canvas canvas;
-	private ScrollPane scrollPane;
 	private PaletteTypes paletteType;
 
 	private static double fontSize = 10;
 	private static Font font = Font.font("Verdana", fontSize);
 
-	private Number[][] numbers;
+	final private Map<Integer, Number[][]> senderGrids;
+	final private List<D2Display> displays;
 	private String widgetId;
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
+
+	private int nViews;
 
 	private static Logger log = Logging.getLogger(MatrixWidget1.class);
 
 	public MatrixWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM2);
 		timeFormatter = new WidgetTimeFormatter();
-		policy = new SimpleWidgetTrackingPolicy();
-		log.info("Creation thread id: " + Thread.currentThread().getId());
+		policy = new SimCloneWidgetTrackingPolicy();
+		senderGrids = new HashMap<>();
+		displays = new ArrayList<>();
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
 		policy.setProperties(id, properties);
+		nViews = 1;
+		if (properties.hasProperty("nViews"))
+			nViews = (Integer) properties.getPropertyValue("nViews");
 	}
 
 	@Override
@@ -149,63 +156,15 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	}
 
 	private void processDataMessage(Output2DData data) {
+		senderGrids.put(data.sender(), data.map());
 		Platform.runLater(() -> {
-			numbers = data.map();
-			dataToCanvas();
+			for (D2Display d : displays) {
+				if (d.getSender() == data.sender()) {
+					d.setTime(timeFormatter.getTimeText(data.time()));
+					d.draw();
+				}
+			}
 		});
-	}
-
-	private void dataToCanvas() {
-		int mapWidth = numbers.length;
-		int mapHeight = numbers[0].length;
-		resizeCanvas(mapWidth, mapHeight);
-		if (resolution == 1)
-			dataToCanvasPixels();
-		else
-			dataToCanvasRect(mapWidth, mapHeight);
-	}
-
-	private void resizeCanvas(int mapWidth, int mapHeight) {
-		if (canvas.getWidth() != (resolution * mapWidth) || canvas.getHeight() != (resolution * mapHeight)) {
-			canvas.setWidth(mapWidth * resolution);
-			canvas.setHeight(mapHeight * resolution);
-			clearCanvas();
-		}
-	}
-
-	private void clearCanvas() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-	};
-
-	private void dataToCanvasPixels() {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		PixelWriter pw = gc.getPixelWriter();
-		for (int x = 0; x < canvas.getWidth(); x++)
-			for (int y = 0; y < canvas.getHeight(); y++) {
-				Color c = Color.TRANSPARENT;
-				if (numbers[x][y] != null) { // missing value
-					double v = (Double) numbers[x][y];
-					c = palette.getColour(v, minValue, maxValue);
-					pw.setColor(x, y, c);
-				}
-			}
-	}
-
-	private void dataToCanvasRect(int mapWidth, int mapHeight) {
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		int w = resolution;
-		for (int x = 0; x < mapWidth; x++)
-			for (int y = 0; y < mapHeight; y++) {
-				Color c = Color.TRANSPARENT;
-				if (numbers[x][y] != null) {
-					double v = numbers[x][y].doubleValue();
-					c = palette.getColour(v, minValue, maxValue);
-					gc.setStroke(c);
-					gc.setFill(c);
-					gc.fillRect(x * w, y * w, w, w);
-				}
-			}
 	}
 
 	@Override
@@ -218,16 +177,47 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	}
 
 	private void processWaitState() {
+		for (D2Display d: displays) {
+			d.clear();
+		}
 
 	}
 
 	@Override
 	public Object getUserInterfaceContainer() {
 		BorderPane content = new BorderPane();
-		content.setBottom(buildStatusBar());
 		content.setTop(buildNamePane());
 		content.setLeft(buildPalettePane());
-		content.setCenter(buildScrollPane());
+		GridPane displayGrid = new GridPane();
+		content.setCenter(displayGrid);
+
+		int nSenders = policy.getDataMessageRange().getLast() - policy.getDataMessageRange().getFirst();
+		nViews = Math.min(nSenders, nViews);
+
+		int nCols = (int) Math.max(1, Math.sqrt(nViews));
+		int nRows = nCols;
+		if ((nRows * nCols) < nViews)
+			nCols++;
+		int display = 0;
+		for (int r = 0; r < nRows; r++)
+			for (int c = 0; c < nCols; c++) {
+				D2Display d = new D2Display(display++, nSenders);
+				displays.add(d);
+				displayGrid.add(d.getContainer(), c, r);
+				d.getContainer().setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+			}
+		double rowSize = (1.0 / (double) nRows) * 100.0;
+		double colSize = (1.0 / (double) nCols) * 100.0;
+		for (int r = 0; r < nRows; r++) {
+			RowConstraints row1 = new RowConstraints();
+			row1.setPercentHeight(rowSize);
+			displayGrid.getRowConstraints().addAll(row1);
+		}
+		for (int c = 0; c < nCols; c++) {
+			ColumnConstraints col1 = new ColumnConstraints();
+			col1.setPercentWidth(colSize);
+			displayGrid.getColumnConstraints().addAll(col1);
+		}
 
 		getUserPreferences();
 
@@ -243,7 +233,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private static final String keyPalette = "palette";
 	private static final String keyMinValue = "minValue";
 	private static final String keyMaxValue = "maxValue";
-	
+	private static final String keySender = "sender";
+
 	private Palette palette;
 	private double minValue;
 	private double maxValue;
@@ -252,13 +243,16 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private int decimalPlaces;
 	private ImageView paletteImageView;
 
-
 	@Override
 	public void putUserPreferences() {
-		Preferences.putDouble(widgetId + keyScaleX, zoomTarget.getScaleX());
-		Preferences.putDouble(widgetId + keyScaleY, zoomTarget.getScaleY());
-		Preferences.putDouble(widgetId + keyScrollH, scrollPane.getHvalue());
-		Preferences.putDouble(widgetId + keyScrollV, scrollPane.getVvalue());
+		for (int i = 0; i < displays.size(); i++) {
+			D2Display d = displays.get(i);
+			Preferences.putDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX());
+			Preferences.putDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY());
+			Preferences.putDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue());
+			Preferences.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
+			Preferences.putInt(widgetId + keySender + i, d.getSender());
+		}
 		Preferences.putDouble(widgetId + keyResolution, resolution);
 		Preferences.putInt(widgetId + keyDecimalPlaces, decimalPlaces);
 		Preferences.putDouble(widgetId + keyMinValue, minValue);
@@ -268,42 +262,30 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	@Override
 	public void getUserPreferences() {
-		paletteType = (PaletteTypes)Preferences.getEnum(widgetId+keyPalette, PaletteTypes.BrownYellowGreen);
+		for (int i = 0; i < displays.size(); i++) {
+			D2Display d = displays.get(i);
+			d.zoomTarget().setScaleX(Preferences.getDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX()));
+			d.zoomTarget().setScaleY(Preferences.getDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY()));
+			d.scrollPane().setHvalue(Preferences.getDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue()));
+			d.scrollPane().setVvalue(Preferences.getDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue()));
+			d.setSender(Preferences.getInt(widgetId + keySender + i, i));
+
+		}
+		paletteType = (PaletteTypes) Preferences.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
 		palette = paletteType.getPalette();
 		Image image = getLegend(10, 100);
 		paletteImageView.setImage(image);
 		minValue = Preferences.getDouble(widgetId + keyMinValue, 0.0);
 		maxValue = Preferences.getDouble(widgetId + keyMaxValue, 1.0);
 
-		zoomTarget.setScaleX(Preferences.getDouble(widgetId + keyScaleX, zoomTarget.getScaleX()));
-		zoomTarget.setScaleY(Preferences.getDouble(widgetId + keyScaleY, zoomTarget.getScaleY()));
-		scrollPane.setHvalue(Preferences.getDouble(widgetId + keyScrollH, scrollPane.getHvalue()));
-		scrollPane.setVvalue(Preferences.getDouble(widgetId + keyScrollV, scrollPane.getVvalue()));
 		decimalPlaces = Preferences.getInt(widgetId + keyDecimalPlaces, 2);
 		formatter = Decimals.getDecimalFormat(decimalPlaces);
 		lblLow.setText(formatter.format(minValue));
 		lblHigh.setText(formatter.format(maxValue));
 		resolution = Preferences.getInt(widgetId + keyResolution, 50);
-		// dataToCanvas();
-
 	}
 
-	private Pane buildStatusBar() {
-		VBox pane = new VBox();
-		HBox valuePane = new HBox();
-		valuePane.setSpacing(5.0);
-		HBox timePane = new HBox();
-		timePane.setSpacing(5.0);
-		lblXY = makeLabel("");
-		lblValue = makeLabel("");
-		// tdm.getTimeLabel().setFont(font);
-		valuePane.getChildren().addAll(makeLabel("[x,y]"), lblXY, makeLabel("="), lblValue);
-		// timePane.getChildren().addAll(tdm.getTimeLabel());
-		pane.getChildren().addAll(valuePane, timePane);
-		return pane;
-	}
-
-	private Label makeLabel(String s) {
+	private static Label makeLabel(String s) {
 		Label result = new Label(s);
 		result.setFont(font);
 		return result;
@@ -332,35 +314,10 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	private Pane buildNamePane() {
 		BorderPane pane = new BorderPane();
-		lblName = new Label("Grid name");
-		Font font = Font.font("Verdana", 12);
-		lblName.setFont(font);
+		lblName = new Label(widgetId);
+		lblName.setFont(Font.font("Verdana", 16));
 		pane.setCenter(lblName);
 		return pane;
-	}
-
-	private ScrollPane buildScrollPane() {
-		zoomTarget = new AnchorPane();
-		canvas = new Canvas();
-		zoomTarget.getChildren().add(canvas);
-		Group group = new Group(zoomTarget);
-		StackPane content = new StackPane(group);
-		scrollPane = new ScrollPane(content);
-		scrollPane.setPannable(true);
-		scrollPane.setContent(content);
-		scrollPane.setMinSize(170, 170);
-		CenteredZooming.center(scrollPane, content, group, zoomTarget);
-		zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
-		return scrollPane;
-	}
-
-	private void onMouseMove(MouseEvent e) {
-		int x = (int) (e.getX() / resolution);
-		int y = (int) (e.getY() / resolution);
-		lblXY.setText("[" + x + "," + y + "]");
-		if (x < numbers.length & y < numbers[0].length & x >= 0 & y >= 0)
-			lblValue.setText(formatter.format(numbers[x][y]));
-
 	}
 
 	@Override
@@ -446,8 +403,158 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			formatter = Decimals.getDecimalFormat(decimalPlaces);
 			lblLow.setText(formatter.format(minValue));
 			lblHigh.setText(formatter.format(maxValue));
-			dataToCanvas();
+			for (D2Display d : displays) {
+				d.draw();
+			}
 		}
 	}
 
+	private class D2Display {
+		private final int nSenders;
+		private int sender;
+		private final ComboBox<String> cmbxSender;
+		private final BorderPane container;
+		private final BorderPane zoomTarget;
+		private final Canvas canvas;
+		private final ScrollPane scrollPane;
+		private Label lblTime;
+		private Label lblValue;
+		private Label lblXY;
+
+		public D2Display(int sender, int nSenders) {
+			this.sender = sender;
+			this.nSenders = nSenders;
+			cmbxSender = new ComboBox<String>();
+			for (int i = 0; i < nSenders; i++)
+				cmbxSender.getItems().add(Integer.toString(i));
+			cmbxSender.setOnAction(e -> {
+				this.sender = cmbxSender.getSelectionModel().getSelectedIndex();
+				draw();
+			});
+
+			container = new BorderPane();
+
+			lblTime = makeLabel("");
+			lblValue = makeLabel("");
+			lblXY = makeLabel("");
+			HBox topBar = new HBox();
+			topBar.setAlignment(Pos.CENTER_LEFT);
+			topBar.setSpacing(5);
+			topBar.getChildren().addAll(new Label("Simulator"), cmbxSender, new Label("Tracker time"), lblTime);
+			container.setTop(topBar);
+
+			HBox bottomBar = new HBox();
+			bottomBar.setAlignment(Pos.CENTER_LEFT);
+			bottomBar.getChildren().addAll(makeLabel("[x,y]"), lblXY, makeLabel("="), lblValue);
+			bottomBar.setSpacing(5);
+			container.setBottom(bottomBar);
+
+			zoomTarget = new BorderPane();
+			canvas = new Canvas();
+			zoomTarget.setCenter(canvas);
+			Group group = new Group(zoomTarget);
+			StackPane content = new StackPane(group);
+			scrollPane = new ScrollPane(content);
+			scrollPane.setPannable(true);
+			scrollPane.setContent(content);
+			CenteredZooming.center(scrollPane, content, group, zoomTarget);
+			zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
+			container.setCenter(scrollPane);
+
+		}
+
+		public void clear() {
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		}
+
+		public void setSender(int s) {
+			s = Math.min(s, nSenders - 1);
+			sender = s;
+			cmbxSender.getSelectionModel().select(sender);
+		}
+
+		public ScrollPane scrollPane() {
+			return scrollPane;
+		}
+
+		public Node zoomTarget() {
+			return zoomTarget;
+		}
+
+		public void setTime(String timeText) {
+			lblTime.setText(timeText);
+		}
+
+		public int getSender() {
+			return sender;
+		}
+
+		public Pane getContainer() {
+			return container;
+		}
+
+		private void onMouseMove(MouseEvent e) {
+			Number[][] grid = senderGrids.get(sender);
+			int x = (int) (e.getX() / resolution);
+			int y = (int) (e.getY() / resolution);
+			lblXY.setText("[" + x + "," + y + "]");
+			if (x < grid.length & y < grid[0].length & x >= 0 & y >= 0)
+				lblValue.setText(formatter.format(grid[x][y]));
+		}
+
+		public void draw() {
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+			Number[][] grid = senderGrids.get(sender);
+			if (grid != null) {
+				int mapWidth = grid.length;
+				int mapHeight = grid[0].length;
+				if (resizeCanvas(mapWidth, mapHeight)) {
+					gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				}
+				if (resolution == 1)
+					dataToCanvasPixels(gc, grid);
+				else
+					dataToCanvasRect(gc, grid, mapWidth, mapHeight);
+			}
+		}
+
+		private boolean resizeCanvas(int mapWidth, int mapHeight) {
+			if (canvas.getWidth() != (resolution * mapWidth) || canvas.getHeight() != (resolution * mapHeight)) {
+				canvas.setWidth(mapWidth * resolution);
+				canvas.setHeight(mapHeight * resolution);
+				return true;
+			} else 
+				return false;
+		}
+
+		private void dataToCanvasPixels(GraphicsContext gc, Number[][] grid) {
+			PixelWriter pw = gc.getPixelWriter();
+			for (int x = 0; x < canvas.getWidth(); x++)
+				for (int y = 0; y < canvas.getHeight(); y++) {
+					Color c = Color.TRANSPARENT;
+					if (grid[x][y] != null) { // missing value
+						double v = grid[x][y].doubleValue();
+						c = palette.getColour(v, minValue, maxValue);
+						pw.setColor(x, y, c);
+					}
+				}
+		}
+
+		private void dataToCanvasRect(GraphicsContext gc, Number[][] grid, int mapWidth, int mapHeight) {
+			int w = resolution;
+			for (int x = 0; x < mapWidth; x++)
+				for (int y = 0; y < mapHeight; y++) {
+					Color c = Color.TRANSPARENT;
+					if (grid[x][y] != null) {
+						double v = grid[x][y].doubleValue();
+						c = palette.getColour(v, minValue, maxValue);
+						gc.setStroke(c);
+						gc.setFill(c);
+						gc.fillRect(x * w, y * w, w, w);
+					}
+				}
+		}
+	}
 }
