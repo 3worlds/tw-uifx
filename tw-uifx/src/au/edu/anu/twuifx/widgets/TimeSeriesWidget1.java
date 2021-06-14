@@ -465,7 +465,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 	@Override
 	public void getUserPreferences() {
-		legendVisible = Preferences.getBoolean(widgetId + keyLegendVisible, false);
+		legendVisible = Preferences.getBoolean(widgetId + keyLegendVisible, true);
 		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
 		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 8);
 	}
