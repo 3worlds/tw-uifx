@@ -97,7 +97,27 @@ image::purposeIMG/state-change-loop.svg[align="center", role="thumb",width="500"
 
 Because ecosystems have both biological and physical characteristics, they not only deal with individuals and populations of living organisms, but also with fluxes of matter and energy. To properly compute a mass or energy balance typical of physical questions, we need a time model that insures that all system components are modified synchronously - otherwise, leaks in mass and energy budgets may occur (<<fig-3w-main-loop>>). This is where IBMs differ somewhat from MASs in their most common current implementations: MASs emphasize the _autonomy_ of agents by allowing them to modify their state immediately. In other words, MASs assume that no two events occurring in a simulation can be simultaneous, while mass/energy balance requires simultaneity of events. 3Worlds assumes that simultaneous events are the default, but by using particular time models it is possible to relax this constraint. 
 
-Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. in *3Worlds*, time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used. *3Worlds* provides three types of _time model_ that can be used in interaction: '__clock__' models using a constant time step, __event-driven __time models where time events trigger computations that can generate further events in the future, and _scenarios_ where the list of events determines when computations are to be made. 
+Given the diversity of topics subject to ecological modelling, ecological processes span many orders of magnitude in their rate of action. Demographic models often use a yearly time step, while ecophysiological models may use daily time steps and physiological models may run with time steps of a second. In *3Worlds*, time steps span the whole scale of time units relevant to ecology, i.e. from milliseconds to millenia. Standard Gregorian calendar time can also be used. *3Worlds* provides three types of _time model_ that can be used in interaction: '__clock__' models using a constant time step, __event-driven __time models where time events trigger computations that can generate further events in the future, and _scenarios_ where the list of events determines when computations are to be made. 
+
+==== Causality
+
+When designing a model in practice, it appears that some computations can or must be made 'in parallel' while others must be made sequentially. For example:
+
+* before computing how much carbon a plant allocates to its roots or to its stems, one has to know how much carbon was gained from photosynthesis: within a time step, photosynthesis must be computed before allocation.
+
+[[fig-3w-causal-loop]]
+.The causal loop within the time loop of 3Worlds. pass:[<br/>]Within a time step, computations are ordered by causal pass:[<br/>] dependency and processed accordingly. Intermediate state pass:[<br/>]and graph structure changes follow each causal step. 
+image::purposeIMG/causal-loop.svg[width="400", float="left"]
+
+* before computing how much nitrogen an animal gets from its food according to its digesting system, one has to know how much food was ingested: food intake must be computed before digestion outcome.
+* water runoff in a water catchment is triggered by rainfall.
+* to compute competition for a shared resource, one has first to compute how much resource is available, how much demand there is for this resource by the organisms having an access to it, and then which share they will get based on some rule. Resource availability must be computed before demand and demand before uptake.
+
+In these examples, 'A must be computed before B' must be understood as 'A is the cause of B'. This 'before' does not refer to time scale: no matter at what scale we measure, think, or compute, a cause must be computed before its effect. It would be nonsense to compute things in another way. 
+
+In other words, the order of computations in a simulator does not only depend on time ordering, but also on the logic of causality implied by modelling choices.
+
+This need for some ordering of computations within a time grain is important and was identified as such in implementations (<<bibliography.adoc#Quesnel2009,Quesnel et al. 2009>>) of versatile simulation timing tools such as https://fr.wikipedia.org/wiki/Discrete_Event_System_Specification[DEVS] (<<bibliography.adoc#Zeigler2000, Zeigler et al. 2000>>). In 3Worlds, the elementary time step of <<truetime-with-simultaneous-events>> is sub-divided into _causal_ steps, enabling to proceed to computations in a meaningful order, and with intermediate update of state and graph structure (<<fig-3w-causal-loop>>).
 
 ==== Space as a mediator for interactions
 

@@ -37,11 +37,17 @@ Melilo, J. M., Borchers, J., Chaney, J., Fisher, H., Fox, S., Haxeltine, A., Jan
 [#Parton1988]
 Parton, W., Stewart, J., & Cole, C. (1988). Dynamics of C,N, P and S in grassland soils: a model. __Biogeochemistry__, 5, 109–131.
 
+[#Quesnel2009]
+Quesnel G, Duboz R, Ramat E (2009). The Virtual Laboratory Environment - An operational framework for multi-modelling, simulation and analysis of complex dynamical systems. _Simulation Modelling Practice and Theory_ 17:641–653.
+
 [#Roxburgh2004]
 Roxburgh, S. H., Barrett, D. J., Berry, S. L., Carter, J. O., Davies, I. D., Gifford, R. M., Kirschbaum, M. U. E., McBeth, B. P., Noble, I. R., Parton, W. G., Raupach, M. R., & Roderick, M. L. (2004). A critical overview of model estimates of net primary productivity for the Australian continent. __Functional Plant Biology__, 31(11), 1043–1059.
 
 [#Tansley1935]
 Tansley, A G. (1935). The use and abuse of vegetational concepts and terms. _Ecology_ 16: 284‑307.
+
+[#Zeigler2000]
+Zeigler B, Kim TG, Praehofer H (2000) __Theory of Modeling and Simulation : integrating discrete event and continuous complex dynamic systems__. Academic Press
 
 [#Zucker2003]
 Zucker, J.D. (2003). A Grounded Theory of Abstraction in Artificial Intelligence. _Philosophical Transactions of 
