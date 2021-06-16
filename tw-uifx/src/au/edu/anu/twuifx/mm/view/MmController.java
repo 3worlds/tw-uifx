@@ -709,6 +709,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					String entry = "";
 					if (ft.returnType().equals("boolean"))
 						entry = "\treturn false;";
+					else if (ft.returnType().equals("double"))
+						entry = "\treturn 0.0;";
+					else if (ft.returnType().equals("String"))
+						entry = "\treturn null;";
 					StringTable newValue = new StringTable(new Dimensioner(1));
 					newValue.fillWith(entry);
 					n.properties().setProperty(P_SNIPPET_JAVACODE.key(), newValue);
