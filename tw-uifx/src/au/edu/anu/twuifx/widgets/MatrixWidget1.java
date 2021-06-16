@@ -102,6 +102,17 @@ import javafx.stage.Window;
  *
  * @date 2 Sep 2019
  */
+
+/**
+ * TODO: Change approach to show many grids.
+ * 
+ * Accept all simulators but user widget properties determines how many to
+ * display at one time.
+ * 
+ * A view is one simulator. Within each are n 2d matrices of any size.
+ * 
+ * Awaiting metaData info (numeric only : i.e java.lang.Number
+ */
 public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata> implements WidgetGUI {
 
 	private Label lblName;
@@ -177,7 +188,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	}
 
 	private void processWaitState() {
-		for (D2Display d: displays) {
+		for (D2Display d : displays) {
 			d.clear();
 		}
 
@@ -431,6 +442,9 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 				this.sender = cmbxSender.getSelectionModel().getSelectedIndex();
 				draw();
 			});
+			
+			if (nSenders==1)
+				cmbxSender.setDisable(true);
 
 			container = new BorderPane();
 
@@ -440,7 +454,10 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			HBox topBar = new HBox();
 			topBar.setAlignment(Pos.CENTER_LEFT);
 			topBar.setSpacing(5);
-			topBar.getChildren().addAll(new Label("Simulator"), cmbxSender, new Label("Tracker time"), lblTime);
+			Label simCaption = new Label("Simulator");
+			if (nSenders ==1)
+				simCaption.setDisable(true);
+			topBar.getChildren().addAll(simCaption, cmbxSender, new Label("Tracker time"), lblTime);
 			container.setTop(topBar);
 
 			HBox bottomBar = new HBox();
@@ -525,7 +542,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 				canvas.setWidth(mapWidth * resolution);
 				canvas.setHeight(mapHeight * resolution);
 				return true;
-			} else 
+			} else
 				return false;
 		}
 
