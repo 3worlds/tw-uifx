@@ -264,7 +264,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			Preferences.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
 			Preferences.putInt(widgetId + keySender + i, d.getSender());
 		}
-		Preferences.putDouble(widgetId + keyResolution, resolution);
+		Preferences.putInt(widgetId + keyResolution, resolution);
 		Preferences.putInt(widgetId + keyDecimalPlaces, decimalPlaces);
 		Preferences.putDouble(widgetId + keyMinValue, minValue);
 		Preferences.putDouble(widgetId + keyMaxValue, maxValue);
@@ -282,18 +282,21 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			d.setSender(Preferences.getInt(widgetId + keySender + i, i));
 
 		}
+		resolution = Preferences.getInt(widgetId + keyResolution, 50);
+		decimalPlaces = Preferences.getInt(widgetId + keyDecimalPlaces, 2);
+		minValue = Preferences.getDouble(widgetId + keyMinValue, 0.0);
+		maxValue = Preferences.getDouble(widgetId + keyMaxValue, 1.0);
 		paletteType = (PaletteTypes) Preferences.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
+
+		formatter = Decimals.getDecimalFormat(decimalPlaces);
+
+		lblLow.setText(formatter.format(minValue));
+		lblHigh.setText(formatter.format(maxValue));
+			
 		palette = paletteType.getPalette();
 		Image image = getLegend(10, 100);
 		paletteImageView.setImage(image);
-		minValue = Preferences.getDouble(widgetId + keyMinValue, 0.0);
-		maxValue = Preferences.getDouble(widgetId + keyMaxValue, 1.0);
 
-		decimalPlaces = Preferences.getInt(widgetId + keyDecimalPlaces, 2);
-		formatter = Decimals.getDecimalFormat(decimalPlaces);
-		lblLow.setText(formatter.format(minValue));
-		lblHigh.setText(formatter.format(maxValue));
-		resolution = Preferences.getInt(widgetId + keyResolution, 50);
 	}
 
 	private static Label makeLabel(String s) {
@@ -514,10 +517,13 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		private void onMouseMove(MouseEvent e) {
 			Number[][] grid = senderGrids.get(sender);
 			int x = (int) (e.getX() / resolution);
-			int y = (int) (e.getY() / resolution);
+			int y = (int) ((canvas.getHeight()-e.getY()) / resolution);
 			lblXY.setText("[" + x + "," + y + "]");
-			if (x < grid.length & y < grid[0].length & x >= 0 & y >= 0)
+			if (x < grid.length & y < grid[0].length & x >= 0 & y >= 0) {
+				//int invy = grid[0].length-y-1;
 				lblValue.setText(formatter.format(grid[x][y]));
+			} else
+				lblValue.setText("");
 		}
 
 		public void draw() {
@@ -547,6 +553,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		}
 
 		private void dataToCanvasPixels(GraphicsContext gc, Number[][] grid) {
+			double h = canvas.getHeight();
 			PixelWriter pw = gc.getPixelWriter();
 			for (int x = 0; x < canvas.getWidth(); x++)
 				for (int y = 0; y < canvas.getHeight(); y++) {
@@ -554,13 +561,15 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 					if (grid[x][y] != null) { // missing value
 						double v = grid[x][y].doubleValue();
 						c = palette.getColour(v, minValue, maxValue);
-						pw.setColor(x, y, c);
+						int invy = (int) (h-y);
+						pw.setColor(x,invy, c);
 					}
 				}
 		}
 
 		private void dataToCanvasRect(GraphicsContext gc, Number[][] grid, int mapWidth, int mapHeight) {
 			int w = resolution;
+			double h = canvas.getHeight();
 			for (int x = 0; x < mapWidth; x++)
 				for (int y = 0; y < mapHeight; y++) {
 					Color c = Color.TRANSPARENT;
@@ -569,7 +578,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 						c = palette.getColour(v, minValue, maxValue);
 						gc.setStroke(c);
 						gc.setFill(c);
-						gc.fillRect(x * w, y * w, w, w);
+						int invy = mapHeight-y;
+						gc.fillRect(x * w, invy*w, w, w);
 					}
 				}
 		}
