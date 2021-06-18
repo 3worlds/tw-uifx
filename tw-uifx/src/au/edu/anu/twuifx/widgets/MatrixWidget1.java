@@ -292,7 +292,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 		lblLow.setText(formatter.format(minValue));
 		lblHigh.setText(formatter.format(maxValue));
-			
+
 		palette = paletteType.getPalette();
 		Image image = getLegend(10, 100);
 		paletteImageView.setImage(image);
@@ -445,8 +445,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 				this.sender = cmbxSender.getSelectionModel().getSelectedIndex();
 				draw();
 			});
-			
-			if (nSenders==1)
+
+			if (nSenders == 1)
 				cmbxSender.setDisable(true);
 
 			container = new BorderPane();
@@ -458,7 +458,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			topBar.setAlignment(Pos.CENTER_LEFT);
 			topBar.setSpacing(5);
 			Label simCaption = new Label("Simulator");
-			if (nSenders ==1)
+			if (nSenders == 1)
 				simCaption.setDisable(true);
 			topBar.getChildren().addAll(simCaption, cmbxSender, new Label("Tracker time"), lblTime);
 			container.setTop(topBar);
@@ -480,6 +480,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			CenteredZooming.center(scrollPane, content, group, zoomTarget);
 			zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
 			container.setCenter(scrollPane);
+			scrollPane.setOnMouseMoved(e-> clearXY());
 
 		}
 
@@ -514,18 +515,6 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			return container;
 		}
 
-		private void onMouseMove(MouseEvent e) {
-			Number[][] grid = senderGrids.get(sender);
-			int x = (int) (e.getX() / resolution);
-			int y = (int) ((canvas.getHeight()-e.getY()) / resolution);
-			lblXY.setText("[" + x + "," + y + "]");
-			if (x < grid.length & y < grid[0].length & x >= 0 & y >= 0) {
-				//int invy = grid[0].length-y-1;
-				lblValue.setText(formatter.format(grid[x][y]));
-			} else
-				lblValue.setText("");
-		}
-
 		public void draw() {
 			GraphicsContext gc = canvas.getGraphicsContext2D();
 			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -553,35 +542,55 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		}
 
 		private void dataToCanvasPixels(GraphicsContext gc, Number[][] grid) {
-			double h = canvas.getHeight();
+			double h = grid[0].length - 1;
 			PixelWriter pw = gc.getPixelWriter();
+
 			for (int x = 0; x < canvas.getWidth(); x++)
 				for (int y = 0; y < canvas.getHeight(); y++) {
 					Color c = Color.TRANSPARENT;
 					if (grid[x][y] != null) { // missing value
 						double v = grid[x][y].doubleValue();
 						c = palette.getColour(v, minValue, maxValue);
-						int invy = (int) (h-y);
-						pw.setColor(x,invy, c);
+						int flipy = (int) (h - y);
+						pw.setColor(x, flipy, c);
 					}
 				}
 		}
 
 		private void dataToCanvasRect(GraphicsContext gc, Number[][] grid, int mapWidth, int mapHeight) {
 			int w = resolution;
-			double h = canvas.getHeight();
+			double h = grid[0].length - 1;// mapHeight
+
 			for (int x = 0; x < mapWidth; x++)
 				for (int y = 0; y < mapHeight; y++) {
 					Color c = Color.TRANSPARENT;
 					if (grid[x][y] != null) {
 						double v = grid[x][y].doubleValue();
 						c = palette.getColour(v, minValue, maxValue);
-						gc.setStroke(c);
+//						gc.setStroke(c);
 						gc.setFill(c);
-						int invy = mapHeight-y;
-						gc.fillRect(x * w, invy*w, w, w);
+						int flipy = (int) (h - y);
+//						gc.strokeRect(x * w, flipy * w, w, w);
+						gc.fillRect(x * w, flipy * w, w, w);
 					}
 				}
 		}
+
+		private void onMouseMove(MouseEvent e) {
+			Number[][] grid = senderGrids.get(sender);
+			int x = (int) (e.getX() / resolution);
+			int y = (int) ((canvas.getHeight() - e.getY()) / resolution);
+			lblXY.setText("[" + x + "," + y + "]");
+			if (x < grid.length & y < grid[0].length & x >= 0 & y >= 0) {
+				lblValue.setText(formatter.format(grid[x][y]));
+				e.consume();
+			}
+			
+		}
+		private void clearXY() {
+			lblXY.setText("");
+			lblValue.setText("");
+		}
+
 	}
 }
