@@ -1503,7 +1503,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		boolean cleanAndValid = isClean && isValid;
 		btnDeploy.setDisable(!cleanAndValid);
 //		btnDocument.setDisable(!cleanAndValid);
-		boolean snp = !cleanAndValid || !UserProjectLink.haveUserProject();
+//		boolean snp = !cleanAndValid || !UserProjectLink.haveUserProject();
+		boolean snp = !UserProjectLink.haveUserProject();
 		miImportSnippets.setDisable(snp);
 		miClearSnippets.setDisable(!isOpen);
 		miRedo.setDisable(!Caretaker.hasSucc());
