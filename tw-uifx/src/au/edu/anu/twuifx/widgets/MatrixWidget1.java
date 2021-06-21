@@ -282,7 +282,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			d.setSender(Preferences.getInt(widgetId + keySender + i, i));
 
 		}
-		resolution = Preferences.getInt(widgetId + keyResolution, 50);
+		resolution = Preferences.getInt(widgetId + keyResolution, 2);
 		decimalPlaces = Preferences.getInt(widgetId + keyDecimalPlaces, 2);
 		minValue = Preferences.getDouble(widgetId + keyMinValue, 0.0);
 		maxValue = Preferences.getDouble(widgetId + keyMaxValue, 1.0);
