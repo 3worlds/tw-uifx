@@ -130,6 +130,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private final WidgetTrackingPolicy<TimeData> policy;
 
 	private int nViews;
+	private final List<Output2DData> initialData;
 
 	private static Logger log = Logging.getLogger(MatrixWidget1.class);
 
@@ -139,6 +140,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		policy = new SimCloneWidgetTrackingPolicy();
 		senderGrids = new HashMap<>();
 		displays = new ArrayList<>();
+		initialData = new ArrayList<>();
 	}
 
 	@Override
@@ -160,7 +162,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	public void onDataMessage(Output2DData data) {
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial))
-				throw new TwuifxException("Handling initial data not implemented for this widget.");
+				initialData.add(data);
 			else
 				processDataMessage(data);
 		}
@@ -180,16 +182,20 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	@Override
 	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {
-			Platform.runLater(() -> {
+		if (isSimulatorState(state, waiting)) {	
 				processWaitState();
-			});
 		}
 	}
 
 	private void processWaitState() {
+		// there may be a concurrent mod exception here!
+		for (Output2DData data : initialData) {
+			processDataMessage(data);
+		}
+		initialData.clear();
+		// TODO: remove below when initial data sending is done.
 		for (D2Display d : displays) {
-			d.clear();
+			d.draw();
 		}
 
 	}
