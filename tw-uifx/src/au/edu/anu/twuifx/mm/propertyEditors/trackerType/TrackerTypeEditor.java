@@ -107,13 +107,14 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			List<TreeGraphDataNode> categories = (List<TreeGraphDataNode>) get(process.edges(Direction.OUT),
 					selectZeroOrMany(hasTheLabel(ConfigurationEdgeLabels.E_APPLIESTO.label())), edgeListEndNodes());
 			for (TreeGraphDataNode category : categories) {
-				Record record = (Record) get(category.edges(Direction.OUT),
-						selectZeroOrOne(orQuery(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label()),
-								hasTheLabel(ConfigurationEdgeLabels.E_DECORATORS.label()))),
+				Record drvr = (Record) get(category.edges(Direction.OUT),selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())),
 						endNode());
-				if (record != null)
-					result.add(record);
-
+				if (drvr != null)
+					result.add(drvr);
+				Record decr = (Record) get(category.edges(Direction.OUT),selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DECORATORS.label())),
+						endNode());
+				if (decr != null)
+					result.add(decr);
 			}
 		}
 		return result;
