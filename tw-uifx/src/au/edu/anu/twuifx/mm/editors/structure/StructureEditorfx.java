@@ -374,6 +374,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// ---------------------------------------------------------------
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_IMPORT_TREE);
+			mu.setDisable(true);// TODO fix importing problem with parent table
 			if (!filteredChildSpecs.isEmpty() && !editableNode.isPredefined()) {
 				for (SimpleDataTreeNode childSpec : filteredChildSpecs) {
 					MenuItem mi = MenuLabels.addMenuItem(mu,
