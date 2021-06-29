@@ -638,10 +638,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void onImportSnippets(ActionEvent event) {
-		Dialogs.warnAlert("Code import", "Code dependencies",
-				"Java snippit importing is intended to be a convenient way of storing Function code within the project configuration graph."
-						+ "\nHowever, importing snippets that have a third-party dependency will cause compile errors."
-						+ "\nTo avoid this and preserve your code, surround the relevant snippet code with comment markers after importing.");
+//		Dialogs.warnAlert("Code import", "Code dependencies",
+//				"Java snippit importing is intended to be a convenient way of storing Function code within the project configuration graph."
+//						+ "\nHowever, importing snippets that have a third-party dependency will cause compile errors."
+//						+ "\nTo avoid this and preserve your code, surround the relevant snippet code with comment markers after importing.");
 		// Add comment markers to the snippet code to preserve the code and allow a
 		// clean compilation.
 		List<String> errorList = new ArrayList<>();
