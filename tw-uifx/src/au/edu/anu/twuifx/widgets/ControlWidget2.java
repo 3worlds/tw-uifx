@@ -307,8 +307,9 @@ public class ControlWidget2 extends ControllerAdapter
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		if (policy.canProcessMetadataMessage(meta))
-			scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
+		policy.canProcessMetadataMessage(meta);
+//			if (policy.canProcessMetadataMessage(meta))
+			//scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
 	}
 
 }
