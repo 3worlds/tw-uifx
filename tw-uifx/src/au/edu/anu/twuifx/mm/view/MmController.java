@@ -1216,7 +1216,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name") + date);
 				}
 
-				model.doNewProject(proposedName, libGraph);
+				model.doNewProject(proposedName, libGraph,lt.dependencyArchive());
 			});
 		}
 
