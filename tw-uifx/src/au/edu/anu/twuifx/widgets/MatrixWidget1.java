@@ -182,8 +182,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	@Override
 	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {	
-				processWaitState();
+		if (isSimulatorState(state, waiting)) {
+			processWaitState();
 		}
 	}
 
@@ -241,6 +241,10 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		return content;
 	}
 
+	private enum MissingValueOptions {
+		LTEQMin, GTEQMax, Auto
+	}
+
 	private static final String keyScaleX = "scaleX";
 	private static final String keyScaleY = "scaleY";
 	private static final String keyScrollH = "scrollH";
@@ -251,6 +255,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private static final String keyMinValue = "minValue";
 	private static final String keyMaxValue = "maxValue";
 	private static final String keySender = "sender";
+	private static final String keyMissingValueMethod = "missingValueMethod";
 
 	private Palette palette;
 	private double minValue;
@@ -259,6 +264,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private int resolution;
 	private int decimalPlaces;
 	private ImageView paletteImageView;
+	private MissingValueOptions mvMethod;
 
 	@Override
 	public void putUserPreferences() {
@@ -275,6 +281,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		Preferences.putDouble(widgetId + keyMinValue, minValue);
 		Preferences.putDouble(widgetId + keyMaxValue, maxValue);
 		Preferences.putEnum(widgetId + keyPalette, paletteType);
+		Preferences.putEnum(widgetId + keyMissingValueMethod, mvMethod);
 	}
 
 	@Override
@@ -293,6 +300,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		minValue = Preferences.getDouble(widgetId + keyMinValue, 0.0);
 		maxValue = Preferences.getDouble(widgetId + keyMaxValue, 1.0);
 		paletteType = (PaletteTypes) Preferences.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
+		mvMethod = (MissingValueOptions) Preferences.getEnum(widgetId + keyMissingValueMethod,
+				MissingValueOptions.Auto);
 
 		formatter = Decimals.getDecimalFormat(decimalPlaces);
 
@@ -305,7 +314,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	}
 
-	private static Label makeLabel(String s) {
+	private static Label smallFontLabel(String s) {
 		Label result = new Label(s);
 		result.setFont(font);
 		return result;
@@ -325,9 +334,9 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	private Pane buildPalettePane() {
 		paletteImageView = new ImageView();
-		lblHigh = makeLabel("");
-		lblLow = makeLabel("");
-		VBox pane = new VBox(makeLabel("high"), lblHigh, paletteImageView, lblLow, makeLabel("low"));
+		lblHigh = smallFontLabel("");
+		lblLow = smallFontLabel("");
+		VBox pane = new VBox(smallFontLabel("high"), lblHigh, paletteImageView, lblLow, smallFontLabel("low"));
 		pane.setAlignment(Pos.CENTER);
 		return pane;
 	}
@@ -391,6 +400,11 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		addGridControl("Maximun z", row++, col, tfMaxValue, content);
 
+		ComboBox<MissingValueOptions> cmbMV = new ComboBox<>();
+		cmbMV.getItems().addAll(MissingValueOptions.values());
+		cmbMV.getSelectionModel().select(mvMethod);
+		addGridControl("Missing values", row++, col, cmbMV, content);
+
 		// --- resolution
 		Spinner<Integer> spResolution = new Spinner<>();
 		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, resolution));
@@ -407,6 +421,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
+			mvMethod = cmbMV.getValue();
 			paletteType = cmbPalette.getValue();
 			palette = paletteType.getPalette();
 			resolution = spResolution.getValue();
@@ -439,7 +454,9 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		private final ScrollPane scrollPane;
 		private Label lblTime;
 		private Label lblValue;
-		private Label lblXY;
+		private Label lblX;
+		private Label lblY;
+		private Label lblMinMax;
 
 		public D2Display(int sender, int nSenders) {
 			this.sender = sender;
@@ -457,9 +474,11 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 			container = new BorderPane();
 
-			lblTime = makeLabel("");
-			lblValue = makeLabel("");
-			lblXY = makeLabel("");
+			lblTime = smallFontLabel("");
+			lblValue = smallFontLabel("");
+			lblX = smallFontLabel("");
+			lblY = smallFontLabel("");
+			lblMinMax = smallFontLabel("");
 			HBox topBar = new HBox();
 			topBar.setAlignment(Pos.CENTER_LEFT);
 			topBar.setSpacing(5);
@@ -471,7 +490,12 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 			HBox bottomBar = new HBox();
 			bottomBar.setAlignment(Pos.CENTER_LEFT);
-			bottomBar.getChildren().addAll(makeLabel("[x,y]"), lblXY, makeLabel("="), lblValue);
+			HBox holder1 = new HBox();
+			holder1.getChildren().addAll(smallFontLabel("Value["), lblX, smallFontLabel(","), lblY,
+					smallFontLabel("]:"), lblValue);
+			HBox holder2 = new HBox();
+			holder2.getChildren().addAll(smallFontLabel("Range:"), lblMinMax);
+			bottomBar.getChildren().addAll(holder2, holder1);
 			bottomBar.setSpacing(5);
 			container.setBottom(bottomBar);
 
@@ -486,7 +510,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			CenteredZooming.center(scrollPane, content, group, zoomTarget);
 			zoomTarget.setOnMouseMoved(e -> onMouseMove(e));
 			container.setCenter(scrollPane);
-			scrollPane.setOnMouseMoved(e-> clearXY());
+			scrollPane.setOnMouseMoved(e -> clearXY());
 
 		}
 
@@ -548,6 +572,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		}
 
 		private void dataToCanvasPixels(GraphicsContext gc, Number[][] grid) {
+			double obsMin = Double.MAX_VALUE;
+			double obsMax = -obsMin;
 			double h = grid[0].length - 1;
 			PixelWriter pw = gc.getPixelWriter();
 
@@ -556,14 +582,19 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 					Color c = Color.TRANSPARENT;
 					if (grid[x][y] != null) { // missing value
 						double v = grid[x][y].doubleValue();
+						obsMin = Math.min(obsMin, v);
+						obsMax = Math.max(obsMax, v);
 						c = palette.getColour(v, minValue, maxValue);
 						int flipy = (int) (h - y);
 						pw.setColor(x, flipy, c);
 					}
 				}
+			lblMinMax.setText("[" + formatter.format(obsMin) + " - " + formatter.format(obsMax) + "]");
 		}
 
 		private void dataToCanvasRect(GraphicsContext gc, Number[][] grid, int mapWidth, int mapHeight) {
+			double obsMin = Double.MAX_VALUE;
+			double obsMax = -obsMin;
 			int w = resolution;
 			double h = grid[0].length - 1;// mapHeight
 
@@ -572,7 +603,23 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 					Color c = Color.TRANSPARENT;
 					if (grid[x][y] != null) {
 						double v = grid[x][y].doubleValue();
-						c = palette.getColour(v, minValue, maxValue);
+						obsMin = Math.min(obsMin, v);
+						obsMax = Math.max(obsMax, v);
+						switch (mvMethod) {
+						case LTEQMin: {
+							if (v > minValue)
+								c = palette.getColour(v, minValue, maxValue);
+							break;
+						}
+						case GTEQMax: {
+							if (v < maxValue)
+								c = palette.getColour(v, minValue, maxValue);
+							break;
+						}
+						default: {
+							c = palette.getColour(v, minValue, maxValue);
+						}
+						}
 //						gc.setStroke(c);
 						gc.setFill(c);
 						int flipy = (int) (h - y);
@@ -580,21 +627,25 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 						gc.fillRect(x * w, flipy * w, w, w);
 					}
 				}
+			lblMinMax.setText("[" + formatter.format(obsMin) + " - " + formatter.format(obsMax) + "]");
 		}
 
 		private void onMouseMove(MouseEvent e) {
 			Number[][] grid = senderGrids.get(sender);
 			int x = (int) (e.getX() / resolution);
 			int y = (int) ((canvas.getHeight() - e.getY()) / resolution);
-			lblXY.setText("[" + x + "," + y + "]");
+			lblX.setText(Integer.toString(x));
+			lblY.setText(Integer.toString(y));
 			if (x < grid.length & y < grid[0].length & x >= 0 & y >= 0) {
 				lblValue.setText(formatter.format(grid[x][y]));
 				e.consume();
 			}
-			
+
 		}
+
 		private void clearXY() {
-			lblXY.setText("");
+			lblX.setText("");
+			lblY.setText("");
 			lblValue.setText("");
 		}
 
