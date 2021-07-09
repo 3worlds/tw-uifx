@@ -69,6 +69,7 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -256,6 +257,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private static final String keyMaxValue = "maxValue";
 	private static final String keySender = "sender";
 	private static final String keyMissingValueMethod = "missingValueMethod";
+	private static final String keyBKGColour = "backgroundColour";
 
 	private Palette palette;
 	private double minValue;
@@ -265,6 +267,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private int decimalPlaces;
 	private ImageView paletteImageView;
 	private MissingValueOptions mvMethod;
+	private Color bkgColour;
 
 	@Override
 	public void putUserPreferences() {
@@ -282,6 +285,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		Preferences.putDouble(widgetId + keyMaxValue, maxValue);
 		Preferences.putEnum(widgetId + keyPalette, paletteType);
 		Preferences.putEnum(widgetId + keyMissingValueMethod, mvMethod);
+		Preferences.putDoubles(widgetId + keyBKGColour, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue(),
+				bkgColour.getOpacity());
 	}
 
 	@Override
@@ -302,6 +307,10 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		paletteType = (PaletteTypes) Preferences.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
 		mvMethod = (MissingValueOptions) Preferences.getEnum(widgetId + keyMissingValueMethod,
 				MissingValueOptions.Auto);
+
+		double[] rgb = Preferences.getDoubles(widgetId + keyBKGColour, Color.TRANSPARENT.getRed(),
+				Color.TRANSPARENT.getGreen(), Color.TRANSPARENT.getBlue(), Color.TRANSPARENT.getOpacity());
+		bkgColour = new Color(rgb[0], rgb[1], rgb[2], rgb[3]);
 
 		formatter = Decimals.getDecimalFormat(decimalPlaces);
 
@@ -400,10 +409,15 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
 		addGridControl("Maximun z", row++, col, tfMaxValue, content);
 
+		// Missing value option
 		ComboBox<MissingValueOptions> cmbMV = new ComboBox<>();
 		cmbMV.getItems().addAll(MissingValueOptions.values());
 		cmbMV.getSelectionModel().select(mvMethod);
 		addGridControl("Missing values", row++, col, cmbMV, content);
+
+		// Background colour i.e colour of missing value (def transparent)
+		ColorPicker cpBkg = new ColorPicker(bkgColour);
+		addGridControl("Background", row++, col, cpBkg, content);
 
 		// --- resolution
 		Spinner<Integer> spResolution = new Spinner<>();
@@ -421,6 +435,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
+			bkgColour = cpBkg.getValue();
 			mvMethod = cmbMV.getValue();
 			paletteType = cmbPalette.getValue();
 			palette = paletteType.getPalette();
@@ -579,12 +594,26 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 			for (int x = 0; x < canvas.getWidth(); x++)
 				for (int y = 0; y < canvas.getHeight(); y++) {
-					Color c = Color.TRANSPARENT;
+					Color c = bkgColour;
 					if (grid[x][y] != null) { // missing value
 						double v = grid[x][y].doubleValue();
 						obsMin = Math.min(obsMin, v);
 						obsMax = Math.max(obsMax, v);
-						c = palette.getColour(v, minValue, maxValue);
+						switch (mvMethod) {
+						case LTEQMin: {
+							if (v > minValue)
+								c = palette.getColour(v, minValue, maxValue);
+							break;
+						}
+						case GTEQMax: {
+							if (v < maxValue)
+								c = palette.getColour(v, minValue, maxValue);
+							break;
+						}
+						default: {
+							c = palette.getColour(v, minValue, maxValue);
+						}
+						}
 						int flipy = (int) (h - y);
 						pw.setColor(x, flipy, c);
 					}
@@ -600,7 +629,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 			for (int x = 0; x < mapWidth; x++)
 				for (int y = 0; y < mapHeight; y++) {
-					Color c = Color.TRANSPARENT;
+					Color c = bkgColour;
 					if (grid[x][y] != null) {
 						double v = grid[x][y].doubleValue();
 						obsMin = Math.min(obsMin, v);
@@ -620,10 +649,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 							c = palette.getColour(v, minValue, maxValue);
 						}
 						}
-//						gc.setStroke(c);
 						gc.setFill(c);
 						int flipy = (int) (h - y);
-//						gc.strokeRect(x * w, flipy * w, w, w);
 						gc.fillRect(x * w, flipy * w, w, w);
 					}
 				}
