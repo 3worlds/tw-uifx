@@ -706,17 +706,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				if (n.getParent() != null) {
 					TreeGraphDataNode func = (TreeGraphDataNode) n.getParent();
 					TwFunctionTypes ft = (TwFunctionTypes) func.properties().getPropertyValue(P_FUNCTIONTYPE.key());
-					String entry = "";
-					if (ft.returnType().equals("boolean"))
-						entry = "\treturn false;";
-					else if (ft.returnType().equals("double"))
-						entry = "\treturn 0.0;";
-					else if (ft.returnType().equals("String"))
-						entry = "\treturn null;";
+					if (!ft.returnStatement().isBlank()) {
 					StringTable newValue = new StringTable(new Dimensioner(1));
-					newValue.fillWith(entry);
+					newValue.fillWith("\t"+ft.returnStatement()+";");
 					n.properties().setProperty(P_SNIPPET_JAVACODE.key(), newValue);
 					changed = true;
+					}
 				} else {
 					Dialogs.warnAlert("Clear snippet", "Function undefined",
 							"'" + n.id() + "' does not have a defining function\n and has not been cleared.");
