@@ -638,18 +638,16 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void onImportSnippets(ActionEvent event) {
-//		Dialogs.warnAlert("Code import", "Code dependencies",
-//				"Java snippit importing is intended to be a convenient way of storing Function code within the project configuration graph."
-//						+ "\nHowever, importing snippets that have a third-party dependency will cause compile errors."
-//						+ "\nTo avoid this and preserve your code, surround the relevant snippet code with comment markers after importing.");
-		// Add comment markers to the snippet code to preserve the code and allow a
-		// clean compilation.
 		List<String> errorList = new ArrayList<>();
 		Map<String, TreeGraphDataNode> snippetNodes = new HashMap<>();
+		// Extract code for the main java class as Map<function name, code lines>.
+		// This includes imports using the root.id() as the key (NB lower case first
+		// letter to make id() consistent with method names)
 		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets();
 		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
-			if (n.classId().equals(N_SNIPPET.label())) {
-				char c[] = n.getParent().id().toCharArray();
+			if (n.classId().equals(N_FUNCTION.label()) || n.classId().equals(N_INITFUNCTION.label())
+					|| n.classId().equals(N_ROOT.label())) {
+				char c[] = n.id().toCharArray();
 				c[0] = Character.toLowerCase(c[0]);
 				snippetNodes.put(new String(c), n);
 			}
@@ -666,7 +664,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		Map<String, List<String>> successfulImports = new HashMap<>();
 		if (!snippetNodes.isEmpty()) {
-
+			boolean changed = false;
 			for (Map.Entry<String, List<String>> method : snippetCodes.entrySet()) {
 				TreeGraphDataNode snippetNode = snippetNodes.get(method.getKey());
 				if (snippetNode != null) {// may have no lines
@@ -674,11 +672,21 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					StringTable newValue = new StringTable(new Dimensioner(lines.size()));
 					for (int i = 0; i < lines.size(); i++)
 						newValue.setByInt(lines.get(i), i);
-					snippetNode.properties().setProperty(P_SNIPPET_JAVACODE.key(), newValue);
-					successfulImports.put(snippetNode.getParent().id() + "->" + snippetNode.id(), lines);
-					GraphState.setChanged();
+					String key;
+					if (snippetNode.properties().hasProperty(P_MODEL_IMPORTSNIPPET.key()))
+						key = P_MODEL_IMPORTSNIPPET.key();
+					else
+						key = P_FUNCTIONSNIPPET.key();
+					StringTable currentValue = (StringTable) snippetNode.properties().getPropertyValue(key);
+					if (!newValue.equals(currentValue)) {
+						snippetNode.properties().setProperty(key, newValue);
+						successfulImports.put(snippetNode.id(), lines);
+						changed = true;
+					}
 				}
 			}
+			if (changed)
+				GraphState.setChanged();
 		}
 		String title = "Snippet Import";
 		String header;
@@ -686,15 +694,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		String content = "";
 		for (Map.Entry<String, List<String>> entry : successfulImports.entrySet()) {
 			content += entry.getKey() + "\n";
-//			for (String line : entry.getValue()) {
-//				content += line + "\n";
-//			}
 		}
 
-		for (String error : errorList) {
+		for (String error : errorList)
 			content += error + "\n";
-		}
+		
 		// Best if we have a list of paired and unpaired code-snippet node
+		if (content.isBlank()) 
+			content = "No changes found.";
 		Dialogs.infoAlert(title, header, content);
 	}
 
@@ -702,21 +709,27 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	void doClearSnippets(ActionEvent event) {
 		boolean changed = false;
 		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
-			if (n.classId().equals(N_SNIPPET.label())) {
-				if (n.getParent() != null) {
-					TreeGraphDataNode func = (TreeGraphDataNode) n.getParent();
-					TwFunctionTypes ft = (TwFunctionTypes) func.properties().getPropertyValue(P_FUNCTIONTYPE.key());
-					if (!ft.returnStatement().isBlank()) {
-					StringTable newValue = new StringTable(new Dimensioner(1));
-					newValue.fillWith("\t"+ft.returnStatement()+";");
-					n.properties().setProperty(P_SNIPPET_JAVACODE.key(), newValue);
+			if (n.classId().equals(N_FUNCTION.label()) || n.classId().equals(N_INITFUNCTION.label())) {
+				TwFunctionTypes ft = (TwFunctionTypes) n.properties().getPropertyValue(P_FUNCTIONTYPE.key());
+				StringTable defValue = new StringTable(new Dimensioner(1));
+				if (!ft.returnStatement().isBlank()) {
+					defValue.setByInt("\t" + ft.returnStatement() + ";", 0);
+				}
+				StringTable currentValue = (StringTable) n.properties().getPropertyValue(P_FUNCTIONSNIPPET.key());
+				if (!defValue.equals(currentValue)) {
+					n.properties().setProperty(P_FUNCTIONSNIPPET.key(), defValue);
 					changed = true;
-					}
-				} else {
-					Dialogs.warnAlert("Clear snippet", "Function undefined",
-							"'" + n.id() + "' does not have a defining function\n and has not been cleared.");
+				}
+
+			} else if (n.classId().equals(N_ROOT.label())) {
+				StringTable defValue = new StringTable(new Dimensioner(1));
+				StringTable currentValue = (StringTable) n.properties().getPropertyValue(P_MODEL_IMPORTSNIPPET.key());
+				if (!defValue.equals(currentValue)) {
+					n.properties().setProperty(P_MODEL_IMPORTSNIPPET.key(), defValue);
+					changed = true;
 				}
 			}
+
 		if (changed) {
 			initialisePropertySheets();
 			GraphState.setChanged();
@@ -734,20 +747,20 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Dialog<ButtonType> dlg = new Dialog<>();
 		dlg.initOwner((Window) Dialogs.owner());
 		dlg.setTitle("3Worlds reference");
-		
+
 		dlg.setResizable(true);
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(done);
-		
+
 		final WebView browser = new WebView();
 		final WebEngine webEngine = browser.getEngine();
 		webEngine.load(this.getClass().getResource("reference.html").toString());
 		ScrollPane scrollPane = new ScrollPane();
-	    scrollPane.setContent(browser);
-	    dlg.getDialogPane().setContent(scrollPane);
-	    scrollPane.setFitToWidth(true);
-	    scrollPane.setFitToHeight(true);
-	    dlg.show();
+		scrollPane.setContent(browser);
+		dlg.getDialogPane().setContent(scrollPane);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setFitToHeight(true);
+		dlg.show();
 	}
 
 	// ---------------FXML End -------------------------
@@ -1211,7 +1224,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					root.properties().setProperty(P_MODEL_BUILTBY.key(), System.getProperty("user.name") + date);
 				}
 
-				model.doNewProject(proposedName, libGraph,lt.dependencyArchive());
+				model.doNewProject(proposedName, libGraph, lt.dependencyArchive());
 			});
 		}
 
