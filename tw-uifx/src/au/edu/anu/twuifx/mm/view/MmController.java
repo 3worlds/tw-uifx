@@ -712,6 +712,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			if (n.classId().equals(N_FUNCTION.label()) || n.classId().equals(N_INITFUNCTION.label())) {
 				TwFunctionTypes ft = (TwFunctionTypes) n.properties().getPropertyValue(P_FUNCTIONTYPE.key());
 				StringTable defValue = new StringTable(new Dimensioner(1));
+				defValue.setByInt("", 0);
 				if (!ft.returnStatement().isBlank()) {
 					defValue.setByInt("\t" + ft.returnStatement() + ";", 0);
 				}
@@ -723,6 +724,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 			} else if (n.classId().equals(N_ROOT.label())) {
 				StringTable defValue = new StringTable(new Dimensioner(1));
+				defValue.setByInt("", 0);
 				StringTable currentValue = (StringTable) n.properties().getPropertyValue(P_MODEL_IMPORTSNIPPET.key());
 				if (!defValue.equals(currentValue)) {
 					n.properties().setProperty(P_MODEL_IMPORTSNIPPET.key(), defValue);
