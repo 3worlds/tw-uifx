@@ -652,15 +652,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				snippetNodes.put(new String(c), n);
 			}
 
-		for (Map.Entry<String, TreeGraphDataNode> e : snippetNodes.entrySet())
-			if (!snippetCodes.containsKey(e.getKey()))
-				errorList.add("No '" + e.getKey() + "' code found for " + e.getValue().getParent().id() + "->"
-						+ e.getValue().id() + ".");
-
-		for (Map.Entry<String, List<String>> e : snippetCodes.entrySet()) {
-			if (!snippetNodes.containsKey(e.getKey()))
-				errorList.add("No snippet node present to receive '" + e.getKey() + "' code.");
-		}
+//		for (Map.Entry<String, TreeGraphDataNode> e : snippetNodes.entrySet())
+//			if (!snippetCodes.containsKey(e.getKey()))
+//				errorList.add("No '" + e.getKey() + "' code found for " + e.getValue().getParent().id() + "->"
+//						+ e.getValue().id() + ".");
+//
+//		for (Map.Entry<String, List<String>> e : snippetCodes.entrySet()) {
+//			if (!snippetNodes.containsKey(e.getKey()))
+//				errorList.add("No snippet node present to receive '" + e.getKey() + "' code.");
+//		}
 
 		Map<String, List<String>> successfulImports = new HashMap<>();
 		if (!snippetNodes.isEmpty()) {
