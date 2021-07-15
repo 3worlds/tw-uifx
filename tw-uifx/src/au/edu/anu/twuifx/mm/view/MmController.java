@@ -109,6 +109,7 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
+import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
@@ -152,6 +153,8 @@ import javafx.scene.web.WebView;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
+import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
+import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
 
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 	@FXML
@@ -643,7 +646,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		// Extract code for the main java class as Map<function name, code lines>.
 		// This includes imports using the root.id() as the key (NB lower case first
 		// letter to make id() consistent with method names)
-		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets();
+		String rootId = ConfigGraph.getGraph().root().id();
+		TreeGraphDataNode sys = (TreeGraphDataNode) get(ConfigGraph.getGraph().root().getChildren(),selectZeroOrOne(hasTheLabel(N_SYSTEM.label())));
+		File remoteMainModelClass = new File(UserProjectLink.srcRoot().getAbsoluteFile() + File.separator
+				+ ProjectPaths.CODE + File.separator + sys.id() + File.separator +rootId+".java" );
+
+		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets(remoteMainModelClass);
 		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
 			if (n.classId().equals(N_FUNCTION.label()) || n.classId().equals(N_INITFUNCTION.label())
 					|| n.classId().equals(N_ROOT.label())) {
@@ -652,19 +660,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				snippetNodes.put(new String(c), n);
 			}
 
-//		for (Map.Entry<String, TreeGraphDataNode> e : snippetNodes.entrySet())
-//			if (!snippetCodes.containsKey(e.getKey()))
-//				errorList.add("No '" + e.getKey() + "' code found for " + e.getValue().getParent().id() + "->"
-//						+ e.getValue().id() + ".");
-//
-//		for (Map.Entry<String, List<String>> e : snippetCodes.entrySet()) {
-//			if (!snippetNodes.containsKey(e.getKey()))
-//				errorList.add("No snippet node present to receive '" + e.getKey() + "' code.");
-//		}
-
-		Map<String, List<String>> successfulImports = new HashMap<>();
+		Map<String, String> successfulImports = new HashMap<>();
+		boolean changed = false;
 		if (!snippetNodes.isEmpty()) {
-			boolean changed = false;
 			for (Map.Entry<String, List<String>> method : snippetCodes.entrySet()) {
 				TreeGraphDataNode snippetNode = snippetNodes.get(method.getKey());
 				if (snippetNode != null) {// may have no lines
@@ -680,20 +678,27 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					StringTable currentValue = (StringTable) snippetNode.properties().getPropertyValue(key);
 					if (!newValue.equals(currentValue)) {
 						snippetNode.properties().setProperty(key, newValue);
-						successfulImports.put(snippetNode.id(), lines);
+						successfulImports.put(snippetNode.id(), "Snippet");
 						changed = true;
 					}
 				}
 			}
-			if (changed)
-				GraphState.setChanged();
 		}
-		String title = "Snippet Import";
+		// update local dep files from remote
+//		List<String> depFiles = UserProjectLink.pullDependentTree(remoteMainModelClass);
+//		for (String s:depFiles) {
+//			successfulImports.put(s,"file");
+//			changed = true;
+//		}
+				
+		if (changed)
+			GraphState.setChanged();
+		String title = "IDE Import";
 		String header;
-		header = "Import code from " + ConfigGraph.getGraph().root().id() + ".java";
+		header = "Import code snippets from " + ConfigGraph.getGraph().root().id() + ".java";
 		String content = "";
-		for (Map.Entry<String, List<String>> entry : successfulImports.entrySet()) {
-			content += entry.getKey() + "\n";
+		for (Map.Entry<String, String> entry : successfulImports.entrySet()) {
+			content += entry.getValue()+": "+entry.getKey() + "\n";
 		}
 
 		for (String error : errorList)
@@ -1128,11 +1133,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void onStartCheck() {
 		Platform.runLater(() -> {
 			btnDeploy.setDisable(true);
-//			btnDocument.setDisable(true);
 			btnCheck.setDisable(true);
 			lblChecking.setVisible(true);
 			trafficLight.fillProperty().set(Color.RED);
-
+			miImportSnippets.setDisable(true);
 			textAreaErrorMsgs.clear();
 			lstErrorMsgs.clear();
 		});
@@ -1147,7 +1151,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		isValid = valid;
 		Platform.runLater(() -> {
 			btnDeploy.setDisable(false);
-//			btnDocument.setDisable(false);
 			btnCheck.setDisable(false);
 			lblChecking.setVisible(false);
 			setButtonState();
