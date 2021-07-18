@@ -91,7 +91,7 @@
                   <MenuItem fx:id="miUndo" disable="true" mnemonicParsing="false" onAction="#doUndo" text="Annuler" />
                   <MenuItem fx:id="miRedo" disable="true" mnemonicParsing="false" onAction="#doRedo" text="Refaire" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Importer les modifications depuis l'IDE" />
+                  <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Importer des extraits depuis l'IDE" />
                   <MenuItem fx:id="miClearSnippets" disable="true" mnemonicParsing="false" onAction="#doClearSnippets" text="Effacer les propriétés de l'extrait" />
                   <Menu mnemonicParsing="false" text="Projet Java">
                     <items>
@@ -219,7 +219,7 @@
                                  <font>
                                     <Font size="10.0" />
                                  </font></RadioButton>
-                              <TextField fx:id="txfLayoutRoot" disable="true" editable="false" layoutX="89.0" layoutY="29.0" prefHeight="26.0" prefWidth="128.0">
+                              <TextField fx:id="txfLayoutRoot" disable="true" editable="false" focusTraversable="false" layoutX="89.0" layoutY="29.0" prefHeight="26.0" prefWidth="128.0">
                                  <font>
                                     <Font size="10.0" />
                                  </font></TextField>

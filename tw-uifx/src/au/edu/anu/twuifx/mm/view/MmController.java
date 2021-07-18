@@ -1506,7 +1506,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		tglSideline.setDisable(!isOpen);
 //		tglNeighbourhood.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
-		txfLayoutRoot.setDisable(!isOpen);
+		//txfLayoutRoot.setDisable(!isOpen);
 		rbl1.setDisable(!isOpen);
 		rbl2.setDisable(!isOpen);
 		rbl3.setDisable(!isOpen);
