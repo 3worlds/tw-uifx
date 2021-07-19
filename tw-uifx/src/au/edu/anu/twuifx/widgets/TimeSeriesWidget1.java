@@ -338,14 +338,14 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			if (sas != null)
 				itemId = data.itemLabel().getEnd();
 			else if (sampledItems != null)
-				itemId = data.itemLabel().toString();
+				itemId = data.itemLabel().toLazyString();
 
 			for (DataLabel dl : metadataTS.doubleNames()) {
 				String key;
 				if (itemId != null)
-					key = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+					key = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toLazyString();
 				else
-					key = sender + ":" + dl.toString();
+					key = sender + ":" + dl.toLazyString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 				final double y = data.getDoubleValues()[metadataTS.indexOf(dl)];
 				final double ey = 1;
@@ -357,9 +357,9 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			for (DataLabel dl : metadataTS.intNames()) {
 				String key;
 				if (itemId != null)
-					key = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toString();
+					key = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toLazyString();
 				else
-					key = sender + ":" + dl.toString();
+					key = sender + ":" + dl.toLazyString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 				final double y = data.getIntValues()[metadataTS.indexOf(dl)];
 				final double ey = 1;
@@ -487,18 +487,18 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 		if (sas != null) {
 			for (StatisticalAggregates sa : sas.values()) {
-				String key = sender + ":" + sa.name() + DataLabel.HIERARCHY_DOWN + dl.toString();
+				String key = sender + ":" + sa.name() + DataLabel.HIERARCHY_DOWN + dl.toLazyString();
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
 				dataSetMap.put(key, ds);
 			}
 		} else if (sampledItems != null) {
 			for (String si : sampledItems) {
-				String key = sender + ":" + si + DataLabel.HIERARCHY_DOWN + dl.toString();
+				String key = sender + ":" + si + DataLabel.HIERARCHY_DOWN + dl.toLazyString();
 				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
 				dataSetMap.put(key, ds);
 			}
 		} else {
-			String key = sender + ":" + dl.toString();
+			String key = sender + ":" + dl.toLazyString();
 			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
 			dataSetMap.put(key, ds);
 		}

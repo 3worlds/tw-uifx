@@ -477,8 +477,8 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 					Color lineTypeColour = lineTypeColours.get(sType);
 					gc.setStroke(lineTypeColour);
 					// now we need a line type colour system.
-					String sKey = lineReference.getFirst().toString();
-					String eKey = lineReference.getSecond().toString();
+					String sKey = lineReference.getFirst().toLazyString();
+					String eKey = lineReference.getSecond().toLazyString();
 					Duple<DataLabel, double[]> sEntry = vertices.get(sKey);
 					Duple<DataLabel, double[]> eEntry = vertices.get(eKey);
 					if (sEntry == null)
@@ -1064,7 +1064,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		int pd = 0;
 		for (DataLabel lab : data.pointsToDelete()) {
 			// It's an error if the lab is NOT found in the list before
-			if (vertices.remove(lab.toString()) == null)
+			if (vertices.remove(lab.toLazyString()) == null)
 //				System.out.println("Warning: Attempt to delete non-existing point. [" + lab + "]");
 				;
 			else {
@@ -1081,7 +1081,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		for (DataLabel lab : data.pointsToCreate().keySet()) {
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToCreate().get(lab));
 			// It's an error if the lab IS found in the list before
-			if (vertices.put(lab.toString(), newValue) != null)
+			if (vertices.put(lab.toLazyString(), newValue) != null)
 				throw new TwuifxException("Attempt to add an already existing point. [" + lab + "]");
 			pa++;
 			if (installPointColour(lab))
@@ -1093,7 +1093,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		for (DataLabel lab : data.pointsToMove().keySet()) {
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToMove().get(lab));
 			// It's an error if the lab is NOT in the list
-			if (vertices.put(lab.toString(), newValue) == null)
+			if (vertices.put(lab.toLazyString(), newValue) == null)
 				throw new TwuifxException("Attempt to move a non-existing point. [" + lab + "]");
 //			pm++;
 			if (installPointColour(lab))
@@ -1147,8 +1147,8 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		Iterator<Tuple<DataLabel, DataLabel, String>> itline = lineSets.iterator();
 		while (itline.hasNext()) {
 			Tuple<DataLabel, DataLabel, String> line = itline.next();
-			if (!vertices.containsKey(line.getFirst().toString())
-					|| !vertices.containsKey(line.getSecond().toString())) {
+			if (!vertices.containsKey(line.getFirst().toLazyString())
+					|| !vertices.containsKey(line.getSecond().toLazyString())) {
 				itline.remove();
 				ldnr++;
 			}
