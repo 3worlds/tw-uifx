@@ -42,6 +42,7 @@ import au.edu.anu.twapps.mr.IMRModel;
 import au.edu.anu.twapps.mr.MRModel;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
+import au.edu.anu.twuifx.dialogs.ExperimentDetailsDlg;
 import au.edu.anu.twuifx.dialogs.ISParametersDlg;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -303,6 +304,13 @@ public class MrController implements IMRController {
 		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save parameters", exts);
 		System.out.println(file);
 	}
+    @FXML
+    void onExperimentDetails(ActionEvent event) {
+    	
+    	new ExperimentDetailsDlg(model.getGraph());
+    	
+
+    }
 
 	private Stage stage;
 	private static final String mainFrameName = "mainFrame";
