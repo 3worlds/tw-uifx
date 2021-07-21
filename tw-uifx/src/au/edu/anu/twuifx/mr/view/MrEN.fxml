@@ -15,7 +15,7 @@
          <children>
             <MenuBar>
               <menus>
-                  <Menu mnemonicParsing="false" text="Experiement design">
+                  <Menu mnemonicParsing="false" text="Experiment design">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#onExperimentDetails" text="Details" />
                     </items>
