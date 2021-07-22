@@ -55,7 +55,7 @@ public class ExperimentDetailsDlg {
 		ButtonType close = new ButtonType("Close", ButtonData.OK_DONE);
 		Dialog<ButtonType> dlg = new Dialog<>();
 		dlg.setTitle("Experiment details");
-		dlg.initOwner((Window) Dialogs.owner());
+		//dlg.initOwner((Window) Dialogs.owner());
 		dlg.getDialogPane().getButtonTypes().addAll(close);
 		dlg.setResizable(true);
 		BorderPane borderPane = new BorderPane();
@@ -104,7 +104,7 @@ public class ExperimentDetailsDlg {
 					addLine(Integer.toString(sim++), f, row++, col, gridPane);
 				}
 		}
-		dlg.show();
+		dlg.showAndWait();
 
 	}
 

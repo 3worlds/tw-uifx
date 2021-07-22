@@ -15,11 +15,6 @@
          <children>
             <MenuBar>
               <menus>
-                  <Menu mnemonicParsing="false" text="Conception de l'expérience">
-                    <items>
-                      <MenuItem mnemonicParsing="false" onAction="#onExperimentDetails" text="Des détails" />
-                    </items>
-                  </Menu>
                   <Menu mnemonicParsing="false" text="Paramètres">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#onParOpen" text="Ouvrir" />
@@ -39,6 +34,7 @@
                 <Menu fx:id="menuWidgets" mnemonicParsing="false" text="Widgets" />
                   <Menu mnemonicParsing="false" text="About">
                      <items>
+                      <MenuItem mnemonicParsing="false" onAction="#onExperimentDetails" text="Conception de l'expérience" />
                         <MenuItem id="miCurrentConfiguration" mnemonicParsing="false" onAction="#onODDGen" text="Créer de la documentation" />
                         <MenuItem id="miAboutModelRunner" mnemonicParsing="false" onAction="#onAboutModelRunner" text="À propos de ModelRunner" />
                      </items>
