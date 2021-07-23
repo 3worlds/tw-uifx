@@ -850,9 +850,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		tlbr.getItems().add(new Separator());
 		tlbr.getItems().add(gp);
 		sldrElements = new Slider();
-		sldrElements.setMin(0.1);
+		sldrElements.setMin(0.05);
 		sldrElements.setMax(2.0);
-		sldrElements.setValue(1.0);
+		sldrElements.setValue(0.5);
 		sldrElements.setShowTickMarks(true);
 		sldrElements.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 			setElementScales();
