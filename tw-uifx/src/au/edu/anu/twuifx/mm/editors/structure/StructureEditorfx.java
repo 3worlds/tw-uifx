@@ -33,6 +33,10 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.Originator;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
@@ -46,6 +50,7 @@ import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
+import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedEdgeLabels;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import javafx.scene.Node;
@@ -173,12 +178,15 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPAND);
 			if (editableNode.getSelectedVisualNode().hasCollaspedChild()) {
 				int count = 0;
-				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren()) {
-					if (vn.isCollapsed()) {
+				SortedMap<String,VisualNode> sortedNames = new TreeMap<>();
+				for (VisualNode vn:editableNode.getSelectedVisualNode().getChildren())
+					sortedNames.put(vn.getDisplayText(ElementDisplayText.RoleName), vn);
+				for (Map.Entry<String, VisualNode> entry:sortedNames.entrySet()) { 
+					if (entry.getValue().isCollapsed()) {
 						count++;
-						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
+						MenuItem mi = MenuLabels.addMenuItem(mu, entry.getKey());
 						mi.setOnAction((e) -> {
-							onExpandTree(vn, duration);
+							onExpandTree(entry.getValue(), duration);
 							// Either record state on transition.setOnFinished(...) or launch delayed thread
 						});
 					}
@@ -199,12 +207,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_COLLAPSE);
 			if (editableNode.getSelectedVisualNode().hasUncollapsedChildren()) {
 				int count = 0;
-				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren()) {
-					if (!vn.isCollapsed()) {
+				SortedMap<String,VisualNode> sortedNames = new TreeMap<>();
+				for (VisualNode vn:editableNode.getSelectedVisualNode().getChildren())
+					sortedNames.put(vn.getDisplayText(ElementDisplayText.RoleName), vn);
+				for (Map.Entry<String, VisualNode> entry:sortedNames.entrySet()) {
+					if (!entry.getValue().isCollapsed()) {
 						count++;
-						MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
-						mi.setOnAction(e -> onCollapseTree(vn, duration));
-						// Either record state on transition.setOnFinished(...) or launch delayed thread
+						MenuItem mi = MenuLabels.addMenuItem(mu, entry.getKey());
+						mi.setOnAction(e -> onCollapseTree(entry.getValue(), duration));
 					}
 				}
 				if (count > 1) {
