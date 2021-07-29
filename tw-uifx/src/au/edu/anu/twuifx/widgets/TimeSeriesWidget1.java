@@ -118,11 +118,11 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 	private int MIN_PIXEL_DISTANCE = 1;// check this in case it causes data to be lost
 	private XYChart chart;
 	private final List<DefaultNumericAxis> yAxes;
-	private Map<Integer, TreeMap<String, CircularDoubleErrorDataSet>> senderDataSetMap;
-	private Output0DMetadata metadataTS;
+	private final Map<Integer, TreeMap<String, CircularDoubleErrorDataSet>> senderDataSetMap;
+	private Output0DMetadata tsMetadata;
 	private Metadata msgMetadata;
-	private WidgetTimeFormatter timeFormatter;
-	private WidgetTrackingPolicy<TimeData> policy;
+	private final WidgetTimeFormatter timeFormatter;
+	private final WidgetTrackingPolicy<TimeData> policy;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
 
@@ -156,7 +156,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		/* 2) called second after construction */
 		if (policy.canProcessMetadataMessage(meta)) {
 			msgMetadata = meta;
-			metadataTS = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
+			tsMetadata = (Output0DMetadata) meta.properties().getPropertyValue(Output0DMetadata.TSMETA);
 		}
 	}
 
@@ -193,7 +193,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			}
 		}
 
-		int nItems = metadataTS.doubleNames().size() + metadataTS.intNames().size();
+		int nItems = tsMetadata.doubleNames().size() + tsMetadata.intNames().size();
 		if (nItems == 0)
 			throw new TwuifxException("No numeric items have been defined for '" + widgetId + "'.");
 		int nModifiers = 0;
@@ -211,9 +211,9 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		for (int sender = policy.getDataMessageRange().getFirst(); sender <= policy.getDataMessageRange()
 				.getLast(); sender++) {
 			senderDataSetMap.put(sender, new TreeMap<String, CircularDoubleErrorDataSet>());
-			for (DataLabel dl : metadataTS.doubleNames())
+			for (DataLabel dl : tsMetadata.doubleNames())
 				makeChannels(dl, sender);
-			for (DataLabel dl : metadataTS.intNames())
+			for (DataLabel dl : tsMetadata.intNames())
 				makeChannels(dl, sender);
 		}
 
@@ -230,6 +230,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			yAxes.add(newAxis);
 		}
 
+		// we need to sort this using padIndexedDidgets somehow
 		senderDataSetMap.forEach((i, dsm) -> {
 			int count = 0;
 			for (String key : dsm.navigableKeySet()) {
@@ -340,28 +341,28 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			else if (sampledItems != null)
 				itemId = data.itemLabel().toLazyString();
 
-			for (DataLabel dl : metadataTS.doubleNames()) {
+			for (DataLabel dl : tsMetadata.doubleNames()) {
 				String key;
 				if (itemId != null)
 					key = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toLazyString();
 				else
 					key = sender + ":" + dl.toLazyString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-				final double y = data.getDoubleValues()[metadataTS.indexOf(dl)];
+				final double y = data.getDoubleValues()[tsMetadata.indexOf(dl)];
 				final double ey = 1;
 //				System.out.println(key + "[" + x + ", " + y + "]");
 				if (ds != null)
 					ds.add(x, y, ey, ey);
 			}
 
-			for (DataLabel dl : metadataTS.intNames()) {
+			for (DataLabel dl : tsMetadata.intNames()) {
 				String key;
 				if (itemId != null)
 					key = sender + ":" + itemId + DataLabel.HIERARCHY_DOWN + dl.toLazyString();
 				else
 					key = sender + ":" + dl.toLazyString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
-				final double y = data.getIntValues()[metadataTS.indexOf(dl)];
+				final double y = data.getIntValues()[tsMetadata.indexOf(dl)];
 				final double ey = 1;
 				if (ds != null)
 					ds.add(x, y, ey, ey);
@@ -483,6 +484,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 	// helper new sender
 	private void makeChannels(DataLabel dl, int sender) {
+		
 		Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(sender);
 
 		if (sas != null) {

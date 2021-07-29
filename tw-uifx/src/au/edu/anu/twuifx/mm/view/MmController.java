@@ -647,9 +647,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		// This includes imports using the root.id() as the key (NB lower case first
 		// letter to make id() consistent with method names)
 		String rootId = ConfigGraph.getGraph().root().id();
-		TreeGraphDataNode sys = (TreeGraphDataNode) get(ConfigGraph.getGraph().root().getChildren(),selectZeroOrOne(hasTheLabel(N_SYSTEM.label())));
+		TreeGraphDataNode sys = (TreeGraphDataNode) get(ConfigGraph.getGraph().root().getChildren(),
+				selectZeroOrOne(hasTheLabel(N_SYSTEM.label())));
 		File remoteMainModelClass = new File(UserProjectLink.srcRoot().getAbsoluteFile() + File.separator
-				+ ProjectPaths.CODE + File.separator + sys.id() + File.separator +rootId+".java" );
+				+ ProjectPaths.CODE + File.separator + sys.id() + File.separator + rootId + ".java");
 
 		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets(remoteMainModelClass);
 		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
@@ -690,7 +691,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //			successfulImports.put(s,"file");
 //			changed = true;
 //		}
-				
+
 		if (changed)
 			GraphState.setChanged();
 		String title = "IDE Import";
@@ -698,14 +699,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		header = "Import code snippets from " + ConfigGraph.getGraph().root().id() + ".java";
 		String content = "";
 		for (Map.Entry<String, String> entry : successfulImports.entrySet()) {
-			content += entry.getValue()+": "+entry.getKey() + "\n";
+			content += entry.getValue() + ": " + entry.getKey() + "\n";
 		}
 
 		for (String error : errorList)
 			content += error + "\n";
-		
+
 		// Best if we have a list of paired and unpaired code-snippet node
-		if (content.isBlank()) 
+		if (content.isBlank())
 			content = "No changes found.";
 		Dialogs.infoAlert(title, header, content);
 	}
@@ -713,6 +714,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void doClearSnippets(ActionEvent event) {
 		boolean changed = false;
+		// Enable Undo for this
 		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
 			if (n.classId().equals(N_FUNCTION.label()) || n.classId().equals(N_INITFUNCTION.label())) {
 				TwFunctionTypes ft = (TwFunctionTypes) n.properties().getPropertyValue(P_FUNCTIONTYPE.key());
@@ -1506,7 +1508,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		tglSideline.setDisable(!isOpen);
 //		tglNeighbourhood.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
-		//txfLayoutRoot.setDisable(!isOpen);
+		// txfLayoutRoot.setDisable(!isOpen);
 		rbl1.setDisable(!isOpen);
 		rbl2.setDisable(!isOpen);
 		rbl3.setDisable(!isOpen);

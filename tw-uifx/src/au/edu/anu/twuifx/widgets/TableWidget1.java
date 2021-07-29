@@ -73,7 +73,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRACKER_STATISTICS;
-
+import static au.edu.anu.twuifx.widgets.helpers.Utilities.*;
 /**
  * @author Ian Davies
  *
@@ -155,23 +155,9 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 
 			@Override
 			public int compare(WidgetTableData o1, WidgetTableData o2) {
-				String s1 = padDigits(o1.getLabel());
-				return padDigits(o1.getLabel()).compareTo(padDigits(o2.getLabel()));
+				return padIndexedDidgets(o1.getLabel()).compareTo(padIndexedDidgets(o2.getLabel()));
 			}
 
-			String padDigits(String s) {
-				int st = s.indexOf("[");
-				int en = s.indexOf("]");
-				if (st >= 0 && en > st) {
-					String num = s.substring(st+1, en);
-					String padded = num;
-					while (padded.length() < 5)
-						padded = "0" + padded;
-					String result = s.replace("[" + num + "]", "[" + padded + "]");
-					return result;
-				} else
-					return s;
-			}
 		});
 
 		timeFormatter.onMetaDataMessage(msgMetadata);
