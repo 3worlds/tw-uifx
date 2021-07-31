@@ -685,18 +685,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				}
 			}
 		}
-		// update local dep files from remote
-//		List<String> depFiles = UserProjectLink.pullDependentTree(remoteMainModelClass);
-//		for (String s:depFiles) {
-//			successfulImports.put(s,"file");
-//			changed = true;
-//		}
 
-		if (changed)
+		if (changed) {
 			GraphState.setChanged();
+			model.addState(miImportSnippets.getText());
+		}
 		String title = "IDE Import";
 		String header;
-		header = "Import code snippets from " + ConfigGraph.getGraph().root().id() + ".java";
+		header = "Import snippets: " +UserProjectLink.projectRoot().getName() + " --> "+ConfigGraph.getGraph().root().id();
 		String content = "";
 		for (Map.Entry<String, String> entry : successfulImports.entrySet()) {
 			content += entry.getValue() + ": " + entry.getKey() + "\n";
@@ -742,6 +738,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		if (changed) {
 			initialisePropertySheets();
 			GraphState.setChanged();
+			model.addState(miClearSnippets.getText());
 		}
 	}
 
