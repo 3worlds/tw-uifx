@@ -21,6 +21,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -60,22 +61,15 @@ public class ExperimentDetailsDlg {
 		dlg.setResizable(true);
 		BorderPane borderPane = new BorderPane();
 		dlg.getDialogPane().setContent(borderPane);
-		ScrollPane scrollPane = new ScrollPane();
-		scrollPane.setPrefSize(400, 300);
-		borderPane.setCenter(scrollPane);
-		GridPane gridPane = new GridPane();
-		scrollPane.setContent(gridPane);
-		gridPane.setHgap(10);
-
-		// col,row
-		int col = 0;
-		int row = 0;
-		addLine("Type:", expType, row++, col, gridPane);
-		addLine("Description:", expDesc, row++, col, gridPane);
+		TextArea ta = new TextArea();
+		borderPane.setCenter(ta);
+		ta.setEditable(false);
+		ta.appendText("Type: "+expType+"\n");
+		ta.appendText("Description: "+ expDesc+"\n");
 		if (edt != null && edt.equals(edt.singleRun)) {
-			addLine("Replicates:", Integer.toString(nReps), row++, col, gridPane);
+			ta.appendText("Replicates: "+ Integer.toString(nReps)+"\n");
 			if (nReps > 1)
-				addLine("Deployment: ", "parallel", row++, col, gridPane);
+				ta.appendText("Deployment: parallel\n");
 		}
 		if (edt != null && edt.equals(edt.crossFactorial)) {
 			List<List<Property>> lst = Experiment.buildSimpleFactorialTreatmentList(exp);
@@ -90,9 +84,9 @@ public class ExperimentDetailsDlg {
 				sb.append(" x ").append(e.endNode().id()).append("(").append(tbl.size()).append(")");
 				total*=tbl.size();
 			}
-			sb.append("=").append(" total runs(").append(total).append(")");
-			addLine("Design:",sb.toString(),row++,col,gridPane);
-			addLine("Simulator:", "Factors:", row++, col, gridPane);
+			sb.append("=").append(" total runs(").append(total).append(")\n");
+			ta.appendText("Design: "+sb.toString());			
+			ta.appendText("Simulator: Factors:\n");
 			int sim = 0;
 			for (int r = 0; r < nReps; r++)
 				for (List<Property> factors : lst) {
@@ -101,22 +95,12 @@ public class ExperimentDetailsDlg {
 					f = f.replace("]]", "");
 					f = f.replace("]", "");
 					f = f.replace("[", "");
-					addLine(Integer.toString(sim++), f, row++, col, gridPane);
+					ta.appendText(Integer.toString(sim++)+": "+ f+"\n");
 				}
 		}
 		dlg.showAndWait();
 
 	}
 
-	private static void addLine(String desc, String value, int row, int col, GridPane grid) {
-		Label lblDesc = new Label(desc);
-		Label lblItem = new Label(value);
-		grid.add(lblDesc, col, row);
-		grid.add(lblItem, col + 1, row);
-		GridPane.setHalignment(lblDesc, HPos.RIGHT);
-		GridPane.setHalignment(lblItem, HPos.LEFT);
-		GridPane.setValignment(lblItem, VPos.CENTER);
-
-	}
 
 }
