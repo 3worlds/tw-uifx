@@ -74,7 +74,7 @@ public class ExperimentDetailsDlg {
 		}
 		switch (edt) {
 		case crossFactorial: {
-			List<List<Property>> lst = Experiment.buildSimpleFactorialTreatmentList(edt, exp);
+			List<List<Property>> lst = Experiment.buildTreatmentList(edt, exp);
 			Treatment treatment = (Treatment) get(exp.getChildren(), selectOne(hasTheLabel(N_TREATMENT.label())));
 			List<ALDataEdge> treatments = (List<ALDataEdge>) get(treatment.edges(Direction.OUT),
 					selectOneOrMany(hasTheLabel(E_TREATS.label())));
@@ -101,8 +101,9 @@ public class ExperimentDetailsDlg {
 				}
 			break;
 		}
+		// TODO repetitive code
 		case sensitivityAnalysis: {
-			List<List<Property>> lst = Experiment.buildSimpleFactorialTreatmentList(edt, exp);
+			List<List<Property>> lst = Experiment.buildTreatmentList(edt, exp);
 			Treatment treatment = (Treatment) get(exp.getChildren(), selectOne(hasTheLabel(N_TREATMENT.label())));
 			List<ALDataEdge> treatments = (List<ALDataEdge>) get(treatment.edges(Direction.OUT),
 					selectOneOrMany(hasTheLabel(E_TREATS.label())));
@@ -117,7 +118,7 @@ public class ExperimentDetailsDlg {
 			total *=nReps;
 			sb.append(")=").append(" total runs(").append(total).append(")\n");
 			String s = sb.toString();
-//			s = s.replaceFirst(" +", "");
+			//s = s.replaceFirst(" + ", "");
 			
 	
 			ta.appendText("Design: " + s);
