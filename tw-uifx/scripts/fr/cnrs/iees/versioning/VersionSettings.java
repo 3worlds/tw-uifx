@@ -84,7 +84,7 @@ public class VersionSettings {
 			{ "au.edu.anu.tw-apps", "tw-apps", "[0.2.3,)", null },
 			{ "au.edu.anu.rscs.aot", "qgraph", "[0.1.4,)", null },
 			{ "au.edu.anu.ymuit", "ymuit", "[0.1.10,)", null },
-			{ "fr.cnrs.iees.rvgrid", "rvgrid", "[0.0.4,)", null },
+			{ "fr.cnrs.iees.rvgrid", "rvgrid", "[0.1.0,)", null },
 			{ "org.openjfx", "javafx-fxml", "[11,)", "_os" },
 			{ "org.openjfx", "javafx-controls", "[11,)", "_os" },
 			{ "org.openjfx", "javafx-graphics", "[11,)", "_os" },
