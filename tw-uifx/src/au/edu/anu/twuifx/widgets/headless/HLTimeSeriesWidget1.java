@@ -10,6 +10,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMOD
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -313,17 +314,29 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			lines += "ava = anova (mdl)\n";
 			lines += "write.table(ava,\"anovaResults.csv\", sep = \"\t\")\n";
 			String rsciptName = "anova.R";
-			File rsciptFile = Project.makeFile(ProjectPaths.RUNTIME, "output", rsciptName);
-			rsciptFile.getParentFile().mkdirs();
+			File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, "output", rsciptName);
+			rscriptFile.getParentFile().mkdirs();
 			try {
-				writer = new PrintWriter(rsciptFile);
+				writer = new PrintWriter(rscriptFile);
 				writer.write(lines);
 				writer.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-			
 			// exec R with rscriptFile
+			List<String> commands = new ArrayList<>();
+			commands.add("Rscript");
+			commands.add(rscriptFile.getAbsolutePath());
+			ProcessBuilder b = new ProcessBuilder(commands);
+			b.directory(new File(rscriptFile.getParent()));
+			b.inheritIO();
+			try {
+				b.start();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			// read anovaResults.csv
 			// whatever
 
