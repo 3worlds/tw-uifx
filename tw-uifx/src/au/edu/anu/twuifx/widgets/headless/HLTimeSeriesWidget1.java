@@ -272,6 +272,7 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				List<Double> col = cols.get(c);
 				sample.add(col.get(lastNonZeroTime));
 			}
+			
 			int factors = treatmentList.get(0).size();
 			String h = "";
 			for (int i = 0; i < factors; i++)
@@ -360,6 +361,7 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 					ssq.add(d);
 				}
 				double residuals = Double.parseDouble(fileLines.get(fileLines.size() - 1).split("\t")[2]);
+				int dfresiduals = Integer.parseInt(fileLines.get(fileLines.size() - 1).split("\t")[1]);
 				totalSsq += residuals;
 				// make relative
 				List<Double> relSsq = new ArrayList<>();
@@ -374,10 +376,19 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				fileLines.add("Terms\tdf\tSum sq\tRel sum sq");
 				for (int i = 0; i < relSsq.size(); i++) {
 					StringBuilder sb = new StringBuilder().append(terms.get(i)).append(sep).append(df.get(i))
-							.append(sep).append(ssq.get(i)).append(sep).append(sep).append(relSsq.get(i));
+							.append(sep).append(ssq.get(i)).append(sep).append(relSsq.get(i));
 					fileLines.add(sb.toString());
 				}
-				fileLines.add("Explained\t" + totalExplained.toString());
+				fileLines.add("Explained\t" + dfresiduals+"\t"+totalExplained.toString());
+				fileLines.add("");
+				fileLines.add("Legend");
+				
+				for (int i = 0; i<factors;i++) {
+					String key = treatmentList.get(0).get(i).getKey();
+					String sym = "F"+i;
+					fileLines.add(new StringBuilder().append(sym).append(sep).append(key).toString());		
+				}
+
 				File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, "output", "RelativeSumSq.csv");
 				Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
 			} catch (IOException e) {
