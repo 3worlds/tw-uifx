@@ -242,7 +242,7 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				Double iv = col.get(lastNonZeroTime);
 				stats[bar].add(iv);
 			}
-			String statsName = widgetId + "SA_[" + RunTimeId.runTimeId() + ".csv";
+			String statsName = widgetId + "SA_" + RunTimeId.runTimeId() + ".csv";
 			File statsFile = Project.makeFile(ProjectPaths.RUNTIME, "output", statsName);
 			fileLines.clear();
 			fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
