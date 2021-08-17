@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -62,7 +64,7 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	final private WidgetTimeFormatter timeFormatter;
 	final private WidgetTrackingPolicy<TimeData> policy;
 	private String widgetId;
-	private PrintWriter writer;
+//	private PrintWriter writer;
 	private Output0DMetadata tsMetadata;
 	private Metadata msgMetadata;
 	private StatisticalAggregatesSet sas;
@@ -198,32 +200,31 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 		int lastNonZeroTime = Integer.MAX_VALUE;
 		int longestSeries = 0;
-		String fileName = widgetId + "[" + RunTimeId.runTimeId() + "].txt";
+		String fileName = widgetId + "_" + RunTimeId.runTimeId() + ".csv";
 		File outFile = Project.makeFile(ProjectPaths.RUNTIME, "output", fileName);
 		outFile.getParentFile().mkdirs();
-
-		try {
-			writer = new PrintWriter(outFile);
-			writer.write(header + "\n");
-			for (int line = 0; line < max; line++) {
-				Integer step = line + 1;
-				writer.write(step.toString());
-				for (int i = 0; i < cols.size(); i++) {
-					String s = "";
-					List<Double> col = cols.get(i);
-					if (line < col.size()) {
-						Double d = col.get(line);
-						if (d <= 0.0)
-							lastNonZeroTime = Math.min(lastNonZeroTime, line);
-						s = d.toString();
-					}
-					writer.write("\t" + s);
+		List<String> fileLines = new ArrayList<>();
+		fileLines.add(header);
+		for (int lineNo = 0; lineNo < max; lineNo++) {
+			Integer step = lineNo + 1;
+			String line = step.toString();
+			for (int i = 0; i < cols.size(); i++) {
+				String s = "";
+				List<Double> col = cols.get(i);
+				if (lineNo < col.size()) {
+					Double d = col.get(lineNo);
+					if (d <= 0.0)
+						lastNonZeroTime = Math.min(lastNonZeroTime, lineNo);
+					s = d.toString();
 				}
-				writer.write("\n");
+				line += "\t" + s;
 			}
-			writer.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			fileLines.add(line);
+		}
+		try {
+			Files.write(outFile.toPath(), fileLines, StandardCharsets.UTF_8);
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 		if (lastNonZeroTime == Integer.MAX_VALUE)
 			lastNonZeroTime = max - 1;
@@ -241,27 +242,24 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				Double iv = col.get(lastNonZeroTime);
 				stats[bar].add(iv);
 			}
-			String statsName = widgetId + "SA[" + RunTimeId.runTimeId() + "].csv";
+			String statsName = widgetId + "SA_[" + RunTimeId.runTimeId() + ".csv";
 			File statsFile = Project.makeFile(ProjectPaths.RUNTIME, "output", statsName);
-			statsFile.getParentFile().mkdirs();
+			fileLines.clear();
+			fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
+			String sep = "\t";
+			for (int bar = 0; bar < stats.length; bar++) {
+				Property p = treatmentList.get(bar).get(0);
+				String s1 = p.getKey() + "(" + p.getValue() + ")";
+				String s2 = Double.toString(stats[bar].average());
+				String s3 = Double.toString(stats[bar].variance());
+				String s4 = Double.toString(Math.sqrt(stats[bar].variance()));
+				String s5 = Integer.toString(stats[bar].n());
+				String s6 = Integer.toString(lastNonZeroTime);
+				fileLines.add(s1 + sep + s2 + sep + s3 + sep + s4 + sep + s5 + sep + s6);
+			}
 			try {
-				writer = new PrintWriter(statsFile);
-				writer.write("Property\tAverage\tVar\tStdD\tN\tTime\n");
-				String sep = "\t";
-				for (int bar = 0; bar < stats.length; bar++) {
-					Property p = treatmentList.get(bar).get(0);
-					String s1 = p.getKey() + "(" + p.getValue() + ")";
-					String s2 = Double.toString(stats[bar].average());
-					String s3 = Double.toString(stats[bar].variance());
-					String s4 = Double.toString(Math.sqrt(stats[bar].variance()));
-					String s5 = Integer.toString(stats[bar].n());
-					String s6 = Integer.toString(lastNonZeroTime);
-					writer.write(s1 + sep + s2 + sep + s3 + sep + s4 + sep + s5 + sep + s6 + "\n");
-				}
-				writer.close();
-
-			} catch (FileNotFoundException e) {
-
+				Files.write(statsFile.toPath(), fileLines, StandardCharsets.UTF_8);
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -276,52 +274,53 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			}
 			int factors = treatmentList.get(0).size();
 			String h = "";
-			for (int i = 0;i<factors;i++)
-				h+="F"+i+"\t";
-			h+="RV\n";
-			String anovaInputName = widgetId + "AnovaInput[" + RunTimeId.runTimeId() + "].csv";
+			for (int i = 0; i < factors; i++)
+				h += "F" + i + "\t";
+			//TODO only one response variable allowed at the moment
+			h += "RV";
+			String anovaInputName = widgetId + "AnovaInput_" + RunTimeId.runTimeId() + ".csv";
 			File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, "output", anovaInputName);
-			anovaInputFile.getParentFile().mkdirs();
-			try {
-				writer = new PrintWriter(anovaInputFile);
-				writer.write(h);
-				for (int i = 0;i<treatmentList.size();i++) {
-					List<Property> ps = treatmentList.get(i);
-					Double v = sample.get(i);
-					String line = "";
-					for (Property p :ps) {
-						String s = p.getValue().toString();
-						line+=p.getKey()+s+"\t";
-					}
-					line += v.toString()+"\n";
-					writer.write(line);
+			fileLines.clear();
+
+			fileLines.add(h);
+			for (int i = 0; i<sample.size();i++) {
+				List<Property> ps = treatmentList.get(i % treatmentList.size());
+				Double v = sample.get(i);
+				String line = "";
+				for (Property p : ps) {
+					String s = p.getValue().toString();
+					line += p.getKey() + s + "\t";
 				}
-				writer.close();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				line += v.toString();
+				fileLines.add(line);
 			}
-			String lines = "setwd(\""+anovaInputFile.getParent()+"\")\n";
-			lines +="data = read.table(\""+anovaInputFile.getName()+"\",sep=\"\t\",header = TRUE,dec=\".\")\n";
-			for (int i = 0;i<factors;i++) 
-				lines+="F"+i+"= data$F"+i+"\n";
-			lines += "RV = data$RV\n";
+			try {
+				Files.write(anovaInputFile.toPath(), fileLines, StandardCharsets.UTF_8);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			fileLines.clear();
+			fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
+			fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
+			for (int i = 0; i < factors; i++)
+				fileLines.add("F" + i + " = data$F" + i);
+			fileLines.add("RV = data$RV");
 			String args = "RV~";
-			for (int f= 0;f<factors;f++)
-				args+="*F"+f;
+			for (int f = 0; f < factors; f++)
+				args += "*F" + f;
 			args = args.replaceFirst("\\*", "");
-			lines += "mdl = lm("+args+")\n";
-			lines += "ava = anova (mdl)\n";
-			lines += "write.table(ava,\"anovaResults.csv\", sep = \"\t\")\n";
+			fileLines.add("mdl = lm(" + args + ")");
+			fileLines.add("ava = anova (mdl)");
+			fileLines.add("write.table(ava,\"anovaResults.csv\", sep = \"\t\")");
 			String rsciptName = "anova.R";
 			File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, "output", rsciptName);
-			rscriptFile.getParentFile().mkdirs();
 			try {
-				writer = new PrintWriter(rscriptFile);
-				writer.write(lines);
-				writer.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				Files.write(rscriptFile.toPath(), fileLines, StandardCharsets.UTF_8);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 			// exec R with rscriptFile
 			List<String> commands = new ArrayList<>();
@@ -331,15 +330,60 @@ public class HLTimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			b.directory(new File(rscriptFile.getParent()));
 			b.inheritIO();
 			try {
-				b.start();
+				try {
+					b.start().waitFor();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			// read anovaResults.csv
-			// whatever
 
+			try {
+				File results = Project.makeFile(ProjectPaths.RUNTIME, "output", "anovaResults.csv");
+				fileLines = Files.readAllLines(results.toPath());
+				String line = "Terms\t" + fileLines.get(0);
+				fileLines.set(0, line);
+				// Terms "Df" "Sum Sq" "Mean Sq" "F value" "Pr(>F)"
+				List<String> terms = new ArrayList<>();
+				List<Integer> df = new ArrayList<>();
+				List<Double> ssq = new ArrayList<>();
+				double totalSsq = 0;
+				for (int l = 1; l < fileLines.size() - 1; l++) {
+					String[] parts = fileLines.get(l).split("\t");
+					terms.add(parts[0]);
+					df.add(Integer.parseInt(parts[1]));
+					double d = Double.parseDouble(parts[2]);
+					totalSsq += d;
+					ssq.add(d);
+				}
+				double residuals = Double.parseDouble(fileLines.get(fileLines.size() - 1).split("\t")[2]);
+				totalSsq += residuals;
+				// make relative
+				List<Double> relSsq = new ArrayList<>();
+				Double totalExplained = 0.0;
+				for (Double d : ssq) {
+					double e = d / totalSsq;
+					relSsq.add(e);
+					totalExplained += e;
+				}
+				fileLines.clear();
+				String sep = "\t";
+				fileLines.add("Terms\tdf\tSum sq\tRel sum sq");
+				for (int i = 0; i < relSsq.size(); i++) {
+					StringBuilder sb = new StringBuilder().append(terms.get(i)).append(sep).append(df.get(i))
+							.append(sep).append(ssq.get(i)).append(sep).append(sep).append(relSsq.get(i));
+					fileLines.add(sb.toString());
+				}
+				fileLines.add("Explained\t" + totalExplained.toString());
+				File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, "output", "RelativeSumSq.csv");
+				Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace(); 
+			}
 		}
 		}
 
