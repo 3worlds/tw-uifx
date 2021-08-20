@@ -41,6 +41,7 @@ import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -53,6 +54,7 @@ import javafx.stage.Window;
 public class StringTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private StringTableItem dtItem;
+
 	public StringTableEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
@@ -82,27 +84,30 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		dlg.getDialogPane().setContent(pane);
 		dlg.setResizable(true);
 		String s = "";
-		
+
 		for (int i = 0; i < currentValue.size(); i++) {
 			s += currentValue.getWithFlatIndex(i);
 			if (i < currentValue.size() - 1)
 				s += "\n";
 		}
 		textArea.setText(s);
+		Platform.runLater(() -> {
+			textArea.requestFocus();
+		});
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
 			s = textArea.getText();
 			List<String> entries = new ArrayList<>();
 			String[] parts = s.split("\\n");
 			for (String p : parts) {
-				//p = p.trim();
+				// p = p.trim();
 				if (p.length() > 0)
 					entries.add(p);
 			}
 			if (entries.isEmpty())
 				entries.add("");
 			StringTable newValue = new StringTable(new Dimensioner(entries.size()));
-			//NB 1 dim editor only
+			// NB 1 dim editor only
 			for (int i = 0; i < entries.size(); i++)
 				newValue.setWithFlatIndex(entries.get(i), i);
 			return newValue;
