@@ -260,175 +260,177 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		}
 		if (lastNonZeroTime == Integer.MAX_VALUE)
 			lastNonZeroTime = max - 1;
-		switch (edt) {
-		case sensitivityAnalysis: {
-			int nBars = treatmentList.size();
-			// how many indep vars? do we care here?
-			Statistics[] stats = new Statistics[nBars];
-			for (int bar = 0; bar < stats.length; bar++)
-				stats[bar] = new Statistics();
+		if (edt != null)
+			switch (edt) {
+			case sensitivityAnalysis: {
+				int nBars = treatmentList.size();
+				// how many indep vars? do we care here?
+				Statistics[] stats = new Statistics[nBars];
+				for (int bar = 0; bar < stats.length; bar++)
+					stats[bar] = new Statistics();
 
-			for (int c = 0; c < cols.size(); c++) {
-				int bar = c % nBars;
-				List<Double> col = cols.get(c);
-				Double iv = col.get(lastNonZeroTime);
-				stats[bar].add(iv);
-			}
-			String statsName = widgetId + "SA_" + RunTimeId.runTimeId() + ".csv";
-			File statsFile = Project.makeFile(ProjectPaths.RUNTIME, "output", statsName);
-			fileLines.clear();
-			fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
-			String sep = "\t";
-			for (int bar = 0; bar < stats.length; bar++) {
-				Property p = treatmentList.get(bar).get(0);
-				String s1 = p.getKey() + "(" + p.getValue() + ")";
-				String s2 = Double.toString(stats[bar].average());
-				String s3 = Double.toString(stats[bar].variance());
-				String s4 = Double.toString(Math.sqrt(stats[bar].variance()));
-				String s5 = Integer.toString(stats[bar].n());
-				String s6 = Integer.toString(lastNonZeroTime);
-				fileLines.add(s1 + sep + s2 + sep + s3 + sep + s4 + sep + s5 + sep + s6);
-			}
-			try {
-				Files.write(statsFile.toPath(), fileLines, StandardCharsets.UTF_8);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			break;
-		}
-		default: {
-			// TODO make abbrev of factor levels
-			List<Double> sample = new ArrayList<>();
-			for (int c = 0; c < cols.size(); c++) {
-				List<Double> col = cols.get(c);
-				sample.add(col.get(lastNonZeroTime));
-			}
-
-			int factors = treatmentList.get(0).size();
-			String h = "";
-			for (int i = 0; i < factors; i++)
-				h += "F" + i + "\t";
-			// TODO only one response variable allowed at the moment
-			h += "RV";
-			String anovaInputName = widgetId + "AnovaInput_" + RunTimeId.runTimeId() + ".csv";
-			File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, "output", anovaInputName);
-			fileLines.clear();
-
-			fileLines.add(h);
-			for (int i = 0; i < sample.size(); i++) {
-				List<Property> ps = treatmentList.get(i % treatmentList.size());
-				Double v = sample.get(i);
-				String line = "";
-				for (Property p : ps) {
-					String s = p.getValue().toString();
-					line += p.getKey() + s + "\t";
+				for (int c = 0; c < cols.size(); c++) {
+					int bar = c % nBars;
+					List<Double> col = cols.get(c);
+					Double iv = col.get(lastNonZeroTime);
+					stats[bar].add(iv);
 				}
-				line += v.toString();
-				fileLines.add(line);
-			}
-			try {
-				Files.write(anovaInputFile.toPath(), fileLines, StandardCharsets.UTF_8);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-			fileLines.clear();
-			fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
-			fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
-			for (int i = 0; i < factors; i++)
-				fileLines.add("F" + i + " = data$F" + i);
-			fileLines.add("RV = data$RV");
-			String args = "RV~";
-			for (int f = 0; f < factors; f++)
-				args += "*F" + f;
-			args = args.replaceFirst("\\*", "");
-			fileLines.add("mdl = lm(" + args + ")");
-			fileLines.add("ava = anova (mdl)");
-			fileLines.add("write.table(ava,\"anovaResults.csv\", sep = \"\t\")");
-			String rsciptName = "anova.R";
-			File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, "output", rsciptName);
-			try {
-				Files.write(rscriptFile.toPath(), fileLines, StandardCharsets.UTF_8);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			// exec R with rscriptFile
-			List<String> commands = new ArrayList<>();
-			commands.add("Rscript");
-			commands.add(rscriptFile.getAbsolutePath());
-			ProcessBuilder b = new ProcessBuilder(commands);
-			b.directory(new File(rscriptFile.getParent()));
-			b.inheritIO();
-			try {
+				String statsName = widgetId + "SA_" + RunTimeId.runTimeId() + ".csv";
+				File statsFile = Project.makeFile(ProjectPaths.RUNTIME, "output", statsName);
+				fileLines.clear();
+				fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
+				String sep = "\t";
+				for (int bar = 0; bar < stats.length; bar++) {
+					Property p = treatmentList.get(bar).get(0);
+					String s1 = p.getKey() + "(" + p.getValue() + ")";
+					String s2 = Double.toString(stats[bar].average());
+					String s3 = Double.toString(stats[bar].variance());
+					String s4 = Double.toString(Math.sqrt(stats[bar].variance()));
+					String s5 = Integer.toString(stats[bar].n());
+					String s6 = Integer.toString(lastNonZeroTime);
+					fileLines.add(s1 + sep + s2 + sep + s3 + sep + s4 + sep + s5 + sep + s6);
+				}
 				try {
-					b.start().waitFor();
-				} catch (InterruptedException e) {
+					Files.write(statsFile.toPath(), fileLines, StandardCharsets.UTF_8);
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				break;
 			}
+			default: {
+				// TODO make abbrev of factor levels
+				List<Double> sample = new ArrayList<>();
+				for (int c = 0; c < cols.size(); c++) {
+					List<Double> col = cols.get(c);
+					sample.add(col.get(lastNonZeroTime));
+				}
 
-			try {
-				File results = Project.makeFile(ProjectPaths.RUNTIME, "output", "anovaResults.csv");
-				fileLines = Files.readAllLines(results.toPath());
-				String line = "Terms\t" + fileLines.get(0);
-				fileLines.set(0, line);
-				// Terms "Df" "Sum Sq" "Mean Sq" "F value" "Pr(>F)"
-				List<String> terms = new ArrayList<>();
-				List<Integer> df = new ArrayList<>();
-				List<Double> ssq = new ArrayList<>();
-				double totalSsq = 0;
-				for (int l = 1; l < fileLines.size() - 1; l++) {
-					String[] parts = fileLines.get(l).split("\t");
-					terms.add(parts[0]);
-					df.add(Integer.parseInt(parts[1]));
-					double d = Double.parseDouble(parts[2]);
-					totalSsq += d;
-					ssq.add(d);
-				}
-				double residuals = Double.parseDouble(fileLines.get(fileLines.size() - 1).split("\t")[2]);
-				int dfresiduals = Integer.parseInt(fileLines.get(fileLines.size() - 1).split("\t")[1]);
-				totalSsq += residuals;
-				// make relative
-				List<Double> relSsq = new ArrayList<>();
-				Double totalExplained = 0.0;
-				for (Double d : ssq) {
-					double e = d / totalSsq;
-					relSsq.add(e);
-					totalExplained += e;
-				}
+				int factors = treatmentList.get(0).size();
+				String h = "";
+				for (int i = 0; i < factors; i++)
+					h += "F" + i + "\t";
+				// TODO only one response variable allowed at the moment
+				h += "RV";
+				String anovaInputName = widgetId + "AnovaInput_" + RunTimeId.runTimeId() + ".csv";
+				File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, "output", anovaInputName);
 				fileLines.clear();
-				String sep = "\t";
-				fileLines.add("Terms\tdf\tSum sq\tRel sum sq");
-				for (int i = 0; i < relSsq.size(); i++) {
-					StringBuilder sb = new StringBuilder().append(terms.get(i)).append(sep).append(df.get(i))
-							.append(sep).append(ssq.get(i)).append(sep).append(relSsq.get(i));
-					fileLines.add(sb.toString());
-				}
-				fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
-				fileLines.add("");
-				fileLines.add("Legend");
 
-				for (int i = 0; i < factors; i++) {
-					String key = treatmentList.get(0).get(i).getKey();
-					String sym = "F" + i;
-					fileLines.add(new StringBuilder().append(sym).append(sep).append(key).toString());
+				fileLines.add(h);
+				for (int i = 0; i < sample.size(); i++) {
+					List<Property> ps = treatmentList.get(i % treatmentList.size());
+					Double v = sample.get(i);
+					String line = "";
+					for (Property p : ps) {
+						String s = p.getValue().toString();
+						line += p.getKey() + s + "\t";
+					}
+					line += v.toString();
+					fileLines.add(line);
+				}
+				try {
+					Files.write(anovaInputFile.toPath(), fileLines, StandardCharsets.UTF_8);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 
-				File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, "output", "RelativeSumSq.csv");
-				Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				fileLines.clear();
+				fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
+				fileLines.add(
+						"data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
+				for (int i = 0; i < factors; i++)
+					fileLines.add("F" + i + " = data$F" + i);
+				fileLines.add("RV = data$RV");
+				String args = "RV~";
+				for (int f = 0; f < factors; f++)
+					args += "*F" + f;
+				args = args.replaceFirst("\\*", "");
+				fileLines.add("mdl = lm(" + args + ")");
+				fileLines.add("ava = anova (mdl)");
+				fileLines.add("write.table(ava,\"anovaResults.csv\", sep = \"\t\")");
+				String rsciptName = "anova.R";
+				File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, "output", rsciptName);
+				try {
+					Files.write(rscriptFile.toPath(), fileLines, StandardCharsets.UTF_8);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				// exec R with rscriptFile
+				List<String> commands = new ArrayList<>();
+				commands.add("Rscript");
+				commands.add(rscriptFile.getAbsolutePath());
+				ProcessBuilder b = new ProcessBuilder(commands);
+				b.directory(new File(rscriptFile.getParent()));
+				b.inheritIO();
+				try {
+					try {
+						b.start().waitFor();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				try {
+					File results = Project.makeFile(ProjectPaths.RUNTIME, "output", "anovaResults.csv");
+					fileLines = Files.readAllLines(results.toPath());
+					String line = "Terms\t" + fileLines.get(0);
+					fileLines.set(0, line);
+					// Terms "Df" "Sum Sq" "Mean Sq" "F value" "Pr(>F)"
+					List<String> terms = new ArrayList<>();
+					List<Integer> df = new ArrayList<>();
+					List<Double> ssq = new ArrayList<>();
+					double totalSsq = 0;
+					for (int l = 1; l < fileLines.size() - 1; l++) {
+						String[] parts = fileLines.get(l).split("\t");
+						terms.add(parts[0]);
+						df.add(Integer.parseInt(parts[1]));
+						double d = Double.parseDouble(parts[2]);
+						totalSsq += d;
+						ssq.add(d);
+					}
+					double residuals = Double.parseDouble(fileLines.get(fileLines.size() - 1).split("\t")[2]);
+					int dfresiduals = Integer.parseInt(fileLines.get(fileLines.size() - 1).split("\t")[1]);
+					totalSsq += residuals;
+					// make relative
+					List<Double> relSsq = new ArrayList<>();
+					Double totalExplained = 0.0;
+					for (Double d : ssq) {
+						double e = d / totalSsq;
+						relSsq.add(e);
+						totalExplained += e;
+					}
+					fileLines.clear();
+					String sep = "\t";
+					fileLines.add("Terms\tdf\tSum sq\tRel sum sq");
+					for (int i = 0; i < relSsq.size(); i++) {
+						StringBuilder sb = new StringBuilder().append(terms.get(i)).append(sep).append(df.get(i))
+								.append(sep).append(ssq.get(i)).append(sep).append(relSsq.get(i));
+						fileLines.add(sb.toString());
+					}
+					fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
+					fileLines.add("");
+					fileLines.add("Legend");
+
+					for (int i = 0; i < factors; i++) {
+						String key = treatmentList.get(0).get(i).getKey();
+						String sym = "F" + i;
+						fileLines.add(new StringBuilder().append(sym).append(sep).append(key).toString());
+					}
+
+					File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, "output", "RelativeSumSq.csv");
+					Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		}
-		}
+			}
 
 	}
 
