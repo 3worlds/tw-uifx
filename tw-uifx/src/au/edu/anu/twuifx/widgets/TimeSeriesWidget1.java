@@ -83,6 +83,7 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
@@ -264,6 +265,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		xAxis.setTimeAxis(false);
 
 		chart = new XYChart(xAxis, yAxes.get(0));
+		chart.setPadding(new Insets(1,10,2,1));
 		chart.setLegendSide(legendSide);
 		chart.setLegendVisible(legendVisible);
 

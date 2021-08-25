@@ -102,7 +102,7 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		DefaultNumericAxis xAxis = new DefaultNumericAxis("Time: ", timeFormatter.getSmallest().abbreviation());
 		DefaultNumericAxis yAxis = new DefaultNumericAxis("Simulator");
 		chart = new XYChart(xAxis, yAxis);
-		chart.setPadding(new Insets(0,10,0,0));
+		chart.setPadding(new Insets(1,10,2,1));
 		
 
 		chart.setLegendVisible(false);
@@ -113,7 +113,7 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		yAxis.setAutoGrowRanging(false);
 		yAxis.setForceZeroInRange(true);				
 		yAxis.setMax(nSenders+1);
-		yAxis.setMaxMajorTickLabelCount(2);// no idea why this should be the case!
+		//yAxis.setMaxMajorTickLabelCount(Math.max(1,nSenders/10));
 
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -124,7 +124,7 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 				long time = Math.round(getMeanTime());
 				if (time != lastTime) {
 					lastTime = time;
-					String text = formatOutput(nSenders, time);
+					String text = formatOutput(currentSenderTimes.size(), time);
 					Platform.runLater(() -> {
 						lblTime.setText(text);
 					});

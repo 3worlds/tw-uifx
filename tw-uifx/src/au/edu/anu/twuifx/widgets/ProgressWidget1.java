@@ -194,7 +194,7 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 	}
 
 	private String formatOutput(int n, long time) {
-		return "[#" + n + "] " + timeFormatter.getTimeText(time);
+		return "[#1-" + n + "] " + timeFormatter.getTimeText(time);
 	}
 
 }
