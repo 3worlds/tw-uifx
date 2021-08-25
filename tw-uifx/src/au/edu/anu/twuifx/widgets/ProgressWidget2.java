@@ -92,7 +92,6 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 		nSenders++;
 		if (policy.canProcessMetadataMessage(meta)) {
 			metadata = meta;
-			timeFormatter.onMetaDataMessage(metadata);
 		}
 	}
 
@@ -100,6 +99,7 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 	public Object getUserInterfaceContainer() {
 
 		getUserPreferences();
+		timeFormatter.onMetaDataMessage(metadata);
 
 		BorderPane content = new BorderPane();
 		content.setTop(new Label("Simulators: " + nSenders + "; Cores: " + Runtime.getRuntime().availableProcessors()
