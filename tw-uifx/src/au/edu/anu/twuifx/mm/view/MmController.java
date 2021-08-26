@@ -687,8 +687,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 
 		if (changed) {
-			GraphState.setChanged();
 			model.addState(miImportSnippets.getText());
+			GraphState.setChanged();
+			ConfigGraph.validateGraph();
 		}
 		String title = "IDE Import";
 		String header;
