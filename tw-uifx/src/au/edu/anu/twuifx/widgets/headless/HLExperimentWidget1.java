@@ -44,6 +44,7 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
+import fr.cnrs.iees.identity.impl.LocalScope;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -211,6 +212,17 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	}
 
 	private void writeData() {
+		// use a local scope to ensure unique file names and so prevent file overwrites
+		LocalScope scope = new LocalScope("Files");
+		File dir = Project.makeFile(ProjectPaths.RUNTIME, "output");
+		dir.mkdirs();
+		for (String fileName : dir.list()) {
+			 int dotIndex = fileName.lastIndexOf('.');
+			 fileName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
+			 scope.newId(true,fileName);
+		}
+		String widgetDirName =scope.newId(false,widgetId+"0").id();
+		
 		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
 		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
@@ -232,8 +244,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 		int lastNonZeroTime = Integer.MAX_VALUE;
 		int longestSeries = 0;
-		String fileName = widgetId + "_" + RunTimeId.runTimeId() + ".csv";
-		File outFile = Project.makeFile(ProjectPaths.RUNTIME, "output", fileName);
+		File outFile = Project.makeFile(ProjectPaths.RUNTIME, "output",widgetDirName, "Series.csv");
 		outFile.getParentFile().mkdirs();
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(header);
@@ -260,6 +271,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		}
 		if (lastNonZeroTime == Integer.MAX_VALUE)
 			lastNonZeroTime = max - 1;
+		
 		if (edt != null)
 			switch (edt) {
 			case sensitivityAnalysis: {
@@ -275,8 +287,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 					Double iv = col.get(lastNonZeroTime);
 					stats[bar].add(iv);
 				}
-				String statsName = widgetId + "SA_" + RunTimeId.runTimeId() + ".csv";
-				File statsFile = Project.makeFile(ProjectPaths.RUNTIME, "output", statsName);
+				File statsFile = Project.makeFile(ProjectPaths.RUNTIME, "output",widgetDirName, "SensAnal.csv");
 				fileLines.clear();
 				fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
 				String sep = "\t";
@@ -312,8 +323,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 					h += "F" + i + "\t";
 				// TODO only one response variable allowed at the moment
 				h += "RV";
-				String anovaInputName = widgetId + "AnovaInput_" + RunTimeId.runTimeId() + ".csv";
-				File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, "output", anovaInputName);
+				
+				File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, "output",widgetDirName, "AnovaInput.csv");
 				fileLines.clear();
 
 				fileLines.add(h);
@@ -334,6 +345,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				String anovaResultsName = "anovaResults.csv";
 
 				fileLines.clear();
 				fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
@@ -348,9 +360,9 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				args = args.replaceFirst("\\*", "");
 				fileLines.add("mdl = lm(" + args + ")");
 				fileLines.add("ava = anova (mdl)");
-				fileLines.add("write.table(ava,\"anovaResults.csv\", sep = \"\t\")");
-				String rsciptName = "anova.R";
-				File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, "output", rsciptName);
+				fileLines.add("write.table(ava,\""+anovaResultsName+"\", sep = \"\t\")");
+			
+				File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, "output",widgetDirName, "anova.R");
 				try {
 					Files.write(rscriptFile.toPath(), fileLines, StandardCharsets.UTF_8);
 				} catch (IOException e1) {
@@ -377,7 +389,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				}
 
 				try {
-					File results = Project.makeFile(ProjectPaths.RUNTIME, "output", "anovaResults.csv");
+					File results = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName,anovaResultsName);
 					fileLines = Files.readAllLines(results.toPath());
 					String line = "Terms\t" + fileLines.get(0);
 					fileLines.set(0, line);
@@ -423,7 +435,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 						fileLines.add(new StringBuilder().append(sym).append(sep).append(key).toString());
 					}
 
-					File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, "output", "RelativeSumSq.csv");
+					File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName,"RelSumSq.csv");
 					Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
