@@ -351,7 +351,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 					key = sender + ":" + dl.toLazyString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 				final double y = data.getDoubleValues()[tsMetadata.indexOf(dl)];
-				final double ey = 1;
+				final double ey = 0;
 //				System.out.println(key + "[" + x + ", " + y + "]");
 				if (ds != null)
 					ds.add(x, y, ey, ey);
@@ -365,7 +365,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 					key = sender + ":" + dl.toLazyString();
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 				final double y = data.getIntValues()[tsMetadata.indexOf(dl)];
-				final double ey = 1;
+				final double ey = 0;
 				if (ds != null)
 					ds.add(x, y, ey, ey);
 			}
