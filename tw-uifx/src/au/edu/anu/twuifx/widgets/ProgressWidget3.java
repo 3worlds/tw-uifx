@@ -4,6 +4,8 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.wait
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_SHORTTU;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_NTU;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,7 +53,13 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 	private final Map<Integer, DoubleDataSet> senderDataSetMap;
 	private final long refreshRate;// ms
 	private Label lblTime;
+	private Label lblStart;
+	private Label lblEnd;
 	private ErrorDataSetRenderer renderer;
+	private Timer timer;
+	private long startTime;
+
+	private final SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss");
 
 	public ProgressWidget3(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
@@ -60,7 +68,7 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		nSenders = 0;
 		currentSenderTimes = new ConcurrentHashMap<>();
 		senderDataSetMap = new ConcurrentHashMap<>();
-		refreshRate = 250;
+		refreshRate = 1000;
 	}
 
 	@Override
@@ -79,7 +87,9 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 
 	@Override
 	public Object getUserInterfaceContainer() {
+
 		getUserPreferences();
+
 		timeFormatter.onMetaDataMessage(metadata);
 		lblTime = new Label("");
 		VBox vBox = new VBox();
@@ -87,6 +97,8 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		HBox line2 = new HBox(5);
 		HBox line3 = new HBox(5);
 		HBox line4 = new HBox(5);
+		HBox line5 = new HBox(5);
+		HBox line6 = new HBox(5);
 
 		line1.getChildren().addAll(new Label("Sims:"), new Label(Integer.toString(nSenders)));
 		line2.getChildren().addAll(new Label("Cores:"),
@@ -95,15 +107,20 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 				new Label((String) metadata.properties().getPropertyValue("StoppingDesc")));
 		line4.getChildren().addAll(new Label("Time:"), lblTime);
 
+		lblStart = new Label("");
+		line5.getChildren().addAll(new Label("Start:"), lblStart);
+
+		lblEnd = new Label("");
+		line6.getChildren().addAll(new Label("End:"), lblEnd);
+
 		BorderPane content = new BorderPane();
-		vBox.getChildren().addAll(line1, line2, line3, line4);
+		vBox.getChildren().addAll(line1, line2, line3, line4, line5, line6);
 		content.setTop(vBox);
 
 		DefaultNumericAxis xAxis = new DefaultNumericAxis("Time: ", timeFormatter.getSmallest().abbreviation());
 		DefaultNumericAxis yAxis = new DefaultNumericAxis("Simulator");
 		chart = new XYChart(xAxis, yAxis);
-		chart.setPadding(new Insets(1,10,2,1));
-		
+		chart.setPadding(new Insets(1, 10, 2, 1));
 
 		chart.setLegendVisible(false);
 		renderer = new ErrorDataSetRenderer();
@@ -111,26 +128,9 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		chart.getRenderers().add(renderer);
 
 		yAxis.setAutoGrowRanging(false);
-		yAxis.setForceZeroInRange(true);				
-		yAxis.setMax(nSenders+1);
-		//yAxis.setMaxMajorTickLabelCount(Math.max(1,nSenders/10));
-
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
-			private long lastTime = Long.MAX_VALUE;
-
-			@Override
-			public void run() {
-				long time = Math.round(getMeanTime());
-				if (time != lastTime) {
-					lastTime = time;
-					String text = formatOutput(currentSenderTimes.size(), time);
-					Platform.runLater(() -> {
-						lblTime.setText(text);
-					});
-				}
-			}
-		}, 0, refreshRate);
+		yAxis.setForceZeroInRange(true);
+		yAxis.setMax(nSenders + 1);
+		// yAxis.setMaxMajorTickLabelCount(Math.max(1,nSenders/10));
 
 		content.setCenter(chart);
 		return content;
@@ -141,6 +141,38 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial)) {
 			} else {
+				if (currentSenderTimes.isEmpty())
+					startTime = System.currentTimeMillis();
+
+				// Lazy init to avoid a time out while many simulators are loading
+				if (timer == null) {
+					timer = new Timer();
+					timer.scheduleAtFixedRate(new TimerTask() {
+						private long lastTime = Long.MAX_VALUE;
+
+						@Override
+						public void run() {
+							long time = Math.round(getMeanTime());
+							if (time != lastTime) {
+								lastTime = time;
+								String text = formatOutput(currentSenderTimes.size(), time);
+								Platform.runLater(() -> {
+									lblTime.setText(text);
+									lblStart.setText(sdf.format(new Date(startTime)));
+									if (!currentSenderTimes.isEmpty()) {
+										long currentTime = System.currentTimeMillis();
+										double meanTimePerSim = (currentTime - startTime) / currentSenderTimes.size();
+										double simsRemaining = nSenders - currentSenderTimes.size();
+										long timeRemaining = (long) (simsRemaining * meanTimePerSim);
+										long endTime = currentTime + timeRemaining;
+										lblEnd.setText(sdf.format(new Date(endTime)));
+									}
+								});
+							}
+						}
+					}, 0, refreshRate);
+				}
+
 				processDataMessage(data);
 			}
 		}
@@ -150,17 +182,17 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		int sender = data.sender();
 		long time = data.time();
 		currentSenderTimes.put(sender, time);
-		
+
 		Platform.runLater(() -> {
 			DoubleDataSet ds = senderDataSetMap.get(sender);
-			if (ds==null) {
+			if (ds == null) {
 				ds = new DoubleDataSet(Integer.toString(sender));
 				senderDataSetMap.put(sender, ds);
 				renderer.getDatasets().add(ds);
-			}		
-			ds.add(time, sender+1);
+			}
+			ds.add(time, sender + 1);
 		});
-		
+
 	}
 
 	@Override

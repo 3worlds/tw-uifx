@@ -79,6 +79,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
@@ -101,7 +102,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
  * Date 28 Jan. 2019
  */
 public final class GraphVisualiserfx implements IGraphVisualiser {
-	public static final Double animateSlow = 1000.0;
+	public static final Double animateSlow = 1500.0;
 	public static final Double animateFast = 1.0;
 
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
@@ -261,8 +262,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		double y = n.getY() * pane.getHeight();
 
 		Circle c = new Circle(x, y, nodeRadius.get());
+//		c.setCache(true);
+//		c.setCacheHint(CacheHint.SPEED);
+
 		c.radiusProperty().bind(nodeRadius);
 		Text text = new Text(n.getDisplayText(nodeSelect.get()));
+		//text.setCacheHint(CacheHint.SPEED);
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
 
@@ -383,6 +388,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			Circle parentCircle = (Circle) parent.getSymbol();
 			Circle childCircle = (Circle) child.getSymbol();
 			Line line = new Line();
+//			line.setCacheHint(CacheHint.SPEED);
 			line.strokeWidthProperty().bind(lineWidth);
 
 			line.setStroke(treeEdgeColor);
@@ -420,8 +426,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
 		Line line = new Line();
+//		line.setCacheHint(CacheHint.SPEED);
 		line.strokeWidthProperty().bind(lineWidth);
 		Text text = new Text(edge.getDisplayText(edgeSelect.get()));
+		//text.setCacheHint(CacheHint.SPEED);
 		text.fontProperty().bind(font);
 		// TODO use property here
 		line.setStroke(graphEdgeColor);
@@ -553,6 +561,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		collapse(childRoot, xp, yp, timelines, duration);
 
 		ParallelTransition pt = new ParallelTransition();
+	
 		pt.getChildren().addAll(timelines);
 		pt.setOnFinished(e -> {
 			// Hide every edge between this tree and other non-collapsed nodes
@@ -874,6 +883,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				KeyFrame f = getKeyFrame(c, node.getX() * pane.getWidth(), node.getY() * pane.getHeight(), duration);
 				timeline.getKeyFrames().add(f);
 			}
+		
 		timeline.play();
 
 		GraphState.setChanged();

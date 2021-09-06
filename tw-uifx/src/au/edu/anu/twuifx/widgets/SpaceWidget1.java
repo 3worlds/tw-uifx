@@ -80,6 +80,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -1486,6 +1487,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			s = new Line(0, 6, 12, 6);
 			s.setStroke(colour);
 			s.setFill(colour);
+			//s.setCacheHint(CacheHint.SPEED);
 		}
 		stackPane.getChildren().addAll(r, s);
 		StackPane.setAlignment(s, Pos.CENTER);

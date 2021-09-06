@@ -87,6 +87,7 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 	private final List<TimeData> initialData;
 	private final Map<Integer, Long> currentSenderTimes;
 	private long refreshRate;// ms
+	private Timer timer;
 
 	public ProgressWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
@@ -116,6 +117,27 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 
 	@Override
 	public void onDataMessage(TimeData data) {
+		// Lazy init to avoid a time out while many simulators are loading
+		if (timer ==null) {
+			timer = new Timer();
+			timer.scheduleAtFixedRate(new TimerTask() {
+				private long lastTime = Long.MAX_VALUE;
+
+				@Override
+				public void run() {
+					long time = Math.round(getMeanTime());
+					if (time != lastTime) {
+						lastTime = time;
+						String text = formatOutput(currentSenderTimes.size(), time);
+						Platform.runLater(() -> {
+							lblTime.setText(text);
+						});
+					}
+				}
+			}, 0, refreshRate);
+
+		}
+		
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial))
 				initialData.add(data);
@@ -143,30 +165,12 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 
 	@Override
 	public Object getUserInterfaceContainer() {
+		getUserPreferences();
+
 		HBox content = new HBox(5);
 		content.setAlignment(Pos.BASELINE_LEFT);
 		lblTime = new Label("");
 		content.getChildren().addAll(new Label("Simulator time (mean): "), lblTime, new Label(scText));
-
-		getUserPreferences();
-
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
-			private long lastTime = Long.MAX_VALUE;
-
-			@Override
-			public void run() {
-				long time = Math.round(getMeanTime());
-				if (time != lastTime) {
-					lastTime = time;
-					String text = formatOutput(currentSenderTimes.size(), time);
-					Platform.runLater(() -> {
-						lblTime.setText(text);
-					});
-				}
-			}
-		}, 0, refreshRate);
-
 		return content;
 	}
 

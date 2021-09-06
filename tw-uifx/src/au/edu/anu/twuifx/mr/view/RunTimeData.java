@@ -116,8 +116,8 @@ public class RunTimeData {
 		for (TreeGraphDataNode system : systems) {
 			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
 					selectOne(hasTheLabel(N_DYNAMICS.label())));
-			for (Simulator sim : simNode.getSimulators())
-				result.add(sim.community());
+//			for (Simulator sim : simNode.getSimulators())
+//				result.add(sim.community());
 		}
 		return result;
 	}
