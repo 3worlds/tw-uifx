@@ -265,7 +265,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		xAxis.setTimeAxis(false);
 
 		chart = new XYChart(xAxis, yAxes.get(0));
-		chart.setPadding(new Insets(1,10,2,1));
+		chart.setPadding(new Insets(1,10,5,5));
 		chart.setLegendSide(legendSide);
 		chart.setLegendVisible(legendVisible);
 

@@ -3,13 +3,13 @@
  *                                                                        *
  *  Copyright 2018: Jacques Gignoux & Ian D. Davies                       *
  *       jacques.gignoux@upmc.fr                                          *
- *       ian.davies@anu.edu.au                                            * 
+ *       ian.davies@anu.edu.au                                            *
  *                                                                        *
  *  TW-UIFX contains the Javafx interface for ModelMaker and ModelRunner. *
  *  This is to separate concerns of UI implementation and the code for    *
  *  these java programs.                                                  *
  *                                                                        *
- **************************************************************************                                       
+ **************************************************************************
  *  This file is part of TW-UIFX (ThreeWorlds User-Interface fx).         *
  *                                                                        *
  *  TW-UIFX is free software: you can redistribute it and/or modify       *
@@ -20,73 +20,89 @@
  *  TW-UIFX is distributed in the hope that it will be useful,            *
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *  GNU General Public License for more details.                          *                         
+ *  GNU General Public License for more details.                          *
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
  *  along with TW-UIFX.                                                   *
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
+
 package au.edu.anu.twuifx.widgets.headless;
 
-import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
-import au.edu.anu.twcore.ui.runtime.Kicker;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import au.edu.anu.twcore.data.runtime.Metadata;
+import au.edu.anu.twcore.data.runtime.TimeData;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
+import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
-import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
  * @author Ian Davies
  *
- * @date 2 Sep 2019
- * 
- *       This controller has no GUI. It sends a run event on start(), a quit
- *       event on Finished and writes the instance id and simulation time to
- *       stdout.
+ * @date 7 Sept 2021
  */
-public class HLSimpleControlWidget extends StateMachineController implements Widget, Kicker {
+public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
+	private int nSenders;
+	private final WidgetTimeFormatter timeFormatter;
+	private final WidgetTrackingPolicy<TimeData> policy;
+	private Metadata msgMetadata;
+	private int lastSender;
+	private final SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss");
 
-//	private static Logger log = Logging.getLogger(HLSimpleControlWidget.class);
-	private long startTime;
-	private boolean ended;
-
-	public HLSimpleControlWidget(StateMachineEngine<StateMachineController> observed) {
-		super(observed);
+	public HLProgressWidget1(StateMachineEngine<StatusWidget> statusSender) {
+		super(statusSender, DataMessageTypes.TIME);
+		timeFormatter = new WidgetTimeFormatter();
+		policy = new SimCloneWidgetTrackingPolicy();
+		nSenders = 0;
+		lastSender = -1;
 	}
 
 	@Override
-	public boolean start() {
-		ended = false;
-		sendEvent(initialise.event());
-		startTime = System.currentTimeMillis();
-//		log.info("Start at "+startTime);
-		sendEvent(run.event());
-		return true;
+	public void onMetaDataMessage(Metadata meta) {
+		nSenders++;
+		if (policy.canProcessMetadataMessage(meta)) {
+			msgMetadata = meta;
+			timeFormatter.onMetaDataMessage(msgMetadata);
+		}
 	}
 
 	@Override
-	public synchronized boolean ended() {
-		return ended;
+	public void onDataMessage(TimeData data) {
+		boolean show = false;
+		if (data.sender() > lastSender)
+			show = true;
+		lastSender = Math.max(lastSender, data.sender());
+		if (show) {
+			long now = System.currentTimeMillis();
+			String timeTxt = sdf.format(new Date(now));
+			System.out.println(timeTxt+"\t"+lastSender + "/" + nSenders);
+		}
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, finished)) {
-			sendEvent(quit.event());
-			long endTime = System.currentTimeMillis();
-			System.out.println("Experiment [done; Instance: " + RunTimeId.runTimeId() + "; Duration: "
-					+ (endTime - startTime) + " ms]");
-			ended = true;
+		if (isSimulatorState(state, waiting)) {
+			lastSender = -1;
 		}
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
+		timeFormatter.setProperties(id, properties);
+		policy.setProperties(id, properties);
+
 	}
 
 }
