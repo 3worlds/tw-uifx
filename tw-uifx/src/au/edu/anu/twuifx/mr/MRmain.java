@@ -43,8 +43,11 @@ import java.util.logging.Level;
 import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
+import au.edu.anu.twcore.InitialisableNode;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
+import au.edu.anu.twcore.experiment.Design;
+import au.edu.anu.twcore.experiment.Experiment;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
@@ -56,6 +59,7 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.io.FileImporter;
+import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import fr.ens.biologie.generic.Initialisable;
 import fr.ens.biologie.generic.utils.Logging;
@@ -151,7 +155,6 @@ public class MRmain {
 
 		}
 
-
 		File prjDir = new File(TwPaths.TW_ROOT + File.separator + args[1]);
 		if (!prjDir.exists()) {
 			System.err.println("Project not found: [" + prjDir + "]");
@@ -243,30 +246,48 @@ public class MRmain {
 			 * some other time, we could wrap this in a cmd line interactive shell that
 			 * allows typing cmds. run/stop / pause etc
 			 */
-			TreeGraphDataNode exp = (TreeGraphDataNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_EXPERIMENT.label())));
-			int nSim = 1;
-			if (exp.properties().hasProperty(P_EXP_NREPLICATES.key())) 
-				nSim = (Integer)exp.properties().getPropertyValue(P_EXP_NREPLICATES.key());
+			Experiment exp = (Experiment) get(configGraph.root().getChildren(),
+					selectOne(hasTheLabel(N_EXPERIMENT.label())));
 			
+			int nSim = 1;
+			if (exp.properties().hasProperty(P_EXP_NREPLICATES.key()))
+				nSim = (Integer) exp.properties().getPropertyValue(P_EXP_NREPLICATES.key());
+			Design dsgn = (Design) get(exp.getChildren(), selectOne(hasTheLabel(N_DESIGN.label())));
+			
+			ExperimentDesignType edt = null;
+			
+			if (dsgn.properties().hasProperty(P_DESIGN_TYPE.key())) {
+				edt = (ExperimentDesignType) dsgn.properties().getPropertyValue(P_DESIGN_TYPE.key());
+			}
 			
 			DateTimeFormatter fm = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS");
 			LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 			String date = currentDate.format(fm);
 
-			System.out.println("Running... [Project: "+Project.getDisplayName()+"; Date: "+date+"]");
-			System.out.println("Initialising... [Simulators: "+nSim+"]");
+			System.out.println("Running... [Project: " + Project.getDisplayName() + "; Date: " + date + "]");
+			int nTreatments = 1;
+			if (edt!=null)
+			 nTreatments = Experiment.buildTreatmentList(edt,exp).size();
+			System.out.println("Initialising... [Simulators: " + (nSim*nTreatments)+ "]");
+			for (TreeNode n : ctrlHl.getParent().getChildren()) {
+				InitialisableNode in = (InitialisableNode) n;
+				in.initialise();
+			}
+
 			Kicker ctrl = (Kicker) ctrlHl.getInstance();
 			System.out.println("Initialising [done]");
-		
-			System.out.println("Starting... ["+exp.toShortString()+"]");
+
+			System.out.println("Starting... [" + exp.toShortString() + "]");
 			ctrl.start();
 			// Loop the main thread until controller receives finished msg
-			while (!ctrl.ended());
-			
+			while (!ctrl.ended())
+				;
+
 			System.out.println("Running [done]");
-			// Generate doco - there is no other opportunity so it's done here without asking.
+			// Generate doco - there is no other opportunity so it's done here without
+			// asking.
 			File f = Project.makeFile(ProjectPaths.RUNTIME, configGraph.root().id() + ".odt");
-			System.out.println("Writing... ["+f.getName()+"-"+f.getParent()+"]");
+			System.out.println("Writing... [" + f.getName() + "-" + f.getParent() + "]");
 			DocoGenerator gen = new DocoGenerator(configGraph);
 			gen.generate();
 			System.out.println("Writing [done]");

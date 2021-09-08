@@ -30,7 +30,7 @@
 
 package au.edu.anu.twuifx.widgets.headless;
 
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -58,15 +58,14 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
 	private Metadata msgMetadata;
-	private int lastSender;
-	private final SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss");
+//	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy ");
 
 	public HLProgressWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimCloneWidgetTrackingPolicy();
 		nSenders = 0;
-		lastSender = -1;
 	}
 
 	@Override
@@ -81,20 +80,22 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 	@Override
 	public void onDataMessage(TimeData data) {
 		boolean show = false;
-		if (data.sender() > lastSender)
-			show = true;
-		lastSender = Math.max(lastSender, data.sender());
-		if (show) {
+		if (data.time() == 0)
+			System.out.println("[" + (data.sender()+1) + "/" + nSenders + "]\tready...");
+		else if (data.time() == 1) {
 			long now = System.currentTimeMillis();
 			String timeTxt = sdf.format(new Date(now));
-			System.out.println(timeTxt+"\t"+lastSender + "/" + nSenders);
+			System.out.println("[" + (data.sender()+1) + "]\trunning...\t" + timeTxt);
 		}
+
 	}
 
 	@Override
 	public void onStatusMessage(State state) {
-		if (isSimulatorState(state, waiting)) {
-			lastSender = -1;
+		if (isSimulatorState(state, waiting) || isSimulatorState(state, finished)) {
+			long now = System.currentTimeMillis();
+			String timeTxt = sdf.format(new Date(now));
+			System.out.println(state.getName() + "\t" + timeTxt);
 		}
 	}
 
