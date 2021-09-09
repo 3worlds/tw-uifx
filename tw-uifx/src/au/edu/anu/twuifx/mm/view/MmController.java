@@ -749,26 +749,26 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-	@FXML
-	void onShowReference(ActionEvent event) {
-		Dialog<ButtonType> dlg = new Dialog<>();
-		dlg.initOwner((Window) Dialogs.owner());
-		dlg.setTitle("3Worlds reference");
-
-		dlg.setResizable(true);
-		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
-		dlg.getDialogPane().getButtonTypes().addAll(done);
-
-		final WebView browser = new WebView();
-		final WebEngine webEngine = browser.getEngine();
-		webEngine.load(this.getClass().getResource("reference.html").toString());
-		ScrollPane scrollPane = new ScrollPane();
-		scrollPane.setContent(browser);
-		dlg.getDialogPane().setContent(scrollPane);
-		scrollPane.setFitToWidth(true);
-		scrollPane.setFitToHeight(true);
-		dlg.show();
-	}
+//	@FXML
+//	void onShowReference(ActionEvent event) {
+//		Dialog<ButtonType> dlg = new Dialog<>();
+//		dlg.initOwner((Window) Dialogs.owner());
+//		dlg.setTitle("3Worlds reference");
+//
+//		dlg.setResizable(true);
+//		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
+//		dlg.getDialogPane().getButtonTypes().addAll(done);
+//
+//		final WebView browser = new WebView();
+//		final WebEngine webEngine = browser.getEngine();
+//		webEngine.load(this.getClass().getResource("reference.html").toString());
+//		ScrollPane scrollPane = new ScrollPane();
+//		scrollPane.setContent(browser);
+//		dlg.getDialogPane().setContent(scrollPane);
+//		scrollPane.setFitToWidth(true);
+//		scrollPane.setFitToHeight(true);
+//		dlg.show();
+//	}
 
 	// ---------------FXML End -------------------------
 
