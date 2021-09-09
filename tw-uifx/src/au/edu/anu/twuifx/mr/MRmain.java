@@ -248,27 +248,27 @@ public class MRmain {
 			 */
 			Experiment exp = (Experiment) get(configGraph.root().getChildren(),
 					selectOne(hasTheLabel(N_EXPERIMENT.label())));
-			
+
 			int nSim = 1;
 			if (exp.properties().hasProperty(P_EXP_NREPLICATES.key()))
 				nSim = (Integer) exp.properties().getPropertyValue(P_EXP_NREPLICATES.key());
 			Design dsgn = (Design) get(exp.getChildren(), selectOne(hasTheLabel(N_DESIGN.label())));
-			
+
 			ExperimentDesignType edt = null;
-			
+
 			if (dsgn.properties().hasProperty(P_DESIGN_TYPE.key())) {
 				edt = (ExperimentDesignType) dsgn.properties().getPropertyValue(P_DESIGN_TYPE.key());
 			}
-			
+
 			DateTimeFormatter fm = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS");
 			LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 			String date = currentDate.format(fm);
 
 			System.out.println("Running... [Project: " + Project.getDisplayName() + "; Date: " + date + "]");
 			int nTreatments = 1;
-			if (edt!=null)
-			 nTreatments = Experiment.buildTreatmentList(edt,exp).size();
-			System.out.println("Initialising... [Simulators: " + (nSim*nTreatments)+ "]");
+			if (edt.equals(ExperimentDesignType.crossFactorial) || edt.equals(ExperimentDesignType.sensitivityAnalysis))
+				nTreatments = Experiment.buildTreatmentList(edt, exp).size();
+			System.out.println("Initialising... [Simulators: " + (nSim * nTreatments) + "]");
 			for (TreeNode n : ctrlHl.getParent().getChildren()) {
 				InitialisableNode in = (InitialisableNode) n;
 				in.initialise();
@@ -277,7 +277,10 @@ public class MRmain {
 			Kicker ctrl = (Kicker) ctrlHl.getInstance();
 			System.out.println("Initialising [done]");
 
-			System.out.println("Starting... [" + exp.toShortString() + "]");
+			String desc = exp.toShortString();
+			if (edt!=null)
+				desc +="("+edt.name()+")";
+			System.out.println("Starting... [" + desc + "]");
 			ctrl.start();
 			// Loop the main thread until controller receives finished msg
 			while (!ctrl.ended())
