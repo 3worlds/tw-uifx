@@ -161,6 +161,11 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		renderer = new ErrorDataSetRenderer();
 		initErrorDataSetRenderer(renderer);
 		chart.getRenderers().add(renderer);
+		for (int sender = 0; sender < nSenders; sender++) {
+			DoubleDataSet ds = new DoubleDataSet(Integer.toString(sender));
+			senderDataSetMap.put(sender, ds);
+			renderer.getDatasets().add(ds);
+		}
 
 		yAxis.setAutoGrowRanging(false);
 		yAxis.setForceZeroInRange(true);
@@ -220,11 +225,6 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 
 		Platform.runLater(() -> {
 			DoubleDataSet ds = senderDataSetMap.get(sender);
-			if (ds == null) {
-				ds = new DoubleDataSet(Integer.toString(sender));
-				senderDataSetMap.put(sender, ds);
-				renderer.getDatasets().add(ds);
-			}
 			ds.add(time, sender + 1);
 		});
 
@@ -234,9 +234,12 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
 			currentSenderTimes.clear();
+			int sender=0;
 			for (DataSet ds : renderer.getDatasets()) {
 				DoubleDataSet dds = (DoubleDataSet) ds;
 				dds.clearData();
+				dds.add(0, sender+1);
+				sender++;
 			}
 		}
 
