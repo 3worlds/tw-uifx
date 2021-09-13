@@ -50,6 +50,7 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
@@ -106,6 +107,7 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 				+ "; Stop: when " + metadata.properties().getPropertyValue("StoppingDesc")));
 
 		chart = new XYChart();
+		chart.setPadding(new Insets(5,5,5,5));
 		chart.setLegendVisible(false);
 		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
 		rndr.setDrawBars(true);

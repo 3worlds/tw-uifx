@@ -68,6 +68,7 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -196,6 +197,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		reductionAlgorithm.setMinPointPixelDistance(1);
 
 		chart = new XYChart(xAxis1, yAxis1);
+		chart.setPadding(new Insets(5,5,5,5));
 
 		for (Map.Entry<Integer, DoubleDataSet> entry : senderDataSet.entrySet())
 			rndr.getDatasets().add(entry.getValue());

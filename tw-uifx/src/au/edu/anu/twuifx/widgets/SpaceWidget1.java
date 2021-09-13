@@ -943,13 +943,18 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		int nRows = nCols;
 		if ((nRows * nCols) < nViews)
 			nCols++;
+		if ((nRows * nCols) < nViews)
+			nRows++;
+		
 		int display = 0;
 		for (int r = 0; r < nRows; r++)
 			for (int c = 0; c < nCols; c++) {
-				SpDisplay d = new SpDisplay(display++, nSenders);
-				displays.add(d);
-				displayGrid.add(d.getContainer(), c, r);
-				d.getContainer().setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+				if (display < nViews) {
+					SpDisplay d = new SpDisplay(display++, nSenders);
+					displays.add(d);
+					displayGrid.add(d.getContainer(), c, r);
+					d.getContainer().setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+				}
 			}
 		double rowSize = (1.0 / (double) nRows) * 100.0;
 		double colSize = (1.0 / (double) nCols) * 100.0;

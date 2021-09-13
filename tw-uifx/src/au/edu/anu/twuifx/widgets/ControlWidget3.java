@@ -61,6 +61,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineObserver;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -183,6 +184,7 @@ public class ControlWidget3 extends StateMachineController
 
 		// can't create a chart without axes
 		chart = new XYChart(xAxis1, yAxis1);
+		chart.setPadding(new Insets(5,5,5,5));
 		chart.legendVisibleProperty().set(true);
 		chart.setAnimated(false);
 		content.setCenter(chart);

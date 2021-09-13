@@ -33,6 +33,9 @@ package au.edu.anu.twuifx.widgets.headless;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
@@ -58,8 +61,8 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 	private final WidgetTimeFormatter timeFormatter;
 	private final WidgetTrackingPolicy<TimeData> policy;
 	private Metadata msgMetadata;
-//	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy ");
+	private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+
 
 	public HLProgressWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
@@ -83,8 +86,8 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 		if (data.time() == 0)
 			System.out.println("[" + (data.sender()+1) + "/" + nSenders + "]\tready...");
 		else if (data.time() == 1) {
-			long now = System.currentTimeMillis();
-			String timeTxt = sdf.format(new Date(now));
+			LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
+			String timeTxt = currentDate.format(dtf);
 			System.out.println("[" + (data.sender()+1) + "]\trunning...\t" + timeTxt);
 		}
 
@@ -93,8 +96,8 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting) || isSimulatorState(state, finished)) {
-			long now = System.currentTimeMillis();
-			String timeTxt = sdf.format(new Date(now));
+			LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
+			String timeTxt = currentDate.format(dtf);
 			System.out.println(state.getName() + "\t" + timeTxt);
 		}
 	}
