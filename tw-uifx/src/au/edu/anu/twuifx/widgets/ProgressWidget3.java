@@ -146,7 +146,7 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		line5.getChildren().addAll(new Label("Start:"), lblStart);
 
 		lblEnd = new Label("");
-		line6.getChildren().addAll(new Label("End:"), lblEnd);
+		line6.getChildren().addAll(new Label("~End:"), lblEnd);
 
 		BorderPane content = new BorderPane();
 		vBox.getChildren().addAll(line1, line2, line3, line4, line5, line6);
@@ -181,11 +181,9 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial)) {
 			} else {
-				if (currentSenderTimes.isEmpty())
-					startTime = System.currentTimeMillis();
-
 				// Lazy init to avoid a time out while many simulators are loading
 				if (timer == null) {
+					startTime = System.currentTimeMillis();
 					timer = new Timer();
 					timer.scheduleAtFixedRate(new TimerTask() {
 						private long lastTime = Long.MAX_VALUE;
@@ -234,11 +232,12 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
 			currentSenderTimes.clear();
-			int sender=0;
+			int sender = 0;
 			for (DataSet ds : renderer.getDatasets()) {
 				DoubleDataSet dds = (DoubleDataSet) ds;
 				dds.clearData();
-				dds.add(0, sender+1);
+				dds.add(0, sender + 1);
+				currentSenderTimes.put(sender, 0L);
 				sender++;
 			}
 		}
