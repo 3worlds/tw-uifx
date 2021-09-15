@@ -49,6 +49,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.dialogs.TextFilters;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
@@ -1599,10 +1600,6 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		// --------------------------------------- Lines
 		row = 0;
 		// -----
-//		ColorPicker cpLine = new ColorPicker(lineColour);
-//		addGridControl("Colour", row++, col, cpLine, linesGrid);
-//		GridPane.setValignment(cpLine, VPos.TOP);
-		// -----
 		CheckBox chbxShowArrows = new CheckBox("");
 		addGridControl("Arrowheads", row++, col, chbxShowArrows, linesGrid);
 		chbxShowArrows.setSelected(showArrows);
@@ -1621,8 +1618,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		// ----
 		TextField tfContrast = new TextField(Double.toString(contrast));
 		tfContrast.setMaxWidth(50);
-		tfContrast.setTextFormatter(
-				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		tfContrast.setTextFormatter(new TextFormatter(TextFilters.getDoubleFilter()));
 		addGridControl("Contrast (0.0-1.0)", row++, col, tfContrast, paperGrid);
 
 		// ---------------------------- Legend

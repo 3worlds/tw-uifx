@@ -30,6 +30,7 @@
 package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twuifx.dialogs.TextFilters;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
@@ -59,6 +61,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
+import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
@@ -132,6 +135,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	private int nViews;
 	private final List<Output2DData> initialData;
+	private Interval defaultRange;
 
 	private static Logger log = Logging.getLogger(MatrixWidget1.class);
 
@@ -147,6 +151,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
+		this.defaultRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
 		policy.setProperties(id, properties);
 		nViews = 1;
 		if (properties.hasProperty("nViews"))
@@ -302,8 +307,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		}
 		resolution = Preferences.getInt(widgetId + keyResolution, 2);
 		decimalPlaces = Preferences.getInt(widgetId + keyDecimalPlaces, 2);
-		minValue = Preferences.getDouble(widgetId + keyMinValue, 0.0);
-		maxValue = Preferences.getDouble(widgetId + keyMaxValue, 1.0);
+		minValue = Preferences.getDouble(widgetId + keyMinValue, Math.max(-Double.MAX_VALUE, defaultRange.inf()));
+		maxValue = Preferences.getDouble(widgetId + keyMaxValue, Math.min(Double.MAX_VALUE,defaultRange.sup()));
 		paletteType = (PaletteTypes) Preferences.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
 		mvMethod = (MissingValueOptions) Preferences.getEnum(widgetId + keyMissingValueMethod,
 				MissingValueOptions.Auto);
@@ -398,15 +403,13 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		// -- minValue
 		TextField tfMinValue = new TextField(Double.toString(minValue));
 		tfMinValue.setMaxWidth(50);
-		tfMinValue.setTextFormatter(
-				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		tfMinValue.setTextFormatter(new TextFormatter<>(TextFilters.getDoubleFilter()));		
 		addGridControl("Minimum z", row++, col, tfMinValue, content);
 
 		// -- maxValue
 		TextField tfMaxValue = new TextField(Double.toString(maxValue));
 		tfMaxValue.setMaxWidth(50);
-		tfMaxValue.setTextFormatter(
-				new TextFormatter<>(change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+		tfMaxValue.setTextFormatter(new TextFormatter<>(TextFilters.getDoubleFilter()));
 		addGridControl("Maximun z", row++, col, tfMaxValue, content);
 
 		// Missing value option

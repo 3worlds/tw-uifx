@@ -146,7 +146,8 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		line5.getChildren().addAll(new Label("Start:"), lblStart);
 
 		lblEnd = new Label("");
-		line6.getChildren().addAll(new Label("~End:"), lblEnd);
+		
+		line6.getChildren().addAll(new Label("≈End: "), lblEnd);
 
 		BorderPane content = new BorderPane();
 		vBox.getChildren().addAll(line1, line2, line3, line4, line5, line6);

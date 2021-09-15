@@ -36,6 +36,7 @@ import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twuifx.dialogs.TextFilters;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.ens.biologie.generic.utils.Interval;
@@ -47,6 +48,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -97,7 +99,9 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		if (!high.equals(Double.POSITIVE_INFINITY))
 			txtHigh = high.toString();
 		TextField tfLow = new TextField("");
+		tfLow.setTextFormatter(new TextFormatter(TextFilters.getDoubleFilter()));
 		TextField tfHigh = new TextField();
+		tfHigh.setTextFormatter(new TextFormatter(TextFilters.getDoubleFilter()));
 		CheckBox cbLowOpen = new CheckBox("]");
 		CheckBox cbHighOpen = new CheckBox("[");
 		CheckBox cbPosInf = new CheckBox("+∞");
