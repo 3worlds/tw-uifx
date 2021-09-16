@@ -260,7 +260,7 @@ public class MRmain {
 				edt = (ExperimentDesignType) dsgn.properties().getPropertyValue(P_DESIGN_TYPE.key());
 			}
 
-			DateTimeFormatter fm = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS");
+			DateTimeFormatter fm = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss:SSS");
 			LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 			String date = currentDate.format(fm);
 
@@ -289,8 +289,7 @@ public class MRmain {
 			System.out.println("Running [done]");
 			// Generate doco - there is no other opportunity so it's done here without
 			// asking.
-			File f = Project.makeFile(ProjectPaths.RUNTIME, configGraph.root().id() + ".odt");
-			System.out.println("Writing... [" + f.getName() + "-" + f.getParent() + "]");
+			System.out.println("Writing documentation...");
 			DocoGenerator gen = new DocoGenerator(configGraph);
 			gen.generate();
 			System.out.println("Writing [done]");
