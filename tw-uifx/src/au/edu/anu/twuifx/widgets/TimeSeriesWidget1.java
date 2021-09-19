@@ -275,7 +275,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		chart.getPlugins().add(new Zoomer());
 		//senderDataSetMap.get(0).values();
 		int nSims = senderDataSetMap.size();
-		int nSeriesPerSim = senderDataSetMap.get(0).size();
+		int nSeriesPerSim = senderDataSetMap.get(policy.getDataMessageRange().getFirst()).size();
 		int nSeries = nSims * nSeriesPerSim;
 
 		if (nSeries <= 100)
