@@ -57,7 +57,6 @@ public class SimpleMMPropertyItem implements Item {
 	protected String category;
 	private String description;
 	private IMMController controller;
-	private static Logger log = Logging.getLogger(SimpleMMPropertyItem.class);
 
 	public SimpleMMPropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
 			String category, String description) {
@@ -102,9 +101,9 @@ public class SimpleMMPropertyItem implements Item {
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
-		log.info("Before compare: " + getName() + "| OLD:NEW\t[" + oldValue + "," + newValue + "]");
+//		log.info("Before compare: " + getName() + "| OLD:NEW\t[" + oldValue + "," + newValue + "]");
 		if (!(oldValue.toString().compareTo(newValue.toString()) == 0)) {
-			log.info("After compare: " + getName() + "| OLD:NEW\t[" + oldValue + "," + newValue + "]");
+//			log.info("After compare: " + getName() + "| OLD:NEW\t[" + oldValue + "," + newValue + "]");
 			onUpdateProperty(newValue);
 		}
 	}
@@ -118,7 +117,8 @@ public class SimpleMMPropertyItem implements Item {
 		getElementProperties().setProperty(key, value);
 		controller.onItemEdit(this);
 		GraphState.setChanged();
-		ConfigGraph.validateGraph();
+		if (!(value instanceof String))
+			ConfigGraph.validateGraph();
 	}
 
 	public SimplePropertyList getElementProperties() {
