@@ -262,17 +262,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		double y = n.getY() * pane.getHeight();
 
 		Circle c = new Circle(x, y, nodeRadius.get());
-//		c.setCache(true);
-//		c.setCacheHint(CacheHint.SPEED);
 
 		c.radiusProperty().bind(nodeRadius);
 		Text text = new Text(n.getDisplayText(nodeSelect.get()));
-		//text.setCacheHint(CacheHint.SPEED);
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
 
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
-//		c.setStroke(Color.BLACK);
 		c.setOnMouseEntered(e -> {
 			if (e.isShiftDown()) {
 				dimmingOn = true;
@@ -283,14 +279,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			}
 		});
 
-		c.setOnMouseExited(e -> {
-//			if (dimmingOn) {
-//				onHighlightAll();
-//				dimmingOn = false;
-//			}
-		});
 
 		c.setEffect(dropShadow);
+		
 		c.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY && !e.isControlDown()) {
 				dragNode = n;
@@ -304,14 +295,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				double h = pane.getHeight();
 				double ex = e.getX();
 				double ey = e.getY();
-//				double nx = dragNode.getX() * w;
-//				double ny = dragNode.getY() * h;
 				if (ex < w && ey < h && ex >= 0 && ey >= 0) {
 					Circle dc = (Circle) dragNode.getSymbol();
 					dc.setCenterX(ex);
 					dc.setCenterY(ey);
+					e.consume();
 				}
-				e.consume();
+				//e.consume();
 			}
 
 		});

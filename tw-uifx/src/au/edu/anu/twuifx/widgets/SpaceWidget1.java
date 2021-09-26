@@ -945,7 +945,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		if ((nRows * nCols) < nViews)
 			nCols++;
 		if ((nRows * nCols) < nViews)
-			nRows++;
+			nCols++;
 		
 		int display = 0;
 		for (int r = 0; r < nRows; r++)
