@@ -289,6 +289,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private ComboBox<ElementDisplayText> cbEdgeTextChoice;
 
+	@FXML
+	private CheckBox cbAnimate;
+
 	public enum Verbosity {
 		brief, medium, full;
 	}
@@ -693,7 +696,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 		String title = "IDE Import";
 		String header;
-		header = "Import snippets: " +UserProjectLink.projectRoot().getName() + " --> "+ConfigGraph.getGraph().root().id();
+		header = "Import snippets: " + UserProjectLink.projectRoot().getName() + " --> "
+				+ ConfigGraph.getGraph().root().id();
 		String content = "";
 		for (Map.Entry<String, String> entry : successfulImports.entrySet()) {
 			content += entry.getValue() + ": " + entry.getKey() + "\n";
@@ -797,6 +801,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		getPreferences();
 		visualiser = new GraphVisualiserfx(visualGraph, //
 				zoomTarget, //
+				cbAnimate.selectedProperty(),//
 				nodeRadiusProperty, //
 				lineWidthProperty, //
 				btnChildLinks.selectedProperty(), //
@@ -997,6 +1002,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String ScrollHValue = "HValue";
 	private static final String ScrollVValue = "VValue";
 	private static final String KeyPathLength = "PathLength";
+	
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
@@ -1027,6 +1033,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putInt(KeyPathLength, spinPathLength.getValue());
 
 			Preferences.putDouble(ElementScalesKey, sldrElements.getValue());
+			
+			Preferences.putBoolean(cbAnimate.idProperty().get(), cbAnimate.isSelected());
+			
 			Preferences.flush();
 		}
 	}
@@ -1107,6 +1116,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		sldrElements.setDisable(false);
 		sldrElements.setValue(Preferences.getDouble(ElementScalesKey, 1.0));
+		
+		cbAnimate.selectedProperty().set(Preferences.getBoolean(cbAnimate.idProperty().get(), true));
+
 		this.setElementScales(sldrElements.getValue());
 	}
 
@@ -1511,6 +1523,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		rbl2.setDisable(!isOpen);
 		rbl3.setDisable(!isOpen);
 		rbl4.setDisable(!isOpen);
+		cbAnimate.setDisable(!isOpen);
 		sldrElements.setDisable(!isOpen);
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;
