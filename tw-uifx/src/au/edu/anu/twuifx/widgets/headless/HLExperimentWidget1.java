@@ -1,12 +1,7 @@
 package au.edu.anu.twuifx.widgets.headless;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRACKER_STATISTICS;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DESIGN_TYPE;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_EXP_NREPLICATES;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMELINE_SHORTTU;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_NTU;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_TIMEMODEL_TU;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -73,6 +68,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private ExperimentDesignType edt;
 	private int nReps;
 	private int nSenders;
+	private int nLines;
 
 	final private Map<Integer, TreeMap<String, List<Double>>> senderDataSetMap;
 
@@ -92,6 +88,10 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			edt = (ExperimentDesignType) properties.getPropertyValue(P_DESIGN_TYPE.key());
 			treatmentList = (List<List<Property>>) properties.getPropertyValue("TreatmentList");
 			nReps = (Integer) properties.getPropertyValue(P_EXP_NREPLICATES.key());
+		}
+		nLines = 1;
+		if (properties.hasProperty(P_HLWIDGET_NLINES.key())) {
+			nLines = (Integer)properties.getPropertyValue(P_HLWIDGET_NLINES.key());			
 		}
 	}
 
@@ -284,8 +284,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				for (int c = 0; c < cols.size(); c++) {
 					int bar = c % nBars;
 					List<Double> col = cols.get(c);
-					Double iv = col.get(lastNonZeroTime);
-					stats[bar].add(iv);
+					double sum=0;		
+					for (int i = 0;i<nLines;i++) {
+						sum+= col.get(lastNonZeroTime-i);
+					}
+					stats[bar].add(sum/(double)nLines);
 				}
 				File statsFile = Project.makeFile(ProjectPaths.RUNTIME, "output",widgetDirName, "SensAnal.csv");
 				fileLines.clear();
@@ -314,7 +317,10 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				List<Double> sample = new ArrayList<>();
 				for (int c = 0; c < cols.size(); c++) {
 					List<Double> col = cols.get(c);
-					sample.add(col.get(lastNonZeroTime));
+					double sum = 0;
+					for (int i = 0;i<nLines;i++)
+						sum+=col.get(lastNonZeroTime-1);
+					sample.add(sum/(double)nLines);
 				}
 
 				int factors = treatmentList.get(0).size();
