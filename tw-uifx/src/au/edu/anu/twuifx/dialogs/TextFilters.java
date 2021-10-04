@@ -1,45 +1,55 @@
 package au.edu.anu.twuifx.dialogs;
 
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 import javafx.scene.control.TextFormatter;
+import javafx.util.StringConverter;
 
 /**
  * @author Ian Davies
  *
  * @date 15 Sept 2021
  * 
- * https://gist.github.com/karimsqualli96/f8d4c2995da8e11496ed
+ *       https://stackoverflow.com/questions/45977390/how-to-force-a-double-input-in-a-textfield-in-javafx
  */
 public class TextFilters {
+	private static Pattern validEditingState = Pattern.compile("-?(([1-9][0-9]*)|0)?(\\.[0-9]*)?");
+
 	private TextFilters() {
 	};
 
-	public static UnaryOperator<TextFormatter.Change> getDoubleFilter() {
-		UnaryOperator<TextFormatter.Change> result = new UnaryOperator<TextFormatter.Change>() {
+	public static TextFormatter<Double> getDoubleFormatter() {
+		return new TextFormatter<>(converter, 0.0, getDoubleFilter());
+	}
 
-			@Override
-			public TextFormatter.Change apply(TextFormatter.Change t) {
-
-				if (t.isReplaced())
-					if (t.getText().matches("[^0-9]"))
-						t.setText(t.getControlText().substring(t.getRangeStart(), t.getRangeEnd()));
-
-				if (t.isAdded()) {
-					if (t.getControlText().contains(".")) {
-						if (t.getText().matches("[^0-9]")) {
-							t.setText("");
-						}
-					} else if (t.getText().matches("[^0-9.]")) {
-						t.setText("");
-					}
-				}
-
-				return t;
+	private static UnaryOperator<TextFormatter.Change> getDoubleFilter() {
+		UnaryOperator<TextFormatter.Change> result = c -> {
+			String text = c.getControlNewText();
+			if (validEditingState.matcher(text).matches()) {
+				return c;
+			} else {
+				return null;
 			}
 		};
 		return result;
 
 	}
 
+	private static StringConverter<Double> converter = new StringConverter<Double>() {
+
+		@Override
+		public Double fromString(String s) {
+			if (s.isEmpty() || "-".equals(s) || ".".equals(s) || "-.".equals(s)) {
+				return 0.0;
+			} else {
+				return Double.valueOf(s);
+			}
+		}
+
+		@Override
+		public String toString(Double d) {
+			return d.toString();
+		}
+	};
 }

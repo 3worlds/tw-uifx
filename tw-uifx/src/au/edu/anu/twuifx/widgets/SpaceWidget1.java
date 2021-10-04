@@ -1618,7 +1618,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		// ----
 		TextField tfContrast = new TextField(Double.toString(contrast));
 		tfContrast.setMaxWidth(50);
-		tfContrast.setTextFormatter(new TextFormatter(TextFilters.getDoubleFilter()));
+		tfContrast.setTextFormatter(TextFilters.getDoubleFormatter());
 		addGridControl("Contrast (0.0-1.0)", row++, col, tfContrast, paperGrid);
 
 		// ---------------------------- Legend

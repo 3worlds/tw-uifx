@@ -151,6 +151,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
+		// Query ensures range is bounded
 		this.defaultRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
 		policy.setProperties(id, properties);
 		nViews = 1;
@@ -307,8 +308,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		}
 		resolution = Preferences.getInt(widgetId + keyResolution, 2);
 		decimalPlaces = Preferences.getInt(widgetId + keyDecimalPlaces, 2);
-		minValue = Preferences.getDouble(widgetId + keyMinValue, Math.max(-Double.MAX_VALUE, defaultRange.inf()));
-		maxValue = Preferences.getDouble(widgetId + keyMaxValue, Math.min(Double.MAX_VALUE,defaultRange.sup()));
+		minValue = Preferences.getDouble(widgetId + keyMinValue, defaultRange.inf());
+		maxValue = Preferences.getDouble(widgetId + keyMaxValue, defaultRange.sup());
 		paletteType = (PaletteTypes) Preferences.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
 		mvMethod = (MissingValueOptions) Preferences.getEnum(widgetId + keyMissingValueMethod,
 				MissingValueOptions.Auto);
@@ -403,13 +404,13 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		// -- minValue
 		TextField tfMinValue = new TextField(Double.toString(minValue));
 		tfMinValue.setMaxWidth(50);
-		tfMinValue.setTextFormatter(new TextFormatter<>(TextFilters.getDoubleFilter()));		
+		tfMinValue.setTextFormatter(TextFilters.getDoubleFormatter());		
 		addGridControl("Minimum z", row++, col, tfMinValue, content);
 
 		// -- maxValue
 		TextField tfMaxValue = new TextField(Double.toString(maxValue));
 		tfMaxValue.setMaxWidth(50);
-		tfMaxValue.setTextFormatter(new TextFormatter<>(TextFilters.getDoubleFilter()));
+		tfMaxValue.setTextFormatter(TextFilters.getDoubleFormatter());
 		addGridControl("Maximun z", row++, col, tfMaxValue, content);
 
 		// Missing value option
