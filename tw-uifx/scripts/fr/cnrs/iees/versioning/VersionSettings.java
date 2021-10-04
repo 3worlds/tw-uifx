@@ -82,7 +82,7 @@ public class VersionSettings {
 			{ "au.edu.anu.rscs.aot", "aot", "[0.1.8,)", null },
 			{ "fr.cnrs.iees.tw-models", "tw-models", "[0.0.3,)", null},
 			{ "au.edu.anu.tw-apps", "tw-apps", "[0.2.3,)", null },
-			{ "au.edu.anu.rscs.aot", "qgraph", "[0.1.4,)", null },
+			{ "au.edu.anu.rscs.aot", "qgraph", "[0.2.0,)", null },
 			{ "au.edu.anu.ymuit", "ymuit", "[0.1.10,)", null },
 			{ "fr.cnrs.iees.rvgrid", "rvgrid", "[0.1.0,)", null },
 			{ "org.openjfx", "javafx-fxml", "[11,)", "_os" },
