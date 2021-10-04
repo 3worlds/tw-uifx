@@ -98,10 +98,10 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 			txtLow = low.toString();
 		if (!high.equals(Double.POSITIVE_INFINITY))
 			txtHigh = high.toString();
-		TextField tfLow = new TextField("");
-		tfLow.setTextFormatter(TextFilters.getDoubleFormatter());
+		TextField tfLow = new TextField();
+		tfLow.setTextFormatter(TextFilters.getDoubleFormatter(0.0));
 		TextField tfHigh = new TextField();
-		tfHigh.setTextFormatter(TextFilters.getDoubleFormatter());
+		tfHigh.setTextFormatter(TextFilters.getDoubleFormatter(1.0));
 		CheckBox cbLowOpen = new CheckBox("]");
 		CheckBox cbHighOpen = new CheckBox("[");
 		CheckBox cbPosInf = new CheckBox("+∞");

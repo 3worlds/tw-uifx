@@ -19,8 +19,8 @@ public class TextFilters {
 	private TextFilters() {
 	};
 
-	public static TextFormatter<Double> getDoubleFormatter() {
-		return new TextFormatter<>(converter, 0.0, getDoubleFilter());
+	public static TextFormatter<Double> getDoubleFormatter(Double def) {
+		return new TextFormatter<>(converter, def, getDoubleFilter());
 	}
 
 	private static UnaryOperator<TextFormatter.Change> getDoubleFilter() {

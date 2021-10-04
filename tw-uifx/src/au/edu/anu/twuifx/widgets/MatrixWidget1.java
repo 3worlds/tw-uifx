@@ -404,13 +404,13 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		// -- minValue
 		TextField tfMinValue = new TextField(Double.toString(minValue));
 		tfMinValue.setMaxWidth(50);
-		tfMinValue.setTextFormatter(TextFilters.getDoubleFormatter());		
+		tfMinValue.setTextFormatter(TextFilters.getDoubleFormatter(minValue));		
 		addGridControl("Minimum z", row++, col, tfMinValue, content);
 
 		// -- maxValue
 		TextField tfMaxValue = new TextField(Double.toString(maxValue));
 		tfMaxValue.setMaxWidth(50);
-		tfMaxValue.setTextFormatter(TextFilters.getDoubleFormatter());
+		tfMaxValue.setTextFormatter(TextFilters.getDoubleFormatter(maxValue));
 		addGridControl("Maximun z", row++, col, tfMaxValue, content);
 
 		// Missing value option
