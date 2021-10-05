@@ -65,6 +65,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
 	private List<List<Property>> treatmentList;
+	private Map<String, Object> baseline;
 	private ExperimentDesignType edt;
 	private int nReps;
 	private int nSenders;
@@ -87,6 +88,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		if (properties.hasProperty(P_DESIGN_TYPE.key())) {
 			edt = (ExperimentDesignType) properties.getPropertyValue(P_DESIGN_TYPE.key());
 			treatmentList = (List<List<Property>>) properties.getPropertyValue("TreatmentList");
+			baseline = (Map<String,Object>)properties.getPropertyValue("Baseline");
 			nReps = (Integer) properties.getPropertyValue(P_EXP_NREPLICATES.key());
 		}
 		nLines = 1;
@@ -212,6 +214,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	}
 
 	private void writeData() {
+		// TODO tidy all this up or move to OpenMOLE
 		// use a local scope to ensure unique file names and so prevent file overwrites
 		LocalScope scope = new LocalScope("Files");
 		File dir = Project.makeFile(ProjectPaths.RUNTIME, "output");
@@ -271,9 +274,31 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		}
 		if (lastNonZeroTime == Integer.MAX_VALUE)
 			lastNonZeroTime = max - 1;
-		
+		File designFile = Project.makeFile(ProjectPaths.RUNTIME, "output",widgetDirName, "Design.csv");
+		fileLines.clear();
+		fileLines.add("Label\tValue");
+		for (Map.Entry<String, Object> pair:baseline.entrySet()){
+			fileLines.add(pair.getKey()+"\t"+pair.getValue());
+		}
+		if (treatmentList!=null && !treatmentList.isEmpty()) {
+			fileLines.add("\nSimulator\tSetting(s)");
+			for (int i = 0 ; i<treatmentList.size();i++) {
+				List<Property> list = treatmentList.get(i);
+				fileLines.add(i+"\t"+list.toString());
+			}
+		}
+		try {
+			Files.write(designFile.toPath(), fileLines, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		if (edt != null)
 			switch (edt) {
+			case singleRun:{
+				break;
+			}
 			case sensitivityAnalysis: {
 				int nBars = treatmentList.size();
 				// how many indep vars? do we care here?
@@ -312,7 +337,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				}
 				break;
 			}
-			default: {
+			case crossFactorial: {
 				// TODO make abbrev of factor levels
 				List<Double> sample = new ArrayList<>();
 				for (int c = 0; c < cols.size(); c++) {
@@ -322,7 +347,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 						sum+=col.get(lastNonZeroTime-1);
 					sample.add(sum/(double)nLines);
 				}
-
+				
 				int factors = treatmentList.get(0).size();
 				String h = "";
 				for (int i = 0; i < factors; i++)
@@ -447,6 +472,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				break;
 			}
 			}
 

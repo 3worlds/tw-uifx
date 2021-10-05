@@ -74,7 +74,7 @@ public class ExperimentDetailsDlg {
 		}
 		switch (edt) {
 		case crossFactorial: {
-			List<List<Property>> lst = Experiment.buildTreatmentList(edt, exp);
+			List<List<Property>> lst = exp.getTreatmentList();
 			Treatment treatment = (Treatment) get(exp.getChildren(), selectOne(hasTheLabel(N_TREATMENT.label())));
 			List<ALDataEdge> treatments = (List<ALDataEdge>) get(treatment.edges(Direction.OUT),
 					selectOneOrMany(hasTheLabel(E_TREATS.label())));
@@ -103,7 +103,7 @@ public class ExperimentDetailsDlg {
 		}
 		// TODO repetitive code
 		case sensitivityAnalysis: {
-			List<List<Property>> lst = Experiment.buildTreatmentList(edt, exp);
+			List<List<Property>> lst = exp.getTreatmentList();
 			Treatment treatment = (Treatment) get(exp.getChildren(), selectOne(hasTheLabel(N_TREATMENT.label())));
 			List<ALDataEdge> treatments = (List<ALDataEdge>) get(treatment.edges(Direction.OUT),
 					selectOneOrMany(hasTheLabel(E_TREATS.label())));
