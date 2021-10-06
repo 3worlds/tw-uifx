@@ -267,7 +267,7 @@ public class MRmain {
 			System.out.println("Running... [Project: " + Project.getDisplayName() + "; Date: " + date + "]");
 			int nTreatments = 1;
 			if (edt.equals(ExperimentDesignType.crossFactorial) || edt.equals(ExperimentDesignType.sensitivityAnalysis))
-				nTreatments = Experiment.buildTreatmentList(edt, exp).size();
+				nTreatments = exp.getTreatmentList().size();
 			System.out.println("Initialising... [Simulators: " + (nSim * nTreatments) + "]");
 			for (TreeNode n : ctrlHl.getParent().getChildren()) {
 				InitialisableNode in = (InitialisableNode) n;
