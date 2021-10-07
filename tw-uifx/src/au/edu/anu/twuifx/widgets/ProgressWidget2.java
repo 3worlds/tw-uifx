@@ -55,8 +55,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
-import java.util.Arrays;
-
 /**
  * @author Ian Davies
  *

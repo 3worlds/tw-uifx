@@ -31,8 +31,6 @@
 package au.edu.anu.twuifx.mm.propertyEditors;
 
 import java.util.Optional;
-import java.util.logging.Logger;
-
 import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.twapps.mm.IMMController;
@@ -42,7 +40,6 @@ import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALDataEdge;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.properties.SimplePropertyList;
-import fr.ens.biologie.generic.utils.Logging;
 import javafx.beans.value.ObservableValue;
 
 /**

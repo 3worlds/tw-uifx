@@ -37,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
-
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.Output2DData;
@@ -49,7 +47,6 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.dialogs.TextFilters;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -62,7 +59,6 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.ens.biologie.generic.utils.Interval;
-import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -82,7 +78,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -137,7 +132,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private final List<Output2DData> initialData;
 	private Interval defaultRange;
 
-	private static Logger log = Logging.getLogger(MatrixWidget1.class);
+//	private static Logger log = Logging.getLogger(MatrixWidget1.class);
 
 	public MatrixWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM2);
@@ -533,10 +528,10 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 		}
 
-		public void clear() {
-			GraphicsContext gc = canvas.getGraphicsContext2D();
-			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		}
+//		public void clear() {
+//			GraphicsContext gc = canvas.getGraphicsContext2D();
+//			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+//		}
 
 		public void setSender(int s) {
 			s = Math.min(s, nSenders - 1);

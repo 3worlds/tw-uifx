@@ -4,9 +4,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -15,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -24,7 +20,6 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.Output0DData;
 import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.project.Project;
@@ -32,13 +27,9 @@ import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
-import au.edu.anu.twuifx.widgets.helpers.RangeWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
-import de.gsi.chart.axes.spi.DefaultNumericAxis;
-import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.identity.impl.LocalScope;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -47,7 +38,6 @@ import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
-import fr.ens.biologie.generic.utils.Logging;
 import fr.ens.biologie.generic.utils.Statistics;
 
 /**
@@ -68,7 +58,6 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private Map<String, Object> baseline;
 	private ExperimentDesignType edt;
 	private int nReps;
-	private int nSenders;
 	private int nLines;
 
 	final private Map<Integer, TreeMap<String, List<Double>>> senderDataSetMap;
@@ -78,9 +67,9 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimCloneWidgetTrackingPolicy();
 		senderDataSetMap = new ConcurrentHashMap<>();
-		nSenders = 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		policy.setProperties(id, properties);
@@ -99,7 +88,6 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
-		nSenders++;
 		if (policy.canProcessMetadataMessage(meta)) {
 			msgMetadata = meta;
 			tsMetadata = (Output0DMetadata) msgMetadata.properties().getPropertyValue(Output0DMetadata.TSMETA);
@@ -228,7 +216,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		
 		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
 		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
-		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
+		TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
 		String header = TimeUtil.timeUnitName(timeUnit, nTimeUnits);
 		List<List<Double>> cols = new ArrayList<>();
 		int max = 0;
@@ -246,7 +234,6 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		}
 
 		int lastNonZeroTime = Integer.MAX_VALUE;
-		int longestSeries = 0;
 		File outFile = Project.makeFile(ProjectPaths.RUNTIME, "output",widgetDirName, "Series.csv");
 		outFile.getParentFile().mkdirs();
 		List<String> fileLines = new ArrayList<>();

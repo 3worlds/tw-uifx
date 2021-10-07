@@ -1,8 +1,6 @@
 package au.edu.anu.twuifx.mr.view;
 
 import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
-import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
-
 import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;

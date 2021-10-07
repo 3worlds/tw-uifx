@@ -70,7 +70,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRACKER_STATISTICS;
 import static au.edu.anu.twuifx.widgets.helpers.Utilities.*;

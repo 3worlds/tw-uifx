@@ -50,7 +50,6 @@ import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedEdgeLabels;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import javafx.scene.Node;
