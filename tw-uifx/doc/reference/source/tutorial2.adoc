@@ -25,17 +25,9 @@ Now create a _3Worlds_ project using tutorial 1 as a starting point.
 
 . From _ModelMaker_ main menu select `New -> Tutorials -> 1 Logistic` name it `Tut2`
 
-. Right-click on the root node (`3worlds:Tut2`) and select `Collapse -> All`.
-
-. Right-click again on the root node and select `Expand -> system:sys1` 
-
-. Re-apply the layout (*L*).
-
-. Delete `snippet:snpt1` and `snippet:snpt2` as they're no longer required.
-
-. Save (`Ctrl+s`)
 
 Next link this project to the Java project created above.
+[start = 2]
 
 . From the _ModelMaker_ main menu, select `Edit -> Java project -> Connect...`.
 
@@ -43,7 +35,7 @@ Next link this project to the Java project created above.
 
 . In the _Eclipse_ Project Explorer view, right-click on `tut2` and select `Refresh`.
 
-. In the _Eclipse_ main menu, select `Project - > clean` and apply to `tut2`.
+. In the _Eclipse_ main menu, select `Project - > clean`, flag `tut2` and click `OK`.
 
 While editing in _Eclipse_, a task message may appear in _ModelMaker_ from time to time complaining about file dates. If so, make sure your Java files are saved, refreshed and the project clean. The message will disappear when the project is re-complied in _ModelMaker_ using the button in the bottom left-hand corner.
 
@@ -63,7 +55,7 @@ Near the bottom of the file are two methods: `chaos` and `init1`, mapped from th
 - `Code insert Begin-- >`; and 
 - `Code insert End---- <`.
 
-. Add the following code between these markers, taking care to leave the text of the markers themselves unchanged.
+The code snippet property that was present in the orginal `Logistic` model this tutorial derives from has already been add for both the `chaos` and `init` methods.
 
 `chaos`:
 
@@ -85,13 +77,22 @@ Near the bottom of the file are two methods: `chaos` and `init1`, mapped from th
 .The main source code file ('Tut2.java').
 image::tutorial2IMG/fig-tut2-src.png[align="center",role="thumb"]
 
+You can also create other Java classes or import third-party libraries to extend you model code. This will be discussed in later tutorials.
+There are two "import" markers at the top of the main source code file. Add any dependencies to third-party or other java classes you use.
+
+IMPORTANT: When editing the main java source code file, any imports your IDE might make automatically will not necessarily appear between the import markers. 
+Take care to edit these statements to they do appear between the import statements. These imports are in fact a code snippet property found in the specification root node.
+
+
 Because these two methods are mapped to this generated file from the specifications created in _ModelMaker_, it follows that changes to the specifications may result in changes to these methods. So the question arises, how does _ModelMaker_ manage this without losing the Java code you write?
 
 If there have been changes to the number, name or type of `function` used in the specification, changes to anything in the `dataDefinition` sub-tree, or changes to the _roles_ of `components`, _ModelMaker_ will back up your old file as a text file with a unique name (e.g `+_Tut2_1.txt+`,`+_Tut2_2.txt+` etc...) within the current java package. This way you can copy and paste you code back to the proper place. Otherwise _ModelMaker_ will never overwrite this file. 
 
-When _ModelMaker_ searches for differences between previous and current versions of this Java file, it will ignore any comments, import statements and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themselves. 
+IMPORTANT: When working simultaneously with an IDE and  _ModelMaker_, it is useful to keep the code snippets in _ModelMaker_ up-to-date by re-importing them from time to time. If changes made in the specifications by _ModelMaker_ result in a new file being created, you code snippets will be carried over to the new file.
 
-If the task list is empty, you can now execute the specifications by deploying them from _ModelMaker_.
+When _ModelMaker_ searches for differences between previous and current versions of this Java file, it will ignore any comments and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themselves. 
+
+If the task list is empty, you can now execute the specification by deploying them from _ModelMaker_.
 
 Running the simulation directly from _ModelMaker_ is a convenient way to speed up the turn-around time in developing and testing specifications. Once the specifications are stable, you can run your model from a jar: the jar file that is created in your project directory in this case `Tut2.jar`. To do this:
 
@@ -103,7 +104,7 @@ Finally we discuss how to debug your equations by running your model from the ID
 
 ===== Debugging your code
 
-Once the specifications are valid (i.e no tasks in the task list) you can quit _ModelMaker_ and debug your code from the IDE.
+Once the simulator specification is valid (i.e no tasks in the task list) you can quit _ModelMaker_ and debug your code from the IDE.
 
 In the default package of the linked java project (`tut2`) is a java file called `UserCodeRunner.java`. This was created the first time you linked the project made with _ModelMaker_ to the Java project. By placing breakpoints in the methods you added to `Tut2.java` above, you can debug by running from this `main` class. The correct command-line arguments have already been provided.
 
