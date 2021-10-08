@@ -189,6 +189,12 @@ for (int i = 0; i < dxdt.length; i++)
 .Example of the generated javaDoc for the `growth` function of Tutorial 3. The figure assumes correct meta-data has been added to the definitions of `K, r, alpha` and `x`.
 image::tutorial3IMG/fig-javaDoc.png[align="center",role="thumb"]
 
+Following a note from 'Tutorial 1', it is a good idea to keep the code snippets in _ModelMaker_ up-to-date with changes in the source code.
+[start = 4]
+
+. In _ModelMaker_ select `Edit -> Import snippets from IDE` and save (`Ctrl-s`).
+
+
 The model is now ready to run. However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.
 
 [#fig-tut3-MR]
