@@ -32,12 +32,9 @@ package au.edu.anu.twuifx.widgets.headless;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
@@ -82,7 +79,7 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 
 	@Override
 	public void onDataMessage(TimeData data) {
-		boolean show = false;
+//		boolean show = false;
 		if (data.time() == 0)
 			System.out.println("[" + (data.sender()+1) + "/" + nSenders + "]\tready...");
 		else if (data.time() == 1) {

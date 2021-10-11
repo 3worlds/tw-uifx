@@ -29,7 +29,6 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets.samples;
 
-import de.gsi.chart.samples.ChartPerformanceGraph;
 import de.gsi.chart.samples.ScatterAndBubbleRendererSample;
 
 public class TestSamples {

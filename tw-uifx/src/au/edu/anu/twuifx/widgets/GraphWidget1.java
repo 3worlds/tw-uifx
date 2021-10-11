@@ -25,8 +25,6 @@ import javafx.scene.layout.BorderPane;
 public class GraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metadata> implements WidgetGUI {
 	private final WidgetTrackingPolicy<TimeData> policy;
 	private final WidgetTimeFormatter timeFormatter;
-	private String widgetId;
-
 	public GraphWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.RUNTIMEGRAPH);
 		timeFormatter = new WidgetTimeFormatter();
@@ -35,7 +33,6 @@ public class GraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metada
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		this.widgetId = id;
 		policy.setProperties(id, properties);
 	}
 
@@ -62,7 +59,7 @@ public class GraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metada
 		System.out.println("\tnEdges: " + eg.nEdges());
 
 		ArenaComponent arena = eg.arena();
-		ComponentContainer comm = eg.community();
+		eg.community();
 
 		System.out.println("Arena: " + arena);
 		System.out.println("\t" + arena.membership().categoryId());

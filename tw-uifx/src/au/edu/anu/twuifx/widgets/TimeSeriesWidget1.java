@@ -172,7 +172,9 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 //		TimeScaleType tst = (TimeScaleType) msgMetadata.properties().getPropertyValue(P_TIMELINE_SCALE.key());
 		final TimeUnits timeUnit = (TimeUnits) msgMetadata.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
 
-		final int nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
+		int nTimeUnits = 1;
+		if (msgMetadata.properties().hasProperty(P_TIMEMODEL_NTU.key()))
+			nTimeUnits = (Integer) msgMetadata.properties().getPropertyValue(P_TIMEMODEL_NTU.key());
 		final String timeUnitName = TimeUtil.timeUnitAbbrev(timeUnit, nTimeUnits);
 
 		final BorderPane content = new BorderPane();
@@ -265,7 +267,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		xAxis.setTimeAxis(false);
 
 		chart = new XYChart(xAxis, yAxes.get(0));
-		chart.setPadding(new Insets(1,10,5,5));
+		chart.setPadding(new Insets(1, 10, 5, 5));
 		chart.setLegendSide(legendSide);
 		chart.setLegendVisible(legendVisible);
 
@@ -273,7 +275,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		chart.getRenderers().addAll(renderers);
 
 		chart.getPlugins().add(new Zoomer());
-		//senderDataSetMap.get(0).values();
+		// senderDataSetMap.get(0).values();
 		int nSims = senderDataSetMap.size();
 		int nSeriesPerSim = senderDataSetMap.get(policy.getDataMessageRange().getFirst()).size();
 		int nSeries = nSims * nSeriesPerSim;
@@ -304,7 +306,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 						.getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
 				trackerTime.setText(timeFormatter.getTimeText(dtt.getDateTime()));
 			});
-			
+
 			for (Renderer r : chart.getRenderers())
 				for (DataSet d : r.getDatasets()) {
 					CircularDoubleErrorDataSet cdds = (CircularDoubleErrorDataSet) d;
@@ -486,7 +488,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 	// helper new sender
 	private void makeChannels(DataLabel dl, int sender) {
-		
+
 		Map<String, CircularDoubleErrorDataSet> dataSetMap = senderDataSetMap.get(sender);
 
 		if (sas != null) {

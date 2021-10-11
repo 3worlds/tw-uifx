@@ -96,7 +96,7 @@ Before proceeding, some explanations are required to make sense of the following
 
 // NOTE ABOUT THIS: for relateToDecision function: must be the only one type of function in its process
 
-We will prefix the names of `processes` in such a way that the layout algorithm will place them in execution order. 
+For clarity, we will prefix the names of `processes` in such a way that the layout algorithm will place them in execution order. 
 
 . Collapse the `dataDefinition` sub-tree and expand `system:sys1`.
 
@@ -302,14 +302,14 @@ The task list now has two tasks asking to connect both disturbance processes to 
 Note here that we expect this relation between the disturbance and the community to be reset every time step depending on whether or not `DistOccur` is true. That is, the relationship is ephemeral. This is achieved by setting the `lifespan` property of the `relationType:distEffectComm` to `ephemeral` (the default is `permanent`).
 
 [start = 7]
-. Chnage the property `distEffectComm#lifespan` to `ephemeral`.
+. Change the property `distEffectComm#lifespan` to `ephemeral`.
 
 
 The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we'll just add code snippets but if you prefer, you can create a java project and add the code there instead (*ref tut2*).
 
 ===== Java code
 
-. Add a `snippet` to each of the three `functions` and two `initFunctions` in the specifications. Add the following code to the `JavaCode` property of each snippet:
+. Copy and paste the code below to all the relevant `javaCode` properties. A convenient way to do this is to enter "javaCode" into the search field in the _All properties_ property editor and edit each in turn. If you received compile error messages, check that you have pasted into the property of the correct function:
 
 `function:InitComm`:
 

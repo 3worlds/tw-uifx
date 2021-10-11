@@ -148,9 +148,6 @@ import fr.cnrs.iees.twmodels.LibraryTable;
 import fr.cnrs.iees.uit.space.Box;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
