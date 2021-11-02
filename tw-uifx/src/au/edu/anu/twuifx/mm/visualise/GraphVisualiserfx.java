@@ -101,7 +101,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
  * Date 28 Jan. 2019
  */
 public final class GraphVisualiserfx implements IGraphVisualiser {
-	public static final Double animateSlow = 1500.0;
+	public static final Double animateSlow = 1000.0;
 	public static final Double animateFast = 1.0;
 
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
