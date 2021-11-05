@@ -43,8 +43,8 @@
 		<dependency org="org.openjfx" name="javafx-controls" rev="[11,)" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-graphics" rev="[11,)" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-base" rev="[11,)" m:classifier="linux"/>
-		<dependency org="org.openjfx" name="javafx-media" rev="[11,)" m:classifier="linux"/>
-		<dependency org="org.openjfx" name="javafx-web" rev="[11,)" m:classifier="linux"/>
+<!--		<dependency org="org.openjfx" name="javafx-media" rev="[11,)" m:classifier="linux"/>
+		<dependency org="org.openjfx" name="javafx-web" rev="[11,)" m:classifier="linux"/> -->
 		<dependency org="org.controlsfx" name="controlsfx" rev="[11,)"/>
 		<dependency org="org.apache.commons" name="commons-math3" rev="[3.6.1,)"/>
 		<dependency org="de.gsi" name="chartfx" rev="11.2.5"/>
