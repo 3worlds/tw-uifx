@@ -101,21 +101,26 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		for (int i = 0; i < nDims; i++) {
 			cmbLower.add(new ComboBox<>());
 			cmbLower.get(i).setOnAction(e -> {
-				ComboBox<BorderType> cb = (ComboBox<BorderType>) e.getSource();
-				if (cb.getSelectionModel().getSelectedIndex() == 0) {// wrap
-					int idx = cmbLower.indexOf(e.getSource());
+				int idx = cmbLower.indexOf(e.getSource());
+				BorderType lo = cmbLower.get(idx).getSelectionModel().getSelectedItem();
+				BorderType hi = cmbUpper.get(idx).getSelectionModel().getSelectedItem();
+				if (lo.equals(BorderType.wrap) || lo.equals(hi)) {
 					chkBxSymm.get(idx).setSelected(true);
-					cmbUpper.get(idx).getSelectionModel().select(0);
+					if (lo.equals(BorderType.wrap))
+						cmbUpper.get(idx).getSelectionModel().select(lo);
 					cmbUpper.get(idx).setVisible(false);
 				}
 			});
+
 			cmbUpper.add(new ComboBox<>());
 			cmbUpper.get(i).setOnAction(e -> {
-				ComboBox<BorderType> cb = (ComboBox<BorderType>) e.getSource();
-				if (cb.getSelectionModel().getSelectedIndex() == 0) {// wrap
-					int idx = cmbUpper.indexOf(e.getSource());
+				int idx = cmbUpper.indexOf(e.getSource());
+				BorderType lo = cmbLower.get(idx).getSelectionModel().getSelectedItem();
+				BorderType hi = cmbUpper.get(idx).getSelectionModel().getSelectedItem();
+				if (hi.equals(BorderType.wrap) || lo.equals(hi)) {
 					chkBxSymm.get(idx).setSelected(true);
-					cmbLower.get(idx).getSelectionModel().select(0);
+					if (hi.equals(BorderType.wrap))
+						cmbLower.get(idx).getSelectionModel().select(hi);
 					cmbUpper.get(idx).setVisible(false);
 				}
 			});
@@ -123,16 +128,26 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 			CheckBox cb = new CheckBox("");
 			chkBxSymm.add(cb);
 			cb.setOnAction((e) -> {
+				// Take care not to assume order of BorderType enum
 				CheckBox src = (CheckBox) e.getSource();
 				int idx = chkBxSymm.indexOf(src);
 				cmbUpper.get(idx).setVisible(!src.isSelected());
+				int wrapIdx = BorderType.wrap.ordinal();
+				int nValues = BorderType.values().length;
 				if (!src.isSelected()) {// if asymm
-					// neither bound can be wrap
-					if (cmbLower.get(idx).getSelectionModel().getSelectedItem().equals(BorderType.wrap))
-						cmbLower.get(idx).getSelectionModel().select(BorderType.infinite);
-					if (cmbUpper.get(idx).getSelectionModel().getSelectedItem().equals(BorderType.wrap))
-						cmbUpper.get(idx).getSelectionModel().select(BorderType.reflection);
-
+					int lo = cmbLower.get(idx).getSelectionModel().getSelectedIndex();
+					int hi = cmbUpper.get(idx).getSelectionModel().getSelectedIndex();
+					// neither bound can be wrap (i.e. 0)
+					while (lo == wrapIdx) {
+						lo = (lo + 1) % nValues;
+					}
+					if (hi == lo || hi==wrapIdx) {
+						hi = (hi + 1) % nValues;
+						while (hi == wrapIdx || hi==lo)
+							hi = (hi + 1) % nValues;
+					}
+					cmbLower.get(idx).getSelectionModel().select(lo);
+					cmbUpper.get(idx).getSelectionModel().select(hi);
 				}
 			});
 			Label lbl = new Label(Integer.toString(i + 1));
