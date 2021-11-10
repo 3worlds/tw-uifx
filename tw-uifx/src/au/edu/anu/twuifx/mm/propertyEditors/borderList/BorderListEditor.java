@@ -30,6 +30,8 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.borderList;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet.Item;
@@ -44,6 +46,7 @@ import fr.cnrs.iees.twcore.constants.BorderType;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -86,28 +89,73 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		content.setVgap(2);
 		content.setHgap(2);
 
-		content.add(new Label("lower bound"), 0, 0);
-		content.add(new Label("upper bound"), 2, 0);
+		content.add(new Label("dim "), 0, 0);
+		content.add(new Label("sym "), 1, 0);
+		content.add(new Label("lower bound"), 2, 0);
+		content.add(new Label("upper bound"), 3, 0);
 		int nDims = currentBLT.size() / 2;
-		char[] dname = { 'x', 'y', 'z' };
-		ComboBox<BorderType>[] cmbLower = new ComboBox[nDims];
-		ComboBox<BorderType>[] cmbUpper = new ComboBox[nDims];
+
+		List<ComboBox<BorderType>> cmbLower = new ArrayList<>();
+		List<ComboBox<BorderType>> cmbUpper = new ArrayList<>();
+		List<CheckBox> chkBxSymm = new ArrayList<>();
 		for (int i = 0; i < nDims; i++) {
-			cmbLower[i] = new ComboBox<>();
-			cmbUpper[i] = new ComboBox<>();
-			content.add(cmbLower[i], 0, i + 1);
-			content.add(cmbUpper[i], 2, i + 1);
-			Label lbl = new Label("dimension(" + dname[i] + ")");
-			content.add(lbl, 1, i + 1);
+			cmbLower.add(new ComboBox<>());
+			cmbLower.get(i).setOnAction(e -> {
+				ComboBox<BorderType> cb = (ComboBox<BorderType>) e.getSource();
+				if (cb.getSelectionModel().getSelectedIndex() == 0) {// wrap
+					int idx = cmbLower.indexOf(e.getSource());
+					chkBxSymm.get(idx).setSelected(true);
+					cmbUpper.get(idx).getSelectionModel().select(0);
+					cmbUpper.get(idx).setVisible(false);
+				}
+			});
+			cmbUpper.add(new ComboBox<>());
+			cmbUpper.get(i).setOnAction(e -> {
+				ComboBox<BorderType> cb = (ComboBox<BorderType>) e.getSource();
+				if (cb.getSelectionModel().getSelectedIndex() == 0) {// wrap
+					int idx = cmbUpper.indexOf(e.getSource());
+					chkBxSymm.get(idx).setSelected(true);
+					cmbLower.get(idx).getSelectionModel().select(0);
+					cmbUpper.get(idx).setVisible(false);
+				}
+			});
+
+			CheckBox cb = new CheckBox("");
+			chkBxSymm.add(cb);
+			cb.setOnAction((e) -> {
+				CheckBox src = (CheckBox) e.getSource();
+				int idx = chkBxSymm.indexOf(src);
+				cmbUpper.get(idx).setVisible(!src.isSelected());
+				if (!src.isSelected()) {// if asymm
+					// neither bound can be wrap
+					if (cmbLower.get(idx).getSelectionModel().getSelectedItem().equals(BorderType.wrap))
+						cmbLower.get(idx).getSelectionModel().select(BorderType.infinite);
+					if (cmbUpper.get(idx).getSelectionModel().getSelectedItem().equals(BorderType.wrap))
+						cmbUpper.get(idx).getSelectionModel().select(BorderType.reflection);
+
+				}
+			});
+			Label lbl = new Label(Integer.toString(i + 1));
+			content.add(lbl, 0, i + 1);
+			content.add(cb, 1, i + 1);
+			content.add(cmbLower.get(i), 2, i + 1);
+			content.add(cmbUpper.get(i), 3, i + 1);
+
 			GridPane.setHalignment(lbl, HPos.CENTER);
-			GridPane.setHalignment(cmbLower[i], HPos.RIGHT);
-			GridPane.setHalignment(cmbUpper[i], HPos.LEFT);
+			GridPane.setHalignment(cmbLower.get(i), HPos.RIGHT);
+			GridPane.setHalignment(cmbUpper.get(i), HPos.LEFT);
 			String lower = currentBLT.getWithFlatIndex(i * 2);
 			String upper = currentBLT.getWithFlatIndex(i * 2 + 1);
-			cmbLower[i].getItems().addAll(BorderType.values());
-			cmbUpper[i].getItems().addAll(BorderType.values());
-			cmbLower[i].getSelectionModel().select(BorderType.valueOf(lower));
-			cmbUpper[i].getSelectionModel().select(BorderType.valueOf(upper));
+			cmbLower.get(i).getItems().addAll(BorderType.values());
+			cmbUpper.get(i).getItems().addAll(BorderType.values());
+			cmbLower.get(i).getSelectionModel().select(BorderType.valueOf(lower));
+			cmbUpper.get(i).getSelectionModel().select(BorderType.valueOf(upper));
+
+			if (upper.equals(lower)) {
+				cb.setSelected(true);
+				cmbUpper.get(i).setVisible(false);
+			}
+
 		}
 
 		dlg.getDialogPane().setContent(content);
@@ -116,13 +164,18 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		String entry = "";
 		if (result.get().equals(ok)) {
 			for (int i = 0; i < nDims; i++) {
-				entry += "," + cmbLower[i].getSelectionModel().getSelectedItem().name();
-				entry += "," + cmbUpper[i].getSelectionModel().getSelectedItem().name();
+				String lower = cmbLower.get(i).getSelectionModel().getSelectedItem().name();
+				String upper = lower;
+				if (!chkBxSymm.get(i).isSelected())
+					upper = cmbUpper.get(i).getSelectionModel().getSelectedItem().name();
+				entry += "," + lower;
+				entry += "," + upper;
 			}
 			entry = entry.replaceFirst(",", "");
 			String value = "([" + nDims * 2 + "]" + entry + ")";
 
-			//NB Leave it to the queries to validate these settings.
+			// NB Leave it to the queries to validate these settings.
+			// Update: query should no longer be required.
 			setValue(value);
 
 		}
