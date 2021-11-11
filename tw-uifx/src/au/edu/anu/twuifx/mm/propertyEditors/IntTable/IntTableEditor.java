@@ -101,21 +101,21 @@ public class IntTableEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
 			
-//			s = textArea.getText();
-//			List<String> entries = new ArrayList<>();
-//			String[] parts = s.split("\\n");
-//			for (String p : parts) {
-//				p = p.trim();
-//				if (p.length() > 0)
-//					entries.add(p);
-//			}
-//			if (entries.isEmpty())
-//				entries.add("");
-//			IntTable newValue = new IntTable(new Dimensioner(entries.size()));
-//			//NB 1 dim editor only
-//			for (int i = 0; i < entries.size(); i++)
-//				newValue.setWithFlatIndex(Integer.parseInt(entries.get(i)), i);
-//			return newValue;
+			s = textArea.getText();
+			List<String> entries = new ArrayList<>();
+			String[] parts = s.split("\\n");
+			for (String p : parts) {
+				p = p.trim();
+				if (p.length() > 0)
+					entries.add(p);
+			}
+			if (entries.isEmpty())
+				entries.add("");
+			IntTable newValue = new IntTable(new Dimensioner(entries.size()));
+			//NB 1 dim editor only
+			for (int i = 0; i < entries.size(); i++)
+				newValue.setWithFlatIndex(Integer.parseInt(entries.get(i)), i);
+			return newValue;
 
 		}
 		return currentValue;
