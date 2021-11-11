@@ -29,11 +29,15 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.propertyEditors.IntTable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
+import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
+import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
 import au.edu.anu.rscs.aot.collections.tables.IntTable;
 import au.edu.anu.rscs.aot.collections.tables.Table;
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -81,11 +85,38 @@ public class IntTableEditor extends AbstractPropertyEditor<String, LabelButtonCo
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		BorderPane pane = new BorderPane();
+		TextArea textArea = new TextArea();
+		pane.setCenter(textArea);
 		dlg.getDialogPane().setContent(pane);
 		dlg.setResizable(true);
+		dlg.setResizable(true);
+		String s = "";
+		for (int i = 0; i < currentValue.size(); i++) {
+			s += Integer.toString(currentValue.getWithFlatIndex(i));
+			if (i < currentValue.size() - 1)
+				s += "\n";
+		}
+		textArea.setText(s);
+
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
 			
+			s = textArea.getText();
+			List<String> entries = new ArrayList<>();
+			String[] parts = s.split("\\n");
+			for (String p : parts) {
+				p = p.trim();
+				if (p.length() > 0)
+					entries.add(p);
+			}
+			if (entries.isEmpty())
+				entries.add("");
+			IntTable newValue = new IntTable(new Dimensioner(entries.size()));
+			//NB 1 dim editor only
+			for (int i = 0; i < entries.size(); i++)
+				newValue.setWithFlatIndex(Integer.parseInt(entries.get(i)), i);
+			return newValue;
+
 		}
 		return currentValue;
 	}
