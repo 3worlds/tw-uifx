@@ -27,52 +27,78 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-
-package au.edu.anu.twuifx.mm.propertyEditors.DoubleTable;
+package au.edu.anu.twuifx.mm.propertyEditors.IntTable;
 
 import java.util.Optional;
 
-import org.controlsfx.property.editor.PropertyEditor;
+import org.controlsfx.control.PropertySheet.Item;
+import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
+import au.edu.anu.rscs.aot.collections.tables.IntTable;
 import au.edu.anu.rscs.aot.collections.tables.Table;
-import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
-import fr.cnrs.iees.graph.ElementAdapter;
+import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twuifx.images.Images;
+import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Window;
 
 /**
  * @author Ian Davies
  *
- * @date 15 Dec 2019
+ * @date 11 Nov 2021
  */
-//TODO table editors need to be brought together in a proper hierarchy
-public class DoubleTableItem extends SimpleMMPropertyItem {
+public class IntTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
-	public DoubleTableItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
-		super(controller,key, element, canEdit, category, description);
+	private LabelButtonControl view;
+	private IntTableItem itItem;
+
+	public IntTableEditor(Item property, LabelButtonControl control) {
+		super(property, control);
 	}
 
-	@Override
-	public Object getValue() {
-		Table table = (Table) super.getValue();
-		return table.toSaveableString();
+	public IntTableEditor(Item property) {
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		itItem = (IntTableItem) this.getProperty();
+		view = this.getEditor();
+		view.setOnAction(e -> onAction());
 	}
 
-	@Override
-	public void setValue(Object value) {
-		Table oldTable = (Table) getElementProperties().getPropertyValue(key);
-		String oldValue = oldTable.toSaveableString();
-		String newValue = (String)value;
-		// NB Tables do not have an equals() function!
-		if (!oldValue.equals(newValue)){
-			Table newTable = DoubleTable.valueOf(newValue);
-			onUpdateProperty(newTable);
+	private void onAction() {
+		IntTable currentTable = IntTable.valueOf((String) itItem.getValue());
+		Table newTable = editTable(currentTable);
+		setValue(newTable.toSaveableString());
+	}
+
+	private IntTable editTable(IntTable currentValue) {
+		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
+		dlg.setTitle(getProperty().getName());
+		dlg.initOwner((Window) Dialogs.owner());
+		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
+		BorderPane pane = new BorderPane();
+		dlg.getDialogPane().setContent(pane);
+		dlg.setResizable(true);
+		Optional<ButtonType> result = dlg.showAndWait();
+		if (result.get().equals(ok)) {
+			
 		}
+		return currentValue;
 	}
 
 	@Override
-	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
-		return Optional.of(DoubleTableEditor.class);
+	public void setValue(String value) {
+		getEditor().setText(value);
+
+	}
+
+	@Override
+	protected ObservableValue<String> getObservableValue() {
+		return getEditor().getTextProperty();
 	}
 
 }

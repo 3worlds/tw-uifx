@@ -50,7 +50,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
+/**
+ * @author Ian Davies
+ *
+ * @date 15 Dec 2019
+ */
 
+//TODO table editors need to be brought together in a proper hierarchy
 public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private DoubleTableItem dtItem;
@@ -66,7 +72,8 @@ public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	private void onAction() {
-		Table newTable = editTable((DoubleTable)dtItem.getValue());
+		DoubleTable currentTable = DoubleTable.valueOf((String)dtItem.getValue());
+		Table newTable = editTable(currentTable);
 		setValue(newTable.toSaveableString());
 	}
 

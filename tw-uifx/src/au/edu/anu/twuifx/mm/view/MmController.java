@@ -87,6 +87,7 @@ import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
+import au.edu.anu.rscs.aot.collections.tables.IntTable;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorMessageManager;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
@@ -115,6 +116,7 @@ import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import au.edu.anu.twuifx.mm.propertyEditors.DoubleTable.DoubleTableItem;
+import au.edu.anu.twuifx.mm.propertyEditors.IntTable.IntTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.StringTable.StringTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.borderList.BorderListItem;
 import au.edu.anu.twuifx.mm.propertyEditors.boxType.BoxItem;
@@ -1455,6 +1457,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			DoubleTable dt = (DoubleTable) value;
 			if (dt.getDimensioners().length == 1)
 				return new DoubleTableItem(this, key, (ElementAdapter) element, editable, category, description);
+		}else if (value instanceof IntTable) {
+			return new IntTableItem(this,key,(ElementAdapter)element,editable,category,description);
+			
 		} else if (value instanceof Box) {
 			return new BoxItem(this, key, (ElementAdapter) element, editable, category, description);
 		}
