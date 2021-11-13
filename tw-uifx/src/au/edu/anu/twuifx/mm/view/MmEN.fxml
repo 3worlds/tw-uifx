@@ -163,7 +163,7 @@
                <bottom>
             		<ToolBar BorderPane.alignment="CENTER">
             			<items>
-            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Compile" />
+            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Verify" />
             				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Deploy">
                            <graphic>
                               <ImageView pickOnBounds="true" preserveRatio="true">

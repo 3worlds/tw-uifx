@@ -234,8 +234,9 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		}
 
 		// we need to sort this using padIndexedDidgets somehow
-		senderDataSetMap.forEach((i, dsm) -> {
-			int count = 0;
+		int count = 0;
+		for (Map.Entry<Integer, TreeMap<String, CircularDoubleErrorDataSet>> entry : senderDataSetMap.entrySet()) {			
+			TreeMap<String, CircularDoubleErrorDataSet> dsm = entry.getValue();
 			for (String key : dsm.navigableKeySet()) {
 				int index = count % nAxes;
 				DefaultNumericAxis axis = yAxes.get(index);
@@ -244,7 +245,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 				newRenderer.getAxes().add(axis);
 				newRenderer.getDatasets().add(dsm.get(key));
 				renderers.add(newRenderer);
-				if (count > maxLegendItems)
+				if (count >= maxLegendItems)
 					newRenderer.setShowInLegend(false);
 				count++;
 
@@ -258,7 +259,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 					axis.setName(newName);
 				}
 			}
-		});
+		}
 
 		final DefaultNumericAxis xAxis = new DefaultNumericAxis("time: ", timeUnitName);
 		xAxis.setAutoRangeRounding(false);
