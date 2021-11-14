@@ -174,7 +174,7 @@
                            </graphic>
                         </Button>
             				<Circle fx:id="trafficLight" fill="#ff2521" opacity="0.5" radius="6.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Label fx:id="lblChecking" style="-fx-background-color: white; -fx-font-style: italic;" text="compiling..." visible="false">
+                        <Label fx:id="lblChecking" style="-fx-background-color: white; -fx-font-style: italic;" text="verifying..." visible="false">
                            <font>
                               <Font size="12.0" />
                            </font>
