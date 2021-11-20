@@ -102,16 +102,6 @@ import javafx.stage.Window;
  * @date 2 Sep 2019
  */
 
-/**
- * TODO: Change approach to show many grids.
- * 
- * Accept all simulators but user widget properties determines how many to
- * display at one time.
- * 
- * A view is one simulator. Within each are n 2d matrices of any size.
- * 
- * Awaiting metaData info (numeric only : i.e java.lang.Number
- */
 public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata> implements WidgetGUI {
 
 	private Label lblName;
@@ -399,7 +389,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		// -- minValue
 		TextField tfMinValue = new TextField(Double.toString(minValue));
 		tfMinValue.setMaxWidth(50);
-		tfMinValue.setTextFormatter(TextFilters.getDoubleFormatter(minValue));		
+		tfMinValue.setTextFormatter(TextFilters.getDoubleFormatter(minValue));
 		addGridControl("Minimum z", row++, col, tfMinValue, content);
 
 		// -- maxValue
@@ -658,15 +648,16 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 		private void onMouseMove(MouseEvent e) {
 			Number[][] grid = senderGrids.get(sender);
-			int x = (int) (e.getX() / resolution);
-			int y = (int) ((canvas.getHeight() - e.getY()) / resolution);
-			lblX.setText(Integer.toString(x));
-			lblY.setText(Integer.toString(y));
-			if (x < grid.length & y < grid[0].length & x >= 0 & y >= 0) {
-				lblValue.setText(formatter.format(grid[x][y]));
-				e.consume();
+			if (grid != null) {
+				int x = (int) (e.getX() / resolution);
+				int y = (int) ((canvas.getHeight() - e.getY()) / resolution);
+				lblX.setText(Integer.toString(x));
+				lblY.setText(Integer.toString(y));
+				if (x < grid.length & y < grid[0].length & x >= 0 & y >= 0) {
+					lblValue.setText(formatter.format(grid[x][y]));
+					e.consume();
+				}
 			}
-
 		}
 
 		private void clearXY() {
