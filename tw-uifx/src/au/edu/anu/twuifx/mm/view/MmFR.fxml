@@ -91,17 +91,19 @@
                <items>
                   <MenuItem fx:id="miUndo" disable="true" mnemonicParsing="false" onAction="#doUndo" text="Annuler" />
                   <MenuItem fx:id="miRedo" disable="true" mnemonicParsing="false" onAction="#doRedo" text="Refaire" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Importer des extraits depuis l'IDE" />
+               </items></Menu>
+            <Menu mnemonicParsing="false" text="EDI">
+              <items>
+                  <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Importer des extraits depuis l'EDI" />
                   <MenuItem fx:id="miClearSnippets" disable="true" mnemonicParsing="false" onAction="#doClearSnippets" text="Effacer les propriétés de l'extrait" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Projet Java">
                     <items>
                         <MenuItem fx:id="miDisconnect" disable="true" mnemonicParsing="false" onAction="#handleDisconnectJavaProject" text="Déconnecter" />
                         <MenuItem fx:id="miSetCodePath" disable="true" mnemonicParsing="false" onAction="#handleSetCodePath" text="Connecter..." />
                     </items>
                   </Menu>
-               </items></Menu>
+              </items>
+            </Menu>
             <Menu mnemonicParsing="false" text="Aider">
               <items>
                 <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="À propos de ModelMaker" />

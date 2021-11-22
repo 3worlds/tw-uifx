@@ -91,17 +91,19 @@
                <items>
                   <MenuItem fx:id="miUndo" disable="true" mnemonicParsing="false" onAction="#doUndo" text="Undo" />
                   <MenuItem fx:id="miRedo" disable="true" mnemonicParsing="false" onAction="#doRedo" text="Redo" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
+               </items></Menu>
+            <Menu mnemonicParsing="false" text="IDE">
+              <items>
                   <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Import snippets from IDE" />
                   <MenuItem fx:id="miClearSnippets" disable="true" mnemonicParsing="false" onAction="#doClearSnippets" text="Clear snippet properties" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Java project">
                     <items>
                         <MenuItem fx:id="miDisconnect" disable="true" mnemonicParsing="false" onAction="#handleDisconnectJavaProject" text="Disconnect" />
                         <MenuItem fx:id="miSetCodePath" disable="true" mnemonicParsing="false" onAction="#handleSetCodePath" text="Connect..." />
                     </items>
                   </Menu>
-               </items></Menu>
+              </items>
+            </Menu>
             <Menu mnemonicParsing="false" text="Help">
               <items>
                 <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="About ModelMaker" />
