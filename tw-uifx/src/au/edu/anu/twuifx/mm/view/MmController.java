@@ -451,7 +451,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		String header = "'" + Project.getDisplayName() + "' is now disconnected from Java project '"
 				+ UserProjectLink.projectRoot().getName() + "'.";
 		UserProjectLink.unlinkUserProject();
-		ConfigGraph.validateGraph();
+		ConfigGraph.verifyGraph();
 		Dialogs.infoAlert("Project disconnected", header, "");
 	}
 
@@ -464,7 +464,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				UserProjectLink.unlinkUserProject();
 				if (UserProjectLinkFactory.makeEnv(jprjFile, ideType)) {
 					userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
-					ConfigGraph.validateGraph();
+					ConfigGraph.verifyGraph();
 					String header = "'" + Project.getDisplayName() + "' is now connected to Java project '"
 							+ jprjFile.getName() + "'.";
 					String content = "Make sure '" + TwPaths.TW_DEP_JAR + "' is in the build path of '"
@@ -477,7 +477,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void handleCheck(ActionEvent event) {
-		ConfigGraph.validateGraph();
+		ConfigGraph.verifyGraph();
 	}
 
 	@FXML
@@ -533,7 +533,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				newNode = null;
 				initialisePropertySheets();
 				GraphState.setChanged();
-				ConfigGraph.validateGraph();
+				ConfigGraph.verifyGraph();
 
 				model.addState(desc);
 			}
@@ -691,7 +691,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		if (changed) {
 			model.addState(miImportSnippets.getText());
 			GraphState.setChanged();
-			ConfigGraph.validateGraph();
+			ConfigGraph.verifyGraph();
 		}
 		String title = "IDE Import";
 		String header;
@@ -800,7 +800,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		getPreferences();
 		visualiser = new GraphVisualiserfx(visualGraph, //
 				zoomTarget, //
-				cbAnimate.selectedProperty(),//
+				cbAnimate.selectedProperty(), //
 				nodeRadiusProperty, //
 				lineWidthProperty, //
 				btnChildLinks.selectedProperty(), //
@@ -938,6 +938,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@Override
 	public void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+		// cbNodeTextChoice.getSelectionModel().selectedItemProperty()
+		// cbEdgeTextChoice.getSelectionModel().selectedItemProperty()
 		visualGraph = layoutGraph;
 		visualiser.onRollback(layoutGraph);
 		lastSelectedNode = null;
@@ -1001,7 +1003,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String ScrollHValue = "HValue";
 	private static final String ScrollVValue = "VValue";
 	private static final String KeyPathLength = "PathLength";
-	
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
@@ -1032,9 +1033,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			Preferences.putInt(KeyPathLength, spinPathLength.getValue());
 
 			Preferences.putDouble(ElementScalesKey, sldrElements.getValue());
-			
+
 			Preferences.putBoolean(cbAnimate.idProperty().get(), cbAnimate.isSelected());
-			
+
 			Preferences.flush();
 		}
 	}
@@ -1115,7 +1116,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		sldrElements.setDisable(false);
 		sldrElements.setValue(Preferences.getDouble(ElementScalesKey, 1.0));
-		
+
 		cbAnimate.selectedProperty().set(Preferences.getBoolean(cbAnimate.idProperty().get(), true));
 
 		this.setElementScales(sldrElements.getValue());
@@ -1457,9 +1458,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			DoubleTable dt = (DoubleTable) value;
 			if (dt.getDimensioners().length == 1)
 				return new DoubleTableItem(this, key, (ElementAdapter) element, editable, category, description);
-		}else if (value instanceof IntTable) {
-			return new IntTableItem(this,key,(ElementAdapter)element,editable,category,description);
-			
+		} else if (value instanceof IntTable) {
+			return new IntTableItem(this, key, (ElementAdapter) element, editable, category, description);
+
 		} else if (value instanceof Box) {
 			return new BoxItem(this, key, (ElementAdapter) element, editable, category, description);
 		}

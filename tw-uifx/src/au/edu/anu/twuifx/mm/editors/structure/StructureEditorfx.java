@@ -325,7 +325,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 						controller.onAddRemoveProperty(editableNode.getSelectedVisualNode());
 						GraphState.setChanged();
-						ConfigGraph.validateGraph();
+						ConfigGraph.verifyGraph();
 
 						recorder.addState(desc);
 					}

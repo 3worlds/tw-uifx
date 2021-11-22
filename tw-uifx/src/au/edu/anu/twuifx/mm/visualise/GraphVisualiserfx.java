@@ -122,8 +122,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final static Interpolator interpolator = Interpolator.EASE_BOTH;
 	private final IMMController controller;
 	private final Originator recorder;
-	private final ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
-	private final ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
+	private ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
+	private ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
 	private final ReadOnlyObjectProperty<Integer> pathLength;
 
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
@@ -165,7 +165,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		hoverColor = Color.RED;
 		treeEdgeColor = Color.MEDIUMSEAGREEN;
 		graphEdgeColor = Color.INDIANRED;
+		setTextListeners();
+	}
 
+	private void setTextListeners() {
 		this.nodeSelect.addListener(e_ -> {
 			for (VisualNode n : visualGraph.nodes()) {
 				Text txt = (Text) n.getText();
@@ -1133,6 +1136,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.visualGraph = layoutGraph;
 		pane.getChildren().clear();
 		this.initialiseView(duration);
+		this.setTextListeners();
 	}
 
 }

@@ -115,7 +115,7 @@ public class SimpleMMPropertyItem implements Item {
 		controller.onItemEdit(this);
 		GraphState.setChanged();
 		if (!(value instanceof String))
-			ConfigGraph.validateGraph();
+			ConfigGraph.verifyGraph();
 	}
 
 	public SimplePropertyList getElementProperties() {
