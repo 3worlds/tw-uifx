@@ -209,7 +209,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		for (VisualNode parent : collapsedParents)
 			for (VisualNode child : parent.getChildren()) {
 				if (child.isCollapsed())
-					collapseTree(child, false, duration);
+					collapseTree(child, duration);
 			}
 		Set<VisualNode> visibleNodes = new HashSet<>();
 
@@ -323,6 +323,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				if (dx != 0 || dy != 0) {
 					dragNode.setPosition(newx, newy);
 					GraphState.setChanged();
+					String desc = "Move ["+dragNode.getConfigNode().toShortString()+"]";
+					recorder.addState(desc);
+					
 				}
 				dragNode = null;
 				e.consume();
@@ -553,11 +556,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void collapseTreeFrom(VisualNode childRoot, boolean record, double duration) {
-		collapseTree(childRoot, record, duration);
+	public void collapseTreeFrom(VisualNode childRoot, double duration) {
+		collapseTree(childRoot, duration);
 	}
 
-	private void collapseTree(VisualNode childRoot, boolean record, double duration) {
+	private void collapseTree(VisualNode childRoot, double duration) {
 		List<Animation> timelines = new ArrayList<>();
 		VisualNode parent = childRoot.getParent();
 		Circle circle = (Circle) parent.getSymbol();
@@ -567,26 +570,16 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		collapse(childRoot, xp, yp, timelines, duration, animate);
 		if (animate.get()) {
 			ParallelTransition pt = new ParallelTransition();
-
 			pt.getChildren().addAll(timelines);
 			pt.setOnFinished(e -> {
 				// Hide every edge between this tree and other non-collapsed nodes
 				hideEdges(childRoot);
 				setLayoutNode(controller.getLayoutRoot());
-
-				if (record) {
-					// Don't do this so "record" can be removed sometime
-					// Problem stemming from CollapseAll
-//				String desc = "Collapse [" + childRoot.getConfigNode().toShortString() + "]";
-//				recorder.addState(desc);
-//				GraphState.setChanged();
-				}
 			});
 			pt.play();
 		} else {
 			hideEdges(childRoot);
 			setLayoutNode(controller.getLayoutRoot());
-
 		}
 	}
 
@@ -609,11 +602,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void expandTreeFrom(VisualNode childRoot, boolean record, double duration) {
-		expandTree(childRoot, record, duration);
+	public void expandTreeFrom(VisualNode childRoot, double duration) {
+		expandTree(childRoot, duration);
 	}
 
-	private void expandTree(VisualNode childRoot, boolean record, double duration) {
+	private void expandTree(VisualNode childRoot, double duration) {
 		List<Animation> timelines = new ArrayList<>();
 		double w = pane.getWidth();
 		double h = pane.getHeight();
@@ -627,14 +620,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			pt.setOnFinished(e -> {
 				// rebind edges to the showGraphLine property.
 				showEdges(childRoot, edgeLineVisibleProperty);
-				if (record) {
-					// Don't save collapsed cmds - there are too many. Therefore, remove "record"
-					// arg sometime.
-					// Problem stemming from CollapseAll
-//				String desc = "Expand [" + childRoot.getConfigNode().toShortString() + "]";
-//				recorder.addState(desc);
-//				GraphState.setChanged();
-				}
 			});
 			pt.play();
 		} else
@@ -933,7 +918,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			if (root.cClassId().equals(N_ROOT.label())) {
 				VisualNode predef = (VisualNode) get(root.getChildren(),
 						selectOne(hasTheName(ConfigurationReservedNodeId.categories.id())));
-				collapseTree(predef, false, 1.0);
+				collapseTree(predef, 1.0);
 			}
 		}
 	}

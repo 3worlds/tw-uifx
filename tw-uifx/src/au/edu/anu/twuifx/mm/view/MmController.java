@@ -495,7 +495,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		final double duration = GraphVisualiserfx.animateSlow;
 
 		doLayout(duration);
-
+		
+		String desc = currentLayout.name() +" layout";
+		model.addState(desc);
 	}
 
 	@FXML

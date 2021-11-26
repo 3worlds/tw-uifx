@@ -177,16 +177,17 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPAND);
 			if (editableNode.getSelectedVisualNode().hasCollaspedChild()) {
 				int count = 0;
-				SortedMap<String,VisualNode> sortedNames = new TreeMap<>();
-				for (VisualNode vn:editableNode.getSelectedVisualNode().getChildren())
+				SortedMap<String, VisualNode> sortedNames = new TreeMap<>();
+				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren())
 					sortedNames.put(vn.getDisplayText(ElementDisplayText.RoleName), vn);
-				for (Map.Entry<String, VisualNode> entry:sortedNames.entrySet()) { 
+				for (Map.Entry<String, VisualNode> entry : sortedNames.entrySet()) {
 					if (entry.getValue().isCollapsed()) {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, entry.getKey());
 						mi.setOnAction((e) -> {
 							onExpandTree(entry.getValue(), duration);
-							// Either record state on transition.setOnFinished(...) or launch delayed thread
+							String desc = MenuLabels.ML_EXPAND.label()+" ["+entry.getKey()+"]";
+							recorder.addState(desc);
 						});
 					}
 				}
@@ -195,7 +196,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
 					mi.setOnAction((e) -> {
 						onExpandTrees(duration);
-						// Either record state on transition.setOnFinished(...) or launch delayed thread
+						String desc = "Expand "+MenuLabels.ML_ALL.label()+" ["+editableNode.getConfigNode().toShortString()+"]";
+						recorder.addState(desc);
 					});
 				}
 			} else
@@ -206,21 +208,28 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_COLLAPSE);
 			if (editableNode.getSelectedVisualNode().hasUncollapsedChildren()) {
 				int count = 0;
-				SortedMap<String,VisualNode> sortedNames = new TreeMap<>();
-				for (VisualNode vn:editableNode.getSelectedVisualNode().getChildren())
+				SortedMap<String, VisualNode> sortedNames = new TreeMap<>();
+				for (VisualNode vn : editableNode.getSelectedVisualNode().getChildren())
 					sortedNames.put(vn.getDisplayText(ElementDisplayText.RoleName), vn);
-				for (Map.Entry<String, VisualNode> entry:sortedNames.entrySet()) {
+				for (Map.Entry<String, VisualNode> entry : sortedNames.entrySet()) {
 					if (!entry.getValue().isCollapsed()) {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, entry.getKey());
-						mi.setOnAction(e -> onCollapseTree(entry.getValue(), duration));
+						mi.setOnAction(e -> {
+							onCollapseTree(entry.getValue(), duration);
+							String desc = MenuLabels.ML_COLLAPSE.label() + " [" + entry.getKey() + "]";
+							recorder.addState(desc);
+						});
 					}
 				}
 				if (count > 1) {
 					mu.getItems().add(new SeparatorMenuItem());
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
-					mi.setOnAction(e -> onCollapseTrees(duration));
-					// Either record state on transition.setOnFinished(...) or launch delayed thread
+					mi.setOnAction(e -> {
+						onCollapseTrees(duration);
+						String desc = "Collapse "+MenuLabels.ML_ALL.label()+" ["+editableNode.getConfigNode().toShortString()+"]";
+						recorder.addState(desc);
+					});
 				}
 			} else
 				mu.setDisable(true);
@@ -237,7 +246,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 							+ editableNode.getConfigNode().toShortString() + "]";
 
 					onDeleteNode(duration);
-				
+
 					gvisualiser.setLayoutNode(controller.getLayoutRoot());
 
 					recorder.addState(desc);
@@ -304,9 +313,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						String desc = MenuLabels.ML_DELETE_TREE.label + " [" + vn.getConfigNode().toShortString() + "]";
 
 						onDeleteTree(vn, duration);
-				
+
 						gvisualiser.setLayoutNode(controller.getLayoutRoot());
-						
+
 						recorder.addState(desc);
 					});
 				}
@@ -346,9 +355,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 							+ editableNode.getConfigNode().toShortString() + "]";
 
 					onRenameNode();
-					
-					gvisualiser.setLayoutNode(controller.getLayoutRoot());
 
+					gvisualiser.setLayoutNode(controller.getLayoutRoot());
 
 					recorder.addState(desc);
 				});
@@ -432,7 +440,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		return propSpecs;
 	}
-
 
 	private enum MenuLabels {
 		ML_NEW_NODE /*         */("New node"), // spec
