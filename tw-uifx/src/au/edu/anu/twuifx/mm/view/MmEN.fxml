@@ -96,7 +96,8 @@
               <items>
                   <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Import snippets from IDE" />
                   <MenuItem fx:id="miClearSnippets" disable="true" mnemonicParsing="false" onAction="#doClearSnippets" text="Clear snippet properties" />
-                  <Menu mnemonicParsing="false" text="Java project">
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="connection">
                     <items>
                         <MenuItem fx:id="miDisconnect" disable="true" mnemonicParsing="false" onAction="#handleDisconnectJavaProject" text="Disconnect" />
                         <MenuItem fx:id="miSetCodePath" disable="true" mnemonicParsing="false" onAction="#handleSetCodePath" text="Connect..." />

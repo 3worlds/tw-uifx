@@ -96,7 +96,8 @@
               <items>
                   <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Importer des extraits depuis l'EDI" />
                   <MenuItem fx:id="miClearSnippets" disable="true" mnemonicParsing="false" onAction="#doClearSnippets" text="Effacer les propriétés de l'extrait" />
-                  <Menu mnemonicParsing="false" text="Projet Java">
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Lien">
                     <items>
                         <MenuItem fx:id="miDisconnect" disable="true" mnemonicParsing="false" onAction="#handleDisconnectJavaProject" text="Déconnecter" />
                         <MenuItem fx:id="miSetCodePath" disable="true" mnemonicParsing="false" onAction="#handleSetCodePath" text="Connecter..." />
