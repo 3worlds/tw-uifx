@@ -230,7 +230,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			for (Property p : props)
 				colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
 			colHeader = colHeader.replaceFirst("_", "");
-			result += sep + colHeader + "_avg" + sep + colHeader + "_var" + sep + colHeader + "_N";
+			result += sep + colHeader;
 		}
 
 		return result.replaceFirst(sep, "");
@@ -525,12 +525,17 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		if (lastNonZeroTime == Integer.MAX_VALUE)
 			lastNonZeroTime = max - 1;
 
-		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_average.csv");
-		fileLines.clear();
-		fileLines.add(getAveragesHeader());
+		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_avg.csv");
+		File varianceFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_var.csv");
+		List<String>fileLinesAvg = new ArrayList<>();
+		List<String>fileLinesVar= new ArrayList<>();
+		String headerAvg = getAveragesHeader();
+		fileLinesAvg.add(headerAvg);
+		fileLinesVar.add(headerAvg);
 		int nCols = data.size() / nReps;
 		for (int row = 0; row < max; row++) {
-			String line = "";
+			String lineAgv = "";
+			String lineVar = "";
 			for (int i = 0; i < nCols; i++) {
 				Statistics stat = new Statistics();
 				for (int r = 0; r < nReps; r++) {
@@ -538,14 +543,16 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 					stat.add(data.get(col).get(row));
 				}
 				String a = Double.toString(stat.average());
-				String v = Double.toString(stat.variance());
-				String n = Integer.toString(stat.n());
-				line += sep + a + sep + v + sep + n;
+				String v = Double.toString(stat.variance());		
+				lineAgv += sep + a ;
+				lineVar += sep + v;
 			}
-			fileLines.add(line.replaceFirst(sep, ""));
+			fileLinesAvg.add(lineAgv.replaceFirst(sep, ""));
+			fileLinesVar.add(lineVar.replaceFirst(sep, ""));
 		}
 		try {
-			Files.write(averageFile.toPath(), fileLines, StandardCharsets.UTF_8);
+			Files.write(averageFile.toPath(), fileLinesAvg, StandardCharsets.UTF_8);
+			Files.write(varianceFile.toPath(), fileLinesVar, StandardCharsets.UTF_8);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
