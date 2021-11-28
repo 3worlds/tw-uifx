@@ -40,6 +40,8 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
+import java.io.IOException;
+
 /**
  * @author Ian Davies
  *
@@ -77,10 +79,15 @@ public class HLControlWidget1 extends StateMachineController implements Widget, 
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, finished)) {
+			// Other widgets will not get the finished message so must also be prepared to
+			// tidy-up in quitting state
 			sendEvent(quit.event());
-			long endTime = System.currentTimeMillis();
+
+			// Does not include tidy-up (quitting state) time taken by other widgets as that
+			// occurs in another thread.		
 			System.out.println("Experiment [done; Instance: " + RunTimeId.runTimeId() + "; Duration: "
-					+ (endTime - startTime) + " ms]");
+					+ (System.currentTimeMillis() - startTime) + " ms]");
+
 			ended = true;
 		}
 	}
