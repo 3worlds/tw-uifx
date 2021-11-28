@@ -10,11 +10,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
@@ -25,7 +22,6 @@ import au.edu.anu.twcore.data.runtime.Output0DData;
 import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates;
-import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
@@ -42,7 +38,6 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
-import fr.cnrs.iees.twcore.constants.TimeUnits;
 import fr.ens.biologie.generic.utils.Statistics;
 
 /**
@@ -150,8 +145,15 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 		} else if (isSimulatorState(state, finished)) {
 			writeData();
-		} else if (isSimulatorState(state,SimulatorStates.quitting)) {
-			writeData();
+		} else if (isSimulatorState(state, SimulatorStates.quitting)) {
+			/**
+			 * when debugging a headless sim, enable the line below because if setting a
+			 * breakpoint in writeData(), the program will exit during debugging
+			 * 
+			 * writeData();
+			 * 
+			 * we need a flag to indicate if we are running headless.
+			 */
 		}
 	}
 
@@ -218,6 +220,20 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		}
 		return result.replaceFirst("\t", "");
 
+	}
+
+	private String getAveragesHeader() {
+		String result = "";
+		String sep = "\t";
+		for (List<Property> props : treatmentList) {
+			String colHeader = "";
+			for (Property p : props)
+				colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
+			colHeader = colHeader.replaceFirst("_", "");
+			result += sep + colHeader + "_avg" + sep + colHeader + "_var" + sep + colHeader + "_N";
+		}
+
+		return result.replaceFirst(sep, "");
 	}
 
 	private void writeData() {
@@ -442,7 +458,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			String s3 = Double.toString(stats[bar].variance());
 			String s4 = Double.toString(Math.sqrt(stats[bar].variance()));
 			String s5 = Integer.toString(stats[bar].n());
-			String s6 = Integer.toString(lastNonZeroTime+1);
+			String s6 = Integer.toString(lastNonZeroTime + 1);
 			fileLines.add(s1 + sep + s2 + sep + s3 + sep + s4 + sep + s5 + sep + s6);
 		}
 		try {
@@ -479,34 +495,61 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	}
 
 	private int processSeries(String widgetDirName, String header, String name, List<List<Double>> data, int max) {
+		String sep = "\t";
 		int lastNonZeroTime = Integer.MAX_VALUE;
-		File outFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + ".csv");
-		outFile.getParentFile().mkdirs();
+		File seriesFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + ".csv");
+		seriesFile.getParentFile().mkdirs();
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(header);
-		for (int lineNo = 0; lineNo < max; lineNo++) {
+		for (int row = 0; row < max; row++) {
 			String line = "";
 			for (int i = 0; i < data.size(); i++) {
 				String s = "";
 				List<Double> col = data.get(i);
-				if (lineNo < col.size()) {
-					Double d = col.get(lineNo);
+				if (row < col.size()) {
+					Double d = col.get(row);
 					if (d <= 0.0)
-						lastNonZeroTime = Math.min(lastNonZeroTime, lineNo);
+						lastNonZeroTime = Math.min(lastNonZeroTime, row);
 					s = d.toString();
 				}
-				line += "\t" + s;
+				line += sep + s;
 			}
-			fileLines.add(line.replaceFirst("\t", ""));
+			fileLines.add(line.replaceFirst(sep, ""));
 		}
 		try {
-			Files.write(outFile.toPath(), fileLines, StandardCharsets.UTF_8);
+			Files.write(seriesFile.toPath(), fileLines, StandardCharsets.UTF_8);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 
 		if (lastNonZeroTime == Integer.MAX_VALUE)
-			lastNonZeroTime = max-1;
+			lastNonZeroTime = max - 1;
+
+		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_average.csv");
+		fileLines.clear();
+		fileLines.add(getAveragesHeader());
+		int nCols = data.size() / nReps;
+		for (int row = 0; row < max; row++) {
+			String line = "";
+			for (int i = 0; i < nCols; i++) {
+				Statistics stat = new Statistics();
+				for (int r = 0; r < nReps; r++) {
+					int col = r * nCols + i;
+					stat.add(data.get(col).get(row));
+				}
+				String a = Double.toString(stat.average());
+				String v = Double.toString(stat.variance());
+				String n = Integer.toString(stat.n());
+				line += sep + a + sep + v + sep + n;
+			}
+			fileLines.add(line.replaceFirst(sep, ""));
+		}
+		try {
+			Files.write(averageFile.toPath(), fileLines, StandardCharsets.UTF_8);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
 		return lastNonZeroTime;
 
 	}
