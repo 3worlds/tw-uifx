@@ -168,6 +168,8 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		for (int i = 0; i < currentTT.size(); i++)
 			s += currentTT.getWithFlatIndex(i) + ",";
 		s = s.substring(0, s.length() - 1);
+		if (s.isBlank())
+			s = hintText;
 		TextField txfInput = new TextField(s);
 		grid.add(txfInput, 0, 2);
 		Button btnValidate = new Button("Validate");

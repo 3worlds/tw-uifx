@@ -209,15 +209,27 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	private String getHeader() {
 		String result = "";
-		for (int i = 0; i < nReps; i++) {
-			for (List<Property> props : treatmentList) {
-				String colHeader = i + ":";
-				for (Property p : props)
-					colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
-				colHeader = colHeader.replaceFirst("_", "");
-				result += "\t" + colHeader;
+		String sep = "\t";
+
+		if (treatmentList.isEmpty()) {
+			for (Map.Entry<Integer, TreeMap<String, List<Double>>> simEntry : simulatorDataSetMap.entrySet()) {
+				TreeMap<String, List<Double>> simData = simEntry.getValue();
+				for (Map.Entry<String, List<Double>> simTimeSeries : simData.entrySet()) {
+					String seriesKey = simTimeSeries.getKey();
+					result += sep + seriesKey;
+				}
 			}
-		}
+
+		} else
+			for (int i = 0; i < nReps; i++) {
+				for (List<Property> props : treatmentList) {
+					String colHeader = i + ":";
+					for (Property p : props)
+						colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
+					colHeader = colHeader.replaceFirst("_", "");
+					result += "\t" + colHeader;
+				}
+			}
 		return result.replaceFirst("\t", "");
 
 	}
@@ -278,7 +290,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			if (edt != null)
 				switch (edt) {
 				case singleRun: {
-					// nothing to do except write the data series and record the exp data
+					// nothing to do except write the data series and record the exp data as above
 					break;
 				}
 				case sensitivityAnalysis: {
@@ -527,8 +539,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_avg.csv");
 		File varianceFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_var.csv");
-		List<String>fileLinesAvg = new ArrayList<>();
-		List<String>fileLinesVar= new ArrayList<>();
+		List<String> fileLinesAvg = new ArrayList<>();
+		List<String> fileLinesVar = new ArrayList<>();
 		String headerAvg = getAveragesHeader();
 		fileLinesAvg.add(headerAvg);
 		fileLinesVar.add(headerAvg);
@@ -543,8 +555,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 					stat.add(data.get(col).get(row));
 				}
 				String a = Double.toString(stat.average());
-				String v = Double.toString(stat.variance());		
-				lineAgv += sep + a ;
+				String v = Double.toString(stat.variance());
+				lineAgv += sep + a;
 				lineVar += sep + v;
 			}
 			fileLinesAvg.add(lineAgv.replaceFirst(sep, ""));
