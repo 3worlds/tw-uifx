@@ -1,3 +1,31 @@
+/**************************************************************************
+ *  TW-CORE - 3Worlds Core classes and methods                            *
+ *                                                                        *
+ *  Copyright 2018: Shayne Flint, Jacques Gignoux & Ian D. Davies         *
+ *       shayne.flint@anu.edu.au                                          *
+ *       jacques.gignoux@upmc.fr                                          *
+ *       ian.davies@anu.edu.au                                            *
+ *                                                                        *
+ *  TW-CORE is a library of the principle components required by 3W       *
+ *                                                                        *
+ **************************************************************************
+ *  This file is part of TW-CORE (3Worlds Core).                          *
+ *                                                                        *
+ *  TW-CORE is free software: you can redistribute it and/or modify       *
+ *  it under the terms of the GNU General Public License as published by  *
+ *  the Free Software Foundation, either version 3 of the License, or     *
+ *  (at your option) any later version.                                   *
+ *                                                                        *
+ *  TW-CORE is distributed in the hope that it will be useful,            *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *  GNU General Public License for more details.                          *
+ *                                                                        *
+ *  You should have received a copy of the GNU General Public License     *
+ *  along with TW-CORE.                                                   *
+ *  If not, see <https://www.gnu.org/licenses/gpl.html>                   *
+ *                                                                        *
+ **************************************************************************/
 package au.edu.anu.twuifx.widgets.headless;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
@@ -59,6 +87,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private ExperimentDesignType edt;
 	private int nReps;
 	private int nLines;
+	private String outputDir;
+	private String precis;
 
 	final private Map<Integer, TreeMap<String, List<Double>>> simulatorDataSetMap;
 
@@ -84,6 +114,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		if (properties.hasProperty(P_HLWIDGET_NLINES.key())) {
 			nLines = (Integer) properties.getPropertyValue(P_HLWIDGET_NLINES.key());
 		}
+		outputDir = (String) properties.getPropertyValue(P_EXP_DIR.key());
+		precis = (String) properties.getPropertyValue(P_EXP_PRECIS.key());
 	}
 
 	@Override
@@ -251,7 +283,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private void writeData() {
 		// use a local scope to ensure unique file names and so prevent file overwrites
 		LocalScope scope = new LocalScope("Files");
-		File dir = Project.makeFile(ProjectPaths.RUNTIME, "output");
+		File dir = Project.makeFile(ProjectPaths.RUNTIME, outputDir);
 		dir.mkdirs();
 		for (String fileName : dir.list()) {
 			int dotIndex = fileName.lastIndexOf('.');
@@ -324,7 +356,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			h += "F" + i + "\t";
 		h += "RV";
 
-		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_AnovaInput.csv");
+		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_AnovaInput.csv");
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(h);
 		for (int i = 0; i < sample.size(); i++) {
@@ -360,7 +392,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		fileLines.add("ava = anova (mdl)");
 		fileLines.add("write.table(ava,\"" + anovaResultsName + "\", sep = \"\t\")");
 
-		File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_anova.R");
+		File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_anova.R");
 		try {
 			Files.write(rscriptFile.toPath(), fileLines, StandardCharsets.UTF_8);
 		} catch (IOException e1) {
@@ -387,7 +419,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		}
 
 		try {
-			File results = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, anovaResultsName);
+			File results = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, anovaResultsName);
 			fileLines = Files.readAllLines(results.toPath());
 			String line = "Terms\t" + fileLines.get(0);
 			fileLines.set(0, line);
@@ -433,7 +465,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				fileLines.add(new StringBuilder().append(sym).append(sep).append(key).toString());
 			}
 
-			File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_RelSumSq.csv");
+			File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_RelSumSq.csv");
 			Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -459,7 +491,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			}
 			stats[bar].add(sum / (double) nLines);
 		}
-		File statsFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_SA.csv");
+		File statsFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_SA.csv");
 		fileLines.clear();
 		fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
 		String sep = "\t";
@@ -483,10 +515,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	private void SaveProjectDesign(String widgetDirName) {
 		List<String> fileLines = new ArrayList<>();
-		File designFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, "Design.csv");
+		File designFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, "Design.csv");
 		designFile.getParentFile().mkdirs();
 		fileLines.clear();
 		fileLines.add("Label\tValue");
+		fileLines.add("Precis\t"+precis);
 		for (Map.Entry<String, Object> pair : baseline.entrySet()) {
 			fileLines.add(pair.getKey() + "\t" + pair.getValue());
 		}
@@ -509,7 +542,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private int processSeries(String widgetDirName, String header, String name, List<List<Double>> data, int max) {
 		String sep = "\t";
 		int lastNonZeroTime = Integer.MAX_VALUE;
-		File seriesFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + ".csv");
+		File seriesFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + ".csv");
 		seriesFile.getParentFile().mkdirs();
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(header);
@@ -537,8 +570,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		if (lastNonZeroTime == Integer.MAX_VALUE)
 			lastNonZeroTime = max - 1;
 
-		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_avg.csv");
-		File varianceFile = Project.makeFile(ProjectPaths.RUNTIME, "output", widgetDirName, name + "_var.csv");
+		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_avg.csv");
+		File varianceFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_var.csv");
 		List<String> fileLinesAvg = new ArrayList<>();
 		List<String> fileLinesVar = new ArrayList<>();
 		String headerAvg = getAveragesHeader();
