@@ -56,6 +56,7 @@ import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -406,18 +407,20 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		ProcessBuilder b = new ProcessBuilder(commands);
 		b.directory(new File(rscriptFile.getParent()));
 		b.inheritIO();
+		boolean rPresent = true;
 		try {
 			try {
 				b.start().waitFor();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				rPresent = false;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			rPresent = false;
 		}
 
+		if (rPresent) {
 		try {
 			File results = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, anovaResultsName);
 			fileLines = Files.readAllLines(results.toPath());
@@ -471,7 +474,9 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		} else {
+			throw new TwuifxException("ANOVA not computed because Rscript was not found on the system.");
+		}
 	}
 
 	private void processSA(String widgetDirName, String name, List<List<Double>> data, int lastNonZeroTime) {
