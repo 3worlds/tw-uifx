@@ -89,15 +89,24 @@
 				</Menu>
 				<Menu mnemonicParsing="false" text="Éditer">
                <items>
-                  <MenuItem fx:id="miUndo" disable="true" mnemonicParsing="false" onAction="#doUndo" text="Annuler" />
-                  <MenuItem fx:id="miRedo" disable="true" mnemonicParsing="false" onAction="#doRedo" text="Refaire" />
+                  <MenuItem fx:id="miUndo" disable="true" mnemonicParsing="false" onAction="#doUndo" text="Annuler">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="miRedo" disable="true" mnemonicParsing="false" onAction="#doRedo" text="Refaire">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
                </items></Menu>
             <Menu mnemonicParsing="false" text="EDI">
               <items>
-                  <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Importer des extraits depuis l'EDI" />
+                  <MenuItem fx:id="miImportSnippets" disable="true" mnemonicParsing="false" onAction="#onImportSnippets" text="Importer des extraits depuis l'EDI">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
                   <MenuItem fx:id="miClearSnippets" disable="true" mnemonicParsing="false" onAction="#doClearSnippets" text="Effacer les propriétés de l'extrait" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <Menu mnemonicParsing="false" text="Lien">
+                  <Menu mnemonicParsing="false" text="Lien vers l'EDI">
                     <items>
                         <MenuItem fx:id="miDisconnect" disable="true" mnemonicParsing="false" onAction="#handleDisconnectJavaProject" text="Déconnecter" />
                         <MenuItem fx:id="miSetCodePath" disable="true" mnemonicParsing="false" onAction="#handleSetCodePath" text="Connecter..." />
@@ -166,8 +175,8 @@
                <bottom>
             		<ToolBar BorderPane.alignment="CENTER">
             			<items>
-            				<Button fx:id="btnCheck" disable="true" mnemonicParsing="false" onAction="#handleCheck" text="Vérifier" />
-            				<Button fx:id="btnDeploy" disable="true" mnemonicParsing="false" onAction="#handleOnDeploy" text="Déployer">
+            				<Button fx:id="btnCheck" disable="true" onAction="#handleCheck" text="_Vérifier" />
+            				<Button fx:id="btnDeploy" disable="true" onAction="#handleOnDeploy" text="_Déployer">
                            <graphic>
                               <ImageView pickOnBounds="true" preserveRatio="true">
                                  <image>

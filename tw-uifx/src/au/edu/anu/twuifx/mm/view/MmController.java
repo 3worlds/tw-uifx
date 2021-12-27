@@ -359,9 +359,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		});
 
 		// Tooltips
-		btnLayout.setTooltip(getFastToolTip("Re-apply layout"));
-		btnXLinks.setTooltip(getFastToolTip("Show/hide cross-links"));
-		btnChildLinks.setTooltip(getFastToolTip("Show/hide parent-child edges"));
+		btnLayout.setTooltip(getFastToolTip("Re-apply layout [Alt+L]"));
+		btnXLinks.setTooltip(getFastToolTip("Toggle cross-links"));
+		btnChildLinks.setTooltip(getFastToolTip("Toggle parent-child edges"));
 		tglSideline.setTooltip(getFastToolTip("Move isolated nodes aside"));
 		cbEdgeTextChoice.setTooltip(getFastToolTip("Edge text display options"));
 		cbNodeTextChoice.setTooltip(getFastToolTip("Node text display options"));
@@ -373,11 +373,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		rbl3.setTooltip(getFastToolTip("Use RadialTree2 layout"));
 		rbl4.setTooltip(getFastToolTip("Use SpringGraph layout"));
 		txfLayoutRoot.setTooltip(getFastToolTip("Current selected display root for tree layouts"));
-		btnCheck.setTooltip(getFastToolTip("Build and compile the model specifications"));
-		btnDeploy.setTooltip(getFastToolTip("Run the simulation experiment"));
+		btnCheck.setTooltip(getFastToolTip("Verify model specifications and compile [Alt+V]"));
+		btnDeploy.setTooltip(getFastToolTip("Run the simulation experiment [Alt+D]"));
 		rb1.setTooltip(getFastToolTip("Display requried actions only"));
 		rb2.setTooltip(getFastToolTip("Display actions and specification constraints"));
 		rb3.setTooltip(getFastToolTip("Display all message info"));
+		// don't display these. Tips get in the way!
 //		allElementsPropertySheet.setTooltip(getFastToolTip("All editable properties for currently displayed nodes and edges"));
 //		nodePropertySheet.setTooltip(getFastToolTip("All properties for currently selected node and its out-edges"));
 		/** Set a handler to refresh the Open menu items when selected */
