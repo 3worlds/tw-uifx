@@ -26,6 +26,9 @@ Three fields are required: a deletion rate, pulse rate and a ceiling to provide 
 
 . Create three `field` nodes as children of `record:glbCnsts`, name them 'ceiling', 'deleteRate' and 'pulseRate' - all of type `Double`.
 
+[#fig-tut5-data-definition]
+.Data definition specifications.
+image::tutorial5IMG/fig-tut5-data-definition.png[align="left",role="thumb"]
 
 ===== Structure
 We need 2 component types for this model: the system (which already exists i.e. `system:sys`) and the 'item' component type which we've yet to define. These have a hierarchical relationship: the system is an assemblage of 'items'. However, `system:sys1` currently belongs to the _atomic_ category. This must be changed to the _assemblage_ category to signify this hierarchical structure.
@@ -69,6 +72,10 @@ A message now appears suggesting two ways we can create an initial number of ite
 . In the properties editor, set the value of `nInstances` to 100. 
 
 . Before ending this section, rename `initFunction:init1` to 'SysInit'.
+
+[#fig-tut5-structure]
+.Model structure specifications.
+image::tutorial5IMG/fig-tut5-structure.png[align="left",role="thumb"]
 
 ===== Dynamics
 
@@ -160,6 +167,9 @@ Now add `dependsOn` edges between some of the processes to set their order of ex
 
 . Right-click on `process:p3` and create a `dependsOn` edge to `process:p2`. This ensures `function:Delete` always occurs after `function:Nitems` should they occur simultaneously.
 
+[#fig-tut5-dynamics]
+.Model dynamics specification.
+image::tutorial5IMG/fig-tut5-dynamics.png[align="left",role="thumb"]
 
 ===== Coding
 
@@ -221,7 +231,16 @@ To see some output we will add a widget to display a time series of `count`.
 
 . Run the simulator (Deploy [Alt+D]).
 
+
+[#fig-tut5-user-interface]
+.User interface specifications.
+image::tutorial5IMG/fig-tut5-user-interface.png[align="left",role="thumb"]
+
 The simulator runs indefinitely (assuming you have deleted the `stoppingCondition` node) with exponentially declining numbers and a creation pulses up to 500 time steps apart.
+
+[#fig-tut5-modelRunner]
+.Running Tutorial 5.
+image::tutorial5IMG/fig-tut5-modelRunner.png[align="left",role="thumb"]
 
 ==== Next
 
