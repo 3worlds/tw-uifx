@@ -47,7 +47,7 @@ We now define some data for the simple disturbance model: frequency and intensit
 
 . Add two fields to this record, both of type `Double` called 'freq' and 'inten' respectively. 
 
-The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order children alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We should also prefix all the data associated with the CLV with 'comm' (community).
+The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order children alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same characters - in this case 'dist'. We should also prefix all the data associated with the CLV with 'comm' (community).
 
 NOTE: Tree layout algorithms sort child nodes in alphabetical order. Consider this behaviour when choosing node names. 
 
@@ -62,7 +62,7 @@ To display an xy plot of diversity by time since disturbance, we can add a drive
 [start = 8]
 . Create a `field` of type `Double` as a child of `record:commDrvs` and name it 'tsd'. 
 
-Fill out the meta-data properties with at least the description, range and units if relevant. This information will be incorporated in the comments of the generated Java code (i.e. add the optional property `description` to the new data nodes).
+Fill out the meta-data properties with at least the description, range and units if relevant. This information will be incorporated in the comments of the generated Java code (i.e. add the optional property `description` to the new data nodes: right-click on a node and select 'optional properties').
 
 [start = 9]
 
@@ -86,7 +86,127 @@ image::tutorial4IMG/fig-tut4-data-definition.png[align="center",role="thumb"]
 
 
 
-That's all the data needed for this model. We can now specify the system dynamics.
+That's all the data needed for this model. We can now specify the system structure.
+
+===== Structure
+
+Recall from the previous tutorial, that `system:sys1` is acting as a single component. It's _role_ was defined as a permanent, indivisible global component:
+
+... _permanent_;
+
+... _atomic_; 
+
+... belonging to the _arena_; 
+
+
+The _arena_ is a special category. One and only one component must belong to this category. Any data associated with it (_constants_, _drivers_ and _decorators_) is available to all `functions`: the data is global. The system (`system:sys1`) was also being tracked by the data tracker. This relationship was removed above because _x_, the population being tracked, will now be part of a category related to the community component of the model i.e 'x' will no longer be global data.
+
+The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define the relationship between the disturbance and the effected community.
+
+. Right-click on `system.sys1` and collapse the `dynamics:sim` sub-tree.
+
+. Create a `structure` as child of `system:sys1`.
+
+. Create a `componentType` as a child of `structure:struc1` and name it 'distType'.
+
+. Create a `component` as child of `componentType:distType` and name it 'dist'.
+
+. Create a second `componentType` as child of `structure:struc1` and name it 'commType'.
+
+. Create a `component` as child of `componentType:commType` and name it 'comm'.
+
+. Create a `relationType` as child of `structure:struc1` and name it 'distEffectComm'.
+
+Before proceeding to the definition of the _roles_ of these component types, we should redefine the _role_ of `system:sys1` that we inherited from Tutorial 3 when starting this project.
+
+The node `system:sys1`, in aliasing as a `componentType`, must now be redefined as an `assemblage` with no functions or data associated with it - that is, it is no longer `atomic`. 
+
+[start = 8]
+
+. Right-click on `system:sys1` and select `Delete edge -> belongsTo -> category:*atomic*`.
+
+. Right-click again on `system:sys1` and select `New edge -> belongsTo -> category:*assemblage*`.
+
+Remove the data associated with the _arena_.
+
+[start = 10]
+. Right-click on the root node (`3worlds:Tut4`), expand the `predefined:*categories*` and re-apply the layout. 
+
+. Right-click on `category:*arena*` and select `Delete edge -> drivers -> record:commDrvs`.
+
+. Right-click again on  `category:*arena*` and select `Delete edge -> constants -> record:commCnsts`.
+
+. Right-click on the root node and collapse `predefined:*categories*` and re-apply the layout [Alt+L].
+
+The node `system:sys` is now defined as simply a _permanent assemblage_ belonging to the _arena_.
+
+Now define a `categorySet` to partition data between the disturbance and community. Category Sets contain mutually exclusive categories: something can belong to one or the other but not both. Since disturbance and community is all there is in this model, this is the 'world' of the model so this seems a reasonable name for this set of categories i.e the 'world' comprises a community and a disturbance category: something can belong to one or other of these but not both. 
+
+[start = 14]
+
+. Create a `categorySet` as child of `structure:struc1` and name it 'world'.
+
+. Create a `category` as child of `categorySet:world` and name it 'distCat'.
+
+. Create another `category` as child of `categorySet:world` and name it 'commCat'.
+
+Define the data for these new categories.
+
+[start = 16]
+
+. Right-click on `category:commCat` and create the following edges:
+
+... `drivers -> record:commDrvs`.
+
+... `constants -> record:commCnsts`.
+
+... `decorators -> record:commDecs`.
+
+. Right-click on `category:commDist` and select `New edge -> constants -> record:distCnsts`.
+
+. Expand the `dataDefinition:dDef` sub-tree, toggle the _cross-links_ to confirm you have done the links as above.
+
+Now define the _roles_ of the new component types for the community and disturbance. Both belong to the _permanent_, _atomic_, and _component_ categories.
+
+[start = 18]
+
+. Right-click on `componentType:commType` and create `belongsTo` edges to:
+... `category:*permanent*`,
+... `category:*atomic*`,
+... `category:*component*` and 
+... `category:commCat`. 
+
+. Right-click on `componentType:distType` and create `belongsTo` edges to:
+... `category:*permanent*`,
+... `category:*atomic*`,
+... `category:*component*` and 
+... `category:distCat`. 
+
+Now define the relation between disturbance and the community.
+
+[start = 20]
+
+. Right-click on `relationType:distEffectComm` and create edges:
+
+... `fromCategory -> distCat`.
+
+... `toCategory -> commCat`.
+
+Finally, add initialisation functions for the disturbance and community component types:
+
+[start = 22]
+
+. Create an `initFunction` as child of `componentType:commType` and name it 'InitComm'.
+
+. Create an `initFunction` as child of `componentType:distType` and name it 'InitDist'.
+
+
+[#fig-tut4-structure]
+.The structure sub-tree for Tutorial 4. .
+image::tutorial4IMG/fig-tut4-structure.png[align="center",role="thumb",width=800]
+
+That's all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.
+
 
 ===== Dynamics
 
@@ -94,7 +214,6 @@ In this section we add two additional functions: one to initiate a disturbance a
 
 Before proceeding, some explanations are required to make sense of the following steps. Ignoring `dataTrackers` for the moment, a `process` can have one or more `functions`. However, the relationships (_cross_links_) between the model's dynamics, data and structure are defined at the level of `processes` not `functions`. If we don't care what order the functions are called in, and they all apply to the same data and structural elements, then we need only one process to contain all the functions. However, this is not the case here. The three functions: community growth, disturbance occurrence, and disturbance effects, must have access to different data, components and component relationships. Specifically, whether or not a disturbance is to occur depends only on disturbance data (in this model). Also order is important: it must come before disturbance effects are applied to the community. The disturbance effects applies to a relationship: that of the disturbance and the community. The growth of the community only depends on community data (the Lotka-Volterra equation). In addition, we make the decision (in this model) that the disturbance can only occur after the growth of the community, mimicking a late growing season disturbance.
 
-// NOTE ABOUT THIS: for relateToDecision function: must be the only one type of function in its process
 
 For clarity, we will prefix the names of `processes` in such a way that the layout algorithm will place them in execution order. 
 
@@ -147,10 +266,10 @@ At this time, `dataTracker:trk1` is set to track the component `system.sys1`. Th
 
 . Right-click on `dataTracker:trk` and select `Delete edge -> trackComponent ->system.sys1`.
 
-Finally, because there will be no global data in this model, `system:sys` will not need an initialisation function. Therefore we can delete this sub-tree.
+Finally, because there will be no global data in this model, `system:sys` will not need an initialisation function. Therefore we can delete this node.
 
 [start = 12] 
-. Right-click on `system:sys` and select `Delete sub-tree -> initFunction:Init1.
+. Right-click on `initFunction:Init1` and select 'Delete node'.
 
 
 [#fig-tut4-dynamics]
@@ -159,127 +278,6 @@ image::tutorial4IMG/fig-tut4-dynamics.png[align="center",role="thumb"]
 
 That's all that's required in this section. The task list indicates that the new processes must belong to some categories. To do that we need to move on to the structure of the specifications.
 
-===== Structure
-
-Recall from the previous tutorial, that `system:sys1` is acting as a single component. It's _role_ was defined as:
-
-... _permanent_;
-
-... _atomic_; 
-
-... belonging to the _arena_; 
-
-... accessing particular data from the `dataDefinition` sub-tree; and,
-
-... has `process:p1` applied to it.
-
-The _arena_ is a special category. It must exist in every specification. Any data associated with it (_constants_, _drivers_ and _decorators_) is available to all `functions`: the data is global. The system (`system:sys1`) was also being tracked by the data tracker. This relationship was removed above because 'x', the population being tracked, will now be part of a category related to the community component of the model i.e 'x' will no longer be global data.
-
-The _role_ of a `component` is defined by its `componentType`. We'll need two `ComponentTypes`; one for the community (the CLV equation) and one for the disturbance. We also need a `relationType` to define the association between the disturbance and the effected community.
-
-. Right-click on `system.sys1` and collapse the `dynamics:sim` sub-tree.
-
-. Create a `structure` as child of `system:sys1`.
-
-. Create a `componentType` as a child of `structure:struc1` and name it 'distType'.
-
-. Create a `component` as child of `componentType:distType` and name it 'dist'.
-
-. Create a second `componentType` as child of `structure:struc1` and name it 'commType'.
-
-. Create a `component` as child of `componentType:commType` and name it 'comm'.
-
-. Create a `relationType` as child of `structure:struc1` and name it 'distEffectComm'.
-
-Before proceeding to the definition of the _roles_ of these component types, we should redefine the _role_ of `system:sys1` that we inherited from Tutorial 3 when starting this project.
-
-The node `system:sys1`, in aliasing as a `componentType`, must now be redefined as an `assemblage` with no functions or data associated with it. 
-
-[start = 8]
-
-. Right-click on `system:sys1` and select `Delete edge -> belongsTo -> category:*atomic*`.
-
-. Right-click again on `system:sys1` and select `New edge -> belongsTo -> category:*assemblage*`.
-
-Remove the data associated with the _arena_.
-
-[start = 10]
-. Right-click on the root node (`3worlds:Tut4`), expand the `predefined:*categories*` and re-apply the layout. 
-
-. Right-click on `category:*arena*` and select `Delete edge -> drivers -> record:commDrvs`.
-
-. Right-click again on  `category:*arena*` and select `Delete edge -> constants -> record:commCnsts`.
-
-. Right-click on the root node and collapse `predefined:*categories*` and re-apply the layout.
-
-The node `system:sys` is now defined as simply a _permanent assemblage_ belonging to the _arena_.
-
-Now define a `categorySet` to partition data between the disturbance and community. Category sets contain mutually exclusive categories: something can belong to one or the other but not both. Since disturbance and community is all there is in this model, this is the 'world' of the model so this seems a reasonable name for this set of categories i.e the 'world' comprises a community and a disturbance category: something can belong to one or other of these but not both. 
-
-[start = 14]
-
-. Create a `categorySet` as child of `structure:struc1` and name it 'world'.
-
-. Create a `category` as child of `categorySet:world` and name it 'distCat'.
-
-. Create another `category` as child of `categorySet:world` and name it 'commCat'.
-
-Define the data for these new categories.
-
-[start = 16]
-
-. Right-click on `category:commCat` and create the following edges:
-
-... `drivers -> record:commDrvs`.
-
-... `constants -> record:commCnsts`.
-
-... `decorators -> record:commDecs`.
-
-. Right-click on `category:commDist` and select `New edge -> constants -> record:distCnsts`.
-
-. Expand the `dataDefinition:dDef` sub-tree, toggle the _cross-links_ to confirm you have done the links as above.
-
-Now define the _roles_ of the new component types for the community and disturbance. Both belong to the  _permanent_, _atomic_, and _component_ categories and accesses data through their respective categories.
-
-[start = 18]
-
-. Right-click on `componentType:commType` and create `belongsTo` edges to:
-... `category:*permanent*`,
-... `category:*atomic*`,
-... `category:*component*` and 
-... `category:commCat`. 
-
-. Right-click on `componentType:distType` and create `belongsTo` edges to:
-... `category:*permanent*`,
-... `category:*atomic*`,
-... `category:*component*` and 
-... `category:distCat`. 
-
-Now define the relation between disturbance and the community.
-
-[start = 20]
-
-. Right-click on `relationType:distEffectComm` and create edges:
-
-... `fromCategory -> distCat`.
-
-... `toCategory -> commCat`.
-
-Finally, add initialisation functions for the disturbance and community component types:
-
-[start = 22]
-
-. Create an `initFunction` as child of `componentType:commType` and name it 'InitComm'.
-
-. Create an `initFunction` as child of `componentType:distType` and name it 'InitDist'.
-
-
-[#fig-tut4-structure]
-.The structure sub-tree for Tutorial 4. .
-image::tutorial4IMG/fig-tut4-structure.png[align="center",role="thumb",width=800]
-
-That's all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.
 
 ===== Relations between sub-trees
 
@@ -309,7 +307,7 @@ The simulation can now be run but, of course, we have yet to add code to the var
 
 ===== Java code
 
-. Copy and paste the code below to all the relevant `javaCode` properties. A convenient way to do this is to enter "javaCode" into the search field in the _All properties_ property editor and edit each in turn. If you received compile error messages, check that you have pasted into the property of the correct function:
+. Copy and paste the code below to all the relevant `functionSnippet` properties. A convenient way to do this is to enter "func" into the search field in the _All properties_ property editor and edit each in turn. Note: click the 'By Name' button at the top-left of the editor, otherwise the search function will only show properties containing 'func' within a property category. If you received compile error messages, check that you have pasted into the property of the correct function:
 
 `function:InitComm`:
 
@@ -397,7 +395,7 @@ otherDec.di = 0.0;
 
 ==== User interface
 
-We now need to modify the user interface, provided curtesy of the previous model (Tut3), to display `di` and `tsd`.
+We now need to modify the user interface, provided courtesy of the previous model (Tut3), to display `di` and `tsd`.
 We are simulating 40 species so their abundance (`x[n]`) is best placed in a separate time series chart and 'di' in another. In addition, we need an xy plot of `di` by `tsd`.
 For this we need two additional `dataTrackers`.
 
@@ -463,4 +461,4 @@ The arrangement of widgets in the `tab` binary sub-tree is controlled by the `or
 
 ==== Next
 
-The next tutorial introduces the event timer to drive disturbance.
+The next tutorial introduces the event timer to simulator episodic systems such as pulse germination or irregular disturbance regimes.

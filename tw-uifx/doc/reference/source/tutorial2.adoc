@@ -37,7 +37,7 @@ Next link this project to the Java project created above.
 
 . In the _Eclipse_ main menu, select `Project - > clean`, flag `tut2` and click `OK`.
 
-While editing in _Eclipse_, a task message may appear in _ModelMaker_ from time to time complaining about file dates. If so, make sure your Java files are saved, refreshed and the project clean. The message will disappear when the project is re-complied in _ModelMaker_ using the button in the bottom left-hand corner.
+While editing in _Eclipse_, a task message may appear in _ModelMaker_ from time to time complaining about file dates. If so, make sure your Java files are saved, refreshed and the project clean. The message will disappear when the project is re-complied in _ModelMaker_ using the _Verify_ button in the bottom left-hand corner.
 
 ==== Writing Java code 
 
@@ -55,7 +55,7 @@ Near the bottom of the file are two methods: `chaos` and `init1`, mapped from th
 - `Code insert Begin-- >`; and 
 - `Code insert End---- <`.
 
-The code snippet property that was present in the orginal `Logistic` model this tutorial derives from has already been add for both the `chaos` and `init` methods.
+The code snippet property that was present in the original `Logistic` model this tutorial derives from has already been add for both the `chaos` and `init` methods.
 
 `chaos`:
 
@@ -88,7 +88,7 @@ Because these two methods are mapped to this generated file from the specificati
 
 If there have been changes to the number, name or type of `function` used in the specification, changes to anything in the `dataDefinition` sub-tree, or changes to the _roles_ of `components`, _ModelMaker_ will back up your old file as a text file with a unique name (e.g `+_Tut2_1.txt+`,`+_Tut2_2.txt+` etc...) within the current java package. This way you can copy and paste you code back to the proper place. Otherwise _ModelMaker_ will never overwrite this file. 
 
-IMPORTANT: When working simultaneously with an IDE and  _ModelMaker_, it is useful to keep the code snippets in _ModelMaker_ up-to-date by re-importing them from time to time. If changes made in the specifications by _ModelMaker_ result in a new file being created, you code snippets will be carried over to the new file.
+IMPORTANT: When working simultaneously with an IDE and  _ModelMaker_, it is useful to keep the code snippets in _ModelMaker_ up-to-date by re-importing them from time to time [ctrl+I]. If changes made in the specifications by _ModelMaker_ result in a new file being created, code snippets will be carried over to the new file.
 
 When _ModelMaker_ searches for differences between previous and current versions of this Java file, it will ignore any comments and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themselves. 
 

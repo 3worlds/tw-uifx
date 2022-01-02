@@ -88,7 +88,7 @@ edge properties created in the following steps.
 At this stage, there are five properties under the section `Tut1`.  These are properties of the root 
 node (`3worlds:Tut1`) intended to provide a limited amount of documentation for this project. 
 If you click on the root node and then select the _Selected Properties_ editor tab, an additional 
-non-editable property is shown call '`built-by`'. This property is filled out automatically with your 
+non-editable property is shown called '`built-by`'. This property is filled out automatically with your 
 computer login name and the creation date of the project. Viewing non-editable properties can be useful 
 at times. These are always shown in the _Selected Properties_ editor but for brevity, not in the 
 _Properties_ editor. Two icons at the top left of the _Properties_ editor allow you to display properties 
@@ -140,8 +140,9 @@ Having created `Tut1`, the task list shows two actions are required (<<fig-blank
  the specification as follows: 
 
 ... *data definition*: the data structures required (cf. <<truethe-datadefinition-node>> for full reference);
-... *dynamics*: define how the modelled system evolves over time (cf. <<truethe-systemdynamics-node>> for full reference).
 ... *structure*: define the organisation of components - their roles and relationships (cf. <<truethe-systemstructure-node>> for full reference). 
+... *dynamics*: define how the modelled system evolves over time and the parts of the *structure* that dynamic processes apply to (cf. <<truethe-systemdynamics-node>> for full reference).
+
 
 For the most part, these tutorials will proceed in this order and leave defining the 
 simulation's *user interface* (<<truethe-userinterface-node>>) and *experiment* design (<<truethe-experiment-node>>) 
@@ -195,11 +196,92 @@ This is all the data required for this tutorial.  The task list has now grown to
 remains undefined. 
  
 You can tidy up the graph display by clicking the `L` button (re-apply layout) in the tool bar.
+
+===== Structure
+
+At this time, the task list displays four actions. Three of these actions relate to the structure of the model. The `structure` sub-tree 
+describes how the modelled system is organised into separate `components` playing particular roles. In an elaborate model, there can be 
+many `components` but in the present case, we need only one, and for convenience, the `system` node can act as this single `component` 
+without the necessity of actually creating a `component` within a `structure` sub-tree. 
+
+Here, the component's _role_ will be defined as:
+
+- lifetime: _permanent_; 
+
+- organisation: _atomic_; 
+
+- systemElements: _arena_; 
+
+- Using _r_ as a constant and _x_ as a driver.
+
+The component has a _permanent_ lifespan because it persists throughout the simulation; it's  _atomic_ simply because it is a single indivisible component and not an assemblage of sub-components; and, it belongs 
+to something called the _arena_. The _arena_ is  a unique top level component - it's more or less a global component accessible to all 
+other components. No matter how many components a model has, exactly one of them must belong to the _arena_ category, 
+
+While this is complicated for such a simple model, later tutorials will show how this arrangement can be a powerful approach to 
+structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
+
+To create this role, we use nodes of the type `categorySet` and `category`. A `categorySet` is a set of mutually exclusive categories. 
+By that we mean a `component` can only be associated with one category of a given categorySet. So for example _permanent_ and _ephemeral_  
+are two categories within a set called _lifespan_ and clearly, a component can only be one or the other. Categories and CategorySets are 
+recursive: a CategorySet contains Categories and Categories can contain CategorySets without limit. 
+
+Apart from the `system` node doubling as a `component`, an additional convenience is provided: a sub-tree of predefined category sets and 
+categories. We use these nodes to define the role described above. To see this sub-tree:
+
+. Right-click on the root node and select `Collapse -> All`.
+
+. Right-click again on the root node and select `Expand -> predefined:*categories*`.
+
+. Re-apply the layout ('*L*' [Alt+L])
+
+The `predefined:*categories*` sub-tree is created with every new project (collapsed by default) and is _immutable_ apart from allowing 
+edges to be added between it and other sub-tree nodes.
+
+There are two `record` nodes within this sub-tree for default handling of average population and ephemeral data. Since the single 
+component used here will be neither of these we can ignore this section:
+
+[start = 4]
+
+. Right-click on `predefined:*categories*` and collapse both the `AVPopulation` and `AVEphemeral` sub-trees.
+
+. Right-click on the root node, expand the `system` and re-apply the layout.
+
+[#fig-system-role]
+.The specification of the system component in belonging pass:[<br/>] to the three categories; _permanent_, _atomic_ and _arena_.
+image::tutorial1IMG/fig-system-role.png[align="left",role="thumb",width=500,float="right"]
+
+We are now in a position to define the _role_ of the `system` node (a.k.a. `component` in this case). The `system` node always belongs to 
+the `arena` and `permanent` categories. This has already been done by the 'Blank' template. It just remains to make the system `atomic`.
+
+[start = 6]
+
+. Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*atomic*`.
+
+The system's role of belonging to the _atomic_, _permanent_ and _arena_ categories is indicated by three _cross-link_ edges 
+(<<fig-system-role>>). All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, 
+they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` in 
+the tool bar, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongsTo category:*arena*`.
+
+[#fig-arena]
+.The specification of the constants and drivers for the _arena_, pass:[<br/>] a category to which the only component in this tutorial (aka pass:[<br/>] `system:sys1`) belongs.
+image::tutorial1IMG/fig-arena.png[align="left",width=550,float="right",role="thumb"]
+
+
+We have yet to relate `system:sys1` to the driver '_x_' and the constant '_r_'.  These are global data and therefore are defined as part 
+of the `arena`.
+
+[start = 7]
+
+. Right-click on `category:*arena*` and select `New edge -> constants -> record:cnsts`.
+. Right-click again on `category:*arena*` and select `New edge -> drivers -> record:drvs` (<<fig-arena>>).
+
+ There is now one message remaining which refers to the dynamics of the model.
  
 ===== Dynamics
 
 The `dynamics` sub-tree specifies how the modelled system will evolve over time. It determines the temporal order of 
-function calls, their type, the conditions under which the simulation will stop and what and when data will be tracked 
+function calls, their type, the categories they apply to (cf above), the conditions under which the simulation will stop (if any) and what and when data will be tracked 
 for output. 
 
 In the present case, the main task is to call the logistic equation a set number of times and present the result from 
@@ -250,15 +332,21 @@ There is currently a task asking that a `process` be added to `timer:tmr1`.
 
 . Create a <<trueprocess,`process`>> node as child of `timer:tmr1`. 
 
+This process will opereate on _r_ and _x_ that we defined in the Data definition section. These data are associated with the _arena_ as constants (_r_) and drivers (_x_). Therefore `process:p1` will `applyTo` the arena.
+
+[start = 4]
+
+. Right-click on `process:p1` and select 'New edge > appliesTo -> category:*arena*'.
+
 A `process` defines a set of computations acting on model components driven at the rate of the parent `timer`. 
-A `component` is defined as a unit of simulation. It can be any physical or biological entity represented in the model 
+A component is some unit of simulation. It can be any physical or biological entity represented in the model 
 that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).
 
 Processes can be composed of any number of functions of various types (much more on this later). We need just one 
 function to implement the logistic equation - a `ChangeState` function that takes the current state of a component and 
 calculates the next state.
 
-[start = 4]
+[start = 5]
 
 . Create a <<truefunction,`function`>> as a child of `process:p1`, name it `Chaos` and select `ChangeState` as its type.
 
@@ -271,99 +359,14 @@ functions. However, in this tutorial the funcion is only one line of code and we
 with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation 
 is compiled.
 
-[start = 5]
+[start = 6]
 
-. Edit the `javaCode` property of `function:Chaos`, and enter the following text: 
+. Edit the `functionSnippet` property of `function:Chaos`, and enter the following text: 
 `focalDrv.x = r*x*(1-x);`
 
 This line sets the next value of _x_ (`focalDrv.x`) in terms of the current value of _x_.
 
 
-===== Structure
-
-At this time, the task list displays four actions. All of these actions relate to the structure of the model. The `structure` sub-tree 
-describes how the modelled system is organised into separate `components` playing particular roles. In an elaborate model, there can be 
-many `components` but in the present case, we need only one, and for convenience, the `system` node can act as this single `component` 
-without the necessity of actually creating a `component` within a `structure` sub-tree. 
-
-Here, the component's _role_ will be defined as:
-
-- lifetime: _permanent_; 
-
-- organisation: _atomic_; 
-
-- systemElements: _arena_; 
-
-- Using _r_ as a constant and _x_ as a driver; and,
-
-- `process:p1` applies to it. 
-
-The component is _permanent_ because it doesn't die; it's  _atomic_ simply because it is a single indivisible component; and, it belongs 
-to something called the _arena_. The _arena_ is  a unique top level component - it's more or less a global component accessible to all 
-other components. No matter how many components a model has, exactly one of them must belong to the _arena_ category, 
-
-While this is complicated for such a simple model, later tutorials will show how this arrangement can be a powerful approach to 
-structuring any complex hierarchical dynamic system composed of interacting physical and biological components. 
-
-To create this role, we use nodes of the type `categorySet` and `category`. A `categorySet` is a set of mutually exclusive categories. 
-By that we mean a `component` can only be associated with one category of a given categorySet. So for example _permanent_ and _ephemeral_  
-are two categories within a set called _lifespan_ and clearly, a component can only be one or the other. Categories and CategorySets are 
-recursive: a CategorySet contains Categories and Categories can contain CategorySets without limit. 
-
-Apart from the `system` node doubling as a `component`, an additional convenience is provided: a sub-tree of predefined category sets and 
-categories. We use these nodes to define the role described above. To see this sub-tree:
-
-. Right-click on the root node and select `Collapse -> All`.
-
-. Right-click again on the root node and select `Expand -> predefined:*categories*`.
-
-. Re-apply the layout ('*L*')
-
-The `predefined:*categories*` sub-tree is created with every new project (collapsed by default) and is _immutable_ apart from allowing 
-edges to be added between it and other sub-tree nodes.
-
-There are two `record` nodes within this sub-tree for default handling of average population and ephemeral data. Since the single 
-component used here will be neither of these we can ignore this section:
-
-[start = 4]
-
-. Right-click on `predefined:*categories*` and collapse both the `AVPopulation` and `AVEphemeral` sub-trees.
-
-. Right-click on the root node, expand the `system` and re-apply the layout.
-
-[#fig-system-role]
-.The specification of the system component in belonging pass:[<br/>] to the three categories; _permanent_, _atomic_ and _arena_.
-image::tutorial1IMG/fig-system-role.png[align="left",role="thumb",width=500,float="right"]
-
-We are now in a position to define the _role_ of the `system` node (a.k.a. `component` in this case). The `system` node always belongs to 
-the `arena` and `permanent` categories. This has already been done by the 'Blank' template. It just remains to make the system `atomic`.
-
-[start = 6]
-
-. Right-click on `system:sys1` and select `New edge -> belongsTo -> category:*atomic*`.
-
-The system's role of belonging to the _atomic_, _permanent_ and _arena_ categories is indicated by three _cross-link_ edges 
-(<<fig-system-role>>). All _cross-links_ are red - thin at the _start node_ and thick at the _end node_. Unlike parent-child links, 
-they have names. Generally, the names of _cross links_ are not much use. They can be hidden by selecting the drop-down list `E text` in 
-the tool bar, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongsTo category:*arena*`.
-
-[#fig-arena]
-.The specification of the constants and drivers for the _arena_, pass:[<br/>] a category to which the only component in this tutorial (aka pass:[<br/>] `system:sys1`) belongs.
-image::tutorial1IMG/fig-arena.png[align="left",width=550,float="right",role="thumb"]
-
-Now we need to apply `process:p` to a category - in this case, the _arena_ (see the task list).
-
-[start = 7]
-
-. Right-click on `process:p1` and select `New edge -> appliesTo -> category:*arena*`.
-
-We have yet to relate `system:sys1` to the driver '_x_' and the constant '_r_'.  These are global data and therefore are defined as part 
-of the `arena`.
-
-[start = 8]
-
-. Right-click on `category:*arena*` and select `New edge -> constants -> record:cnsts`.
-. Right-click again on `category:*arena*` and select `New edge -> drivers -> record:drvs` (<<fig-arena>>).
 
 Save your work (`Ctrl+s`) and the task list will be empty indicating the simulation is ready to deploy.
 

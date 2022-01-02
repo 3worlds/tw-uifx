@@ -83,13 +83,16 @@ Finally, add some meta-data to each table. This meta-data assists in documenting
 [start =12]
 . Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property. 
 
+===== Structure
+
+The _SimpleClock1_ template has already defined the role of `system.sys` as _permanent_, _atomic_ and belonging to the _arena_ - the definition of a non-hierarachical model. There is nothing additional needed for this section.
 
 ===== Dynamics
 
 Although the task list is now empty (i.e. the specifications are now deployable), we have yet to write the model equation and provide some output. We can now rename the function provided by the template to something meaningful in the present context and add a data tracker to follow _x_.
 
 
-. Expand the `system.sys1` sub-tree from the root node and re-apply the layout.
+. Expand the `system.sys1` sub-tree from the root node and re-apply the layout [Alt+L].
 
 . Right-click on `Function:F1`, select `Rename node` and name it 'Growth'. If the prompt is unresponsive, remember to begin the name with an upper case letter.
 
@@ -203,6 +206,6 @@ image::tutorial3IMG/fig-tut3-MR.png[align="center"]
 
 ==== Next
 
-The next two tutorials (4 & 5) begin to elaborate the Lotka-Volterra model by developing the `structure` sub-tree through the addition of a disturbance component. 
+The next tutorial elaborates the Lotka-Volterra model by developing the `structure` sub-tree through the addition of a disturbance component. 
 
 

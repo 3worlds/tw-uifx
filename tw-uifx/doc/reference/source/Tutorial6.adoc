@@ -1,27 +1,105 @@
-=== Random number generators
+=== Event driven systems: Using the Event Timer in a spatial model
 
 ==== Introduction
 
-This tutorial introduces the use of random number generators (RNG). 
-3Worlds provides for:
-
-* A single default RNG
-
-* Any number of independent RNGs;
-
-* Three different RNG alogithms; and,
-
-* Management for seeding the RNGs.
-
-Two RNG algorithm are available in addition to the standard Java RNG: Pcg32 and XSRandom. Two important properties of RNGs are their quality (the degree to which they cannot be predicted better than by a random chance) and the computer resources required to produce them (memory and speed). Both Pcg32 and XSRandom are much faster (50% and 75% respectivly) and of higher quality than the native Java RNG. Pcg32 is of higher quality than XSRandom and is the default.
-
-For the purpose of debugging and experimental design it is often necessary to manage the RNG seeds.
-
-
-https://www.random.org/
-https://en.wikipedia.org/wiki/Random_number_generation
+This tutorial introduces 2-dimensional space by converting Tutorial 5 to a spatial model.
 
 ==== Specifications
 
+. Start _ModelMaker_ and create a new project from `Tutorials -> Event timer 1` and name it 'Tut6'.
+
+===== Data definition
+
+We must first specify x,y coordinates of 'items' - the modelled entity.
+
+. Create a `record` as a child of `dataDefinition:dDef` and name it 'itemDrvs'.
+. Add 2 fields to this record named 'x' and 'y' of type `Double`.
+
+A message appears indicating this new record must be associated with a `category`. This is done in the next section.
+
+===== Structure
+
+In the *structure* sub-tree we specify the type of space to use and associate it, and the `category:itemCat`, with the _xy_ coordinates specified above. We can also set the initial values of the coordinates at start up time.
+
+Associate the item drivers with the item category.
+
+. Right-click on `category:itemCat` and create an edge to the _xy_ coordinates by selecting `New edge -> drivers -> record:itemDrvs`.
+
+Create the space and set its properties.
+
+[start = 2]
+
+. Create a `space` node as a child of `structure:struc1` and select `ContinuousFlatSurface` as its type.
+
+. Right-click on `space:space` and create a new edge to `coordinate -> field:x` and name it 'x1'.
+
+. Repeat the above but select `coordinate -> field:y` and name it 'y1'.
+
+. In the properties editor for `space:space1`, set `y1#rank` to 1 and `space1#precision` to 0.01.
+
+Set the dimensions of the space to 1,000 by 1,000 meters.
+
+[start = 6]
+
+. Set the properties of `space1#x-limits` and `space1#y-limits` to 0 to 1000 inclusive.
+
+. Add the optional property `units` to `space:space1` and set its value to 'm' (meters). This is just for documentation.
+
+Create a function to set initial values for the 100 items (a property of `component:item`) at start up.
+
+[start = 8]
+
+. Create an `initFunction` as a child of `componentType:itemType` and name it 'ItemInit'.
+
+===== Dynamics
+
+When new items are created by `process:Nitems` we need a function to set _xy_ coordinates of the newly created 'items'. This is a 'consequence' function. Consequence functions are children of other functions rather than a process.
+
+. Create a `function` as a child of `function:Nitems`, name it 'MakeItem' and select `setOtherInitialState` as its type.
+
+===== Coding
+
+We now add some Java code to set values for the _xy_ coordinates. We will just set random values for the state up items and set values in newly created items to be clumped near their parent item.
+
+. Add the following code to the `ItemInit#functionSnippet` property:
+
+[source,Java]
+-----------------
+        // place dots in random locations (assuming these are the dimensions of the map)
+        focalDrv.x = random.nextDouble() * 1000;
+        focalDrv.y = random.nextDouble() * 1000;
+-----------------
+
+[start = 2]
+. Add the following code to the `MakeItem#functionSnippet` property:
+
+[source,Java]
+-----------------
+       // place dot randomly near 'parent' dot.
+       double distance = -50.0 * Math.log(1 - random.nextDouble());
+       double direction = random.nextDouble() * (2 * Math.PI);
+       otherDrv.x = x + distance * Math.cos(direction);
+       otherDrv.y = y + distance * Math.sin(direction);
+-----------------
+
+===== User Interface
+
+Add a widget to view the items in space.
+
+. Create a `widget` as a child to `tab:tab`, name it 'Item landscape' and select `SpaceWidget1` as its type.
+
+. Add a `trackSpace` edge from `widget:Item landscape` to `space:space` ('trackSpace -> space:space1`).
+
+Arrange the two widget horizontally (the default) - time series first.
+
+[start = 3]
+
+. Click on `widget:Item landscape` and in the _Selected properties_ editor, set `Item landscape#order` to 1.
+
+. Deploy the simulation [Alt+D]
+
+Information about `SpaceWidget1` can be found at (ref).
 
 ==== Next
+
+

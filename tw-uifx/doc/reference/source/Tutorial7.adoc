@@ -1,0 +1,27 @@
+=== Random number generators
+
+==== Introduction
+
+This tutorial introduces the use of random number generators (RNG). 
+3Worlds provides for:
+
+* A single default RNG
+
+* Any number of independent RNGs;
+
+* Three different RNG alogithms; and,
+
+* Management for seeding the RNGs.
+
+Two RNG algorithm are available in addition to the standard Java RNG: Pcg32 and XSRandom. Two important properties of RNGs are their quality (the degree to which they cannot be predicted better than by a random chance) and the computer resources required to produce them (memory and speed). Both Pcg32 and XSRandom are much faster (50% and 75% respectively) and of higher quality than the native Java RNG. Pcg32 is of higher quality than XSRandom and is the default.
+
+For the purpose of debugging and experimental design it is often necessary to manage the RNG seeds.
+
+
+https://www.random.org/
+https://en.wikipedia.org/wiki/Random_number_generation
+
+==== Specifications
+
+
+==== Next
