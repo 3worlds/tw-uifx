@@ -169,7 +169,6 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		if (isSimulatorState(state, waiting)) {
 			// possible in interactive mode
 			for (Map.Entry<Integer, TreeMap<String, List<Double>>> entry : simulatorDataSetMap.entrySet()) {
-				System.out.println("Clearing -------------------");
 				TreeMap<String, List<Double>> tm = entry.getValue();
 				for (Map.Entry<String, List<Double>> tmEntry : tm.entrySet()) {
 					tmEntry.getValue().clear();
@@ -180,6 +179,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			writeData();
 		} else if (isSimulatorState(state, SimulatorStates.quitting)) {
 			/**
+			 * TODO: Check if this comment is still the case.
 			 * when debugging a headless sim, enable the line below because if setting a
 			 * breakpoint in writeData(), the program will exit during debugging
 			 * 
