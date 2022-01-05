@@ -10,7 +10,7 @@ This tutorial introduces 2-dimensional space by converting Tutorial 5 to a spati
 
 ===== Data definition
 
-We must first specify x,y coordinates of 'items' - the modelled entity.
+We must first specify x,y coordinates for 'items' - the modelled entity.
 
 . Create a `record` as a child of `dataDefinition:dDef` and name it 'itemDrvs'.
 . Add 2 fields to this record named 'x' and 'y' of type `Double`.
@@ -49,7 +49,7 @@ Set the dimensions of the space to 1,000 by 1,000 meters.
 
 . Add the optional property `units` to `space:space1` and set its value to 'm' (meters). This is just for documentation.
 
-Create a function to set initial values for the 100 items (a property of `component:item`) at start up.
+Create a function to set initial values (the _xy_ coordinates) for the 100 items (a property of `component:item`) at start up.
 
 [start = 8]
 
@@ -101,7 +101,7 @@ Add a widget to view the items in space.
 
 . Create a `widget` as a child to `tab:tab`, name it 'Item landscape' and select `SpaceWidget1` as its type.
 
-. Add a `trackSpace` edge from `widget:Item landscape` to `space:space` ('trackSpace -> space:space1`).
+. Add a `trackSpace` edge from `widget:Item landscape` to `space:space` (`trackSpace -> space:space1`).
 
 Arrange the two widget horizontally (the default) - time series first.
 
