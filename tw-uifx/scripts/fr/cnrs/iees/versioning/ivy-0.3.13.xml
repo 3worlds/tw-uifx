@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.3.14 (Thu Jan 06 11:50:20 AEDT 2022)
+ ant and ivy scripts for project <tw-uifx> version 0.3.13 (Thu Jan 06 11:07:29 AEDT 2022)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -13,7 +13,7 @@
 
 	<info	organisation="au.edu.anu.tw-uifx"
 			module="tw-uifx"
-			revision="0.3.14"
+			revision="0.3.13"
 			status="integration">
 		<license name="gpl3" url="https://www.gnu.org/licenses/gpl-3.0.txt"/>
 		<description>This module contains only fx code for the UI of ModelMaker and ModelRunner.</description>
@@ -52,8 +52,11 @@
 		<dependency org="de.gsi.math" name="chartfx-math" rev="[11,)"/>
 		<dependency org="de.gsi.acc" name="chartfx-acc" rev="[11,)"/>
 		<dependency org="de.gsi" name="microservice" rev="[11,)"/>
-		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.17.1"/>
-		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.17.1"/>
+		<!--===================================================================================
+		<dependency org="org.slf4j" name="slf4j-api" rev="[2,)"/>
+		===================================================================================-->
+		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.17.1" />
+		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.17.1" />
 	</dependencies>
 
 </ivy-module>
