@@ -1,10 +1,10 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.3.13 (Thu Jan 06 11:07:29 AEDT 2022)
+ ant and ivy scripts for project <tw-uifx> version 0.3.12 (Tue Oct 06 10:15:51 AEDT 2020)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
  If you need to change this file, edit ../version/Setup.java appropriately and run it.
- This will re-generate this file and manage version numbers properly. 
+ This will re-generate this file and manage version numbers properly.
 ===================================================================================-->
 <ivy-module version="2.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -13,7 +13,7 @@
 
 	<info	organisation="au.edu.anu.tw-uifx"
 			module="tw-uifx"
-			revision="0.3.13"
+			revision="0.3.12"
 			status="integration">
 		<license name="gpl3" url="https://www.gnu.org/licenses/gpl-3.0.txt"/>
 		<description>This module contains only fx code for the UI of ModelMaker and ModelRunner.</description>
@@ -43,6 +43,8 @@
 		<dependency org="org.openjfx" name="javafx-controls" rev="[11,)" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-graphics" rev="[11,)" m:classifier="linux"/>
 		<dependency org="org.openjfx" name="javafx-base" rev="[11,)" m:classifier="linux"/>
+<!--		<dependency org="org.openjfx" name="javafx-media" rev="[11,)" m:classifier="linux"/>
+		<dependency org="org.openjfx" name="javafx-web" rev="[11,)" m:classifier="linux"/> -->
 		<dependency org="org.controlsfx" name="controlsfx" rev="[11,)"/>
 		<dependency org="org.apache.commons" name="commons-math3" rev="[3.6.1,)"/>
 		<dependency org="de.gsi" name="chartfx" rev="[11,)"/>
@@ -53,6 +55,7 @@
 		<dependency org="de.gsi.acc" name="chartfx-acc" rev="[11,)"/>
 		<dependency org="de.gsi" name="microservice" rev="[11,)"/>
 		<dependency org="org.slf4j" name="slf4j-api" rev="[2,)"/>
+
 	</dependencies>
 
 </ivy-module>
