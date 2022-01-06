@@ -47,14 +47,14 @@
 		<dependency org="org.openjfx" name="javafx-web" rev="[11,)" m:classifier="linux"/> -->
 		<dependency org="org.controlsfx" name="controlsfx" rev="[11,)"/>
 		<dependency org="org.apache.commons" name="commons-math3" rev="[3.6.1,)"/>
-		<dependency org="de.gsi" name="chartfx" rev="11.2.5"/>
-		<dependency org="de.gsi" name="chartfx-samples" rev="11.2.5"/>
-		<dependency org="de.gsi.chart" name="chartfx-chart" rev="11.2.5"/>
-		<dependency org="de.gsi.dataset" name="chartfx-dataset" rev="11.2.5"/>
-		<dependency org="de.gsi.math" name="chartfx-math" rev="11.2.5"/>
-		<dependency org="de.gsi.acc" name="chartfx-acc" rev="11.2.5"/>
-		<dependency org="de.gsi" name="microservice" rev="11.2.5"/>
-		<dependency org="org.slf4j" name="slf4j-api" rev="2.0.0-alpha0"/>
+		<dependency org="de.gsi" name="chartfx" rev="[11,)"/>
+		<dependency org="de.gsi" name="chartfx-samples" rev="[11,)"/>
+		<dependency org="de.gsi.chart" name="chartfx-chart" rev="[11,)"/>
+		<dependency org="de.gsi.dataset" name="chartfx-dataset" rev="[11,)"/>
+		<dependency org="de.gsi.math" name="chartfx-math" rev="[11,)"/>
+		<dependency org="de.gsi.acc" name="chartfx-acc" rev="[11,)"/>
+		<dependency org="de.gsi" name="microservice" rev="[11,)"/>
+		<dependency org="org.slf4j" name="slf4j-api" rev="[2,)"/>
 
 	</dependencies>
 
