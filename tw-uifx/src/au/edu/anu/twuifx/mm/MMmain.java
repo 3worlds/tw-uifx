@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import au.edu.anu.twapps.mm.MMModel;
+import au.edu.anu.twuifx.mr.MRmain;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import fr.ens.biologie.generic.utils.Logging;
@@ -45,8 +46,8 @@ public class MMmain {
 	public static void main(String[] args) {
 //		System.out.println("Current language: "+System.getProperty("user.language"));
 
-		// Flaky I know but...
-		ProjectJarGenerator.mainClass = au.edu.anu.twuifx.mr.MRmain.class.getName();
+		// Flaky ??
+		ProjectJarGenerator.setModelRunnerClass(MRmain.class);
 		// pass logging args on to deployed MR
 		MMModel.mmArgs = args;
 

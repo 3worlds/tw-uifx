@@ -207,6 +207,9 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		int nRows = nCols;
 		if ((nRows * nCols) < nViews)
 			nCols++;
+		if ((nRows * nCols) < nViews)
+			nCols++;
+
 		int display = 0;
 		for (int r = 0; r < nRows; r++)
 			for (int c = 0; c < nCols; c++) {
