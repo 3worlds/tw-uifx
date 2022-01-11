@@ -106,9 +106,7 @@ public class VersionSettings {
 
 			// This is required by chart-fx - tw-core loads this api, but as version 1.7.6
 			// but chartfx cannot use that version, it is set to use version 2.0.0
-			//{ "org.slf4j", "slf4j-api", "[2,)", null}
-			{ "org.apache.logging.log4j", "log4j-api", "2.17.1", null},
-			{ "org.apache.logging.log4j", "log4j-core", "2.17.1", null}
+			{ "org.slf4j", "slf4j-api", "2.0.0-alpha0", null}
 		};
 
 	/**
