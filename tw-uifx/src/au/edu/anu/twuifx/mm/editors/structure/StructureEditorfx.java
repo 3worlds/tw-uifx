@@ -348,6 +348,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// ---------------------------------------------------------------
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_RENAME_NODE);
+			mi.setDisable(true);
 
 			if (!editableNode.isRoot() && !editableNode.isPredefined()) {
 				mi.setOnAction((e) -> {
@@ -371,6 +372,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					VisualNode vn = (VisualNode) edge.endNode();
 					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->"
 							+ vn.getDisplayText(ElementDisplayText.RoleName));
+					mi.setDisable(true);
 					if (vn.isPredefined() && editableNode.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {

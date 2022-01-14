@@ -351,6 +351,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			sample.add(sum / (double) nLines);
 		}
 
+		// We need just the property for header
 		int factors = treatmentList.get(0).size();
 		String h = "";
 		for (int i = 0; i < factors; i++)
@@ -378,14 +379,32 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			e1.printStackTrace();
 		}
 		String anovaResultsName = name + "_anovaResults.csv";
-
+/*-
+setwd("/home/ian/.3w/project_LMDExp_2022-01-03-22-40-14-976/local/runTime/NOG-K/popWriter0")
+data = read.table("population_AnovaInput.csv",sep="	",header = TRUE,dec=".")
+F0 = data$F0
+F1 = data$F1
+F2 = data$F2
+F3 = data$F3
+RV = data$RV
+mdl = lm(RV~F0*F1*F2*F3)
+ava = anova (mdl)
+write.table(ava,"population_anovaResults.csv", sep = "	")
+svg(paste("population_trends.svg"),width = 5.5, height = 5.5)
+oldpar <- par(mfrow = c(2,2))
+plot(RV~F0, main = outputDir)
+plot(RV~F1, main = outputDir)
+plot(RV~F2, main = outputDir)
+plot(RV~F3, main = outputDir)
+dev.off()
+ */
 		fileLines.clear();
 		fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
 		fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
 		for (int i = 0; i < factors; i++)
 			fileLines.add("F" + i + " = data$F" + i);
-		fileLines.add("RV = data$RV");
-		String args = "RV~";
+		fileLines.add(name+ " = data$RV");
+		String args = name+"~";
 		for (int f = 0; f < factors; f++)
 			args += "*F" + f;
 		args = args.replaceFirst("\\*", "");
