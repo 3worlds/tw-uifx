@@ -986,6 +986,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public VisualNode getLayoutRoot() {
 		return layoutRoot;
 	}
+	@Override
+	public IMMModel model() {
+		return model;
+	}
 
 	// -------------- IMMController End ---------------------
 
@@ -1558,5 +1562,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		else
 			trafficLight.fillProperty().set(Color.RED);
 	}
+
 
 }

@@ -186,7 +186,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						MenuItem mi = MenuLabels.addMenuItem(mu, entry.getKey());
 						mi.setOnAction((e) -> {
 							onExpandTree(entry.getValue(), duration);
-							String desc = MenuLabels.ML_EXPAND.label()+" ["+entry.getKey()+"]";
+							String desc = MenuLabels.ML_EXPAND.label() + " [" + entry.getKey() + "]";
 							recorder.addState(desc);
 						});
 					}
@@ -196,7 +196,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
 					mi.setOnAction((e) -> {
 						onExpandTrees(duration);
-						String desc = "Expand "+MenuLabels.ML_ALL.label()+" ["+editableNode.getConfigNode().toShortString()+"]";
+						String desc = "Expand " + MenuLabels.ML_ALL.label() + " ["
+								+ editableNode.getConfigNode().toShortString() + "]";
 						recorder.addState(desc);
 					});
 				}
@@ -227,7 +228,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = MenuLabels.addMenuItem(mu, MenuLabels.ML_ALL.label());
 					mi.setOnAction(e -> {
 						onCollapseTrees(duration);
-						String desc = "Collapse "+MenuLabels.ML_ALL.label()+" ["+editableNode.getConfigNode().toShortString()+"]";
+						String desc = "Collapse " + MenuLabels.ML_ALL.label() + " ["
+								+ editableNode.getConfigNode().toShortString() + "]";
 						recorder.addState(desc);
 					});
 				}
@@ -348,18 +350,24 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// ---------------------------------------------------------------
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_RENAME_NODE);
-			mi.setDisable(true);
+			// mi.setDisable(true);
 
 			if (!editableNode.isRoot() && !editableNode.isPredefined()) {
 				mi.setOnAction((e) -> {
 					String desc = MenuLabels.ML_RENAME_NODE.label() + " ["
 							+ editableNode.getConfigNode().toShortString() + "]";
 
-					onRenameNode();
+					if (onRenameNode()) {
 
-					gvisualiser.setLayoutNode(controller.getLayoutRoot());
+						controller.model().saveAndReload();
 
-					recorder.addState(desc);
+						gvisualiser.setLayoutNode(controller.getLayoutRoot());
+
+						recorder.addState(desc);
+
+						GraphState.setChanged();
+						ConfigGraph.verifyGraph();
+					}
 				});
 			} else
 				mi.setDisable(true);
@@ -372,16 +380,22 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					VisualNode vn = (VisualNode) edge.endNode();
 					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->"
 							+ vn.getDisplayText(ElementDisplayText.RoleName));
-					mi.setDisable(true);
+//					mi.setDisable(true);
 					if (vn.isPredefined() && editableNode.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
 						String desc = MenuLabels.ML_RENAME_EDGE.label() + " [" + edge.getConfigEdge().toShortString()
 								+ "]";
 
-						onRenameEdge(edge);
+						if (onRenameEdge(edge)) {
 
-						recorder.addState(desc);
+							controller.model().saveAndReload();
+
+							recorder.addState(desc);
+
+							GraphState.setChanged();
+							ConfigGraph.verifyGraph();
+						}
 					});
 				}
 //				}
