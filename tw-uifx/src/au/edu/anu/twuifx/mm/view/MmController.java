@@ -1512,7 +1512,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-	public void setButtonState() {
+	private void setButtonState() {
 		boolean isOpen = Project.isOpen();
 		boolean isClean = !GraphState.changed() & isOpen;
 		boolean isConnected = UserProjectLink.haveUserProject();
