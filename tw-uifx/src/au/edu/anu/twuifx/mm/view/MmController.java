@@ -299,7 +299,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private Slider sldrElements;
 
 	private RadioButton[] rbLayouts;
+	
 	private IMMModel model;
+	private IGraphVisualiser visualiser;
+
 	private Stage stage;
 	private ToggleGroup tgArchetype;
 	private ToggleGroup tgLayout;
@@ -929,12 +932,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	public void collapsePredef() {
-		visualiser.collapsePredef();
-
-	}
-
-	@Override
 	public LayoutType getCurrentLayout() {
 		return currentLayout;
 	}
@@ -986,9 +983,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public VisualNode getLayoutRoot() {
 		return layoutRoot;
 	}
+	
 	@Override
 	public IMMModel model() {
 		return model;
+	}
+
+	@Override
+	public IGraphVisualiser visualiser() {
+		return visualiser;
 	}
 
 	// -------------- IMMController End ---------------------
@@ -1352,8 +1355,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-	private IGraphVisualiser visualiser;
-
 	private List<VisualNode> getNodeList() {
 		List<VisualNode> result = new LinkedList<>();
 		for (VisualNode n : visualGraph.nodes())
@@ -1562,6 +1563,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		else
 			trafficLight.fillProperty().set(Color.RED);
 	}
+
 
 
 }
