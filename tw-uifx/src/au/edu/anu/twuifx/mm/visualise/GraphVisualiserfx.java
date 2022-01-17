@@ -271,7 +271,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		c.radiusProperty().bind(nodeRadius);
 		Text text = new Text(n.getDisplayText(nodeSelect.get()));
 		n.setVisualElements(c, text);
-		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.cClassId());
+		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.configNode().classId());
 
 		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
 		c.setOnMouseEntered(e -> {
@@ -323,7 +323,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				if (dx != 0 || dy != 0) {
 					dragNode.setPosition(newx, newy);
 					GraphState.setChanged();
-					String desc = "Move ["+dragNode.getConfigNode().toShortString()+"]";
+					String desc = "Move ["+dragNode.configNode().toShortString()+"]";
 					recorder.addState(desc);
 					
 				}
@@ -365,7 +365,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		VisualNode oldRoot = controller.setLayoutRoot(newRoot);
 		if (oldRoot != null)
 			((Circle) oldRoot.getSymbol()).setStroke(null);
-		if (newRoot.cClassId().equals(N_ROOT.label()))
+		if (newRoot.isRoot())
 			((Circle) newRoot.getSymbol()).setStroke(Color.WHITE);
 		else
 			((Circle) newRoot.getSymbol()).setStroke(Color.BLACK);
@@ -817,7 +817,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	private VisualNode getTWRoot() {
 		for (VisualNode n : visualGraph.nodes()) {
-			if (n.cClassId().equals(fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_ROOT.label()))
+			if (n.isRoot())
 				return n;
 		}
 		return null;
@@ -915,7 +915,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	@Override
 	public void collapsePredef() {
 		for (VisualNode root : visualGraph.roots()) {
-			if (root.cClassId().equals(N_ROOT.label())) {
+			if (root.isRoot()) {
 				VisualNode predef = (VisualNode) get(root.getChildren(),
 						selectOne(hasTheName(ConfigurationReservedNodeId.categories.id())));
 				collapseTree(predef, 1.0);

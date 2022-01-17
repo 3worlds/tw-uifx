@@ -39,8 +39,6 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
-import java.io.IOException;
-
 /**
  * @author Ian Davies
  *

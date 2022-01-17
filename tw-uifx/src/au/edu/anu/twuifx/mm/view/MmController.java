@@ -517,9 +517,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void handleSaveAs(ActionEvent event) {
 		model.doSaveAs();
-		for (VisualNode root : visualGraph.roots())
-			if (root.cClassId().equals(N_ROOT.label()))
-				visualiser.onNodeRenamed(root);
+		for (VisualNode rootNodes : visualGraph.roots())
+			if (rootNodes.isRoot())
+				visualiser.onNodeRenamed(rootNodes);
 	}
 
 	@FXML
@@ -534,7 +534,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				newNode.setPosition(e.getX() / zoomTarget.getWidth(), e.getY() / zoomTarget.getHeight());
 				visualiser.onNewNode(newNode);
 				zoomTarget.setCursor(Cursor.DEFAULT);
-				String desc = "New node [" + newNode.getConfigNode().toShortString() + "]";
+				String desc = "New node [" + newNode.configNode().toShortString() + "]";
 				lastSelectedNode = newNode;
 				newNode = null;
 				initialisePropertySheets();
@@ -956,7 +956,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		Duple<ObservableList<Item>, ObservableList<Item>> items = getObsItems();
 		fillAllPropertySheet(items.getFirst());
 		if (lastSelectedNode != null)
-			if (lastSelectedNode.getConfigNode().toShortString().equals(vn.getConfigNode().toShortString()))
+			if (lastSelectedNode.configNode().toShortString().equals(vn.configNode().toShortString()))
 				fillSelPropertySheet(items.getSecond());
 	}
 
@@ -968,11 +968,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		layoutRoot = newRoot;
 		if (layoutRoot == null) {
 			for (VisualNode root : visualGraph.roots())
-				if (root.cClassId().equals(N_ROOT.label()))
+				if (root.isRoot())
 					layoutRoot = root;
 		}
 		if (layoutRoot != null)
-			txfLayoutRoot.setText(layoutRoot.getConfigNode().toShortString());
+			txfLayoutRoot.setText(layoutRoot.configNode().toShortString());
 		else {
 			txfLayoutRoot.setText("");
 		}
@@ -1375,7 +1375,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				String cat = vn.getCategory();
 				if (cat == null)
 					cat = vn.id();
-				TreeGraphNode cn = vn.getConfigNode();
+				TreeGraphNode cn = vn.configNode();
 				// TODO !!! EDGES
 				if (cn instanceof DataHolder) {
 					TreeGraphDataNode node = (TreeGraphDataNode) cn;
