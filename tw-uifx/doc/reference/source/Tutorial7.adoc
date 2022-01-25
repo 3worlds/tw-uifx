@@ -2,26 +2,121 @@
 
 ==== Introduction
 
-This tutorial introduces the use of random number generators (RNG). 
+This tutorial introduces the use of random number generators (RNG) (https://en.wikipedia.org/wiki/Random_number_generation). 
 3Worlds provides for:
 
 * A single default RNG
 
 * Any number of independent RNGs;
 
-* Three different RNG alogithms; and,
+* Three different RNG algorithms;
 
-* Management for seeding the RNGs.
+* Management for seeding the RNGs; and,
 
-Two RNG algorithms are available in addition to the standard Java RNG: Pcg32 and XSRandom. Two important properties of RNGs are their quality (the degree to which they cannot be predicted better than by a random chance) and the computer resources required to produce them (memory and speed). Both Pcg32 and XSRandom are much faster (50% and 75% respectively) and of higher quality than the native Java RNG. Pcg32 is of higher quality than XSRandom (the default).
+* Assignment of RNGs to particular `Functions`.
+
+===== A single default RNG
+
+In many cases, management of random number generation is not required. For this reason, a single default RNG (PCG32) is available to all functions and can be used by the modeller in their code. Which RNG is available and how it is managed is defined in the model's specifications using _ModelMaker_. These choices are transparent to the model so no coding effort is required by the modeller to utilise the various features.
+
+===== Any number of independent RNGs
+
+You can create any number of independent RNGs and apply them individually or to groups of `Functions`. For example, you could assign an RNG to all functions that apply to reproduction and another to all functions that concern landscape dynamics.
+
+===== Three different RNG algorithms
+
+Three RNG algorithms are available: the standard Java RNG, Pcg32 (Permuted Congruential Generator) and XSRandom (XorShift: http://demesos.blogspot.com/2011/09/replacing-java-random-generator.html). Two important properties of RNGs are their quality (the degree to which they cannot be predicted better than by a random chance) and the computer resources required to produce them (memory and speed). Both Pcg32 and XSRandom are much faster (50% and 75% respectively) and of higher quality than the native Java RNG. Pcg32 is of higher quality than XSRandom (the default).
+
+===== Management for seeding the RNGs
 
 For the purpose of debugging and experimental design it is often necessary to manage the RNG seeds.
 
+There are two ways to set the source of the RNG seed:
 
-https://www.random.org/
-https://en.wikipedia.org/wiki/Random_number_generation
+* *TABLE*: From a table of 1,000 independently generated random number seeds (https://www.random.org/); and,
+
+* *RANDOM*: From a randomly generated seed using current time to the nano second.
+
+In addition, the seed can be set at the time of model instantiation (*NEVER*) or upon every reset of the simulation (*ONMODELSTART*).
+Using the *RANDOM* option means there is a new seed created at every instantiation. This option is here just so you don't need to delete all the random number generators from the specifications - it effectively switches off reproducible RNG streams.
+
+In this tutorial, we build a model with two functions to generate random numbers from two independent streams.
 
 ==== Specifications
+
+. Create a new project starting from the `SimpleClock` template.
+
+===== Data definition
+
+. Delete the node `record:cnsts`
+
+. Create two `field` nodes as children of `record:drvs` accept their default names ('fld1', 'fld2') and use the default type of `Double`.
+
+. Create two `rng` nodes as children of `dataDefinition:dDef` and accept their default names ('gen1', gen2').
+
+===== Structure
+
+. Delete node `initFunction:init1`: it's no needed for this tutorial.
+
+===== Dynamics
+
+. Create a `Function` as child of `process:p1` accept the default name ('F2") and select `ChangeState` as the type.
+
+. Add the following code to `F1#functionSnippet` property: 'focalDrv.fld1 = random.nextDouble();'.
+
+. Add the following code to `F2#functionSnippet` property: 'focalDrv.fld2 = random.nextDouble();'.
+
+. Create a `useRNG` edge from `function:F1` to `rng:gen1`.
+
+. Create a `useRNG` edge from `function:F2` to `rng:gen2`.
+
+Now the value of 'fld1' is set by the random number generator 'gen1' and the value of 'fld2' by 'gen2'.
+
+[start = 6]
+
+. Create a `dataTracker` as a child of `process:p1` and select `DataTrackerD0` as its type.
+
+. Create two `trackField` edges from `dataTracker:trk1` to `field:fld`` and `field:fld2` respectively.
+
+. Create a `trackComponent` edge from `dataTracker:trk1` to `system.sys1`.
+
+===== User interface
+
+. Create a `tab` node as a child of `userInterface:gui`.
+
+. Create a `widget` node as a child of `tab:tab1` and select `TimeseriesWidget1` as its type.
+
+. Create a `trackSeries` edge from `widget:wgt1` to `dataTracker:trk1`.
+
+[#fig-tut7-Config]
+.Essential elements of the configuration for tutorial 7.
+image::tutorial7IMG/fig-tut7-Config.png[align="left",role="thumb"]
+
+
+. Re-run the simulator a few times to ensure a different series is produced each time
+
+When the simulator is run, two independent random number series are produced. If this is not the case, check that the code snippets (steps 2 & 3 in _Dynamics_ above) are correct and that `function:F1` sets the value of `fld1` and `function:F2` sets the value of `fld2`.
+
+To see all the relevant RNG properties:
+
+[start = 5]
+
+. Select the _Properties_ tab in _ModelMaker_ and click the _by name_ button (top left).
+
+. Enter 'gen' in the search field. Now only properties of nodes `gen1` and `gen2` are displayed.
+
+. Set properties `gen1#seedSource` and `gen2#seedSource` to *TABLE* and re-run the simulator.
+
+[#fig-tut7-rng-properties]
+.Displaying just the properties of the random number generators.
+image::tutorial7IMG/fig-tut7-rng-properties.png[align="left",role="thumb"]
+
+Both series are now identical as they are set by the same seed (index 0 of the table of seeds). Of course if you change the RNG algorithm to one of the other algorithms, different streams will result.
+
+
+[#fig-tut7-ModelRunner]
+.Independent and dependent random number streams.
+image::tutorial7IMG/fig-tut7-ModelRunner.png[align="left",role="thumb"]
 
 
 ==== Next
