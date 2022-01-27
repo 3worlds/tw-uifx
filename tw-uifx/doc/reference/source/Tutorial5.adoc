@@ -1,4 +1,4 @@
-=== Event driven systems: Using the Event Timer
+=== Tutorial 5: Event driven systems - Using the Event Timer
 
 ==== Introduction
 
@@ -7,7 +7,7 @@ Many processes in nature are episodic and can be triggered when some other proce
 The previous tutorials have used a clock timer to drive the simulation dynamics. In essence, a clock timer simply issues regular time events autonomously, at intervals determined by its properties – its time step. 
 An event timer, on the other hand, is not autonomous. It drives its child processes through events posted to it by other processes. 
 
-In this tutorial we mimic the dynamics of an episodic system with an Individual-based Model (IBM). We use an event timer to drive pulse creation of entities and a clock timer for their deletion. Here, we refer to the 'entities' as 'items' so as not to be distracted by ecological details.
+In this tutorial we mimic the dynamics of an episodic system with an https://en.wikipedia.org/wiki/Agent-based_model#In_biology[Individual-based Model] (IBM). We use an event timer to drive pulse creation of entities and a clock timer for their deletion. Here, we refer to the 'entities' as 'items' so as not to be distracted by ecological details.
 
 ==== Specifications
 
@@ -28,7 +28,7 @@ Three fields are required: a deletion rate, pulse rate and a ceiling to provide 
 
 [#fig-tut5-data-definition]
 .Data definition specifications.
-image::tutorial5IMG/fig-tut5-data-definition.png[align="left",role="thumb"]
+image::tutorial5IMG/fig-tut5-data-definition.png[align="left",role="thumb", width="400", float="right"]
 
 ===== Structure
 We need 2 component types for this model: the system (which already exists i.e. `system:sys`) and the 'item' component type which we've yet to define. These have a hierarchical relationship: the system is an assemblage of 'items'. However, `system:sys1` currently belongs to the _atomic_ category. This must be changed to the _assemblage_ category to signify this hierarchical structure.
@@ -41,7 +41,7 @@ We need 2 component types for this model: the system (which already exists i.e. 
 
 . From the same node, create a `belongsTo` edge to `category:*assemblage*`.
 
-A 'itemType' will be a component type with a role defined as belonging to the _ephemeral_, _atomic_, _component_ and _item_ categories. It's _ephemeral_ because it can be created and destroyed; it's _atomic_ because it has no sub-components; it's a _component_ because it is a sub-component of a larger system and it's a _item_ because processes that apply to it must reference a category unique to it. All these categories already exist in the `predefined:*categories*` sub-tree except for the 'item' category which we must create.
+An 'itemType' will be a component type with a role defined as belonging to the _ephemeral_, _atomic_, _component_ and _item_ categories. It's _ephemeral_ because it can be created and destroyed; it's _atomic_ because it has no sub-components; it's a _component_ because it is a sub-component of a larger system and it's a _item_ because processes that apply to it must reference a category unique to it. All these categories already exist in the `predefined:*categories*` sub-tree except for the 'item' category which we must create.
 
 [start = 5]
 
@@ -75,7 +75,7 @@ A message now appears suggesting two ways we can create an initial number of ite
 
 [#fig-tut5-structure]
 .Model structure specifications.
-image::tutorial5IMG/fig-tut5-structure.png[align="left",role="thumb"]
+image::tutorial5IMG/fig-tut5-structure.png[align="center",role="thumb", width="500"]
 
 ===== Dynamics
 
@@ -169,7 +169,7 @@ Now add `dependsOn` edges between some of the processes to set their order of ex
 
 [#fig-tut5-dynamics]
 .Model dynamics specification.
-image::tutorial5IMG/fig-tut5-dynamics.png[align="left",role="thumb"]
+image::tutorial5IMG/fig-tut5-dynamics.png[align="left",role="thumb", width="800"]
 
 ===== Coding
 
@@ -234,7 +234,7 @@ To see some output we will add a widget to display a time series of `count`.
 
 [#fig-tut5-user-interface]
 .User interface specifications.
-image::tutorial5IMG/fig-tut5-user-interface.png[align="left",role="thumb"]
+image::tutorial5IMG/fig-tut5-user-interface.png[align="left",role="thumb", width="600"]
 
 The simulator runs indefinitely (assuming you have deleted the `stoppingCondition` node) with exponentially declining numbers and a creation pulses up to 500 time steps apart.
 

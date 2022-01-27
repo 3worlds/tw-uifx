@@ -1,4 +1,4 @@
-=== Event driven systems: Using the Event Timer in a spatial model
+=== Tutorial 6: Event driven systems - Using the Event Timer in a spatial model
 
 ==== Introduction
 
@@ -19,7 +19,7 @@ A message appears indicating this new record must be associated with a `category
 
 [#fig-tut6-data-definition]
 .Data definition specifications.
-image::tutorial6IMG/fig-tut6-data-definition.png[align="left",role="thumb"]
+image::tutorial6IMG/fig-tut6-data-definition.png[align="left",role="thumb", width=500,float="right"]
 
 ===== Structure
 
@@ -58,7 +58,7 @@ Create a function to set initial values (the _xy_ coordinates) for the 100 items
 
 [#fig-tut6-structure]
 .Model structure specifications.
-image::tutorial6IMG/fig-tut6-structure.png[align="left",role="thumb"]
+image::tutorial6IMG/fig-tut6-structure.png[align="left",role="thumb",width="550",float="right"]
 
 ===== Dynamics
 
@@ -68,7 +68,7 @@ When new items are created by `process:Nitems` we need a function to set _xy_ co
 
 [#fig-tut6-dynamics]
 .Model dynamics specifications.
-image::tutorial6IMG/fig-tut6-dynamics.png[align="left",role="thumb"]
+image::tutorial6IMG/fig-tut6-dynamics.png[align="left",role="thumb",width="800"]
 
 ===== Coding
 
@@ -110,8 +110,8 @@ Arrange the two widget horizontally (the default) - time series first.
 . Click on `widget:Item landscape` and in the _Selected properties_ editor, set `Item landscape#order` to 1.
 
 [#fig-tut6-user-interface]
-.Simulator's user-interface specifications showing cross-links to nodes in the structure and dynamics sub-trees.
-image::tutorial6IMG/fig-tut6-user-interface.png[align="left",role="thumb"]
+.Simulator's user-interface specifications showing cross-links to nodes in pass:[<br/>] the structure and dynamics sub-trees.
+image::tutorial6IMG/fig-tut6-User-Interface.png[align="left",role="thumb",width="600"]
 
 [start = 4]
 . Deploy the simulation [Alt+D]
@@ -120,8 +120,10 @@ Information about `SpaceWidget1` can be found at (ref).
 
 [#fig-tut6-modelRunner]
 .Running Tutorial 6.
-image::tutorial6IMG/fig-tut6-modelRunner.png[align="left",role="thumb"]
+image::tutorial6IMG/fig-tut6-ModelRunner.png[align="left",role="thumb"]
 
 ==== Next
+
+The next tutorial will explain how to implement and use random numbers in models that require stochasticity.
 
 

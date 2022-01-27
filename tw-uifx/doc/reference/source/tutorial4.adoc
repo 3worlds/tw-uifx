@@ -437,7 +437,7 @@ All that remains now is to arrange the widgets in the _ModelRunner_ interface. B
 
 [#fig-tut4-user-interface]
 .The user-interface sub-tree for Tutorial 4. .
-image::tutorial4IMG/fig-tut4-user-interface.png[align="center",role="thumb",width=800]
+image::tutorial4IMG/fig-tut4-user-interface.png[align="center",role="thumb",width=700]
 
 [#fig-tut4-modelrunner]
 .Running Tutorial 4.

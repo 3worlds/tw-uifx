@@ -571,6 +571,27 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truenext-4">5.4.4. Next</a></li>
 </ul>
 </li>
+<li><a href="#truetutorial-5-event-driven-systems-using-the-event-timer">5.5. Tutorial 5: Event driven systems - Using the Event Timer</a>
+<ul class="sectlevel3">
+<li><a href="#trueintroduction-5">5.5.1. Introduction</a></li>
+<li><a href="#truespecifications-4">5.5.2. Specifications</a></li>
+<li><a href="#truenext-5">5.5.3. Next</a></li>
+</ul>
+</li>
+<li><a href="#truetutorial-6-event-driven-systems-using-the-event-timer-in-a-spatial-model">5.6. Tutorial 6: Event driven systems - Using the Event Timer in a spatial model</a>
+<ul class="sectlevel3">
+<li><a href="#trueintroduction-6">5.6.1. Introduction</a></li>
+<li><a href="#truespecifications-5">5.6.2. Specifications</a></li>
+<li><a href="#truenext-6">5.6.3. Next</a></li>
+</ul>
+</li>
+<li><a href="#truetutorial-7-random-number-generators">5.7. Tutorial 7: Random number generators</a>
+<ul class="sectlevel3">
+<li><a href="#trueintroduction-7">5.7.1. Introduction</a></li>
+<li><a href="#truespecifications-6">5.7.2. Specifications</a></li>
+<li><a href="#truenext-7">5.7.3. Next</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#truebibliography">Bibliography</a></li>
@@ -6430,25 +6451,44 @@ Whenever you have to search for items to construct relations, associate a space 
 <div class="sect3">
 <h4 id="trueintroduction"><a class="anchor" href="#trueintroduction"></a>5.1.1. Introduction</h4>
 <div class="paragraph">
-<p>This tutorial explains the procedure for developing and running a simulation with <em>ModelMaker</em>. We start by using a simple <a href="https://en.wikipedia.org/wiki/Logistic_map">logistic growth model</a> as a test case and gradually introduce more capabilities over the course of these tutorials as we explore the full range of modelling features available.</p>
+<p>This tutorial explains the procedure for developing and running a simulation with <em>ModelMaker</em>.
+We start by using a simple <a href="https://en.wikipedia.org/wiki/Logistic_map">logistic growth model</a> as a test case and
+gradually introduce more capabilities with subsequent tutorials as we explore the full range of modelling features available.</p>
 </div>
 <div class="paragraph">
-<p>In <em>3Worlds</em>, the specifications for a simulation model are developed by constructing a graph of nodes and edges and setting their respective properties. The nodes represent elements of interest in the model while the edges show the relationships between them: the entire graph then constituting the model specifications. The simulation can be run as soon as the specifications are complete and Java code has been written to define the behaviour of the functions you have specified.</p>
+<p>In <em>3Worlds</em>, the specification of a simulator is developed by constructing a graph of nodes and edges and
+setting their respective properties. The nodes represent elements of interest in the model while the edges show the
+relationships between them: the entire graph then constituting the simulator specification.
+The simulation can be run as soon as the specification is complete and Java code has been written to define the
+behaviour of the functions you have specified.</p>
 </div>
 <div class="paragraph">
-<p>As you construct the graph, <em>ModelMaker</em> is constantly checking and providing feedback on how these specifications comply with an <em>archetype</em>. <em>ModelMaker</em> guides you through this process by managing the available options at each stage in the graph construction and by providing an updated list of tasks requiring attention.</p>
+<p>As you construct the graph, <em>ModelMaker</em> is constantly checking and providing feedback on how the specification complies
+with the <em>specification archetype</em>. <em>ModelMaker</em> guides you through this process by managing the available options at each
+stage in the graph construction and by providing an updated list of tasks requiring attention.</p>
 </div>
 <div class="paragraph">
-<p>While this process greatly accelerates model development, a more important aim is to provide a firm basis for model comparison. As all models developed with <em>ModelMaker</em> must comply with the <em>archetype</em>, structural differences become apparent when comparing specifications. That is, while you can construct any model, the design, being constrained by the <em>archetype</em>, will not be arbitrary. Of course, this is not the only difference between models. The code for each function defined by the specifications will be particular but at least these differences are encapsulated at specific places in the model implementation.</p>
+<p>While this process greatly accelerates model development, a more important aim is to provide a firm basis for model
+comparison. As all models developed with <em>ModelMaker</em> must comply with the <em>specification archetype</em>,
+structural differences reduce to a comparision of graphs. That is, while you can construct any model, the design,
+being constrained by the <em>specification archetype</em>, will not be arbitrary. Of course, this is not the only difference
+between models. The code for each function defined in the specifications will be particular but at least these differences
+are encapsulated at specific places in the model implementation.</p>
 </div>
 <div class="paragraph">
-<p>The specification graph is both a tree and a directed graph (<a href="#truegeneral-concepts-structure-of-a-3worlds-configuration">Section 3.1</a>). Aside from the root, each node has a parent and, as we have said, may have additional edges between nodes to define particular relationships. We refer to these edges as <em>cross-links</em> to distinguish them from edges that represent <em>parent-child</em> relationships.</p>
+<p>The specification graph is both a tree and a directed graph
+(<a href="#truegeneral-concepts-structure-of-a-3worlds-configuration">Section 3.1</a>). Aside from the root, each node has a parent and may have
+additional edges between nodes to define particular relationships. We refer to these edges as <em>cross-links</em> to distinguish
+them from edges that represent <em>parent-child</em> relationships.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="trueinstallation"><a class="anchor" href="#trueinstallation"></a>5.1.2. Installation</h4>
 <div class="paragraph">
-<p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>.3w</code> in your home directory and copy <code>tw-dep.jar</code> to it. Then copy <code>modelMaker.jar</code> to your home directory. To start <em>modelMaker</em>, open a terminal and type: <code>java -jar modelMaker.jar</code>. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling (including upper-case letters) and that the file is executable using the file manager of your operating system.</p>
+<p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>.3w</code> in your home directory and copy <code>tw-dep.jar</code> to it.
+Then copy <code>modelMaker.jar</code> to your home directory. To start <em>modelMaker</em>, open a terminal and type:
+<code>java -jar modelMaker.jar</code>. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling
+(including upper-case letters) and that the file is executable using the file manager of your operating system.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -6474,7 +6514,7 @@ To compile your own models, the Java Development Kit (JDK)  must be installed on
 <p>Create a new project (<code>Main menu: Projects &#8594; New &#8594; Templates &#8594; Blank</code>)</p>
 </li>
 <li>
-<p>When prompted enter 'Tut1' (first letter upper case). A small graph of nine nodes appears in the graph window.</p>
+<p>When prompted enter 'Tut1' (first letter upper case). A small graph of ten nodes appears in the graph window.</p>
 </li>
 </ol>
 </div>
@@ -6485,10 +6525,14 @@ To compile your own models, the Java Development Kit (JDK)  must be installed on
 <div class="title">Figure 26. The appearance of <em>ModelMaker</em> after creating a new project from the 'Blank' template.</div>
 </div>
 <div class="paragraph">
-<p>The black node (<code>3worlds:Tut1</code>) is the <em>root</em> of a graph that forms the model specifications. The other nodes are, for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specifications are defined (<a href="#fig-blank-template">Figure 26</a>, <a href="#trueconfiguration-options-reference">Section 3.3</a>).</p>
+<p>The black node (<code>3worlds:Tut1</code>) is the <em>root</em> of a graph that forms the simulator&#8217;s specification. The other nodes are,
+for the most part, colour-coded roots of sub-trees of the graph wherein various aspects of the specification are defined
+(<a href="#fig-blank-template">Figure 26</a>, <a href="#trueconfiguration-options-reference">Section 3.3</a>).</p>
 </div>
 <div class="paragraph">
-<p>All nodes are identified by a <em>label:name</em> pair. The <em>label</em> is the type of node, representing its role, while the <em>name</em> is a unique identifier. A few node types, of which the root node is one, must have names beginning with an upper case letter. These nodes are used to generate Java classes when the simulation compiles.</p>
+<p>All nodes are identified by a <em>label:name</em> pair. The <em>label</em> is the type of node, representing its role, while the <em>name</em>
+is a unique identifier. A few node types, of which the root node is one, must have names beginning with an upper case
+letter. These nodes are used to generate Java classes when the simulation compiles.</p>
 </div>
 <div class="paragraph">
 <p>At this stage you can try out a few basic edit operations:</p>
@@ -6499,35 +6543,54 @@ To compile your own models, the Java Development Kit (JDK)  must be installed on
 <p>Move a node around the graph display by dragging it with the left mouse button;</p>
 </li>
 <li>
-<p>Zoom in and out in the graph display using the mouse wheel while holding down the <code>ctrl</code> key (or equivalent on your operating system). The focus of the zoom is set by the mouse position;</p>
+<p>Zoom in and out in the graph display using the mouse wheel while holding down the <code>ctrl</code> key (or equivalent on your
+operating system). Zooming is centered on the mouse position;</p>
 </li>
 <li>
-<p>Pan the drawing surface by dragging with the left-mouse button anywhere outside a node (assuming the drawing area is larger than the display);</p>
+<p>Pan the drawing surface by dragging with the left-mouse button anywhere outside a node (assuming the drawing area is
+larger than the display);</p>
 </li>
 <li>
 <p>Change the node and text size with the <em>element size</em> slider in the tool bar;</p>
 </li>
 <li>
-<p>Right-click on a node to see a display a pop-up menu of edit options for that particular node. It is via these popup menus that the graph is constructed; and,</p>
+<p>Right-click on a node to display a pop-up menu of edit options for that particular node. It is via these pop-up menus
+that the graph is constructed; and,</p>
 </li>
 <li>
-<p>While holding down the <code>shift</code> key, left-click on a node to see just this node and its nearest neighbours. What constitutes 'nearest' is set by the 'path len.' control in the tool bar.</p>
+<p>While holding down the <code>shift</code> key, left-click on a node to see just this node and its nearest neighbours. What
+constitutes 'nearest' is set by the 'path len.' control in the tool bar.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>A list of tasks remaining to be completed appears at the bottom-left of the main window (<a href="#fig-blank-template">Figure 26</a>). This list grows and shrinks as the developing graph is checked against the archetype.  A check takes place in the background every time the graph structure or its properties change.</p>
+<p>A list of tasks remaining to be completed appears at the bottom-left of the main window (<a href="#fig-blank-template">Figure 26</a>).
+This list grows and shrinks as the developing graph is checked against the specification archetype.  A check takes place
+in the background every time the graph structure or its properties change.</p>
 </div>
 <div class="paragraph">
-<p>At the top-left of the main window are the two property editors - <em>Properties</em> and <em>Selected Properties</em> (<a href="#fig-blank-template">Figure 26</a>).  These show properties for the entire graph or for a single selected node (selected by clicking on the node with the left button) respectively. It&#8217;s here that values are entered for the properties of nodes and edges created in the following steps.</p>
+<p>At the top-left of the main window are the two property editors - <em>Properties</em> and <em>Selected Properties</em>
+(<a href="#fig-blank-template">Figure 26</a>).  These show properties for the entire graph or for a single selected node
+(selected by clicking on the node with the left button) respectively. It&#8217;s here that values are entered for node and
+edge properties created in the following steps.</p>
 </div>
 <div class="paragraph">
-<p>At this stage, there are five properties under the section <code>Tut1</code>.  These are properties of the root node (<code>3worlds:Tut1</code>) intended to provide a limited amount of documentation for this project. If you click on the root node and then select the <em>Selected Properties</em> editor tab, an additional non-editable property is shown call &#8216;built-by&#8217;. This property is filled out automatically with your computer login name and the creation date of the project. Viewing non-editable properties can be useful at times. These are always shown in the <em>Selected Properties</em> editor but for brevity, not in the <em>Properties</em> editor. Two icons at the top of the <em>Properties</em> editor allow you to display properties by category (by sub-tree) or by name. When this last option is selected, all editable properties are display in one list.</p>
+<p>At this stage, there are five properties under the section <code>Tut1</code>.  These are properties of the root
+node (<code>3worlds:Tut1</code>) intended to provide a limited amount of documentation for this project.
+If you click on the root node and then select the <em>Selected Properties</em> editor tab, an additional
+non-editable property is shown called &#8216;built-by&#8217;. This property is filled out automatically with your
+computer login name and the creation date of the project. Viewing non-editable properties can be useful
+at times. These are always shown in the <em>Selected Properties</em> editor but for brevity, not in the
+<em>Properties</em> editor. Two icons at the top left of the <em>Properties</em> editor allow you to display properties
+by category (by sub-tree) or by name. When this last option is selected, all editable properties are
+display in one list.</p>
 </div>
 <div class="sect4">
 <h5 id="truedirectory-structure"><a class="anchor" href="#truedirectory-structure"></a>Directory structure</h5>
 <div class="paragraph">
-<p>All projects are located within the 3Worlds root directory called <code>.3w</code>. The dot indicates a hidden directory. To see these files you may need to do what ever is required by your operating system to show hidden files (<a href="#fig-tut1-dir">Figure 27</a>).</p>
+<p>All projects are located within the 3Worlds root directory called <code>.3w</code>. The dot indicates a hidden directory.
+To see these files you may need to do what ever is required by your operating system to show hidden files
+(<a href="#fig-tut1-dir">Figure 27</a>).</p>
 </div>
 <div id="fig-tut1-dir" class="imageblock right text-left thumb">
 <div class="content">
@@ -6536,10 +6599,14 @@ To compile your own models, the Java Development Kit (JDK)  must be installed on
 <div class="title">Figure 27. The initial directory structure <br/> after creating a new project from the 'Blank' <br/> template. Later, after all tasks have been <br/> completed and the model is deployed, another <br/> sub-directory is added for run-time files.</div>
 </div>
 <div class="paragraph">
-<p>The <code>.3w</code> directory contains a Jar file called <code>tw-dep.jar</code> (<a href="#fig-tut1-dir">Figure 27</a>). This file contains all dependent libraries for <em>3Worlds</em>. It&#8217;s a good idea to keep a backup of this file.</p>
+<p>The <code>.3w</code> directory contains a Jar file called <code>tw-dep.jar</code> (<a href="#fig-tut1-dir">Figure 27</a>). This file contains all dependent
+libraries for <em>3Worlds</em>. It&#8217;s a good idea to keep a backup of this file.</p>
 </div>
 <div class="paragraph">
-<p>Within <code>.3w</code> there is now a sub-directory called something like <code>project_Tut1_2020-06-07-01-47-44-708</code>. Every project directory begins with the key word <code>project</code>, followed by the name of the project you entered (<code>Tut1</code> in this case) and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible to inadvertently overwrite a project.</p>
+<p>Within <code>.3w</code> there is now a sub-directory called something like <code>project_Tut1_2020-06-07-01-47-44-708</code>. Every project
+directory begins with the key word <code>project</code>, followed by the name of the project you entered (<code>Tut1</code> in this case)
+and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible
+to inadvertently overwrite a project.</p>
 </div>
 <div class="paragraph">
 <p>Inside this directory are a number of text files:</p>
@@ -6556,12 +6623,15 @@ To compile your own models, the Java Development Kit (JDK)  must be installed on
 <p><code>MM.xml</code> contains the session&#8217;s preference settings.</p>
 </li>
 <li>
-<p><code>__StateA1</code> and sequences of similarly named files are temporary files to support the program&#8217;s undo/redo editing operations. These files are created during a session and deleted when the session ends.</p>
+<p><code>__StateA1</code> and sequences of similarly named files are temporary files to support the program&#8217;s undo/redo of editing
+operations. These files are created during a session and deleted when the session ends.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>All these files are text files and you can open and inspect them with a simple text editor. However, as they are written by <em>modelMaker</em> you should <em>avoid editing them directly as this will likely cause problems for your project</em>.</p>
+<p>All these files are text files and you can open and inspect them with a simple text editor.
+However, as they are written by <em>ModelMaker</em> you should <em>avoid editing them directly as this will
+likely cause problems for your project</em>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -6576,14 +6646,19 @@ Editing any project graph files (*.utg) with a text editor is likely to corrupt 
 </table>
 </div>
 <div class="paragraph">
-<p>On the other hand, you can delete project directories at any time if you wish. If you accidentally delete the project of a currently open session, it will be recreated automatically by <em>ModelMaker</em> (apart from the <em>undo-redo</em> history). However, if you delete the entire <code>.3w</code> directory you will have to restore <code>tw-dep.jar</code> from backup.</p>
+<p>On the other hand, you can delete project directories at any time you wish. If you accidentally
+delete the project of a currently open session, it will be recreated automatically by
+<em>ModelMaker</em> (apart from the <em>undo-redo</em> history). However, if you delete the entire <code>.3w</code> directory
+you will have to restore <code>tw-dep.jar</code> from backup.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="truecreating-the-specifications"><a class="anchor" href="#truecreating-the-specifications"></a>5.1.4. Creating the specifications</h4>
 <div class="paragraph">
-<p>Having created <code>Tut1</code>, the task list shows two actions are required (<a href="#fig-blank-template">Figure 26</a>). These tasks can be dealt with in any order but in general, a logical approach is to build the specifications as follows:</p>
+<p>Having created <code>Tut1</code>, the task list shows two actions are required (<a href="#fig-blank-template">Figure 26</a>).
+ These tasks can be dealt with in any order but in general, a logical approach is to build
+ the specification as follows:</p>
 </div>
 <div class="olist lowerroman">
 <ol class="lowerroman" type="i">
@@ -6591,26 +6666,35 @@ Editing any project graph files (*.utg) with a text editor is likely to corrupt 
 <p><strong>data definition</strong>: the data structures required (cf. <a href="#truethe-datadefinition-node">Section 3.3.5</a> for full reference);</p>
 </li>
 <li>
-<p><strong>dynamics</strong>: define how the modelled system evolves over time (cf. <a href="#truethe-systemdynamics-node">Section 3.3.4</a> for full reference).</p>
+<p><strong>structure</strong>: define the organisation of components - their roles and relationships (cf. <a href="#truethe-systemstructure-node">Section 3.3.3</a> for full reference).</p>
 </li>
 <li>
-<p><strong>structure</strong>: define the organisation of components - their roles and relationships (cf. <a href="#truethe-systemstructure-node">Section 3.3.3</a> for full reference).</p>
+<p><strong>dynamics</strong>: define how the modelled system evolves over time and the parts of the <strong>structure</strong> that dynamic processes apply to (cf. <a href="#truethe-systemdynamics-node">Section 3.3.4</a> for full reference).</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>For the most part, these tutorials will proceed in this order and leave defining the simulation&#8217;s <strong>user interface</strong> (<a href="#truethe-userinterface-node">Section 3.3.7</a>) and <strong>experiment</strong> design (<a href="#truethe-experiment-node">Section 3.3.6</a>) until last. In fact, the Blank template has provide a minimum specification for the <strong>experiment</strong> sub-tree (a single run of the model) and  the <strong>user interface</strong> (a simulation controller).</p>
+<p>For the most part, these tutorials will proceed in this order and leave defining the
+simulation&#8217;s <strong>user interface</strong> (<a href="#truethe-userinterface-node">Section 3.3.7</a>) and <strong>experiment</strong> design (<a href="#truethe-experiment-node">Section 3.3.6</a>)
+until last. In fact, the Blank template has provided a minimum specification for the <strong>experiment</strong> sub-tree
+(a single run of the model) and  the <strong>user interface</strong> (a simulation controller).</p>
 </div>
 <div class="sect4">
 <h5 id="truedata-definition"><a class="anchor" href="#truedata-definition"></a>Data definition</h5>
 <div class="paragraph">
-<p>The logistic equation we will implement is: <em>x(t+1) = rx(t)(1-x(t))</em>. Though simple, it has interesting chaotic behaviour for values of <em>r</em> between 3.7 and 4.0. All we need do for the data definition section is to define the parameter <em>r</em> and the state variable <em>x</em>.</p>
+<p>The logistic equation we will implement is: <em>x(t+1) = rx(t)(1-x(t))</em>. Though simple, it has interesting chaotic
+behaviour for values of <em>r</em> between 3.7 and 4.0. All we need do for the data definition section is to define the
+parameter <em>r</em> and the state variable <em>x</em>.</p>
 </div>
 <div class="paragraph">
-<p>From here on and throughout these tutorials, parameters are called <em>constants</em> (data that does not change over the course of a simulation) and state variables are called <em>drivers</em> (data that drives the simulation from one time to the next).</p>
+<p>From here on and throughout these tutorials, parameters are called <em>constants</em> (data that does not change over the
+course of a simulation) and state variables are called <em>drivers</em> (data that drives the simulation from one time to
+the next).</p>
 </div>
 <div class="paragraph">
-<p>Note that at this stage, the task list says nothing about adding anything to the <strong>data definition</strong> sub-tree. This is because it is possible to define a model without data. Nevertheless, once data is defined, various actions will be required and displayed in the task list, to correctly define its use.</p>
+<p>Note that at this stage, the task list says nothing about adding anything to the <strong>data definition</strong> sub-tree. This is
+because it is possible to define a model without data. Nevertheless, once data is defined, various actions will be
+required and displayed in the task list to correctly define its use.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -6620,10 +6704,15 @@ Editing any project graph files (*.utg) with a text editor is likely to corrupt 
 </ol>
 </div>
 <div class="paragraph">
-<p>You can name nodes and edges anything you like but accepting the recommended names and edges will make these tutorials easier to follow. Note that <em>ModelMaker</em> will prevent naming nodes or edges with duplicate names.</p>
+<p>You can name nodes and edges anything you like but accepting the recommended names and edges will make these tutorials
+easier to follow. Note that <em>ModelMaker</em> will prevent naming nodes or edges with duplicate names.</p>
 </div>
 <div class="paragraph">
-<p>All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes by right-clicking on a parent and selecting a child to create from the available options provided by the popup menu. The items in this menu vary according to the possibilities allowed by the <em>archetype</em>. This is one way <em>ModelMaker</em> ensures the developing configuration conforms with the <em>archetype</em>, greatly simplifying an otherwise complex workflow.</p>
+<p>All nodes in the configuration graph are children of some parent (apart from the root node). You can only create nodes
+by right-clicking on a parent and selecting a child to create from the available options provided by the pop-up menu.
+The items in this menu vary according to the possibilities allowed by the <em>specification archetype</em>. This is one way
+<em>ModelMaker</em> ensures the developing configuration conforms with the <em>archetype</em>, greatly simplifying an otherwise
+complex workflow.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="2">
@@ -6652,29 +6741,165 @@ Editing any project graph files (*.utg) with a text editor is likely to corrupt 
 <div class="title">Figure 28. Defining constant <code>r</code> and driver <code>x</code> <br/> within the data definition sub-tree.</div>
 </div>
 <div class="paragraph">
-<p>Note that the names 'drvs' and 'cnsts' don&#8217;t imply any meaning to the specifications - they&#8217;re just names. Their <em>roles</em> as drivers and constants will be defined later.</p>
+<p>Note that the names 'drvs' and 'cnsts' don&#8217;t imply any meaning to the simulation specification - they&#8217;re just names.
+Their <em>roles</em> as drivers and constants will be defined later.</p>
 </div>
 <div class="paragraph">
-<p>This is all the data required for this tutorial.  The task list has now grown to four because the roles of this data remains undefined.</p>
+<p>This is all the data required for this tutorial.  The task list has now grown to four because the roles of this data
+remains undefined.</p>
 </div>
 <div class="paragraph">
 <p>You can tidy up the graph display by clicking the <code>L</code> button (re-apply layout) in the tool bar.</p>
 </div>
 </div>
 <div class="sect4">
+<h5 id="truestructure"><a class="anchor" href="#truestructure"></a>Structure</h5>
+<div class="paragraph">
+<p>At this time, the task list displays four actions. Three of these actions relate to the structure of the model. The <code>structure</code> sub-tree
+describes how the modelled system is organised into separate <code>components</code> playing particular roles. In an elaborate model, there can be
+many <code>components</code> but in the present case, we need only one, and for convenience, the <code>system</code> node can act as this single <code>component</code>
+without the necessity of actually creating a <code>component</code> within a <code>structure</code> sub-tree.</p>
+</div>
+<div class="paragraph">
+<p>Here, the component&#8217;s <em>role</em> will be defined as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>lifetime: <em>permanent</em>;</p>
+</li>
+<li>
+<p>organisation: <em>atomic</em>;</p>
+</li>
+<li>
+<p>systemElements: <em>arena</em>;</p>
+</li>
+<li>
+<p>Using <em>r</em> as a constant and <em>x</em> as a driver.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The component has a <em>permanent</em> lifespan because it persists throughout the simulation; it&#8217;s  <em>atomic</em> simply because it is a single indivisible component and not an assemblage of sub-components; and, it belongs
+to something called the <em>arena</em>. The <em>arena</em> is  a unique top level component - it&#8217;s more or less a global component accessible to all
+other components. No matter how many components a model has, exactly one of them must belong to the <em>arena</em> category,</p>
+</div>
+<div class="paragraph">
+<p>While this is complicated for such a simple model, later tutorials will show how this arrangement can be a powerful approach to
+structuring any complex hierarchical dynamic system composed of interacting physical and biological components.</p>
+</div>
+<div class="paragraph">
+<p>To create this role, we use nodes of the type <code>categorySet</code> and <code>category</code>. A <code>categorySet</code> is a set of mutually exclusive categories.
+By that we mean a <code>component</code> can only be associated with one category of a given categorySet. So for example <em>permanent</em> and <em>ephemeral</em>
+are two categories within a set called <em>lifespan</em> and clearly, a component can only be one or the other. Categories and CategorySets are
+recursive: a CategorySet contains Categories and Categories can contain CategorySets without limit.</p>
+</div>
+<div class="paragraph">
+<p>Apart from the <code>system</code> node doubling as a <code>component</code>, an additional convenience is provided: a sub-tree of predefined category sets and
+categories. We use these nodes to define the role described above. To see this sub-tree:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Right-click on the root node and select <code>Collapse &#8594; All</code>.</p>
+</li>
+<li>
+<p>Right-click again on the root node and select <code>Expand &#8594; predefined:*categories*</code>.</p>
+</li>
+<li>
+<p>Re-apply the layout ('<strong>L</strong>' [Alt+L])</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <code>predefined:*categories*</code> sub-tree is created with every new project (collapsed by default) and is <em>immutable</em> apart from allowing
+edges to be added between it and other sub-tree nodes.</p>
+</div>
+<div class="paragraph">
+<p>There are two <code>record</code> nodes within this sub-tree for default handling of average population and ephemeral data. Since the single
+component used here will be neither of these we can ignore this section:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Right-click on <code>predefined:*categories*</code> and collapse both the <code>AVPopulation</code> and <code>AVEphemeral</code> sub-trees.</p>
+</li>
+<li>
+<p>Right-click on the root node, expand the <code>system</code> and re-apply the layout.</p>
+</li>
+</ol>
+</div>
+<div id="fig-system-role" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-system-role.png" alt="fig system role" width="500">
+</div>
+<div class="title">Figure 29. The specification of the system component in belonging <br/> to the three categories; <em>permanent</em>, <em>atomic</em> and <em>arena</em>.</div>
+</div>
+<div class="paragraph">
+<p>We are now in a position to define the <em>role</em> of the <code>system</code> node (a.k.a. <code>component</code> in this case). The <code>system</code> node always belongs to
+the <code>arena</code> and <code>permanent</code> categories. This has already been done by the 'Blank' template. It just remains to make the system <code>atomic</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>Right-click on <code>system:sys1</code> and select <code>New edge &#8594; belongsTo &#8594; category:*atomic*</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The system&#8217;s role of belonging to the <em>atomic</em>, <em>permanent</em> and <em>arena</em> categories is indicated by three <em>cross-link</em> edges
+(<a href="#fig-system-role">Figure 29</a>). All <em>cross-links</em> are red - thin at the <em>start node</em> and thick at the <em>end node</em>. Unlike parent-child links,
+they have names. Generally, the names of <em>cross links</em> are not much use. They can be hidden by selecting the drop-down list <code>E text</code> in
+the tool bar, and selecting <code>Role</code>. The relationship can be read as, for example: <code>system:sys1 belongsTo category:*arena*</code>.</p>
+</div>
+<div id="fig-arena" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial1IMG/fig-arena.png" alt="fig arena" width="550">
+</div>
+<div class="title">Figure 30. The specification of the constants and drivers for the <em>arena</em>, <br/> a category to which the only component in this tutorial (aka <br/> <code>system:sys1</code>) belongs.</div>
+</div>
+<div class="paragraph">
+<p>We have yet to relate <code>system:sys1</code> to the driver '<em>x</em>' and the constant '<em>r</em>'.  These are global data and therefore are defined as part
+of the <code>arena</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>Right-click on <code>category:*arena*</code> and select <code>New edge &#8594; constants &#8594; record:cnsts</code>.</p>
+</li>
+<li>
+<p>Right-click again on <code>category:*arena*</code> and select <code>New edge &#8594; drivers &#8594; record:drvs</code> (<a href="#fig-arena">Figure 30</a>).</p>
+<div class="literalblock">
+<div class="content">
+<pre>There is now one message remaining which refers to the dynamics of the model.</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
 <h5 id="truedynamics"><a class="anchor" href="#truedynamics"></a>Dynamics</h5>
 <div class="paragraph">
-<p>The <code>dynamics</code> sub-tree specifies how the modelled system will evolve over time. It determines the temporal order of function calls, their type, the conditions under which the simulation will stop and what and when data will be tracked for output.</p>
+<p>The <code>dynamics</code> sub-tree specifies how the modelled system will evolve over time. It determines the temporal order of
+function calls, their type, the categories they apply to (cf above), the conditions under which the simulation will stop (if any) and what and when data will be tracked
+for output.</p>
 </div>
 <div class="paragraph">
-<p>In the present case, the main task is to call the logistic equation a set number of times and present the result from each time step to the equation at the next time step.</p>
+<p>In the present case, the main task is to call the logistic equation a set number of times and present the result from
+each iteration to the equation at the next time step.</p>
 </div>
 <div class="paragraph">
-<p>The <code>dynamics</code> sub-tree (lime green) is a child of the <code>system</code> node - the root of the modelled system that defines both its dynamics and its structure. These nodes are already present in the "Blank" template we started with.
-The <code>dynamics</code> node is the specification of a type of simulator. There can be many simulators (instances) of this specification running in parallel depending on the experimental design.</p>
+<p>The <code>dynamics</code> sub-tree (lime green) is a child of the <code>system</code> node - the root of the modelled system that defines
+both its dynamics and structure. These nodes are already present in the "Blank" template we started with.
+The <code>dynamics</code> node is the specification of a type of simulator. There can be many simulators (instances) of this
+specification running in parallel depending on the experimental design.</p>
 </div>
 <div class="paragraph">
-<p>A dynamic system must have a single definition of the <a href="#truetime-line">time scale</a>. There are ten different types of time scale available: all of them define exact sub-divisions of time except for the <code>GREGORIAN</code> scale type which implements the standard Gregorian calendar. The 'Blank' template has already defined a <code>timeline</code> with an <code>ARBITRARY</code> time scale which is sufficient for this tutorial.</p>
+<p>A dynamic system must have a single definition of the <a href="#truetime-line">time scale</a>. There are ten different types of
+time scale available: all of them define exact sub-divisions of time except for the <code>GREGORIAN</code> scale type which
+implements the standard Gregorian calendar. The 'Blank' template has already defined a <code>timeline</code> with an <code>ARBITRARY</code>
+time scale which is sufficient for this tutorial.</p>
 </div>
 <div class="paragraph">
 <p>In the task list is an action asking that a <code>timer</code> be added to <code>timeline:tmLn1</code>.</p>
@@ -6702,18 +6927,27 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="ulist">
 <ul>
 <li>
-<p>the <code>timeUnit</code> property, which tells in which measurement unit time is to be expressed. There are 22 time unit types available ranging from microseconds to millennia, and  constrained by the choice of the time scale. The current default value of <code>UNSPECIFIED</code> is fine for this tutorial, as here time is just a sequence of steps;</p>
+<p>the <code>timeUnit</code> property, which defines in which measurement unit time is to be expressed. There are 22 time unit types
+available ranging from microseconds to millennia, constrained by the choice of the time scale. The current default
+value of <code>UNSPECIFIED</code> is fine for this tutorial, as here, time is just a sequence of steps;</p>
 </li>
 <li>
-<p><code>nTimeUnits</code>, i.e. the number of measurement units per timer unit - for example, a timer could use '2 days' as its basic time unit. It means that an elementary time tick in this timer represents 2 days, so (time = 11) means 22 days, etc. It is the finest <em>grain</em> at which time can be measured with this timer. In this tutorial, 1 is fine as we simply use a sequence of steps.</p>
+<p><code>nTimeUnits</code>, i.e. the number of measurement units per timer unit - for example, a timer could use '2 days' as its
+basic time unit. It means that an elementary time tick in this timer represents 2 days, so (time = 11) means 22 days,
+etc. It is the finest <em>grain</em> at which time can be measured with this timer. In this tutorial, 1 is fine as we simply
+use a sequence of steps.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Finally, <code>dt</code> is the number of time <em>grains</em> per time step. Here, 1 will do. This tutorial runs with time steps of 1 unspecified unit, i.e just simple ticks.</p>
+<p>Finally, <code>dt</code> is the number of time <em>grains</em> per time step. Here, 1 will do. This tutorial runs with time steps of 1
+unspecified unit, i.e just simple ticks.</p>
 </div>
 <div class="paragraph">
-<p>Note that a model can have any number of <code>timers</code> using any of the available time steps and time units as long as the time units selected are compatible with the parent <code>timeline</code>. The task messages will indicate if this is not the case. Because the specifications allow for more than one system, it follows there can be many dynamics sub-trees, each with their own time system.</p>
+<p>Note that a model can have any number of <code>timers</code> using any of the available time steps and time units as long as the
+time units selected are compatible with the parent <code>timeline</code>. The task messages will indicate if this is not the case.
+Because the specification archetype allows for more than one system, it follows there can be many dynamics sub-trees,
+each with their own time system.</p>
 </div>
 <div class="paragraph">
 <p>There is currently a task asking that a <code>process</code> be added to <code>timer:tmr1</code>.</p>
@@ -6726,151 +6960,52 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </ol>
 </div>
 <div class="paragraph">
-<p>A <code>process</code> defines a set of computations acting on model components driven at the rate of the parent <code>timer</code>. A <code>component</code> is defined as a unit of simulation. It can be any physical or biological entity represented in the model that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).</p>
-</div>
-<div class="paragraph">
-<p>Processes can be composed of any number of functions of various types (much more on this later). We need just one function to implement the logistic equation - a <code>ChangeState</code> function that takes the current state of a component and calculates the next state.</p>
+<p>This process will opereate on <em>r</em> and <em>x</em> that we defined in the Data definition section. These data are associated with the <em>arena</em> as constants (<em>r</em>) and drivers (<em>x</em>). Therefore <code>process:p1</code> will <code>applyTo</code> the arena.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="4">
+<li>
+<p>Right-click on <code>process:p1</code> and select 'New edge &gt; appliesTo &#8594; category:*arena*'.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A <code>process</code> defines a set of computations acting on model components driven at the rate of the parent <code>timer</code>.
+A component is some unit of simulation. It can be any physical or biological entity represented in the model
+that has dynamic behaviour (plants, animals, nutrient pools, lakes, the atmosphere or the rhizosphere etc).</p>
+</div>
+<div class="paragraph">
+<p>Processes can be composed of any number of functions of various types (much more on this later). We need just one
+function to implement the logistic equation - a <code>ChangeState</code> function that takes the current state of a component and
+calculates the next state.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
 <li>
 <p>Create a <a href="#truefunction"><code>function</code></a> as a child of <code>process:p1</code>, name it <code>Chaos</code> and select <code>ChangeState</code> as its type.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>The function type can&#8217;t be changed after creating node, so if you make a mistake, delete and recreate it (<code>Delete</code> from the popup menu or <code>Undo</code> from the main menu).</p>
+<p>The function type can&#8217;t be changed after creating node, so if you make a mistake, delete and recreate it (<code>Delete</code>
+from the pop-up menu or <code>Undo</code> from the main menu).</p>
 </div>
 <div class="paragraph">
-<p><em>ModelMaker</em> can link to an Integrated Development Environment (IDE) such as <em>Eclipse</em>, to write code for these functions. However, in this tutorial the funcion is only one line of code and we can just associate a code snippet with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation is compiled.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="5">
-<li>
-<p>Create a <code>snippet</code> node as a child of <code>function:Chaos</code>.</p>
-</li>
-<li>
-<p>In the property editor, locate the <code>snpt1#javaCode</code> property, click the edit button ('<strong>&#8230;&#8203;</strong>') and enter the following text:
-<code>focalDrv.x = r*x*(1-x);</code></p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect4">
-<h5 id="truestructure"><a class="anchor" href="#truestructure"></a>Structure</h5>
-<div class="paragraph">
-<p>At this time, the task list displays four actions. All of these actions relate to the structure of the model. The <code>structure</code> sub-tree describes how the modelled system is organised into separate <code>components</code> playing particular roles. In an elaborate model, there can be many <code>components</code> but in the present case, we need only one, and for convenience, the <code>system</code> node can act as this single <code>component</code> without the necessity of actually creating a <code>component</code> within a <code>structure</code> sub-tree.</p>
-</div>
-<div class="paragraph">
-<p>Here, the component&#8217;s <em>role</em> will be defined as:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>lifetime: <em>permanent</em>;</p>
-</li>
-<li>
-<p>organisation: <em>atomic</em></p>
-</li>
-<li>
-<p>systemElements: <em>arena</em>.</p>
-</li>
-<li>
-<p>Using <em>r</em> as a constant and <em>x</em> as a driver; and,</p>
-</li>
-<li>
-<p><code>process:p1</code> applies to it.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The component is <em>permanent</em> because it doesn&#8217;t die; it&#8217;s  <em>atomic</em> simply because it is a single indivisable component; and, it belongs to something called the <em>arena</em>. The <em>arena</em> is  a unique top level component - it&#8217;s more or less a global component accessible to all other components. No matter how many components a model has, exactly one of them must belong to the <em>arena</em> category,</p>
-</div>
-<div class="paragraph">
-<p>While this is complicated for such a simple model, later tutorials will show how this arrangement can be a powerful approach to structuring any complex hierarchical dynamic system composed of interacting physical and biological components.</p>
-</div>
-<div class="paragraph">
-<p>To create this role, we use nodes of the type <code>categorySet</code> and <code>category</code>. A <code>categorySet</code> is a set of mutually exclusive categories. By that we mean a <code>component</code> can only be associated with one category of a given categorySet. So for example <em>permanent</em> and <em>ephemeral</em>  are two categories within a set called <em>lifespan</em> and clearly, a component can only be one or the other. Categories and CategorySets are recursive: a CategorySet contains Categories and Categories can contain CategorySets without limit.</p>
-</div>
-<div class="paragraph">
-<p>Apart from the <code>system</code> node doubling as a <code>component</code>, an additional convenience is provided: a sub-tree of predefined category sets and categories. We use these nodes to define the role described above. To see this sub-tree:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Right-click on the root node and select <code>Collapse &#8594; All</code>.</p>
-</li>
-<li>
-<p>Right-click again on the root node and select <code>Expand &#8594; predefined:*categories*</code>.</p>
-</li>
-<li>
-<p>Re-apply the layout ('<strong>L</strong>')</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The <code>predefined:*categories*</code> sub-tree is created with every new project (collapsed by default) and is <em>immutable</em> apart from allowing edges to be added between it and other sub-trees.</p>
-</div>
-<div class="paragraph">
-<p>There are two <code>record</code> nodes within this sub-tree for default handling of average population and ephemeral data. Since the single component used here will be neither of these we can ignore this section:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="4">
-<li>
-<p>Right-click on <code>predefined:*categories*</code> and collapse both the <code>AVPopulation</code> and <code>AVEphemeral</code> sub-trees.</p>
-</li>
-<li>
-<p>Right-click on the root node, expand the <code>system</code> and re-apply the layout.</p>
-</li>
-</ol>
-</div>
-<div id="fig-system-role" class="imageblock right text-left thumb">
-<div class="content">
-<img src="../source/tutorial1IMG/fig-system-role.png" alt="fig system role" width="500">
-</div>
-<div class="title">Figure 29. The specification of the system component in belonging <br/> to the three categories; <em>permanent</em>, <em>atomic</em> and <em>arena</em>.</div>
-</div>
-<div class="paragraph">
-<p>We are now in a position to define the <em>role</em> of the <code>system</code> node (a.k.a. <code>component</code> in this case). The <code>system</code> node always belongs to the <code>arena</code> and <code>permanent</code> categories. This has already been done by the 'Blank' template. It just remains to make the system <code>atomic</code>.</p>
+<p><em>ModelMaker</em> can link to an Integrated Development Environment (IDE) such as <em>Eclipse</em>, to write code for these
+functions. However, in this tutorial the funcion is only one line of code and we can just associate a code snippet
+with the function without the need to link to an IDE. The snippet will be inserted in the function when the simulation
+is compiled.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="6">
 <li>
-<p>Right-click on <code>system:sys1</code> and select <code>New edge &#8594; belongsTo &#8594; category:*atomic*</code>.</p>
+<p>Edit the <code>functionSnippet</code> property of <code>function:Chaos</code>, and enter the following text:
+<code>focalDrv.x = r*x*(1-x);</code></p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>The system&#8217;s role of belonging to the <em>atomic</em>, <em>permanent</em> and <em>arena</em> categories is indicated by three <em>cross-link</em> edges (<a href="#fig-system-role">Figure 29</a>). All <em>cross-links</em> are red - thin at the <em>start node</em> and thick at the <em>end node</em>. Unlike parent-child links, they have names. Generally, the names of <em>cross links</em> are not much use. They can be hidden by selecting the drop-down list <code>E text</code> in the tool bar, and selecting <code>Role</code>. The relationship can be read as, for example: <code>system:sys1 belongsTo category:*arena*</code>.</p>
-</div>
-<div id="fig-arena" class="imageblock right text-left thumb">
-<div class="content">
-<img src="../source/tutorial1IMG/fig-arena.png" alt="fig arena" width="550">
-</div>
-<div class="title">Figure 30. The specification of the constants and drivers for the <em>arena</em>, <br/> a category to which the only component in this tutorial (aka <br/> <code>system:sys1</code>) belongs.</div>
-</div>
-<div class="paragraph">
-<p>Now we need to apply <code>process:p</code> to a category - in this case, the <em>arena</em> (see the task list).</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="7">
-<li>
-<p>Right-click on <code>process:p1</code> and select <code>New edge &#8594; appliesTo &#8594; category:*arena*</code>.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>We have yet to relate <code>system:sys1</code> to the driver '<em>x</em>' and the constant '<em>r</em>'.  These are global data and therefore are defined as part of the <code>arena</code>.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="8">
-<li>
-<p>Right-click on <code>category:*arena*</code> and select <code>New edge &#8594; constants &#8594; record:cnsts</code>.</p>
-</li>
-<li>
-<p>Right-click again on <code>category:*arena*</code> and select <code>New edge &#8594; drivers &#8594; record:drvs</code> (<a href="#fig-arena">Figure 30</a>).</p>
-</li>
-</ol>
+<p>This line sets the next value of <em>x</em> (<code>focalDrv.x</code>) in terms of the current value of <em>x</em>.</p>
 </div>
 <div class="paragraph">
 <p>Save your work (<code>Ctrl+s</code>) and the task list will be empty indicating the simulation is ready to deploy.</p>
@@ -6879,7 +7014,8 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="sect4">
 <h5 id="truedeployment-launching-modelrunner"><a class="anchor" href="#truedeployment-launching-modelrunner"></a>Deployment: launching <em>ModelRunner</em></h5>
 <div class="paragraph">
-<p>Before deploying the simulation, it&#8217;s useful to display the overall specifications by hiding the predefined sub-tree and showing the experiment and user interface sub-trees.</p>
+<p>Before deploying the simulation, it&#8217;s useful to display the overall specifications by hiding the predefined sub-tree and showing the
+experiment and user interface sub-trees.</p>
 </div>
 <div id="fig-deploy1" class="imageblock text-left thumb">
 <div class="content">
@@ -6904,13 +7040,17 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </ol>
 </div>
 <div class="paragraph">
-<p>At the top of <em>ModelRunner</em> are some control buttons to start, step and stop the simulation. This is the <code>ControlWidget1</code> shown in the figure above that was included by default in the 'Blank' template. The <em>run</em> button becomes a <em>pause</em> button while running and the <em>stop</em> button resets the simulator to it&#8217;s starting state.</p>
+<p>At the top of <em>ModelRunner</em> are some control buttons to start, step and stop the simulation. This is the <code>ControlWidget1</code> shown in the
+figure above that was included by default in the 'Blank' template. The <em>run</em> button becomes a <em>pause</em> button while running and the <em>stop</em>
+button resets the simulator to it&#8217;s starting state.</p>
 </div>
 <div class="paragraph">
-<p>However, as expected, there&#8217;s nothing to see so the next step is to add a time series widget. This is an optional requirement so the task list didn&#8217;t complain about this.</p>
+<p>However, as expected, there&#8217;s nothing to see so the next step is to add a time series widget. This is an optional requirement so the
+task list didn&#8217;t complain about this.</p>
 </div>
 <div class="paragraph">
-<p>You can move easily between design and execution of the specifications simply by deploying <em>ModelRunner</em>, checking the simulation and quitting to return to <em>ModelMaker</em>.</p>
+<p>You can move easily between design and execution of the specifications simply by deploying <em>ModelRunner</em>, checking the simulation and
+quitting to return to <em>ModelMaker</em>.</p>
 </div>
 <div class="paragraph">
 <p>To add a time series for <em>x</em>:</p>
@@ -6926,7 +7066,8 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </ol>
 </div>
 <div class="paragraph">
-<p>A <code>tab</code> is a container that can contain either widgets or other containers. The task list indicates this now asking that one of these be added.</p>
+<p>A <code>tab</code> is a container that can contain either widgets or other containers. The task list indicates this now asking that one of these be
+added.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="7">
@@ -6939,7 +7080,8 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>A new task has been added to the list requiring an edge from this widget to a dataTracker.</p>
 </div>
 <div class="paragraph">
-<p>For this widget to receive values of <em>x</em>, something must post values of <em>x</em> to the widget at the same rate as the <code>Chaos</code> function is executed. This is the job of a <code>dataTracker</code> and it properly belongs in the <code>dynamics</code> sub-tree.</p>
+<p>For this widget to receive values of <em>x</em>, something must post values of <em>x</em> to the widget at the same rate as the <code>Chaos</code> function is
+executed. This is the job of a <code>dataTracker</code> and it properly belongs in the <code>dynamics</code> sub-tree.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="8">
@@ -6961,7 +7103,8 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </ol>
 </div>
 <div class="paragraph">
-<p>The display is still uninteresting because we haven&#8217;t set an initial value for <em>x</em> or parameterised <em>r</em>. This can be done in a number of ways but for this tutorial we will add an initialisation function and a code snippet.</p>
+<p>The display is still uninteresting because we haven&#8217;t set an initial value for <em>x</em> or parameterised <em>r</em>. This can be done in a number of
+ways but for this tutorial we will add an initialisation function and a code snippet.</p>
 </div>
 <div id="fig-javaCode" class="imageblock left text-center">
 <div class="content">
@@ -6975,10 +7118,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <p>Create an <code>initFunction</code> as a child of <code>system:sys1</code>. As <code>system:sys1</code> is the only component in the specifications, it is the node requiring initialisation of <em>x</em> and <em>r</em>.</p>
 </li>
 <li>
-<p>Create a <code>snippet</code> as a child of <code>initFunction:Init1</code>.</p>
-</li>
-<li>
-<p>Enter the following two lines in the <code>snpt2#javaCode</code> property (<a href="#fig-javaCode">Figure 32</a>):</p>
+<p>Enter the following two lines in the <code>Init1#javaCode</code> property (<a href="#fig-javaCode">Figure 32</a>):</p>
 <div class="olist lowerroman">
 <ol class="lowerroman" type="i">
 <li>
@@ -6999,13 +7139,19 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <div class="sect4">
 <h5 id="truestopping-conditions"><a class="anchor" href="#truestopping-conditions"></a>Stopping conditions</h5>
 <div class="paragraph">
-<p>If you examine the graph and all its properties, you may notice that there is no indication as to how long the simulation should run. This means that when we run it we should expect it to continue indefinitely. You may or may not want this. If your model contains an unconstrained exponential function, it may eventually crash unless your code takes measures to handle this. You can add a variety of simple or complicated stopping conditions to the <code>dynamics</code> node. These will be discussed in later tutorials.</p>
+<p>If you examine the graph and all its properties, you may notice that there is no indication as to how long the simulation should run.
+This means that when we run it we should expect it to continue indefinitely. You may or may not want this. If your model contains an
+unconstrained exponential function, it may eventually crash unless your code takes measures to handle this. You can add a variety of
+simple or complicated stopping conditions to the <code>dynamics</code> node. These will be discussed in later tutorials.</p>
 </div>
 <div class="paragraph">
-<p>When we first ran this model it had no output. Now that we have a time series chart, displaying data of unlimited length will make the <em>ModelRunner</em> fairly unresponsive because the simulator has little to do but the UI must update the graph continuously. Note: the <code>TimeSeriesWidget1</code> displays data in a rolling buffer. The default buffer size is 1,000 data points.</p>
+<p>When we first ran this model it had no output. Now that we have a time series chart, displaying data of unlimited length will make the
+<em>ModelRunner</em> fairly unresponsive because the simulator has little to do but the UI must update the graph continuously. Note: the
+<code>TimeSeriesWidget1</code> displays data in a rolling buffer. The default buffer size is 1,000 data points.</p>
 </div>
 <div class="paragraph">
-<p>If you press the run button and then the stop or pause button of the controller, it may take a while for the model to actually stop running. So for now, it&#8217;s best to test the simulation with the <code>Step</code> button.</p>
+<p>If you press the run button and then the stop or pause button of the controller, it may take a while for the simulator to respond.
+So for now, it&#8217;s best to test the simulation with the <code>Step</code> button.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="16">
@@ -7062,7 +7208,9 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 </ol>
 </div>
 <div class="paragraph">
-<p>This creates  an ODD template (Overview, Design concepts and Details) (<code>Tut1.odt</code>), an established standard for documenting simulation models. This file can be generated any time from <em>ModelRunner</em>. When you&#8217;re statisfied with the specifications, make a copy of this file as a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <a href="#fig-dir-post-run">Figure 36</a>:</p>
+<p>This creates  an ODD template (Overview, Design concepts and Details) (<code>Tut1.odt</code>), an established standard for documenting simulation
+models. This file can be generated any time from <em>ModelRunner</em>. When you&#8217;re satisfied with the specification, edit this file as
+a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <a href="#fig-dir-post-run">Figure 36</a>:</p>
 </div>
 <div class="paragraph">
 <p><code>~/.3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt</code>.</p>
@@ -7077,7 +7225,7 @@ The <code>dynamics</code> node is the specification of a type of simulator. Ther
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you edit the file without making a copy, those edits will be lost whenever the file is regenerated.
+Every time this file is created, it will have a number added to its name to prevent overwrites.
 </td>
 </tr>
 </table>
@@ -7095,7 +7243,7 @@ If you edit the file without making a copy, those edits will be lost whenever th
 <div class="title">Figure 36. The directory structure after deploying <br/><em>ModelRunner</em> and creating the ODD <br/> documentation.</div>
 </div>
 <div class="paragraph">
-<p>Once the specifications have been compiled without errors and deployed and the documentation generated, a number of files will have been created <a href="#fig-dir-post-run">Figure 36</a>:</p>
+<p>Once the specification has been compiled without errors and deployed and the documentation generated, a number of files will have been created <a href="#fig-dir-post-run">Figure 36</a>:</p>
 </div>
 <div class="olist lowerroman">
 <ol class="lowerroman" type="i">
@@ -7121,13 +7269,19 @@ If you edit the file without making a copy, those edits will be lost whenever th
 <p>An aspect of <em>ModelMaker</em> we have only touched on so far, is the graph layout system.</p>
 </div>
 <div class="paragraph">
-<p>While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges. The advantage in presenting the specifications as a graph is that the huge number of options possible can be constrained by context. For example, to have a dynamic <code>process</code>, it makes sense that it&#8217;s associated with a particular <code>timer</code>, that other processes working at the same rate are associated with the same <code>timer</code> and that all timers are coordinated by the one <code>timeline</code>. The user interface for problems such as this would be very error-prone if presented say, as a series of dialog boxes.</p>
+<p>While using a graph to construct model specifications has many advantages, you can quickly become lost in a confusion of nodes and edges.
+The advantage in presenting the specification as a graph is that the huge number of options possible can be constrained by context.
+For example, to have a dynamic <code>process</code>, it makes sense that it&#8217;s associated with a particular <code>timer</code>, that other processes working at
+the same rate are associated with the same <code>timer</code> and that all timers are coordinated by the one <code>timeline</code>. The user interface for
+problems such as this would be very error-prone if presented say, as a series of dialog boxes.</p>
 </div>
 <div class="paragraph">
 <p><em>ModelMaker</em> has a number of features to help arrange the graph display. Please refer to (<strong>REF</strong>).</p>
 </div>
 <div class="paragraph">
-<p>As an exercise if you wish, try displaying just the nodes with <em>cross-links</em> using the SpringGraph layout (<strong>L4</strong>). This is a common way to look at just the <em>cross-link</em> relationships between nodes. Generally, adding a screen capture of this and a second screen capture of just the relevant <em>parent-child</em> relationships make useful additions to the ODD appendix.</p>
+<p>As an exercise if you wish, try displaying just the nodes with <em>cross-links</em> using the SpringGraph layout (<strong>L4</strong>). This is a common way to
+look at just the <em>cross-link</em> relationships between nodes. Generally, adding a screen capture of this and a second screen capture of
+just the relevant <em>parent-child</em> relationships make useful additions to the ODD appendix.</p>
 </div>
 <div id="fig-links-only" class="imageblock text-left thumb">
 <div class="content">
@@ -7192,28 +7346,13 @@ If you edit the file without making a copy, those edits will be lost whenever th
 <li>
 <p>From <em>ModelMaker</em> main menu select <code>New &#8594; Tutorials &#8594; 1 Logistic</code> name it <code>Tut2</code></p>
 </li>
-<li>
-<p>Right-click on the root node (<code>3worlds:Tut2</code>) and select <code>Collapse &#8594; All</code>.</p>
-</li>
-<li>
-<p>Right-click again on the root node and select <code>Expand &#8594; system:sys1</code></p>
-</li>
-<li>
-<p>Re-apply the layout (<strong>L</strong>).</p>
-</li>
-<li>
-<p>Delete <code>snippet:snpt1</code> and <code>snippet:snpt2</code> as they&#8217;re no longer required.</p>
-</li>
-<li>
-<p>Save (<code>Ctrl+s</code>)</p>
-</li>
 </ol>
 </div>
 <div class="paragraph">
 <p>Next link this project to the Java project created above.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic">
+<ol class="arabic" start="2">
 <li>
 <p>From the <em>ModelMaker</em> main menu, select <code>Edit &#8594; Java project &#8594; Connect&#8230;&#8203;</code>.</p>
 </li>
@@ -7224,12 +7363,12 @@ If you edit the file without making a copy, those edits will be lost whenever th
 <p>In the <em>Eclipse</em> Project Explorer view, right-click on <code>tut2</code> and select <code>Refresh</code>.</p>
 </li>
 <li>
-<p>In the <em>Eclipse</em> main menu, select <code>Project - &gt; clean</code> and apply to <code>tut2</code>.</p>
+<p>In the <em>Eclipse</em> main menu, select <code>Project - &gt; clean</code>, flag <code>tut2</code> and click <code>OK</code>.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>While editing in <em>Eclipse</em>, a task message may appear in <em>ModelMaker</em> from time to time complaining about file dates. If so, make sure your Java files are saved, refreshed and the project clean. The message will disappear when the project is re-complied in <em>ModelMaker</em> using the button in the bottom left-hand corner.</p>
+<p>While editing in <em>Eclipse</em>, a task message may appear in <em>ModelMaker</em> from time to time complaining about file dates. If so, make sure your Java files are saved, refreshed and the project clean. The message will disappear when the project is re-complied in <em>ModelMaker</em> using the <em>Verify</em> button in the bottom left-hand corner.</p>
 </div>
 </div>
 <div class="sect3">
@@ -7260,15 +7399,11 @@ If you edit the file without making a copy, those edits will be lost whenever th
 </li>
 <li>
 <p><code>Code insert End---- &lt;</code>.</p>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Add the following code between these markers, taking care to leave the text of the markers themselves unchanged.</p>
-</li>
-</ol>
-</div>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The code snippet property that was present in the original <code>Logistic</code> model this tutorial derives from has already been add for both the <code>chaos</code> and <code>init</code> methods.</p>
 </div>
 <div class="paragraph">
 <p><code>chaos</code>:</p>
@@ -7294,16 +7429,45 @@ If you edit the file without making a copy, those edits will be lost whenever th
 <div class="title">Figure 39. The main source code file ('Tut2.java').</div>
 </div>
 <div class="paragraph">
+<p>You can also create other Java classes or import third-party libraries to extend you model code. This will be discussed in later tutorials.
+There are two "import" markers at the top of the main source code file. Add any dependencies to third-party or other java classes you use.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When editing the main java source code file, any imports your IDE might make automatically will not necessarily appear between the import markers.
+Take care to edit these statements to they do appear between the import statements. These imports are in fact a code snippet property found in the specification root node.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
 <p>Because these two methods are mapped to this generated file from the specifications created in <em>ModelMaker</em>, it follows that changes to the specifications may result in changes to these methods. So the question arises, how does <em>ModelMaker</em> manage this without losing the Java code you write?</p>
 </div>
 <div class="paragraph">
 <p>If there have been changes to the number, name or type of <code>function</code> used in the specification, changes to anything in the <code>dataDefinition</code> sub-tree, or changes to the <em>roles</em> of <code>components</code>, <em>ModelMaker</em> will back up your old file as a text file with a unique name (e.g <code>_Tut2_1.txt</code>,<code>_Tut2_2.txt</code> etc&#8230;&#8203;) within the current java package. This way you can copy and paste you code back to the proper place. Otherwise <em>ModelMaker</em> will never overwrite this file.</p>
 </div>
-<div class="paragraph">
-<p>When <em>ModelMaker</em> searches for differences between previous and current versions of this Java file, it will ignore any comments, import statements and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themselves.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When working simultaneously with an IDE and  <em>ModelMaker</em>, it is useful to keep the code snippets in <em>ModelMaker</em> up-to-date by re-importing them from time to time [ctrl+I]. If changes made in the specifications by <em>ModelMaker</em> result in a new file being created, code snippets will be carried over to the new file.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>If the task list is empty, you can now execute the specifications by deploying them from <em>ModelMaker</em>.</p>
+<p>When <em>ModelMaker</em> searches for differences between previous and current versions of this Java file, it will ignore any comments and the code you have added between the insertion markers. Therefore, although you can do as you please with the generated comments, you should take care not to alter the text of the markers themselves.</p>
+</div>
+<div class="paragraph">
+<p>If the task list is empty, you can now execute the specification by deploying them from <em>ModelMaker</em>.</p>
 </div>
 <div class="paragraph">
 <p>Running the simulation directly from <em>ModelMaker</em> is a convenient way to speed up the turn-around time in developing and testing specifications. Once the specifications are stable, you can run your model from a jar: the jar file that is created in your project directory in this case <code>Tut2.jar</code>. To do this:</p>
@@ -7321,7 +7485,7 @@ If you edit the file without making a copy, those edits will be lost whenever th
 <div class="sect4">
 <h5 id="truedebugging-your-code"><a class="anchor" href="#truedebugging-your-code"></a>Debugging your code</h5>
 <div class="paragraph">
-<p>Once the specifications are valid (i.e no tasks in the task list) you can quit <em>ModelMaker</em> and debug your code from the IDE.</p>
+<p>Once the simulator specification is valid (i.e no tasks in the task list) you can quit <em>ModelMaker</em> and debug your code from the IDE.</p>
 </div>
 <div class="paragraph">
 <p>In the default package of the linked java project (<code>tut2</code>) is a java file called <code>UserCodeRunner.java</code>. This was created the first time you linked the project made with <em>ModelMaker</em> to the Java project. By placing breakpoints in the methods you added to <code>Tut2.java</code> above, you can debug by running from this <code>main</code> class. The correct command-line arguments have already been provided.</p>
@@ -7490,6 +7654,12 @@ If you edit the file without making a copy, those edits will be lost whenever th
 </div>
 </div>
 <div class="sect4">
+<h5 id="truestructure-2"><a class="anchor" href="#truestructure-2"></a>Structure</h5>
+<div class="paragraph">
+<p>The <em>SimpleClock1</em> template has already defined the role of <code>system.sys</code> as <em>permanent</em>, <em>atomic</em> and belonging to the <em>arena</em> - the definition of a non-hierarachical model. There is nothing additional needed for this section.</p>
+</div>
+</div>
+<div class="sect4">
 <h5 id="truedynamics-2"><a class="anchor" href="#truedynamics-2"></a>Dynamics</h5>
 <div class="paragraph">
 <p>Although the task list is now empty (i.e. the specifications are now deployable), we have yet to write the model equation and provide some output. We can now rename the function provided by the template to something meaningful in the present context and add a data tracker to follow <em>x</em>.</p>
@@ -7497,7 +7667,7 @@ If you edit the file without making a copy, those edits will be lost whenever th
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Expand the <code>system.sys1</code> sub-tree from the root node and re-apply the layout.</p>
+<p>Expand the <code>system.sys1</code> sub-tree from the root node and re-apply the layout [Alt+L].</p>
 </li>
 <li>
 <p>Right-click on <code>Function:F1</code>, select <code>Rename node</code> and name it 'Growth'. If the prompt is unresponsive, remember to begin the name with an upper case letter.</p>
@@ -7644,6 +7814,16 @@ for (int i = 0; i &lt; dxdt.length; i++)
 <div class="title">Figure 46. Example of the generated javaDoc for the <code>growth</code> function of Tutorial 3. The figure assumes correct meta-data has been added to the definitions of <code>K, r, alpha</code> and <code>x</code>.</div>
 </div>
 <div class="paragraph">
+<p>Following a note from 'Tutorial 1', it is a good idea to keep the code snippets in <em>ModelMaker</em> up-to-date with changes in the source code.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>In <em>ModelMaker</em> select <code>Edit &#8594; Import snippets from IDE</code> and save (<code>Ctrl-s</code>).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
 <p>The model is now ready to run. However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.</p>
 </div>
 <div id="fig-tut3-MR" class="imageblock text-center">
@@ -7657,7 +7837,7 @@ for (int i = 0; i &lt; dxdt.length; i++)
 <div class="sect3">
 <h4 id="truenext-3"><a class="anchor" href="#truenext-3"></a>5.3.3. Next</h4>
 <div class="paragraph">
-<p>The next two tutorials (4 &amp; 5) begin to elaborate the Lotka-Volterra model by developing the <code>structure</code> sub-tree through the addition of a disturbance component.</p>
+<p>The next tutorial elaborates the Lotka-Volterra model by developing the <code>structure</code> sub-tree through the addition of a disturbance component.</p>
 </div>
 </div>
 </div>
@@ -7757,7 +7937,7 @@ for (int i = 0; i &lt; dxdt.length; i++)
 </ol>
 </div>
 <div class="paragraph">
-<p>The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order children alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same string - in this case 'dist'. We should also prefix all the data associated with the CLV with 'comm' (community).</p>
+<p>The records carried over from the previous tutorial should now be given better names. A trick with the Tree layout functions is that they order children alphabetically. To arrange nodes so that related nodes of a particular role are close together, prefix the name with the same characters - in this case 'dist'. We should also prefix all the data associated with the CLV with 'comm' (community).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -7792,7 +7972,7 @@ Tree layout algorithms sort child nodes in alphabetical order. Consider this beh
 </ol>
 </div>
 <div class="paragraph">
-<p>Fill out the meta-data properties with at least the description, range and units if relevant. This information will be incorporated in the comments of the generated Java code (i.e. add the optional property <code>description</code> to the new data nodes).</p>
+<p>Fill out the meta-data properties with at least the description, range and units if relevant. This information will be incorporated in the comments of the generated Java code (i.e. add the optional property <code>description</code> to the new data nodes: right-click on a node and select 'optional properties').</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="9">
@@ -7837,7 +8017,227 @@ Tree layout algorithms sort child nodes in alphabetical order. Consider this beh
 <div class="title">Figure 48. The data definition sub-tree for Tutorial 4. Tree layout algorithms sort nodes in alphabetical order. Keeping this in mind when naming nodes can help keep your specifications in useful order.</div>
 </div>
 <div class="paragraph">
-<p>That&#8217;s all the data needed for this model. We can now specify the system dynamics.</p>
+<p>That&#8217;s all the data needed for this model. We can now specify the system structure.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truestructure-3"><a class="anchor" href="#truestructure-3"></a>Structure</h5>
+<div class="paragraph">
+<p>Recall from the previous tutorial, that <code>system:sys1</code> is acting as a single component. It&#8217;s <em>role</em> was defined as a permanent, indivisible global component:</p>
+</div>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><em>permanent</em>;</p>
+</li>
+<li>
+<p><em>atomic</em>;</p>
+</li>
+<li>
+<p>belonging to the <em>arena</em>;</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <em>arena</em> is a special category. One and only one component must belong to this category. Any data associated with it (<em>constants</em>, <em>drivers</em> and <em>decorators</em>) is available to all <code>functions</code>: the data is global. The system (<code>system:sys1</code>) was also being tracked by the data tracker. This relationship was removed above because <em>x</em>, the population being tracked, will now be part of a category related to the community component of the model i.e 'x' will no longer be global data.</p>
+</div>
+<div class="paragraph">
+<p>The <em>role</em> of a <code>component</code> is defined by its <code>componentType</code>. We&#8217;ll need two <code>ComponentTypes</code>; one for the community (the CLV equation) and one for the disturbance. We also need a <code>relationType</code> to define the relationship between the disturbance and the effected community.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Right-click on <code>system.sys1</code> and collapse the <code>dynamics:sim</code> sub-tree.</p>
+</li>
+<li>
+<p>Create a <code>structure</code> as child of <code>system:sys1</code>.</p>
+</li>
+<li>
+<p>Create a <code>componentType</code> as a child of <code>structure:struc1</code> and name it 'distType'.</p>
+</li>
+<li>
+<p>Create a <code>component</code> as child of <code>componentType:distType</code> and name it 'dist'.</p>
+</li>
+<li>
+<p>Create a second <code>componentType</code> as child of <code>structure:struc1</code> and name it 'commType'.</p>
+</li>
+<li>
+<p>Create a <code>component</code> as child of <code>componentType:commType</code> and name it 'comm'.</p>
+</li>
+<li>
+<p>Create a <code>relationType</code> as child of <code>structure:struc1</code> and name it 'distEffectComm'.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Before proceeding to the definition of the <em>roles</em> of these component types, we should redefine the <em>role</em> of <code>system:sys1</code> that we inherited from Tutorial 3 when starting this project.</p>
+</div>
+<div class="paragraph">
+<p>The node <code>system:sys1</code>, in aliasing as a <code>componentType</code>, must now be redefined as an <code>assemblage</code> with no functions or data associated with it - that is, it is no longer <code>atomic</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Right-click on <code>system:sys1</code> and select <code>Delete edge &#8594; belongsTo &#8594; category:*atomic*</code>.</p>
+</li>
+<li>
+<p>Right-click again on <code>system:sys1</code> and select <code>New edge &#8594; belongsTo &#8594; category:*assemblage*</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Remove the data associated with the <em>arena</em>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="10">
+<li>
+<p>Right-click on the root node (<code>3worlds:Tut4</code>), expand the <code>predefined:*categories*</code> and re-apply the layout.</p>
+</li>
+<li>
+<p>Right-click on <code>category:*arena*</code> and select <code>Delete edge &#8594; drivers &#8594; record:commDrvs</code>.</p>
+</li>
+<li>
+<p>Right-click again on  <code>category:*arena*</code> and select <code>Delete edge &#8594; constants &#8594; record:commCnsts</code>.</p>
+</li>
+<li>
+<p>Right-click on the root node and collapse <code>predefined:*categories*</code> and re-apply the layout [Alt+L].</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The node <code>system:sys</code> is now defined as simply a <em>permanent assemblage</em> belonging to the <em>arena</em>.</p>
+</div>
+<div class="paragraph">
+<p>Now define a <code>categorySet</code> to partition data between the disturbance and community. Category Sets contain mutually exclusive categories: something can belong to one or the other but not both. Since disturbance and community is all there is in this model, this is the 'world' of the model so this seems a reasonable name for this set of categories i.e the 'world' comprises a community and a disturbance category: something can belong to one or other of these but not both.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="14">
+<li>
+<p>Create a <code>categorySet</code> as child of <code>structure:struc1</code> and name it 'world'.</p>
+</li>
+<li>
+<p>Create a <code>category</code> as child of <code>categorySet:world</code> and name it 'distCat'.</p>
+</li>
+<li>
+<p>Create another <code>category</code> as child of <code>categorySet:world</code> and name it 'commCat'.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Define the data for these new categories.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="16">
+<li>
+<p>Right-click on <code>category:commCat</code> and create the following edges:</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>drivers &#8594; record:commDrvs</code>.</p>
+</li>
+<li>
+<p><code>constants &#8594; record:commCnsts</code>.</p>
+</li>
+<li>
+<p><code>decorators &#8594; record:commDecs</code>.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Right-click on <code>category:commDist</code> and select <code>New edge &#8594; constants &#8594; record:distCnsts</code>.</p>
+</li>
+<li>
+<p>Expand the <code>dataDefinition:dDef</code> sub-tree, toggle the <em>cross-links</em> to confirm you have done the links as above.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Now define the <em>roles</em> of the new component types for the community and disturbance. Both belong to the <em>permanent</em>, <em>atomic</em>, and <em>component</em> categories.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="18">
+<li>
+<p>Right-click on <code>componentType:commType</code> and create <code>belongsTo</code> edges to:</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>category:*permanent*</code>,</p>
+</li>
+<li>
+<p><code>category:*atomic*</code>,</p>
+</li>
+<li>
+<p><code>category:*component*</code> and</p>
+</li>
+<li>
+<p><code>category:commCat</code>.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Right-click on <code>componentType:distType</code> and create <code>belongsTo</code> edges to:</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>category:*permanent*</code>,</p>
+</li>
+<li>
+<p><code>category:*atomic*</code>,</p>
+</li>
+<li>
+<p><code>category:*component*</code> and</p>
+</li>
+<li>
+<p><code>category:distCat</code>.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Now define the relation between disturbance and the community.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="20">
+<li>
+<p>Right-click on <code>relationType:distEffectComm</code> and create edges:</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p><code>fromCategory &#8594; distCat</code>.</p>
+</li>
+<li>
+<p><code>toCategory &#8594; commCat</code>.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Finally, add initialisation functions for the disturbance and community component types:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="22">
+<li>
+<p>Create an <code>initFunction</code> as child of <code>componentType:commType</code> and name it 'InitComm'.</p>
+</li>
+<li>
+<p>Create an <code>initFunction</code> as child of <code>componentType:distType</code> and name it 'InitDist'.</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut4-structure" class="imageblock text-center thumb">
+<div class="content">
+<img src="../source/tutorial4IMG/fig-tut4-structure.png" alt="fig tut4 structure" width="800">
+</div>
+<div class="title">Figure 49. The structure sub-tree for Tutorial 4. .</div>
+</div>
+<div class="paragraph">
+<p>That&#8217;s all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.</p>
 </div>
 </div>
 <div class="sect4">
@@ -7849,7 +8249,7 @@ Tree layout algorithms sort child nodes in alphabetical order. Consider this beh
 <p>Before proceeding, some explanations are required to make sense of the following steps. Ignoring <code>dataTrackers</code> for the moment, a <code>process</code> can have one or more <code>functions</code>. However, the relationships (<em>cross_links</em>) between the model&#8217;s dynamics, data and structure are defined at the level of <code>processes</code> not <code>functions</code>. If we don&#8217;t care what order the functions are called in, and they all apply to the same data and structural elements, then we need only one process to contain all the functions. However, this is not the case here. The three functions: community growth, disturbance occurrence, and disturbance effects, must have access to different data, components and component relationships. Specifically, whether or not a disturbance is to occur depends only on disturbance data (in this model). Also order is important: it must come before disturbance effects are applied to the community. The disturbance effects applies to a relationship: that of the disturbance and the community. The growth of the community only depends on community data (the Lotka-Volterra equation). In addition, we make the decision (in this model) that the disturbance can only occur after the growth of the community, mimicking a late growing season disturbance.</p>
 </div>
 <div class="paragraph">
-<p>We will prefix the names of <code>processes</code> in such a way that the layout algorithm will place them in execution order.</p>
+<p>For clarity, we will prefix the names of <code>processes</code> in such a way that the layout algorithm will place them in execution order.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -7944,12 +8344,12 @@ All methods read the data of this time step and write to data of the next time s
 </ol>
 </div>
 <div class="paragraph">
-<p>Finally, because there will be no global data in this model, <code>system:sys</code> will not need an initialisation function. Therefore we can delete this sub-tree.</p>
+<p>Finally, because there will be no global data in this model, <code>system:sys</code> will not need an initialisation function. Therefore we can delete this node.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="12">
 <li>
-<p>Right-click on <code>system:sys</code> and select `Delete sub-tree &#8594; initFunction:Init1.</p>
+<p>Right-click on <code>initFunction:Init1</code> and select 'Delete node'.</p>
 </li>
 </ol>
 </div>
@@ -7957,236 +8357,10 @@ All methods read the data of this time step and write to data of the next time s
 <div class="content">
 <img src="../source/tutorial4IMG/fig-tut4-dynamics.png" alt="fig tut4 dynamics">
 </div>
-<div class="title">Figure 49. The system dynamics sub-tree for Tutorial 4. .</div>
+<div class="title">Figure 50. The system dynamics sub-tree for Tutorial 4. .</div>
 </div>
 <div class="paragraph">
 <p>That&#8217;s all that&#8217;s required in this section. The task list indicates that the new processes must belong to some categories. To do that we need to move on to the structure of the specifications.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="truestructure-2"><a class="anchor" href="#truestructure-2"></a>Structure</h5>
-<div class="paragraph">
-<p>Recall from the previous tutorial, that <code>system:sys1</code> is acting as a single component. It&#8217;s <em>role</em> was defined as:</p>
-</div>
-<div class="olist lowerroman">
-<ol class="lowerroman" type="i">
-<li>
-<p><em>permanent</em>;</p>
-</li>
-<li>
-<p><em>atomic</em>;</p>
-</li>
-<li>
-<p>belonging to the <em>arena</em>;</p>
-</li>
-<li>
-<p>accessing particular data from the <code>dataDefinition</code> sub-tree; and,</p>
-</li>
-<li>
-<p>has <code>process:p1</code> applied to it.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The <em>arena</em> is a special category. It must exist in every specification. Any data associated with it (<em>constants</em>, <em>drivers</em> and <em>decorators</em>) is available to all <code>functions</code>: the data is global. The system (<code>system:sys1</code>) was also being tracked by the data tracker. This relationship was removed above because 'x', the population being tracked, will now be part of a category related to the community component of the model i.e 'x' will no longer be global data.</p>
-</div>
-<div class="paragraph">
-<p>The <em>role</em> of a <code>component</code> is defined by its <code>componentType</code>. We&#8217;ll need two <code>ComponentTypes</code>; one for the community (the CLV equation) and one for the disturbance. We also need a <code>relationType</code> to define the association between the disturbance and the effected community.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Right-click on <code>system.sys1</code> and collapse the <code>dynamics:sim</code> sub-tree.</p>
-</li>
-<li>
-<p>Create a <code>structure</code> as child of <code>system:sys1</code>.</p>
-</li>
-<li>
-<p>Create a <code>componentType</code> as a child of <code>structure:struc1</code> and name it 'distType'.</p>
-</li>
-<li>
-<p>Create a <code>component</code> as child of <code>componentType:distType</code> and name it 'dist'.</p>
-</li>
-<li>
-<p>Create a second <code>componentType</code> as child of <code>structure:struc1</code> and name it 'commType'.</p>
-</li>
-<li>
-<p>Create a <code>component</code> as child of <code>componentType:commType</code> and name it 'comm'.</p>
-</li>
-<li>
-<p>Create a <code>relationType</code> as child of <code>structure:struc1</code> and name it 'distEffectComm'.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Before proceeding to the definition of the <em>roles</em> of these component types, we should redefine the <em>role</em> of <code>system:sys1</code> that we inherited from Tutorial 3 when starting this project.</p>
-</div>
-<div class="paragraph">
-<p>The node <code>system:sys1</code>, in aliasing as a <code>componentType</code>, must now be redefined as an <code>assemblage</code> with no functions or data associated with it.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="8">
-<li>
-<p>Right-click on <code>system:sys1</code> and select <code>Delete edge &#8594; belongsTo &#8594; category:*atomic*</code>.</p>
-</li>
-<li>
-<p>Right-click again on <code>system:sys1</code> and select <code>New edge &#8594; belongsTo &#8594; category:*assemblage*</code>.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Remove the data associated with the <em>arena</em>.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="10">
-<li>
-<p>Right-click on the root node (<code>3worlds:Tut4</code>), expand the <code>predefined:*categories*</code> and re-apply the layout.</p>
-</li>
-<li>
-<p>Right-click on <code>category:*arena*</code> and select <code>Delete edge &#8594; drivers &#8594; record:commDrvs</code>.</p>
-</li>
-<li>
-<p>Right-click again on  <code>category:*arena*</code> and select <code>Delete edge &#8594; constants &#8594; record:commCnsts</code>.</p>
-</li>
-<li>
-<p>Right-click on the root node and collapse <code>predefined:*categories*</code> and re-apply the layout.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The node <code>system:sys</code> is now defined as simply a <em>permanent assemblage</em> belonging to the <em>arena</em>.</p>
-</div>
-<div class="paragraph">
-<p>Now define a <code>categorySet</code> to partition data between the disturbance and community. Category sets contain mutually exclusive categories: something can belong to one or the other but not both. Since disturbance and community is all there is in this model, this is the 'world' of the model so this seems a reasonable name for this set of categories i.e the 'world' comprises a community and a disturbance category: something can belong to one or other of these but not both.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="14">
-<li>
-<p>Create a <code>categorySet</code> as child of <code>structure:struc1</code> and name it 'world'.</p>
-</li>
-<li>
-<p>Create a <code>category</code> as child of <code>categorySet:world</code> and name it 'distCat'.</p>
-</li>
-<li>
-<p>Create another <code>category</code> as child of <code>categorySet:world</code> and name it 'commCat'.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Define the data for these new categories.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="16">
-<li>
-<p>Right-click on <code>category:commCat</code> and create the following edges:</p>
-<div class="olist lowerroman">
-<ol class="lowerroman" type="i">
-<li>
-<p><code>drivers &#8594; record:commDrvs</code>.</p>
-</li>
-<li>
-<p><code>constants &#8594; record:commCnsts</code>.</p>
-</li>
-<li>
-<p><code>decorators &#8594; record:commDecs</code>.</p>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>Right-click on <code>category:commDist</code> and select <code>New edge &#8594; constants &#8594; record:distCnsts</code>.</p>
-</li>
-<li>
-<p>Expand the <code>dataDefinition:dDef</code> sub-tree, toggle the <em>cross-links</em> to confirm you have done the links as above.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Now define the <em>roles</em> of the new component types for the community and disturbance. Both belong to the  <em>permanent</em>, <em>atomic</em>, and <em>component</em> categories and accesses data through their respective categories.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="18">
-<li>
-<p>Right-click on <code>componentType:commType</code> and create <code>belongsTo</code> edges to:</p>
-<div class="olist lowerroman">
-<ol class="lowerroman" type="i">
-<li>
-<p><code>category:*permanent*</code>,</p>
-</li>
-<li>
-<p><code>category:*atomic*</code>,</p>
-</li>
-<li>
-<p><code>category:*component*</code> and</p>
-</li>
-<li>
-<p><code>category:commCat</code>.</p>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>Right-click on <code>componentType:distType</code> and create <code>belongsTo</code> edges to:</p>
-<div class="olist lowerroman">
-<ol class="lowerroman" type="i">
-<li>
-<p><code>category:*permanent*</code>,</p>
-</li>
-<li>
-<p><code>category:*atomic*</code>,</p>
-</li>
-<li>
-<p><code>category:*component*</code> and</p>
-</li>
-<li>
-<p><code>category:distCat</code>.</p>
-</li>
-</ol>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Now define the relation between disturbance and the community.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="20">
-<li>
-<p>Right-click on <code>relationType:distEffectComm</code> and create edges:</p>
-<div class="olist lowerroman">
-<ol class="lowerroman" type="i">
-<li>
-<p><code>fromCategory &#8594; distCat</code>.</p>
-</li>
-<li>
-<p><code>toCategory &#8594; commCat</code>.</p>
-</li>
-</ol>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Finally, add initialisation functions for the disturbance and community component types:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="22">
-<li>
-<p>Create an <code>initFunction</code> as child of <code>componentType:commType</code> and name it 'InitComm'.</p>
-</li>
-<li>
-<p>Create an <code>initFunction</code> as child of <code>componentType:distType</code> and name it 'InitDist'.</p>
-</li>
-</ol>
-</div>
-<div id="fig-tut4-structure" class="imageblock text-center thumb">
-<div class="content">
-<img src="../source/tutorial4IMG/fig-tut4-structure.png" alt="fig tut4 structure" width="800">
-</div>
-<div class="title">Figure 50. The structure sub-tree for Tutorial 4. .</div>
-</div>
-<div class="paragraph">
-<p>That&#8217;s all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.</p>
 </div>
 </div>
 <div class="sect4">
@@ -8226,7 +8400,7 @@ All methods read the data of this time step and write to data of the next time s
 <div class="olist arabic">
 <ol class="arabic" start="7">
 <li>
-<p>Chnage the property <code>distEffectComm#lifespan</code> to <code>ephemeral</code>.</p>
+<p>Change the property <code>distEffectComm#lifespan</code> to <code>ephemeral</code>.</p>
 </li>
 </ol>
 </div>
@@ -8239,7 +8413,7 @@ All methods read the data of this time step and write to data of the next time s
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Add a <code>snippet</code> to each of the three <code>functions</code> and two <code>initFunctions</code> in the specifications. Add the following code to the <code>JavaCode</code> property of each snippet:</p>
+<p>Copy and paste the code below to all the relevant <code>functionSnippet</code> properties. A convenient way to do this is to enter "func" into the search field in the <em>All properties</em> property editor and edit each in turn. Note: click the 'By Name' button at the top-left of the editor, otherwise the search function will only show properties containing 'func' within a property category. If you received compile error messages, check that you have pasted into the property of the correct function:</p>
 </li>
 </ol>
 </div>
@@ -8339,7 +8513,7 @@ otherDec.di = 0.0;
 <div class="sect3">
 <h4 id="trueuser-interface-2"><a class="anchor" href="#trueuser-interface-2"></a>5.4.3. User interface</h4>
 <div class="paragraph">
-<p>We now need to modify the user interface, provided curtesy of the previous model (Tut3), to display <code>di</code> and <code>tsd</code>.
+<p>We now need to modify the user interface, provided courtesy of the previous model (Tut3), to display <code>di</code> and <code>tsd</code>.
 We are simulating 40 species so their abundance (<code>x[n]</code>) is best placed in a separate time series chart and 'di' in another. In addition, we need an xy plot of <code>di</code> by <code>tsd</code>.
 For this we need two additional <code>dataTrackers</code>.</p>
 </div>
@@ -8427,7 +8601,7 @@ However, you can have as many <code>tabs</code> but of course only one tab is vi
 </div>
 <div id="fig-tut4-user-interface" class="imageblock text-center thumb">
 <div class="content">
-<img src="../source/tutorial4IMG/fig-tut4-user-interface.png" alt="fig tut4 user interface" width="800">
+<img src="../source/tutorial4IMG/fig-tut4-user-interface.png" alt="fig tut4 user interface" width="700">
 </div>
 <div class="title">Figure 51. The user-interface sub-tree for Tutorial 4. .</div>
 </div>
@@ -8459,7 +8633,850 @@ However, you can have as many <code>tabs</code> but of course only one tab is vi
 <div class="sect3">
 <h4 id="truenext-4"><a class="anchor" href="#truenext-4"></a>5.4.4. Next</h4>
 <div class="paragraph">
-<p>The next tutorial introduces the event timer to drive disturbance.</p>
+<p>The next tutorial introduces the event timer to simulator episodic systems such as pulse germination or irregular disturbance regimes.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truetutorial-5-event-driven-systems-using-the-event-timer"><a class="anchor" href="#truetutorial-5-event-driven-systems-using-the-event-timer"></a>5.5. Tutorial 5: Event driven systems - Using the Event Timer</h3>
+<div class="sect3">
+<h4 id="trueintroduction-5"><a class="anchor" href="#trueintroduction-5"></a>5.5.1. Introduction</h4>
+<div class="paragraph">
+<p>Many processes in nature are episodic and can be triggered when some other process reaches a particular state. For example, in arid environments, organisms may reproduce en masse when a rain event occurs; an epidemic may break out when a population reaches a certain density or; smouldering fire may spread if weather conditions cross some threshold.</p>
+</div>
+<div class="paragraph">
+<p>The previous tutorials have used a clock timer to drive the simulation dynamics. In essence, a clock timer simply issues regular time events autonomously, at intervals determined by its properties – its time step.
+An event timer, on the other hand, is not autonomous. It drives its child processes through events posted to it by other processes.</p>
+</div>
+<div class="paragraph">
+<p>In this tutorial we mimic the dynamics of an episodic system with an <a href="https://en.wikipedia.org/wiki/Agent-based_model#In_biology">Individual-based Model</a> (IBM). We use an event timer to drive pulse creation of entities and a clock timer for their deletion. Here, we refer to the 'entities' as 'items' so as not to be distracted by ecological details.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truespecifications-4"><a class="anchor" href="#truespecifications-4"></a>5.5.2. Specifications</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start <em>ModelMaker</em> and create a new project from the <code>SimpleClock1</code> template and name the project 'Tut5'.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="truedata-definition-4"><a class="anchor" href="#truedata-definition-4"></a>Data definition</h5>
+<div class="paragraph">
+<p>Three fields are required: a deletion rate, pulse rate and a ceiling to provide a limit to item creation. These will be global constants.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="2">
+<li>
+<p>Collapse all sub-trees from the root node and then expand <code>dataDefinition:dDef</code>.</p>
+</li>
+<li>
+<p>Delete <code>record:drvs</code>. There are no drivers needed.</p>
+</li>
+<li>
+<p>Rename <code>record:cnsts</code> to 'glbCnsts'.</p>
+</li>
+<li>
+<p>Create three <code>field</code> nodes as children of <code>record:glbCnsts</code>, name them 'ceiling', 'deleteRate' and 'pulseRate' - all of type <code>Double</code>.</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut5-data-definition" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial5IMG/fig-tut5-data-definition.png" alt="fig tut5 data definition" width="400">
+</div>
+<div class="title">Figure 55. Data definition specifications.</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truestructure-4"><a class="anchor" href="#truestructure-4"></a>Structure</h5>
+<div class="paragraph">
+<p>We need 2 component types for this model: the system (which already exists i.e. <code>system:sys</code>) and the 'item' component type which we&#8217;ve yet to define. These have a hierarchical relationship: the system is an assemblage of 'items'. However, <code>system:sys1</code> currently belongs to the <em>atomic</em> category. This must be changed to the <em>assemblage</em> category to signify this hierarchical structure.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Collapse the <code>dataDefinition</code> sub-tree and expand the <code>system</code> sub-tree.</p>
+</li>
+<li>
+<p>From <code>system:sys1</code>, collapse the <code>dynamics</code> sub-tree.</p>
+</li>
+<li>
+<p>Select the <code>system.sys1</code> node and delete the edge to <code>category:*atomic*</code>.</p>
+</li>
+<li>
+<p>From the same node, create a <code>belongsTo</code> edge to <code>category:*assemblage*</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>An 'itemType' will be a component type with a role defined as belonging to the <em>ephemeral</em>, <em>atomic</em>, <em>component</em> and <em>item</em> categories. It&#8217;s <em>ephemeral</em> because it can be created and destroyed; it&#8217;s <em>atomic</em> because it has no sub-components; it&#8217;s a <em>component</em> because it is a sub-component of a larger system and it&#8217;s a <em>item</em> because processes that apply to it must reference a category unique to it. All these categories already exist in the <code>predefined:*categories*</code> sub-tree except for the 'item' category which we must create.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>Create a <code>structure</code> node as a child of <code>system.sys1</code> to begin building the model structure sub-tree.</p>
+</li>
+<li>
+<p>Create a <code>categorySet</code> node as a child of <code>structure:struc1</code> and name it 'itemSet'.</p>
+</li>
+<li>
+<p>Create a <code>category</code> node as a child of <code>categorySet:itemSet</code> and name it 'itemCat'.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>We now build the item component.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Create a <code>componentType</code> as a child of <code>structure:struc1</code> and name it 'itemType'.</p>
+</li>
+<li>
+<p>Create a <code>component</code> as a child of <code>componentType:itemType</code> and name it 'item'.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>We now define the <em>role</em> of <code>itemType</code> by specifying the categories it belongs to.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="10">
+<li>
+<p>Create 4 <code>belongsTo</code> edges from <code>componentType:itemType</code> to <code>category:*ephemeral*</code>, <code>category:*atomic*</code>, <code>category:*component*</code> and <code>category:itemCat</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A message now appears suggesting two ways we can create an initial number of items: by the addition of an optional property (<code>nInstances</code>) or loading from a file. For this tutorial we will just add the optional property.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="11">
+<li>
+<p>Right-click on <code>component:item</code> and select <em>optional properties</em> from the popup menu. Check the <code>nInstances</code> box.</p>
+</li>
+<li>
+<p>In the properties editor, set the value of <code>nInstances</code> to 100.</p>
+</li>
+<li>
+<p>Before ending this section, rename <code>initFunction:init1</code> to 'SysInit'.</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut5-structure" class="imageblock text-center thumb">
+<div class="content">
+<img src="../source/tutorial5IMG/fig-tut5-structure.png" alt="fig tut5 structure" width="500">
+</div>
+<div class="title">Figure 56. Model structure specifications.</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truedynamics-4"><a class="anchor" href="#truedynamics-4"></a>Dynamics</h5>
+<div class="paragraph">
+<p>The <code>SimpleClock1</code> template we started with contains a clock timer (<code>timer:clock1</code>) which we can use to call the delete function to remove items at a regular rate. Later we add <code>eventTimers</code> to implement the episodic dynamics. It will make the following steps clearer if we rename two nodes first.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Collapse all sub-trees from the root node and then expand <code>system:sys1</code>.</p>
+</li>
+<li>
+<p>From <code>system:sys1</code>, collapse all sub-trees and then expand <code>dynamics:sim</code> and re-apply the layout [Alt+L].</p>
+</li>
+<li>
+<p>Rename <code>timer:clock1</code> to <code>timer:t3Clock</code>.</p>
+</li>
+<li>
+<p>Rename <code>process:p1</code> to <code>process:p3</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>We need a <code>deleteDecision</code> function associated with this process rather than the current <code>ChangeState</code> function.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>Delete node <code>function:F1</code>.</p>
+</li>
+<li>
+<p>Create a <code>function</code> node as a child of <code>process:p3</code>, name it 'DeleteItem' and select <code>deleteDecision</code> as its type.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><code>process:p3</code> is currently applied to the <code>arena</code> category. This edge was present from the template we started with. We must reassign this to apply <code>p3</code> to <code>category:itemCat</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>Select <code>process:p3</code> and delete the edge to the arena category and create an <code>appliesTo</code> edget to <code>category:itemCat</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>We now need an event timer to drive 'item' creation events.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Create a <code>timer</code> node as a child of <code>timeline:tmLn</code>, name it 't2Event' and select <code>EventTimer</code> as its type.</p>
+</li>
+<li>
+<p>Create a <code>process</code> node as child of <code>timer:t2Event</code> and name it 'p2'.</p>
+</li>
+<li>
+<p>Add an <code>appliesTo</code> edge from <code>process:p2</code> to <code>category:itemCat</code>.</p>
+</li>
+<li>
+<p>Create a <code>function</code> node as child of <code>process:p2</code>, name it 'Nitems' and select <code>CreateOtherDecision</code> as its type.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This function returns a floating point number that will be the number of items to create <em>for each existing item</em>. The fractional part is rounded probabilistically to give a discrete value.</p>
+</div>
+<div class="paragraph">
+<p>A new message has now appeared asking that <code>timer:t2Event</code> have an edge to a <code>function</code> or <code>initFunction</code>. Every event timer must have at least one function that feeds events to it (specified by a <code>fedBy</code> edge). Therefore, we need a third function to generate these events.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="12">
+<li>
+<p>Create a <code>timer</code> node as a child of <code>timeline:tmLn</code>, name it 't1Event' and select <code>EventTimer</code> as its type.</p>
+</li>
+<li>
+<p>Create a <code>process</code> node as child of <code>timer:t1Event</code> and name it 'p1'.</p>
+</li>
+<li>
+<p>Create a <code>function</code> node as child of <code>process:p1</code>, name it 'Pulse' and select <code>ChangeState</code> as its type.</p>
+</li>
+<li>
+<p>Add an <code>appliesTo</code> edge from <code>process:p1</code> to <code>category:*arena*</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This function operates at a global level (the arena) not at the level of individual items as does <code>function:Nitems</code>. It&#8217;s job is to send an event to <code>timer:t2Event</code> that will cause <code>function:Nitems</code> to be called in a loop on all existing items. The function <code>function:Pulse</code> will also post a future event to call itself so the system will run indefinitely. However, since <code>function:Pulse</code> is also driven by an <code>eventTimer</code> we will get into an infinite regress unless we somehow feed at least one event to <code>timer:t1Event</code>. To do this we just add a <code>fedBy</code> edge to an <code>initFunction</code>.</p>
+</div>
+<div class="paragraph">
+<p>To do all this, we must add 3 <code>fedBy</code> edges: one from <code>function:Pulse</code> to drive item creation; one from <code>function:Pulse</code> to <code>timer:t1Event</code> to drive pulse creation; and a third from <code>initFunction:SysInit</code> to start the chain of events.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="16">
+<li>
+<p>Add an <code>fedBy</code> edge from <code>timer:t1Event</code> to <code>initFunction:SysInit</code>. SysInit will post a first event to begin the process.</p>
+</li>
+<li>
+<p>Add another <code>fedBy</code> edge from <code>timer:t1Event</code> to <code>function:Pulse</code>. Pulse will continue calls to itself at some random time.</p>
+</li>
+<li>
+<p>Add a third <code>fedBy</code> edge this time from <code>timer:t2Event</code> to <code>function:Pulse</code>. Pulse will also generate the item creation events.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>There can be any number of event timers in a specification and each timer can be driven by any number of functions posting events at any time in 'present' or future. This design allows specifying very complex causal chains.</p>
+</div>
+<div class="paragraph">
+<p>The template we began with includes a <code>stoppingCondition</code>. This is not needed as we can allow the simulation continue indefinitely for now.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="19">
+<li>
+<p>Select <code>stoppingCondition:stCd1</code> (a child of <code>dynamics:sim1</code>) and delete it.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The next step is to record the number of 'items' at the end of the time step for display. A state variable already exists for this purpose in the <code>predefined:*categories*</code> sub-tree called <code>count</code>. To make use of this we must add another <code>process</code> with a <code>dataTracker</code> child.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="20">
+<li>
+<p>Create a <code>process</code> as a child of <code>timer:t3clock</code> and name it 'p4'.</p>
+</li>
+<li>
+<p>Add an <code>appliesTo</code> edge from <code>process:p4</code> to <code>category:*assemblage*</code>. This category is associated with <code>record:AVPopualation</code> that contains the <code>count</code> field.</p>
+</li>
+<li>
+<p>Create a <code>dataTracker</code> as a child of <code>process:p4</code>.</p>
+</li>
+<li>
+<p>From the dataTracker, add two edges: one a <code>trackField</code> edge to <code>field:count</code> and the second a <code>trackComponent</code> edge to  <code>system:sys</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Now add <code>dependsOn</code> edges between some of the processes to set their order of execution.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="24">
+<li>
+<p>Right-click on <code>process:p4</code> and create a <code>dependsOn</code> edge to <code>process:p3</code>. This ensures <code>count</code> is recorded as the last step.</p>
+</li>
+<li>
+<p>Right-click on <code>process:p3</code> and create a <code>dependsOn</code> edge to <code>process:p2</code>. This ensures <code>function:Delete</code> always occurs after <code>function:Nitems</code> should they occur simultaneously.</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut5-dynamics" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial5IMG/fig-tut5-dynamics.png" alt="fig tut5 dynamics" width="800">
+</div>
+<div class="title">Figure 57. Model dynamics specification.</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truecoding"><a class="anchor" href="#truecoding"></a>Coding</h5>
+<div class="paragraph">
+<p>We now add the program code to all <code>functionSnippet</code> properties for all the functions we have created.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ensure that the <code>system</code> sub-tree is fully expanded. To do this <em>Collapse sub-tree &gt; All</em> from <code>system:sys</code> node and then select <em>Expand sub-tree &gt; All</em> from the same node.</p>
+</li>
+<li>
+<p>In the <code>Properties</code> editor, select the 'By name' button in the top-left corner and type 'func' in the search bar. All 4 <code>functionSnippet</code> properties should now be listed.</p>
+</li>
+<li>
+<p>Edit <code>SysInit#functionSnippet</code>, and enter the following text:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="Java" class="language-Java hljs">        // Set values of global constants
+        focalCnt.deleteRate = 0.01;
+        focalCnt.pulseRate = 0.002;
+        focalCnt.ceiling = 5000.0;
+        // post event to the pulse time to kick start it. After this it posts events to itself.
+        t1Event.postTimeEvent(1);</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Edit <code>Pulse#functionSnippet</code> and enter:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="Java" class="language-Java hljs">        // post a 'item' creation event for this time
+        t2Event.postTimeEvent(t);
+        // schedule a call to this method at some future time
+        t1Event.postTimeEvent(t + random.nextInt((int)(1.0/pulseRate)) + 1);</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>Edit <code>Nitems#functionSnippet</code> and enter:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        // limit the recuitment rate of items to the ceiling
+        double rate = (ceiling-count)/(double)count;
+        return rate;</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>Edit <code>Delete#functionSnippet</code> and enter:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        // return the deleteRate probabilistically converted to true or false
+        return decider.decide(deleteRate);</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueuser-interface-3"><a class="anchor" href="#trueuser-interface-3"></a>User Interface</h5>
+<div class="paragraph">
+<p>The template we are using has only provided a control widget (<code>widget:ctrl</code>) to run the model.
+To see some output we will add a widget to display a time series of <code>count</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a <code>tab</code> as a child of <code>userInterface:gui</code>.</p>
+</li>
+<li>
+<p>Create a <code>widget</code> as a child of <code>tab:tab1</code> and name it <code>Number of items</code> and select <code>TimeSeriesWidget1</code> as its type.</p>
+</li>
+<li>
+<p>Add a <code>trackSeries</code> edge from this widget to <code>dataTracker:trk1</code>.</p>
+</li>
+<li>
+<p>Run the simulator (Deploy [Alt+D]).</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut5-user-interface" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial5IMG/fig-tut5-user-interface.png" alt="fig tut5 user interface" width="600">
+</div>
+<div class="title">Figure 58. User interface specifications.</div>
+</div>
+<div class="paragraph">
+<p>The simulator runs indefinitely (assuming you have deleted the <code>stoppingCondition</code> node) with exponentially declining numbers and a creation pulses up to 500 time steps apart.</p>
+</div>
+<div id="fig-tut5-modelRunner" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial5IMG/fig-tut5-modelRunner.png" alt="fig tut5 modelRunner">
+</div>
+<div class="title">Figure 59. Running Tutorial 5.</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truenext-5"><a class="anchor" href="#truenext-5"></a>5.5.3. Next</h4>
+<div class="paragraph">
+<p>The next tutorial introduces spatial models by modifying this model to display 'items' in a 2-dimensional continuous surface.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truetutorial-6-event-driven-systems-using-the-event-timer-in-a-spatial-model"><a class="anchor" href="#truetutorial-6-event-driven-systems-using-the-event-timer-in-a-spatial-model"></a>5.6. Tutorial 6: Event driven systems - Using the Event Timer in a spatial model</h3>
+<div class="sect3">
+<h4 id="trueintroduction-6"><a class="anchor" href="#trueintroduction-6"></a>5.6.1. Introduction</h4>
+<div class="paragraph">
+<p>This tutorial introduces 2-dimensional space by converting Tutorial 5 to a spatial model.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truespecifications-5"><a class="anchor" href="#truespecifications-5"></a>5.6.2. Specifications</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start <em>ModelMaker</em> and create a new project from <code>Tutorials &#8594; Event timer 1</code> and name it 'Tut6'.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="truedata-definition-5"><a class="anchor" href="#truedata-definition-5"></a>Data definition</h5>
+<div class="paragraph">
+<p>We must first specify x,y coordinates for 'items' - the modelled entity.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a <code>record</code> as a child of <code>dataDefinition:dDef</code> and name it 'itemDrvs'.</p>
+</li>
+<li>
+<p>Add 2 fields to this record named 'x' and 'y' of type <code>Double</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A message appears indicating this new record must be associated with a <code>category</code>. This is done in the next section.</p>
+</div>
+<div id="fig-tut6-data-definition" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial6IMG/fig-tut6-data-definition.png" alt="fig tut6 data definition" width="500">
+</div>
+<div class="title">Figure 60. Data definition specifications.</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truestructure-5"><a class="anchor" href="#truestructure-5"></a>Structure</h5>
+<div class="paragraph">
+<p>In the <strong>structure</strong> sub-tree we specify the type of space to use and associate it, and the <code>category:itemCat</code>, with the <em>xy</em> coordinates specified above. We can also set the initial values of the coordinates at start up time.</p>
+</div>
+<div class="paragraph">
+<p>Associate the item drivers with the item category.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Right-click on <code>category:itemCat</code> and create an edge to the <em>xy</em> coordinates by selecting <code>New edge &#8594; drivers &#8594; record:itemDrvs</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Create the space and set its properties.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="2">
+<li>
+<p>Create a <code>space</code> node as a child of <code>structure:struc1</code> and select <code>ContinuousFlatSurface</code> as its type.</p>
+</li>
+<li>
+<p>Right-click on <code>space:space</code> and create a new edge to <code>coordinate &#8594; field:x</code> and name it 'x1'.</p>
+</li>
+<li>
+<p>Repeat the above but select <code>coordinate &#8594; field:y</code> and name it 'y1'.</p>
+</li>
+<li>
+<p>In the properties editor for <code>space:space1</code>, set <code>y1#rank</code> to 1 and <code>space1#precision</code> to 0.01.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Set the dimensions of the space to 1,000 by 1,000 meters.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>Set the properties of <code>space1#x-limits</code> and <code>space1#y-limits</code> to 0 to 1000 inclusive.</p>
+</li>
+<li>
+<p>Add the optional property <code>units</code> to <code>space:space1</code> and set its value to 'm' (meters). This is just for documentation.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Create a function to set initial values (the <em>xy</em> coordinates) for the 100 items (a property of <code>component:item</code>) at start up.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Create an <code>initFunction</code> as a child of <code>componentType:itemType</code> and name it 'ItemInit'.</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut6-structure" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial6IMG/fig-tut6-structure.png" alt="fig tut6 structure" width="550">
+</div>
+<div class="title">Figure 61. Model structure specifications.</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truedynamics-5"><a class="anchor" href="#truedynamics-5"></a>Dynamics</h5>
+<div class="paragraph">
+<p>When new items are created by <code>process:Nitems</code> we need a function to set <em>xy</em> coordinates of the newly created 'items'. This is a 'consequence' function. Consequence functions are children of other functions rather than a process.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a <code>function</code> as a child of <code>function:Nitems</code>, name it 'MakeItem' and select <code>setOtherInitialState</code> as its type.</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut6-dynamics" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial6IMG/fig-tut6-dynamics.png" alt="fig tut6 dynamics" width="800">
+</div>
+<div class="title">Figure 62. Model dynamics specifications.</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truecoding-2"><a class="anchor" href="#truecoding-2"></a>Coding</h5>
+<div class="paragraph">
+<p>We now add some Java code to set values for the <em>xy</em> coordinates. We will just set random values for the state up items and set values in newly created items to be clumped near their parent item.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the following code to the <code>ItemInit#functionSnippet</code> property:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="Java" class="language-Java hljs">        // place dots in random locations (assuming these are the dimensions of the map)
+        focalDrv.x = random.nextDouble() * 1000;
+        focalDrv.y = random.nextDouble() * 1000;</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="2">
+<li>
+<p>Add the following code to the <code>MakeItem#functionSnippet</code> property:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="Java" class="language-Java hljs">       // place dot randomly near 'parent' dot.
+       double distance = -50.0 * Math.log(1 - random.nextDouble());
+       double direction = random.nextDouble() * (2 * Math.PI);
+       otherDrv.x = x + distance * Math.cos(direction);
+       otherDrv.y = y + distance * Math.sin(direction);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueuser-interface-4"><a class="anchor" href="#trueuser-interface-4"></a>User Interface</h5>
+<div class="paragraph">
+<p>Add a widget to view the items in space.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a <code>widget</code> as a child to <code>tab:tab</code>, name it 'Item landscape' and select <code>SpaceWidget1</code> as its type.</p>
+</li>
+<li>
+<p>Add a <code>trackSpace</code> edge from <code>widget:Item landscape</code> to <code>space:space</code> (<code>trackSpace &#8594; space:space1</code>).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Arrange the two widget horizontally (the default) - time series first.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>Click on <code>widget:Item landscape</code> and in the <em>Selected properties</em> editor, set <code>Item landscape#order</code> to 1.</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut6-user-interface" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial6IMG/fig-tut6-User-Interface.png" alt="fig tut6 User Interface" width="600">
+</div>
+<div class="title">Figure 63. Simulator&#8217;s user-interface specifications showing cross-links to nodes in <br/> the structure and dynamics sub-trees.</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Deploy the simulation [Alt+D]</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Information about <code>SpaceWidget1</code> can be found at (ref).</p>
+</div>
+<div id="fig-tut6-modelRunner" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial6IMG/fig-tut6-ModelRunner.png" alt="fig tut6 ModelRunner">
+</div>
+<div class="title">Figure 64. Running Tutorial 6.</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truenext-6"><a class="anchor" href="#truenext-6"></a>5.6.3. Next</h4>
+<div class="paragraph">
+<p>The next tutorial will explain how to implement and use random numbers in models that require stochasticity.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truetutorial-7-random-number-generators"><a class="anchor" href="#truetutorial-7-random-number-generators"></a>5.7. Tutorial 7: Random number generators</h3>
+<div class="sect3">
+<h4 id="trueintroduction-7"><a class="anchor" href="#trueintroduction-7"></a>5.7.1. Introduction</h4>
+<div class="paragraph">
+<p>This tutorial introduces the use of <a href="https://en.wikipedia.org/wiki/Random_number_generation">random number generators</a> (RNG).</p>
+</div>
+<div class="paragraph">
+<p>3Worlds provides for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A single default RNG</p>
+</li>
+<li>
+<p>Any number of independent RNGs;</p>
+</li>
+<li>
+<p>Three different RNG algorithms;</p>
+</li>
+<li>
+<p>Management for seeding the RNGs; and,</p>
+</li>
+<li>
+<p>Assignment of RNGs to particular <code>Functions</code>.</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="truea-single-default-rng"><a class="anchor" href="#truea-single-default-rng"></a>A single default RNG</h5>
+<div class="paragraph">
+<p>In many cases, management of random number generation is not required. For this reason, a single default RNG (PCG32) is available to all functions and can be used by the modeller in their code. Which RNG is available and how it is managed is defined in the model&#8217;s specifications using <em>ModelMaker</em>. These choices are transparent to the model so no coding effort is required by the modeller to utilise the various features.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueany-number-of-independent-rngs"><a class="anchor" href="#trueany-number-of-independent-rngs"></a>Any number of independent RNGs</h5>
+<div class="paragraph">
+<p>You can create any number of independent RNGs and apply them individually or to groups of <code>Functions</code>. For example, you could assign an RNG to all functions that apply to reproduction and another to all functions that concern landscape dynamics.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truethree-different-rng-algorithms"><a class="anchor" href="#truethree-different-rng-algorithms"></a>Three different RNG algorithms</h5>
+<div class="paragraph">
+<p>Three RNG algorithms are available: the standard Java RNG, Pcg32 (<a href="https://www.pcg-random.org/pdf/hmc-cs-2014-0905.pdf">Permuted Congruential Generator</a>) and XSRandom (<a href="http://demesos.blogspot.com/2011/09/replacing-java-random-generator.html">XorShift</a>). Two important properties of RNGs are their quality (the degree to which they cannot be predicted better than by a random chance) and the computer resources required to produce them (memory and speed). Both Pcg32 and XSRandom are much faster (50% and 75% respectively) and of higher quality than the native Java RNG. Pcg32 is of higher quality than XSRandom (the default).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truemanagement-for-seeding-the-rngs"><a class="anchor" href="#truemanagement-for-seeding-the-rngs"></a>Management for seeding the RNGs</h5>
+<div class="paragraph">
+<p>For the purpose of debugging and experimental design it is often necessary to manage the RNG seeds.</p>
+</div>
+<div class="paragraph">
+<p>There are two ways to set the source of the RNG seed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TABLE</strong>: From <a href="https://www.random.org/">a table of 1,000 independently generated random number seeds</a>; and,</p>
+</li>
+<li>
+<p><strong>RANDOM</strong>: From a randomly generated seed using current time to the nano second.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition, the seed can be set at the time of model instantiation (<strong>NEVER</strong>) or upon every reset of the simulation (<strong>ONMODELSTART</strong>).
+Using the <strong>RANDOM</strong> option means there is a new seed created at every instantiation. This option is here just so you don&#8217;t need to delete all the random number generators from the specifications - it effectively switches off reproducible RNG streams.</p>
+</div>
+<div class="paragraph">
+<p>In this tutorial, we build a model with two functions to generate random numbers from two independent streams.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truespecifications-6"><a class="anchor" href="#truespecifications-6"></a>5.7.2. Specifications</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new project starting from the <code>SimpleClock</code> template.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="truedata-definition-6"><a class="anchor" href="#truedata-definition-6"></a>Data definition</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Delete the node <code>record:cnsts</code></p>
+</li>
+<li>
+<p>Create two <code>field</code> nodes as children of <code>record:drvs</code> accept their default names ('fld1', 'fld2') and use the default type of <code>Double</code>.</p>
+</li>
+<li>
+<p>Create two <code>rng</code> nodes as children of <code>dataDefinition:dDef</code> and accept their default names ('gen1', gen2').</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truestructure-6"><a class="anchor" href="#truestructure-6"></a>Structure</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Delete node <code>initFunction:init1</code>: it&#8217;s no needed for this tutorial.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truedynamics-6"><a class="anchor" href="#truedynamics-6"></a>Dynamics</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a <code>Function</code> as child of <code>process:p1</code> accept the default name ('F2") and select <code>ChangeState</code> as the type.</p>
+</li>
+<li>
+<p>Add the following code to <code>F1#functionSnippet</code> property: 'focalDrv.fld1 = random.nextDouble();'.</p>
+</li>
+<li>
+<p>Add the following code to <code>F2#functionSnippet</code> property: 'focalDrv.fld2 = random.nextDouble();'.</p>
+</li>
+<li>
+<p>Create a <code>useRNG</code> edge from <code>function:F1</code> to <code>rng:gen1</code>.</p>
+</li>
+<li>
+<p>Create a <code>useRNG</code> edge from <code>function:F2</code> to <code>rng:gen2</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Now the value of 'fld1' is set by the random number generator 'gen1' and the value of 'fld2' by 'gen2'.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>Create a <code>dataTracker</code> as a child of <code>process:p1</code> and select <code>DataTrackerD0</code> as its type.</p>
+</li>
+<li>
+<p>Create two <code>trackField</code> edges from <code>dataTracker:trk1</code> to <code>field:fld`</code> and <code>field:fld2</code> respectively.</p>
+</li>
+<li>
+<p>Create a <code>trackComponent</code> edge from <code>dataTracker:trk1</code> to <code>system.sys1</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueuser-interface-5"><a class="anchor" href="#trueuser-interface-5"></a>User interface</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a <code>tab</code> node as a child of <code>userInterface:gui</code>.</p>
+</li>
+<li>
+<p>Create a <code>widget</code> node as a child of <code>tab:tab1</code> and select <code>TimeseriesWidget1</code> as its type.</p>
+</li>
+<li>
+<p>Create a <code>trackSeries</code> edge from <code>widget:wgt1</code> to <code>dataTracker:trk1</code>.</p>
+</li>
+</ol>
+</div>
+<div id="fig-tut7-Config" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial7IMG/fig-tut7-Config.png" alt="fig tut7 Config" width="700">
+</div>
+<div class="title">Figure 65. Essential elements of the configuration for tutorial 7.</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Re-run the simulator a few times to ensure a different series is produced each time</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>When the simulator is run, two independent random number series are produced. If this is not the case, check that the code snippets (steps 2 &amp; 3 in <em>Dynamics</em> above) are correct and that <code>function:F1</code> sets the value of <code>fld1</code> and <code>function:F2</code> sets the value of <code>fld2</code>.</p>
+</div>
+<div id="fig-tut7-rng-properties" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial7IMG/fig-tut7-rng-properties.png" alt="fig tut7 rng properties">
+</div>
+<div class="title">Figure 66. Displaying just the properties of <br/> the random number generators.</div>
+</div>
+<div class="paragraph">
+<p>To see all the relevant RNG properties:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>Select the <em>Properties</em> tab in <em>ModelMaker</em> and click the <em>by name</em> button (top left).</p>
+</li>
+<li>
+<p>Enter 'gen' in the search field. Now only properties of nodes <code>gen1</code> and <code>gen2</code> are displayed.</p>
+</li>
+<li>
+<p>Set properties <code>gen1#seedSource</code> and <code>gen2#seedSource</code> to <strong>TABLE</strong> and re-run the simulator.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Both series are now identical as they are set by the same seed (index 0 of the table of seeds). Of course if you change the RNG algorithm to one of the other algorithms, different streams will result.</p>
+</div>
+<div id="fig-tut7-ModelRunner" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial7IMG/fig-tut7-ModelRunner.png" alt="fig tut7 ModelRunner" width="700">
+</div>
+<div class="title">Figure 67. Independent and dependent random number streams.</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truenext-7"><a class="anchor" href="#truenext-7"></a>5.7.3. Next</h4>
+<div class="paragraph">
+<p><strong>TODO</strong></p>
 </div>
 </div>
 </div>
@@ -8528,7 +9545,7 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 <div id="footer">
 <div id="footer-text">
 Version 1.7<br>
-Last updated 2021-10-07 09:26:16 +0200
+Last updated 2022-01-27 10:30:58 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
