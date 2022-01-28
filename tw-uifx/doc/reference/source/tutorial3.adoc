@@ -15,7 +15,7 @@ The equation has three _constants_ and one _driver_; all of which are tables:
 
 ==== Specifications
 
-Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a basic structure, dynamics and a minimal user interface.
+Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. _ModelMaker_ provides a library of model templates for common model patterns such this. One of these, the `SimpleClock` template, has already defined a basic structure, dynamics and a minimal user interface (<<fig-simple-clock-template>>).
 
 . Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project 'Tut3'.
 
@@ -32,7 +32,7 @@ image::tutorial3IMG/fig-records-tables.svg[role="thumb", width=400,float="right"
 
 Data is defined through the recursive use of records and tables: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records (<<fig-records-tables>>). Tables can have any number of dimensions.
 
-There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for _alpha_, a 1-dimensional table for  _r_ and _K_ and another 1-dimensional table for the population _x_.
+There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for _alpha_, a 1-dimensional table for  _r_ and _K_ and another 1-dimensional table for the population _x_ (<<fig-data-definition>>).
 
 [start = 2]
 
@@ -81,7 +81,7 @@ image::tutorial3IMG/fig-description-property-option.png[float="right",align="cen
 Finally, add some meta-data to each table. This meta-data assists in documenting your Java source code and ODD documentation. Many nodes have optional properties. One such optional property is `description` for tables and fields. 
 
 [start =12]
-. Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property. 
+. Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property (<<fig-description-property-option>>). 
 
 ===== Structure
 
@@ -129,7 +129,7 @@ Both these widgets are compatible with this data tracker class: the `TimeseriesW
 . Right-click on each of these widgets in turn and select `New edge -> trackSeries -> dataTracker:trks`.
 . Set the property `tblx#order` to '1' to arrange their positions in _ModelRunner_ as srsx on the left (`order` = 0) and tblx to the right (`order`=1).
 
-Save the specifications (`Ctrl+s`) and they're now ready to run. The next step is to create a Java project to write the 'Growth' and 'Init1' functions, the latter having been provided by the `SimpleClock` template we started this tutorial with. 
+Save the specifications (`Ctrl+s`) and they're now ready to run (<<fig-tree>>, <<fig-links>>). The next step is to create a Java project to write the 'Growth' and 'Init1' functions, the latter having been provided by the `SimpleClock` template we started this tutorial with. 
 
 [#fig-tree]
 .Tree graph of the final specifiation graph for Tutorial 3.
@@ -165,7 +165,7 @@ for (int i = 0;i<x.size(0); i++)
     focalDrv.x.setByInt(0.2, i);
 -----------------
 
-The above method simply initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_) to random values and the population size (_x_) to 0.2. 
+The above method simply initialises the equation constants: growth rate (_r_), carrying capacity (_K_) and the interspecific competition coefficient (_alpha_) to random values and the population size (_x_) to 0.2. Notice that the generated code includes a detailed javadoc that reminds the forgetful user of all the table dimensions, driver and constant units, etc. (<<fig-javaDoc>>).
 
 There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNGs into groups. For example, one RNG can be assigned to functions of a particular type such as those effecting reproduction or mortality.
 
@@ -198,7 +198,7 @@ Following a note from 'Tutorial 1', it is a good idea to keep the code snippets 
 . In _ModelMaker_ select `Edit -> Import snippets from IDE` and save (`Ctrl-s`).
 
 
-The model is now ready to run. However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.
+The model is now ready to run (<<fig-tut3-MR>>). However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.
 
 [#fig-tut3-MR]
 ._ModelRunner_ executing Tutorial 3. Note that the property `tab1#orientation` has be set to `vertical` is this figure. This displays the time series graph above the table.

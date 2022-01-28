@@ -589,7 +589,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#trueintroduction-7">5.7.1. Introduction</a></li>
 <li><a href="#truespecifications-6">5.7.2. Specifications</a></li>
-<li><a href="#truenext-7">5.7.3. Next</a></li>
+<li><a href="#truesimulation">5.7.3. Simulation</a></li>
+<li><a href="#truenext-7">5.7.4. Next</a></li>
 </ul>
 </li>
 </ul>
@@ -6423,19 +6424,19 @@ Whenever you have to search for items to construct relations, associate a space 
 <div class="sect1 text-justify">
 <h2 id="truesimulation-reference-running-a-simulation-experiment-with-modelrunner"><a class="anchor" href="#truesimulation-reference-running-a-simulation-experiment-with-modelrunner"></a>4. Simulation reference: running a simulation experiment with ModelRunner</h2>
 <div class="sectionbody">
-<div class="sect2 text-justify">
+<div class="sect2">
 <h3 id="truegeneral-concepts"><a class="anchor" href="#truegeneral-concepts"></a>4.1. General concepts</h3>
 <div class="paragraph">
 <p><strong>TODO</strong></p>
 </div>
 </div>
-<div class="sect2 text-justify">
+<div class="sect2">
 <h3 id="trueusing-modelrunner-software-interface-and-functioning"><a class="anchor" href="#trueusing-modelrunner-software-interface-and-functioning"></a>4.2. Using ModelRunner: software interface and functioning</h3>
 <div class="paragraph">
 <p><strong>TODO</strong></p>
 </div>
 </div>
-<div class="sect2 text-justify">
+<div class="sect2">
 <h3 id="truegetting-output-from-a-simulation-experiment"><a class="anchor" href="#truegetting-output-from-a-simulation-experiment"></a>4.3. Getting output from a simulation experiment</h3>
 <div class="paragraph">
 <p><strong>TODO</strong></p>
@@ -6854,7 +6855,7 @@ the tool bar, and selecting <code>Role</code>. The relationship can be read as, 
 </div>
 <div id="fig-arena" class="imageblock right text-left thumb">
 <div class="content">
-<img src="../source/tutorial1IMG/fig-arena.png" alt="fig arena" width="550">
+<img src="../source/tutorial1IMG/fig-arena.png" alt="fig arena" width="500">
 </div>
 <div class="title">Figure 30. The specification of the constants and drivers for the <em>arena</em>, <br/> a category to which the only component in this tutorial (aka <br/> <code>system:sys1</code>) belongs.</div>
 </div>
@@ -7208,7 +7209,7 @@ So for now, it&#8217;s best to test the simulation with the <code>Step</code> bu
 </ol>
 </div>
 <div class="paragraph">
-<p>This creates  an ODD template (Overview, Design concepts and Details) (<code>Tut1.odt</code>), an established standard for documenting simulation
+<p>This creates  an ODD template (Overview, Design concepts and Details) (<code>Tut1.odt</code>, <a href="#fig-ODD1">Figure 35</a>), an established standard for documenting simulation
 models. This file can be generated any time from <em>ModelRunner</em>. When you&#8217;re satisfied with the specification, edit this file as
 a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <a href="#fig-dir-post-run">Figure 36</a>:</p>
 </div>
@@ -7251,7 +7252,7 @@ Every time this file is created, it will have a number added to its name to prev
 <p><code>local/java/code/</code>: This directory contains the generated Java code. The entire model is contained within the <code>Tut1.java</code> class.</p>
 </li>
 <li>
-<p><code>Tut1.jar</code>: A stand-alone jar of the model that can be run independently of <em>ModelMaker</em> (<strong>ref?</strong>).</p>
+<p><code>Tut1.jar</code>: A stand-alone jar of the model that can be run independently of <em>ModelMaker</em> (<a href="#truesimulation-reference-running-a-simulation-experiment-with-modelrunner">Section 4</a>).</p>
 </li>
 <li>
 <p><code>runTime/MR.xml</code>: A preferences file for <em>ModelRunner</em>. These settings are saved whenever <em>ModelRunner</em> quits so it will have the same appearance between successive uses.</p>
@@ -7276,10 +7277,10 @@ the same rate are associated with the same <code>timer</code> and that all timer
 problems such as this would be very error-prone if presented say, as a series of dialog boxes.</p>
 </div>
 <div class="paragraph">
-<p><em>ModelMaker</em> has a number of features to help arrange the graph display. Please refer to (<strong>REF</strong>).</p>
+<p><em>ModelMaker</em> has a number of features to help arrange the graph display. Please refer to <a href="#truegraph-display">Section 3.2.2</a>.</p>
 </div>
 <div class="paragraph">
-<p>As an exercise if you wish, try displaying just the nodes with <em>cross-links</em> using the SpringGraph layout (<strong>L4</strong>). This is a common way to
+<p>As an exercise if you wish, try displaying just the nodes with <em>cross-links</em> using the SpringGraph layout (<strong>L4</strong>) (<a href="#fig-links-only">Figure 37</a>). This is a common way to
 look at just the <em>cross-link</em> relationships between nodes. Generally, adding a screen capture of this and a second screen capture of
 just the relevant <em>parent-child</em> relationships make useful additions to the ODD appendix.</p>
 </div>
@@ -7305,7 +7306,7 @@ just the relevant <em>parent-child</em> relationships make useful additions to t
 <div class="sect3">
 <h4 id="trueintroduction-2"><a class="anchor" href="#trueintroduction-2"></a>5.2.1. Introduction</h4>
 <div class="paragraph">
-<p>The previous tutorial used code snippets to insert Java code into the model specifications. In this tutorial we show how to use an Integrated Development Environment (IDE) to achieve the same end. Generally, the only way to develop any but the simplest of models is to code in a professional IDE such as <em>Eclipse</em>, <em>Intellij</em> or <em>NetBeans</em>. At the time of writing, linking specifications to a Java project has only be tested with the <em>Eclipse</em> IDE.</p>
+<p>The previous tutorial used code snippets to insert Java code into the model specifications. In this tutorial we show how to use an Integrated Development Environment (IDE) to achieve the same end. Generally, the only way to develop any but the simplest of models is to code in a professional IDE such as <a href="https://www.eclipse.org/downloads/"><em>Eclipse</em></a>, <a href="https://www.jetbrains.com/idea/"><em>Intellij</em></a> or <a href="https://netbeans.apache.org/"><em>NetBeans</em></a>. At the time of writing, linking specifications to a Java project has only be tested with the <em>Eclipse</em> IDE.</p>
 </div>
 </div>
 <div class="sect3">
@@ -7380,7 +7381,7 @@ just the relevant <em>parent-child</em> relationships make useful additions to t
 <div class="title">Figure 38. The package structure in Eclipse after <br/> linking Tutorial 2 to a Java project.</div>
 </div>
 <div class="paragraph">
-<p>In the <code>src</code> folder of <code>tut2</code>, you&#8217;ll now find a new package called <code>code</code> and <code>code.sys1</code>. These have been generated by <em>ModelMaker</em> upon linking. In the <code>code</code> package is a Java file with the same name as the 3Worlds project: <code>Tut2.java</code>. This single class is where you add all your code. The other classes in the <code>generated</code> package are not intended to be edited. If you do edit these, your edits will be overwritten whenever the specifications are edited in <em>ModelMaker</em>.</p>
+<p>In the <code>src</code> folder of <code>tut2</code>, you&#8217;ll now find a new package called <code>code.sys1</code> and <code>code.sys1.generated</code> (<a href="#fig-tut2-java-project">Figure 38</a>). These have been generated by <em>ModelMaker</em> upon linking. In the <code>code.sys1</code> package is a Java file with the same name as the 3Worlds project: <code>Tut2.java</code>. This single class is where you add all your code. The other classes in the <code>generated</code> package are not intended to be edited. If you do edit these, your edits will be overwritten whenever the specifications are edited in <em>ModelMaker</em>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -7390,7 +7391,7 @@ just the relevant <em>parent-child</em> relationships make useful additions to t
 </ol>
 </div>
 <div class="paragraph">
-<p>Near the bottom of the file are two methods: <code>chaos</code> and <code>init1</code>, mapped from the names of the function and initFunction nodes we created in <code>Tut2</code> with <em>ModelMaker</em>. Within the body of these methods are a pair of insertion markers:</p>
+<p>Near the bottom of the file are two methods (<a href="#fig-tut2-src">Figure 39</a>): <code>chaos</code> and <code>init1</code>, mapped from the names of the function and initFunction nodes we created in <code>Tut2</code> with <em>ModelMaker</em>. Within the body of these methods are a pair of insertion markers:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -7439,7 +7440,7 @@ There are two "import" markers at the top of the main source code file. Add any 
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-When editing the main java source code file, any imports your IDE might make automatically will not necessarily appear between the import markers.
+When editing the main java source code file, any imports your IDE might make automatically will not appear between the import markers.
 Take care to edit these statements to they do appear between the import statements. These imports are in fact a code snippet property found in the specification root node.
 </td>
 </tr>
@@ -7543,7 +7544,7 @@ When working simultaneously with an IDE and  <em>ModelMaker</em>, it is useful t
 <div class="sect3">
 <h4 id="truespecifications-2"><a class="anchor" href="#truespecifications-2"></a>5.3.2. Specifications</h4>
 <div class="paragraph">
-<p>Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. <em>ModelMaker</em> provides a library of model templates for common model patterns such this. One of these, the <code>SimpleClock</code> template, has already defined a basic structure, dynamics and a minimal user interface.</p>
+<p>Apart from the use of tables and a more elaborate model equation, these specifications are very similar to those of Tutorial 1. <em>ModelMaker</em> provides a library of model templates for common model patterns such this. One of these, the <code>SimpleClock</code> template, has already defined a basic structure, dynamics and a minimal user interface (<a href="#fig-simple-clock-template">Figure 40</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -7570,7 +7571,7 @@ When working simultaneously with an IDE and  <em>ModelMaker</em>, it is useful t
 <p>Data is defined through the recursive use of records and tables: records can contain tables and tables can contain records without limit. Records can also contain fields of any primitive Java type. Tables can also contain Java primitive types as well as user-defined records (<a href="#fig-records-tables">Figure 41</a>). Tables can have any number of dimensions.</p>
 </div>
 <div class="paragraph">
-<p>There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for <em>alpha</em>, a 1-dimensional table for  <em>r</em> and <em>K</em> and another 1-dimensional table for the population <em>x</em>.</p>
+<p>There is usually more than one way of defining the data for any model. For the CLV, we will use a 2-dimensional table for <em>alpha</em>, a 1-dimensional table for  <em>r</em> and <em>K</em> and another 1-dimensional table for the population <em>x</em> (<a href="#fig-data-definition">Figure 42</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="2">
@@ -7648,7 +7649,7 @@ When working simultaneously with an IDE and  <em>ModelMaker</em>, it is useful t
 <div class="olist arabic">
 <ol class="arabic" start="12">
 <li>
-<p>Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property.</p>
+<p>Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property (<a href="#fig-description-property-option">Figure 43</a>).</p>
 </li>
 </ol>
 </div>
@@ -7732,7 +7733,7 @@ When working simultaneously with an IDE and  <em>ModelMaker</em>, it is useful t
 </ol>
 </div>
 <div class="paragraph">
-<p>Save the specifications (<code>Ctrl+s</code>) and they&#8217;re now ready to run. The next step is to create a Java project to write the 'Growth' and 'Init1' functions, the latter having been provided by the <code>SimpleClock</code> template we started this tutorial with.</p>
+<p>Save the specifications (<code>Ctrl+s</code>) and they&#8217;re now ready to run (<a href="#fig-tree">Figure 44</a>, <a href="#fig-links">Figure 45</a>). The next step is to create a Java project to write the 'Growth' and 'Init1' functions, the latter having been provided by the <code>SimpleClock</code> template we started this tutorial with.</p>
 </div>
 <div id="fig-tree" class="imageblock text-center thumb">
 <div class="content">
@@ -7782,7 +7783,7 @@ for (int i = 0;i&lt;x.size(0); i++)
 </div>
 </div>
 <div class="paragraph">
-<p>The above method simply initialises the equation constants: growth rate (<em>r</em>), carrying capacity (<em>K</em>) and the interspecific competition coefficient (<em>alpha</em>) to random values and the population size (<em>x</em>) to 0.2.</p>
+<p>The above method simply initialises the equation constants: growth rate (<em>r</em>), carrying capacity (<em>K</em>) and the interspecific competition coefficient (<em>alpha</em>) to random values and the population size (<em>x</em>) to 0.2. Notice that the generated code includes a detailed javadoc that reminds the forgetful user of all the table dimensions, driver and constant units, etc. (<a href="#fig-javaDoc">Figure 46</a>).</p>
 </div>
 <div class="paragraph">
 <p>There is a default random number generator (RNG) available to all functions. In later tutorials we will show how the specifications can factor any number of RNGs into groups. For example, one RNG can be assigned to functions of a particular type such as those effecting reproduction or mortality.</p>
@@ -7824,7 +7825,7 @@ for (int i = 0; i &lt; dxdt.length; i++)
 </ol>
 </div>
 <div class="paragraph">
-<p>The model is now ready to run. However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.</p>
+<p>The model is now ready to run (<a href="#fig-tut3-MR">Figure 47</a>). However, you may want to change the time duration of the simulation from the template default of 100 to 1,000 steps.</p>
 </div>
 <div id="fig-tut3-MR" class="imageblock text-center">
 <div class="content">
@@ -7921,7 +7922,7 @@ for (int i = 0; i &lt; dxdt.length; i++)
 <p>As noted previously, these names are just for clarity: they don&#8217;t impose roles as <em>drivers</em>, <em>constants</em> or <em>decorators</em>. Here, the records are named to indicate their intended roles just for clarity. Their role will later be formally defined by a relationship with a <code>category</code> which we create when building the <code>structure</code> specifications.</p>
 </div>
 <div class="paragraph">
-<p>While building the data definition, expect task messages to accumulate until these roles have been defined.</p>
+<p>While building the data definition (<a href="#fig-tut4-data-definition">Figure 48</a>), expect task messages to accumulate until these roles have been defined.</p>
 </div>
 <div class="paragraph">
 <p>We now define some data for the simple disturbance model: frequency and intensity.</p>
@@ -8237,7 +8238,7 @@ Tree layout algorithms sort child nodes in alphabetical order. Consider this beh
 <div class="title">Figure 49. The structure sub-tree for Tutorial 4. .</div>
 </div>
 <div class="paragraph">
-<p>That&#8217;s all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.</p>
+<p>That&#8217;s all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure (<a href="#fig-tut4-structure">Figure 49</a>).</p>
 </div>
 </div>
 <div class="sect4">
@@ -8360,7 +8361,7 @@ All methods read the data of this time step and write to data of the next time s
 <div class="title">Figure 50. The system dynamics sub-tree for Tutorial 4. .</div>
 </div>
 <div class="paragraph">
-<p>That&#8217;s all that&#8217;s required in this section. The task list indicates that the new processes must belong to some categories. To do that we need to move on to the structure of the specifications.</p>
+<p>That&#8217;s all that&#8217;s required in this section (<a href="#fig-tut4-dynamics">Figure 50</a>). The task list indicates that the new processes must belong to some categories. To do that we need to move on to the structure of the specifications.</p>
 </div>
 </div>
 <div class="sect4">
@@ -8405,7 +8406,7 @@ All methods read the data of this time step and write to data of the next time s
 </ol>
 </div>
 <div class="paragraph">
-<p>The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we&#8217;ll just add code snippets but if you prefer, you can create a java project and add the code there instead (<strong>ref tut2</strong>).</p>
+<p>The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we&#8217;ll just add code snippets but if you prefer, you can create a java project and add the code there instead (<a href="#truetutorial-2-linking-a-3worlds-project-to-a-integrated-development-environment-ide">Section 5.2</a>).</p>
 </div>
 </div>
 <div class="sect4">
@@ -8513,8 +8514,8 @@ otherDec.di = 0.0;
 <div class="sect3">
 <h4 id="trueuser-interface-2"><a class="anchor" href="#trueuser-interface-2"></a>5.4.3. User interface</h4>
 <div class="paragraph">
-<p>We now need to modify the user interface, provided courtesy of the previous model (Tut3), to display <code>di</code> and <code>tsd</code>.
-We are simulating 40 species so their abundance (<code>x[n]</code>) is best placed in a separate time series chart and 'di' in another. In addition, we need an xy plot of <code>di</code> by <code>tsd</code>.
+<p>We now need to modify the user interface, provided courtesy of the previous model (<a href="#truetutorial-3-using-tables">Section 5.3</a>), to display <code>di</code> and <code>tsd</code>.
+We are simulating 40 species so their abundance (<code>x[n]</code>) is best placed in a separate time series chart and <code>di</code> in another. In addition, we need an xy plot of <code>di</code> by <code>tsd</code>.
 For this we need two additional <code>dataTrackers</code>.</p>
 </div>
 <div class="olist arabic">
@@ -8584,7 +8585,7 @@ However, you can have as many <code>tabs</code> but of course only one tab is vi
 </ol>
 </div>
 <div class="paragraph">
-<p>Set these <code>widgets</code> to track the appropriate <code>dataTrackers</code>.</p>
+<p>Set these <code>widgets</code> to track the appropriate <code>dataTrackers</code> (<a href="#fig-tut4-user-interface">Figure 51</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="14">
@@ -8597,7 +8598,7 @@ However, you can have as many <code>tabs</code> but of course only one tab is vi
 </ol>
 </div>
 <div class="paragraph">
-<p>All that remains now is to arrange the widgets in the <em>ModelRunner</em> interface. Between each pair of widgets/containers is a divider which can be moved as required. You can specify the pairs to be divided horizontally or vertically and the order of the pairs (left/right or top/bottom).</p>
+<p>All that remains now is to arrange the widgets in the <em>ModelRunner</em> interface. Between each pair of widgets/containers is a divider which can be moved as required (<a href="#fig-tut4-modelrunner">Figure 52</a>). You can specify the pairs to be divided horizontally or vertically and the order of the pairs (left/right or top/bottom).</p>
 </div>
 <div id="fig-tut4-user-interface" class="imageblock text-center thumb">
 <div class="content">
@@ -8615,7 +8616,7 @@ However, you can have as many <code>tabs</code> but of course only one tab is vi
 <div class="content">
 <img src="../source/tutorial4IMG/fig-tut4-user-interface-properties.png" alt="fig tut4 user interface properties">
 </div>
-<div class="title">Figure 53. User-interface properties for Tutorial 4.</div>
+<div class="title">Figure 53. User-interface properties for <br/>Tutorial 4.</div>
 </div>
 <div id="fig-tut4-xyplot-dlg" class="imageblock right text-left thumb">
 <div class="content">
@@ -8624,10 +8625,10 @@ However, you can have as many <code>tabs</code> but of course only one tab is vi
 <div class="title">Figure 54. Scatter plot properties <br/>editor in ModelRunner.</div>
 </div>
 <div class="paragraph">
-<p>The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in <em>ModelRunner</em> <a href="#fig-tut4-xyplot-dlg">Figure 54</a>.</p>
+<p>The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in <em>ModelRunner</em> (<a href="#fig-tut4-xyplot-dlg">Figure 54</a>).</p>
 </div>
 <div class="paragraph">
-<p>The arrangement of widgets in the <code>tab</code> binary sub-tree is controlled by the <code>order</code> and <code>orientation</code> properties. <a href="#fig-tut4-user-interface-properties">Figure 53</a></p>
+<p>The arrangement of widgets in the <code>tab</code> binary sub-tree is controlled by the <code>order</code> and <code>orientation</code> properties (<a href="#fig-tut4-user-interface-properties">Figure 53</a>).</p>
 </div>
 </div>
 <div class="sect3">
@@ -8664,7 +8665,13 @@ An event timer, on the other hand, is not autonomous. It drives its child proces
 <div class="sect4">
 <h5 id="truedata-definition-4"><a class="anchor" href="#truedata-definition-4"></a>Data definition</h5>
 <div class="paragraph">
-<p>Three fields are required: a deletion rate, pulse rate and a ceiling to provide a limit to item creation. These will be global constants.</p>
+<p>Three fields are required: a deletion rate, pulse rate and a ceiling to provide a limit to item creation. These will be global constants (<a href="#fig-tut5-data-definition">Figure 55</a>).</p>
+</div>
+<div id="fig-tut5-data-definition" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial5IMG/fig-tut5-data-definition.png" alt="fig tut5 data definition" width="400">
+</div>
+<div class="title">Figure 55. Data definition specifications.</div>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="2">
@@ -8682,17 +8689,11 @@ An event timer, on the other hand, is not autonomous. It drives its child proces
 </li>
 </ol>
 </div>
-<div id="fig-tut5-data-definition" class="imageblock right text-left thumb">
-<div class="content">
-<img src="../source/tutorial5IMG/fig-tut5-data-definition.png" alt="fig tut5 data definition" width="400">
-</div>
-<div class="title">Figure 55. Data definition specifications.</div>
-</div>
 </div>
 <div class="sect4">
 <h5 id="truestructure-4"><a class="anchor" href="#truestructure-4"></a>Structure</h5>
 <div class="paragraph">
-<p>We need 2 component types for this model: the system (which already exists i.e. <code>system:sys</code>) and the 'item' component type which we&#8217;ve yet to define. These have a hierarchical relationship: the system is an assemblage of 'items'. However, <code>system:sys1</code> currently belongs to the <em>atomic</em> category. This must be changed to the <em>assemblage</em> category to signify this hierarchical structure.</p>
+<p>We need 2 component types for this model: the system (which already exists i.e. <code>system:sys</code>) and the 'item' component type which we&#8217;ve yet to define (<a href="#fig-tut5-structure">Figure 56</a>). These have a hierarchical relationship: the system is an assemblage of 'items'. However, <code>system:sys1</code> currently belongs to the <em>atomic</em> category. This must be changed to the <em>assemblage</em> category to signify this hierarchical structure.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -8728,6 +8729,12 @@ An event timer, on the other hand, is not autonomous. It drives its child proces
 </div>
 <div class="paragraph">
 <p>We now build the item component.</p>
+</div>
+<div id="fig-tut5-structure" class="imageblock left text-center thumb">
+<div class="content">
+<img src="../source/tutorial5IMG/fig-tut5-structure.png" alt="fig tut5 structure" width="500">
+</div>
+<div class="title">Figure 56. Model structure specifications.</div>
 </div>
 <div class="olist arabic">
 <ol class="arabic" start="8">
@@ -8765,17 +8772,11 @@ An event timer, on the other hand, is not autonomous. It drives its child proces
 </li>
 </ol>
 </div>
-<div id="fig-tut5-structure" class="imageblock text-center thumb">
-<div class="content">
-<img src="../source/tutorial5IMG/fig-tut5-structure.png" alt="fig tut5 structure" width="500">
-</div>
-<div class="title">Figure 56. Model structure specifications.</div>
-</div>
 </div>
 <div class="sect4">
 <h5 id="truedynamics-4"><a class="anchor" href="#truedynamics-4"></a>Dynamics</h5>
 <div class="paragraph">
-<p>The <code>SimpleClock1</code> template we started with contains a clock timer (<code>timer:clock1</code>) which we can use to call the delete function to remove items at a regular rate. Later we add <code>eventTimers</code> to implement the episodic dynamics. It will make the following steps clearer if we rename two nodes first.</p>
+<p>The <code>SimpleClock1</code> template we started with contains a clock timer (<code>timer:clock1</code>) which we can use to call the delete function to remove items at a regular rate. Later we add <code>eventTimers</code> to implement the episodic dynamics. It will make the following steps clearer if we rename two nodes first (<a href="#fig-tut5-dynamics">Figure 57</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -9003,7 +9004,7 @@ An event timer, on the other hand, is not autonomous. It drives its child proces
 <h5 id="trueuser-interface-3"><a class="anchor" href="#trueuser-interface-3"></a>User Interface</h5>
 <div class="paragraph">
 <p>The template we are using has only provided a control widget (<code>widget:ctrl</code>) to run the model.
-To see some output we will add a widget to display a time series of <code>count</code>.</p>
+To see some output we will add a widget to display a time series of <code>count</code> (<a href="#fig-tut5-user-interface">Figure 58</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -9028,7 +9029,7 @@ To see some output we will add a widget to display a time series of <code>count<
 <div class="title">Figure 58. User interface specifications.</div>
 </div>
 <div class="paragraph">
-<p>The simulator runs indefinitely (assuming you have deleted the <code>stoppingCondition</code> node) with exponentially declining numbers and a creation pulses up to 500 time steps apart.</p>
+<p>The simulator runs indefinitely (assuming you have deleted the <code>stoppingCondition</code> node) with exponentially declining numbers and a creation pulses up to 500 time steps apart (<a href="#fig-tut5-modelRunner">Figure 59</a>).</p>
 </div>
 <div id="fig-tut5-modelRunner" class="imageblock text-left thumb">
 <div class="content">
@@ -9064,8 +9065,14 @@ To see some output we will add a widget to display a time series of <code>count<
 </div>
 <div class="sect4">
 <h5 id="truedata-definition-5"><a class="anchor" href="#truedata-definition-5"></a>Data definition</h5>
+<div id="fig-tut6-data-definition" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial6IMG/fig-tut6-data-definition.png" alt="fig tut6 data definition" width="500">
+</div>
+<div class="title">Figure 60. Data definition specifications.</div>
+</div>
 <div class="paragraph">
-<p>We must first specify x,y coordinates for 'items' - the modelled entity.</p>
+<p>We must first specify x,y coordinates for 'items' - the modelled entity (<a href="#fig-tut6-data-definition">Figure 60</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -9080,17 +9087,17 @@ To see some output we will add a widget to display a time series of <code>count<
 <div class="paragraph">
 <p>A message appears indicating this new record must be associated with a <code>category</code>. This is done in the next section.</p>
 </div>
-<div id="fig-tut6-data-definition" class="imageblock right text-left thumb">
-<div class="content">
-<img src="../source/tutorial6IMG/fig-tut6-data-definition.png" alt="fig tut6 data definition" width="500">
-</div>
-<div class="title">Figure 60. Data definition specifications.</div>
-</div>
 </div>
 <div class="sect4">
 <h5 id="truestructure-5"><a class="anchor" href="#truestructure-5"></a>Structure</h5>
 <div class="paragraph">
-<p>In the <strong>structure</strong> sub-tree we specify the type of space to use and associate it, and the <code>category:itemCat</code>, with the <em>xy</em> coordinates specified above. We can also set the initial values of the coordinates at start up time.</p>
+<p>In the <strong>structure</strong> sub-tree we specify the type of space to use and associate it, and the <code>category:itemCat</code>, with the <em>xy</em> coordinates specified above (<a href="#fig-tut6-structure">Figure 61</a>). We can also set the initial values of the coordinates at start up time.</p>
+</div>
+<div id="fig-tut6-structure" class="imageblock right text-left thumb">
+<div class="content">
+<img src="../source/tutorial6IMG/fig-tut6-structure.png" alt="fig tut6 structure" width="550">
+</div>
+<div class="title">Figure 61. Model structure specifications.</div>
 </div>
 <div class="paragraph">
 <p>Associate the item drivers with the item category.</p>
@@ -9144,17 +9151,11 @@ To see some output we will add a widget to display a time series of <code>count<
 </li>
 </ol>
 </div>
-<div id="fig-tut6-structure" class="imageblock right text-left thumb">
-<div class="content">
-<img src="../source/tutorial6IMG/fig-tut6-structure.png" alt="fig tut6 structure" width="550">
-</div>
-<div class="title">Figure 61. Model structure specifications.</div>
-</div>
 </div>
 <div class="sect4">
 <h5 id="truedynamics-5"><a class="anchor" href="#truedynamics-5"></a>Dynamics</h5>
 <div class="paragraph">
-<p>When new items are created by <code>process:Nitems</code> we need a function to set <em>xy</em> coordinates of the newly created 'items'. This is a 'consequence' function. Consequence functions are children of other functions rather than a process.</p>
+<p>When new items are created by <code>process:Nitems</code> we need a function to set <em>xy</em> coordinates of the newly created 'items'. This is a 'consequence' function. Consequence functions are children of other functions rather than a process (<a href="#fig-tut6-dynamics">Figure 62</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -9209,7 +9210,7 @@ To see some output we will add a widget to display a time series of <code>count<
 <div class="sect4">
 <h5 id="trueuser-interface-4"><a class="anchor" href="#trueuser-interface-4"></a>User Interface</h5>
 <div class="paragraph">
-<p>Add a widget to view the items in space.</p>
+<p>Add a widget to view the items in space (<a href="#fig-tut6-user-interface">Figure 63</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -9240,12 +9241,12 @@ To see some output we will add a widget to display a time series of <code>count<
 <div class="olist arabic">
 <ol class="arabic" start="4">
 <li>
-<p>Deploy the simulation [Alt+D]</p>
+<p>Deploy the simulation [Alt+D] (<a href="#fig-tut6-modelRunner">Figure 64</a>).</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>Information about <code>SpaceWidget1</code> can be found at (ref).</p>
+<p>Information about <code>SpaceWidget1</code> can be found at <a href="#truewidgets">Section 3.3.7.5</a>.</p>
 </div>
 <div id="fig-tut6-modelRunner" class="imageblock text-left thumb">
 <div class="content">
@@ -9408,6 +9409,12 @@ Using the <strong>RANDOM</strong> option means there is a new seed created at ev
 </li>
 </ol>
 </div>
+<div id="fig-tut7-Config" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial7IMG/fig-tut7-Config.png" alt="fig tut7 Config" width="700">
+</div>
+<div class="title">Figure 65. Essential elements of the configuration for tutorial 7.</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="trueuser-interface-5"><a class="anchor" href="#trueuser-interface-5"></a>User interface</h5>
@@ -9424,21 +9431,22 @@ Using the <strong>RANDOM</strong> option means there is a new seed created at ev
 </li>
 </ol>
 </div>
-<div id="fig-tut7-Config" class="imageblock text-left thumb">
-<div class="content">
-<img src="../source/tutorial7IMG/fig-tut7-Config.png" alt="fig tut7 Config" width="700">
+<div class="paragraph">
+<p>Once the configuration is finished (<a href="#fig-tut7-Config">Figure 65</a>), deploy the simulator.</p>
 </div>
-<div class="title">Figure 65. Essential elements of the configuration for tutorial 7.</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truesimulation"><a class="anchor" href="#truesimulation"></a>5.7.3. Simulation</h4>
+<div class="paragraph">
+<p>When the simulator is run, two independent random number series  (<a href="#fig-tut7-ModelRunner">Figure 67</a>) are produced. If this is not the case, check that the code snippets (steps 2 &amp; 3 in <em>Dynamics</em> above) are correct and that <code>function:F1</code> sets the value of <code>fld1</code> and <code>function:F2</code> sets the value of <code>fld2</code>.</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="4">
+<ol class="arabic">
 <li>
 <p>Re-run the simulator a few times to ensure a different series is produced each time</p>
 </li>
 </ol>
-</div>
-<div class="paragraph">
-<p>When the simulator is run, two independent random number series are produced. If this is not the case, check that the code snippets (steps 2 &amp; 3 in <em>Dynamics</em> above) are correct and that <code>function:F1</code> sets the value of <code>fld1</code> and <code>function:F2</code> sets the value of <code>fld2</code>.</p>
 </div>
 <div id="fig-tut7-rng-properties" class="imageblock right text-left thumb">
 <div class="content">
@@ -9447,15 +9455,16 @@ Using the <strong>RANDOM</strong> option means there is a new seed created at ev
 <div class="title">Figure 66. Displaying just the properties of <br/> the random number generators.</div>
 </div>
 <div class="paragraph">
-<p>To see all the relevant RNG properties:</p>
+<p>We will now hold the random number series constant.
+To see all the relevant RNG properties:</p>
 </div>
 <div class="olist arabic">
-<ol class="arabic" start="5">
+<ol class="arabic" start="2">
 <li>
 <p>Select the <em>Properties</em> tab in <em>ModelMaker</em> and click the <em>by name</em> button (top left).</p>
 </li>
 <li>
-<p>Enter 'gen' in the search field. Now only properties of nodes <code>gen1</code> and <code>gen2</code> are displayed.</p>
+<p>Enter 'gen' in the search field. Now only properties of nodes <code>gen1</code> and <code>gen2</code> are displayed (<a href="#fig-tut7-rng-properties">Figure 66</a>).</p>
 </li>
 <li>
 <p>Set properties <code>gen1#seedSource</code> and <code>gen2#seedSource</code> to <strong>TABLE</strong> and re-run the simulator.</p>
@@ -9472,9 +9481,8 @@ Using the <strong>RANDOM</strong> option means there is a new seed created at ev
 <div class="title">Figure 67. Independent and dependent random number streams.</div>
 </div>
 </div>
-</div>
 <div class="sect3">
-<h4 id="truenext-7"><a class="anchor" href="#truenext-7"></a>5.7.3. Next</h4>
+<h4 id="truenext-7"><a class="anchor" href="#truenext-7"></a>5.7.4. Next</h4>
 <div class="paragraph">
 <p><strong>TODO</strong></p>
 </div>
@@ -9545,7 +9553,7 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 <div id="footer">
 <div id="footer-text">
 Version 1.7<br>
-Last updated 2022-01-27 10:30:58 +0100
+Last updated 2022-01-28 16:43:33 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

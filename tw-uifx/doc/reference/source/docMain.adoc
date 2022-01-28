@@ -62,20 +62,7 @@ include::user-coding-reference.adoc[]
 [.text-justify]
 == Simulation reference: running a simulation experiment with ModelRunner
 
-[.text-justify]
-=== General concepts
-
-*TODO*
-
-[.text-justify]
-=== Using ModelRunner: software interface and functioning
-
-*TODO*
-
-[.text-justify]
-=== Getting output from a simulation experiment
-
-*TODO*
+include::using-ModelRunner.adoc[]
 
 [.text-justify]
 == Sample models and tutorials

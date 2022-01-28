@@ -81,6 +81,11 @@ Now the value of 'fld1' is set by the random number generator 'gen1' and the val
 
 . Create a `trackComponent` edge from `dataTracker:trk1` to `system.sys1`.
 
+[#fig-tut7-Config]
+.Essential elements of the configuration for tutorial 7.
+image::tutorial7IMG/fig-tut7-Config.png[align="left",role="thumb", width="700"]
+
+
 ===== User interface
 
 . Create a `tab` node as a child of `userInterface:gui`.
@@ -89,25 +94,25 @@ Now the value of 'fld1' is set by the random number generator 'gen1' and the val
 
 . Create a `trackSeries` edge from `widget:wgt1` to `dataTracker:trk1`.
 
-[#fig-tut7-Config]
-.Essential elements of the configuration for tutorial 7.
-image::tutorial7IMG/fig-tut7-Config.png[align="left",role="thumb", width="700"]
+Once the configuration is finished (<<fig-tut7-Config>>), deploy the simulator.
 
-[start = 4]
+==== Simulation
+
+When the simulator is run, two independent random number series  (<<fig-tut7-ModelRunner>>) are produced. If this is not the case, check that the code snippets (steps 2 & 3 in _Dynamics_ above) are correct and that `function:F1` sets the value of `fld1` and `function:F2` sets the value of `fld2`.
+
 . Re-run the simulator a few times to ensure a different series is produced each time
-
-When the simulator is run, two independent random number series are produced. If this is not the case, check that the code snippets (steps 2 & 3 in _Dynamics_ above) are correct and that `function:F1` sets the value of `fld1` and `function:F2` sets the value of `fld2`.
 
 [#fig-tut7-rng-properties]
 .Displaying just the properties of pass:[<br/>] the random number generators.
 image::tutorial7IMG/fig-tut7-rng-properties.png[align="left",role="thumb", float="right"]
 
+We will now hold the random number series constant.
 To see all the relevant RNG properties:
 
-[start = 5]
+[start = 2]
 . Select the _Properties_ tab in _ModelMaker_ and click the _by name_ button (top left).
 
-. Enter 'gen' in the search field. Now only properties of nodes `gen1` and `gen2` are displayed.
+. Enter 'gen' in the search field. Now only properties of nodes `gen1` and `gen2` are displayed (<<fig-tut7-rng-properties>>).
 
 . Set properties `gen1#seedSource` and `gen2#seedSource` to *TABLE* and re-run the simulator.
 

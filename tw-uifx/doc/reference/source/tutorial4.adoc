@@ -37,7 +37,7 @@ NOTE: _Decorators_ are re-initialised (zero, false, null etc.) at the start of e
 
 As noted previously, these names are just for clarity: they don't impose roles as _drivers_, _constants_ or _decorators_. Here, the records are named to indicate their intended roles just for clarity. Their role will later be formally defined by a relationship with a `category` which we create when building the `structure` specifications. 
 
-While building the data definition, expect task messages to accumulate until these roles have been defined.
+While building the data definition (<<fig-tut4-data-definition>>), expect task messages to accumulate until these roles have been defined.
 
 We now define some data for the simple disturbance model: frequency and intensity.
 
@@ -205,7 +205,7 @@ Finally, add initialisation functions for the disturbance and community componen
 .The structure sub-tree for Tutorial 4. .
 image::tutorial4IMG/fig-tut4-structure.png[align="center",role="thumb",width=800]
 
-That's all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure.
+That's all that is required in this section. To finish up, we now need to connect various sub-trees of the graph to each other. Foremost among these is to associate processes with the new structure (<<fig-tut4-structure>>).
 
 
 ===== Dynamics
@@ -276,7 +276,7 @@ Finally, because there will be no global data in this model, `system:sys` will n
 .The system dynamics sub-tree for Tutorial 4. .
 image::tutorial4IMG/fig-tut4-dynamics.png[align="center",role="thumb"]
 
-That's all that's required in this section. The task list indicates that the new processes must belong to some categories. To do that we need to move on to the structure of the specifications.
+That's all that's required in this section (<<fig-tut4-dynamics>>). The task list indicates that the new processes must belong to some categories. To do that we need to move on to the structure of the specifications.
 
 
 ===== Relations between sub-trees
@@ -303,7 +303,7 @@ Note here that we expect this relation between the disturbance and the community
 . Change the property `distEffectComm#lifespan` to `ephemeral`.
 
 
-The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we'll just add code snippets but if you prefer, you can create a java project and add the code there instead (*ref tut2*).
+The simulation can now be run but, of course, we have yet to add code to the various functions. Here, we'll just add code snippets but if you prefer, you can create a java project and add the code there instead (<<truetutorial-2-linking-a-3worlds-project-to-a-integrated-development-environment-ide>>).
 
 ===== Java code
 
@@ -395,8 +395,8 @@ otherDec.di = 0.0;
 
 ==== User interface
 
-We now need to modify the user interface, provided courtesy of the previous model (Tut3), to display `di` and `tsd`.
-We are simulating 40 species so their abundance (`x[n]`) is best placed in a separate time series chart and 'di' in another. In addition, we need an xy plot of `di` by `tsd`.
+We now need to modify the user interface, provided courtesy of the previous model (<<truetutorial-3-using-tables>>), to display `di` and `tsd`.
+We are simulating 40 species so their abundance (`x[n]`) is best placed in a separate time series chart and `di` in another. In addition, we need an xy plot of `di` by `tsd`.
 For this we need two additional `dataTrackers`.
 
 . For clarity, rename `dataTracker:trk1` to `dataTracker:trkx`.
@@ -427,13 +427,13 @@ However, you can have as many `tabs` but of course only one tab is visible at a 
 . Add a `widget` as a child of `container:cont1`, name it 'srsdi' and select `TimeseriesWidget1` as its class.
 . Add another `widget` as a  child of `container:cont1`, name it 'diversity time since dist'  or something similar, and select `ScatterPlotWidget1` as its class.
 
-Set these `widgets` to track the appropriate `dataTrackers`.
+Set these `widgets` to track the appropriate `dataTrackers` (<<fig-tut4-user-interface>>).
 
 [start = 14]
 . From `widget:srsdi`, add a `trackSeries` edge to `dataTracker:trkdi`.
 . From `widget:diversity time since dist`, add a `trackSeries` edge to `dataTracker:trktsddi`.
 
-All that remains now is to arrange the widgets in the _ModelRunner_ interface. Between each pair of widgets/containers is a divider which can be moved as required. You can specify the pairs to be divided horizontally or vertically and the order of the pairs (left/right or top/bottom).
+All that remains now is to arrange the widgets in the _ModelRunner_ interface. Between each pair of widgets/containers is a divider which can be moved as required (<<fig-tut4-modelrunner>>). You can specify the pairs to be divided horizontally or vertically and the order of the pairs (left/right or top/bottom).
 
 [#fig-tut4-user-interface]
 .The user-interface sub-tree for Tutorial 4. .
@@ -444,16 +444,16 @@ image::tutorial4IMG/fig-tut4-user-interface.png[align="center",role="thumb",widt
 image::tutorial4IMG/fig-tut4-modelrunner.png[align="center"]
 
 [#fig-tut4-user-interface-properties]
-.User-interface properties for Tutorial 4.
+.User-interface properties for pass:[<br/>]Tutorial 4.
 image::tutorial4IMG/fig-tut4-user-interface-properties.png[role="thumb",align="left",float="right"]
 
 [#fig-tut4-xyplot-dlg]
 .Scatter plot properties pass:[<br/>]editor in ModelRunner.
 image::tutorial4IMG/fig-tut4-xyplot-dlg.png[role="thumb",align="left",float="right"]
 
-The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in _ModelRunner_ <<fig-tut4-xyplot-dlg>>.
+The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in _ModelRunner_ (<<fig-tut4-xyplot-dlg>>).
 
-The arrangement of widgets in the `tab` binary sub-tree is controlled by the `order` and `orientation` properties. <<fig-tut4-user-interface-properties>>
+The arrangement of widgets in the `tab` binary sub-tree is controlled by the `order` and `orientation` properties (<<fig-tut4-user-interface-properties>>).
 
 
 //*TODO run this with dependsOn reversed and discuss*

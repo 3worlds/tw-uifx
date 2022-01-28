@@ -14,7 +14,11 @@ In this tutorial we mimic the dynamics of an episodic system with an https://en.
 . Start _ModelMaker_ and create a new project from the `SimpleClock1` template and name the project 'Tut5'.
 
 ===== Data definition
-Three fields are required: a deletion rate, pulse rate and a ceiling to provide a limit to item creation. These will be global constants.
+Three fields are required: a deletion rate, pulse rate and a ceiling to provide a limit to item creation. These will be global constants (<<fig-tut5-data-definition>>).
+
+[#fig-tut5-data-definition]
+.Data definition specifications.
+image::tutorial5IMG/fig-tut5-data-definition.png[align="left",role="thumb", width="400", float="right"]
 
 [start = 2]
 
@@ -26,12 +30,8 @@ Three fields are required: a deletion rate, pulse rate and a ceiling to provide 
 
 . Create three `field` nodes as children of `record:glbCnsts`, name them 'ceiling', 'deleteRate' and 'pulseRate' - all of type `Double`.
 
-[#fig-tut5-data-definition]
-.Data definition specifications.
-image::tutorial5IMG/fig-tut5-data-definition.png[align="left",role="thumb", width="400", float="right"]
-
 ===== Structure
-We need 2 component types for this model: the system (which already exists i.e. `system:sys`) and the 'item' component type which we've yet to define. These have a hierarchical relationship: the system is an assemblage of 'items'. However, `system:sys1` currently belongs to the _atomic_ category. This must be changed to the _assemblage_ category to signify this hierarchical structure.
+We need 2 component types for this model: the system (which already exists i.e. `system:sys`) and the 'item' component type which we've yet to define (<<fig-tut5-structure>>). These have a hierarchical relationship: the system is an assemblage of 'items'. However, `system:sys1` currently belongs to the _atomic_ category. This must be changed to the _assemblage_ category to signify this hierarchical structure.
 
 . Collapse the `dataDefinition` sub-tree and expand the `system` sub-tree.
 
@@ -53,6 +53,10 @@ An 'itemType' will be a component type with a role defined as belonging to the _
 
 We now build the item component.
 
+[#fig-tut5-structure]
+.Model structure specifications.
+image::tutorial5IMG/fig-tut5-structure.png[align="center",role="thumb", width="500", float="left"]
+
 [start = 8]
 . Create a `componentType` as a child of `structure:struc1` and name it 'itemType'.
 
@@ -73,13 +77,9 @@ A message now appears suggesting two ways we can create an initial number of ite
 
 . Before ending this section, rename `initFunction:init1` to 'SysInit'.
 
-[#fig-tut5-structure]
-.Model structure specifications.
-image::tutorial5IMG/fig-tut5-structure.png[align="center",role="thumb", width="500"]
-
 ===== Dynamics
 
-The `SimpleClock1` template we started with contains a clock timer (`timer:clock1`) which we can use to call the delete function to remove items at a regular rate. Later we add `eventTimers` to implement the episodic dynamics. It will make the following steps clearer if we rename two nodes first.
+The `SimpleClock1` template we started with contains a clock timer (`timer:clock1`) which we can use to call the delete function to remove items at a regular rate. Later we add `eventTimers` to implement the episodic dynamics. It will make the following steps clearer if we rename two nodes first (<<fig-tut5-dynamics>>).
 
 . Collapse all sub-trees from the root node and then expand `system:sys1`.
 
@@ -221,7 +221,7 @@ We now add the program code to all `functionSnippet` properties for all the func
 ===== User Interface
 
 The template we are using has only provided a control widget (`widget:ctrl`) to run the model.
-To see some output we will add a widget to display a time series of `count`.
+To see some output we will add a widget to display a time series of `count` (<<fig-tut5-user-interface>>).
 
 . Create a `tab` as a child of `userInterface:gui`.
 
@@ -236,7 +236,7 @@ To see some output we will add a widget to display a time series of `count`.
 .User interface specifications.
 image::tutorial5IMG/fig-tut5-user-interface.png[align="left",role="thumb", width="600"]
 
-The simulator runs indefinitely (assuming you have deleted the `stoppingCondition` node) with exponentially declining numbers and a creation pulses up to 500 time steps apart.
+The simulator runs indefinitely (assuming you have deleted the `stoppingCondition` node) with exponentially declining numbers and a creation pulses up to 500 time steps apart (<<fig-tut5-modelRunner>>).
 
 [#fig-tut5-modelRunner]
 .Running Tutorial 5.

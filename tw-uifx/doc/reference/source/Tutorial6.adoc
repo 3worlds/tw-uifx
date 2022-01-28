@@ -10,20 +10,25 @@ This tutorial introduces 2-dimensional space by converting Tutorial 5 to a spati
 
 ===== Data definition
 
-We must first specify x,y coordinates for 'items' - the modelled entity.
+[#fig-tut6-data-definition]
+.Data definition specifications.
+image::tutorial6IMG/fig-tut6-data-definition.png[align="left",role="thumb", width=500,float="right"]
+
+We must first specify x,y coordinates for 'items' - the modelled entity (<<fig-tut6-data-definition>>).
 
 . Create a `record` as a child of `dataDefinition:dDef` and name it 'itemDrvs'.
 . Add 2 fields to this record named 'x' and 'y' of type `Double`.
 
 A message appears indicating this new record must be associated with a `category`. This is done in the next section.
 
-[#fig-tut6-data-definition]
-.Data definition specifications.
-image::tutorial6IMG/fig-tut6-data-definition.png[align="left",role="thumb", width=500,float="right"]
 
 ===== Structure
 
-In the *structure* sub-tree we specify the type of space to use and associate it, and the `category:itemCat`, with the _xy_ coordinates specified above. We can also set the initial values of the coordinates at start up time.
+In the *structure* sub-tree we specify the type of space to use and associate it, and the `category:itemCat`, with the _xy_ coordinates specified above (<<fig-tut6-structure>>). We can also set the initial values of the coordinates at start up time.
+
+[#fig-tut6-structure]
+.Model structure specifications.
+image::tutorial6IMG/fig-tut6-structure.png[align="left",role="thumb",width="550",float="right"]
 
 Associate the item drivers with the item category.
 
@@ -56,13 +61,9 @@ Create a function to set initial values (the _xy_ coordinates) for the 100 items
 . Create an `initFunction` as a child of `componentType:itemType` and name it 'ItemInit'.
 
 
-[#fig-tut6-structure]
-.Model structure specifications.
-image::tutorial6IMG/fig-tut6-structure.png[align="left",role="thumb",width="550",float="right"]
-
 ===== Dynamics
 
-When new items are created by `process:Nitems` we need a function to set _xy_ coordinates of the newly created 'items'. This is a 'consequence' function. Consequence functions are children of other functions rather than a process.
+When new items are created by `process:Nitems` we need a function to set _xy_ coordinates of the newly created 'items'. This is a 'consequence' function. Consequence functions are children of other functions rather than a process (<<fig-tut6-dynamics>>).
 
 . Create a `function` as a child of `function:Nitems`, name it 'MakeItem' and select `setOtherInitialState` as its type.
 
@@ -97,7 +98,7 @@ We now add some Java code to set values for the _xy_ coordinates. We will just s
 
 ===== User Interface
 
-Add a widget to view the items in space.
+Add a widget to view the items in space (<<fig-tut6-user-interface>>).
 
 . Create a `widget` as a child to `tab:tab`, name it 'Item landscape' and select `SpaceWidget1` as its type.
 
@@ -114,9 +115,9 @@ Arrange the two widget horizontally (the default) - time series first.
 image::tutorial6IMG/fig-tut6-User-Interface.png[align="left",role="thumb",width="600"]
 
 [start = 4]
-. Deploy the simulation [Alt+D]
+. Deploy the simulation [Alt+D] (<<fig-tut6-modelRunner>>).
 
-Information about `SpaceWidget1` can be found at (ref).
+Information about `SpaceWidget1` can be found at <<truewidgets>>.
 
 [#fig-tut6-modelRunner]
 .Running Tutorial 6.

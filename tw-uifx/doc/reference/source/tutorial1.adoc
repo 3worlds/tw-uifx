@@ -265,7 +265,7 @@ the tool bar, and selecting `Role`. The relationship can be read as, for example
 
 [#fig-arena]
 .The specification of the constants and drivers for the _arena_, pass:[<br/>] a category to which the only component in this tutorial (aka pass:[<br/>] `system:sys1`) belongs.
-image::tutorial1IMG/fig-arena.png[align="left",width=550,float="right",role="thumb"]
+image::tutorial1IMG/fig-arena.png[align="left",width=500,float="right",role="thumb"]
 
 
 We have yet to relate `system:sys1` to the driver '_x_' and the constant '_r_'.  These are global data and therefore are defined as part 
@@ -491,7 +491,7 @@ You can now generate documentation for this model from _ModelRunner_.
 
 . From _ModelRunner_ select 'About -> Create documentation' from the main menu. 
 
-This creates  an ODD template (Overview, Design concepts and Details) (`Tut1.odt`), an established standard for documenting simulation 
+This creates  an ODD template (Overview, Design concepts and Details) (`Tut1.odt`, <<fig-ODD1>>), an established standard for documenting simulation 
 models. This file can be generated any time from _ModelRunner_. When you're satisfied with the specification, edit this file as 
 a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <<fig-dir-post-run>>:
 
@@ -514,7 +514,7 @@ Once the specification has been compiled without errors and deployed and the doc
 
 ... `local/java/code/`: This directory contains the generated Java code. The entire model is contained within the `Tut1.java` class.
 
-... `Tut1.jar`: A stand-alone jar of the model that can be run independently of _ModelMaker_ (*ref?*).
+... `Tut1.jar`: A stand-alone jar of the model that can be run independently of _ModelMaker_ (<<truesimulation-reference-running-a-simulation-experiment-with-modelrunner>>).
 
 ... `runTime/MR.xml`: A preferences file for _ModelRunner_. These settings are saved whenever _ModelRunner_ quits so it will have the same appearance between successive uses.
 
@@ -530,9 +530,9 @@ For example, to have a dynamic `process`, it makes sense that it's associated wi
 the same rate are associated with the same `timer` and that all timers are coordinated by the one `timeline`. The user interface for 
 problems such as this would be very error-prone if presented say, as a series of dialog boxes.
 
-_ModelMaker_ has a number of features to help arrange the graph display. Please refer to (*REF*).
+_ModelMaker_ has a number of features to help arrange the graph display. Please refer to <<truegraph-display>>.
 
-As an exercise if you wish, try displaying just the nodes with _cross-links_ using the SpringGraph layout (*L4*). This is a common way to 
+As an exercise if you wish, try displaying just the nodes with _cross-links_ using the SpringGraph layout (*L4*) (<<fig-links-only>>). This is a common way to 
 look at just the _cross-link_ relationships between nodes. Generally, adding a screen capture of this and a second screen capture of 
 just the relevant _parent-child_ relationships make useful additions to the ODD appendix.
 
