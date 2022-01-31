@@ -55,7 +55,7 @@ include::ArchetypeDoc-container.adoc[]
 
 `/3worlds/userInterface/*headless*` {0..*}
 
-If you want to run a simulation unattended, you may not need a GUI at all. Instead, you may want the simulation to begin immediately and use widgets to write data to disk. Such widgets are call `Headless`. All headless widgets are children of the `gui:Headless:` node.
+If you want to run a simulation unattended, you may not need a GUI at all. Instead, you may want the simulation to begin immediately and use widgets to write data to disk. Such widgets are call `headless`. All headless widgets are children of the `gui:headless:` node.
 
 ===== Widgets
 
@@ -69,39 +69,42 @@ If you want to run a simulation unattended, you may not need a GUI at all. Inste
 
 `/3worlds/userInterface/headless/*widget*:<__name__>` {0..*}
 
-Widgets are the interesting part of the GUI configuration as they provide feedback and control of a simulation. A widget may be added as a child of `top`, `botton`, `tab`, `container`  or `headless`  nodes.
+Widgets are the interesting part of the GUI configuration as they provide feedback and control of a simulation. A widget may be added as a child of `top`, `bottom`, `tab`, `container`  or `headless`  nodes.
 
 include::ArchetypeDoc-widget.adoc[]
 
-`subclass`:: A widget class
-+
-****
-_possible values_:
-[horizontal]
+`subclass`:: A widget class;
+_order_: display order in a horizontal or vertical arrangment depending on the orientation property of the container (`tab` or `container`).
+
 `ControlWidget1`:: A simple simulator controller with run/pause, step and reset buttons. Add this as a child of a `top` or `bottom` node. A GUI definition can only have one controller.
 
-`ControlWidget2`:: As for `ControlWidget1`, but also displays the stopping condition(s) and the time taken to complete each simulation step and the total simulation time. These timings are only accurate when deploying a single simulation. They are not accurate when deploying multiple simulations. Therefore, this widget is best used when developing a model to check its performance. Use ControlWidget1 otherwise.
+`ControlWidget2`:: As for `ControlWidget1`, but also displays the time taken to complete each simulation step and the total simulation time. These timings are only accurate when deploying a single simulation. They are not accurate when deploying multiple simulations. Therefore, this widget is best used when developing a model to check its performance. Use `ControlWidget1` otherwise.
 
 `ControlWidget3`:: As for `ControlWidget2`, but displays a time series plot of simulation execution time. Add this widget as a child of a `tab` or `container` node. 
 
 `ProgressWidget1`:: A simple display of simulation time (average time if deploying multiple simulations) and stopping condition. Add this widget as a child of a `top` or `bottom` node.
 
-`ProgressWidget2`:: A bar graph of simulation progress intended for use when deploying multiple simulations. Add this widget as a child of a `tab` or `container` node.
+`ProgressWidget2`:: A bar graph of simulation progress intended for use only when deploying multiple simulations. Add this widget as a child of a `tab` or `container` node.
 
-`TimeseriesWidget1`:: A graph of _x~i~_ = __f__(__t__), where _x~i~_ are component descriptors and _t_ is time.  Add as a child of a `tab` or `container` node. This widget uses the fast charting library from https://github.com/GSI-CS-CO/chart-fx[Chartfx]. The widget has a number of additional facilites accessed by moving the mouse to the top of the chart display. Here, data can be viewed as a table and exported to file.
+`ProgressWidget3`:: As for `ProgressWidget2` but using a time series chart instead of a bar chart.
+
+`TimeseriesWidget1`:: A graph of _x~i~_ = __f__(__t__), where _x~i~_ are component descriptors and _t_ is time.  Add as a child of a `tab` or `container` node. This widget uses the fast charting library from https://github.com/GSI-CS-CO/chart-fx[Chartfx]. The widget has a number of additional facilites accessed by moving the mouse to the top of the chart display. Here, data can be viewed as a table and exported to file. At the time of writing we have not found this feature very reliable (chartfx version 11.2.6). A better option to save time series data, is to use `HLExperimentWidget`.
 
 `ScatterplotWidget1`:: A graph of _y_ = __f__(__x__) where _x_ and _y_ are two descriptors of a component.  Add as a child of a `tab` or `container` node. This widget also uses the fast charting library from https://github.com/GSI-CS-CO/chart-fx[Chartfx].
 
 `SpaceWidget1`:: A map of a  <<configuration-ecosystem-structure.adoc#truethe-representation-of-space,space>>.  Add as a child of a `tab` or `container` node.
 `TableWidget1`:: A table of number values __x~i~__(__t__).  Add as a child of a `tab` or `container` node. Add as a child of a `tab` or `container` node. 
 
-`MatrixWidget1`:: A colour display of a 2-dimensional table. Add as a child of a `tab` or `container` node. *untested*
+`MatrixWidget1`:: A colour display of a 2-dimensional table. Add as a child of a `tab` or `container` node.
 
 `GraphWidget1`:: A display of the system graph. Add as a child of a `tab` or `container` node.  *not yet implemented*
 
-`HLSimpleTimeSeriesWidget`:: Saves time series data to a file. Add as a child of a `headless` node.  *untested*
+`HLExperimentWidget1`:: Saves data to file. Add as a child of a `headless` node. The data written depends on the experiment design. A `SingleRun` produces a time series of each simulator and an average of replicates. `CrossFactorial` experiments produce the results of an ANOVA and svg (*TODO*) files of each factor's sensitivity. All statistical analysis uses *R*.
 
 `HLSimpleControlWidget`:: As `ControlWidget1`, but for unattended simulations. Add as a child of a `headless` node.
+
+`HLProgressWidget1`:: Writes simulator progress to the console.
+
 ****
 
 Many widgets have settings which can be adjusted from the _Widget_ menu of _ModelRunner_. These settings are automatically saved to a preferences file when _ModelRunner_ is closed thus preserving the look and feel of the interface between uses.
@@ -111,7 +114,7 @@ Many widgets have settings which can be adjusted from the _Widget_ menu of _Mode
 _for_ `ProgressWidget1`:
 
 [horizontal]
-`refreshRate`:: (optional) The rate at which this widget updates its display (ms) (_default_ 250 ms). This property is for the purpose of efficency. Because this widget can display the average progress of a very large number of simulations (e.g 1 million parallel simulations), it would be very inefficient, not to mention uninformative, if the display was updated every time any one of the simulators sent a message. 
+`refreshRate`:: (optional) The rate at which this widget updates its display (ms) (_default_ 250 ms). This property is for the purpose of efficiency. Because this widget can display the average progress of a very large number of simulations (e.g 1 million parallel simulations), it would be very inefficient, not to mention uninformative, if the display was updated every time any one of the simulators sent a message. 
 
 _for_ `TimeSeriesWidget1` _and_ `TableWidget1`:
 
@@ -129,7 +132,7 @@ _for_ `TimeSeriesWidget1`:
 _for_ `SpaceWidget1`:
 
 [horizontal]
-`nViews`:: This widget records data produced from any number of simulators. However, its often unreasonable to view every one of what may be a very large number. However, being able to visually compare independent parallel simulations is useful. This setting allow more than one (at the moment this is unlimited) view. A drop-down list for each view allows you to select which data set to display. 
+`nViews`:: This widget records data produced from any number of simulators. However, its often unreasonable to view every one of what may be a very large number. However, being able to visually compare independent parallel simulations is useful. This setting allows more than one (at the moment this is unlimited) view. A drop-down list for each view allows you to select which data set to display. 
 
 ====== Additional cross-links for widget sub-classes
 

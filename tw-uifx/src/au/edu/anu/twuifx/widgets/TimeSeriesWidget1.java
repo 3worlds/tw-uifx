@@ -418,7 +418,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		ComboBox<Side> cmbSide = new ComboBox<>();
 		cmbSide.getItems().addAll(Side.values());// better to convert to javafx.geometry.Side.
 		cmbSide.getSelectionModel().select(chart.getLegendSide());
-		addGridControl("Legend side", row++, cmbSide, content);
+		addGridControl("Legend position", row++, cmbSide, content);
 
 		Spinner<Integer> spMaxLegendItems = new Spinner<>();
 		spMaxLegendItems.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, maxLegendItems));

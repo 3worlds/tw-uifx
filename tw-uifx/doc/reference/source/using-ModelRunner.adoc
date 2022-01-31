@@ -1,11 +1,26 @@
 === General concepts
 
-*TODO*
+_ModelRunner_ can be used with or without a GUI. If using without a GUI, all `widget` nodes must be specified as children of a `headless` node. Alternatively, _ModelRunner_ will have a GUI if any `widget` nodes are children of `top`, `bottom', `tab` or `container` nodes. You can freely mix these two types of widgets.
+
+At the time of writing, two major aspects of _ModelRunner's_ functionality have not been developed: the ability to change constants during a simulation (i.e to play around with a model while it's running) and to save and restart simulations from particular states (e.g create a save a spin-up state from which to start an experiment).
 
 === Using ModelRunner: software interface and functioning
 
-*TODO*
+The layout of widgets in _ModelRunner_ is determined by the structure and properties of the `userInterface` sub-tree constructed with _ModelMaker_ (ref to UI sub-tree).
+
+The two functioning menu items are *widgets* and *about*.
+
+- widgets:: Edit properties of widgets (ref to UI sub-tree). These settings are saved automatically when _ModelRunner_ quits.
+
+- about:: Information about the experiment design, _ModelRunner_ and provision to create model documentation (ODD).
+
+The following widgets have run-time properties, saved automatically by _ModelRunner_ so that its appearance remains as selected between each deployment of the model:
+
+- `TimeseriesWidget`: 
+* Legend visible: Toggles the legend display on or off.
+* Legend position: The placement of the legend relative to the chart.
+* Max legend items: The maximum number of items in the legend. This limits the number of items to display when running experiments with a large number of simulators running in parallel.
 
 === Getting output from a simulation experiment
 
-*TODO*
+Outputs from a simulation are detailed in the section on widget properties (ref to UI sub-tree).

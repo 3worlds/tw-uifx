@@ -241,7 +241,7 @@ The function `function:DistOcc`, a `RelateToDecision` function, will decide if a
 
 If a disturbance occurs, `function:DistEffectComm` will implement the consequences of the disturbance on the community *but at the next time step*.
 
-NOTE: All methods read the data of this time step and write to data of the next time step. That is, always be mindful that _State(t+1) = f(State(t)_.
+NOTE: All methods read data at the current time step and write data of the next time step. That is, always be mindful that _x[t+1] <- f(x[t])_. In code, _x[t+1]_ is `focalDrv.x` and _x[t]_ is just _x_.
 
 As a reminder of this ordering, we have prefixed the process that creates the temporary (ephemeral) relation between disturbance and the community with 'p1' so that the layout (if using a _Tree_ layout) will display processes in a sensible order. 
 
