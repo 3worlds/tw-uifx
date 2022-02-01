@@ -1,6 +1,23 @@
+Simulators usually rely on possibly large data sets to initialise and run a simulation. According to their use during a simulation, we can classify data into:
+
+[horizontal]
+Parameters:: Values usually shared by a large number of system components that remain constant over a simulation or over the life time of an ephemeral component. These are stored in the <<truethe-systemstructure-node,constants>> of components, groups, life cycles and the arena. 
++
+__Examples__: the _average solar radiation at the top of the canopy_ for the arena component; the _spatial coordinates_ of a plant; the _species name_ for a group of components.
+
+Initial community:: In most cases a simulation must start with a non-empty initial system. This implies that components be instantiated with specific values for their <<truethe-systemstructure-node,drivers>> and proper connections between them.
++
+__Examples__: an initial forest reconstructed from LIDAR data; a monitored population of marked animals within an area.
+
+Forcing data:: Sometimes a simulation requires that data be fed in during its time course, at some time step, replacing values of a driver that cannot be computed by the model.
++
+__Examples__: a series of metorological data used to force a fire spread or a vegetation growth model.
+
 There are five different ways of feeding `ModelRunner` with data to start a simulation experiment.
 
 ==== Let the model decide
+
+Some purely theoretical models do not use real-world data. They rely on random number generators and a few hard-coded constants to build-up the simulated system and run it.
 
 ==== Provide parameters and initial state through ModelMaker
 
@@ -8,5 +25,9 @@ There are five different ways of feeding `ModelRunner` with data to start a simu
 
 ==== Use previously saved initial states
 
+*[TODO: not yet implemented]*
+
 ==== Generate an initialState using the InitWizard
+
+*[TODO: not yet implemented]*
 

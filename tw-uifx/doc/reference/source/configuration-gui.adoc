@@ -74,7 +74,11 @@ Widgets are the interesting part of the GUI configuration as they provide feedba
 include::ArchetypeDoc-widget.adoc[]
 
 `subclass`:: A widget class;
-_order_: display order in a horizontal or vertical arrangment depending on the orientation property of the container (`tab` or `container`).
+
++
+****
+_possible values_:
+[horizontal]
 
 `ControlWidget1`:: A simple simulator controller with run/pause, step and reset buttons. Add this as a child of a `top` or `bottom` node. A GUI definition can only have one controller.
 

@@ -57,7 +57,7 @@ include::user-coding-reference.adoc[]
 [.text-justify]
 === Feeding the model with data
 
-// include::data-input.adoc[]
+include::data-input.adoc[]
 
 [.text-justify]
 == Simulation reference: running a simulation experiment with ModelRunner
