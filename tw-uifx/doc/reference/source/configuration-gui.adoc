@@ -14,13 +14,13 @@ pass:[<br/>]
 
 `/3worlds/userInterface/*top*:<__name__>` {1}
 
-This is a tool bar and appears at the top, just below the menu bar. Widgets placed here will appear beside each other in an order specified in `ModelMaker` properties (_Order_). The top is typically a place where small widgets are added that remain accessible no matter where other widgets are placed. Typically a controller or progress widgets are placed here. Checks are made by `ModelMaker` to ensure only small widgets can be placed here (<<fig-example-gui>>).
+This is a tool bar located at the top just below the menu bar. Widgets placed here will appear beside each other in an order specified in `ModelMaker` properties (_Order_). The top is typically a place where small widgets are added that remain accessible no matter where other widgets are placed. Typically a controller or progress widgets are placed here. Checks are made by `ModelMaker` to ensure only small widgets can be placed here (<<fig-example-gui>>).
 
 ===== Bottom
 
 `/3worlds/userInterface/*bottom*:<__name__>` {0..1}
 
-The _bottom_ is a status bar and appears at the bottom of the GUI. It has the same constraints as the _top_. Widgets such as a progress bar can be placed here if desired (<<fig-example-gui>>).
+The _bottom_ is a status bar located at the bottom of the main window. It has the same constraints as the _top_. Widgets such as a progress bar can be placed here if desired (<<fig-example-gui>>).
 
 ===== Tabs and containers
 
