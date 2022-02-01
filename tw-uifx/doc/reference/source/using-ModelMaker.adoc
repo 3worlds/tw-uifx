@@ -51,27 +51,25 @@ Exits _ModelMaker_ after a prompting to save any unsaved work. On exiting, a pro
 
 ===== Edit
 
-The Edit menu has five choices (<<fig-menu-edit>>):
+The Edit menu provides the Undo/Redo options (<<fig-menu-edit>>). All graph editor operations are able to be undo or redone except property edits. The undo/redo system creates temporary history files during a session. These are deleted when the project is closed.
 
 [#fig-menu-edit]
 .The edit pass:[<br/>] menu choice.
 image::using-modelmakerIMG/fig-menu-edit.png[role="thumb",align="left",float="right"]
 
-====== undo/redo
+===== IDE
 
-Re-do or un-do most edit operations. Note that collapsing/expanding sub-tree operations are not included in this system. The undo/redo system creates temporary history files during a session. These are deleted when the project is closed.
+====== Import snippets
 
-====== import snippets
+Enabled when a project is linked to a Java project. This option imports method code from Java into any `snippet` nodes in the specifications (`Function` and `InitFunction` and the `importSnippet` property of the specification root node. NOTE: currently, importing code containing double quotes is not supported.
 
-Enabled when a project is linked to a Java project. This option imports method code from Java into any `snippet` nodes in the specifications. If this code references dependencies, _ModelMaker_ will show compile errors in the *message pane*. To avoid these errors but keep the snippet, add comment markers in the imported snippet to avoid these dependencies and prevent the compile errors. (*TODO: this may change*).
+====== Clear snippets
 
-====== clear snippets
+Clears the Java code in the configuration's `functionSnippet`and `importSnippet` properties. Functions requiring return values will have default return values added.
 
-Clears the Java code in the configuration's `snippet#javaCode` properties. Functions requiring return values will have default return values added.
+====== Link to IDE
 
-====== Java project
-
-Allows connecting to or disconnecting from an external Java project. When connecting to a Java project, the java project must have imported `.3w/tw-dep.jar` as an external jar to its class path (<<truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds>>). Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported for this purpose (<<truesetting-up-a-java-development-environment-for-the-user-code>>).
+Allows connecting to or disconnecting from an external Java project via in an Integrated Development Environment. When connecting to a Java project, the java project must have imported `.3w/tw-dep.jar` as an external jar to its class path (<<truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds>>). Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported for this purpose (<<truesetting-up-a-java-development-environment-for-the-user-code>>).
 
 If the creation times of Java source files and their associated class files become inconsistent, a message to this effect will appear in the *message pane*. In such cases, refresh or clean the Java project.
 
@@ -81,13 +79,9 @@ NOTE: Use 'Refresh` in the IDE to keep _ModelMaker_ and the Java project synchro
 
 ===== Help
 
-====== Reference manual
-
-Displays this user manual in a browser. *TODO if we go ahead, we need to refactor paths of generated html and images to appropriate packages*
-
 ====== About ModelMaker
 
-A dialog with a succinct description of the purpose of _ModelMaker_. If you're using _ModelMaker_ for the first time, it's a good idea to at least read this overview. 
+A dialog with a succinct description of the purpose of _ModelMaker_. If you're using _ModelMaker_ for the first time, it's a good idea to at least read this overview.
 
 ==== Graph display
 
@@ -128,6 +122,8 @@ image::using-modelmakerIMG/fig-tool-bar.png[align="center"]
 ... *Edge text*: Display the edge label and name or any combination of the two including no text.
 
 . *Element size*: Increases or decreases the size of all nodes, edges and text in the display.
+
+. *Animate*: When checked, changes to the shape of the graph by either collapsing/expanding sub-trees or applying a layout function are animated. Switch this off for large graphs - the animation routine can quickly become over-loaded and the resulting animation jumpy.
 
 ===== Keyboard and mouse functions
 
@@ -205,8 +201,8 @@ Messages are displayed in alphabetical order of the Action text no matter what t
 
 ... *Debug*: This level shows all information available for this message including a detailed description of the target and archetype elements. It is rarely informative unless you are a contributor to the development of 3Worlds (<<fig-msg-formats>>).
 
-===== Compile and Deploy
+===== Verify and Deploy
 
-... *Compile*: Checks the specification graph against the archetype and compiles the Java code. This process takes place in the background any time the graph is edited. Therefore, there is rarely any need to click the compile button.
+... *Verify*: Verifies that the specification graph conforms with the archetype and compiles the Java code. This process takes place in the background any time the graph is edited. Therefore, there is rarely any need to click the compile button.
 
 ... *Deploy*: This button is enabled (traffic light green) whenever the *message pane* is clear. When clicked, _ModelRunner_ is launched to run the model with the specified experiment design.
