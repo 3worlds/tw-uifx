@@ -19,11 +19,6 @@ Apart from the use of tables and a more elaborate model equation, these specific
 
 . Start _ModelMaker_ and create a new: `Projects -> New -> Templates -> 2 SimpleClock` and name the project 'Tut3'.
 
-[#fig-simple-clock-template]
-.The appearance of _ModelMaker_ after creating a new project from the 'SimpleClock' template.
-image::tutorial3IMG/fig-simple-clock-template.png[align="center"]
-
-
 ===== Data definition
 
 [#fig-records-tables]

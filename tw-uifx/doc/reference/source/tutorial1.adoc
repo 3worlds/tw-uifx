@@ -502,7 +502,7 @@ Most word processors can read this standard format, native to LibreOffice, inclu
 NOTE: Every time this file is created, it will have a number added to its name to prevent overwrites. 
 
 [#fig-ODD1]
-.A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from <<bibliography.adoc#Grimm2010,Grimm et al. (2010)>> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node.
+.A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from <<bibliography.adoc#Grimm2010,Grimm et al. (2010)>> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node for convenience.
 image::tutorial1IMG/fig-ODD1.png[align="left",role="thumb",width=850]
 
 
