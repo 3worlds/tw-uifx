@@ -115,7 +115,7 @@ Predefined categories are grouped in 3 ``categorySet``s:
 ** `\*relation*` is currently not in use
 
 * `\*organisation*` represent levels of organisation in the system:
-** `nRemoved`, the number of components added to the population during the last simulation step
+** `\*atomic*`, is a category attached to single, individable (hence __atomic__), components
 ** `\*assemblage*` is a category attached to populations of components. Members of this category have the following automatic variables:
 *** `count`, the population size
 *** `nAdded`, the number of components added to the population during the last simulation step

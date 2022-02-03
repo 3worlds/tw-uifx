@@ -217,6 +217,20 @@ image::configuration-ecosystem-structureIMG/example-life-cycle.png[align="center
 
 The life cycle has two categories, _seedling_ and __adult__, and three transitions: a _recruit_ transition called __recruitment__, effected by the function __Recruit__, and two _produce_ transitions, effected by the functions _Seed_ and __Sprout__.
 
+.How is the simulated system implemented?
+[#system-howto]
+****
+Internally, system __component__s (= ecological entities) are instances of the same class, `SystemComponent`. They are stored in a hierarchy of nested __container__s that represent logical groupings of components based on categories: all components of a container belong to the same categories, in order to facilitate their processing by the user-defined function (remember that a `Process` also applies to some categories).
+
+The nesting of containers is based on the `System` > `LifeCycle` > `Group` > `Component` `-Type` hierarchy decided by the user. To each container is associated a single particular component instance that represents this container... as one more _component_ of the system. It is called the container's __avatar__. Since containers are, by construct, populations of components, they have natural descriptors such as the number of components they contain, and the number of additions and deletions of components during the last simulator iteration. These are stored in the avatar as _automatic variables_ (<<truecategory>>), as specified by the predefined `\*assemblage*` category (<<truethe-predefined-sub-tree>>) which must be associated to all containers.
+
+At the top of the container hierarchy is the __arena__, which contains everything else and matches the `System` node. The arena is always present and unique. In a full complexity 3Worlds system, the _arena_ container has _life cycle_ sub-containers, each of which can have _group_ sub-containers wich ultimately contain the __components__. Of course this can be simplified: if there are no life cycles or groups defined in a model, these containers will not exist in the simulator and the container hierarchy will be simplified. Possibly to the simplest simulated system in 3Worlds, made of only the arena.
+
+A `LifeCycleType`, `GroupType`, or `ComponentType` does not represent just one life cycle / group / component, but a _class_ of those defined by their categories. As all classes, there can be many instances of these at runtime. When initialising a simulation with data (<<truethe-setup-of-an-initial-state-for-a-simulation>>), it is possible, and important, to define names that will be used to uniquely identify e.g., various groups as instances of the same `GroupType`.
+****
+
+
+
 ===== The representation of space
 
 Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a <<true3worlds-library-of-spaces,library>> of different spaces for this need.
@@ -267,6 +281,7 @@ _Additional properties for space type_ `SquareGrid`:
 ====== Shapes and topology
 
 *This part is still under construction.*
+
 
 
 ===== The setup of an initial state for a simulation
