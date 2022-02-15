@@ -89,9 +89,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
 		List<Tuple<String, VisualNode, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
-		List<SimpleDataTreeNode> optionalPropertySpecs = filterOptionalPropertySpecs(
+		List<SimpleDataTreeNode> optionalNodePropertySpecs = filterOptionalPropertySpecs(
 				specifications.getOptionalProperties(baseSpec, subClassSpec));
+		// Get edge specs for currently extant edges and select only those that are optional
+		 List<SimpleDataTreeNode> optionalEdgePropertySpecs = filterOptionalEdgePropertySpecs(editableNode,edgeSpecs);
 		final double duration = GraphVisualiserfx.animateSlow;
+		
 
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_NODE);
@@ -326,13 +329,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_OPTIONAL_PROPS);
-			if (!editableNode.visualNode().isPredefined() && !optionalPropertySpecs.isEmpty()) {
+			if (!editableNode.visualNode().isPredefined() && !optionalNodePropertySpecs.isEmpty()) {
 				mi.setOnAction((e) -> {
 
 					String desc = MenuLabels.ML_OPTIONAL_PROPS.label() + " ["
 							+ editableNode.visualNode().configNode().toShortString() + "]";
 
-					if (onOptionalProperties(optionalPropertySpecs)) {
+					if (onOptionalProperties(optionalNodePropertySpecs)) {
 
 						controller.onAddRemoveProperty(editableNode.visualNode());
 						GraphState.setChanged();
@@ -444,8 +447,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 
 	}
-
 	// TODO Move to adaptor
+	private List<SimpleDataTreeNode> filterOptionalEdgePropertySpecs(VisualNodeEditable editableNode,
+			Iterable<SimpleDataTreeNode> edgeSpecs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 	private List<SimpleDataTreeNode> filterOptionalPropertySpecs(List<SimpleDataTreeNode> propSpecs) {
 		Collection<String> ne = controller.getUnEditablePropertyKeys(editableNode.visualNode().configNode().classId());
 		Iterator<SimpleDataTreeNode> iter = propSpecs.iterator();
