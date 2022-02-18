@@ -33,12 +33,12 @@ package au.edu.anu.twuifx.mm.editors.structure;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.Originator;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
@@ -51,7 +51,6 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
-import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedEdgeLabels;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
@@ -95,11 +94,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
 		List<Tuple<String, VisualNode, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
-		List<SimpleDataTreeNode> optionalNodePropertySpecs = filterOptionalPropertySpecs(
+		List<SimpleDataTreeNode> optionalNodePropertySpecs = removeNonEditablePropertySpecs(
 				specifications.getOptionalProperties(baseSpec, subClassSpec));
 		// Get edge specs for currently extant edges and select those that are
-		// optional
-		List<Duple<ALEdge, SimpleDataTreeNode>> optionalEdgePropertySpecs = filterOptionalEdgePropertySpecs(
+		// optional.
+		// TODO: No account taken of possible constraints and non-editable properties.
+		// Some inconsistency in use of Iterable and List<>
+		List<Duple<VisualEdge, SimpleDataTreeNode>> optionalEdgePropertySpecs = filterOptionalEdgePropertySpecs(
 				editableNode, edgeSpecs);
 		final double duration = GraphVisualiserfx.animateSlow;
 
@@ -336,13 +337,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_OPTIONAL_PROPS);
-			if (!editableNode.visualNode().isPredefined() && !optionalNodePropertySpecs.isEmpty()) {
+			if (!editableNode.visualNode().isPredefined() && (!optionalNodePropertySpecs.isEmpty())|| !optionalEdgePropertySpecs.isEmpty()) {
 				mi.setOnAction((e) -> {
 
 					String desc = MenuLabels.ML_OPTIONAL_PROPS.label() + " ["
 							+ editableNode.visualNode().configNode().toShortString() + "]";
 
-					if (onOptionalProperties(optionalNodePropertySpecs)) {
+					if (onOptionalProperties(optionalNodePropertySpecs,optionalEdgePropertySpecs)) {
 
 						controller.onAddRemoveProperty(editableNode.visualNode());
 						GraphState.setChanged();
@@ -456,37 +457,33 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	}
 
 	// TODO Move to adaptor
-	private List<Duple<ALEdge, SimpleDataTreeNode>> filterOptionalEdgePropertySpecs(VisualNodeEditable editableNode,
+	private List<Duple<VisualEdge, SimpleDataTreeNode>> filterOptionalEdgePropertySpecs(VisualNodeEditable editableNode,
 			Iterable<SimpleDataTreeNode> edgeSpecs) {
-		// Task: get edge spec for each edge present that contains optional properties
-		List<Duple<ALEdge, SimpleDataTreeNode>> result = new ArrayList<>();
-		List<ALEdge> edges = new ArrayList<>();
-		List<String> edgeLabels = new ArrayList<>();
-		for (VisualEdge e : editableNode.getOutEdges()) {
-			edges.add(e.getConfigEdge());
-			edgeLabels.add(e.getConfigEdge().classId());
-		}
+		// Task: get edge spec for each out edge present for this node that contains optional properties
+		Map<String, VisualEdge> edgeMap = new LinkedHashMap<>();
+		for (VisualEdge e : editableNode.getOutEdges())
+			edgeMap.put(e.getConfigEdge().classId(), e);
 
+		List<Duple<VisualEdge, SimpleDataTreeNode>> result = new ArrayList<>();
 		for (SimpleDataTreeNode es : edgeSpecs) {
 			String edgeClass = (String) es.properties().getPropertyValue(aaIsOfClass);
-			String toRef = (String) es.properties().getPropertyValue(aaToNode);
-			if (edgeLabels.contains(edgeClass)) {
+			if (edgeMap.containsKey(edgeClass)) {
 				List<SimpleDataTreeNode> propSpecs = (List<SimpleDataTreeNode>) get(es, children(),
 						selectZeroOrMany(hasTheLabel(aaHasProperty)));
 				for (SimpleDataTreeNode ps : propSpecs) {
 					if (specifications.getMultiplicityOf(ps).getFirst() == 0) {
 						String propName = (String) ps.properties().getPropertyValue(aaHasName);
-						System.out.println("[optional] " + edgeClass + "#" + propName);
 						// add a duple of ALEdge and property spec
+						result.add(new Duple<VisualEdge, SimpleDataTreeNode>(edgeMap.get(edgeClass), ps));
+						VisualEdge ve = edgeMap.get(edgeClass);
 					}
 				}
 			}
 		}
-
-		return null;
+		return result;
 	}
 
-	private List<SimpleDataTreeNode> filterOptionalPropertySpecs(List<SimpleDataTreeNode> propSpecs) {
+	private List<SimpleDataTreeNode> removeNonEditablePropertySpecs(List<SimpleDataTreeNode> propSpecs) {
 		Collection<String> ne = controller.getUnEditablePropertyKeys(editableNode.visualNode().configNode().classId());
 		Iterator<SimpleDataTreeNode> iter = propSpecs.iterator();
 		while (iter.hasNext()) {
