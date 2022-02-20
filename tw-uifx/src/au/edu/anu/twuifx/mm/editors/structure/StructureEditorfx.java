@@ -337,13 +337,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		}
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_OPTIONAL_PROPS);
-			if (!editableNode.visualNode().isPredefined() && (!optionalNodePropertySpecs.isEmpty())|| !optionalEdgePropertySpecs.isEmpty()) {
+			if (!editableNode.visualNode().isPredefined() && (!optionalNodePropertySpecs.isEmpty())
+					|| !optionalEdgePropertySpecs.isEmpty()) {
 				mi.setOnAction((e) -> {
 
 					String desc = MenuLabels.ML_OPTIONAL_PROPS.label() + " ["
 							+ editableNode.visualNode().configNode().toShortString() + "]";
 
-					if (onOptionalProperties(optionalNodePropertySpecs,optionalEdgePropertySpecs)) {
+					if (onOptionalProperties(optionalNodePropertySpecs, optionalEdgePropertySpecs)) {
 
 						controller.onAddRemoveProperty(editableNode.visualNode());
 						GraphState.setChanged();
@@ -459,10 +460,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	// TODO Move to adaptor
 	private List<Duple<VisualEdge, SimpleDataTreeNode>> filterOptionalEdgePropertySpecs(VisualNodeEditable editableNode,
 			Iterable<SimpleDataTreeNode> edgeSpecs) {
-		// Task: get edge spec for each out edge present for this node that contains optional properties
+		// Task: get edge spec for each out edge present for this node that contains
+		// optional properties
 		Map<String, VisualEdge> edgeMap = new LinkedHashMap<>();
 		for (VisualEdge e : editableNode.getOutEdges())
 			edgeMap.put(e.getConfigEdge().classId(), e);
+		
 
 		List<Duple<VisualEdge, SimpleDataTreeNode>> result = new ArrayList<>();
 		for (SimpleDataTreeNode es : edgeSpecs) {
