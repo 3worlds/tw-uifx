@@ -10,13 +10,13 @@ A `*category*` is simply a name attached to a set of objects sharing common prop
 
 Descriptors consist in _drivers_, _decorators_, _constants_ and _automatic variables_:
 
-_drivers_:: are _independent_ variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (_e.g._ biomass, age, sex, social status...). They will vary during a simulation. 'Independent' means that these variables cannot be computed from each other within a simulation step, they also depend on their previous step values. For example, if some category is described by drivers _age_ and __biomass__, neither of them can be computed from the other: _age_ is computed from its previous value by adding the time step duration; _biomass_ is computed in some other way probably involving its previous value. The values of drivers are carried over from a simulation step to the next, i.e. they _drive_ the dynamics of the system.
+_drivers_:: are _independent_ variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (_e.g._ biomass, age, sex, social status...). They will vary during a simulation. 'Independent' means that these variables cannot be computed from each other within a simulation step, they also depend on their previous <<truecausality,__causal__>> step values. For example, if some category is described by drivers _age_ and __biomass__, neither of them can be computed from the other: _age_ is computed from its previous value by adding the time step duration; _biomass_ is computed in some other way probably involving its previous value. The values of drivers are carried over from a simulation step to the next, i.e. they _drive_ the dynamics of the system.
 
-_decorators_:: are _dependent_ variables that are computed from drivers and other decorators within a simulation step. For example, _leaf area_ could be computed as some constant times __biomass__: its value is completely determined by the value of __biomass__. As such, decorators are not independent from the drivers and are used only for convenience in computations or output display. They are not carried over from a simulation step to the next, they are always automatically reset to zero at the end of each step.
+_decorators_:: are _dependent_ variables that are computed from drivers and other decorators within a simulation step. For example, _leaf area_ could be computed as some constant times __biomass__: its value is completely determined by the value of __biomass__. As such, decorators are not independent from the drivers and are used only for convenience in computations or output display. They are not carried over from a simulation step to the next, they are always automatically reset to zero at the end of each <<truecausality,__time__>> step.
 
-_constants_:: are values (numbers, text, logical values) that do not change during a simulation. For example, _sex_ or _number of legs_ are not going to change during the lifetime of animal. They are set at birth and never changed after.
+_constants_:: are values (numbers, text, logical values) that do not change during a simulation. For example, _sex_ or _number of legs_ are not going to change during the lifetime of an animal. They are set at birth and never changed after.
 
-_automatic variables_:: are values internally managed by 3Worlds and only available as read-only values for computation. For components representing individuals, these are _age_ and __birth date__. For components representing populations, these are _number of individualls_, __number of births__, __number of deaths__.
+_automatic variables_:: are values internally managed by 3Worlds and available _read-only_ for computation. For components representing individuals, these are _age_ and __birth date__. For components representing populations, these are _number of individuals_, __number of newly created individuals__, __number of deleted individuals__.
 
 The exact data structures for descriptors are specified under the `dataDefinition` node (<<configuration-reference.adoc#truethe-datadefinition-node>>) and linked to the category through the following:
 
@@ -39,7 +39,7 @@ There are _predefined categories_ in 3Worlds under the node `/3worlds/*predefine
 
 `/3worlds/system/structure/*categorySet*:<[underline]##__name__##>` {1..*}
 
-Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can't be both. For this reason, _exclusive_ categories are grouped into `*categorySets*`. A `categorySet` is _a set of **mutually exclusive** categories_. Categories can be nested, by simply defining a `categorySet` as a child of a `category`:
+Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can't be both. For this reason, _exclusive_ categories are grouped into `*categorySets*`. A `categorySet` is _a set of **mutually exclusive** categories_ (mathematically, a https://en.wikipedia.org/wiki/Partition_of_a_set[__partition__]). Categories can be nested, by simply defining a `categorySet` as a child of a `category`:
 
 `.../category/*categorySet*:<[underline]##__name__##>` {0..*}
 
@@ -47,7 +47,7 @@ Some categories must be exclusive of each other: for example, an ecological enti
 
 `/3worlds/system/structure/*relationType*:<[underline]##__name__##>` {0..*}
 
-A `*relationType*` is just a name representing a meaningful link between two kinds of categories. It is specified by giving it a name and cross-linking it to the relevant categories with `fromCategory` and `toCategory` cross-links. Note that a `relationType` can link more than one 'from' categories to more than one 'to' categories if required. ``RelationType``s are used to implement specific processes acting on ecological entities (for example, a predation process).
+A `*relationType*` is just a name representing a meaningful link between two kinds of categories. It is specified by giving it a name and cross-linking it to the relevant categories with `fromCategory` and `toCategory` cross-links. Note that a `relationType` can link more than one 'from' categories to more than one 'to' categories if required. ``RelationType``s are used to implement specific processes acting on ecological entities (for example, a predation process). Notice that relations are _directed_ (i.e., they have a _start_ and an _end_ with potentially different roles).
 
 _Cross-links for_ `relationType`:
 
@@ -83,12 +83,12 @@ In this example, a _plant_ can be a _C3 tree_ but cannot be simultaneously a _gr
 
 `/3worlds/system/structure/*componentType*:<[underline]##__name__##>` {1..*}
 
-3Worlds simulates a _system_ made of _system components_. These are the things which are instantiated at run time, hold descriptors, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach _categories_ to _system components_. The rules prevailing to build up category hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the _plant_ and _tree_ categories, but not to the _animal_ and _tree_ categories.
+3Worlds simulates a _system_ made of _system components_. These are the things which are instantiated at run time, hold <<truethe-complex-system-as-a-dynamic-graph,descriptors>>, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach _categories_ to _system components_. The rules prevailing to build up category hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example (<<fig-category-example>>), we could define a system as belonging to the _plant_ and _tree_ categories, but not to the _animal_ and _tree_ categories.
 
 _Cross-links_ for `componentType`:
 
 `belongsTo -> category:<__name__>` {1..*}::
-This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the _C3_ category automatically implies the system component is also a _plant_).The categories targets of these links must be specific to component types, i.e. no `groupType` or `lifeCycleType` should refer (`belongTo` cross-link) to any of them.
+This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the _C3_ category automatically implies the system component is also a _plant_). The categories targets of these links must be specific to component types, i.e. no `groupType` or `lifeCycleType` should refer (`belongTo` cross-link) to any of them.
 
 `belongsTo -> category:*component*` {1}::
 This link to the predefined category `\*component*` is required in all models.
@@ -98,6 +98,16 @@ This link to the predefined category `\*atomic*` is required in all models. It m
 
 `belongsTo -> category:*ephemeral*|\*permanent*` {1}::
 This link to either of the predefined category `\*ephemeral*` or `\*permanent*` is required in all models. It specifies if components of this `componentType` are going to stay forever (permanent) or can be created and deleted (ephemeral) during a simulation. Ephemeral components have two automatic variables, `birthDate` and `age`. 
+
+`loadFrom -> dataSource:` {0..*}::
+These optional links refer to <<trueinputs-datasource,data sources>> from which to read initial values of component-level <<truethe-complex-system-as-a-dynamic-graph,descriptors>> (<<trueimport-data-from-external-sources>>).
+
+_Optional child_ for `componentType`:
+
+`/3worlds/.../componentType/*initFunction*:<[underline]##__name__##>` {0..1}
+
+This node declares a <<truefunction,function>> of type `SetInitialState` to set or transform the initial values of component-level <<truethe-complex-system-as-a-dynamic-graph,descriptors>> (<<truedata-input-methods>>).
+
 
 ====== Component group
 
@@ -109,7 +119,7 @@ To make a `componentType` belong to a `groupType`, you just need to declare it a
 
 `.../groupType/*componentType*:<[underline]##__name__##>` {0..*}
 
-_Cross-links_ for `componentType`:
+_Cross-links_ for `groupType`:
 
 `belongsTo -> category:<__name__>` {1..*}::
 This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited. The categories targets of these links must be specific to groups, i.e. no `componentType` or `lifeCycleType` should refer (`belongTo` cross-link) to any of them.
@@ -118,10 +128,20 @@ This link tells to which categories a system component type belongs. The categor
 This link to the predefined category `\*group*` is required in all models.
 
 `belongsTo -> category:*assemblage*` {1}::
-This link to the predefined category `\*assemblage*` is required in all models. It means that a group is a population of components. Assemblages have three automatic variables: the group size (number of components) `count`, the number of new components added during last time step `nAdded`, and the number of components deleted during the last time step `nRemoved`.
+This link to the predefined category `\*assemblage*` is required in all models. It means that a group is a population of components. Assemblages have three automatic variables: the group size (number of components) `count`, the number of new components added during last <<truecausality,causal>> step `nAdded`, and the number of components deleted during the causal step `nRemoved`.
 
 `belongsTo -> category:*permanent*` {1}::
 This link to the predefined category `\*permanent*` is required in all models. It means that groups will stay forever in the system, even if all components of this groups are gone. 
+
+`loadFrom -> dataSource:` {0..*}::
+These optional links refer to <<trueinputs-datasource,data sources>> from which to read initial values of group-level <<truethe-complex-system-as-a-dynamic-graph,descriptors>> (<<trueimport-data-from-external-sources>>).
+
+_Optional child_ for `groupType`:
+
+`/3worlds/.../groupType/*initFunction*:<[underline]##__name__##>` {0..1}
+
+This node declares a <<truefunction,function>> of type `SetInitialState` to set or transform the initial values of group-level <<truethe-complex-system-as-a-dynamic-graph,descriptors>> (<<truedata-input-methods>>).
+
 
 ====== Life cycle
 
@@ -141,13 +161,13 @@ A specification of a life cycle requires:
 
 . `recruit` and `produce` nodes linking categories within the above `categorySet` to describe possible recruitment and reproduction transitions;
 
-. optionnally, `categories` can be linked to a `lifeCycle` if one wants to attach descriptors to the life cycle.
+. optionnally, `categories` can be linked to a `lifeCycleType` if one wants to attach <<truethe-complex-system-as-a-dynamic-graph,descriptors>> to the life cycle.
 
 To define a `groupType` within the context of a `lifeCycleType`, simply make it a child node of the lifeCycleType:
 
 `.../lifeCycleType/*groupType*:<[underline]##__name__##>` {1..*}
 
-_Cross-links for_ `lifeCycle`
+_Cross-links for_ `lifeCycleType`
 
 `appliesTo -> categorySet:<[underline]##__name__##>` {1}::
 This links indicates which categories define the stages of the life cycle. `recruit` or `produce` nodes can only link categories of this set.
@@ -159,14 +179,24 @@ These links enable to attach descriptors to a `lifeCycle`, if needed by some eco
 This link to the predefined category `\*life cycle*` is required in all models.
 
 `belongsTo -> category:*assemblage*` {1}::
-This link to the predefined category `\*assemblage*` is required in all models. It means that a life cycle is a population of components. Assemblages have three automatic variables: size (number of components) `count`, the number of new components added during last time step `nAdded`, and the number of components deleted during the last time step `nRemoved`.
+This link to the predefined category `\*assemblage*` is required in all models. It means that a life cycle is a population of components. Assemblages have three automatic variables: the group size (number of components) `count`, the number of new components added during last <<truecausality,causal>> step `nAdded`, and the number of components deleted during the causal step `nRemoved`.
 
 `belongsTo -> category:*permanent*` {1}::
 This link to the predefined category `\*permanent*` is required in all models. It means that life cycles will stay forever in the system. 
 
+`loadFrom -> dataSource:` {0..*}::
+These optional links refer to <<trueinputs-datasource,data sources>> from which to read initial values of life cycle-level <<truethe-complex-system-as-a-dynamic-graph,descriptors>> (<<trueimport-data-from-external-sources>>).
+
+_Optional child_ for `lifeCycleType`:
+
+`/3worlds/structure/lifeCycleType/*initFunction*:<[underline]##__name__##>` {0..1}
+
+This node declares a <<truefunction,function>> of type `SetInitialState` to set or transform the initial values of life cycle-level <<truethe-complex-system-as-a-dynamic-graph,descriptors>> (<<truedata-input-methods>>).
+
+
 ====== Recruitment
 
-`/3worlds/system/dynamics/lifeCycle/*recruit*:<[underline]##__name__##>` {0..*}
+`/3worlds/system/structure/lifeCycle/*recruit*:<[underline]##__name__##>` {0..*}
 
 This node specifies that two categories of the life cycle `categorySet` are linked by a _recruitment_ process.
 
@@ -185,7 +215,7 @@ This link tells which ecological process is used to compute the recruitment. Thi
 
 ====== Reproduction
 
-`/3worlds/system/dynamics/lifeCycle/*produce*:<[underline]##__name__##>` {0..*}
+`/3worlds/system/structure/lifeCycle/*produce*:<[underline]##__name__##>` {0..*}
 
 This node specifies that two categories of the life cycle `categorySet` are linked by a _reproduction_ process.
 
@@ -230,7 +260,6 @@ A `LifeCycleType`, `GroupType`, or `ComponentType` does not represent just one l
 ****
 
 
-
 ===== The representation of space
 
 Sometimes modellers want an explicit representation of space for their model. 3Worlds provides a <<true3worlds-library-of-spaces,library>> of different spaces for this need.
@@ -238,7 +267,7 @@ Technically, space could just be treated as a component related to other compone
 
 ====== Space and spatial indexing
 
-`/3worlds/system/dynamics/*space*:<[underline]##__name__##>` {0..*}
+`/3worlds/system/structure/*space*:<[underline]##__name__##>` {0..*}
 
 This defines a space, i.e. a container where system components can be located by their _spatial coordinates_ and where distances can be computed. More than one space can coexist in 3Worlds, applying to possibly different types of components and processes. Spaces can be of 1 to 3 dimensions (this is set by choosing a space type).
 
@@ -323,33 +352,3 @@ This link tells in which `lifeCycle` instance this group is involved. The `group
 `/3worlds/.../lifeCycleType/*lifeCycle*:<__name__>`
 
 Use this node to instantiate a life cycle applying to a set of groups.
-
-====== Setting decriptor values
-
-A first method to set descriptor values is to define a `setInitialState` function as a child of the `componentType`, `groupType`, `lifeCycleType` or `system` nodes. Such functions are only called once, at the beginning of a simulation, to setup the _initial state_ of a model. In a `setInitialState` function, only drivers and constants can be set (it is the only place where constants can be set).
-
-`/3worlds/.../componentType/*initFunction*:<__name__>`
-
-`/3worlds/.../groupType/*initFunction*:<__name__>`
-
-`/3worlds/.../lifeCycleType/*initFunction*:<__name__>`
-
-`/3worlds/.../system/*initFunction*:<__name__>`
-
-_Properties for_ `initFunction`:
-
-[horizontal]
-`type`:: The type of function used: only <<configuration-ecosystem-dynamics.adoc#truefunction,`setInitialState`>> is possible.
-
-_Cross-links for_ `initFunction`:
-
-`useRNG -> rng:<__name__>` {0..1}::
-Points to the <<configuration-dataDefinition.adoc#truerandom-number-channels,random number generator channel>> to use in this function. If unset, the default random number channel is used.
-
-A second method to set descriptor values is to import data from an external source. This is done by defining a  <<configuration-experiment.adoc#trueinputs-datasource,`dataSource`>> and linking a `component`, `group`, `lifeCycle` or `system` to it:
-
-_Cross-links for_ `component`, `group`, `lifeCycle`, and `system`
-
-`loadFrom -> dataSource:<__name__>` {0..1}::
-This link tells where to read the initial values of the descriptors from.
-

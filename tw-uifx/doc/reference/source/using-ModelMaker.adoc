@@ -61,7 +61,9 @@ image::using-modelmakerIMG/fig-menu-edit.png[role="thumb",align="left",float="ri
 
 ====== Import snippets
 
-Enabled when a project is linked to a Java project. This option imports method code from Java into any `snippet` nodes in the specifications (`Function` and `InitFunction` and the `importSnippet` property of the specification root node. NOTE: currently, importing code containing double quotes is not supported.
+Enabled when a project is linked to a Java project. This option imports method code from Java into any `snippet` properties in the specifications (`functionSnippet` of the `Function` and `InitFunction` nodes and the `importSnippet` property of the specification root node). 
+
+WARNING: currently, importing code containing double quotes is not supported.
 
 ====== Clear snippets
 
