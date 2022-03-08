@@ -20,7 +20,7 @@ The main window title is the currently open project and any linked Java project 
 .Options for creating a new project.
 image::using-modelmakerIMG/fig-menu-new.png[role="thumb",align="left",float="right"]
 
-Creates a new project from either a library of *Templates*, *Tutorials*, *Model library* or *Test cases* (<<fig-menu-new>>). You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project successfully compiles.  A sub-directory with the name and creation date will be created under `.3w`.
+Creates a new project from either a library of *Templates*, *Tutorials*, *Model library* or *Test cases* (<<fig-menu-new>>). You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project successfully compiles.  A sub-directory with the name and creation date will be created under `3w`.
 Once created, the project name and its creation date appear in the window title and the graph root node name is that entered at the prompt. _ModelMaker_ will automatically compile the project and list any actions required in the *message pane*.
 
 ====== Open
@@ -29,7 +29,7 @@ Once created, the project name and its creation date appear in the window title 
 .The Open project menu choice.
 image::using-modelmakerIMG/fig-menu-open.png[role="thumb",align="left",float="right"]
 
-Opens any project currently in the `.3w` directory (<<fig-menu-open>>). Projects are listed in alphabetical order.
+Opens any project currently in the `3w` directory (<<fig-menu-open>>). Projects are listed in alphabetical order.
 
 ====== Import
 
@@ -43,7 +43,7 @@ Saves the configuration graph and its associated layout file (`.layout.utg`) to 
 
 ====== Save as
 
-Saves the project under a new name in a new directory within `.3w`. If the project was linked to a Java project, the new project will maintain this link and generate a new Java file with this name.
+Saves the project under a new name in a new directory within `3w`. If the project was linked to a Java project, the new project will maintain this link and generate a new Java file with this name.
 
 ====== Exit
 
@@ -71,7 +71,7 @@ Clears the Java code in the configuration's `functionSnippet`and `importSnippet`
 
 ====== Link to IDE
 
-Allows connecting to or disconnecting from an external Java project via in an Integrated Development Environment. When connecting to a Java project, the java project must have imported `.3w/tw-dep.jar` as an external jar to its class path (<<truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds>>). Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported for this purpose (<<truesetting-up-a-java-development-environment-for-the-user-code>>).
+Allows connecting to or disconnecting from an external Java project via in an Integrated Development Environment. When connecting to a Java project, the java project must have imported `3w/tw.jar` as an external jar to its class path (<<truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds>>). Upon first connecting to a Java project, a Java class called `UserCodeRunner.java` is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the _Eclipse_ IDE is supported for this purpose (<<truesetting-up-a-java-development-environment-for-the-user-code>>).
 
 If the creation times of Java source files and their associated class files become inconsistent, a message to this effect will appear in the *message pane*. In such cases, refresh or clean the Java project.
 

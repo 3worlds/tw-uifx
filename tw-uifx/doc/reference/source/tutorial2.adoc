@@ -14,7 +14,7 @@ First create a Java project in _Eclipse_.
 
 . Under the `Libraries` tab, highlight `Classpath` and  click the `Add External JARs...` button to the right.
 
-. Navigate to the .3w directory and select `tw-dep.jar`.
+. Navigate to the `3w` directory and select `tw.jar`.
 
 . Click `Apply and close`.
 
