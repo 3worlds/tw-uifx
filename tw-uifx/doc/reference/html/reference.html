@@ -914,7 +914,7 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">Eclips
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Unzip <code>3w.zip</code> in your user home directory (important), keeping the internal directory tree. This will extract a file <code>modelMaker.jar</code> and a <code>.3w</code> directory containing more jar files.</p>
+<p>Unzip <code>3w.zip</code> in your user home directory (important), keeping the internal directory tree. This will extract a file <code>modelMaker.jar</code> and a <code>3w</code> directory containing more jar files.</p>
 </li>
 <li>
 <p>Double-click on <code>modelMaker.jar</code>. This should launch the ModelMaker application.</p>
@@ -931,17 +931,17 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">Eclips
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-This way of launching 3Worlds is sensitive to the relative location of <code>modelMaker.jar</code> and the other jars that are in the <code>.3w</code> directory, ie <code>modelMaker.jar</code> <strong>must</strong> be exactly one directory above <code>.3w</code>.
+This way of launching 3Worlds is sensitive to the relative location of <code>modelMaker.jar</code> and the other jars that are in the <code>3w</code> directory, ie <code>modelMaker.jar</code> <strong>must</strong> be exactly one directory above <code>3w</code>.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>To remove this constraint, you can bypass <code>modelMaker.jar</code> by directly launching it from the jars contained in <code>.3w</code>:</p>
+<p>To remove this constraint, you can bypass <code>modelMaker.jar</code> by directly launching it from the jars contained in <code>3w</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">java -cp .3w/tw-dep.jar au.edu.anu.twuifx.mm.MMmain</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">java -cp 3w/tw.jar au.edu.anu.twuifx.mm.MMmain</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -965,7 +965,7 @@ to develop your model-specific code, you will need to setup a Java development e
 <div class="sect3">
 <h4 id="truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds"><a class="anchor" href="#truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds"></a>2.4.1. Setting up the Eclipse Integrated Development Environment (IDE) for 3Worlds</h4>
 <div class="paragraph">
-<p>This assumes you have downloaded <code>tw-dep.jar</code>.</p>
+<p>This assumes you have downloaded <code>tw.jar</code>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1011,7 +1011,7 @@ to develop your model-specific code, you will need to setup a Java development e
 <p>Click on the <code>Add external JARs&#8230;&#8203;</code> button; this open a file selection dialog box</p>
 </li>
 <li>
-<p>In the file selection dialog box, browse and select <code>tw-dep.jar</code></p>
+<p>In the file selection dialog box, browse and select <code>tw.jar</code></p>
 </li>
 <li>
 <p>Click the <code>Apply and Close</code> button</p>
@@ -1025,7 +1025,7 @@ to develop your model-specific code, you will need to setup a Java development e
 <div class="sect3">
 <h4 id="truerunning-modelmaker-from-eclipse"><a class="anchor" href="#truerunning-modelmaker-from-eclipse"></a>2.4.2. Running ModelMaker from Eclipse</h4>
 <div class="paragraph">
-<p>ModelMaker can be run from Eclipse or as a standalone application since it is included in the <code>tw-dep.jar</code> library required to develop the user code.</p>
+<p>ModelMaker can be run from Eclipse or as a standalone application since it is included in the <code>tw.jar</code> library required to develop the user code.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1033,7 +1033,7 @@ to develop your model-specific code, you will need to setup a Java development e
 <p>In the <code>package explorer</code> window, expand the <code>Referenced libraries</code> entry</p>
 </li>
 <li>
-<p>Right-click on the <code>tw-dep.jar</code> entry, select <code>Run as &#8594; Java Application</code>. This opens a dialog box</p>
+<p>Right-click on the <code>tw.jar</code> entry, select <code>Run as &#8594; Java Application</code>. This opens a dialog box</p>
 </li>
 <li>
 <p>In the dialog box, type <em>Main</em></p>
@@ -1117,7 +1117,7 @@ It requires three command line arguments (we assume that you know how to setup a
 <p>an instance number (more about this later); leave this at '0' for now.</p>
 </li>
 <li>
-<p>the name of the directory of the 3Worlds project as created by <code>ModelMaker</code> (e.g. <em>project_test_model9_2019-09-05-08-50-20-458</em>). This project directory is located under the <code>.3w</code> directory automatically created by <code>ModelMaker</code> as its working directory</p>
+<p>the name of the directory of the 3Worlds project as created by <code>ModelMaker</code> (e.g. <em>project_test_model9_2019-09-05-08-50-20-458</em>). This project directory is located under the <code>3w</code> directory automatically created by <code>ModelMaker</code> as its working directory</p>
 </li>
 <li>
 <p>some optional settings to switch on debugging logs.</p>
@@ -1256,7 +1256,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="title">Figure 8. Options for creating a new project.</div>
 </div>
 <div class="paragraph">
-<p>Creates a new project from either a library of <strong>Templates</strong>, <strong>Tutorials</strong>, <strong>Model library</strong> or <strong>Test cases</strong> (<a href="#fig-menu-new">Figure 8</a>). You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project successfully compiles.  A sub-directory with the name and creation date will be created under <code>.3w</code>.
+<p>Creates a new project from either a library of <strong>Templates</strong>, <strong>Tutorials</strong>, <strong>Model library</strong> or <strong>Test cases</strong> (<a href="#fig-menu-new">Figure 8</a>). You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project successfully compiles.  A sub-directory with the name and creation date will be created under <code>3w</code>.
 Once created, the project name and its creation date appear in the window title and the graph root node name is that entered at the prompt. <em>ModelMaker</em> will automatically compile the project and list any actions required in the <strong>message pane</strong>.</p>
 </div>
 </div>
@@ -1269,7 +1269,7 @@ Once created, the project name and its creation date appear in the window title 
 <div class="title">Figure 9. The Open project menu choice.</div>
 </div>
 <div class="paragraph">
-<p>Opens any project currently in the <code>.3w</code> directory (<a href="#fig-menu-open">Figure 9</a>). Projects are listed in alphabetical order.</p>
+<p>Opens any project currently in the <code>3w</code> directory (<a href="#fig-menu-open">Figure 9</a>). Projects are listed in alphabetical order.</p>
 </div>
 </div>
 <div class="sect5">
@@ -1299,7 +1299,7 @@ Tree-graphs with more than one root cannot be imported.
 <div class="sect5">
 <h6 id="truesave-as"><a class="anchor" href="#truesave-as"></a>Save as</h6>
 <div class="paragraph">
-<p>Saves the project under a new name in a new directory within <code>.3w</code>. If the project was linked to a Java project, the new project will maintain this link and generate a new Java file with this name.</p>
+<p>Saves the project under a new name in a new directory within <code>3w</code>. If the project was linked to a Java project, the new project will maintain this link and generate a new Java file with this name.</p>
 </div>
 </div>
 <div class="sect5">
@@ -1350,7 +1350,7 @@ currently, importing code containing double quotes is not supported.
 <div class="sect5">
 <h6 id="truelink-to-ide"><a class="anchor" href="#truelink-to-ide"></a>Link to IDE</h6>
 <div class="paragraph">
-<p>Allows connecting to or disconnecting from an external Java project via in an Integrated Development Environment. When connecting to a Java project, the java project must have imported <code>.3w/tw-dep.jar</code> as an external jar to its class path (<a href="#truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds">Section 2.4.1</a>). Upon first connecting to a Java project, a Java class called <code>UserCodeRunner.java</code> is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the <em>Eclipse</em> IDE is supported for this purpose (<a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a>).</p>
+<p>Allows connecting to or disconnecting from an external Java project via in an Integrated Development Environment. When connecting to a Java project, the java project must have imported <code>3w/tw.jar</code> as an external jar to its class path (<a href="#truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds">Section 2.4.1</a>). Upon first connecting to a Java project, a Java class called <code>UserCodeRunner.java</code> is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the <em>Eclipse</em> IDE is supported for this purpose (<a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a>).</p>
 </div>
 <div class="paragraph">
 <p>If the creation times of Java source files and their associated class files become inconsistent, a message to this effect will appear in the <strong>message pane</strong>. In such cases, refresh or clean the Java project.</p>
@@ -6722,7 +6722,7 @@ them from edges that represent <em>parent-child</em> relationships.</p>
 <div class="sect3">
 <h4 id="trueinstallation"><a class="anchor" href="#trueinstallation"></a>5.1.2. Installation</h4>
 <div class="paragraph">
-<p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>.3w</code> in your home directory and copy <code>tw-dep.jar</code> to it.
+<p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>3w</code> in your home directory and copy <code>tw.jar</code> to it.
 Then copy <code>modelMaker.jar</code> to your home directory. To start <em>modelMaker</em>, open a terminal and type:
 <code>java -jar modelMaker.jar</code>. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling
 (including upper-case letters) and that the file is executable using the file manager of your operating system.</p>
@@ -6825,9 +6825,10 @@ display in one list.</p>
 <div class="sect4">
 <h5 id="truedirectory-structure"><a class="anchor" href="#truedirectory-structure"></a>Directory structure</h5>
 <div class="paragraph">
-<p>All projects are located within the 3Worlds root directory called <code>.3w</code>. The dot indicates a hidden directory.
-To see these files you may need to do what ever is required by your operating system to show hidden files
-(<a href="#fig-tut1-dir">Figure 27</a>).</p>
+<p>All projects are located within the 3Worlds root directory called <code>3w</code>.</p>
+</div>
+<div class="paragraph">
+<p>(<a href="#fig-tut1-dir">Figure 27</a>).</p>
 </div>
 <div id="fig-tut1-dir" class="imageblock right text-left thumb">
 <div class="content">
@@ -6836,11 +6837,10 @@ To see these files you may need to do what ever is required by your operating sy
 <div class="title">Figure 27. The initial directory structure <br/> after creating a new project from the 'Blank' <br/> template. Later, after all tasks have been <br/> completed and the model is deployed, another <br/> sub-directory is added for run-time files.</div>
 </div>
 <div class="paragraph">
-<p>The <code>.3w</code> directory contains a Jar file called <code>tw-dep.jar</code> (<a href="#fig-tut1-dir">Figure 27</a>). This file contains all dependent
-libraries for <em>3Worlds</em>. It&#8217;s a good idea to keep a backup of this file.</p>
+<p>The <code>3w</code> directory contains a Jar file called <code>tw.jar</code> (<a href="#fig-tut1-dir">Figure 27</a>). This file contains all dependent libraries for <em>3Worlds</em>. It&#8217;s a good idea to keep a backup of this file.</p>
 </div>
 <div class="paragraph">
-<p>Within <code>.3w</code> there is now a sub-directory called something like <code>project_Tut1_2020-06-07-01-47-44-708</code>. Every project
+<p>Within <code>3w</code> there is now a sub-directory called something like <code>project_Tut1_2020-06-07-01-47-44-708</code>. Every project
 directory begins with the key word <code>project</code>, followed by the name of the project you entered (<code>Tut1</code> in this case)
 and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible
 to inadvertently overwrite a project.</p>
@@ -6885,8 +6885,8 @@ Editing any project graph files (*.utg) with a text editor is likely to corrupt 
 <div class="paragraph">
 <p>On the other hand, you can delete project directories at any time you wish. If you accidentally
 delete the project of a currently open session, it will be recreated automatically by
-<em>ModelMaker</em> (apart from the <em>undo-redo</em> history). However, if you delete the entire <code>.3w</code> directory
-you will have to restore <code>tw-dep.jar</code> from backup.</p>
+<em>ModelMaker</em> (apart from the <em>undo-redo</em> history). However, if you delete the entire <code>3w</code> directory
+you will have to restore <code>tw.jar</code> from backup.</p>
 </div>
 </div>
 </div>
@@ -7450,7 +7450,7 @@ models. This file can be generated any time from <em>ModelRunner</em>. When you&
 a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <a href="#fig-dir-post-run">Figure 36</a>:</p>
 </div>
 <div class="paragraph">
-<p><code>~/.3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt</code>.</p>
+<p><code>~/3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt</code>.</p>
 </div>
 <div class="paragraph">
 <p>Most word processors can read this standard format, native to LibreOffice, including Microsoft Word.</p>
@@ -7562,7 +7562,7 @@ just the relevant <em>parent-child</em> relationships make useful additions to t
 <p>Under the <code>Libraries</code> tab, highlight <code>Classpath</code> and  click the <code>Add External JARs&#8230;&#8203;</code> button to the right.</p>
 </li>
 <li>
-<p>Navigate to the .3w directory and select <code>tw-dep.jar</code>.</p>
+<p>Navigate to the <code>3w</code> directory and select <code>tw.jar</code>.</p>
 </li>
 <li>
 <p>Click <code>Apply and close</code>.</p>
@@ -9783,7 +9783,7 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 <div id="footer">
 <div id="footer-text">
 Version 1.7<br>
-Last updated 2022-03-08 16:43:23 +0100
+Last updated 2022-03-09 10:40:15 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
