@@ -31,7 +31,7 @@ them from edges that represent _parent-child_ relationships.
 
 ==== Installation
 
-Installing _ModelMaker_ is very simple: create a directory called `.3w` in your home directory and copy `tw-dep.jar` to it. 
+Installing _ModelMaker_ is very simple: create a directory called `3w` in your home directory and copy `tw.jar` to it. 
 Then copy `modelMaker.jar` to your home directory. To start _modelMaker_, open a terminal and type: 
 `java -jar modelMaker.jar`. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling 
 (including upper-case letters) and that the file is executable using the file manager of your operating system.
@@ -97,18 +97,17 @@ display in one list.
 
 ===== Directory structure
 
-All projects are located within the 3Worlds root directory called `.3w`. The dot indicates a hidden directory. 
-To see these files you may need to do what ever is required by your operating system to show hidden files 
+All projects are located within the 3Worlds root directory called `3w`.
+
 (<<fig-tut1-dir>>). 
 
 [#fig-tut1-dir]
 .The initial directory structure pass:[<br/>] after creating a new project from the 'Blank' pass:[<br/>] template. Later, after all tasks have been pass:[<br/>] completed and the model is deployed, another pass:[<br/>] sub-directory is added for run-time files.
 image::tutorial1IMG/fig-tut1-dir.png[role="thumb",align="left",float="right"]
 
-The `.3w` directory contains a Jar file called `tw-dep.jar` (<<fig-tut1-dir>>). This file contains all dependent 
-libraries for _3Worlds_. It's a good idea to keep a backup of this file.
+The `3w` directory contains a Jar file called `tw.jar` (<<fig-tut1-dir>>). This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
 
-Within `.3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project 
+Within `3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project 
 directory begins with the key word `project`, followed by the name of the project you entered (`Tut1` in this case) 
 and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible 
 to inadvertently overwrite a project. 
@@ -129,8 +128,8 @@ NOTE: Editing any project graph files (*.utg) with a text editor is likely to co
 
 On the other hand, you can delete project directories at any time you wish. If you accidentally 
 delete the project of a currently open session, it will be recreated automatically by 
-_ModelMaker_ (apart from the _undo-redo_ history). However, if you delete the entire `.3w` directory 
-you will have to restore `tw-dep.jar` from backup.
+_ModelMaker_ (apart from the _undo-redo_ history). However, if you delete the entire `3w` directory 
+you will have to restore `tw.jar` from backup.
 
 
 ==== Creating the specifications
@@ -495,7 +494,7 @@ This creates  an ODD template (Overview, Design concepts and Details) (`Tut1.odt
 models. This file can be generated any time from _ModelRunner_. When you're satisfied with the specification, edit this file as 
 a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <<fig-dir-post-run>>:
 
-`~/.3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt`.
+`~/3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt`.
 
 Most word processors can read this standard format, native to LibreOffice, including Microsoft Word.
 

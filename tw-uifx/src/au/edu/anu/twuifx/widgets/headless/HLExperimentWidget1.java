@@ -51,6 +51,7 @@ import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.experiment.ExpFactor;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
@@ -84,6 +85,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
 	private List<List<Property>> treatmentList;
+	private Map<String,ExpFactor> factors;
 	private Map<String, Object> baseline;
 	private ExperimentDesignType edt;
 	private int nReps;
@@ -108,6 +110,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		if (properties.hasProperty(P_DESIGN_TYPE.key())) {
 			edt = (ExperimentDesignType) properties.getPropertyValue(P_DESIGN_TYPE.key());
 			treatmentList = (List<List<Property>>) properties.getPropertyValue("TreatmentList");
+			factors = (Map<String,ExpFactor>) properties.getPropertyValue("Factors");
 			baseline = (Map<String, Object>) properties.getPropertyValue("Baseline");
 			nReps = (Integer) properties.getPropertyValue(P_EXP_NREPLICATES.key());
 		}
@@ -257,8 +260,12 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			for (int i = 0; i < nReps; i++) {
 				for (List<Property> props : treatmentList) {
 					String colHeader = i + ":";
-					for (Property p : props)
-						colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
+					for (Property p : props) {
+						ExpFactor factor = factors.get(p.getKey());
+						colHeader += "_" + factor.getName() + "[" + factor.getValueName(p) + "]";
+//						
+//						colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
+					}
 					colHeader = colHeader.replaceFirst("_", "");
 					result += "\t" + colHeader;
 				}
@@ -272,8 +279,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		String sep = "\t";
 		for (List<Property> props : treatmentList) {
 			String colHeader = "";
-			for (Property p : props)
-				colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
+			for (Property p : props) {
+				ExpFactor factor = factors.get(p.getKey());
+//				colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
+				colHeader += "_" + factor.getName() + "[" + factor.getValueName(p) + "]";
+			}
 			colHeader = colHeader.replaceFirst("_", "");
 			result += sep + colHeader;
 		}
@@ -352,11 +362,17 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		}
 
 		// We need just the property for header
-		int factors = treatmentList.get(0).size();
+//		int factors = treatmentList.get(0).size();
+//		String h = "";
+//		for (int i = 0; i < factors; i++)
+//			h += "F" + i + "\t";
+//		h += "RV";
+		
 		String h = "";
-		for (int i = 0; i < factors; i++)
-			h += "F" + i + "\t";
-		h += "RV";
+		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) {
+			h+= entry.getValue().getName()+"\t";
+		}
+		h +="RV";
 
 		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_AnovaInput.csv");
 		List<String> fileLines = new ArrayList<>();
@@ -366,8 +382,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			Double v = sample.get(i);
 			String line = "";
 			for (Property p : ps) {
-				String s = p.getValue().toString();
-				line += p.getKey() + s + "\t";
+				ExpFactor factor = factors.get(p.getKey());
+				String s = factor.getValueName(p);
+				//String s = p.getValue().toString();
+//				line += p.getKey() + s + "\t";
+				line += s + "\t";
 			}
 			line += v.toString();
 			fileLines.add(line);
@@ -401,12 +420,15 @@ dev.off()
 		fileLines.clear();
 		fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
 		fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
-		for (int i = 0; i < factors; i++)
-			fileLines.add("F" + i + " = data$F" + i);
-		fileLines.add(name+ " = data$RV");
+//		for (int i = 0; i < factors.size(); i++)
+//			fileLines.add("F" + i + " = data$F" + i);
+		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) 
+			fileLines.add(entry.getValue().getName() + " = data$" + entry.getValue().getName());
+		fileLines.add(name + " = data$RV");
 		String args = name+"~";
-		for (int f = 0; f < factors; f++)
-			args += "*F" + f;
+		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) 
+			args += "*"+entry.getValue().getName();
+//		args += "*F" + f;
 		args = args.replaceFirst("\\*", "");
 		fileLines.add("mdl = lm(" + args + ")");
 		fileLines.add("ava = anova (mdl)");
@@ -478,14 +500,6 @@ dev.off()
 				fileLines.add(sb.toString());
 			}
 			fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
-			fileLines.add("");
-			fileLines.add("Legend");
-
-			for (int i = 0; i < factors; i++) {
-				String key = treatmentList.get(0).get(i).getKey();
-				String sym = "F" + i;
-				fileLines.add(new StringBuilder().append(sym).append(sep).append(key).toString());
-			}
 
 			File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_RelSumSq.csv");
 			Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
@@ -521,7 +535,8 @@ dev.off()
 		String sep = "\t";
 		for (int bar = 0; bar < stats.length; bar++) {
 			Property p = treatmentList.get(bar).get(0);
-			String s1 = p.getKey() + "(" + p.getValue() + ")";
+			ExpFactor f = factors.get(p.getKey());
+			String s1 = f.getName() + "(" + f.getValueName(p) + ")";
 			String s2 = Double.toString(stats[bar].average());
 			String s3 = Double.toString(stats[bar].variance());
 			String s4 = Double.toString(Math.sqrt(stats[bar].variance()));

@@ -31,18 +31,18 @@ You will need the following software installed on your computer before installin
 === Running ModelMaker
 
 This assumes you have downloaded `3w.zip`.
-// NOTE: 3w.zip must contain (1) .3w/tw-dep.jar, (2) ModelMaker.jar, (3) UserCodeRunner.java
+// NOTE: 3w.zip must contain (1) 3w/tw.jar, (2) ModelMaker.jar, (3) UserCodeRunner.java
 
-. Unzip `3w.zip` in your user home directory (important), keeping the internal directory tree. This will extract a file `modelMaker.jar` and a `.3w` directory containing more jar files.
+. Unzip `3w.zip` in your user home directory (important), keeping the internal directory tree. This will extract a file `modelMaker.jar` and a `3w` directory containing more jar files.
 . Double-click on `modelMaker.jar`. This should launch the ModelMaker application.
 . If this doesn't work, open a terminal and type `java -jar modelMaker.jar`. This should launch the ModelMaker application.
 
-WARNING: This way of launching 3Worlds is sensitive to the relative location of `modelMaker.jar` and the other jars that are in the `.3w` directory, ie `modelMaker.jar` *must* be exactly one directory above `.3w`.
+WARNING: This way of launching 3Worlds is sensitive to the relative location of `modelMaker.jar` and the other jars that are in the `3w` directory, ie `modelMaker.jar` *must* be exactly one directory above `3w`.
 
-To remove this constraint, you can bypass `modelMaker.jar` by directly launching it from the jars contained in `.3w`:
+To remove this constraint, you can bypass `modelMaker.jar` by directly launching it from the jars contained in `3w`:
 [source,bash]
 ----
-java -cp .3w/tw-dep.jar au.edu.anu.twuifx.mm.MMmain
+java -cp 3w/tw.jar au.edu.anu.twuifx.mm.MMmain
 ----
 
 It is preferable to run the software from a terminal window. This way, any errors that may arise will be displayed.
@@ -54,7 +54,7 @@ NOTE: to develop your model-specific code, you will need to setup a Java develop
 
 ==== Setting up the Eclipse Integrated Development Environment (IDE) for 3Worlds
 
-This assumes you have downloaded `tw-dep.jar`.
+This assumes you have downloaded `tw.jar`.
 
 . If not yet done, install https://www.eclipse.org/downloads/[Eclipse] (don't forget https://www.eclipse.org/efxclipse/install.html[e(fx)clipse]!)
 
@@ -71,7 +71,7 @@ This assumes you have downloaded `tw-dep.jar`.
 * Select the `Libraries` tab
 * Select `ClassPath`
 * Click on the `Add external JARs...` button; this open a file selection dialog box
-* In the file selection dialog box, browse and select `tw-dep.jar`
+* In the file selection dialog box, browse and select `tw.jar`
 * Click the `Apply and Close` button
 
 // NB: UserCodeRunner is created when a 3w project is linked to a Java project - it is not 'imported' from anywhere
@@ -91,10 +91,10 @@ This assumes you have downloaded `tw-dep.jar`.
 
 ==== Running ModelMaker from Eclipse
 
-ModelMaker can be run from Eclipse or as a standalone application since it is included in the `tw-dep.jar` library required to develop the user code.
+ModelMaker can be run from Eclipse or as a standalone application since it is included in the `tw.jar` library required to develop the user code.
 
 * In the `package explorer` window, expand the `Referenced libraries` entry
-* Right-click on the `tw-dep.jar` entry, select `Run as -> Java Application`. This opens a dialog box
+* Right-click on the `tw.jar` entry, select `Run as -> Java Application`. This opens a dialog box
 * In the dialog box, type _Main_
 * In the list of matching items, select `Main - au.edu.anu.twuifx.MMmain` and click `OK` 
 * If warning errors appear, click `Proceed`. This launches the ModelMaker application
@@ -126,7 +126,7 @@ It requires three command line arguments (we assume that you know how to setup a
 
 * an instance number (more about this later); leave this at '0' for now.
 
-* the name of the directory of the 3Worlds project as created by `ModelMaker` (e.g. _project_test_model9_2019-09-05-08-50-20-458_). This project directory is located under the `.3w` directory automatically created by `ModelMaker` as its working directory
+* the name of the directory of the 3Worlds project as created by `ModelMaker` (e.g. _project_test_model9_2019-09-05-08-50-20-458_). This project directory is located under the `3w` directory automatically created by `ModelMaker` as its working directory
 * some optional settings to switch on debugging logs.
  
 With this, the user code should be executed as a test simulation by `UserCodeRunner`.

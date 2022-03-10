@@ -914,7 +914,7 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">Eclips
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Unzip <code>3w.zip</code> in your user home directory (important), keeping the internal directory tree. This will extract a file <code>modelMaker.jar</code> and a <code>.3w</code> directory containing more jar files.</p>
+<p>Unzip <code>3w.zip</code> in your user home directory (important), keeping the internal directory tree. This will extract a file <code>modelMaker.jar</code> and a <code>3w</code> directory containing more jar files.</p>
 </li>
 <li>
 <p>Double-click on <code>modelMaker.jar</code>. This should launch the ModelMaker application.</p>
@@ -931,17 +931,17 @@ To do this, you must use the <a href="https://www.eclipse.org/downloads/">Eclips
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-This way of launching 3Worlds is sensitive to the relative location of <code>modelMaker.jar</code> and the other jars that are in the <code>.3w</code> directory, ie <code>modelMaker.jar</code> <strong>must</strong> be exactly one directory above <code>.3w</code>.
+This way of launching 3Worlds is sensitive to the relative location of <code>modelMaker.jar</code> and the other jars that are in the <code>3w</code> directory, ie <code>modelMaker.jar</code> <strong>must</strong> be exactly one directory above <code>3w</code>.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>To remove this constraint, you can bypass <code>modelMaker.jar</code> by directly launching it from the jars contained in <code>.3w</code>:</p>
+<p>To remove this constraint, you can bypass <code>modelMaker.jar</code> by directly launching it from the jars contained in <code>3w</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">java -cp .3w/tw-dep.jar au.edu.anu.twuifx.mm.MMmain</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">java -cp 3w/tw.jar au.edu.anu.twuifx.mm.MMmain</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -965,7 +965,7 @@ to develop your model-specific code, you will need to setup a Java development e
 <div class="sect3">
 <h4 id="truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds"><a class="anchor" href="#truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds"></a>2.4.1. Setting up the Eclipse Integrated Development Environment (IDE) for 3Worlds</h4>
 <div class="paragraph">
-<p>This assumes you have downloaded <code>tw-dep.jar</code>.</p>
+<p>This assumes you have downloaded <code>tw.jar</code>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1011,7 +1011,7 @@ to develop your model-specific code, you will need to setup a Java development e
 <p>Click on the <code>Add external JARs&#8230;&#8203;</code> button; this open a file selection dialog box</p>
 </li>
 <li>
-<p>In the file selection dialog box, browse and select <code>tw-dep.jar</code></p>
+<p>In the file selection dialog box, browse and select <code>tw.jar</code></p>
 </li>
 <li>
 <p>Click the <code>Apply and Close</code> button</p>
@@ -1025,7 +1025,7 @@ to develop your model-specific code, you will need to setup a Java development e
 <div class="sect3">
 <h4 id="truerunning-modelmaker-from-eclipse"><a class="anchor" href="#truerunning-modelmaker-from-eclipse"></a>2.4.2. Running ModelMaker from Eclipse</h4>
 <div class="paragraph">
-<p>ModelMaker can be run from Eclipse or as a standalone application since it is included in the <code>tw-dep.jar</code> library required to develop the user code.</p>
+<p>ModelMaker can be run from Eclipse or as a standalone application since it is included in the <code>tw.jar</code> library required to develop the user code.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1033,7 +1033,7 @@ to develop your model-specific code, you will need to setup a Java development e
 <p>In the <code>package explorer</code> window, expand the <code>Referenced libraries</code> entry</p>
 </li>
 <li>
-<p>Right-click on the <code>tw-dep.jar</code> entry, select <code>Run as &#8594; Java Application</code>. This opens a dialog box</p>
+<p>Right-click on the <code>tw.jar</code> entry, select <code>Run as &#8594; Java Application</code>. This opens a dialog box</p>
 </li>
 <li>
 <p>In the dialog box, type <em>Main</em></p>
@@ -1117,7 +1117,7 @@ It requires three command line arguments (we assume that you know how to setup a
 <p>an instance number (more about this later); leave this at '0' for now.</p>
 </li>
 <li>
-<p>the name of the directory of the 3Worlds project as created by <code>ModelMaker</code> (e.g. <em>project_test_model9_2019-09-05-08-50-20-458</em>). This project directory is located under the <code>.3w</code> directory automatically created by <code>ModelMaker</code> as its working directory</p>
+<p>the name of the directory of the 3Worlds project as created by <code>ModelMaker</code> (e.g. <em>project_test_model9_2019-09-05-08-50-20-458</em>). This project directory is located under the <code>3w</code> directory automatically created by <code>ModelMaker</code> as its working directory</p>
 </li>
 <li>
 <p>some optional settings to switch on debugging logs.</p>
@@ -1171,7 +1171,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </div>
 <div id="fig-configuration-tree" class="imageblock text-center thumb">
 <div class="content">
-<img src="../source/configuration-structureIMG/dsl-tree3.svg" alt="dsl tree3">
+<img src="../source/configuration-structureIMG/dsl-tree4.svg" alt="dsl tree4">
 </div>
 <div class="title">Figure 5. Tree structure of a simulation experiment configuration in 3Worlds</div>
 </div>
@@ -1201,7 +1201,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 </div>
 <div id="fig-configuration-tree2" class="imageblock text-center thumb">
 <div class="content">
-<img src="../source/configuration-structureIMG/dsl-tree3links.svg" alt="dsl tree3links">
+<img src="../source/configuration-structureIMG/dsl-tree4links.svg" alt="dsl tree4links">
 </div>
 <div class="title">Figure 6. Tree structure of a simulation experiment configuration in 3Worlds, showing the cross-links between tree nodes (NB: not all cross-links are drawn)</div>
 </div>
@@ -1256,7 +1256,7 @@ Further edits and modifications of the configuration can be made in <code>ModelM
 <div class="title">Figure 8. Options for creating a new project.</div>
 </div>
 <div class="paragraph">
-<p>Creates a new project from either a library of <strong>Templates</strong>, <strong>Tutorials</strong>, <strong>Model library</strong> or <strong>Test cases</strong> (<a href="#fig-menu-new">Figure 8</a>). You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project successfully compiles.  A sub-directory with the name and creation date will be created under <code>.3w</code>.
+<p>Creates a new project from either a library of <strong>Templates</strong>, <strong>Tutorials</strong>, <strong>Model library</strong> or <strong>Test cases</strong> (<a href="#fig-menu-new">Figure 8</a>). You will be prompted for a unique name for the project. The first letter of this name must be upper case as it will eventually be used as the name of a Java class when the project successfully compiles.  A sub-directory with the name and creation date will be created under <code>3w</code>.
 Once created, the project name and its creation date appear in the window title and the graph root node name is that entered at the prompt. <em>ModelMaker</em> will automatically compile the project and list any actions required in the <strong>message pane</strong>.</p>
 </div>
 </div>
@@ -1269,7 +1269,7 @@ Once created, the project name and its creation date appear in the window title 
 <div class="title">Figure 9. The Open project menu choice.</div>
 </div>
 <div class="paragraph">
-<p>Opens any project currently in the <code>.3w</code> directory (<a href="#fig-menu-open">Figure 9</a>). Projects are listed in alphabetical order.</p>
+<p>Opens any project currently in the <code>3w</code> directory (<a href="#fig-menu-open">Figure 9</a>). Projects are listed in alphabetical order.</p>
 </div>
 </div>
 <div class="sect5">
@@ -1299,7 +1299,7 @@ Tree-graphs with more than one root cannot be imported.
 <div class="sect5">
 <h6 id="truesave-as"><a class="anchor" href="#truesave-as"></a>Save as</h6>
 <div class="paragraph">
-<p>Saves the project under a new name in a new directory within <code>.3w</code>. If the project was linked to a Java project, the new project will maintain this link and generate a new Java file with this name.</p>
+<p>Saves the project under a new name in a new directory within <code>3w</code>. If the project was linked to a Java project, the new project will maintain this link and generate a new Java file with this name.</p>
 </div>
 </div>
 <div class="sect5">
@@ -1326,7 +1326,19 @@ Tree-graphs with more than one root cannot be imported.
 <div class="sect5">
 <h6 id="trueimport-snippets"><a class="anchor" href="#trueimport-snippets"></a>Import snippets</h6>
 <div class="paragraph">
-<p>Enabled when a project is linked to a Java project. This option imports method code from Java into any <code>snippet</code> nodes in the specifications (<code>Function</code> and <code>InitFunction</code> and the <code>importSnippet</code> property of the specification root node. NOTE: currently, importing code containing double quotes is not supported.</p>
+<p>Enabled when a project is linked to a Java project. This option imports method code from Java into any <code>snippet</code> properties in the specifications (<code>functionSnippet</code> of the <code>Function</code> and <code>InitFunction</code> nodes and the <code>importSnippet</code> property of the specification root node).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+currently, importing code containing double quotes is not supported.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect5">
@@ -1338,7 +1350,7 @@ Tree-graphs with more than one root cannot be imported.
 <div class="sect5">
 <h6 id="truelink-to-ide"><a class="anchor" href="#truelink-to-ide"></a>Link to IDE</h6>
 <div class="paragraph">
-<p>Allows connecting to or disconnecting from an external Java project via in an Integrated Development Environment. When connecting to a Java project, the java project must have imported <code>.3w/tw-dep.jar</code> as an external jar to its class path (<a href="#truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds">Section 2.4.1</a>). Upon first connecting to a Java project, a Java class called <code>UserCodeRunner.java</code> is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the <em>Eclipse</em> IDE is supported for this purpose (<a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a>).</p>
+<p>Allows connecting to or disconnecting from an external Java project via in an Integrated Development Environment. When connecting to a Java project, the java project must have imported <code>3w/tw.jar</code> as an external jar to its class path (<a href="#truesetting-up-the-eclipse-integrated-development-environment-ide-for-3worlds">Section 2.4.1</a>). Upon first connecting to a Java project, a Java class called <code>UserCodeRunner.java</code> is added to the default package. Use this as a main class to debug your model code. If the specifications are valid, additional Java classes are created. One of these has the same name as the 3Worlds project. Edit this file in an Integrated Development Environment (IDE) to begin developing your model. At the time of writing, only the <em>Eclipse</em> IDE is supported for this purpose (<a href="#truesetting-up-a-java-development-environment-for-the-user-code">Section 2.4</a>).</p>
 </div>
 <div class="paragraph">
 <p>If the creation times of Java source files and their associated class files become inconsistent, a message to this effect will appear in the <strong>message pane</strong>. In such cases, refresh or clean the Java project.</p>
@@ -1819,13 +1831,26 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*atomic*|*assemblage*</code> {1}</dt>
 <dd>
-<p>This link to either the predefined category <code>*atomic*</code> or <code>*assemblage*</code> is required in all models. Only if the system is very simple (no components, no groups, no life cycles) should <code>*atomic*</code> be selected. It means the system has no further subdivision. In any other case (i.e. as long as there is a structure sub-tree), the system should be an <code>*assemblage*</code>. Assemblages have three automatic variables: the system size (number of components) <code>count</code>, the number of new components added during last time step <code>nAdded</code>, and the number of components deleted during the last time step <code>nRemoved</code>.</p>
+<p>This link to either the predefined category <code>*atomic*</code> or <code>*assemblage*</code> is required in all models. Only if the system is very simple (no components, no groups, no life cycles) should <code>*atomic*</code> be selected. It means the system has no further subdivision. In any other case (i.e. as long as there is a structure sub-tree), the system should be an <code>*assemblage*</code>. Assemblages have three automatic variables: the group size (number of components) <code>count</code>, the number of new components added during last <a href="#truecausality">causal</a> step <code>nAdded</code>, and the number of components deleted during the causal step <code>nRemoved</code>.</p>
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*permanent*</code> is required in all models. It specifies that the system is going to stay forever (permanent) during a simulation.</p>
 </dd>
+<dt class="hdlist1"><code>loadFrom &#8594; dataSource:</code> {0..*}</dt>
+<dd>
+<p>These optional links refer to <a href="#trueinputs-datasource">data sources</a> from which to read initial values of system-level <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> (<a href="#trueimport-data-from-external-sources">Section 3.5.5</a>).</p>
+</dd>
 </dl>
+</div>
+<div class="paragraph">
+<p><em>Optional child</em> for <code>system</code>:</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/system/<strong>initFunction</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</p>
+</div>
+<div class="paragraph">
+<p>This node declares a <a href="#truefunction">function</a> of type <code>SetInitialState</code> to set or transform the initial values of system-level <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> (<a href="#truedata-input-methods">Section 3.5.2</a>).</p>
 </div>
 </div>
 <div class="sect3">
@@ -1856,19 +1881,19 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <dl>
 <dt class="hdlist1"><em>drivers</em></dt>
 <dd>
-<p>are <em>independent</em> variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (<em>e.g.</em> biomass, age, sex, social status&#8230;&#8203;). They will vary during a simulation. 'Independent' means that these variables cannot be computed from each other within a simulation step, they also depend on their previous step values. For example, if some category is described by drivers <em>age</em> and <em>biomass</em>, neither of them can be computed from the other: <em>age</em> is computed from its previous value by adding the time step duration; <em>biomass</em> is computed in some other way probably involving its previous value. The values of drivers are carried over from a simulation step to the next, i.e. they <em>drive</em> the dynamics of the system.</p>
+<p>are <em>independent</em> variables (numbers, text, logical values) that characterize the state of a system component at an instant in time (<em>e.g.</em> biomass, age, sex, social status&#8230;&#8203;). They will vary during a simulation. 'Independent' means that these variables cannot be computed from each other within a simulation step, they also depend on their previous <a href="#truecausality"><em>causal</em></a> step values. For example, if some category is described by drivers <em>age</em> and <em>biomass</em>, neither of them can be computed from the other: <em>age</em> is computed from its previous value by adding the time step duration; <em>biomass</em> is computed in some other way probably involving its previous value. The values of drivers are carried over from a simulation step to the next, i.e. they <em>drive</em> the dynamics of the system.</p>
 </dd>
 <dt class="hdlist1"><em>decorators</em></dt>
 <dd>
-<p>are <em>dependent</em> variables that are computed from drivers and other decorators within a simulation step. For example, <em>leaf area</em> could be computed as some constant times <em>biomass</em>: its value is completely determined by the value of <em>biomass</em>. As such, decorators are not independent from the drivers and are used only for convenience in computations or output display. They are not carried over from a simulation step to the next, they are always automatically reset to zero at the end of each step.</p>
+<p>are <em>dependent</em> variables that are computed from drivers and other decorators within a simulation step. For example, <em>leaf area</em> could be computed as some constant times <em>biomass</em>: its value is completely determined by the value of <em>biomass</em>. As such, decorators are not independent from the drivers and are used only for convenience in computations or output display. They are not carried over from a simulation step to the next, they are always automatically reset to zero at the end of each <a href="#truecausality"><em>time</em></a> step.</p>
 </dd>
 <dt class="hdlist1"><em>constants</em></dt>
 <dd>
-<p>are values (numbers, text, logical values) that do not change during a simulation. For example, <em>sex</em> or <em>number of legs</em> are not going to change during the lifetime of animal. They are set at birth and never changed after.</p>
+<p>are values (numbers, text, logical values) that do not change during a simulation. For example, <em>sex</em> or <em>number of legs</em> are not going to change during the lifetime of an animal. They are set at birth and never changed after.</p>
 </dd>
 <dt class="hdlist1"><em>automatic variables</em></dt>
 <dd>
-<p>are values internally managed by 3Worlds and only available as read-only values for computation. For components representing individuals, these are <em>age</em> and <em>birth date</em>. For components representing populations, these are <em>number of individualls</em>, <em>number of births</em>, <em>number of deaths</em>.</p>
+<p>are values internally managed by 3Worlds and available <em>read-only</em> for computation. For components representing individuals, these are <em>age</em> and <em>birth date</em>. For components representing populations, these are <em>number of individuals</em>, <em>number of newly created individuals</em>, <em>number of deleted individuals</em>.</p>
 </dd>
 </dl>
 </div>
@@ -1904,7 +1929,7 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <p><code>/3worlds/system/structure/<strong>categorySet</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p>Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can&#8217;t be both. For this reason, <em>exclusive</em> categories are grouped into <code><strong>categorySets</strong></code>. A <code>categorySet</code> is <em>a set of <strong>mutually exclusive</strong> categories</em>. Categories can be nested, by simply defining a <code>categorySet</code> as a child of a <code>category</code>:</p>
+<p>Some categories must be exclusive of each other: for example, an ecological entity is either a plant or an animal, but can&#8217;t be both. For this reason, <em>exclusive</em> categories are grouped into <code><strong>categorySets</strong></code>. A <code>categorySet</code> is <em>a set of <strong>mutually exclusive</strong> categories</em> (mathematically, a <a href="https://en.wikipedia.org/wiki/Partition_of_a_set"><em>partition</em></a>). Categories can be nested, by simply defining a <code>categorySet</code> as a child of a <code>category</code>:</p>
 </div>
 <div class="paragraph">
 <p><code>&#8230;&#8203;/category/<strong>categorySet</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
@@ -1916,7 +1941,7 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <p><code>/3worlds/system/structure/<strong>relationType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p>A <code><strong>relationType</strong></code> is just a name representing a meaningful link between two kinds of categories. It is specified by giving it a name and cross-linking it to the relevant categories with <code>fromCategory</code> and <code>toCategory</code> cross-links. Note that a <code>relationType</code> can link more than one 'from' categories to more than one 'to' categories if required. <code>RelationType</code>s are used to implement specific processes acting on ecological entities (for example, a predation process).</p>
+<p>A <code><strong>relationType</strong></code> is just a name representing a meaningful link between two kinds of categories. It is specified by giving it a name and cross-linking it to the relevant categories with <code>fromCategory</code> and <code>toCategory</code> cross-links. Note that a <code>relationType</code> can link more than one 'from' categories to more than one 'to' categories if required. <code>RelationType</code>s are used to implement specific processes acting on ecological entities (for example, a predation process). Notice that relations are <em>directed</em> (i.e., they have a <em>start</em> and an <em>end</em> with potentially different roles).</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>relationType</code>:</p>
@@ -2000,7 +2025,7 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <p><code>/3worlds/system/structure/<strong>componentType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p>3Worlds simulates a <em>system</em> made of <em>system components</em>. These are the things which are instantiated at run time, hold descriptors, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach <em>categories</em> to <em>system components</em>. The rules prevailing to build up category hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example, we could define a system as belonging to the <em>plant</em> and <em>tree</em> categories, but not to the <em>animal</em> and <em>tree</em> categories.</p>
+<p>3Worlds simulates a <em>system</em> made of <em>system components</em>. These are the things which are instantiated at run time, hold <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a>, and are dynamically changed over the time course of a simulation. When setting up a simulation, one must attach <em>categories</em> to <em>system components</em>. The rules prevailing to build up category hierarchies mean that a system can belong to a number of non-exclusive categories, as long as the exclusion and nesting rules are respected. For example (<a href="#fig-category-example">Figure 19</a>), we could define a system as belonging to the <em>plant</em> and <em>tree</em> categories, but not to the <em>animal</em> and <em>tree</em> categories.</p>
 </div>
 <div class="paragraph">
 <p><em>Cross-links</em> for <code>componentType</code>:</p>
@@ -2009,7 +2034,7 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <dl>
 <dt class="hdlist1"><code>belongsTo &#8594; category:&lt;<em>name</em>&gt;</code> {1..*}</dt>
 <dd>
-<p>This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the <em>C3</em> category automatically implies the system component is also a <em>plant</em>).The categories targets of these links must be specific to component types, i.e. no <code>groupType</code> or <code>lifeCycleType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
+<p>This link tells to which categories a system component type belongs. The categories must not belong to the same category set. If there are nested categories, membership is inherited (e.g. in the previous example, belonging to the <em>C3</em> category automatically implies the system component is also a <em>plant</em>). The categories targets of these links must be specific to component types, i.e. no <code>groupType</code> or <code>lifeCycleType</code> should refer (<code>belongTo</code> cross-link) to any of them.</p>
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*component*</code> {1}</dt>
 <dd>
@@ -2023,7 +2048,20 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <dd>
 <p>This link to either of the predefined category <code>*ephemeral*</code> or <code>*permanent*</code> is required in all models. It specifies if components of this <code>componentType</code> are going to stay forever (permanent) or can be created and deleted (ephemeral) during a simulation. Ephemeral components have two automatic variables, <code>birthDate</code> and <code>age</code>.</p>
 </dd>
+<dt class="hdlist1"><code>loadFrom &#8594; dataSource:</code> {0..*}</dt>
+<dd>
+<p>These optional links refer to <a href="#trueinputs-datasource">data sources</a> from which to read initial values of component-level <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> (<a href="#trueimport-data-from-external-sources">Section 3.5.5</a>).</p>
+</dd>
 </dl>
+</div>
+<div class="paragraph">
+<p><em>Optional child</em> for <code>componentType</code>:</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/componentType/<strong>initFunction</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</p>
+</div>
+<div class="paragraph">
+<p>This node declares a <a href="#truefunction">function</a> of type <code>SetInitialState</code> to set or transform the initial values of component-level <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> (<a href="#truedata-input-methods">Section 3.5.2</a>).</p>
 </div>
 </div>
 <div class="sect5">
@@ -2041,7 +2079,7 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <p><code>&#8230;&#8203;/groupType/<strong>componentType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
-<p><em>Cross-links</em> for <code>componentType</code>:</p>
+<p><em>Cross-links</em> for <code>groupType</code>:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -2055,13 +2093,26 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*assemblage*</code> {1}</dt>
 <dd>
-<p>This link to the predefined category <code>*assemblage*</code> is required in all models. It means that a group is a population of components. Assemblages have three automatic variables: the group size (number of components) <code>count</code>, the number of new components added during last time step <code>nAdded</code>, and the number of components deleted during the last time step <code>nRemoved</code>.</p>
+<p>This link to the predefined category <code>*assemblage*</code> is required in all models. It means that a group is a population of components. Assemblages have three automatic variables: the group size (number of components) <code>count</code>, the number of new components added during last <a href="#truecausality">causal</a> step <code>nAdded</code>, and the number of components deleted during the causal step <code>nRemoved</code>.</p>
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*permanent*</code> is required in all models. It means that groups will stay forever in the system, even if all components of this groups are gone.</p>
 </dd>
+<dt class="hdlist1"><code>loadFrom &#8594; dataSource:</code> {0..*}</dt>
+<dd>
+<p>These optional links refer to <a href="#trueinputs-datasource">data sources</a> from which to read initial values of group-level <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> (<a href="#trueimport-data-from-external-sources">Section 3.5.5</a>).</p>
+</dd>
 </dl>
+</div>
+<div class="paragraph">
+<p><em>Optional child</em> for <code>groupType</code>:</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/groupType/<strong>initFunction</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</p>
+</div>
+<div class="paragraph">
+<p>This node declares a <a href="#truefunction">function</a> of type <code>SetInitialState</code> to set or transform the initial values of group-level <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> (<a href="#truedata-input-methods">Section 3.5.2</a>).</p>
 </div>
 </div>
 <div class="sect5">
@@ -2093,7 +2144,7 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <p><code>recruit</code> and <code>produce</code> nodes linking categories within the above <code>categorySet</code> to describe possible recruitment and reproduction transitions;</p>
 </li>
 <li>
-<p>optionnally, <code>categories</code> can be linked to a <code>lifeCycle</code> if one wants to attach descriptors to the life cycle.</p>
+<p>optionnally, <code>categories</code> can be linked to a <code>lifeCycleType</code> if one wants to attach <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> to the life cycle.</p>
 </li>
 </ol>
 </div>
@@ -2104,7 +2155,7 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 <p><code>&#8230;&#8203;/lifeCycleType/<strong>groupType</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1..*}</p>
 </div>
 <div class="paragraph">
-<p><em>Cross-links for</em> <code>lifeCycle</code></p>
+<p><em>Cross-links for</em> <code>lifeCycleType</code></p>
 </div>
 <div class="dlist">
 <dl>
@@ -2122,19 +2173,32 @@ Use 'Refresh` in the IDE to keep <em>ModelMaker</em> and the Java project synchr
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*assemblage*</code> {1}</dt>
 <dd>
-<p>This link to the predefined category <code>*assemblage*</code> is required in all models. It means that a life cycle is a population of components. Assemblages have three automatic variables: size (number of components) <code>count</code>, the number of new components added during last time step <code>nAdded</code>, and the number of components deleted during the last time step <code>nRemoved</code>.</p>
+<p>This link to the predefined category <code>*assemblage*</code> is required in all models. It means that a life cycle is a population of components. Assemblages have three automatic variables: the group size (number of components) <code>count</code>, the number of new components added during last <a href="#truecausality">causal</a> step <code>nAdded</code>, and the number of components deleted during the causal step <code>nRemoved</code>.</p>
 </dd>
 <dt class="hdlist1"><code>belongsTo &#8594; category:*permanent*</code> {1}</dt>
 <dd>
 <p>This link to the predefined category <code>*permanent*</code> is required in all models. It means that life cycles will stay forever in the system.</p>
 </dd>
+<dt class="hdlist1"><code>loadFrom &#8594; dataSource:</code> {0..*}</dt>
+<dd>
+<p>These optional links refer to <a href="#trueinputs-datasource">data sources</a> from which to read initial values of life cycle-level <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> (<a href="#trueimport-data-from-external-sources">Section 3.5.5</a>).</p>
+</dd>
 </dl>
+</div>
+<div class="paragraph">
+<p><em>Optional child</em> for <code>lifeCycleType</code>:</p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/structure/lifeCycleType/<strong>initFunction</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</p>
+</div>
+<div class="paragraph">
+<p>This node declares a <a href="#truefunction">function</a> of type <code>SetInitialState</code> to set or transform the initial values of life cycle-level <a href="#truethe-complex-system-as-a-dynamic-graph">descriptors</a> (<a href="#truedata-input-methods">Section 3.5.2</a>).</p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="truerecruitment"><a class="anchor" href="#truerecruitment"></a>Recruitment</h6>
 <div class="paragraph">
-<p><code>/3worlds/system/dynamics/lifeCycle/<strong>recruit</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/system/structure/lifeCycle/<strong>recruit</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>This node specifies that two categories of the life cycle <code>categorySet</code> are linked by a <em>recruitment</em> process.</p>
@@ -2178,7 +2242,7 @@ multiple targets are possible from the same category, i.e. a component of a cate
 <div class="sect5">
 <h6 id="truereproduction"><a class="anchor" href="#truereproduction"></a>Reproduction</h6>
 <div class="paragraph">
-<p><code>/3worlds/system/dynamics/lifeCycle/<strong>produce</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/system/structure/lifeCycle/<strong>produce</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>This node specifies that two categories of the life cycle <code>categorySet</code> are linked by a <em>reproduction</em> process.</p>
@@ -2270,7 +2334,7 @@ Technically, space could just be treated as a component related to other compone
 <div class="sect5">
 <h6 id="truespace-and-spatial-indexing"><a class="anchor" href="#truespace-and-spatial-indexing"></a>Space and spatial indexing</h6>
 <div class="paragraph">
-<p><code>/3worlds/system/dynamics/<strong>space</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
+<p><code>/3worlds/system/structure/<strong>space</strong>:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</p>
 </div>
 <div class="paragraph">
 <p>This defines a space, i.e. a container where system components can be located by their <em>spatial coordinates</em> and where distances can be computed. More than one space can coexist in 3Worlds, applying to possibly different types of components and processes. Spaces can be of 1 to 3 dimensions (this is set by choosing a space type).</p>
@@ -2660,64 +2724,6 @@ Technically, space could just be treated as a component related to other compone
 </div>
 <div class="paragraph">
 <p>Use this node to instantiate a life cycle applying to a set of groups.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="truesetting-decriptor-values"><a class="anchor" href="#truesetting-decriptor-values"></a>Setting decriptor values</h6>
-<div class="paragraph">
-<p>A first method to set descriptor values is to define a <code>setInitialState</code> function as a child of the <code>componentType</code>, <code>groupType</code>, <code>lifeCycleType</code> or <code>system</code> nodes. Such functions are only called once, at the beginning of a simulation, to setup the <em>initial state</em> of a model. In a <code>setInitialState</code> function, only drivers and constants can be set (it is the only place where constants can be set).</p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/componentType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/groupType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/lifeCycleType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/system/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
-</div>
-<div class="paragraph">
-<p><em>Properties for</em> <code>initFunction</code>:</p>
-</div>
-<div class="hdlist">
-<table>
-<tr>
-<td class="hdlist1">
-<code>type</code>
-</td>
-<td class="hdlist2">
-<p>The type of function used: only <a href="#truefunction"><code>setInitialState</code></a> is possible.</p>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><em>Cross-links for</em> <code>initFunction</code>:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
-<dd>
-<p>Points to the <a href="#truerandom-number-channels">random number generator channel</a> to use in this function. If unset, the default random number channel is used.</p>
-</dd>
-</dl>
-</div>
-<div class="paragraph">
-<p>A second method to set descriptor values is to import data from an external source. This is done by defining a  <a href="#trueinputs-datasource"><code>dataSource</code></a> and linking a <code>component</code>, <code>group</code>, <code>lifeCycle</code> or <code>system</code> to it:</p>
-</div>
-<div class="paragraph">
-<p><em>Cross-links for</em> <code>component</code>, <code>group</code>, <code>lifeCycle</code>, and <code>system</code></p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code>loadFrom &#8594; dataSource:&lt;<em>name</em>&gt;</code> {0..1}</dt>
-<dd>
-<p>This link tells where to read the initial values of the descriptors from.</p>
-</dd>
-</dl>
 </div>
 </div>
 </div>
@@ -6497,6 +6503,9 @@ Forcing data
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Data for <em>parameters</em> and <em>initial community</em> are directly used to instantiate components and fill their descriptors with values. <em>Forcing data</em> must be loaded into some initial data structure (probably most often a <code>DoubleTable</code>, cf. <a href="#truetable">Section 3.3.5.2.2</a>, as a constant in the <code>system</code> instance), made accessible to some user-defined function that will read its content as simulation progresses.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="truedata-input-methods"><a class="anchor" href="#truedata-input-methods"></a>3.5.2. Data input methods</h4>
@@ -6506,28 +6515,96 @@ Forcing data
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Entering parameter and initial driver values in the model configuration tree. This is useful only for small quantities of data, with model requiring only a few parameters, or during the initial building/testing file of a model. Typically when one does not want to bother with formatting an input file with two parameter values. This is specified using <code>initialValues</code> nodes.</p>
+<p>Entering parameter and initial driver values in the model configuration tree. This is useful only for small quantities of data, (i) with models requiring only a few parameters, or (ii) during the initial building/testing file of a model; typically when one does not want to bother with formatting an input file with only two parameter values. This is specified using <code>initialValues</code> nodes as children of <code>system</code>, <code>componentType</code>, <code>groupType</code> or <code>lifeCycleType</code>, depending on where the data should go (<a href="#truethe-system-node">Section 3.3.2</a> and <a href="#truethe-systemstructure-node">Section 3.3.3</a>).</p>
 </li>
 <li>
-<p>Loading data from an external source, typically, one or more files. This is recommended whenever a large number of initial values and items must be used. This is specified using <code>loadFrom</code> cross-links to <code>dataSource</code> nodes (<a href="#truethe-experiment-node">Section 3.3.6</a>).</p>
+<p>Loading data from an external source, typically, one or more files. This is recommended whenever a large number of initial values and items must be used. This is specified using <code>loadFrom</code> cross-links to <code>dataSource</code> nodes (<a href="#trueinputs-datasource">Section 3.3.6.4.1</a>).</p>
 </li>
 <li>
-<p>Using a user-defined initialiser function to set or modify initial values. This complements both points above and enables to compute transformations of initial drivers or constants prior to run the simulation. This is specified using the <code>SetInitialState</code> type (<a href="#truefunction">Section 3.3.4.2.2</a>).</p>
+<p>Using a user-defined initialiser function to set or modify initial values. This complements both points above and enables to compute transformations of initial drivers or constants prior to run the simulation. This is specified using <code>initFunction</code> nodes of the <code>SetInitialState</code> type (<a href="#truefunction">Section 3.3.4.2.2</a>) as children of <code>system</code>, <code>componentType</code>, <code>groupType</code> or <code>lifeCycleType</code>, depending on where the data should go (<a href="#truethe-system-node">Section 3.3.2</a> and <a href="#truethe-systemstructure-node">Section 3.3.3</a>).</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
 <p>These three methods can be used together within the same model. However, since an initialiser function must be run on an existing instance of a component, it can only be used (i) on the <code>system</code> node, which is always instantiated and unique, or (ii) as a complement to the two other methods which can specify the component instances to create.</p>
 </div>
+<div class="sect4">
+<h5 id="truethe-loadfrom-cross-link"><a class="anchor" href="#truethe-loadfrom-cross-link"></a>The <em>loadFrom</em> cross-link</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>loadFrom &#8594; dataSource:&lt;<em>name</em>&gt;</code> {0..*}</dt>
+<dd>
+<p>A <code>dataSource</code> node specifies the information required to access some data source: for example, a file name, a file format, and all other requested information that the java code just needs to read the file.</p>
+</dd>
+</dl>
+</div>
 <div class="paragraph">
-<p>Data for <em>parameters</em> and <em>initial community</em> are directly used to instantiate components and fill their descriptors with values. <em>Forcing data</em> must be loaded into some initial data structure (probably most often a <code>DoubleTable</code>, cf. <a href="#truetable">Section 3.3.5.2.2</a>, as a constant in the <code>system</code> instance), made accessible to some user-defined function that will read its content as simulation progresses.</p>
+<p><strong>TODO: Flaw here ! some dataSource properties must be moved to the loadFrom edge???</strong></p>
+</div>
+<div class="paragraph">
+<p>A <code>loadFrom</code> cross-link links the <code>system</code>, a <code>componentType</code>, <code>groupType</code> or <code>lifeCycleType</code> a to a data source.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truethe-initialvalues-node"><a class="anchor" href="#truethe-initialvalues-node"></a>The <em>initialValues</em> node</h5>
+<div class="paragraph">
+<p><strong>[TODO]</strong></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="truethe-initfunction-node"><a class="anchor" href="#truethe-initfunction-node"></a>The <em>initFunction</em> node</h5>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/componentType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/groupType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/lifeCycleType/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/system/<strong>initFunction</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>initFunction</code> :</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>type</code>
+</td>
+<td class="hdlist2">
+<p>The type of function used: only <a href="#truefunction"><code>setInitialState</code></a> is possible.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>functionSnippet</code>
+</td>
+<td class="hdlist2">
+<p><strong>[TODO]</strong></p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Cross-links for</em> <code>initFunction</code>:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>useRNG &#8594; rng:&lt;<em>name</em>&gt;</code> {0..1}</dt>
+<dd>
+<p>Points to the <a href="#truerandom-number-channels">random number generator channel</a> to use in this function. If unset, the default random number channel is used.</p>
+</dd>
+</dl>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="trueconsistency-of-data-files-with-the-model-component-hierarchy"><a class="anchor" href="#trueconsistency-of-data-files-with-the-model-component-hierarchy"></a>3.5.3. Consistency of data files with the model component hierarchy</h4>
 <div class="paragraph">
-<p>The simulated system is a hierarchy (<a href="#truethe-specification-of-ecological-entities-system-components">Section 3.3.3.2</a>) with up to 4 levels: arena &gt; life cycle &gt; group &gt; component.
-<a href="#system-howto">How is the simulated system implemented?</a></p>
+<p>The simulated system is a hierarchy with up to 4 levels: arena &gt; life cycle &gt; group &gt; component (cf. Box <a href="#system-howto">How is the simulated system implemented?</a>). As a consequence, input data files must reflect this hierarchy.</p>
 </div>
 </div>
 <div class="sect3">
@@ -6645,7 +6722,7 @@ them from edges that represent <em>parent-child</em> relationships.</p>
 <div class="sect3">
 <h4 id="trueinstallation"><a class="anchor" href="#trueinstallation"></a>5.1.2. Installation</h4>
 <div class="paragraph">
-<p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>.3w</code> in your home directory and copy <code>tw-dep.jar</code> to it.
+<p>Installing <em>ModelMaker</em> is very simple: create a directory called <code>3w</code> in your home directory and copy <code>tw.jar</code> to it.
 Then copy <code>modelMaker.jar</code> to your home directory. To start <em>modelMaker</em>, open a terminal and type:
 <code>java -jar modelMaker.jar</code>. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling
 (including upper-case letters) and that the file is executable using the file manager of your operating system.</p>
@@ -6748,9 +6825,10 @@ display in one list.</p>
 <div class="sect4">
 <h5 id="truedirectory-structure"><a class="anchor" href="#truedirectory-structure"></a>Directory structure</h5>
 <div class="paragraph">
-<p>All projects are located within the 3Worlds root directory called <code>.3w</code>. The dot indicates a hidden directory.
-To see these files you may need to do what ever is required by your operating system to show hidden files
-(<a href="#fig-tut1-dir">Figure 27</a>).</p>
+<p>All projects are located within the 3Worlds root directory called <code>3w</code>.</p>
+</div>
+<div class="paragraph">
+<p>(<a href="#fig-tut1-dir">Figure 27</a>).</p>
 </div>
 <div id="fig-tut1-dir" class="imageblock right text-left thumb">
 <div class="content">
@@ -6759,11 +6837,10 @@ To see these files you may need to do what ever is required by your operating sy
 <div class="title">Figure 27. The initial directory structure <br/> after creating a new project from the 'Blank' <br/> template. Later, after all tasks have been <br/> completed and the model is deployed, another <br/> sub-directory is added for run-time files.</div>
 </div>
 <div class="paragraph">
-<p>The <code>.3w</code> directory contains a Jar file called <code>tw-dep.jar</code> (<a href="#fig-tut1-dir">Figure 27</a>). This file contains all dependent
-libraries for <em>3Worlds</em>. It&#8217;s a good idea to keep a backup of this file.</p>
+<p>The <code>3w</code> directory contains a Jar file called <code>tw.jar</code> (<a href="#fig-tut1-dir">Figure 27</a>). This file contains all dependent libraries for <em>3Worlds</em>. It&#8217;s a good idea to keep a backup of this file.</p>
 </div>
 <div class="paragraph">
-<p>Within <code>.3w</code> there is now a sub-directory called something like <code>project_Tut1_2020-06-07-01-47-44-708</code>. Every project
+<p>Within <code>3w</code> there is now a sub-directory called something like <code>project_Tut1_2020-06-07-01-47-44-708</code>. Every project
 directory begins with the key word <code>project</code>, followed by the name of the project you entered (<code>Tut1</code> in this case)
 and the creation date and time. The purpose of naming project directories in this way is to make it almost impossible
 to inadvertently overwrite a project.</p>
@@ -6808,8 +6885,8 @@ Editing any project graph files (*.utg) with a text editor is likely to corrupt 
 <div class="paragraph">
 <p>On the other hand, you can delete project directories at any time you wish. If you accidentally
 delete the project of a currently open session, it will be recreated automatically by
-<em>ModelMaker</em> (apart from the <em>undo-redo</em> history). However, if you delete the entire <code>.3w</code> directory
-you will have to restore <code>tw-dep.jar</code> from backup.</p>
+<em>ModelMaker</em> (apart from the <em>undo-redo</em> history). However, if you delete the entire <code>3w</code> directory
+you will have to restore <code>tw.jar</code> from backup.</p>
 </div>
 </div>
 </div>
@@ -7373,7 +7450,7 @@ models. This file can be generated any time from <em>ModelRunner</em>. When you&
 a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <a href="#fig-dir-post-run">Figure 36</a>:</p>
 </div>
 <div class="paragraph">
-<p><code>~/.3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt</code>.</p>
+<p><code>~/3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt</code>.</p>
 </div>
 <div class="paragraph">
 <p>Most word processors can read this standard format, native to LibreOffice, including Microsoft Word.</p>
@@ -7485,7 +7562,7 @@ just the relevant <em>parent-child</em> relationships make useful additions to t
 <p>Under the <code>Libraries</code> tab, highlight <code>Classpath</code> and  click the <code>Add External JARs&#8230;&#8203;</code> button to the right.</p>
 </li>
 <li>
-<p>Navigate to the .3w directory and select <code>tw-dep.jar</code>.</p>
+<p>Navigate to the <code>3w</code> directory and select <code>tw.jar</code>.</p>
 </li>
 <li>
 <p>Click <code>Apply and close</code>.</p>
@@ -9706,7 +9783,7 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 <div id="footer">
 <div id="footer-text">
 Version 1.7<br>
-Last updated 2022-02-03 17:26:24 +0100
+Last updated 2022-03-09 10:40:15 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

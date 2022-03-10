@@ -17,17 +17,57 @@ Forcing data:: Sometimes a simulation requires that data be fed in during its t
 +
 __Examples__: a series of metorological data used to force a fire spread or a vegetation growth model.
 
+Data for _parameters_ and _initial community_ are directly used to instantiate components and fill their descriptors with values. _Forcing data_ must be loaded into some initial data structure (probably most often a `DoubleTable`, cf. <<truetable>>, as a constant in the `system` instance), made accessible to some user-defined function that will read its content as simulation progresses.
+
 ==== Data input methods
 
 There are three different ways of feeding `ModelRunner` with data to start a simulation experiment (cf. <<truethe-setup-of-an-initial-state-for-a-simulation>> for the specification of these):
 
-. Entering parameter and initial driver values in the model configuration tree. This is useful only for small quantities of data, with model requiring only a few parameters, or during the initial building/testing file of a model. Typically when one does not want to bother with formatting an input file with two parameter values. This is specified using `initialValues` nodes.
-. Loading data from an external source, typically, one or more files. This is recommended whenever a large number of initial values and items must be used. This is specified using `loadFrom` cross-links to `dataSource` nodes (<<truethe-experiment-node>>).
-. Using a user-defined initialiser function to set or modify initial values. This complements both points above and enables to compute transformations of initial drivers or constants prior to run the simulation. This is specified using the `SetInitialState` type (<<truefunction>>). 
+. Entering parameter and initial driver values in the model configuration tree. This is useful only for small quantities of data, (i) with models requiring only a few parameters, or (ii) during the initial building/testing file of a model; typically when one does not want to bother with formatting an input file with only two parameter values. This is specified using `initialValues` nodes as children of `system`, `componentType`, `groupType` or `lifeCycleType`, depending on where the data should go (<<truethe-system-node>> and <<configuration-ecosystem-structure.adoc#truethe-systemstructure-node>>).
+. Loading data from an external source, typically, one or more files. This is recommended whenever a large number of initial values and items must be used. This is specified using `loadFrom` cross-links to `dataSource` nodes (<<configuration-experiment.adoc#trueinputs-datasource>>).
+. Using a user-defined initialiser function to set or modify initial values. This complements both points above and enables to compute transformations of initial drivers or constants prior to run the simulation. This is specified using `initFunction` nodes of the `SetInitialState` type (<<configuration-ecosystem-dynamics.adoc#truefunction>>) as children of `system`, `componentType`, `groupType` or `lifeCycleType`, depending on where the data should go (<<truethe-system-node>> and <<configuration-ecosystem-structure.adoc#truethe-systemstructure-node>>). 
 
 These three methods can be used together within the same model. However, since an initialiser function must be run on an existing instance of a component, it can only be used (i) on the `system` node, which is always instantiated and unique, or (ii) as a complement to the two other methods which can specify the component instances to create.
 
-Data for _parameters_ and _initial community_ are directly used to instantiate components and fill their descriptors with values. _Forcing data_ must be loaded into some initial data structure (probably most often a `DoubleTable`, cf. <<truetable>>, as a constant in the `system` instance), made accessible to some user-defined function that will read its content as simulation progresses.
+
+===== The _loadFrom_ cross-link
+
+`loadFrom -> dataSource:<__name__>` {0..*}::
+
+A `dataSource` node specifies the information required to access some data source: for example, a file name, a file format, and all other requested information that the java code just needs to read the file.
+
+**TODO: Flaw here ! some dataSource properties must be moved to the loadFrom edge???**
+
+A `loadFrom` cross-link links the `system`, a `componentType`, `groupType` or `lifeCycleType` a to a data source.
+
+===== The _initialValues_ node
+
+*[TODO]*
+
+===== The _initFunction_ node
+
+`/3worlds/.../componentType/*initFunction*:<__name__>`
+
+`/3worlds/.../groupType/*initFunction*:<__name__>`
+
+`/3worlds/.../lifeCycleType/*initFunction*:<__name__>`
+
+`/3worlds/system/*initFunction*:<__name__>`
+
+_Properties for_ `initFunction` :
+
+[horizontal]
+`type`:: The type of function used: only <<configuration-ecosystem-dynamics.adoc#truefunction,`setInitialState`>> is possible.
+
+`functionSnippet`:: *[TODO]*
+
+_Cross-links for_ `initFunction`:
+
+`useRNG -> rng:<__name__>` {0..1}::
+Points to the <<configuration-dataDefinition.adoc#truerandom-number-channels,random number generator channel>> to use in this function. If unset, the default random number channel is used.
+
+
+
 
 ==== Consistency of data files with the model component hierarchy
 

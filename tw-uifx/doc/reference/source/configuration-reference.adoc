@@ -52,10 +52,20 @@ This link tells to which categories the system node belongs. The categories must
 This link to the predefined category `\*arena*` is required in all models (<<truethe-predefined-sub-tree>>). The arena is 'the place where things happen', i.e. it describes the part of the system where components interact. If no components are modelled, then it is the system.
 
 `belongsTo -> category:*atomic*|\*assemblage*` {1}::
-This link to either the predefined category `\*atomic*` or `\*assemblage*` is required in all models. Only if the system is very simple (no components, no groups, no life cycles) should `\*atomic*` be selected. It means the system has no further subdivision. In any other case (i.e. as long as there is a structure sub-tree), the system should be an `\*assemblage*`. Assemblages have three automatic variables: the system size (number of components) `count`, the number of new components added during last time step `nAdded`, and the number of components deleted during the last time step `nRemoved`.
+This link to either the predefined category `\*atomic*` or `\*assemblage*` is required in all models. Only if the system is very simple (no components, no groups, no life cycles) should `\*atomic*` be selected. It means the system has no further subdivision. In any other case (i.e. as long as there is a structure sub-tree), the system should be an `\*assemblage*`. Assemblages have three automatic variables: the group size (number of components) `count`, the number of new components added during last <<truecausality,causal>> step `nAdded`, and the number of components deleted during the causal step `nRemoved`.
 
 `belongsTo -> category:*permanent*` {1}::
 This link to the predefined category `\*permanent*` is required in all models. It specifies that the system is going to stay forever (permanent) during a simulation.
+
+`loadFrom -> dataSource:` {0..*}::
+These optional links refer to <<trueinputs-datasource,data sources>> from which to read initial values of system-level <<truethe-complex-system-as-a-dynamic-graph,descriptors>> (<<trueimport-data-from-external-sources>>).
+
+_Optional child_ for `system`:
+
+`/3worlds/system/*initFunction*:<[underline]##__name__##>` {0..1}
+
+This node declares a <<truefunction,function>> of type `SetInitialState` to set or transform the initial values of system-level <<truethe-complex-system-as-a-dynamic-graph,descriptors>> (<<truedata-input-methods>>).
+
 
 ==== The _system/structure_ node
 
