@@ -447,8 +447,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="email2" class="email"><a href="mailto:ian.davies@anu.edu.au">ian.davies@anu.edu.au</a></span><br>
 <span id="author3" class="author">Shayne R. Flint</span><br>
 <span id="email3" class="email"><a href="mailto:shayne.flint@anu.edu.au">shayne.flint@anu.edu.au</a></span><br>
-<span id="revnumber">version 1.7,</span>
-<span id="revdate">2 June 2021</span>
+<span id="revnumber">version 1.8,</span>
+<span id="revdate">9 March 2022</span>
 <br><span id="revremark"></span>
 </div>
 <div id="toc" class="toc2">
@@ -614,7 +614,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>by <strong>Jacques Gignoux</strong>, <strong>Ian D. Davies</strong> &amp; <strong>Shayne R. Flint</strong></p>
 </div>
 <div class="paragraph">
-<p>Version: <strong>1.7</strong> (2 June 2021)</p>
+<p>Version: <strong>1.8</strong> (9 March 2022)</p>
 </div>
 </div>
 </div>
@@ -3436,10 +3436,10 @@ Forgetting to set the value of <code>searchRadius</code> is a common source of u
 <p>If it applies to a relation type, it is either (1) a double loop, possibly optimized by using a space, on components belonging to the 'from' list of categories of the relation type, and components belonging to the 'to' list of categories of the relation type (<code>SearchProcess</code> sub-class); or (2) a single loop on relations instances of its relation type (<code>RelationProcess</code> sub-class).</p>
 </div>
 <div class="paragraph">
-<p>Processes of a same timer are run in any (= unpredictable) order unless explicitly ordered by the use of the <code>dependsOn</code> cross-link.</p>
+<p>Processes of a same timer are run in any (= unpredictable) order unless explicitly ordered by the use of the <code>dependsOn</code> cross-link. Ordering processes in such ways defines <em>causal steps</em> (<a href="#truecausality">Section 1.2.5</a>) within the time steps.</p>
 </div>
 <div class="paragraph">
-<p>In short: process = (parallel) loop on components within one time step.</p>
+<p>In short: process = (parallel) loop on components (within one causal step) within one time step.</p>
 </div>
 </div>
 </div>
@@ -3694,13 +3694,10 @@ We recommend not to use snippets, or only for simple models, since it may cause 
 <p>A way to make your model code efficient is to group functions run with the same timer in a single process, so that they are called in a single pass on components instead of many in case you use different processes. This assumes that your functions can be processed in any order without consequences on the outcome - which is not always true. If you need a precise ordering of function calls because, e.g. one of them requires that a decorator variable has been set by another, then you must place your functions in different processes linked by a <code>dependsOn</code> cross-link to tell which is computed first.</p>
 </div>
 <div class="paragraph">
-<p>At the end of all process loops (of all timers activated for the current time step):</p>
+<p>At the end of a process loop (causal step, <a href="#truecausality">Section 1.2.5</a>):</p>
 </div>
 <div class="ulist">
 <ul>
-<li>
-<p>all <em>decorators</em> are set to zero;</p>
-</li>
 <li>
 <p>the values of all <em>drivers</em> are updated (i.e. values computed by functions are stored in a <em>next</em> driver data structure, which now replaces the <em>current</em> driver structure);</p>
 </li>
@@ -3708,13 +3705,23 @@ We recommend not to use snippets, or only for simple models, since it may cause 
 <p><em>components</em> to be deleted and to be created as decided by <code>-Decision</code> functions, and <em>ephemeral</em> relations to create/delete, are now inserted in the current list of components;</p>
 </li>
 <li>
-<p><em>automatic</em> descriptors (e.g. component age, population numbers) are updated;</p>
-</li>
-<li>
 <p><em>spaces</em> are updated according to changes in the component community;</p>
 </li>
 <li>
 <p><em>permanent</em> relations between components are updated.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>At the end of all process loops (time step, <a href="#truecausality">Section 1.2.5</a>):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>all <em>decorators</em> are set to zero;</p>
+</li>
+<li>
+<p><em>automatic</em> descriptors (e.g. component age, population numbers) are updated;</p>
 </li>
 </ul>
 </div>
@@ -4011,57 +4018,118 @@ A <code>dataTracker</code> node can only be specified in a <em>category process<
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>trackComponent &#8594; component:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
+<dt class="hdlist1"><code>sampleComponent &#8594; componentType:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dd>
-<p>The <code>dataTracker</code> will track all initial components pointed by these links. If these are <em>permanent</em> components, they will be tracked until the end of the simulation. If they are <em>ephemeral</em>, <strong>they must all belong to the same <em>group</em></strong> and, when they are deleted, they will be replaced by other components of the same <em>group</em> using the sampling strategy defined by the <code>samplingMode</code> and <code>sampleSize</code> properties.</p>
+<p>The <code>dataTracker</code> will track components of the <code>componentType</code> pointed by this link, following the sampling strategy specified by properties <code>samplingMode</code>, <code>sampleSize</code>, <code>statistics</code> and <code>tableStatistics</code>. <em>Permanent</em> components will be tracked until the end of the simulation. <em>Ephemeral</em> components are tracked all their life long: a new sampling is done every time a formerly tracked component is deleted. Sampling strategy can further be refined using two optional properties (see below).</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The <code>componentType</code> categories must match those of the <code>process</code> parent of the <code>dataTracker</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Optional properties for</em> <code>sampleComponent</code> <em>cross-links</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>idLifeCycle</code>
+</td>
+<td class="hdlist2">
+<p>The identifier of the <em>life cycle</em> which components are to be sampled from, as a <code>String</code>; only required if a life cycle has been specified.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>idGroup</code>
+</td>
+<td class="hdlist2">
+<p>The identifier of the <em>group</em> which components are to be sampled from,  as a <code>String</code>; only required if a group has been specified</p>
+</td>
+</tr>
+</table>
+</div>
 </dd>
-<dt class="hdlist1"><code>trackComponent &#8594; group:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dt class="hdlist1"><code>sampleGroup &#8594; groupType:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dd>
-<p>If the categories of the <code>process</code> parent of this <code>dataTracker</code> are the same as those of the <code>groupType</code> parent of the <em>group</em> pointed by this link, then the group data are tracked. If they are the same as the <code>componentType</code> of this group&#8217;s <em>components</em>, the <code>dataTracker</code> will sample the <em>group</em>  for components using the sampling strategy defined by the <code>samplingMode</code> and <code>sampleSize</code> properties.</p>
+<p>The <code>dataTracker</code> will track groups of the <code>groupType</code> pointed by this link.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The <code>groupType</code> categories must match those of the <code>process</code> parent of the <code>dataTracker</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Optional property for</em> <code>sampleGroup</code> <em>cross-links</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>idGroup</code>
+</td>
+<td class="hdlist2">
+<p>The list of identifiers of the groups to track, as a <code>StringTable</code>. If not set, all groups of the <code>groupType</code> are tracked.</p>
+</td>
+</tr>
+</table>
+</div>
 </dd>
-<dt class="hdlist1"><code>trackComponent &#8594; groupType:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dt class="hdlist1"><code>sampleLifeCycle &#8594; lifeCycleType:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dd>
-<p>The <code>dataTracker</code> will sample the <em>group type</em> pointed by this link for <em>groups</em> using the sampling strategy defined by the <code>samplingMode</code> and <code>sampleSize</code> properties.</p>
+<p>The <code>dataTracker</code> will track life cycles of the <code>lifeCycleType</code> pointed by this link.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The <code>lifeCycleType</code> categories must match those of the <code>process</code> parent of the <code>dataTracker</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><em>Optional property for</em> <code>sampleLifeCycle</code> <em>cross-links</em>:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>idLifeCycle</code>
+</td>
+<td class="hdlist2">
+<p>The list of identifiers of the life cycles to track, as a <code>StringTable</code>. If not set, all life cycles of the <code>lifeCycleType</code> are tracked.</p>
+</td>
+</tr>
+</table>
+</div>
 </dd>
-<dt class="hdlist1"><code>trackComponent &#8594; system:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
+<dt class="hdlist1"><code>sampleArena &#8594; system:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..1}</dt>
 <dd>
 <p>The <code>dataTracker</code> will only track the <em>system</em> data.</p>
 </dd>
-</dl>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The items pointed by all the <code>trackComponent</code> cross-links must belong to categories compatible with the parent <code>process</code> of the <code>dataTracker</code> (<code>process</code> <code>appliesTo</code> cross-links).
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The four <code>trackComponent</code> cross-links types cannot be used together with the same data tracker.
-</td>
-</tr>
-</table>
-</div>
-<div class="dlist">
-<dl>
 <dt class="hdlist1"><code>trackField &#8594; field:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
 <dd>
-<p>The <code>dataTracker</code> will track all fields pointed by these cross-links in all objects (<em>components</em>, <em>groups</em>, or <em>system</em>) it is sampling.</p>
+<p>The <code>dataTracker</code> will track all fields pointed by these cross-links in all objects (<em>components</em>, <em>groups</em>, <em>life cycles</em> or <em>system</em>) it is sampling.</p>
 </dd>
 <dt class="hdlist1"><code>trackTable &#8594; table:&lt;<span class="underline"><em>name</em></span>&gt;</code> {0..*}</dt>
 <dd>
-<p>The <code>dataTracker</code> will track all tables pointed by these cross-links in all objects (<em>components</em>, <em>groups</em>, or <em>system</em>) it is sampling.</p>
+<p>The <code>dataTracker</code> will track all tables pointed by these cross-links in all objects (<em>components</em>, <em>groups</em>, <em>life cycles</em> or <em>system</em>) it is sampling.</p>
 </dd>
 </dl>
 </div>
@@ -4072,7 +4140,7 @@ The four <code>trackComponent</code> cross-links types cannot be used together w
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-the trackField or trackTable cross-links must be refer to fields or tables present in the categories of the parent <code>process</code> of the <code>dataTracker</code> (<code>process</code> <code>appliesTo</code> cross-links).
+the trackField or trackTable cross-links must refer to fields or tables present in the categories of the parent <code>process</code> of the <code>dataTracker</code> (<code>process</code> <code>appliesTo</code> cross-links).
 </td>
 </tr>
 </table>
@@ -9782,8 +9850,8 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.7<br>
-Last updated 2022-03-09 10:40:15 +0100
+Version 1.8<br>
+Last updated 2022-03-14 16:23:47 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

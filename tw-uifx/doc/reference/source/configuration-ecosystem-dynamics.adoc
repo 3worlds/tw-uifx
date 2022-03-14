@@ -162,9 +162,9 @@ If the process applies to a list of categories, it is a single loop on all compo
 
 If it applies to a relation type, it is either (1) a double loop, possibly optimized by using a space, on components belonging to the 'from' list of categories of the relation type, and components belonging to the 'to' list of categories of the relation type (`SearchProcess` sub-class); or (2) a single loop on relations instances of its relation type (`RelationProcess` sub-class).
 
-Processes of a same timer are run in any (= unpredictable) order unless explicitly ordered by the use of the `dependsOn` cross-link.
+Processes of a same timer are run in any (= unpredictable) order unless explicitly ordered by the use of the `dependsOn` cross-link. Ordering processes in such ways defines _causal steps_ (<<truecausality>>) within the time steps.
 
-In short: process = (parallel) loop on components within one time step.
+In short: process = (parallel) loop on components (within one causal step) within one time step.
 ****
 
 ====== Function
@@ -221,14 +221,18 @@ The order of these computations does not matter for _driver_ descriptors, nor fo
 
 A way to make your model code efficient is to group functions run with the same timer in a single process, so that they are called in a single pass on components instead of many in case you use different processes. This assumes that your functions can be processed in any order without consequences on the outcome - which is not always true. If you need a precise ordering of function calls because, e.g. one of them requires that a decorator variable has been set by another, then you must place your functions in different processes linked by a `dependsOn` cross-link to tell which is computed first.
 
-At the end of all process loops (of all timers activated for the current time step):
+At the end of a process loop (causal step, <<truecausality>>):
 
-* all _decorators_ are set to zero;
 * the values of all _drivers_ are updated (i.e. values computed by functions are stored in a _next_ driver data structure, which now replaces the _current_ driver structure);
 * _components_ to be deleted and to be created as decided by `-Decision` functions, and _ephemeral_ relations to create/delete, are now inserted in the current list of components;
-* _automatic_ descriptors (e.g. component age, population numbers) are updated;
 * _spaces_ are updated according to changes in the component community;
 * _permanent_ relations between components are updated.
+
+
+At the end of all process loops (time step, <<truecausality>>):
+
+* all _decorators_ are set to zero;
+* _automatic_ descriptors (e.g. component age, population numbers) are updated;
 ****
 
 ====== Function consequences
@@ -283,29 +287,54 @@ _possible values_:
 
 _Cross-links for_ `dataTracker`
 
-`trackComponent -> component:<[underline]##__name__##>` {0..*}::
-The `dataTracker` will track all initial components pointed by these links. If these are _permanent_ components, they will be tracked until the end of the simulation. If they are _ephemeral_, *they must all belong to the same _group_* and, when they are deleted, they will be replaced by other components of the same _group_ using the sampling strategy defined by the `samplingMode` and `sampleSize` properties.
+`sampleComponent -> componentType:<[underline]##__name__##>` {0..1}::
+The `dataTracker` will track components of the `componentType` pointed by this link, following the sampling strategy specified by properties `samplingMode`, `sampleSize`, `statistics` and `tableStatistics`. _Permanent_ components will be tracked until the end of the simulation. _Ephemeral_ components are tracked all their life long: a new sampling is done every time a formerly tracked component is deleted. Sampling strategy can further be refined using two optional properties (see below).
 
-`trackComponent -> group:<[underline]##__name__##>` {0..1}::
-If the categories of the `process` parent of this `dataTracker` are the same as those of the `groupType` parent of the __group__ pointed by this link, then the group data are tracked. If they are the same as the `componentType` of this group's __components__, the `dataTracker` will sample the _group_  for components using the sampling strategy defined by the `samplingMode` and `sampleSize` properties. 
++
+IMPORTANT: The `componentType` categories must match those of the `process` parent of the `dataTracker`.
 
-`trackComponent -> groupType:<[underline]##__name__##>` {0..1}::
-The `dataTracker` will sample the _group type_ pointed by this link for _groups_ using the sampling strategy defined by the `samplingMode` and `sampleSize` properties.  
++
+_Optional properties for_ `sampleComponent` __cross-links__:
++
+[horizontal]
+`idLifeCycle`::: The identifier of the _life cycle_ which components are to be sampled from, as a ``String``; only required if a life cycle has been specified. 
+`idGroup`::: The identifier of the _group_ which components are to be sampled from,  as a ``String``; only required if a group has been specified
 
-`trackComponent -> system:<[underline]##__name__##>` {0..1}::
+`sampleGroup -> groupType:<[underline]##__name__##>` {0..1}::
+The `dataTracker` will track groups of the `groupType` pointed by this link. 
+
++
+IMPORTANT: The `groupType` categories must match those of the `process` parent of the `dataTracker`.
+
++
+_Optional property for_ `sampleGroup` __cross-links__:
++
+[horizontal]
+`idGroup`::: The list of identifiers of the groups to track, as a `StringTable`. If not set, all groups of the `groupType` are tracked.
+
+`sampleLifeCycle -> lifeCycleType:<[underline]##__name__##>` {0..1}::
+The `dataTracker` will track life cycles of the `lifeCycleType` pointed by this link.  
+
++
+IMPORTANT: The `lifeCycleType` categories must match those of the `process` parent of the `dataTracker`.
+
++
+_Optional property for_ `sampleLifeCycle` __cross-links__:
++
+[horizontal]
+`idLifeCycle`::: The list of identifiers of the life cycles to track, as a `StringTable`. If not set, all life cycles of the `lifeCycleType` are tracked.
+
+
+`sampleArena -> system:<[underline]##__name__##>` {0..1}::
 The `dataTracker` will only track the _system_ data.
 
-IMPORTANT: The items pointed by all the `trackComponent` cross-links must belong to categories compatible with the parent `process` of the `dataTracker` (`process` `appliesTo` cross-links).
-
-IMPORTANT: The four `trackComponent` cross-links types cannot be used together with the same data tracker.
-
 `trackField -> field:<[underline]##__name__##>` {0..*}::
-The `dataTracker` will track all fields pointed by these cross-links in all objects (__components__, __groups__, or __system__) it is sampling.
+The `dataTracker` will track all fields pointed by these cross-links in all objects (__components__, __groups__, __life cycles__ or __system__) it is sampling.
 
 `trackTable -> table:<[underline]##__name__##>` {0..*}::
-The `dataTracker` will track all tables pointed by these cross-links in all objects (__components__, __groups__, or __system__) it is sampling.
+The `dataTracker` will track all tables pointed by these cross-links in all objects (__components__, __groups__, __life cycles__ or __system__) it is sampling.
 
-IMPORTANT: the trackField or trackTable cross-links must be refer to fields or tables present in the categories of the parent `process` of the `dataTracker` (`process` `appliesTo` cross-links).
+IMPORTANT: the trackField or trackTable cross-links must refer to fields or tables present in the categories of the parent `process` of the `dataTracker` (`process` `appliesTo` cross-links).
 
 _Properties for_ `trackField` _and_ `trackTable` __cross-links__:
 
