@@ -1,0 +1,16 @@
+= The TW-UIFX library
+
+*tw-uifx* contains the  https://wiki.openjdk.java.net/display/OpenJFX[javafx]-based interface classes for _ModelMaker_ and _ModelRunner_.
+
+See the link:https://3worlds.github.io/tw-uifx/tw-uifx/javadoc/index.html[javadoc]
+
+Depends on: https://github.com/3worlds/omhtk[omhtk], 
+https://github.com/3worlds/omugi[omugi], 
+https://github.com/3worlds/rvgrid[rvgrid], 
+https://github.com/3worlds/ymuit[ymuit], 
+https://github.com/3worlds/qgraph[qgraph], 
+https://github.com/3worlds/aot[aot], 
+https://github.com/3worlds/tw-core[tw-core], 
+https://github.com/3worlds/tw-models[tw-models], 
+https://github.com/3worlds/tw-apps[tw-apps]
+
