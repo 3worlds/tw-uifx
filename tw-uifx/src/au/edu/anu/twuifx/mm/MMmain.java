@@ -77,6 +77,11 @@ public class MMmain {
 			}
 		}
 		
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		Package[] pks = cl.getDefinedPackages();
+		for (int i=0; i<pks.length; i++)
+			System.out.println(pks[i].getName());
+		
 		Application.launch(ModelMakerfx.class);
 	}
 
