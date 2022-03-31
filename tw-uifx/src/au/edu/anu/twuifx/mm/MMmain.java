@@ -29,9 +29,11 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm;
 
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twuifx.mr.MRmain;
 import fr.cnrs.iees.OmugiClassLoader;
@@ -45,6 +47,20 @@ public class MMmain {
 
 	public static void main(String[] args) {
 //		System.out.println("Current language: "+System.getProperty("user.language"));
+//		if (Jars.getRunningJarFilePath(MMmain.class) == null) {
+//			System.out.println("MM is NOT running from jar");
+//			System.out.println(Thread.currentThread().getContextClassLoader().getName());
+//		} else {
+//			System.out.println("MM is running from jar");
+//			System.out.println("BEFORE: "+Thread.currentThread().getContextClassLoader().getName());
+//			System.out.println(Jars.getRunningJarFilePath(MMmain.class));
+//			
+//			OmugiClassLoader.setJarClassLoader(new File ("/home/ian/3w/tw.jar"),new File ("/home/ian/3w/twfx.jar"));
+//			Thread.currentThread().setContextClassLoader(OmugiClassLoader.getJarClassLoader());
+//			System.out.println("AFTER: "+Thread.currentThread().getContextClassLoader().getName());
+//			leaves the classLoader NULL
+//		}
+			
 
 		// Flaky ??
 		ProjectJarGenerator.setModelRunnerClass(MRmain.class);
@@ -67,6 +83,7 @@ public class MMmain {
 			String klass = pair[0];
 			String level = pair[1];
 			try {
+//				Class<?> c = Class.forName(klass,true,OmugiClassLoader.getJarClassLoader());
 				Class<?> c = Class.forName(klass,true,OmugiClassLoader.getAppClassLoader());
 				Level lvl = Level.parse(level);
 				Logger log = Logging.getLogger(c);
@@ -76,9 +93,11 @@ public class MMmain {
 				System.exit(-1);
 			}
 		}
-		
+		//Thread.currentThread().setContextClassLoader(OmugiClassLoader.getJarClassLoader());
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		
 		Package[] pks = cl.getDefinedPackages();
+		System.out.println("#pks: "+pks.length);
 		for (int i=0; i<pks.length; i++)
 			System.out.println(pks[i].getName());
 		
