@@ -93,6 +93,7 @@ public class MMmain {
 				System.exit(-1);
 			}
 		}
+
 		//Thread.currentThread().setContextClassLoader(OmugiClassLoader.getJarClassLoader());
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		
