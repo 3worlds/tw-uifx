@@ -40,11 +40,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.Originator;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
+import au.edu.anu.twapps.mm.undo.Originator;
 import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;

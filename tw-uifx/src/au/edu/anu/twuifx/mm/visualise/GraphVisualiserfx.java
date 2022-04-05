@@ -41,7 +41,6 @@ import fr.cnrs.iees.uit.space.Distance;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.Originator;
 import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.FRLayout;
@@ -50,6 +49,7 @@ import au.edu.anu.twapps.mm.layout.LayoutType;
 import au.edu.anu.twapps.mm.layout.OTLayout;
 import au.edu.anu.twapps.mm.layout.RT1Layout;
 import au.edu.anu.twapps.mm.layout.RT2Layout;
+import au.edu.anu.twapps.mm.undo.Originator;
 import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
