@@ -29,15 +29,9 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twuifx.mr.MRmain;
 import fr.cnrs.iees.OmugiClassLoader;
@@ -50,64 +44,11 @@ public class MMmain {
 			+ "default logging level, class:level.";
 
 	public static void main(String[] args) {
-////		System.out.println("Current language: "+System.getProperty("user.language"));
-//		if (Jars.getRunningJarFilePath(MMmain.class) == null) {
-//			System.out.println("MM is NOT running from jar");
-//			System.out.println(Thread.currentThread().getContextClassLoader().getName());
-//			URL[] paths = new URL[1];
-//			try {
-//				paths[0] = new File ("/home/gignoux/3w/twfx.jar").toURI().toURL();
-//				ClassLoader cld = new URLClassLoader(paths,	Thread.currentThread().getContextClassLoader());
-//				Thread.currentThread().setContextClassLoader(cld);
-//				cld.loadClass("javafx.application.Application");
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//		} else {
-//			System.out.println("MM is running from jar "+Jars.getRunningJarFilePath(MMmain.class));
-//			System.out.println("BEFORE: "+Thread.currentThread().getContextClassLoader().getName());
-//			System.out.println("SYSTEM: "+ClassLoader.getSystemClassLoader().getName());
-//			
-//			URL[] paths = new URL[1];
-//			try {
-//				paths[0] = new File ("/home/gignoux/3w/twfx.jar").toURI().toURL();
-//			} catch (MalformedURLException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			ClassLoader cld = new URLClassLoader(paths,	Thread.currentThread().getContextClassLoader());
-//			System.out.println("INTER: "+cld);
-//			Thread.currentThread().setContextClassLoader(cld);
-//			try {
-//				cld.loadClass("javafx.application.Application");
-//				Class<?> bidon = Class.forName("javafx.application.Application");
-//				System.out.println(bidon.getCanonicalName());				
-//			} catch (ClassNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} 
-//// this is now deprecated - lots of warnings			
-////			https://stackoverflow.com/questions/5380275/replacement-system-classloader-for-classes-in-jars-containing-jars
-////			Field scl = ClassLoader.class.getDeclaredField("scl"); // Get system class loader
-////	        scl.setAccessible(true); // Set accessible
-////	        scl.set(null, new YourClassLoader()); // Update it to your class loader
-//			
-////			
-////			OmugiClassLoader.setJarClassLoader(new File ("/home/ian/3w/tw.jar"),new File ("/home/ian/3w/twfx.jar"));
-////			Thread.currentThread().setContextClassLoader(OmugiClassLoader.getJarClassLoader());
-//			
-//			System.out.println("AFTER: "+Thread.currentThread().getContextClassLoader());
-////			leaves the classLoader NULL
-//		}
-			
 
 		// Flaky ??
 		ProjectJarGenerator.setModelRunnerClass(MRmain.class);
 		// pass logging args on to deployed MR
 		MMModel.mmArgs = args;
-
 		
 		// enact logging args 
 		if (args.length > 0)
@@ -124,7 +65,6 @@ public class MMmain {
 			String klass = pair[0];
 			String level = pair[1];
 			try {
-//				Class<?> c = Class.forName(klass,true,OmugiClassLoader.getJarClassLoader());
 				Class<?> c = Class.forName(klass,true,OmugiClassLoader.getAppClassLoader());
 				Level lvl = Level.parse(level);
 				Logger log = Logging.getLogger(c);
@@ -134,14 +74,6 @@ public class MMmain {
 				System.exit(-1);
 			}
 		}
-
-		//Thread.currentThread().setContextClassLoader(OmugiClassLoader.getJarClassLoader());
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		
-		Package[] pks = cl.getDefinedPackages();
-//		System.out.println("#pks: "+pks.length);
-//		for (int i=0; i<pks.length; i++)
-//			System.out.println(pks[i].getName());
 		
 		Application.launch(ModelMakerfx.class);
 	}
