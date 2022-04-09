@@ -121,9 +121,11 @@ public class ModelRunnerfx extends Application {
 		this.stage = primaryStage;
 		stage.setWidth(DefaultWindowSettings.getWidth());
 		stage.setHeight(DefaultWindowSettings.getHeight());
+		stage.setX(DefaultWindowSettings.getX());
+		stage.setY(DefaultWindowSettings.getY());
 		String title = Project.getDisplayName();
 		stage.titleProperty().set(title);
-		// setUserAgentStylesheet(STYLESHEET_CASPIAN);
+		setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		FXMLLoader loader = new FXMLLoader();
 		if (Language.French())
 			loader.setLocation(ModelRunnerfx.class.getResource("view/MrFR.fxml"));

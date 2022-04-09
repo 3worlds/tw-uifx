@@ -34,35 +34,40 @@ import javafx.stage.Screen;
 
 public class DefaultWindowSettings {
 	private static Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-	private static double w = 1520;
-	private static double h =900;
-	private static double x = (screenBounds.getWidth() - w) / 2;
-	private static double y = (screenBounds.getHeight() - h) / 3;
+	private static double w = screenBounds.getWidth() * 0.8;
+	private static double h = screenBounds.getHeight() * 0.8;
+	private static double x = screenBounds.getWidth() * 0.1;
+	private static double y = screenBounds.getHeight() * 0.1;
 	private static double splitter1 = 0.2;
 	private static double splitter2 = 0.5;
 	private static String defaultMMName = "3Worlds Model Maker";
+
 	public static double getWidth() {
 		return w;
 	}
+
 	public static double getHeight() {
 		return h;
 	}
+
 	public static double getX() {
 		return x;
 	}
+
 	public static double getY() {
 		return y;
 	}
+
 	public static double splitter1() {
 		return splitter1;
 	}
+
 	public static double splitter2() {
 		return splitter2;
 	}
+
 	public static String defaultName() {
 		return defaultMMName;
 	}
-	
-
 
 }
