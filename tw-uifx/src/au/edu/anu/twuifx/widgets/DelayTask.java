@@ -45,16 +45,24 @@ public class DelayTask {
 
 	/**
 	 * Prevents animation tasks from flickering. Tasks are placed in a Timeline to
-	 * be run at some time in the future ('head') at a rate no greater than the value
-	 * of 'gap'. Note, this can cause animations to lag way behind their
+	 * be run at some time in the future ('head') at a rate no greater than the
+	 * value of 'gap'. 
+	 * <p>
+	 * If the generation of tasks is faster than the 'ga'Using this method can cause animations to lag way behind their
 	 * computation. Typically, 'gap' need be no greater than 1 ms.
+	 * </p>
+	 * <p>
+	 * This method should only be called from the application thread to prevent
+	 * instances of Timeline from throwing concurrent modification exceptions.
+	 * </p>
 	 * 
-	 * @param gap  time in ms to advance the time front
+	 * @param gap  time in ms to advance the time front. Must be > 0
 	 * @param head the current value of the time front
 	 * @param task submitted task to run at that time.
 	 * @return updated value of time front.
 	 */
 	public static long submit(final long gap, long head, EventHandler<ActionEvent> task) {
+		assert(gap>0);
 		long now = System.currentTimeMillis();
 		head = Math.max(head, now);
 		head += gap;
