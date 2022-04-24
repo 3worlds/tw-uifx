@@ -32,6 +32,8 @@ package au.edu.anu.twuifx.widgets;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
+//import java.time.Duration;
+import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -81,6 +83,8 @@ import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -510,5 +514,4 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			dataSetMap.put(key, ds);
 		}
 	}
-
 }

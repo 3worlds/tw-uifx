@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -71,6 +72,8 @@ import fr.cnrs.iees.uit.space.Distance;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.Tuple;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -122,6 +125,7 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Window;
+import javafx.util.Duration;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
@@ -193,6 +197,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	private int nViews;
 
 	private final List<SpDisplay> displays;
+
+	private long gap = 1;
+	private long head;
 
 	public SpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
@@ -315,6 +322,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		private final Map<Double, Duple<Label, Label>> yAxes;
 		private final ScrollPane scrollPane;
 		private final int nSenders;
+		private long lastTime;
 
 		private final ComboBox<String> cmbxSender;
 
@@ -332,7 +340,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			bar1.setAlignment(Pos.CENTER_LEFT);
 			HBox bar2 = new HBox();
 			bar2.setAlignment(Pos.CENTER_LEFT);
-			topBar.getChildren().addAll(bar1,bar2);
+			topBar.getChildren().addAll(bar1, bar2);
 			lblItem = new Label("");
 			lblTime = new Label("");
 			bar1.setSpacing(5);
@@ -442,6 +450,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 				this.sender = cmbxSender.getSelectionModel().getSelectedIndex();
 				drawScene();
 			});
+			lastTime = 0;
 		}
 
 		private Pane getContainer() {
@@ -529,6 +538,12 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		}
 
 		private void drawPaper(GraphicsContext gc) {
+//			long minDelay = 4L;
+//			long time = System.currentTimeMillis();
+//			long d = Math.max(0,minDelay - (time - lastTime));
+//			System.out.println(d);
+//			lastTime = time;
+//			delay(d);
 			gc.setFill(bkgColour);
 			gc.setStroke(bkgColour);
 			gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -827,7 +842,6 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			}
 
 		}
-		
 
 		public void setTime(String timeText) {
 			lblTime.setText(timeText);
@@ -943,7 +957,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			nCols++;
 		if ((nRows * nCols) < nViews)
 			nCols++;
-		
+
 		int display = 0;
 		for (int r = 0; r < nRows; r++)
 			for (int c = 0; c < nCols; c++) {
@@ -1009,7 +1023,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 	private void processDataMessage(SpaceData data) {
 		Platform.runLater(() -> {
-//			lblTime.setText(timeFormatter.getTimeText(data.time()));
+			head = DelayTask.submit(gap, head,e-> {
 			boolean refreshLegend = updateData(data);
 			if (refreshLegend)
 				updateLegend();
@@ -1019,6 +1033,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 					d.drawScene();
 				}
 			}
+			});
 		});
 	}
 
@@ -1035,6 +1050,8 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	@Override
 	public void onStatusMessage(State state) {
 		if (isSimulatorState(state, waiting)) {
+			Platform.runLater(() -> {
+				head = DelayTask.submit(gap, head, e -> {
 			senderVertices.forEach((k, vertices) -> {
 				vertices.clear();
 			});
@@ -1042,11 +1059,14 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 				lineSets.clear();
 			});
 			vertexColours.clear();
-
+				});
 			for (SpaceData data : lstInitialData)
 				processDataMessage(data);
 
+				head = DelayTask.submit(gap, head, e -> {
 			lstInitialData.clear();
+				});
+			});
 		}
 	}
 
@@ -1490,7 +1510,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			s = new Line(0, 6, 12, 6);
 			s.setStroke(colour);
 			s.setFill(colour);
-			//s.setCacheHint(CacheHint.SPEED);
+			// s.setCacheHint(CacheHint.SPEED);
 		}
 		stackPane.getChildren().addAll(r, s);
 		StackPane.setAlignment(s, Pos.CENTER);
@@ -1767,6 +1787,21 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 	private double getStartValue(double min, double offset, double tickSize) {
 		return min + offset;
+	}
+
+	private static int delay(long d) {
+		long s = System.currentTimeMillis();
+		long e = System.currentTimeMillis();
+		Random r = new Random();
+		double sum = 0;
+		int i = 0;
+		while (e - s < d) {
+			sum += r.nextDouble();
+			e = System.currentTimeMillis();
+			i++;
+		}
+		return i;
+
 	}
 
 }
