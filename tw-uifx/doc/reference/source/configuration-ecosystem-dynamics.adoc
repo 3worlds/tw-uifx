@@ -183,6 +183,12 @@ include::ArchetypeDoc-function.adoc[]
 
 IMPORTANT: The `relateToDecision` function has a special status among relation processes as it is used to establish a relation, whereas all other functions for relation processes use an already established relation. As a result, a process parent to a `relateToDecision` function cannot be parent to any other type of function. For computation efficiency, it is recommended to associate a <<configuration-ecosystem-structure.adoc#truethe-representation-of-space,_space_>> to the process parent to a `relateToDecision` function.
 
+[horizontal]
+`functionSnippet`:: This optional property is used in 3Worlds tutorial and test models  to store the java code of user-defined function. This code is inserted in the body of the generated user-code methods.
+
+CAUTION: We recommend not to use snippets, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achieve when, e.g., renaming a field or table. If you use it, do it with caution.
+
+
 _Cross-links for_ `function`:
 
 `useRNG -> rng:<__name__>` {0..1}::
@@ -192,12 +198,6 @@ _Additional properties when_ `function = createOtherDecision`:
 
 [horizontal]
 `relateToProduct`:: A logical value (`false` by default) which tells to establish a permanent `parentTo` relation (defined in the `predefined` sub-tree: <<configuration-reference.adoc#truethe-predefined-sub-tree>>) between a parent component and its offspring created by calling `createOtherDecision`.
-
-`/3worlds/.../function/*snippet*:<__name__>` {0..1}
-
-This node is used in 3Worlds tutorial and test models  to store the java code of functions (in its `javaCode` property). 
-
-CAUTION: We recommend not to use snippets, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming a field or table. If you use it, do it with caution.
 
 .How do functions work?
 [#function-howto]

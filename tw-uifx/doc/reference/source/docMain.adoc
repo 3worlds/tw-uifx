@@ -18,7 +18,7 @@
 
 = 3Worlds user manual
 Jacques Gignoux <jacques.gignoux@upmc.fr>; Ian D. Davies <ian.davies@anu.edu.au>; Shayne R. Flint <shayne.flint@anu.edu.au>
-v1.8, 9 March 2022:
+v1.9, 29 April 2022:
 
 by *{author}*, *{author_2}* & *{author_3}*
 

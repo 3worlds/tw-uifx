@@ -36,13 +36,29 @@ These three methods can be used together within the same model. However, since a
 
 A `dataSource` node specifies the information required to access some data source: for example, a file name, a file format, and all other requested information that the java code just needs to read the file.
 
-**TODO: Flaw here ! some dataSource properties must be moved to the loadFrom edge???**
-
 A `loadFrom` cross-link links the `system`, a `componentType`, `groupType` or `lifeCycleType` a to a data source.
 
 ===== The _initialValues_ node
 
-*[TODO]*
+`/3worlds/.../componentType/*initialValues*:<__name__>`
+
+`/3worlds/.../groupType/*initialValues*:<__name__>`
+
+`/3worlds/.../lifeCycleType/*initialValues*:<__name__>`
+
+`/3worlds/system/*initialValues*:<__name__>`
+
+An `initialValues` node enables one to directly specify the number, driver and constant values, belonging to groups and life cycle instances, of initial instances of components, groups, life cycle, and the arena.
+
+_Properties for_ `initialValues` :
+
+[horizontal]
+`nInstances`:: The number of instances of `componentType`, `groupType` or `lifeCycleType` to create at the start of the simulation. For groups and life cycle, the instance name will be the name of the initialValues node, plus a number if more than one instance is required. For components, the unique identifier is automatically generated. Note that a value of zero will not create any instance. Ignored for the arena (always present and unique).
+`idGroup`:: (only applies to `.../groupType/componentType/initialValues` nodes): The `groupType` instance name of these `ComponentType` instances
+`idLifeCycle`:: (only applies to `.../lifeCycleType/groupType/componentType/initialValues` and `.../lifeCycleType/groupType/initialValues` nodes): The `lifeCycleType` instance name of these `ComponentType` or `groupType` instances
+`<__name__>`:: driver and constant (name,value) pairs to populate the instances. The property name must match a declared field. Tables are not supported. 
+
+CAUTION: The latter property is only partly supported and at the time of writing, `ModelMaker` does not enable one to write such properties. One has to edit the configuration file by hand. Only do that if you are an expert.
 
 ===== The _initFunction_ node
 
@@ -59,14 +75,12 @@ _Properties for_ `initFunction` :
 [horizontal]
 `type`:: The type of function used: only <<configuration-ecosystem-dynamics.adoc#truefunction,`setInitialState`>> is possible.
 
-`functionSnippet`:: *[TODO]*
+`functionSnippet`:: The java code to be inserted into the body of the `initFunction` method in the generated code.
 
 _Cross-links for_ `initFunction`:
 
 `useRNG -> rng:<__name__>` {0..1}::
 Points to the <<configuration-dataDefinition.adoc#truerandom-number-channels,random number generator channel>> to use in this function. If unset, the default random number channel is used.
-
-
 
 
 ==== Consistency of data files with the model component hierarchy

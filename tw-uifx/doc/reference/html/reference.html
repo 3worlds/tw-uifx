@@ -447,8 +447,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="email2" class="email"><a href="mailto:ian.davies@anu.edu.au">ian.davies@anu.edu.au</a></span><br>
 <span id="author3" class="author">Shayne R. Flint</span><br>
 <span id="email3" class="email"><a href="mailto:shayne.flint@anu.edu.au">shayne.flint@anu.edu.au</a></span><br>
-<span id="revnumber">version 1.8,</span>
-<span id="revdate">9 March 2022</span>
+<span id="revnumber">version 1.9,</span>
+<span id="revdate">29 April 2022</span>
 <br><span id="revremark"></span>
 </div>
 <div id="toc" class="toc2">
@@ -614,7 +614,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>by <strong>Jacques Gignoux</strong>, <strong>Ian D. Davies</strong> &amp; <strong>Shayne R. Flint</strong></p>
 </div>
 <div class="paragraph">
-<p>Version: <strong>1.8</strong> (9 March 2022)</p>
+<p>Version: <strong>1.9</strong> (29 April 2022)</p>
 </div>
 </div>
 </div>
@@ -3585,6 +3585,30 @@ The <code>relateToDecision</code> function has a special status among relation p
 </tr>
 </table>
 </div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>functionSnippet</code>
+</td>
+<td class="hdlist2">
+<p>This optional property is used in 3Worlds tutorial and test models  to store the java code of user-defined function. This code is inserted in the body of the generated user-code methods.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+We recommend not to use snippets, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achieve when, e.g., renaming a field or table. If you use it, do it with caution.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p><em>Cross-links for</em> <code>function</code>:</p>
 </div>
@@ -3607,24 +3631,6 @@ The <code>relateToDecision</code> function has a special status among relation p
 </td>
 <td class="hdlist2">
 <p>A logical value (<code>false</code> by default) which tells to establish a permanent <code>parentTo</code> relation (defined in the <code>predefined</code> sub-tree: <a href="#truethe-predefined-sub-tree">Section 3.3.8</a>) between a parent component and its offspring created by calling <code>createOtherDecision</code>.</p>
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><code>/3worlds/&#8230;&#8203;/function/<strong>snippet</strong>:&lt;<em>name</em>&gt;</code> {0..1}</p>
-</div>
-<div class="paragraph">
-<p>This node is used in 3Worlds tutorial and test models  to store the java code of functions (in its <code>javaCode</code> property).</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-We recommend not to use snippets, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achive when, e.g., renaming a field or table. If you use it, do it with caution.
 </td>
 </tr>
 </table>
@@ -6607,16 +6613,76 @@ Forcing data
 </dl>
 </div>
 <div class="paragraph">
-<p><strong>TODO: Flaw here ! some dataSource properties must be moved to the loadFrom edge???</strong></p>
-</div>
-<div class="paragraph">
 <p>A <code>loadFrom</code> cross-link links the <code>system</code>, a <code>componentType</code>, <code>groupType</code> or <code>lifeCycleType</code> a to a data source.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="truethe-initialvalues-node"><a class="anchor" href="#truethe-initialvalues-node"></a>The <em>initialValues</em> node</h5>
 <div class="paragraph">
-<p><strong>[TODO]</strong></p>
+<p><code>/3worlds/&#8230;&#8203;/componentType/<strong>initialValues</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/groupType/<strong>initialValues</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/&#8230;&#8203;/lifeCycleType/<strong>initialValues</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p><code>/3worlds/system/<strong>initialValues</strong>:&lt;<em>name</em>&gt;</code></p>
+</div>
+<div class="paragraph">
+<p>An <code>initialValues</code> node enables one to directly specify the number, driver and constant values, belonging to groups and life cycle instances, of initial instances of components, groups, life cycle, and the arena.</p>
+</div>
+<div class="paragraph">
+<p><em>Properties for</em> <code>initialValues</code> :</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+<code>nInstances</code>
+</td>
+<td class="hdlist2">
+<p>The number of instances of <code>componentType</code>, <code>groupType</code> or <code>lifeCycleType</code> to create at the start of the simulation. For groups and life cycle, the instance name will be the name of the initialValues node, plus a number if more than one instance is required. For components, the unique identifier is automatically generated. Note that a value of zero will not create any instance. Ignored for the arena (always present and unique).</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>idGroup</code>
+</td>
+<td class="hdlist2">
+<p>(only applies to <code>&#8230;&#8203;/groupType/componentType/initialValues</code> nodes): The <code>groupType</code> instance name of these <code>ComponentType</code> instances</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>idLifeCycle</code>
+</td>
+<td class="hdlist2">
+<p>(only applies to <code>&#8230;&#8203;/lifeCycleType/groupType/componentType/initialValues</code> and <code>&#8230;&#8203;/lifeCycleType/groupType/initialValues</code> nodes): The <code>lifeCycleType</code> instance name of these <code>ComponentType</code> or <code>groupType</code> instances</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+<code>&lt;<em>name</em>&gt;</code>
+</td>
+<td class="hdlist2">
+<p>driver and constant (name,value) pairs to populate the instances. The property name must match a declared field. Tables are not supported.</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+The latter property is only partly supported and at the time of writing, <code>ModelMaker</code> does not enable one to write such properties. One has to edit the configuration file by hand. Only do that if you are an expert.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect4">
@@ -6651,7 +6717,7 @@ Forcing data
 <code>functionSnippet</code>
 </td>
 <td class="hdlist2">
-<p><strong>[TODO]</strong></p>
+<p>The java code to be inserted into the body of the <code>initFunction</code> method in the generated code.</p>
 </td>
 </tr>
 </table>
@@ -9850,8 +9916,8 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.8<br>
-Last updated 2022-03-14 16:23:47 +0100
+Version 1.9<br>
+Last updated 2022-04-29 17:07:48 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
