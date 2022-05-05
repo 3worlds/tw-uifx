@@ -67,7 +67,7 @@ WARNING: currently, importing code containing double quotes is not supported.
 
 ====== Clear snippets
 
-Clears the Java code in the configuration's `functionSnippet`and `importSnippet` properties. Functions requiring return values will have default return values added.
+Clears the Java code in the configuration's `functionSnippet`and `importSnippet` properties. Functions requiring return values will have default return statements inserted.
 
 ====== Link to IDE
 

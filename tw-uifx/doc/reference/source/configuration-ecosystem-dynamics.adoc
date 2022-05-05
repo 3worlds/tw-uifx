@@ -186,7 +186,7 @@ IMPORTANT: The `relateToDecision` function has a special status among relation p
 [horizontal]
 `functionSnippet`:: This optional property is used in 3Worlds tutorial and test models  to store the java code of user-defined function. This code is inserted in the body of the generated user-code methods.
 
-CAUTION: We recommend not to use snippets, or only for simple models, since it may cause problems when the code contained in a snippet contains compile errors, something very easy to achieve when, e.g., renaming a field or table. If you use it, do it with caution.
+CAUTION: Use snippets only for simple models as there no Java compiler checking your code for errors.
 
 
 _Cross-links for_ `function`:
