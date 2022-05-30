@@ -154,8 +154,8 @@ image::using-modelmakerIMG/fig-popup.png[role="thumb",align="left",float="right"
 ... *Delete edge*: Displays a list of 'out-edges' from this node that can be deleted.
 ... *Delete child edge*: Displays a list of child nodes that can be orphaned. Note that the specifications are not valid until all child nodes have parents.
 ... *Optional properties*: Displays a dialog with any optional properties that can be added or removed from this node.
-... *Rename node*: Changes the node name to some other unqiue name. Note that the name of the root node cannot be changed.
-... *Rename edge*: Displays a list of 'out-edges' whose name can be changed to some other unqiue name. 
+... *Rename node*: Changes the node name to some other unique name. Note that the name of the root node cannot be changed.
+... *Rename edge*: Displays a list of 'out-edges' whose name can be changed to some other unique name. 
 ... *Import sub-tree*: Displays a list of valid child node labels that can form the root of a sub-tree read from file.
 ... *Export sub-tree*: Displays a list of the current child nodes of this node that can be exported to file as a sub-tree.
 
