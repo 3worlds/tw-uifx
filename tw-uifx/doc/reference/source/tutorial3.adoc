@@ -69,14 +69,7 @@ Now set the rank order for the indexing of `table:alpha`.
 .The `dataDefinition` specifications for Tutorial 3: three tables of one dimension and one of two dimensions ('alpha'). This size of each table is the same so only one `dimensioner` is required.
 image::tutorial3IMG/fig-data-definition.png[align="center",role="thumb"]
 
-[#fig-description-property-option]
-.Adding a `description` pass:[<br/>] property to the table 'K'.
-image::tutorial3IMG/fig-description-property-option.png[float="right",align="center"]
-
-Finally, add some meta-data to each table. This meta-data assists in documenting your Java source code and ODD documentation. Many nodes have optional properties. One such optional property is `description` for tables and fields. 
-
-[start =12]
-. Right-click on each of the table nodes and select 'Optional properties' and flag the 'Description` property (<<fig-description-property-option>>). 
+Finally, add some meta-data to each table by adding suitable text to the `description` property of each table or field.
 
 ===== Structure
 

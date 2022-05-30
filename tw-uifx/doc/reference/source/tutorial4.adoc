@@ -62,7 +62,7 @@ To display an xy plot of diversity by time since disturbance, we can add a drive
 [start = 8]
 . Create a `field` of type `Double` as a child of `record:commDrvs` and name it 'tsd'. 
 
-Fill out the meta-data properties with at least the description, range and units if relevant. This information will be incorporated in the comments of the generated Java code (i.e. add the optional property `description` to the new data nodes: right-click on a node and select 'optional properties').
+Fill out the meta-data properties with at least the description, range and units if relevant. This information will be incorporated in the comments of the generated Java code.
 
 [start = 9]
 
