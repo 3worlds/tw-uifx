@@ -32,6 +32,7 @@ package au.edu.anu.twuifx.mm;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.prefs.Preferences;
 
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.twapps.dialogs.Dialogs;
@@ -48,11 +49,22 @@ import au.edu.anu.twuifx.mm.view.MmController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
-
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  * Author Ian Davies
@@ -68,7 +80,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		FXMLLoader loader = new FXMLLoader();
 		String skinFile = "view/MmEN.fxml";
 		if (Language.French())
-			skinFile =  "view/MmFR.fxml";
+			skinFile = "view/MmFR.fxml";
 		URL URLView = ModelMakerfx.class.getResource(skinFile);
 		loader.setLocation(URLView);
 		root = (Parent) loader.load();
@@ -77,6 +89,20 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage.setScene(scene);
 		controller.setStage(mainStage);
 		mainStage.getIcons().add(new Image(Images.class.getResourceAsStream("MmIcon16.png")));
+		
+		controller.setHostServices(getHostServices());
+
+		scene.getWindow().setOnShown((e) -> {
+			// uncomment when ready.
+//			final String firstUseKey= "First_MM_Use";
+//			 Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
+//			 boolean firstUse = prefs.getBoolean(firstUseKey, true);
+//			 prefs.putBoolean(firstUseKey, false);
+			boolean firstUse = true;
+			if (firstUse)
+				showFirstUseWin(scene.getWindow());
+
+		});
 		scene.getWindow().setOnCloseRequest((e) -> {
 			if (!controller.canClose()) {
 				e.consume();
@@ -108,9 +134,53 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage.setX(DefaultWindowSettings.getX());
 		mainStage.setY(DefaultWindowSettings.getY());
 		mainStage.show();
+//		this.getHostServices().showDocument("www.stackoverflow.com");
 
 	}
 
+	private static String enFirstTimeMsg = "To begin a new project, select\n'Projects → New → Templates → 1 Blank'.\n\n"
+			+ "To work through some tutorials, select\nHelp → Tutorials'.\n\n"
+			+ "To go straight to some example models, select\n'Projects -> New -> Tutorials...'.";
+
+	private static String frFirstTimeMsg = "Pour commencer un nouveau projet, sélectionnez\n<<Projets → Nouveau → Templates → 1 Blank>>.\n\n"
+			+ "Pour parcourir certains tutoriels, sélectionnez \n<<nAider → Tutorials>>.\n\n"
+			+ "Pour accéder directement à des exemples de modèles, sélectionnez\n<<Projets → Nouveau → Tutorials...>>.";
+
+	private void showFirstUseWin(Window parent) {
+		Stage stage = new Stage();
+		stage.initOwner(parent);
+		stage.initModality(Modality.NONE);
+		BorderPane root = new BorderPane();
+		Scene scene = new Scene(root);
+
+		stage.setScene(scene);
+		stage.setX(mainStage.getX() + 0.2 * mainStage.getWidth());
+		stage.setY(mainStage.getY() + 0.2 * mainStage.getHeight());
+		Label header = new Label();
+		BorderPane.setAlignment(header, Pos.CENTER);
+		BorderPane.setMargin(header, new Insets(12, 12, 12, 12));
+		root.setTop(header);
+		BorderPane.setAlignment(header, Pos.CENTER);
+		TextArea content = new TextArea();
+		content.setEditable(false);
+		content.setTextFormatter(new TextFormatter<String>(change -> {
+			change.setAnchor(change.getCaretPosition());
+			return change;
+		}));
+
+		root.setCenter(content);
+		if (Language.French()) {
+			stage.setTitle("Bienvenue dans ModelMaker");
+			header.setText("Commencer");
+			content.setText(frFirstTimeMsg);
+		} else {
+			stage.setTitle("Welcome to ModelMaker");
+			header.setText("Getting started");
+			content.setText(enFirstTimeMsg);
+		}
+		stage.show();
+
+	}
 
 	@Override
 	public void stop() {

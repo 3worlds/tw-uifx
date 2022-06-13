@@ -30,6 +30,7 @@
 
 package au.edu.anu.twuifx.mm.view;
 
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
@@ -66,7 +67,10 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -299,7 +303,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private Slider sldrElements;
 
 	private RadioButton[] rbLayouts;
-	
+
 	private IMMModel model;
 	private IGraphVisualiser visualiser;
 
@@ -329,6 +333,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// TODO: make menu options and preferences entry for this choice when netbeans
 	// and IntelliJ have been tested
 	private IDETypes ideType = IDETypes.eclipse;
+	
+	HostServices hostServices;
 
 	/*******************************************************************************
 	 * NB any function that causes checking to take place (e.g. an edit) also causes
@@ -499,8 +505,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		final double duration = GraphVisualiserfx.animateSlow;
 
 		doLayout(duration);
-		
-		String desc = currentLayout.name() +" layout";
+
+		String desc = currentLayout.name() + " layout";
 		model.addState(desc);
 	}
 
@@ -758,30 +764,24 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-//	@FXML
-//	void onShowReference(ActionEvent event) {
-//		Dialog<ButtonType> dlg = new Dialog<>();
-//		dlg.initOwner((Window) Dialogs.owner());
-//		dlg.setTitle("3Worlds reference");
-//
-//		dlg.setResizable(true);
-//		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
-//		dlg.getDialogPane().getButtonTypes().addAll(done);
-//
-//		final WebView browser = new WebView();
-//		final WebEngine webEngine = browser.getEngine();
-//		webEngine.load(this.getClass().getResource("reference.html").toString());
-//		ScrollPane scrollPane = new ScrollPane();
-//		scrollPane.setContent(browser);
-//		dlg.getDialogPane().setContent(scrollPane);
-//		scrollPane.setFitToWidth(true);
-//		scrollPane.setFitToHeight(true);
-//		dlg.show();
-//	}
+	@FXML
+	void onReference(ActionEvent event) {
+		hostServices.showDocument("https://3worlds.github.io/tw-uifx/tw-uifx/doc/reference/html/reference.html");
+
+	}
+
+	@FXML
+	void onTutorials(ActionEvent event) {
+		hostServices.showDocument("https://3worlds.github.io/tw-uifx/tw-uifx/doc/reference/html/reference.html#truesample-models-and-tutorials");
+	}
+
 
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
+	public void setHostServices(HostServices hs) {
+		hostServices = hs;
+	}
 	@Override
 	public void onProjectClosing() {
 		GraphState.clear();
@@ -983,7 +983,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public VisualNode getLayoutRoot() {
 		return layoutRoot;
 	}
-	
+
 	@Override
 	public IMMModel model() {
 		return model;
@@ -1563,7 +1563,5 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		else
 			trafficLight.fillProperty().set(Color.RED);
 	}
-
-
 
 }
