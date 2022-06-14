@@ -55,12 +55,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -89,18 +93,16 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage.setScene(scene);
 		controller.setStage(mainStage);
 		mainStage.getIcons().add(new Image(Images.class.getResourceAsStream("MmIcon16.png")));
-		
+
 		controller.setHostServices(getHostServices());
 
 		scene.getWindow().setOnShown((e) -> {
-			// uncomment when ready.
-//			final String firstUseKey= "First_MM_Use";
-//			 Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
-//			 boolean firstUse = prefs.getBoolean(firstUseKey, true);
-//			 prefs.putBoolean(firstUseKey, false);
-			boolean firstUse = true;
-			if (firstUse)
-				showFirstUseWin(scene.getWindow());
+			final String welcomeWindow = "Welcome_Window";
+			Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
+			// Uncomment for debugging
+			// prefs.putBoolean(welcomeWindow, true);
+			if (prefs.getBoolean(welcomeWindow, true))
+				showWelcomeWindow(welcomeWindow, prefs, scene.getWindow());
 
 		});
 		scene.getWindow().setOnCloseRequest((e) -> {
@@ -134,28 +136,42 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage.setX(DefaultWindowSettings.getX());
 		mainStage.setY(DefaultWindowSettings.getY());
 		mainStage.show();
-//		this.getHostServices().showDocument("www.stackoverflow.com");
-
 	}
 
+	// If we end up with suppressable msg boxes then develop language files for this
+	// situation including a 'reset defaults' option.
 	private static String enFirstTimeMsg = "To begin a new project, select\n'Projects → New → Templates → 1 Blank'.\n\n"
 			+ "To work through some tutorials, select\nHelp → Tutorials'.\n\n"
 			+ "To go straight to some example models, select\n'Projects -> New -> Tutorials...'.";
+	private static String enTitle = "Welcome to ModelMaker";
+	private static String enHeader = "Getting started";
+	private static String enChBxSuppress = "Don't show again";
 
 	private static String frFirstTimeMsg = "Pour commencer un nouveau projet, sélectionnez\n<<Projets → Nouveau → Templates → 1 Blank>>.\n\n"
 			+ "Pour parcourir certains tutoriels, sélectionnez \n<<nAider → Tutorials>>.\n\n"
 			+ "Pour accéder directement à des exemples de modèles, sélectionnez\n<<Projets → Nouveau → Tutorials...>>.";
+	private static String frTitle = "Bienvenue dans ModelMaker";
+	private static String frHeader = "Commencer";
+	private static String frChBxSuppress = "Ne plus afficher";
 
-	private void showFirstUseWin(Window parent) {
+	private void showWelcomeWindow(String key, Preferences prefs, Window parent) {
 		Stage stage = new Stage();
 		stage.initOwner(parent);
 		stage.initModality(Modality.NONE);
 		BorderPane root = new BorderPane();
 		Scene scene = new Scene(root);
-
+		Button btnClose = new Button("Close");
+//		btnClose.setStyle("-fx-background-color: DarkOrange");
+		HBox bottom = new HBox();
+		bottom.setSpacing(20);
+		CheckBox chBxSuppress = new CheckBox(enChBxSuppress);
+		bottom.getChildren().addAll(chBxSuppress, btnClose);
+		root.setBottom(bottom);
+		BorderPane.setMargin(bottom, new Insets(12, 12, 12, 12));
+		bottom.setAlignment(Pos.CENTER_RIGHT);
 		stage.setScene(scene);
-		stage.setX(mainStage.getX() + 0.2 * mainStage.getWidth());
-		stage.setY(mainStage.getY() + 0.2 * mainStage.getHeight());
+		stage.setX(mainStage.getX() + 0.3 * mainStage.getWidth());
+		stage.setY(mainStage.getY() + 0.3 * mainStage.getHeight());
 		Label header = new Label();
 		BorderPane.setAlignment(header, Pos.CENTER);
 		BorderPane.setMargin(header, new Insets(12, 12, 12, 12));
@@ -163,21 +179,30 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		BorderPane.setAlignment(header, Pos.CENTER);
 		TextArea content = new TextArea();
 		content.setEditable(false);
+		// prevent user selection
 		content.setTextFormatter(new TextFormatter<String>(change -> {
 			change.setAnchor(change.getCaretPosition());
 			return change;
 		}));
+		btnClose.setOnAction((e) -> {
+			stage.close();
+		});
 
 		root.setCenter(content);
 		if (Language.French()) {
-			stage.setTitle("Bienvenue dans ModelMaker");
-			header.setText("Commencer");
+			stage.setTitle(frTitle);
+			header.setText(frHeader);
 			content.setText(frFirstTimeMsg);
+			chBxSuppress.setText(frChBxSuppress);
 		} else {
-			stage.setTitle("Welcome to ModelMaker");
-			header.setText("Getting started");
+			stage.setTitle(enTitle);
+			header.setText(enHeader);
 			content.setText(enFirstTimeMsg);
+			chBxSuppress.setText(enChBxSuppress);
 		}
+		stage.setOnCloseRequest((e) -> {
+			prefs.putBoolean(key, !chBxSuppress.isSelected());
+		});
 		stage.show();
 
 	}
