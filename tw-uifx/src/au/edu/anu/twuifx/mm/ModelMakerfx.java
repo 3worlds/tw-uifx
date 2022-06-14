@@ -62,9 +62,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -142,14 +144,14 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	// situation including a 'reset defaults' option.
 	private static String enFirstTimeMsg = "To begin a new project, select\n'Projects → New → Templates → 1 Blank'.\n\n"
 			+ "To work through some tutorials, select\nHelp → Tutorials'.\n\n"
-			+ "To go straight to some example models, select\n'Projects -> New -> Tutorials...'.";
+			+ "To create and run example models, select\n'Projects -> New -> Tutorials...'.";
 	private static String enTitle = "Welcome to ModelMaker";
 	private static String enHeader = "Getting started";
 	private static String enChBxSuppress = "Don't show again";
 
 	private static String frFirstTimeMsg = "Pour commencer un nouveau projet, sélectionnez\n<<Projets → Nouveau → Templates → 1 Blank>>.\n\n"
 			+ "Pour parcourir certains tutoriels, sélectionnez \n<<nAider → Tutorials>>.\n\n"
-			+ "Pour accéder directement à des exemples de modèles, sélectionnez\n<<Projets → Nouveau → Tutorials...>>.";
+			+ "Pour créer et exécuter des exemples de modèles, sélectionnez\n<<Projets → Nouveau → Tutorials...>>.";
 	private static String frTitle = "Bienvenue dans ModelMaker";
 	private static String frHeader = "Commencer";
 	private static String frChBxSuppress = "Ne plus afficher";
@@ -158,7 +160,15 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		Stage stage = new Stage();
 		stage.initOwner(parent);
 		stage.initModality(Modality.NONE);
-		BorderPane root = new BorderPane();
+		HBox root = new HBox();
+		ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
+		imageView.preserveRatioProperty().set(true);
+		imageView.setFitHeight(300);
+		VBox leftContent = new VBox();
+		leftContent.setAlignment(Pos.BASELINE_RIGHT);
+		Label l1 = new Label("Three Worlds");
+		Label l2 = new Label("M. C. Escher (1955)");
+		leftContent.getChildren().addAll(imageView,l1,l2,new Label(""));
 		Scene scene = new Scene(root);
 		Button btnClose = new Button("Close");
 //		btnClose.setStyle("-fx-background-color: DarkOrange");
@@ -166,7 +176,8 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		bottom.setSpacing(20);
 		CheckBox chBxSuppress = new CheckBox(enChBxSuppress);
 		bottom.getChildren().addAll(chBxSuppress, btnClose);
-		root.setBottom(bottom);
+		BorderPane rightContent = new BorderPane();
+		rightContent.setBottom(bottom);
 		BorderPane.setMargin(bottom, new Insets(12, 12, 12, 12));
 		bottom.setAlignment(Pos.CENTER_RIGHT);
 		stage.setScene(scene);
@@ -175,12 +186,13 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		Label header = new Label();
 		BorderPane.setAlignment(header, Pos.CENTER);
 		BorderPane.setMargin(header, new Insets(12, 12, 12, 12));
-		root.setTop(header);
+		rightContent.setTop(header);
 		BorderPane.setAlignment(header, Pos.CENTER);
-		TextArea content = new TextArea();
-		content.setEditable(false);
+		TextArea txAreaInfo = new TextArea();
+		txAreaInfo.setEditable(false);
+		txAreaInfo.setPrefWidth(470);
 		// prevent user selection
-		content.setTextFormatter(new TextFormatter<String>(change -> {
+		txAreaInfo.setTextFormatter(new TextFormatter<String>(change -> {
 			change.setAnchor(change.getCaretPosition());
 			return change;
 		}));
@@ -188,16 +200,20 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 			stage.close();
 		});
 
-		root.setCenter(content);
+		HBox content = new HBox();
+		content.getChildren().addAll(leftContent,txAreaInfo);
+		rightContent.setCenter(content);
+		root.getChildren().addAll(leftContent,rightContent);
+		//root.setSpacing(10);
 		if (Language.French()) {
 			stage.setTitle(frTitle);
 			header.setText(frHeader);
-			content.setText(frFirstTimeMsg);
+			txAreaInfo.setText(frFirstTimeMsg);
 			chBxSuppress.setText(frChBxSuppress);
 		} else {
 			stage.setTitle(enTitle);
 			header.setText(enHeader);
-			content.setText(enFirstTimeMsg);
+			txAreaInfo.setText(enFirstTimeMsg);
 			chBxSuppress.setText(enChBxSuppress);
 		}
 		stage.setOnCloseRequest((e) -> {
