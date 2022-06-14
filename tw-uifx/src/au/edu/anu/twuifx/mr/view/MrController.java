@@ -32,6 +32,9 @@ package au.edu.anu.twuifx.mr.view;
 
 import java.io.File;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -47,6 +50,8 @@ import au.edu.anu.twuifx.dialogs.ISParametersDlg;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -59,6 +64,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -239,9 +247,29 @@ public class MrController implements IMRController {
 
 	@FXML
 	void onODDGen(ActionEvent event) {
+		Cursor oldCursor = tabPane.getScene().getCursor();
+		tabPane.getScene().setCursor(Cursor.WAIT);
 		DocoGenerator gen = new DocoGenerator(model.getGraph());
-		gen.generate();
+		Task<Void> oddTask = new Task<Void>() {
 
+			@Override
+			protected Void call() throws Exception {
+				gen.generate();
+				return null;
+			}
+
+		};
+		oddTask.setOnSucceeded(e -> {
+			tabPane.getScene().setCursor(oldCursor);
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Documentation generator");
+			alert.setResizable(true);
+			alert.setHeaderText("Generation completed");
+			alert.setContentText("Directory:\n" + gen.getODDFile().getParent() + "\n\nFiles:\n"
+					+ gen.getODDFile().getName() + "\nflowChart.svg");
+			alert.showAndWait();
+		});
+		new Thread(oddTask).start();
 	}
 
 	@FXML
@@ -304,13 +332,13 @@ public class MrController implements IMRController {
 		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save parameters", exts);
 		System.out.println(file);
 	}
-    @FXML
-    void onExperimentDetails(ActionEvent event) {
-    	
-    	new ExperimentDetailsDlg(model.getGraph());
-    	
 
-    }
+	@FXML
+	void onExperimentDetails(ActionEvent event) {
+
+		new ExperimentDetailsDlg(model.getGraph());
+
+	}
 
 	private Stage stage;
 	private static final String mainFrameName = "mainFrame";

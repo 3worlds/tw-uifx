@@ -333,7 +333,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// TODO: make menu options and preferences entry for this choice when netbeans
 	// and IntelliJ have been tested
 	private IDETypes ideType = IDETypes.eclipse;
-	
+
 	HostServices hostServices;
 
 	/*******************************************************************************
@@ -772,9 +772,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	@FXML
 	void onTutorials(ActionEvent event) {
-		hostServices.showDocument("https://3worlds.github.io/tw-uifx/tw-uifx/doc/reference/html/reference.html#truesample-models-and-tutorials");
+		hostServices.showDocument(
+				"https://3worlds.github.io/tw-uifx/tw-uifx/doc/reference/html/reference.html#truesample-models-and-tutorials");
 	}
-
 
 	// ---------------FXML End -------------------------
 
@@ -782,8 +782,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	public void setHostServices(HostServices hs) {
 		hostServices = hs;
 	}
+
 	@Override
-	public void onProjectClosing() {
+	
+public void onProjectClosing() {
 		GraphState.clear();
 		if (visualiser != null)
 			visualiser.close();
