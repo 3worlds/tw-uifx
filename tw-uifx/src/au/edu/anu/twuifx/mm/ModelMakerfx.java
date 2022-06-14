@@ -140,7 +140,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage.show();
 	}
 
-	// If we end up with suppressable msg boxes then develop language files for this
+	// If we end up with many suppressable msg boxes then develop language files for this
 	// situation including a 'reset defaults' option.
 	private static String enFirstTimeMsg = "To begin a new project, select\n'Projects → New → Templates → 1 Blank'.\n\n"
 			+ "To work through some tutorials, select\nHelp → Tutorials'.\n\n"
