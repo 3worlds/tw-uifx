@@ -435,10 +435,16 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		CenteredZooming.center(scrollPane, scrollContent, group, zoomTarget);
 
 		// are prefs saved regardless of graphState??
-		sldrElements.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-//			System.out.println(newValue.doubleValue());
-			setElementScales(newValue.doubleValue());
+		sldrElements.setOnMouseReleased((e) -> {
+			setElementScales(sldrElements.getValue());
 		});
+//		sldrElements.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+//			if (oldValue != newValue)
+//				Platform.runLater(() -> {
+//					// not sure this makes anything better
+//					setElementScales(newValue.doubleValue());
+//				});
+//		});
 
 	}
 
@@ -784,8 +790,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	
-public void onProjectClosing() {
+
+	public void onProjectClosing() {
 		GraphState.clear();
 		if (visualiser != null)
 			visualiser.close();
