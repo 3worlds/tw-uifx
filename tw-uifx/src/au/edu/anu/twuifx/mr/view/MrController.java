@@ -272,6 +272,15 @@ public class MrController implements IMRController {
 			alert.setContentText(content);
 			alert.showAndWait();
 		});
+		oddTask.setOnFailed(e->{
+			tabPane.getScene().setCursor(oldCursor);
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Documentation generator");
+			alert.setResizable(true);
+			alert.setHeaderText("Generation failed");
+			alert.setContentText(e.getEventType().toString());
+			alert.showAndWait();
+		});
 		new Thread(oddTask).start();
 	}
 
