@@ -265,8 +265,11 @@ public class MrController implements IMRController {
 			alert.setTitle("Documentation generator");
 			alert.setResizable(true);
 			alert.setHeaderText("Generation completed");
-			alert.setContentText("Directory:\n" + gen.getODDFile().getParent() + "\n\nFiles:\n"
-					+ gen.getODDFile().getName() + "\nflowChart.svg");
+			String content = "Directory:\n" + gen.getArtifactFiles()[0].getParent() + "\n\nFiles:";
+			File[] list = gen.getArtifactFiles();
+			for (int i = 0;i<list.length;i++)
+				content+="\n - "+list[i].getName();
+			alert.setContentText(content);
 			alert.showAndWait();
 		});
 		new Thread(oddTask).start();
