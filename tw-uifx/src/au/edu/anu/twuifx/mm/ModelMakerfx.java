@@ -149,9 +149,10 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	private static String enHeader = "Getting started";
 	private static String enChBxSuppress = "Don't show again";
 
-	private static String frFirstTimeMsg = "Pour commencer un nouveau projet, sélectionnez\n<<Projets → Nouveau → Templates → 1 Blank>>.\n\n"
-			+ "Pour parcourir certains tutoriels, sélectionnez \n<<nAider → Tutorials>>.\n\n"
-			+ "Pour créer et exécuter des exemples de modèles, sélectionnez\n<<Projets → Nouveau → Tutorials...>>.";
+	private static String frFirstTimeMsg = "Pour démarrer un nouveau projet, sélectionnez\n"
+			+ "<<Projets → Nouveau → Templates → 1 Blank>>.\n\n"
+			+ "Pour lire la documentation des tutoriels, sélectionnez \n<<Aide → Tutoriels>>.\n\n"
+			+ "Pour créer et exécuter des exemples de modèles, sélectionnez\n<<Projets → Nouveau → Tutoriels...>>.";
 	private static String frTitle = "Bienvenue dans ModelMaker";
 	private static String frHeader = "Commencer";
 	private static String frChBxSuppress = "Ne plus afficher";
