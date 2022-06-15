@@ -142,8 +142,8 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 
 	// If we end up with many suppressable msg boxes then develop language files for this
 	// situation including a 'reset defaults' option.
-	private static String enFirstTimeMsg = "To begin a new project, select\n'Projects → New → Templates → 1 Blank'.\n\n"
-			+ "To work through some tutorials, select\nHelp → Tutorials'.\n\n"
+	private static String enFirstTimeMsg = "To start a new project, select\n'Projects → New → Templates → 1 Blank'.\n\n"
+			+ "To read the tutorial documentation, select\nHelp → Tutorials'.\n\n"
 			+ "To create and run example models, select\n'Projects -> New -> Tutorials...'.";
 	private static String enTitle = "Welcome to ModelMaker";
 	private static String enHeader = "Getting started";
