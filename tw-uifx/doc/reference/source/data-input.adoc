@@ -90,6 +90,47 @@ The simulated system is a hierarchy with up to 4 levels: arena > life cycle > gr
 
 ==== Data file formats
 
+The data file formats currently supported as input to 3Worlds are listed in <<configuration-experiment.adoc#trueinputs-datasource>>. At the moment, `.csv` text files and `.ods` spreadsheet files are supported. Their content must comply with constraints listed in <<configuration-experiment.adoc#trueinputs-datasource>>.
+
+For a practical understanding of how this works, we recommend to run the `TestDataLoading` model (accessible in *ModelMaker* through the `Projects > New > Test cases` menu). 
+
+Here are examples extracted  from this test model:
+
+====== Example 1: using a _dataSource_ only
+
+This `.ods` spreadsheet:
+
+image::configuration-experimentIMG/example-spreadsheet-climate.png[align="center"]
+
+with the following specifications: 
+
+image::configuration-experimentIMG/example-climate1.png[align="center"]
+
+will result in the instantiation of a single system component with id **#49**, belonging to category **climate**, with an elaborate data structure as shown on the graph, containing a table *otherVar* of dimensions [12,8] with values read from the *climat.ods* file (from debugger):
+[source,]
+----
+otherVar={[12,8],(8 3.1 C ),(0 2.9 C ),(2 5.3 C ),(0 3.1 C ),(16 3.9 C ),(17 3.9 C ),(5 2.0 C ),(17 2.6 C ),(0 1.2 C ),(0 0.4 C )...} 
+temperature={[12,8],21.8,21.4,23.0,24.0,19.4,20.5,22.0,18.0,21.3,22.5...}
+----
+
+How?
+
+* property  `subclass` in `dataSource:climateData` tells *ModelMaker* that the file to be read is in `.odf` format. Since there is no `sheet` property, only the first (actually, only) sheet is read;
+* since `componentType:compTyp1` is child of the `structure` node and has no `initialValues` child node, the number of components to instantiate must come from the data source;
+* since the `dataSource` node does not have a `componentId` property, only one component can be instantiated (there is no way to uniquely identify it in the spreadsheet). As a result, all data in _climat.ods_ will be used to instantiate a single instance of `componentType:compTyp1`;
+* property `dim` tells ModelMaker that indices for the first table dimensions are to be read in column __lat__, and for the second dimension in column __long__;
+* column headings prefixed with "__otherVar:__" indicate that these columns are sub-fields of the *otherVar* `table` (cf. graph);
+* finally, the 96 (=12×8) different lines with different indices (CAUTION: the indices start at 0 for 3Worlds table data structures) will all go into the same constants table as specified by the *climate* `category` of the `componentType:compTyp1`, of which only one instance automatically identified as *#49* by *ModelRunner* has been created.
+
+====== Example 2: using multiple _dataSource_ nodes
+*[TODO]*
+
+====== Example 3: using a mixture of _dataSource_ and _initialValues_ nodes
+
+*[TODO]*
+
+
 ==== Import data from external sources
 
+Not yet implemented.
 
