@@ -116,8 +116,8 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Aider">
               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#onTutorials" text="Tutorials" />
-                  <MenuItem mnemonicParsing="false" onAction="#onReference" text="Reference" />
+                  <MenuItem mnemonicParsing="false" onAction="#onTutorials" text="Tutoriels" />
+                  <MenuItem mnemonicParsing="false" onAction="#onReference" text="Référence" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                 <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="À propos de ModelMaker" />
               </items>

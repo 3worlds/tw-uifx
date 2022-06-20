@@ -97,6 +97,7 @@ import au.edu.anu.rscs.aot.errorMessaging.ErrorMessageManager;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorMessagable;
 import au.edu.anu.rscs.aot.util.IntegerRange;
+import au.edu.anu.rscs.aot.util.Resources;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
@@ -631,17 +632,16 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 		content.getChildren().addAll(rightContent, leftContent);
 		TextArea textArea = new TextArea();
-		Scanner sc = null;
+		List<String> lines;
 		if (Language.French())
-			sc = new Scanner(MmController.class.getResourceAsStream("aboutMMFR.txt"));
+			lines = Resources.getTextResource("aboutMMFR.txt", getClass());
 		else
-			sc = new Scanner(MmController.class.getResourceAsStream("aboutMMEN.txt"));
+			lines = Resources.getTextResource("aboutMMEN.txt", getClass());
 
-		while (sc.hasNext()) {
-			textArea.appendText(sc.nextLine());
+		for (String line : lines) {
+			textArea.appendText(line);
 			textArea.appendText("\n");
 		}
-		sc.close();
 
 		textArea.setWrapText(true);
 		textArea.setPrefHeight(400);
@@ -1210,6 +1210,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		menuNew.getItems().clear();
 		Menu muTemplates = new Menu("Templates");
 		Menu muTutorials = new Menu("Tutorials");
+		if (Language.French())
+			muTutorials.setText("Tutoriels");
 		Menu muModels = new Menu("Model Library");
 		Menu muTests = new Menu("Test cases");
 		menuNew.getItems().addAll(muTemplates, muTutorials, muModels, muTests);

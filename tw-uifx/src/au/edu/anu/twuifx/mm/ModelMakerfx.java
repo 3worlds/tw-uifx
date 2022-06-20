@@ -53,21 +53,16 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -140,10 +135,11 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage.show();
 	}
 
-	// If we end up with many suppressable msg boxes then develop language files for this
+	// If we end up with many suppressable msg boxes then develop language files for
+	// this
 	// situation including a 'reset defaults' option.
-	private static String enFirstTimeMsg = "To start a new project, select\n'Projects → New → Templates → 1 Blank'.\n\n"
-			+ "To read the tutorial documentation, select\nHelp → Tutorials'.\n\n"
+	private static String enFirstTimeMsg = "To begin a new project, select\n'Projects → New → Templates → 1 Blank'.\n\n"
+			+ "To read the tutorial exercises, select\nHelp → Tutorials'.\n\n"
 			+ "To create and run example models, select\n'Projects -> New -> Tutorials...'.";
 	private static String enTitle = "Welcome to ModelMaker";
 	private static String enHeader = "Getting started";
@@ -169,13 +165,17 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		leftContent.setAlignment(Pos.BASELINE_RIGHT);
 		Label l1 = new Label("Three Worlds");
 		Label l2 = new Label("M. C. Escher (1955)");
-		leftContent.getChildren().addAll(imageView,l1,l2,new Label(""));
+		leftContent.getChildren().addAll(imageView, l1, l2, new Label(""));
 		Scene scene = new Scene(root);
 		Button btnClose = new Button("Close");
 //		btnClose.setStyle("-fx-background-color: DarkOrange");
 		HBox bottom = new HBox();
 		bottom.setSpacing(20);
 		CheckBox chBxSuppress = new CheckBox(enChBxSuppress);
+		chBxSuppress.setOnAction((e) -> {
+			prefs.putBoolean(key, !chBxSuppress.isSelected());
+		});
+	
 		bottom.getChildren().addAll(chBxSuppress, btnClose);
 		BorderPane rightContent = new BorderPane();
 		rightContent.setBottom(bottom);
@@ -202,10 +202,10 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		});
 
 		HBox content = new HBox();
-		content.getChildren().addAll(leftContent,txAreaInfo);
+		content.getChildren().addAll(leftContent, txAreaInfo);
 		rightContent.setCenter(content);
-		root.getChildren().addAll(leftContent,rightContent);
-		//root.setSpacing(10);
+		root.getChildren().addAll(leftContent, rightContent);
+		// root.setSpacing(10);
 		if (Language.French()) {
 			stage.setTitle(frTitle);
 			header.setText(frHeader);
@@ -217,9 +217,6 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 			txAreaInfo.setText(enFirstTimeMsg);
 			chBxSuppress.setText(enChBxSuppress);
 		}
-		stage.setOnCloseRequest((e) -> {
-			prefs.putBoolean(key, !chBxSuppress.isSelected());
-		});
 		stage.show();
 
 	}

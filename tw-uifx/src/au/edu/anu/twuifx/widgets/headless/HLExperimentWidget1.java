@@ -464,7 +464,7 @@ dev.off()
 		if (rPresent) {
 		try {
 			File results = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, anovaResultsName);
-			fileLines = Files.readAllLines(results.toPath());
+			fileLines = Files.readAllLines(results.toPath(),StandardCharsets.UTF_8);
 			String line = "Terms\t" + fileLines.get(0);
 			fileLines.set(0, line);
 			// Terms "Df" "Sum Sq" "Mean Sq" "F value" "Pr(>F)"

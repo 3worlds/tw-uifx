@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.mr.view;
 
 import java.io.File;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.rscs.aot.util.Resources;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mr.IMRController;
 import au.edu.anu.twapps.mr.IMRModel;
@@ -214,17 +216,16 @@ public class MrController implements IMRController {
 
 		content.getChildren().addAll(leftContent, rightContent);
 		TextArea textArea = new TextArea();
-		Scanner sc = null;
+		List<String> lines;
 		if (Language.French())
-			sc = new Scanner(MrController.class.getResourceAsStream("aboutMRFR.txt"));
+			lines = Resources.getTextResource("aboutMRFR.txt", getClass());
 		else
-			sc = new Scanner(MrController.class.getResourceAsStream("aboutMREN.txt"));
+			lines = Resources.getTextResource("aboutMREN.txt", getClass());
 
-		while (sc.hasNext()) {
-			textArea.appendText(sc.nextLine());
+		for (String line:lines){
+			textArea.appendText(line);
 			textArea.appendText("\n");
 		}
-		sc.close();
 
 		textArea.setWrapText(true);
 		textArea.setPrefHeight(400);

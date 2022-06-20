@@ -458,6 +458,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	}
 
 	// TODO Move to adaptor
+	@SuppressWarnings("unchecked")
 	private List<Duple<VisualEdge, SimpleDataTreeNode>> filterOptionalEdgePropertySpecs(VisualNodeEditable editableNode,
 			Iterable<SimpleDataTreeNode> edgeSpecs) {
 		// Task: get edge spec for each out edge present for this node that contains
@@ -475,10 +476,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						selectZeroOrMany(hasTheLabel(aaHasProperty)));
 				for (SimpleDataTreeNode ps : propSpecs) {
 					if (specifications.getMultiplicityOf(ps).getFirst() == 0) {
-						String propName = (String) ps.properties().getPropertyValue(aaHasName);
+//						String propName = (String) ps.properties().getPropertyValue(aaHasName);
 						// add a duple of ALEdge and property spec
 						result.add(new Duple<VisualEdge, SimpleDataTreeNode>(edgeMap.get(edgeClass), ps));
-						VisualEdge ve = edgeMap.get(edgeClass);
+//						VisualEdge ve = edgeMap.get(edgeClass);
 					}
 				}
 			}
