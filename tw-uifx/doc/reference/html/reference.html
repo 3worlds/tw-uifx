@@ -4691,7 +4691,7 @@ If no random number channel is specified, 3Worlds uses a single default channel 
 <code>nReplicates</code>
 </td>
 <td class="hdlist2">
-<p>The number of times all elementary treatments must be replicated. Use this only if there is an internal source of variation in simulations, like random numbers. Otherwise all simulations will be strictly identical.</p>
+<p>The number of times all elementary treatments must be replicated. Use this only if there is an internal source of variation in simulations, like random numbers.</p>
 </td>
 </tr>
 </table>
@@ -4703,7 +4703,7 @@ If no random number channel is specified, 3Worlds uses a single default channel 
 <dl>
 <dt class="hdlist1"><code>baseLine &#8594; system:&lt;<span class="underline"><em>name</em></span>&gt;</code> {1}</dt>
 <dd>
-<p>This link points to a model setup (<a href="#truethe-system-node">Section 3.3.2</a>) that will be used as a <em>base line</em> simulation. A base line simulation is the equivalent of a control in a real experiment, i.e. a reference case that serves as a basis to which other treatments are compared. Often, the base line is the setup for which data is available to compare simulation outputs to.</p>
+<p>This link points to a model setup (<a href="#truethe-system-node">Section 3.3.2</a>) that will be used as a <em>base line</em> simulation. A base line simulation is the equivalent to a control in a real experiment, i.e. a reference case that serves as a basis to which other treatments are compared. Often, the base line is the setup for which data is available to compare simulation outputs to.</p>
 </dd>
 </dl>
 </div>
@@ -4859,7 +4859,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <div class="ulist">
 <ul>
 <li>
-<p>in full detail: this is done by specifying more than one <code>system</code> nodes, each <code>system</code> being used for a different treatment;</p>
+<p>in full detail: this is done by specifying more than one <code>system</code> node, each <code>system</code> being used for a different treatment;</p>
 </li>
 <li>
 <p>as (minor) changes relative to the experiment <code>baseLine</code>.</p>
@@ -4951,7 +4951,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>idLifeCycle</code>
 </td>
 <td class="hdlist2">
-<p>(optional) Header of the column containing the <em>life cycle</em> names (instances of <a href="#truelife-cycle"><code>lifeCycleType</code></a>). If only this property is set, each row of the file/spreadsheet will be used to generate a different <em>life cycle</em> instance (with associated component container, constants, drivers and decorators). If it used in conjunction with <code>idGroup</code> and/or <code>idComponent</code> (see below), it will be used to search for or create the proper <em>life cycle</em> container  in which to place the requested items (<em>groups</em> or <em>components</em>). Values of this property will become the life cycle instance unique identifiers. They must be consistently used across <code>dataSource</code> / <code>initialValues</code> nodes when initial items are constructed from more than one source.</p>
+<p>(optional) Header of the column containing the <em>life cycle</em> names (instances of <a href="#truelife-cycle"><code>lifeCycleType</code></a>). If only this property is set, each row of the file/spreadsheet will be used to generate a different <em>life cycle</em> instance (with associated component container, constants, drivers and decorators). If it is used in conjunction with <code>idGroup</code> and/or <code>idComponent</code> (see below), it will be used to search for or create the proper <em>life cycle</em> container  in which to place the requested items (<em>groups</em> or <em>components</em>). Values of this property will become the life cycle instance unique identifiers. They must be consistently used across <code>dataSource</code> / <code>initialValues</code> nodes when initial items are constructed from more than one source.</p>
 </td>
 </tr>
 <tr>
@@ -4959,7 +4959,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>idGroup</code>
 </td>
 <td class="hdlist2">
-<p>(optional) Header of the column containing the <em>group</em> names (instances of <a href="#truecomponent-group"><code>groupType</code></a>). If only this property is set, each row of the file/spreadsheet will be used to generate a different <em>group</em> instance (with associated component container, constants, drivers and decorators). If it used in conjunction with <code>idComponent</code> (see below), it will be used to search for or create the proper <em>group</em> container  in which to place the requested <em>components</em>. Values of this property will become the group instance unique identifiers. They must be consistently used across <code>dataSource</code> / <code>initialValues</code> nodes when initial items are constructed from more than one source. If the <code>groupType</code> is declared as the child of a <code>lifeCycleType</code>, then the <code>idLifeCycle</code> property (cf. above) is also required, either in <code>dataSource</code> or <code>initialValues</code> nodes.</p>
+<p>(optional) Header of the column containing the <em>group</em> names (instances of <a href="#truecomponent-group"><code>groupType</code></a>). If only this property is set, each row of the file/spreadsheet will be used to generate a different <em>group</em> instance (with associated component container, constants, drivers and decorators). If it used in conjunction with <code>idComponent</code> (see below), it will be used to search for or create the proper <em>group</em> container in which to place the requested <em>components</em>. Values of this property will become the group instance unique identifiers. They must be consistently used across <code>dataSource</code> / <code>initialValues</code> nodes when initial items are constructed from more than one source. If the <code>groupType</code> is declared as the child of a <code>lifeCycleType</code>, then the <code>idLifeCycle</code> property (cf. above) is also required, either in <code>dataSource</code> or <code>initialValues</code> nodes.</p>
 </td>
 </tr>
 <tr>
@@ -4967,7 +4967,7 @@ The stopping condition has the priority over the <code>end</code> property.
 <code>idComponent</code>
 </td>
 <td class="hdlist2">
-<p>(optional) Header of the column containing system <em>component</em> unique identifiers (instances of <a href="#truesystem-component"><code>componentType</code></a>). Every different value will generate a different <em>component</em>. Contrary to the two previous properties, the value is <em>not</em> used to generate the component instance identifier, which is specifically generated by 3Worlds. Nevertheless, they must be consistently used across <code>dataSource</code> / <code>initialValues</code> nodes when initial items are constructed from more than one source. If the <code>componentType</code> is declared as the child of a <code>groupType</code>, then the <code>idGroup</code> property (cf. above) is also required, either in <code>dataSource</code> or <code>initialValues</code> nodes.</p>
+<p>(optional) Header of the column containing system <em>component</em> unique identifiers (instances of <a href="#truesystem-component"><code>componentType</code></a>). Every different value will generate a different <em>component</em>. Contrary to the two previous properties, the value is <em>not</em> used to generate the component instance identifier, which is specifically generated by 3Worlds. Nevertheless, they must be used consistently across <code>dataSource</code> / <code>initialValues</code> nodes when initial items are constructed from more than one source. If the <code>componentType</code> is declared as the child of a <code>groupType</code>, then the <code>idGroup</code> property (cf. above) is also required, either in <code>dataSource</code> or <code>initialValues</code> nodes.</p>
 </td>
 </tr>
 <tr>
@@ -5009,9 +5009,6 @@ The stopping condition has the priority over the <code>end</code> property.
 </td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p><em>Additional properties when</em> <code>subclass = CsvFileLoader</code>, <code>OdfFileLoader</code></p>
 </div>
 <div class="paragraph">
 <p><code>.csv</code> and <code>.ods</code> file formats both assume the data come in 2 dimensional tables with cross-references between the tables. Table columns must match parameter and driver field or table names. Table rows must match species, stage or system component instances.</p>
@@ -6436,7 +6433,7 @@ Forcing data
 </table>
 </div>
 <div class="paragraph">
-<p>Data for <em>parameters</em> and <em>initial community</em> are directly used to instantiate components and fill their descriptors with values. <em>Forcing data</em> must be loaded into some initial data structure (probably most often a <code>DoubleTable</code>, cf. <a href="#truetable">Section 3.3.5.2.2</a>, as a constant in the <code>system</code> instance), made accessible to some user-defined function that will read its content as simulation progresses.</p>
+<p>Data for <em>parameters</em> and <em>initial community</em> are directly used to instantiate components and fill their descriptors with values. <em>Forcing data</em> must be loaded into some initial data structure (probably most often a <code>DoubleTable</code>, cf. <a href="#truetable">Section 3.3.5.2.2</a>, as a constant in the <code>system</code> instance), made accessible to some user-defined function that will read its content as the simulation proceeds.</p>
 </div>
 </div>
 <div class="sect3">
@@ -6625,16 +6622,32 @@ The latter property is only partly supported and at the time of writing, <code>M
 </div>
 <div class="imageblock text-center">
 <div class="content">
+<img src="../source/configuration-experimentIMG/example-climate2.png" alt="example climate2">
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
 <img src="../source/configuration-experimentIMG/example-climate1.png" alt="example climate1">
 </div>
 </div>
 <div class="paragraph">
-<p>will result in the instantiation of a single system component with id <strong>#49</strong>, belonging to category <strong>climate</strong>, with an elaborate data structure as shown on the graph, containing a table <strong>otherVar</strong> of dimensions [12,8] with values read from the <strong>climat.ods</strong> file (from debugger):</p>
+<p>will result in the instantiation of a single system component with id <strong>49</strong>, belonging to category <strong>climate</strong>, with an elaborate data structure as shown on the graph, containing a table <strong>otherVar</strong> of dimensions <strong>[12,8]</strong> with values read from the <strong>climat.ods</strong> file (from debugger):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">otherVar={[12,8],(8 3.1 C ),(0 2.9 C ),(2 5.3 C ),(0 3.1 C ),(16 3.9 C ),(17 3.9 C ),(5 2.0 C ),(17 2.6 C ),(0 1.2 C ),(0 0.4 C )...}
-temperature={[12,8],21.8,21.4,23.0,24.0,19.4,20.5,22.0,18.0,21.3,22.5...}</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">container:sys1[
+  categories:[[category:*arena*], ...]
+  local_items:{
+    49=[SystemComponent:49
+      otherVar={[12,8],(8 3.1 C),(0 2.9 C),(2 5.3 C),(0 3.1 C),
+                       (16 3.9 C),(17 3.9 C),(5 2.0 C),(17 2.6 C),
+                       (0 1.2 C ,(0 0.4 C)...}
+      temperature={[12,8],21.8,21.4,23.0,24.0,19.4,20.5,22.0,
+                          18.0,21.3,22.5...}
+    ]
+  }
+  ...
+]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6644,6 +6657,9 @@ temperature={[12,8],21.8,21.4,23.0,24.0,19.4,20.5,22.0,18.0,21.3,22.5...}</code>
 <ul>
 <li>
 <p>property  <code>subclass</code> in <code>dataSource:climateData</code> tells <strong>ModelMaker</strong> that the file to be read is in <code>.odf</code> format. Since there is no <code>sheet</code> property, only the first (actually, only) sheet is read;</p>
+</li>
+<li>
+<p>property <code>file</code> gives the name of the file to read, here <strong>climat.ods</strong>.</p>
 </li>
 <li>
 <p>since <code>componentType:compTyp1</code> is child of the <code>structure</code> node and has no <code>initialValues</code> child node, the number of components to instantiate must come from the data source;</p>
@@ -6666,13 +6682,233 @@ temperature={[12,8],21.8,21.4,23.0,24.0,19.4,20.5,22.0,18.0,21.3,22.5...}</code>
 <div class="sect5">
 <h6 id="trueexample-2-using-multiple-datasource-nodes"><a class="anchor" href="#trueexample-2-using-multiple-datasource-nodes"></a>Example 2: using multiple <em>dataSource</em> nodes</h6>
 <div class="paragraph">
-<p><strong>[TODO]</strong></p>
+<p>These <code>.ods</code> spreadsheets:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../source/configuration-experimentIMG/example-spreadsheet-termites.png" alt="example spreadsheet termites">
+</div>
+</div>
+<div class="paragraph">
+<p>with the following specifications:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../source/configuration-experimentIMG/example-termites2.png" alt="example termites2">
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../source/configuration-experimentIMG/example-termites1.png" alt="example termites1">
+</div>
+</div>
+<div class="paragraph">
+<p>will result in the instantiation of <em>four</em> system components with ids <strong>77</strong> to <strong>80</strong>, belonging to category <strong>waterBody</strong>, with an elaborate data structure as shown on the graph, containing a table <strong>turbidity</strong> of dimensions <strong>3</strong> with values read from the <strong>termites.ods</strong> file, sheets <strong>ponds1</strong> and <strong>ponds2</strong> (from debugger):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">container:sys1[
+  categories:[[category:*arena*], ...]
+  local_items:{...}
+  sub_containers:[
+    container:pond[
+      local_items:{
+        77=[SystemComponent:77 (xx=36.0 yy=53.0 turbidity={[3],0.91,0.61,0.18} depth=-0.578 level=0.0)],
+        78=[SystemComponent:78 (xx=12.0 yy=27.0 turbidity={[3],0.21,0.74,0.0}  depth=-3.5   level=0.0)],
+        79=[SystemComponent:79 (xx=0.0  yy=0.0  turbidity={[3],0.0,0.37,0.14}  depth=0.0    level=0.0)],
+        80=[SystemComponent:80 (xx=24.0 yy=87.2 turbidity={[3],0.0,0.0,0.0}    depth=-1.02  level=0.0)]
+      }
+    ]
+    ...
+  ]
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>How?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>property  <code>subclass</code> in <code>dataSource:pondData1</code> and <code>dataSource:pondData2</code> (not shown) tell <strong>ModelMaker</strong> that the file to be read is in <code>.odf</code> format.</p>
+</li>
+<li>
+<p>property <code>file</code> gives the name of the file to read, here <strong>termites.ods</strong>.</p>
+</li>
+<li>
+<p>property <code>sheet</code> in <code>dataSource:pondData1</code> and <code>dataSource:pondData2</code> tell <strong>ModelMaker</strong> that the data are contained in, respectively, sheets <strong>ponds1</strong> and <strong>ponds2</strong> of this file.</p>
+</li>
+<li>
+<p>since <code>componentType:compTyp3</code> is child of a <code>groupType</code>, an <code>idGroup</code> property must be provided in the <code>dataSource</code> nodes to identify into which group container components instances will be stored; and an <code>idComponent</code> property to identify how many components must be instantiated;</p>
+</li>
+<li>
+<p>four different components identifiers <strong>P1</strong>, <strong>P2</strong>, <strong>P3</strong>, <strong>P4</strong> (columns <strong>id</strong> and <strong>pid</strong> according to <code>idComponent</code> properties of the two <code>dataSource</code> nodes) and only one group identifier <strong>pond</strong> (column <strong>type</strong> according to <code>idGroup</code> properties of the two <code>dataSource</code> nodes) are found in the data sources. They trigger the instantiation of one group container with four components;</p>
+</li>
+<li>
+<p>as <code>dataSource:pondData2</code> contains tabular data, a <code>dim</code> property tells which column contains the table indices (<strong>d</strong>);</p>
+</li>
+<li>
+<p>as <code>dataSource:pondData1</code> contains no data for component <strong>P3</strong> (instantiated with identifier <strong>79</strong>), its <code>xx</code>, <code>yy</code> and <code>depth</code> fields are empty (= 0.0);</p>
+</li>
+<li>
+<p>as <code>dataSource:pondData2</code> contains no data for component <strong>P2</strong> (instantiated with identifier <strong>80</strong>), for <code>turbidity[<strong>2</strong>]</code> in <strong>P1</strong> (instantiated with identifier <strong>78</strong>), and for <code>turbidity[<strong>0</strong>]</code> in <strong>P3</strong> (instantiated with identifier <strong>79</strong>), all these table celles are empty (= 0.0).</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+If two different data sources contain data for the same field / table cell in the same component, only the last value read will be kept. Since the order of <code>dataSource</code> nodes processing is unpredictable, this should be avoided. Take care!
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect5">
 <h6 id="trueexample-3-using-a-mixture-of-datasource-and-initialvalues-nodes"><a class="anchor" href="#trueexample-3-using-a-mixture-of-datasource-and-initialvalues-nodes"></a>Example 3: using a mixture of <em>dataSource</em> and <em>initialValues</em> nodes</h6>
 <div class="paragraph">
-<p><strong>[TODO]</strong></p>
+<p>This <code>.csv</code> text file:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../source/configuration-experimentIMG/example-animal-csv.png" alt="example animal csv">
+</div>
+</div>
+<div class="paragraph">
+<p>with the following specifications:</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../source/configuration-experimentIMG/example-animal3.png" alt="example animal3">
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../source/configuration-experimentIMG/example-animal2.png" alt="example animal2">
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../source/configuration-experimentIMG/example-animal1.png" alt="example animal1">
+</div>
+</div>
+<div class="paragraph">
+<p>will result in the instantiation of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>six</em> system components with ids <strong>50</strong> to <strong>55</strong>, belonging to category <strong>adult</strong>, with their <code>age</code> automatic variable read from the <code>dataSource:animalData</code> node;</p>
+</li>
+<li>
+<p><em>six</em> group containers with ids <strong>e_adult</strong>, <strong>e_offspring</strong>, <strong>e_young</strong>, <strong>r_adult</strong>, <strong>r_offspring</strong> and <strong>r_young</strong>. Components <strong>50</strong> to <strong>53</strong> belong to group <strong>e_adult</strong> while components <strong>54</strong> to <strong>55</strong> belong to group <strong>r_adult</strong>
+of life cycle <strong>rat</strong>.</p>
+</li>
+<li>
+<p><em>two</em> life cycles with ids <strong>elephant</strong> (containing the three former groups) and <strong>rat</strong> (containing the three latter groups).
+with the hierarchy of containers is described by all the <code>initialValues</code> nodes visible on the graph (from debugger):</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">container:sys1[
+  categories:[[category:*arena*], ...]
+  local_items:{...}
+  sub_containers:[
+
+    elephant=container:elephant[
+      categories:[[category:*life cycle*], ...]
+      sub_containers:[
+        eoffspring=container:eoffspring[
+          categories:[[category:*group*], ...]
+          local_items:{}
+        ],
+        eyoung=container:eyoung[
+          categories:[[category:*group*], ...]
+          local_items:{}
+        ],
+        e_adult=container:e_adult[
+          categories:[[category:*group*], ...]
+          local_items:{
+            50=[SystemComponent:50 (birthDate=0 age=28)],
+            51=[SystemComponent:51 (birthDate=0 age=65)],
+            52=[SystemComponent:52 (birthDate=0 age=12)],
+            53=[SystemComponent:53 (birthDate=0 age=8)]
+          }
+        ]
+      ]
+    ]
+
+    rat=container:rat[
+      categories:[[category:*life cycle*], ...]
+      sub_containers:[
+        roffspring=container:roffspring[
+          categories:[[category:*group*], ...]
+          local_items:{}
+        ],
+        ryoung=container:ryoung[
+          categories:[[category:*group*], ...]
+          local_items:{}
+        ],
+        r_adult=container:r_adult[
+          categories:[[category:*group*], ...]
+          local_items:{
+            54=[SystemComponent:54 (birthDate=0 age=1)],
+            55=[SystemComponent:55 (birthDate=0 age=1)]
+          }
+        ]
+      ]
+    ]
+
+    ...
+  ]
+]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>How?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>property  <code>subclass</code> in <code>dataSource:animalData</code> tells <strong>ModelMaker</strong> that the file to be read is in <code>.csv</code> format.</p>
+</li>
+<li>
+<p>property <code>file</code> gives the name of the file to read, here <strong>species.csv</strong>.</p>
+</li>
+<li>
+<p>property <code>separator</code> in <code>dataSource:animalData</code> tells <strong>ModelMaker</strong> that the fields are separated with <strong>";"</strong>.</p>
+</li>
+<li>
+<p>since <code>componentType</code> nodes in this graph are all children of a <code>groupType</code> node, themselves children of a <code>lifeCycleType</code> node, properties <code>idLifeCycle</code>, <code>idGroup</code> and <code>idComponent</code> are required in data files to properly identify the components to instantiate;</p>
+</li>
+<li>
+<p>six different components identifiers <strong>robert</strong>, <strong>jasmine</strong>, <strong>pepe</strong>, <strong>groumpf</strong>, <strong>squick</strong> and <strong>squack</strong> (column <strong>id</strong> according to the <code>idComponent</code> property of <code>dataSource:animalData</code>); two group identifiers <strong>e_adult</strong> and <strong>r_adult</strong> (column <strong>stage</strong> according to the <code>idGroup</code> property of <code>dataSource:animalData</code>); and two life cycle identifiers <strong>elephant</strong> and <strong>rat</strong> (column <strong>species</strong> according to the <code>idLifeCycle</code> property of <code>dataSource:animalData</code>); are found in the data source. They trigger the instantiation of two life cycle containers, each containing a single group container (from the data structure in the file), the former containing the first 4 components and the latter the last 2 components;</p>
+</li>
+<li>
+<p>four <code>initialValues</code> nodes are also defined in this graph. They are all children of <code>groupType</code> nodes, meaning that they apply to groups and not to components. Since the groups in this model do not declare any data, the <code>initialValues</code> nodes only tell <strong>ModelRunner</strong> to instantiate one container for each of them (<code>nInstances</code> property set to 1). Without these declarations, <strong>ModelRunner</strong> would not instantiate thee containers and would not know where to store instances of components of categories <code>young</code> and <code>offspring</code> (as no instance of these is required in the data source);</p>
+</li>
+<li>
+<p>as <code>dataSource:animalData</code> only contains data for the <code>age</code> automatic variable, all the instances of adult rats and elephants have their <code>birthDate</code> value set to 0; you can also verify that elephants have a much longer life span than rats.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+if <code>dataSource</code> and <code>initialValues</code> nodes are used to instantiate the same components, groups, life cycles, or the arena, all <code>dataSource</code> nodes are processed first (in unpredictable order), followed by all <code>initialValues</code> nodes (in unpredictable order too).
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -9837,7 +10073,7 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 <div id="footer">
 <div id="footer-text">
 Version 1.10<br>
-Last updated 2022-06-20 16:59:44 +0200
+Last updated 2022-06-21 17:20:02 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

@@ -104,18 +104,31 @@ image::configuration-experimentIMG/example-spreadsheet-climate.png[align="center
 
 with the following specifications: 
 
+image::configuration-experimentIMG/example-climate2.png[align="center"]
 image::configuration-experimentIMG/example-climate1.png[align="center"]
 
-will result in the instantiation of a single system component with id **#49**, belonging to category **climate**, with an elaborate data structure as shown on the graph, containing a table *otherVar* of dimensions [12,8] with values read from the *climat.ods* file (from debugger):
+will result in the instantiation of a single system component with id **49**, belonging to category **climate**, with an elaborate data structure as shown on the graph, containing a table *otherVar* of dimensions *[12,8]* with values read from the *climat.ods* file (from debugger):
 [source,]
 ----
-otherVar={[12,8],(8 3.1 C ),(0 2.9 C ),(2 5.3 C ),(0 3.1 C ),(16 3.9 C ),(17 3.9 C ),(5 2.0 C ),(17 2.6 C ),(0 1.2 C ),(0 0.4 C )...} 
-temperature={[12,8],21.8,21.4,23.0,24.0,19.4,20.5,22.0,18.0,21.3,22.5...}
+container:sys1[
+  categories:[[category:*arena*], ...]
+  local_items:{
+    49=[SystemComponent:49
+      otherVar={[12,8],(8 3.1 C),(0 2.9 C),(2 5.3 C),(0 3.1 C),
+                       (16 3.9 C),(17 3.9 C),(5 2.0 C),(17 2.6 C),
+                       (0 1.2 C ,(0 0.4 C)...} 
+      temperature={[12,8],21.8,21.4,23.0,24.0,19.4,20.5,22.0,
+                          18.0,21.3,22.5...}
+    ]
+  }
+  ...
+]
 ----
 
 How?
 
 * property  `subclass` in `dataSource:climateData` tells *ModelMaker* that the file to be read is in `.odf` format. Since there is no `sheet` property, only the first (actually, only) sheet is read;
+* property `file` gives the name of the file to read, here **climat.ods**.
 * since `componentType:compTyp1` is child of the `structure` node and has no `initialValues` child node, the number of components to instantiate must come from the data source;
 * since the `dataSource` node does not have a `componentId` property, only one component can be instantiated (there is no way to uniquely identify it in the spreadsheet). As a result, all data in _climat.ods_ will be used to instantiate a single instance of `componentType:compTyp1`;
 * property `dim` tells ModelMaker that indices for the first table dimensions are to be read in column __lat__, and for the second dimension in column __long__;
@@ -123,12 +136,138 @@ How?
 * finally, the 96 (=12×8) different lines with different indices (CAUTION: the indices start at 0 for 3Worlds table data structures) will all go into the same constants table as specified by the *climate* `category` of the `componentType:compTyp1`, of which only one instance automatically identified as *#49* by *ModelRunner* has been created.
 
 ====== Example 2: using multiple _dataSource_ nodes
-*[TODO]*
+
+These `.ods` spreadsheets:
+
+image::configuration-experimentIMG/example-spreadsheet-termites.png[align="center"]
+
+with the following specifications: 
+
+image::configuration-experimentIMG/example-termites2.png[align="center"]
+image::configuration-experimentIMG/example-termites1.png[align="center"]
+
+will result in the instantiation of _four_ system components with ids **77** to **80**, belonging to category **waterBody**, with an elaborate data structure as shown on the graph, containing a table *turbidity* of dimensions *3* with values read from the *termites.ods* file, sheets **ponds1** and **ponds2** (from debugger): 
+
+[source,]
+----
+container:sys1[
+  categories:[[category:*arena*], ...]
+  local_items:{...}
+  sub_containers:[
+    container:pond[
+      local_items:{
+        77=[SystemComponent:77 (xx=36.0 yy=53.0 turbidity={[3],0.91,0.61,0.18} depth=-0.578 level=0.0)], 
+        78=[SystemComponent:78 (xx=12.0 yy=27.0 turbidity={[3],0.21,0.74,0.0}  depth=-3.5   level=0.0)], 
+        79=[SystemComponent:79 (xx=0.0  yy=0.0  turbidity={[3],0.0,0.37,0.14}  depth=0.0    level=0.0)], 
+        80=[SystemComponent:80 (xx=24.0 yy=87.2 turbidity={[3],0.0,0.0,0.0}    depth=-1.02  level=0.0)]
+      } 
+    ]
+    ...
+  ]
+]
+----
+
+How?
+
+* property  `subclass` in `dataSource:pondData1` and `dataSource:pondData2` (not shown) tell *ModelMaker* that the file to be read is in `.odf` format.
+* property `file` gives the name of the file to read, here **termites.ods**.
+* property `sheet` in `dataSource:pondData1` and `dataSource:pondData2` tell *ModelMaker* that the data are contained in, respectively, sheets **ponds1** and **ponds2** of this file. 
+* since `componentType:compTyp3` is child of a `groupType`, an `idGroup` property must be provided in the `dataSource` nodes to identify into which group container components instances will be stored; and an `idComponent` property to identify how many components must be instantiated;
+* four different components identifiers **P1**, **P2**, **P3**, **P4** (columns **id** and **pid** according to `idComponent` properties of the two `dataSource` nodes) and only one group identifier **pond** (column **type** according to `idGroup` properties of the two `dataSource` nodes) are found in the data sources. They trigger the instantiation of one group container with four components;
+* as `dataSource:pondData2` contains tabular data, a `dim` property tells which column contains the table indices (**d**);
+* as `dataSource:pondData1` contains no data for component **P3** (instantiated with identifier **79**), its `xx`, `yy` and `depth` fields are empty (= 0.0);
+* as `dataSource:pondData2` contains no data for component **P2** (instantiated with identifier **80**), for `turbidity[**2**]` in **P1** (instantiated with identifier **78**), and for `turbidity[**0**]` in **P3** (instantiated with identifier **79**), all these table celles are empty (= 0.0).
+
+CAUTION: If two different data sources contain data for the same field / table cell in the same component, only the last value read will be kept. Since the order of `dataSource` nodes processing is unpredictable, this should be avoided. Take care!
+
 
 ====== Example 3: using a mixture of _dataSource_ and _initialValues_ nodes
 
-*[TODO]*
+This `.csv` text file:
 
+image::configuration-experimentIMG/example-animal-csv.png[align="center"]
+
+with the following specifications: 
+
+image::configuration-experimentIMG/example-animal3.png[align="center"]
+image::configuration-experimentIMG/example-animal2.png[align="center"]
+image::configuration-experimentIMG/example-animal1.png[align="center"]
+
+will result in the instantiation of: 
+
+* _six_ system components with ids **50** to **55**, belonging to category **adult**, with their `age` automatic variable read from the `dataSource:animalData` node;
+* _six_ group containers with ids **e_adult**, **e_offspring**, **e_young**, **r_adult**, **r_offspring** and **r_young**. Components **50** to **53** belong to group **e_adult** while components **54** to **55** belong to group **r_adult**
+of life cycle **rat**. 
+* _two_ life cycles with ids **elephant** (containing the three former groups) and **rat** (containing the three latter groups).
+with the hierarchy of containers is described by all the `initialValues` nodes visible on the graph (from debugger):
+
+[source,]
+----
+container:sys1[
+  categories:[[category:*arena*], ...]
+  local_items:{...}
+  sub_containers:[
+  
+    elephant=container:elephant[
+      categories:[[category:*life cycle*], ...] 
+      sub_containers:[
+        eoffspring=container:eoffspring[
+          categories:[[category:*group*], ...] 
+          local_items:{}
+        ], 
+        eyoung=container:eyoung[
+          categories:[[category:*group*], ...] 
+          local_items:{}
+        ], 
+        e_adult=container:e_adult[
+          categories:[[category:*group*], ...]
+          local_items:{
+            50=[SystemComponent:50 (birthDate=0 age=28)], 
+            51=[SystemComponent:51 (birthDate=0 age=65)], 
+            52=[SystemComponent:52 (birthDate=0 age=12)], 
+            53=[SystemComponent:53 (birthDate=0 age=8)]
+          }
+        ]
+      ]
+    ]    
+    
+    rat=container:rat[
+      categories:[[category:*life cycle*], ...] 
+      sub_containers:[
+        roffspring=container:roffspring[
+          categories:[[category:*group*], ...]
+          local_items:{}
+        ], 
+        ryoung=container:ryoung[
+          categories:[[category:*group*], ...] 
+          local_items:{}
+        ], 
+        r_adult=container:r_adult[
+          categories:[[category:*group*], ...] 
+          local_items:{
+            54=[SystemComponent:54 (birthDate=0 age=1)], 
+            55=[SystemComponent:55 (birthDate=0 age=1)]
+          } 
+        ]
+      ]
+    ]
+    
+    ...
+  ]
+]
+----
+
+How?
+
+* property  `subclass` in `dataSource:animalData` tells *ModelMaker* that the file to be read is in `.csv` format.
+* property `file` gives the name of the file to read, here **species.csv**.
+* property `separator` in `dataSource:animalData` tells *ModelMaker* that the fields are separated with **";"**. 
+* since `componentType` nodes in this graph are all children of a `groupType` node, themselves children of a `lifeCycleType` node, properties `idLifeCycle`, `idGroup` and `idComponent` are required in data files to properly identify the components to instantiate;
+* six different components identifiers **robert**, **jasmine**, **pepe**, **groumpf**, **squick** and **squack** (column **id** according to the `idComponent` property of `dataSource:animalData`); two group identifiers **e_adult** and **r_adult** (column **stage** according to the `idGroup` property of `dataSource:animalData`); and two life cycle identifiers **elephant** and **rat** (column **species** according to the `idLifeCycle` property of `dataSource:animalData`); are found in the data source. They trigger the instantiation of two life cycle containers, each containing a single group container (from the data structure in the file), the former containing the first 4 components and the latter the last 2 components;
+* four `initialValues` nodes are also defined in this graph. They are all children of `groupType` nodes, meaning that they apply to groups and not to components. Since the groups in this model do not declare any data, the `initialValues` nodes only tell *ModelRunner* to instantiate one container for each of them (`nInstances` property set to 1). Without these declarations, *ModelRunner* would not instantiate thee containers and would not know where to store instances of components of categories `young` and `offspring` (as no instance of these is required in the data source);
+* as `dataSource:animalData` only contains data for the `age` automatic variable, all the instances of adult rats and elephants have their `birthDate` value set to 0; you can also verify that elephants have a much longer life span than rats.
+
+CAUTION: if `dataSource` and `initialValues` nodes are used to instantiate the same components, groups, life cycles, or the arena, all `dataSource` nodes are processed first (in unpredictable order), followed by all `initialValues` nodes (in unpredictable order too).
 
 ==== Import data from external sources
 

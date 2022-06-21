@@ -105,8 +105,6 @@ _Additional properties when_ `subclass = OdfFileLoader`
 [horizontal]
 `sheet`:: the name of the spreadsheet to load from this `.ods` file (different spreadsheets in the same `.ods` file must be specified as different `dataSource` nodes). If this property is absent or not set, the first spreadsheet will be loaded.
 
-_Additional properties when_ `subclass = CsvFileLoader`, `OdfFileLoader`
-
 `.csv` and `.ods` file formats both assume the data come in 2 dimensional tables with cross-references between the tables. Table columns must match parameter and driver field or table names. Table rows must match species, stage or system component instances.
 
 The following rules must be respected when preparing the data files:
