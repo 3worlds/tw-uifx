@@ -17,7 +17,7 @@ Forcing data:: Sometimes a simulation requires that data be fed in during its t
 +
 __Examples__: a series of metorological data used to force a fire spread or a vegetation growth model.
 
-Data for _parameters_ and _initial community_ are directly used to instantiate components and fill their descriptors with values. _Forcing data_ must be loaded into some initial data structure (probably most often a `DoubleTable`, cf. <<truetable>>, as a constant in the `system` instance), made accessible to some user-defined function that will read its content as simulation progresses.
+Data for _parameters_ and _initial community_ are directly used to instantiate components and fill their descriptors with values. _Forcing data_ must be loaded into some initial data structure (probably most often a `DoubleTable`, cf. <<truetable>>, as a constant in the `system` instance), made accessible to some user-defined function that will read its content as the simulation proceeds.
 
 ==== Data input methods
 
