@@ -80,8 +80,8 @@ image::tutorial2IMG/fig-tut2-src.png[align="center",role="thumb"]
 You can also create other Java classes or import third-party libraries to extend you model code. This will be discussed in later tutorials.
 There are two "import" markers at the top of the main source code file. Add any dependencies to third-party or other java classes you use.
 
-IMPORTANT: When editing the main java source code file, any imports your IDE might make automatically will not appear between the import markers. 
-Take care to edit these statements to they do appear between the import statements. These imports are in fact a code snippet property found in the specification root node.
+IMPORTANT: When editing the main java source code file, any imports your IDE might insert automatically will not necessarily appear between the import markers. 
+Take care to edit these statements so they do appear between the import statements. These imports are in fact a code snippet property found in the specification root node.
 
 
 Because these two methods are mapped to this generated file from the specifications created in _ModelMaker_, it follows that changes to the specifications may result in changes to these methods. So the question arises, how does _ModelMaker_ manage this without losing the Java code you write?

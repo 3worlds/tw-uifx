@@ -263,7 +263,7 @@ they have names. Generally, the names of _cross links_ are not much use. They ca
 the tool bar, and selecting `Role`. The relationship can be read as, for example: `system:sys1 belongsTo category:*arena*`.
 
 [#fig-arena]
-.The specification of the constants and drivers for the _arena_, pass:[<br/>] a category to which the only component in this tutorial (aka pass:[<br/>] `system:sys1`) belongs.
+.The specification of the constants and drivers for the _arena_, pass:[<br/>] a category to which the only component (aka `system:sys1`) pass:[<br/>]in this tutorial belongs.
 image::tutorial1IMG/fig-arena.png[align="left",width=500,float="right",role="thumb"]
 
 

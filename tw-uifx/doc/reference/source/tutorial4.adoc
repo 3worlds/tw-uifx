@@ -451,7 +451,7 @@ image::tutorial4IMG/fig-tut4-user-interface-properties.png[role="thumb",align="l
 .Scatter plot properties pass:[<br/>]editor in ModelRunner.
 image::tutorial4IMG/fig-tut4-xyplot-dlg.png[role="thumb",align="left",float="right"]
 
-The axis order of the xy plot 'diversity time since dist` can be set using the appropriate dialog from the widget menu in _ModelRunner_ (<<fig-tut4-xyplot-dlg>>).
+The axis order of the xy plot 'diversity time since dist' can be set using the appropriate dialog from the widget menu in _ModelRunner_ (<<fig-tut4-xyplot-dlg>>).
 
 The arrangement of widgets in the `tab` binary sub-tree is controlled by the `order` and `orientation` properties (<<fig-tut4-user-interface-properties>>).
 
