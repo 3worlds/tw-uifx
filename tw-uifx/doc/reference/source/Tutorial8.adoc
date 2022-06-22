@@ -125,4 +125,8 @@ Design.csv : Experiment design details.
 
 Examining "population_RelSumSq.csv' and 'Fst_RelSumSq.csv' we can see that about 90% of variance in Fst is explained by dispersal distance (dd) and 80% of population. Dispersal Method (dm) played a bigger role in explained variance in population (18%) than Fst (6%). The interaction between dd and dm is twice as strong in explaining variation of Fst (4%) than variation in population (2%). 
 
+You can recreate this tutorial by selecting `new -> tutorials -> 12 Running experiments`.
+
+
+
 
