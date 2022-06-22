@@ -601,6 +601,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truenext-7">5.7.4. Next</a></li>
 </ul>
 </li>
+<li><a href="#truetutorial-8-running-an-experiment">5.8. Tutorial 8: Running an experiment</a>
+<ul class="sectlevel3">
+<li><a href="#trueintroduction-8">5.8.1. Introduction</a></li>
+<li><a href="#truespecifications-7">5.8.2. Specifications</a></li>
+<li><a href="#truesimulation-2">5.8.3. Simulation</a></li>
+<li><a href="#trueresults">5.8.4. Results</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#truebibliography">Bibliography</a></li>
@@ -6614,7 +6622,7 @@ The latter property is only partly supported and at the time of writing, <code>M
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="../source/configuration-experimentIMG/example-spreadsheet-climate.png" alt="example spreadsheet climate">
+<img src="../source/configuration-experimentIMG/example-spreadsheet-climate.png" alt="example spreadsheet climate" width="550">
 </div>
 </div>
 <div class="paragraph">
@@ -6627,7 +6635,7 @@ The latter property is only partly supported and at the time of writing, <code>M
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="../source/configuration-experimentIMG/example-climate1.png" alt="example climate1">
+<img src="../source/configuration-experimentIMG/example-climate1.png" alt="example climate1" width="700">
 </div>
 </div>
 <div class="paragraph">
@@ -6686,7 +6694,7 @@ The latter property is only partly supported and at the time of writing, <code>M
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="../source/configuration-experimentIMG/example-spreadsheet-termites.png" alt="example spreadsheet termites">
+<img src="../source/configuration-experimentIMG/example-spreadsheet-termites.png" alt="example spreadsheet termites" width="550">
 </div>
 </div>
 <div class="paragraph">
@@ -6699,7 +6707,7 @@ The latter property is only partly supported and at the time of writing, <code>M
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="../source/configuration-experimentIMG/example-termites1.png" alt="example termites1">
+<img src="../source/configuration-experimentIMG/example-termites1.png" alt="example termites1" width="650">
 </div>
 </div>
 <div class="paragraph">
@@ -6793,7 +6801,7 @@ If two different data sources contain data for the same field / table cell in th
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="../source/configuration-experimentIMG/example-animal1.png" alt="example animal1">
+<img src="../source/configuration-experimentIMG/example-animal1.png" alt="example animal1" width="750">
 </div>
 </div>
 <div class="paragraph">
@@ -9996,7 +10004,7 @@ To see all the relevant RNG properties:</p>
 </div>
 <div id="fig-tut7-ModelRunner" class="imageblock text-left thumb">
 <div class="content">
-<img src="../source/tutorial7IMG/fig-tut7-ModelRunner.png" alt="fig tut7 ModelRunner" width="700">
+<img src="../source/tutorial7IMG/fig-tut7-ModelRunner.png" alt="fig tut7 ModelRunner" width="600">
 </div>
 <div class="title">Figure 64. Independent and dependent random number streams.</div>
 </div>
@@ -10004,7 +10012,274 @@ To see all the relevant RNG properties:</p>
 <div class="sect3">
 <h4 id="truenext-7"><a class="anchor" href="#truenext-7"></a>5.7.4. Next</h4>
 <div class="paragraph">
-<p><strong>TODO</strong></p>
+<p>This next and last tutorial covers running simulation experiments.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truetutorial-8-running-an-experiment"><a class="anchor" href="#truetutorial-8-running-an-experiment"></a>5.8. Tutorial 8: Running an experiment</h3>
+<div class="sect3">
+<h4 id="trueintroduction-8"><a class="anchor" href="#trueintroduction-8"></a>5.8.1. Introduction</h4>
+<div class="paragraph">
+<p>This tutorial introduces the current experiment design system (22/06/2022). This system has a major limitation in that it can only work with arena (i.e. global) constants.
+We will update this tutorial when OpenMOLE is integrated with 3Worlds, something we are currently working on.</p>
+</div>
+<div class="paragraph">
+<p>We will demonstrate the current system using GDDM (Genetics, Demography and Disturbance Model).
+GDDM is an individual-based spatial model of a population of animals in an environment experiencing recurrent disturbance. The disturbance return interval
+is short (about every two years) because the study is intended for the North Australian savannah. Animals mate, give birth, disperse and die on an annual time step. Their longevity is about 12 years.</p>
+</div>
+<div class="paragraph">
+<p>One of the aims of the study is to examine the population and genetic consequences of informed dispersal. In the present case, informed dispersal means tending to select habitat with a higher carrying capacity.</p>
+</div>
+<div class="paragraph">
+<p>We perform a simple ANOVA experiment to examine the variance explained in Fst and total population by just two parameters (constants): dispersal distance (long/short) and dispersal method (informed/uninformed). Most of the processes in this model depend on random number generation. Therefore, we will run (somewhat arbitrarily) five replicates.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truespecifications-7"><a class="anchor" href="#truespecifications-7"></a>5.8.2. Specifications</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new project by selecting <code>new &#8594; model library &#8594; GDDM</code> and name it 'Tut8'.</p>
+</li>
+<li>
+<p>Run (Deploy) the model and adjust the widget settings (widget menu)to suit to get a feel for what&#8217;s going on.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The model runs for 100 years and displays many variables such as Fst and population occupancy. The habitat pattern changes every year with approximately half being 'good' habitat and half 'bad'. 'Good' habitat has a carrying capacity of 3 animals per ha. and bad 1.5.</p>
+</div>
+<div id="fig-tut8-MR" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial8IMG/fig-tut8-MR.png" alt="fig tut8 MR" width="700">
+</div>
+<div class="title">Figure 65. A view of GDDM running in <em>ModelRunner</em>.</div>
+</div>
+<div class="paragraph">
+<p>Return to <em>ModelMaker</em> and arrange the graph as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>Collapse <code>system.sys1</code>.</p>
+</li>
+<li>
+<p>Collapse all sub-trees from <code>DataDefintion:dDef</code> and then expand <code>record:glbCnt</code>.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="trueuser-interface-6"><a class="anchor" href="#trueuser-interface-6"></a>User interface</h5>
+<div class="paragraph">
+<p>To reduce the running time of the experiment, we can replace the graphic displays and just have text output to file.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>Delete all sub-trees of <code>UserInterface:gui</code>.</p>
+</li>
+<li>
+<p>Add a <code>Headless</code> node as a child of <code>UserInterface:gui</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Widgets that are children of <code>Headless</code> have no visible presence except for console output. Note: you won&#8217;t see this output unless you are running tw.jar from a console.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>Add a <code>widget</code> as a child or <code>headless:hl</code>, name it 'ctrl' and select 'HLControlWidget1' as its sub-class.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This control widget can be used even if you have visible widgets. It begins the simulation without user-intervention.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Add another <code>widget</code> as a child of <code>headless:hl</code> name it 'progress' and select 'HLProgressWidget1' as its sub-class.</p>
+</li>
+<li>
+<p>Add a <code>trackTime</code> edge from <code>widget:progress</code> to <code>dynamics:sim1</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This progress widget will produce progress information to the console as the experiment proceeds.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="9">
+<li>
+<p>Add two more widgets as a children of <code>headless:hl</code>, name them 'fstWriter' and 'popWriter' respectively and select 'HLExperimentWidget1' as their type.</p>
+</li>
+<li>
+<p>Add a <code>trackSeries</code> edge from <code>widget:fstWriter</code> to  <code>dataTracker:trkFst</code>.</p>
+</li>
+<li>
+<p>Add another <code>trackSeries</code> edge, this time from <code>widget:popWriter</code> to <code>dataTracker:trkMetaPop</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueexperiment"><a class="anchor" href="#trueexperiment"></a>Experiment</h5>
+<div class="paragraph">
+<p>We now define some treatments of <code>fields</code> that are children of <code>record:glbCnt</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add a <code>treatment</code> node as a child of <code>experiment:exp</code>.</p>
+</li>
+<li>
+<p>Add a <code>treats</code> edge from <code>treatment:trt</code> to <code>field:isDispersalInformed</code> and name it 'dm' (dispersal method).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This field (<code>isDispersalInformed</code>) is a boolean constant so the only treatments are 'true' and 'false'.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>Click on the <code>treatment:trt</code> node and, in the selected properties editor, edit the <code>dm#values</code> property by adding 'true' and 'false' on two separate lines.</p>
+</li>
+<li>
+<p>Edit the <code>dm#valueName</code> property and enter 'inf' and 'uninf', again on two separate line. These are the names by which the setting is described in outputs.</p>
+</li>
+<li>
+<p>Add another <code>treats</code> edge from <code>treatment:trt</code> to <code>field:isDispersalShort</code> and name it 'dd' (dispersal distance).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This field (<code>isDispersalShort</code>) is also a boolean constant.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>Click on the <code>treatment:trt</code> node and, in the selected properties editor, edit the <code>dd#values</code> property by adding 'true' and 'false' on two separate lines.</p>
+</li>
+<li>
+<p>Edit the <code>dd#valueName</code> property and enter 'short' and 'long', again, on two separate line.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To run an ANOVA:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Select the <code>design:dsgn</code> node, and in the selected properties editor set <code>design:dsgn</code> to <code>crossFactorial</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A message now appears indicating that treatments must have a designated rank order for this experiment design.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="9">
+<li>
+<p>Select the <code>treatment:trt</code> node again and in the selected properties editor set <code>dd#rank</code> to 1 and <code>dm#rank</code> to 2.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This model employs random number generation in many of its processes so replicates must be used.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="10">
+<li>
+<p>Right-click on the <code>experiment:exp</code> node, select <code>Optional properties&#8230;&#8203;</code>, check <code>experiment:exp#nReplicates</code> and click 'ok'.</p>
+</li>
+<li>
+<p>Select <code>experiment:exp</code> and in the selected properties editor set <code>exp#nReplicates</code> to 5.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This experiment will create 5 x 2 x 2 simulators (20) running in parallel.</p>
+</div>
+<div id="fig-tut8-config" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial8IMG/fig-tut8-config.png" alt="fig tut8 config" width="800">
+</div>
+<div class="title">Figure 66. Relevant parts of the configuration graph ready for running.</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truesimulation-2"><a class="anchor" href="#truesimulation-2"></a>5.8.3. Simulation</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Save changes (Ctrl-S) and click the deploy button (Alt+D).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The date and experiment design type are now written to the console followed by a message from each simulator as it is initialised. The headless controller then starts the simulators and a running message is produced from each. The number of simulators running in parallel depends on the number of cores on your machine. The experiment takes about 3 to 4 minutes on a 16 core machine.
+The ODD documentation is generated automatically at the end of the experiment.</p>
+</div>
+<div id="fig-tut8-consoleOutput" class="imageblock text-left thumb">
+<div class="content">
+<img src="../source/tutorial8IMG/fig-tut8-consoleOutput.png" alt="fig tut8 consoleOutput" width="450">
+</div>
+<div class="title">Figure 67. Console output produced when running Tutorial 8 experiment.</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueresults"><a class="anchor" href="#trueresults"></a>5.8.4. Results</h4>
+<div class="paragraph">
+<p>The results of the experiment can be found in 2 directories with the names of the experiment widgets <code>fstWriter</code> and <code>popWriter</code>.</p>
+</div>
+<div id="fig-tut8-expDirs" class="imageblock right text-center thumb">
+<div class="content">
+<img src="../source/tutorial8IMG/fig-tut8-expDirs.png" alt="fig tut8 expDirs" width="200">
+</div>
+<div class="title">Figure 68. Directory structure <br/> created by the <code>fstWriter</code> <br/> and <code>popWriter</code> widgets.</div>
+</div>
+<div class="paragraph">
+<p>The experiment widgets have produced the following files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Design.csv</strong>: Experiment design details.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;.csv</strong>: time series of the data from each simulator</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_avg.csv</strong>: time series of the data averaged over simulators</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_anova.R</strong>: R script for the anova computation.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_AnovaInput.csv</strong>: table of data by treatment value name presented to R.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_anovaResults.csv</strong>: raw results produced by R.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_RelSumSq.csv</strong>: variance explained relative to the total explained.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_var.csv</strong>: variance in time series over replicates.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Examining <strong>population_RelSumSq.csv</strong> and <strong>Fst_RelSumSq.csv</strong> we can see that about 90% of variance in Fst is explained by dispersal distance (dd) and 80% of population. Dispersal Method (dm) played a bigger role in explained variance in population (18%) than Fst (6%). The interaction between dd and dm is twice as strong in explaining variation of Fst (4%) than variation in population (2%).</p>
+</div>
+<div class="paragraph">
+<p>You can recreate this tutorial by selecting <code>new &#8594; tutorials &#8594; 12 Running experiments</code>.</p>
 </div>
 </div>
 </div>
@@ -10073,7 +10348,7 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 <div id="footer">
 <div id="footer-text">
 Version 1.10<br>
-Last updated 2022-06-21 17:20:02 +0200
+Last updated 2022-06-22 10:45:54 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
