@@ -100,12 +100,12 @@ Here are examples extracted  from this test model:
 
 This `.ods` spreadsheet:
 
-image::configuration-experimentIMG/example-spreadsheet-climate.png[align="center"]
+image::configuration-experimentIMG/example-spreadsheet-climate.png[align="center",width=550]
 
 with the following specifications: 
 
 image::configuration-experimentIMG/example-climate2.png[align="center"]
-image::configuration-experimentIMG/example-climate1.png[align="center"]
+image::configuration-experimentIMG/example-climate1.png[align="center",width=700]
 
 will result in the instantiation of a single system component with id **49**, belonging to category **climate**, with an elaborate data structure as shown on the graph, containing a table *otherVar* of dimensions *[12,8]* with values read from the *climat.ods* file (from debugger):
 [source,]
@@ -139,12 +139,12 @@ How?
 
 These `.ods` spreadsheets:
 
-image::configuration-experimentIMG/example-spreadsheet-termites.png[align="center"]
+image::configuration-experimentIMG/example-spreadsheet-termites.png[align="center",width=550]
 
 with the following specifications: 
 
 image::configuration-experimentIMG/example-termites2.png[align="center"]
-image::configuration-experimentIMG/example-termites1.png[align="center"]
+image::configuration-experimentIMG/example-termites1.png[align="center",width=650]
 
 will result in the instantiation of _four_ system components with ids **77** to **80**, belonging to category **waterBody**, with an elaborate data structure as shown on the graph, containing a table *turbidity* of dimensions *3* with values read from the *termites.ods* file, sheets **ponds1** and **ponds2** (from debugger): 
 
@@ -191,7 +191,7 @@ with the following specifications:
 
 image::configuration-experimentIMG/example-animal3.png[align="center"]
 image::configuration-experimentIMG/example-animal2.png[align="center"]
-image::configuration-experimentIMG/example-animal1.png[align="center"]
+image::configuration-experimentIMG/example-animal1.png[align="center",width=750]
 
 will result in the instantiation of: 
 

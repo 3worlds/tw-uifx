@@ -121,7 +121,7 @@ Both series are now identical as they are set by the same seed (index 0 of the t
 
 [#fig-tut7-ModelRunner]
 .Independent and dependent random number streams.
-image::tutorial7IMG/fig-tut7-ModelRunner.png[align="left",role="thumb", width="700"]
+image::tutorial7IMG/fig-tut7-ModelRunner.png[align="left",role="thumb", width="600"]
 
 
 ==== Next

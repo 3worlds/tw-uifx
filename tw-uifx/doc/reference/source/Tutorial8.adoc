@@ -1,4 +1,4 @@
-=== Tutorial 7: Running an experiment
+=== Tutorial 8: Running an experiment
 
 ==== Introduction
 
@@ -90,7 +90,7 @@ This experiment will create 5 x 2 x 2 simulators (20) running in parallel.
 
 [#fig-tut8-config]
 .Relevant parts of the configuration graph ready for running.
-image::tutorial8IMG/fig-tut8-config.png[align="left",role="thumb", width="1000"]
+image::tutorial8IMG/fig-tut8-config.png[align="left",role="thumb", width="800"]
 
 
 ==== Simulation
@@ -101,7 +101,7 @@ The ODD documentation is generated automatically at the end of the experiment.
 
 [#fig-tut8-consoleOutput]
 .Console output produced when running Tutorial 8 experiment.
-image::tutorial8IMG/fig-tut8-consoleOutput.png[align="left",role="thumb", width="700"]
+image::tutorial8IMG/fig-tut8-consoleOutput.png[align="left",role="thumb", width="450"]
 
 
 ==== Results
@@ -109,21 +109,22 @@ image::tutorial8IMG/fig-tut8-consoleOutput.png[align="left",role="thumb", width=
 The results of the experiment can be found in 2 directories with the names of the experiment widgets `fstWriter` and `popWriter`.
 
 [#fig-tut8-expDirs]
-.Directory structure created by the `fstWriter` and `popWriter` widgets.
-image::tutorial8IMG/fig-tut8-expDirs.png[align="left",role="thumb", width="400"]
+.Directory structure pass:[<br/>] created by the `fstWriter` pass:[<br/>] and `popWriter` widgets.
+image::tutorial8IMG/fig-tut8-expDirs.png[align="center",role="thumb", width="200", float="right"]
 
 
 The experiment widgets have produced the following files:
-Design.csv : Experiment design details.
-<Field name>.csv: time series of the data from each simulator
-<Field name>_avg.csv: time series of the data averaged over simulators
-<Field name>_anova.R: R script for the anova computation.
-<Field name>_AnovaInput.csv: table of data by treatment value name presented to R.
-<Field name>_anovaResults.csv: raw results produced by R.
-<Field name>_RelSumSq.csv: variance explained relative to the total explained.
-<Field name>_var.csv: variance in time series over replicates.
 
-Examining "population_RelSumSq.csv' and 'Fst_RelSumSq.csv' we can see that about 90% of variance in Fst is explained by dispersal distance (dd) and 80% of population. Dispersal Method (dm) played a bigger role in explained variance in population (18%) than Fst (6%). The interaction between dd and dm is twice as strong in explaining variation of Fst (4%) than variation in population (2%). 
+* **Design.csv**: Experiment design details.
+* **<Field name>.csv**: time series of the data from each simulator
+* **<Field name>_avg.csv**: time series of the data averaged over simulators
+* **<Field name>_anova.R**: R script for the anova computation.
+* **<Field name>_AnovaInput.csv**: table of data by treatment value name presented to R.
+* **<Field name>_anovaResults.csv**: raw results produced by R.
+* **<Field name>_RelSumSq.csv**: variance explained relative to the total explained.
+* **<Field name>_var.csv**: variance in time series over replicates.
+
+Examining *population_RelSumSq.csv* and **Fst_RelSumSq.csv** we can see that about 90% of variance in Fst is explained by dispersal distance (dd) and 80% of population. Dispersal Method (dm) played a bigger role in explained variance in population (18%) than Fst (6%). The interaction between dd and dm is twice as strong in explaining variation of Fst (4%) than variation in population (2%). 
 
 You can recreate this tutorial by selecting `new -> tutorials -> 12 Running experiments`.
 
