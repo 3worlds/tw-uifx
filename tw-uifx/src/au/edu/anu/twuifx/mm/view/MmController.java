@@ -67,10 +67,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -82,8 +79,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Scanner;
-
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 import javafx.scene.effect.DropShadow;
