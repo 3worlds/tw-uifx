@@ -81,6 +81,8 @@ include::Tutorial6.adoc[]
 
 include::Tutorial7.adoc[]
 
+include::Tutorial8.adoc[]
+
 :sectnums!:
 [.text-justify]
 == Bibliography
