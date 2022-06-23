@@ -120,7 +120,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#onReference" text="Référence" />
                 <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#onAbout" text="À propos de ModelMaker" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#onGitHub" text="GitHub" />
+                  <MenuItem mnemonicParsing="false" onAction="#onGitHub" text="GitHub 3Worlds" />
               </items>
             </Menu>
 			</menus>
