@@ -9,7 +9,7 @@ Connell, J.H. (1978). Diversity in tropical rain forests and coral reefs - high 
 Coquillard, P., & Hill, D. (1997). __Modélisation et simulation d’écosystèmes. Des modèles déterministes aux simulations à événements discrets__. Masson, Paris.
 
 [#Flint2006]
-Flint, S. R. (2006). _Aspect-Oriented Thinking - An approach to bridging the disciplinary divides_. PhD, Australian National University.
+Flint, S. R. (2006). _Aspect-Oriented Thinking - An approach to bridging the disciplinary divides_. PhD, Australian National University. https://openresearch-repository.anu.edu.au/handle/1885/49328
 
 [#Gignoux2011]
 Gignoux, J., I.D. Davies, S.R. Flint, & J.D. Zucker (2011). The Ecosystem in Practice: Interest and 
