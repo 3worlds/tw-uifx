@@ -776,11 +776,18 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		hostServices.showDocument(
 				"https://3worlds.github.io/tw-uifx/tw-uifx/doc/reference/html/reference.html#truesample-models-and-tutorials");
 	}
+	
+	@FXML
+	void onGitHub(ActionEvent event) {
+		hostServices.showDocument(
+				"https://github.com/3worlds/3w");
+		
+	}
 
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
-	public void setHostServices(HostServices hs) {
+ 	public void setHostServices(HostServices hs) {
 		hostServices = hs;
 	}
 

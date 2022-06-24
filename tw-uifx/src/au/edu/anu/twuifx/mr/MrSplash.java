@@ -94,7 +94,7 @@ public class MrSplash extends Preloader {
 			bottom.getChildren().addAll(label, progressBar, lblNodeName);
 			VBox.setVgrow(progressBar, Priority.ALWAYS);
 
-			Label title = new Label("ThreeWorlds");
+			Label title = new Label("3Worlds");
 //			title.setStyle("-fx-effect: innershadow(gaussian, gray, 5, 1.0, 0, 0);");
 			title.setFont(Font.font("System", 40));
 			BorderPane.setAlignment(title, Pos.CENTER);
