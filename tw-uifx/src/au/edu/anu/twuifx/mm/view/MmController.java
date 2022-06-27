@@ -792,7 +792,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-
 	public void onProjectClosing() {
 		GraphState.clear();
 		if (visualiser != null)
@@ -941,10 +940,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-	@Override
-	public LayoutType getCurrentLayout() {
-		return currentLayout;
-	}
+//	@Override
+//	public LayoutType getCurrentLayout() {
+//		return currentLayout;
+//	}
 
 	@Override
 	public void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {

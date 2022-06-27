@@ -125,7 +125,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		mainStage = primaryStage;
 		mainStage.setTitle(DefaultWindowSettings.defaultName());
 		createMainWindow();
-		Dialogs.initialise(new Dialogsfx(root.getScene().getWindow()));
+		Dialogs.setImplementation(new Dialogsfx(root.getScene().getWindow()));
 		GraphState.initialise(new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
 		GraphState.addListener(controller);
 		mainStage.setHeight(DefaultWindowSettings.getHeight());

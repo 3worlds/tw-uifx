@@ -48,7 +48,7 @@ public class MMmain {
 		// Flaky ??
 		ProjectJarGenerator.setModelRunnerClass(MRmain.class);
 		// pass logging args on to deployed MR
-		MMModel.mmArgs = args;
+		MMModel.setMMArgs(args);
 		
 		// enact logging args 
 		if (args.length > 0)
