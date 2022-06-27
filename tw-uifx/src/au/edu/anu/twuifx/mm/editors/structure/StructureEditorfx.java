@@ -41,7 +41,7 @@ import java.util.TreeMap;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
+import au.edu.anu.twapps.mm.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
 import au.edu.anu.twapps.mm.undo.Originator;

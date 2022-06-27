@@ -319,7 +319,7 @@ public class Dialogsfx implements IDialogs {
 	}
 
 	@Override
-	public int editISFiles(List<File> files, int idx) {
+	public int selectFile(List<File> files, int idx) {
 		ISSelectionDlg dlg = new ISSelectionDlg(files, idx);
 		return dlg.getResult();
 	}

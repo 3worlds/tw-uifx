@@ -97,7 +97,7 @@ import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.MMModel;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
+import au.edu.anu.twapps.mm.IGraphVisualiser;
 import au.edu.anu.twapps.mm.layout.LayoutType;
 import au.edu.anu.twapps.mm.undo.Caretaker;
 import au.edu.anu.twapps.mm.undo.MMMemento;

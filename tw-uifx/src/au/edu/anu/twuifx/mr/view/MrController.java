@@ -319,7 +319,7 @@ public class MrController implements IMRController {
 
 	@FXML
 	void onISSelect(ActionEvent event) {
-		int idx = Dialogs.editISFiles(model.getISFiles(), model.getISSelection());
+		int idx = Dialogs.selectFile(model.getISFiles(), model.getISSelection());
 		model.setISSelection(idx);
 	}
 

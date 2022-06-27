@@ -41,7 +41,7 @@ import fr.cnrs.iees.uit.space.Distance;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.graphEditor.IGraphVisualiser;
+import au.edu.anu.twapps.mm.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.FRLayout;
 import au.edu.anu.twapps.mm.layout.ILayout;
