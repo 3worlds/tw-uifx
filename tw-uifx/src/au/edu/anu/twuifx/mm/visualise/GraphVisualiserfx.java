@@ -219,7 +219,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
 
-		setLayoutNode(null);
+		setLayoutRoot(null);
 	}
 
 	private void resetZorder(ObservableList<Node> nodeList) {
@@ -336,7 +336,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this, recorder);
 				e.consume();
 			} else if (e.getButton() == MouseButton.SECONDARY && e.isControlDown()) {
-				setLayoutNode(n);
+				setLayoutRoot(n);
 //				e.consume();
 			} else {
 				controller.onNodeSelected(n);
@@ -355,7 +355,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void setLayoutNode(VisualNode newRoot) {
+	public void setLayoutRoot(VisualNode newRoot) {
 		if (newRoot == null)
 			newRoot = getTWRoot();
 		if (!newRoot.isVisible() || newRoot.isCollapsed())
@@ -574,12 +574,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			pt.setOnFinished(e -> {
 				// Hide every edge between this tree and other non-collapsed nodes
 				hideEdges(childRoot);
-				setLayoutNode(controller.getLayoutRoot());
+				setLayoutRoot(controller.getLayoutRoot());
 			});
 			pt.play();
 		} else {
 			hideEdges(childRoot);
-			setLayoutNode(controller.getLayoutRoot());
+			setLayoutRoot(controller.getLayoutRoot());
 		}
 	}
 
@@ -932,23 +932,23 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		updateElementColour(highlightNodes);
 	}
 
-	@Override
-	public void onShowLocalGraph(VisualNode root, int pathLength) {
-		Set<VisualNode> visibleNodes = new HashSet<>();
-		traversal(parentLineVisibleProperty.getValue(), edgeLineVisibleProperty.getValue(), root, 0, pathLength,
-				visibleNodes);
-		visibleNodes.add(root);
-		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-	}
+//	@Override
+//	public void onShowLocalGraph(VisualNode root, int pathLength) {
+//		Set<VisualNode> visibleNodes = new HashSet<>();
+//		traversal(parentLineVisibleProperty.getValue(), edgeLineVisibleProperty.getValue(), root, 0, pathLength,
+//				visibleNodes);
+//		visibleNodes.add(root);
+//		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
+//	}
 
-	@Override
-	public void onShowAll() {
-		Set<VisualNode> visibleNodes = new HashSet<>();
-		for (VisualNode n : visualGraph.nodes())
-			if (!n.isCollapsed())
-				visibleNodes.add(n);
-		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-	}
+//	@Override
+//	public void onShowAll() {
+//		Set<VisualNode> visibleNodes = new HashSet<>();
+//		for (VisualNode n : visualGraph.nodes())
+//			if (!n.isCollapsed())
+//				visibleNodes.add(n);
+//		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
+//	}
 
 	@Override
 	public void onHighlightLocalGraph(VisualNode root, int pathLength) {

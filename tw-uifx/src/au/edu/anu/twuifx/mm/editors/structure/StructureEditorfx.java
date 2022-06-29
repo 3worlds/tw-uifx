@@ -260,7 +260,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 					onDeleteNode(duration);
 
-					gvisualiser.setLayoutNode(controller.getLayoutRoot());
+					gvisualiser.setLayoutRoot(controller.getLayoutRoot());
 
 					recorder.addState(desc);
 				});
@@ -327,7 +327,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 						onDeleteTree(vn, duration);
 
-						gvisualiser.setLayoutNode(controller.getLayoutRoot());
+						gvisualiser.setLayoutRoot(controller.getLayoutRoot());
 
 						recorder.addState(desc);
 					});
@@ -373,7 +373,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 						controller.model().saveAndReload();
 
-						gvisualiser.setLayoutNode(controller.getLayoutRoot());
+						gvisualiser.setLayoutRoot(controller.getLayoutRoot());
 
 						recorder.addState(desc);
 
