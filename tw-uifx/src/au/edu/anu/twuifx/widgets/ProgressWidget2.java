@@ -56,9 +56,7 @@ import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
- * @author Ian Davies
- *
- * @date 23 Mar. 2021
+ * @author Ian Davies -23 Mar. 2021
  * 
  *       Series (time by Sender) for each simulator
  */

@@ -40,9 +40,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
- * @author Ian Davies
- *
- * @date 2 Sep 2019
+ * @author Ian Davies -2 Sep 2019
  * 
  *       This controller has no GUI. It sends a run event on start(), a quit
  *       event on Finished and writes the instance id and simulation time to

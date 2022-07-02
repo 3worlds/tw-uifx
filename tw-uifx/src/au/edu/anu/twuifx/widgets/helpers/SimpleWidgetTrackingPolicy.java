@@ -37,9 +37,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
- * @author Ian Davies
- *
- * @date 23 Sep 2019
+ * @author Ian Davies - 23 Sep 2019
  */
 
 /*

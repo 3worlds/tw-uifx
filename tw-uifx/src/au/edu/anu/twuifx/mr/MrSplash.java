@@ -49,8 +49,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
- * @author Ian Davies
- * @date 23 Sep. 2018
+ * @author Ian Davies -23 Sep. 2018
  * 
  * 
  */

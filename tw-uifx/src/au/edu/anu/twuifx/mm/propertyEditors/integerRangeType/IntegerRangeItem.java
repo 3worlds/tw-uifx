@@ -40,9 +40,7 @@ import fr.cnrs.iees.graph.ElementAdapter;
 import au.edu.anu.rscs.aot.util.IntegerRange;
 
 /**
- * @author Ian Davies
- *
- * @date 24 Oct 2019
+ * @author Ian Davies - 24 Oct 2019
  */
 public class IntegerRangeItem extends SimpleMMPropertyItem {
 

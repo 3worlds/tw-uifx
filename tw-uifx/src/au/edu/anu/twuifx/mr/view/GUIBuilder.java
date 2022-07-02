@@ -60,9 +60,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
- * @author Ian Davies
- *
- * @date 2 Sep 2019
+ * @author Ian Davies - 2 Sep 2019
  */
 public class GUIBuilder {
 	private List<WidgetGUI> guiWidgets;

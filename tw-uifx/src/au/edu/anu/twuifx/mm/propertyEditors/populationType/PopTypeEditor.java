@@ -46,9 +46,7 @@ import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.layout.Pane;
 
 /**
- * @author Ian Davies
- *
- * @date 15 Nov 2019
+ * @author Ian Davies - 15 Nov 2019
  */
 public class PopTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 

@@ -57,9 +57,7 @@ import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
- * @author Ian Davies
- *
- * @date 25 Sep 2020
+ * @author Ian Davies - 25 Sep 2020
  */
 public class BorderListEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 

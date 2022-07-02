@@ -40,9 +40,7 @@ import fr.cnrs.iees.graph.ElementAdapter;
 import fr.ens.biologie.generic.utils.Interval;
 
 /**
- * @author Ian Davies
- *
- * @date 24 Oct 2019
+ * @author Ian Davies - 24 Oct 2019
  */
 public class IntervalItem extends SimpleMMPropertyItem {
 

@@ -36,9 +36,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.paint.Color;
 
 /**
- * @author Ian Davies
- *
- * @date 3 Jan 2020
+ * @author Ian Davies -3 Jan 2020
  */
 public class FileFormatCell extends ListCell<File> {
 

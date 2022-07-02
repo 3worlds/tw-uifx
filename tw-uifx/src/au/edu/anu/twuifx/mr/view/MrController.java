@@ -86,8 +86,7 @@ import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
- * @author Ian Davies
- * @date 18 Jan. 2018
+ * @author Ian Davies - 18 Jan. 2018
  */
 public class MrController implements IMRController {
 	@FXML

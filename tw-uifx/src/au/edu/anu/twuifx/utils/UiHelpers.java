@@ -41,9 +41,7 @@ import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
 
 /**
- * @author Ian Davies
- *
- * @date 11 Dec 2019
+ * @author Ian Davies - 11 Dec 2019
  */
 public class UiHelpers {
 	public static double[] getSplitPanePositions(double def, String key) {

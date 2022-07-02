@@ -36,9 +36,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
 /**
- * @author Ian Davies
- *
- * @date 15 Sept 2021
+ * @author Ian Davies -15 Sept 2021
  * 
  *       https://stackoverflow.com/questions/45977390/how-to-force-a-double-input-in-a-textfield-in-javafx
  */

@@ -36,9 +36,7 @@ import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 
 /**
- * @author Ian Davies
- *
- * @date 23 Oct 2020
+ * @author Ian Davies - 23 Oct 2020
  * 
  * Makes controller ui controls more responsive.
  */

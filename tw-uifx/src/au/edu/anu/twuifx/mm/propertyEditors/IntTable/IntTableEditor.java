@@ -52,9 +52,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Window;
 
 /**
- * @author Ian Davies
- *
- * @date 11 Nov 2021
+ * @author Ian Davies - 11 Nov 2021
  */
 public class IntTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 

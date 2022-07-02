@@ -53,9 +53,7 @@ import javafx.stage.Window;
 import javafx.util.Callback;
 
 /**
- * @author Ian Davies
- *
- * @date 2 Jan 2020
+ * @author Ian Davies -  2 Jan 2020
  */
 public class ISSelectionDlg {
 	private List<File> fileList;

@@ -67,9 +67,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * @author Ian Davies
- *
- * @date 7 Sept 2021
+ * @author Ian Davies - 7 Sept 2021
  */
 public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
 	private final WidgetTimeFormatter timeFormatter;
@@ -139,7 +137,7 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 		line5.getChildren().addAll(new Label("Start:"), lblStart);
 
 		lblEnd = new Label("");
-		
+
 		line6.getChildren().addAll(new Label("≈End: "), lblEnd);
 
 		BorderPane content = new BorderPane();

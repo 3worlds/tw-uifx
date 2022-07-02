@@ -37,9 +37,7 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
- * @author Ian Davies
- *
- * @date 9 Dec. 2020
+ * @author Ian Davies - 9 Dec. 2020
  */
 public class RangeWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData> {
 

@@ -40,9 +40,7 @@ import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 
 /**
- * @author Ian Davies
- *
- * @date 11 Nov 2021
+ * @author Ian Davies - 11 Nov 2021
  */
 //TODO table editors need to be brought together in a proper hierarchy
 public class IntTableItem extends SimpleMMPropertyItem{

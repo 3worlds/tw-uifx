@@ -84,9 +84,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
 
 /**
- * @author Ian Davies
- *
- * @date 16 Mar. 2021
+ * @author Ian Davies - 16 Mar. 2021
  * 
  *       Displays one scatter plot for each selected simulator (default sender =
  *       0)

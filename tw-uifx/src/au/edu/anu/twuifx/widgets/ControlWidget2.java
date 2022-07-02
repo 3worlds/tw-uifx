@@ -65,9 +65,7 @@ import javafx.scene.layout.HBox;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
- * @author Ian Davies
- *
- * @date 29 Jan 2020
+ * @author Ian Davies - 29 Jan 2020
  */
 public class ControlWidget2 extends ControllerAdapter
 		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {

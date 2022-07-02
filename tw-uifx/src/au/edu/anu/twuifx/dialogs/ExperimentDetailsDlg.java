@@ -52,6 +52,9 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
+/**
+ * @author Ian Davies - 5 Jan 2022
+ */
 public class ExperimentDetailsDlg {
 	@SuppressWarnings("unchecked")
 	public ExperimentDetailsDlg(TreeGraph<TreeGraphDataNode, ALEdge> g) {

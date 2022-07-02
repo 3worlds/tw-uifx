@@ -72,14 +72,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 /**
- * @author Ian Davies
- *
- * @date 29 Jan 2020
+ * @author Ian Davies -29 Jan 2020
+ *         <p>
+ *         Produces a plots of cpu time.
  * 
- *       Produces a plots of cpu time.
- * 
- *       There is clearly an opportunity for a common ancestor for this and SCW1
- *       and perhaps SCW.
+ *         There is clearly an opportunity for a common ancestor for this and
+ *         SCW1 and perhaps SCW.
  */
 public class ControlWidget3 extends StateMachineController
 		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
@@ -184,7 +182,7 @@ public class ControlWidget3 extends StateMachineController
 
 		// can't create a chart without axes
 		chart = new XYChart(xAxis1, yAxis1);
-		chart.setPadding(new Insets(5,5,5,5));
+		chart.setPadding(new Insets(5, 5, 5, 5));
 		chart.legendVisibleProperty().set(true);
 		chart.setAnimated(false);
 		content.setCenter(chart);

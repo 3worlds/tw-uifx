@@ -52,9 +52,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
- * @author Ian Davies
- *
- * @date 2 Sep 2019
+ * @author Ian Davies - 2 Sep 2019
  *
  *       Simplest possible state machine controller (experiment Deployer)
  *       widget.

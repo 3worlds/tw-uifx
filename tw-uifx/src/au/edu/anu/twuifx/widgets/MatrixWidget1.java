@@ -97,9 +97,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Window;
 
 /**
- * @author Ian Davies
- *
- * @date 2 Sep 2019
+ * @author Ian Davies - 2 Sep 2019
  */
 
 public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata> implements WidgetGUI {

@@ -41,9 +41,7 @@ import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 
 /**
- * @author Ian Davies
- *
- * @date 12 Oct 2019
+ * @author Ian Davies - 12 Oct 2019
  */
 public class TrackerTypeItem extends SimpleMMPropertyItem {
 

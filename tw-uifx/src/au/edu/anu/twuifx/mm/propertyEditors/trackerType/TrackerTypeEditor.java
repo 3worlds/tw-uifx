@@ -64,9 +64,7 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 /**
- * @author Ian Davies
- *
- * @date 13 Oct 2019
+ * @author Ian Davies - 13 Oct 2019
  */
 public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 

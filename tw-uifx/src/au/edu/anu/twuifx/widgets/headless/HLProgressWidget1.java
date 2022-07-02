@@ -48,9 +48,7 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 
 /**
- * @author Ian Davies
- *
- * @date 7 Sept 2021
+ * @author Ian Davies - 7 Sept 2021
  */
 public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
 	private int nSenders;

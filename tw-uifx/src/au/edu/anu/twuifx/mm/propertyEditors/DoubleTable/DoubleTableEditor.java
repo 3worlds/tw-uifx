@@ -51,9 +51,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 /**
- * @author Ian Davies
- *
- * @date 15 Dec 2019
+ * @author Ian Davies-15 Dec 2019
  */
 
 //TODO table editors need to be brought together in a proper hierarchy

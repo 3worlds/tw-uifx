@@ -71,9 +71,7 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.ens.biologie.generic.utils.Statistics;
 
 /**
- * @author Ian Davies
- *
- * @date 22 Feb 2020
+ * @author Ian Davies -22 Feb 2020
  */
 
 public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {

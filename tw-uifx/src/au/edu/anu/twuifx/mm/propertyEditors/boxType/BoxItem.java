@@ -40,9 +40,7 @@ import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.uit.space.Box;
 
 /**
- * @author Ian Davies
- *
- * @date 25 Sep 2020
+ * @author Ian Davies - 25 Sep 2020
  */
 public class BoxItem extends SimpleMMPropertyItem{
 

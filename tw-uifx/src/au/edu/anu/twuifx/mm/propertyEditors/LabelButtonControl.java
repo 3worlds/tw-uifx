@@ -47,15 +47,15 @@ import javafx.scene.layout.Priority;
 
 /**
  * 
- * Generic UI for property editor with text (non-editable) on left
- * and and edit button on the right.
- * This is the ui of some property appearing in the 
- * propertySheet in ModelMaker
  * 
  */
 /**
- * @author Ian Davies
- * @date 24 Feb. 2018
+ * @author Ian Davies - 24 Feb. 2018
+ *         <p>
+ *         Generic UI for property editor with text (non-editable) on left and
+ *         and edit button on the right. This is the ui many properties
+ *         appearing in the propertySheet in ModelMaker
+ * 
  */
 public class LabelButtonControl extends GridPane {
 	private Label label;

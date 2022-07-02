@@ -71,9 +71,7 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 /**
- * @author Ian Davies
- *
- * @date 30 Aug 2019
+ * @author Ian Davies -30 Aug 2019
  */
 // This replaces MrLauncher
 public class MRmain {

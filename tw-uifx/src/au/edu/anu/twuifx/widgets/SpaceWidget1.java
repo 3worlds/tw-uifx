@@ -131,9 +131,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.wait
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
- * @author Ian Davies
- *
- * @date 12 Feb 2020
+ * @author Ian Davies - 12 Feb 2020
  *
  *       Widget to show spatial map of objects and their relations.
  *

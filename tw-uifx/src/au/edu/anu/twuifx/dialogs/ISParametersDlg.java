@@ -45,9 +45,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Window;
 
 /**
- * @author Ian Davies
- *
- * @date 22 Jan 2020
+ * @author Ian Davies -22 Jan 2020
  */
 public class ISParametersDlg {
 //	private Button btnSave;
@@ -56,7 +54,7 @@ public class ISParametersDlg {
 	private Dialog<ButtonType> dlg;
 	private ButtonType ok;
 	
-	public ISParametersDlg(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
+		public ISParametersDlg(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
 		dlg = new Dialog<ButtonType>();
 		dlg.setTitle("Edit parameters");
 		dlg.initOwner((Window) Dialogs.owner());

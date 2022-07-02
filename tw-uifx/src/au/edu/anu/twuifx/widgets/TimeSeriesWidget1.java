@@ -106,12 +106,10 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Window;
 
 /**
- * @author Ian Davies
- *
- * @date 10 Dec. 2020
- * 
- *       S * Displays 1..* time series lines: one set for each selected
- *       simulator (default sender = 0)
+ * @author Ian Davies - 10 Dec. 2020
+ *         <p>
+ *         S * Displays 1..* time series lines: one set for each selected
+ *         simulator (default sender = 0)
  * 
  */
 public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
@@ -239,7 +237,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 		// we need to sort this using padIndexedDidgets somehow
 		int count = 0;
-		for (Map.Entry<Integer, TreeMap<String, CircularDoubleErrorDataSet>> entry : senderDataSetMap.entrySet()) {			
+		for (Map.Entry<Integer, TreeMap<String, CircularDoubleErrorDataSet>> entry : senderDataSetMap.entrySet()) {
 			TreeMap<String, CircularDoubleErrorDataSet> dsm = entry.getValue();
 			for (String key : dsm.navigableKeySet()) {
 				int index = count % nAxes;

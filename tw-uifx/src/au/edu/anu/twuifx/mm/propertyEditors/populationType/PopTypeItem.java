@@ -40,9 +40,7 @@ import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 
 /**
- * @author Ian Davies
- *
- * @date 15 Nov 2019
+ * @author Ian Davies - 15 Nov 2019
  */
 public class PopTypeItem extends SimpleMMPropertyItem {
 

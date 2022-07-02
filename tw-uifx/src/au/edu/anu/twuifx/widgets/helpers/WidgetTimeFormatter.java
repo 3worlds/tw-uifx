@@ -41,9 +41,7 @@ import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 
 /**
- * @author Ian Davies
- *
- * @date 19 Sep 2019
+ * @author Ian Davies - 19 Sep 2019
  */
 
 /*

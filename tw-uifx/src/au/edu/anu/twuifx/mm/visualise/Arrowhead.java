@@ -34,9 +34,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.scene.shape.Line;
 
 /**
- * @author Ian Davies
- *
- * @date 25 May 2020
+ * @author Ian Davies - 25 May 2020
  */
 public class Arrowhead extends Line {
 	public Arrowhead(Line line, DoubleProperty r,DoubleProperty lineWidth) {

@@ -55,9 +55,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author Ian Davies
- *
- * @date 25 Sep 2020
+ * @author Ian Davies - 25 Sep 2020
  */
 public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	public BoxItemEditor(Item property, Pane control) {

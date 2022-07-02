@@ -36,9 +36,7 @@ import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
 
 /**
- * @author Ian Davies
- *
- * @date 23 Sep 2019
+ * @author Ian Davies - 23 Sep 2019
  */
 
 /*

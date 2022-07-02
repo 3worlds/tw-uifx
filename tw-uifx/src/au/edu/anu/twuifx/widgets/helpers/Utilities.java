@@ -30,9 +30,7 @@
 package au.edu.anu.twuifx.widgets.helpers;
 
 /**
- * @author Ian Davies
- *
- * @date 26 July 2021
+ * @author Ian Davies -26 July 2021
  */
 public class Utilities {
 	// pad the index with leading '0' so it can be sensibly sorted
