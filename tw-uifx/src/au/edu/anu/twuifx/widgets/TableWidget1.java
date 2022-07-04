@@ -73,13 +73,12 @@ import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRACKER_STATISTICS;
 import static au.edu.anu.twuifx.widgets.helpers.Utilities.*;
+
 /**
- * @author Ian Davies
- *
- * @date 6 Dec 2019
- */
-/**
- * Displays a table of data from all simulator.id() from [lower.. lower+range]
+ * @author Ian Davies - 6 Dec 2019
+ * 
+ *         Displays a table of data from all simulator.id() from [lower..
+ *         lower+range]
  */
 public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private final WidgetTimeFormatter timeFormatter;

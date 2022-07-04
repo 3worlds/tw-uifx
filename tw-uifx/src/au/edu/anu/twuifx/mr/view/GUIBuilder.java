@@ -29,6 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mr.view;
 
+import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twcore.ui.UIContainer;
 import au.edu.anu.twcore.ui.UITab;
@@ -247,8 +248,6 @@ public class GUIBuilder {
 	private static final String splitter = "splitter_";
 
 	public void getPreferences() {
-//		for (WidgetGUI w : guiWidgets)
-//			w.getUserPreferences();
 		// maybe needs to be delayed!
 		for (SplitPane s : splitPanes) {
 			String key = splitter + s.getId();
@@ -258,11 +257,12 @@ public class GUIBuilder {
 	}
 
 	public void putPreferences() {
+		IPreferences prefs = Preferences.getImplementation();
 		for (WidgetGUI w : guiWidgets)
 			w.putUserPreferences();
 		for (SplitPane s : splitPanes) {
 			String key = splitter + s.getId();
-			Preferences.putDouble(key, s.getDividerPositions()[0]);
+			prefs.putDouble(key, s.getDividerPositions()[0]);
 		}
 	}
 

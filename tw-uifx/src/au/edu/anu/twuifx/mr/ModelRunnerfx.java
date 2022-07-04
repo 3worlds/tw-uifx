@@ -41,6 +41,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import au.edu.anu.omhtk.Language;
+import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -146,7 +147,7 @@ public class ModelRunnerfx extends Application {
 		scene.getWindow().setOnCloseRequest((e) -> {
 			stop();
 		});
-		Preferences.initialise(Project.makeRuntimePreferencesFile());
+		Preferences.setImplementation(new PrefImpl(Project.makeRuntimePreferencesFile()));
 		//
 		// Everything is initialized here through cascading.
 		uiDeployer = new GUIBuilder(uiNode, controller);
@@ -206,7 +207,7 @@ public class ModelRunnerfx extends Application {
 	public void stop() {
 		controller.putPreferences();
 		uiDeployer.putPreferences();
-		Preferences.flush();
+		Preferences.getImplementation().flush();
 		Platform.exit();
 		System.exit(0);
 	}

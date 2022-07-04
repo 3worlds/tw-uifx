@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.util.StringUtils;
@@ -466,16 +467,20 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 	@Override
 	public void putUserPreferences() {
-		Preferences.putBoolean(widgetId + keyLegendVisible, legendVisible);
-		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
-		Preferences.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
+		IPreferences prefs = Preferences.getImplementation();
+
+		prefs.putBoolean(widgetId + keyLegendVisible, legendVisible);
+		prefs.putEnum(widgetId + keyLegendSide, legendSide);
+		prefs.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
 	}
 
 	@Override
 	public void getUserPreferences() {
-		legendVisible = Preferences.getBoolean(widgetId + keyLegendVisible, true);
-		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
-		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 8);
+		IPreferences prefs = Preferences.getImplementation();
+
+		legendVisible = prefs.getBoolean(widgetId + keyLegendVisible, true);
+		legendSide = (Side) prefs.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
+		maxLegendItems = prefs.getInt(widgetId + keyMaxLegendItems, 8);
 	}
 
 	// helper to initialise a Renderer

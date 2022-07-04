@@ -40,6 +40,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+
+import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.DataLabel;
@@ -1362,81 +1364,84 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 	@Override
 	public void putUserPreferences() {
+		IPreferences prefs = Preferences.getImplementation();
+
 		for (int i = 0; i < displays.size(); i++) {
 			SpDisplay d = displays.get(i);
-			Preferences.putDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX());
-			Preferences.putDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY());
-			Preferences.putDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue());
-			Preferences.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
-			Preferences.putInt(widgetId + keySender + i, d.getSender());
+			prefs.putDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX());
+			prefs.putDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY());
+			prefs.putDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue());
+			prefs.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
+			prefs.putInt(widgetId + keySender + i, d.getSender());
 		}
-		Preferences.putInt(widgetId + keyColourHLevel, colourHLevel);
-		Preferences.putDouble(widgetId + keyElementScale, sldrElements.getValue());
-		Preferences.putDouble(widgetId + keyPaperScale, sldrResolution.getValue());
-		Preferences.putBoolean(widgetId + keySymbolFill, symbolFill);
-		Preferences.putBoolean(widgetId + keyShowGrid, chbxGrid.isSelected());
-		Preferences.putBoolean(widgetId + keyShowEdgeEffect, chbxBoundaries.isSelected());
-		Preferences.putDoubles(widgetId + keyBKG, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue());
-//		Preferences.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
+		prefs.putInt(widgetId + keyColourHLevel, colourHLevel);
+		prefs.putDouble(widgetId + keyElementScale, sldrElements.getValue());
+		prefs.putDouble(widgetId + keyPaperScale, sldrResolution.getValue());
+		prefs.putBoolean(widgetId + keySymbolFill, symbolFill);
+		prefs.putBoolean(widgetId + keyShowGrid, chbxGrid.isSelected());
+		prefs.putBoolean(widgetId + keyShowEdgeEffect, chbxBoundaries.isSelected());
+		prefs.putDoubles(widgetId + keyBKG, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue());
+//		prefs.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
 //				lineColour.getBlue());
-		Preferences.putDoubles(widgetId + keyFontColour, fontColour.getRed(), fontColour.getGreen(),
+		prefs.putDoubles(widgetId + keyFontColour, fontColour.getRed(), fontColour.getGreen(),
 				fontColour.getBlue());
-		Preferences.putDouble(widgetId + keyContrast, contrast);
-		Preferences.putBoolean(widgetId + keyColour64, colour64);
-		Preferences.putBoolean(widgetId + keyShowLines, chbxLines.isSelected());
-		Preferences.putBoolean(widgetId + keyLegendVisible, chbxLegend.isSelected());
-		Preferences.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
-		Preferences.putEnum(widgetId + keyLegendSide, legendSide);
-		Preferences.putBoolean(widgetId + keyShowPointLabels, chbxLabels.isSelected());
-		Preferences.putBoolean(widgetId + keyShowArrows, showArrows);
-		Preferences.putBoolean(widgetId + keyShowIntermediateArrows, showIntermediateArrows);
+		prefs.putDouble(widgetId + keyContrast, contrast);
+		prefs.putBoolean(widgetId + keyColour64, colour64);
+		prefs.putBoolean(widgetId + keyShowLines, chbxLines.isSelected());
+		prefs.putBoolean(widgetId + keyLegendVisible, chbxLegend.isSelected());
+		prefs.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
+		prefs.putEnum(widgetId + keyLegendSide, legendSide);
+		prefs.putBoolean(widgetId + keyShowPointLabels, chbxLabels.isSelected());
+		prefs.putBoolean(widgetId + keyShowArrows, showArrows);
+		prefs.putBoolean(widgetId + keyShowIntermediateArrows, showIntermediateArrows);
 	}
 
 	// called at END of UI construction because this depends on UI components.
 	@Override
 	public void getUserPreferences() {
+		IPreferences prefs = Preferences.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			SpDisplay d = displays.get(i);
-			d.zoomTarget().setScaleX(Preferences.getDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX()));
-			d.zoomTarget().setScaleY(Preferences.getDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY()));
-			d.scrollPane().setHvalue(Preferences.getDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue()));
-			d.scrollPane().setVvalue(Preferences.getDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue()));
-			d.setSender(Preferences.getInt(widgetId + keySender + i, i));
+			d.zoomTarget().setScaleX(prefs.getDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX()));
+			d.zoomTarget().setScaleY(prefs.getDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY()));
+			d.scrollPane().setHvalue(prefs.getDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue()));
+			d.scrollPane().setVvalue(prefs.getDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue()));
+			d.setSender(prefs.getInt(widgetId + keySender + i, i));
 		}
-		colourHLevel = Preferences.getInt(widgetId + keyColourHLevel, 0);
-		sldrElements.setValue(Preferences.getDouble(widgetId + keyElementScale, 1.0));
-		sldrResolution.setValue(Preferences.getDouble(widgetId + keyPaperScale, 1.0));
-		symbolFill = Preferences.getBoolean(widgetId + keySymbolFill, true);
-		chbxGrid.setSelected(Preferences.getBoolean(widgetId + keyShowGrid, true));
-		chbxBoundaries.setSelected(Preferences.getBoolean(widgetId + keyShowEdgeEffect, true));
+		colourHLevel = prefs.getInt(widgetId + keyColourHLevel, 0);
+		sldrElements.setValue(prefs.getDouble(widgetId + keyElementScale, 1.0));
+		sldrResolution.setValue(prefs.getDouble(widgetId + keyPaperScale, 1.0));
+		symbolFill = prefs.getBoolean(widgetId + keySymbolFill, true);
+		chbxGrid.setSelected(prefs.getBoolean(widgetId + keyShowGrid, true));
+		chbxBoundaries.setSelected(prefs.getBoolean(widgetId + keyShowEdgeEffect, true));
 		double[] rgb;
-		rgb = Preferences.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
+		rgb = prefs.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
 				Color.WHITE.getBlue());
 		bkgColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
-//		rgb = Preferences.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),
+//		rgb = prefs.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),
 //				Color.GREY.getBlue());
 //		lineColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
-		rgb = Preferences.getDoubles(widgetId + keyFontColour, Color.BLACK.getRed(), Color.BLACK.getGreen(),
+		rgb = prefs.getDoubles(widgetId + keyFontColour, Color.BLACK.getRed(), Color.BLACK.getGreen(),
 				Color.BLACK.getBlue());
 		fontColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
-		contrast = Preferences.getDouble(widgetId + keyContrast, 0.2);
-		colour64 = Preferences.getBoolean(widgetId + keyColour64, false);
+		contrast = prefs.getDouble(widgetId + keyContrast, 0.2);
+		colour64 = prefs.getBoolean(widgetId + keyColour64, false);
 		// small= 8, medium=27, large = 64, veryLarge 125 colours max
 
 		if (colour64)
 			lstColoursAvailable = ColourContrast.getContrastingColours64(paletteSize, bkgColour, contrast);
 		else
 			lstColoursAvailable = ColourContrast.getContrastingColours(paletteSize, bkgColour, contrast);
-		legendSide = (Side) Preferences.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
-		chbxLegend.setSelected(Preferences.getBoolean(widgetId + keyLegendVisible, true));
-		maxLegendItems = Preferences.getInt(widgetId + keyMaxLegendItems, 10);
-		chbxLines.setSelected(Preferences.getBoolean(widgetId + keyShowLines, true));
-		chbxLabels.setSelected(Preferences.getBoolean(widgetId + keyShowPointLabels, false));
-		showArrows = Preferences.getBoolean(widgetId + keyShowArrows, false);
-		showIntermediateArrows = Preferences.getBoolean(widgetId + keyShowIntermediateArrows, true);
+		legendSide = (Side) prefs.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
+		chbxLegend.setSelected(prefs.getBoolean(widgetId + keyLegendVisible, true));
+		maxLegendItems = prefs.getInt(widgetId + keyMaxLegendItems, 10);
+		chbxLines.setSelected(prefs.getBoolean(widgetId + keyShowLines, true));
+		chbxLabels.setSelected(prefs.getBoolean(widgetId + keyShowPointLabels, false));
+		showArrows = prefs.getBoolean(widgetId + keyShowArrows, false);
+		showIntermediateArrows = prefs.getBoolean(widgetId + keyShowIntermediateArrows, true);
 	}
 
 	// --------------- GUI

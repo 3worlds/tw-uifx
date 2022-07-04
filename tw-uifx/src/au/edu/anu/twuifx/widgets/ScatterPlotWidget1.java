@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.IndexedDataLabel;
@@ -344,16 +345,18 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 
 	@Override
 	public void putUserPreferences() {
-		Preferences.putInt(widgetId + keySymbolSize, symbolSize);
-		Preferences.putEnum(widgetId + keySymbol, symbol);
-		Preferences.putBoolean(keySwapAxes, swapAxes);
+		IPreferences prefs = Preferences.getImplementation();
+		prefs.putInt(widgetId + keySymbolSize, symbolSize);
+		prefs.putEnum(widgetId + keySymbol, symbol);
+		prefs.putBoolean(keySwapAxes, swapAxes);
 	}
 
 	@Override
 	public void getUserPreferences() {
-		symbolSize = Preferences.getInt(widgetId + keySymbolSize, 2);
-		symbol = (DefaultMarker) Preferences.getEnum(widgetId + keySymbol, DefaultMarker.DIAMOND);
-		swapAxes = Preferences.getBoolean(keySwapAxes, false);
+		IPreferences prefs = Preferences.getImplementation();
+		symbolSize = prefs.getInt(widgetId + keySymbolSize, 2);
+		symbol = (DefaultMarker) prefs.getEnum(widgetId + keySymbol, DefaultMarker.DIAMOND);
+		swapAxes = prefs.getBoolean(keySwapAxes, false);
 	}
 
 }

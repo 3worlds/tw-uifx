@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.data.runtime.Output2DData;
@@ -263,44 +265,46 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	@Override
 	public void putUserPreferences() {
+		IPreferences prefs = Preferences.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			D2Display d = displays.get(i);
-			Preferences.putDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX());
-			Preferences.putDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY());
-			Preferences.putDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue());
-			Preferences.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
-			Preferences.putInt(widgetId + keySender + i, d.getSender());
+			prefs.putDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX());
+			prefs.putDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY());
+			prefs.putDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue());
+			prefs.putDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue());
+			prefs.putInt(widgetId + keySender + i, d.getSender());
 		}
-		Preferences.putInt(widgetId + keyResolution, resolution);
-		Preferences.putInt(widgetId + keyDecimalPlaces, decimalPlaces);
-		Preferences.putDouble(widgetId + keyMinValue, minValue);
-		Preferences.putDouble(widgetId + keyMaxValue, maxValue);
-		Preferences.putEnum(widgetId + keyPalette, paletteType);
-		Preferences.putEnum(widgetId + keyMissingValueMethod, mvMethod);
-		Preferences.putDoubles(widgetId + keyBKGColour, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue(),
+		prefs.putInt(widgetId + keyResolution, resolution);
+		prefs.putInt(widgetId + keyDecimalPlaces, decimalPlaces);
+		prefs.putDouble(widgetId + keyMinValue, minValue);
+		prefs.putDouble(widgetId + keyMaxValue, maxValue);
+		prefs.putEnum(widgetId + keyPalette, paletteType);
+		prefs.putEnum(widgetId + keyMissingValueMethod, mvMethod);
+		prefs.putDoubles(widgetId + keyBKGColour, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue(),
 				bkgColour.getOpacity());
 	}
 
 	@Override
 	public void getUserPreferences() {
+		IPreferences prefs = Preferences.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			D2Display d = displays.get(i);
-			d.zoomTarget().setScaleX(Preferences.getDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX()));
-			d.zoomTarget().setScaleY(Preferences.getDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY()));
-			d.scrollPane().setHvalue(Preferences.getDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue()));
-			d.scrollPane().setVvalue(Preferences.getDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue()));
-			d.setSender(Preferences.getInt(widgetId + keySender + i, i));
+			d.zoomTarget().setScaleX(prefs.getDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX()));
+			d.zoomTarget().setScaleY(prefs.getDouble(widgetId + keyScaleY + i, d.zoomTarget().getScaleY()));
+			d.scrollPane().setHvalue(prefs.getDouble(widgetId + keyScrollH + i, d.scrollPane().getHvalue()));
+			d.scrollPane().setVvalue(prefs.getDouble(widgetId + keyScrollV + i, d.scrollPane().getVvalue()));
+			d.setSender(prefs.getInt(widgetId + keySender + i, i));
 
 		}
-		resolution = Preferences.getInt(widgetId + keyResolution, 2);
-		decimalPlaces = Preferences.getInt(widgetId + keyDecimalPlaces, 2);
-		minValue = Preferences.getDouble(widgetId + keyMinValue, defaultRange.inf());
-		maxValue = Preferences.getDouble(widgetId + keyMaxValue, defaultRange.sup());
-		paletteType = (PaletteTypes) Preferences.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
-		mvMethod = (MissingValueOptions) Preferences.getEnum(widgetId + keyMissingValueMethod,
+		resolution = prefs.getInt(widgetId + keyResolution, 2);
+		decimalPlaces = prefs.getInt(widgetId + keyDecimalPlaces, 2);
+		minValue = prefs.getDouble(widgetId + keyMinValue, defaultRange.inf());
+		maxValue = prefs.getDouble(widgetId + keyMaxValue, defaultRange.sup());
+		paletteType = (PaletteTypes) prefs.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
+		mvMethod = (MissingValueOptions) prefs.getEnum(widgetId + keyMissingValueMethod,
 				MissingValueOptions.Auto);
 
-		double[] rgb = Preferences.getDoubles(widgetId + keyBKGColour, Color.TRANSPARENT.getRed(),
+		double[] rgb = prefs.getDoubles(widgetId + keyBKGColour, Color.TRANSPARENT.getRed(),
 				Color.TRANSPARENT.getGreen(), Color.TRANSPARENT.getBlue(), Color.TRANSPARENT.getOpacity());
 		bkgColour = new Color(rgb[0], rgb[1], rgb[2], rgb[3]);
 

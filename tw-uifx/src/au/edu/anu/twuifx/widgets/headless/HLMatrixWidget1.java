@@ -39,7 +39,7 @@ import fr.ens.biologie.generic.utils.Interval;
  * <li>Selected matrices are saved with their time step in a Map<> time step.
  * <li>The maps can be averaged to one map or saved individually.
  * <li>The file name is
- * {@literal <}time-step{@literal >}_{@literal <}matrixName{@literal >}.tif;
+ * {@literal <time-step >}_{@literal <matrixName>}.tif;
  * <li>All are saved in a directory with the widget's id.
  * 
  * @author Ian Davies - 1 July 2022

@@ -38,6 +38,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import au.edu.anu.omhtk.Language;
+import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.util.Resources;
@@ -367,24 +368,26 @@ public class MrController implements IMRController {
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			Preferences.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-			Preferences.putBoolean(mainMaximized, stage.isMaximized());
+			IPreferences prefs = Preferences.getImplementation();
+			prefs.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+			prefs.putBoolean(mainMaximized, stage.isMaximized());
 			int idx = tabPane.getSelectionModel().getSelectedIndex();
-			Preferences.putInt(tabIndex, idx);
+			prefs.putInt(tabIndex, idx);
 			model.putPreferences();
-			Preferences.flush();
+			prefs.flush();
 		}
 	}
 
 	public void getPreferences() {
-		double[] r = Preferences.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
+		IPreferences prefs = Preferences.getImplementation();
+		double[] r = prefs.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
 				stage.getHeight());
 		stage.setX(r[0]);
 		stage.setY(r[1]);
 		stage.setWidth(r[2]);
 		stage.setHeight(r[3]);
-		stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
-		int idx = Preferences.getInt(tabIndex, 0);
+		stage.setMaximized(prefs.getBoolean(mainMaximized, stage.isMaximized()));
+		int idx = prefs.getInt(tabIndex, 0);
 		tabPane.getSelectionModel().select(idx);
 		model.getPreferences();
 	}

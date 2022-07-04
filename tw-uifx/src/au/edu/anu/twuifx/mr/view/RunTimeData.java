@@ -42,9 +42,7 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 
 /**
- * @author Ian Davies
- *
- * @date 6 Jan 2020
+ * @author Ian Davies - 6 Jan 2020
  */
 // NB these trial bits of code assume the graph has been initialised i.e. these proposed methods are only called from ModelRunner
 /**

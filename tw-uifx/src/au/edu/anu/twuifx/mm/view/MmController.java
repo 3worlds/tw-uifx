@@ -83,6 +83,8 @@ import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 import javafx.scene.effect.DropShadow;
 import au.edu.anu.omhtk.Language;
+import au.edu.anu.omhtk.preferences.IPreferences;
+import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
@@ -776,18 +778,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		hostServices.showDocument(
 				"https://3worlds.github.io/tw-uifx/tw-uifx/doc/reference/html/reference.html#truesample-models-and-tutorials");
 	}
-	
+
 	@FXML
 	void onGitHub(ActionEvent event) {
-		hostServices.showDocument(
-				"https://github.com/3worlds/3w");
-		
+		hostServices.showDocument("https://github.com/3worlds/3w");
+
 	}
 
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
- 	public void setHostServices(HostServices hs) {
+	public void setHostServices(HostServices hs) {
 		hostServices = hs;
 	}
 
@@ -1025,44 +1026,46 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	public void putPreferences() {
 		if (Project.isOpen()) {
+			IPreferences prefs = Preferences.getImplementation();
 
-			Preferences.putString(UserProjectPath, userProjectPath.get());
-			Preferences.putEnum(allElementsPropertySheet.idProperty().get() + Mode, allElementsPropertySheet.getMode());
-			Preferences.putEnum(nodePropertySheet.idProperty().get() + Mode, nodePropertySheet.getMode());
-			Preferences.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
-			Preferences.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
-			Preferences.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
-			Preferences.putDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
-			Preferences.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-			Preferences.putBoolean(mainMaximized, stage.isMaximized());
-			Preferences.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
-			Preferences.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
-			Preferences.putBoolean(tglSideline.idProperty().get(), tglSideline.isSelected());
-			Preferences.putInt(jitterKey, jitterProperty.get());
-			Preferences.putInt(tabPaneProperties.idProperty().get(),
+			prefs.putString(UserProjectPath, userProjectPath.get());
+			prefs.putEnum(allElementsPropertySheet.idProperty().get() + Mode, allElementsPropertySheet.getMode());
+			prefs.putEnum(nodePropertySheet.idProperty().get() + Mode, nodePropertySheet.getMode());
+			prefs.putDouble(splitPane1.idProperty().get(), splitPane1.getDividerPositions()[0]);
+			prefs.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
+			prefs.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
+			prefs.putDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
+			prefs.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+			prefs.putBoolean(mainMaximized, stage.isMaximized());
+			prefs.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
+			prefs.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
+			prefs.putBoolean(tglSideline.idProperty().get(), tglSideline.isSelected());
+			prefs.putInt(jitterKey, jitterProperty.get());
+			prefs.putInt(tabPaneProperties.idProperty().get(),
 					tabPaneProperties.getSelectionModel().getSelectedIndex());
-			Preferences.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
+			prefs.putInt(AccordionSelection, UiHelpers.getExpandedPaneIndex(allElementsPropertySheet));
 
-			Preferences.putEnum(CurrentLayoutKey, currentLayout);
-			Preferences.putEnum(NodeTextDisplayChoice, cbNodeTextChoice.getSelectionModel().getSelectedItem());
-			Preferences.putEnum(EdgeTextDisplayChoice, cbEdgeTextChoice.getSelectionModel().getSelectedItem());
-			Preferences.putDouble(scrollPane.idProperty().get() + ScrollHValue, scrollPane.getHvalue());
-			Preferences.putDouble(scrollPane.idProperty().get() + ScrollVValue, scrollPane.getVvalue());
+			prefs.putEnum(CurrentLayoutKey, currentLayout);
+			prefs.putEnum(NodeTextDisplayChoice, cbNodeTextChoice.getSelectionModel().getSelectedItem());
+			prefs.putEnum(EdgeTextDisplayChoice, cbEdgeTextChoice.getSelectionModel().getSelectedItem());
+			prefs.putDouble(scrollPane.idProperty().get() + ScrollHValue, scrollPane.getHvalue());
+			prefs.putDouble(scrollPane.idProperty().get() + ScrollVValue, scrollPane.getVvalue());
 
-			Preferences.putInt(KeyPathLength, spinPathLength.getValue());
+			prefs.putInt(KeyPathLength, spinPathLength.getValue());
 
-			Preferences.putDouble(ElementScalesKey, sldrElements.getValue());
+			prefs.putDouble(ElementScalesKey, sldrElements.getValue());
 
-			Preferences.putBoolean(cbAnimate.idProperty().get(), cbAnimate.isSelected());
+			prefs.putBoolean(cbAnimate.idProperty().get(), cbAnimate.isSelected());
 
-			Preferences.flush();
+			prefs.flush();
 		}
 	}
 
 	public void getPreferences() {
-		Preferences.initialise(Project.makeProjectPreferencesFile());
+		Preferences.setImplementation(new PrefImpl(Project.makeProjectPreferencesFile()));
+		IPreferences prefs = Preferences.getImplementation();
 		// get path string for user project
-		String prjtmp = Preferences.getString(UserProjectPath, "");
+		String prjtmp = prefs.getString(UserProjectPath, "");
 		if (!prjtmp.equals("")) {
 			// check java project still exists.
 			UserProjectLink.unlinkUserProject();
@@ -1073,42 +1076,42 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		} else
 			userProjectPath.set("");
 
-		double[] ws = Preferences.getDoubles(mainFrameName, DefaultWindowSettings.getX(), DefaultWindowSettings.getY(),
+		double[] ws = prefs.getDoubles(mainFrameName, DefaultWindowSettings.getX(), DefaultWindowSettings.getY(),
 				DefaultWindowSettings.getWidth(), DefaultWindowSettings.getHeight());
 		stage.setX(ws[0]);
 		stage.setY(ws[1]);
 		stage.setWidth(ws[2]);
 		stage.setHeight(ws[3]);
-		stage.setMaximized(Preferences.getBoolean(mainMaximized, stage.isMaximized()));
+		stage.setMaximized(prefs.getBoolean(mainMaximized, stage.isMaximized()));
 
-		setJitter(Preferences.getInt(jitterKey, 0));
+		setJitter(prefs.getInt(jitterKey, 0));
 		tabPaneProperties.getSelectionModel()
-				.select(Math.max(0, Preferences.getInt(tabPaneProperties.idProperty().get(), 0)));
+				.select(Math.max(0, prefs.getInt(tabPaneProperties.idProperty().get(), 0)));
 
-		currentLayout = (LayoutType) Preferences.getEnum(CurrentLayoutKey, LayoutType.OrderedTree);
+		currentLayout = (LayoutType) prefs.getEnum(CurrentLayoutKey, LayoutType.OrderedTree);
 		rbLayouts[currentLayout.ordinal()].setSelected(true);
 
 		cbNodeTextChoice.getSelectionModel()
-				.select((ElementDisplayText) Preferences.getEnum(NodeTextDisplayChoice, ElementDisplayText.RoleName));
+				.select((ElementDisplayText) prefs.getEnum(NodeTextDisplayChoice, ElementDisplayText.RoleName));
 		cbEdgeTextChoice.getSelectionModel()
-				.select((ElementDisplayText) Preferences.getEnum(EdgeTextDisplayChoice, ElementDisplayText.RoleName));
+				.select((ElementDisplayText) prefs.getEnum(EdgeTextDisplayChoice, ElementDisplayText.RoleName));
 
-		PropertySheet.Mode mode = (PropertySheet.Mode) Preferences
+		PropertySheet.Mode mode = (PropertySheet.Mode) prefs
 				.getEnum(allElementsPropertySheet.idProperty().get() + Mode, PropertySheet.Mode.CATEGORY);
 		allElementsPropertySheet.setMode(mode);
-		mode = (PropertySheet.Mode) Preferences.getEnum(nodePropertySheet.idProperty().get() + Mode,
+		mode = (PropertySheet.Mode) prefs.getEnum(nodePropertySheet.idProperty().get() + Mode,
 				PropertySheet.Mode.NAME);
 		nodePropertySheet.setMode(mode);
-		int idx = Preferences.getInt(AccordionSelection, -1);
+		int idx = prefs.getInt(AccordionSelection, -1);
 		UiHelpers.setExpandedPane(allElementsPropertySheet, idx);
 
-		btnXLinks.selectedProperty().set(Preferences.getBoolean(btnXLinks.idProperty().get(), true));
-		btnChildLinks.selectedProperty().set(Preferences.getBoolean(btnChildLinks.idProperty().get(), true));
-		tglSideline.selectedProperty().set(Preferences.getBoolean(tglSideline.idProperty().get(), false));
+		btnXLinks.selectedProperty().set(prefs.getBoolean(btnXLinks.idProperty().get(), true));
+		btnChildLinks.selectedProperty().set(prefs.getBoolean(btnChildLinks.idProperty().get(), true));
+		tglSideline.selectedProperty().set(prefs.getBoolean(tglSideline.idProperty().get(), false));
 
-		zoomTarget.setScaleX(Preferences.getDouble(zoomTarget.idProperty().get() + scaleX, 1));
-		zoomTarget.setScaleY(Preferences.getDouble(zoomTarget.idProperty().get() + scaleY, 1));
-		double s1 = Preferences.getDouble(splitPane1.getId(), DefaultWindowSettings.splitter1());
+		zoomTarget.setScaleX(prefs.getDouble(zoomTarget.idProperty().get() + scaleX, 1));
+		zoomTarget.setScaleY(prefs.getDouble(zoomTarget.idProperty().get() + scaleY, 1));
+		double s1 = prefs.getDouble(splitPane1.getId(), DefaultWindowSettings.splitter1());
 		splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(s1, splitPane1.getId()));
 		// get splitPanes later after UI has settled down
 		splitPane1.getDividers().get(0).positionProperty().addListener(new ChangeListener<Number>() {
@@ -1116,27 +1119,27 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Platform.runLater(() -> {
-					double s1 = Preferences.getDouble(splitPane1.getId(), DefaultWindowSettings.splitter1());
-					double s2 = Preferences.getDouble(splitPane2.getId(), DefaultWindowSettings.splitter2());
+					double s1 = prefs.getDouble(splitPane1.getId(), DefaultWindowSettings.splitter1());
+					double s2 = prefs.getDouble(splitPane2.getId(), DefaultWindowSettings.splitter2());
 					splitPane1.setDividerPositions(UiHelpers.getSplitPanePositions(s1, splitPane1.getId()));
 					splitPane2.setDividerPositions(UiHelpers.getSplitPanePositions(s2, splitPane2.getId()));
 					observable.removeListener(this);
-					scrollPane.setHvalue(Preferences.getDouble(scrollPane.idProperty().get() + ScrollHValue, 0));
-					scrollPane.setVvalue(Preferences.getDouble(scrollPane.idProperty().get() + ScrollVValue, 0));
+					scrollPane.setHvalue(prefs.getDouble(scrollPane.idProperty().get() + ScrollHValue, 0));
+					scrollPane.setVvalue(prefs.getDouble(scrollPane.idProperty().get() + ScrollVValue, 0));
 
 				});
 			}
 		});
 
-		int pl = Preferences.getInt(KeyPathLength, 1);
+		int pl = prefs.getInt(KeyPathLength, 1);
 		spinPathLength.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, pl));
 
 		setLayoutRoot(null);
 
 		sldrElements.setDisable(false);
-		sldrElements.setValue(Preferences.getDouble(ElementScalesKey, 1.0));
+		sldrElements.setValue(prefs.getDouble(ElementScalesKey, 1.0));
 
-		cbAnimate.selectedProperty().set(Preferences.getBoolean(cbAnimate.idProperty().get(), true));
+		cbAnimate.selectedProperty().set(prefs.getBoolean(cbAnimate.idProperty().get(), true));
 
 		this.setElementScales(sldrElements.getValue());
 	}

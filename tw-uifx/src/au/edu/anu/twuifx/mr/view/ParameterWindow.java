@@ -47,9 +47,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
- * @author Ian Davies
- *
- * @date 3 Jan 2020
+ * @author Ian Davies - 3 Jan 2020
  */
 
 /**

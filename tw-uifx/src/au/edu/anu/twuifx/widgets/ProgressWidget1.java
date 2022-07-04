@@ -59,25 +59,22 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
- * @author Ian Davies
- *
- * @date 5 Dec. 2020
- */
-
-/**
- * Displays the average sim time for a collection of simulators.
+ * @author Ian Davies - 5 Dec. 2020
  * 
- * Every simulator msg is recorded in a collection. A java timer determines how
- * often an average value from this collection is calculated (controlled by the
- * 'refreshRate'). If the average time has change the ui is updated.
+ *         Displays the average sim time for a collection of simulators.
  * 
- * NB: The currentSenderTimes will become as large as the number of unique
- * simulator ids.
+ *         Every simulator msg is recorded in a collection. A java timer
+ *         determines how often an average value from this collection is
+ *         calculated (controlled by the 'refreshRate'). If the average time has
+ *         change the ui is updated.
  * 
- * Tested to 1,000,000 simulators.
+ *         NB: The currentSenderTimes will become as large as the number of
+ *         unique simulator ids.
  * 
- * Important: The SimCloneWIdgetTrackingPolicy assumes all simulators are
- * instances of the same SimulatorNode!
+ *         Tested to 1,000,000 simulators.
+ * 
+ *         Important: The SimCloneWIdgetTrackingPolicy assumes all simulators
+ *         are instances of the same SimulatorNode!
  */
 public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
 	private WidgetTimeFormatter timeFormatter;
@@ -118,7 +115,7 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 	@Override
 	public void onDataMessage(TimeData data) {
 		// Lazy init to avoid a time out while many simulators are loading
-		if (timer ==null) {
+		if (timer == null) {
 			timer = new Timer();
 			timer.scheduleAtFixedRate(new TimerTask() {
 				private long lastTime = Long.MAX_VALUE;
@@ -137,7 +134,7 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 			}, 0, refreshRate);
 
 		}
-		
+
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial))
 				initialData.add(data);
