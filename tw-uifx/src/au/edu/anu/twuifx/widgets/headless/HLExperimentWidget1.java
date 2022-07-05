@@ -72,6 +72,11 @@ import fr.ens.biologie.generic.utils.Statistics;
 
 /**
  * @author Ian Davies -22 Feb 2020
+ * 
+ *         Should be called something else: it only handles time series of
+ *         scalar data.
+ *         <p>
+ *         TODO we need some static helpers for common exp widget operations.
  */
 
 public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {
@@ -83,7 +88,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
 	private List<List<Property>> treatmentList;
-	private Map<String,ExpFactor> factors;
+	private Map<String, ExpFactor> factors;
 	private Map<String, Object> baseline;
 	private ExperimentDesignType edt;
 	private int nReps;
@@ -108,7 +113,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		if (properties.hasProperty(P_DESIGN_TYPE.key())) {
 			edt = (ExperimentDesignType) properties.getPropertyValue(P_DESIGN_TYPE.key());
 			treatmentList = (List<List<Property>>) properties.getPropertyValue("TreatmentList");
-			factors = (Map<String,ExpFactor>) properties.getPropertyValue("Factors");
+			factors = (Map<String, ExpFactor>) properties.getPropertyValue("Factors");
 			baseline = (Map<String, Object>) properties.getPropertyValue("Baseline");
 			nReps = (Integer) properties.getPropertyValue(P_EXP_NREPLICATES.key());
 		}
@@ -180,9 +185,9 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			writeData();
 		} else if (isSimulatorState(state, SimulatorStates.quitting)) {
 			/**
-			 * TODO: Check if this comment is still the case.
-			 * when debugging a headless sim, enable the line below because if setting a
-			 * breakpoint in writeData(), the program will exit during debugging
+			 * TODO: Check if this comment is still the case. when debugging a with a
+			 * headless controller, enable the line below because if setting a breakpoint in
+			 * writeData(), the program will exit during debugging
 			 * 
 			 * writeData();
 			 * 
@@ -365,14 +370,15 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 //		for (int i = 0; i < factors; i++)
 //			h += "F" + i + "\t";
 //		h += "RV";
-		
+
 		String h = "";
 		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) {
-			h+= entry.getValue().getName()+"\t";
+			h += entry.getValue().getName() + "\t";
 		}
-		h +="RV";
+		h += "RV";
 
-		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_AnovaInput.csv");
+		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName,
+				name + "_AnovaInput.csv");
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(h);
 		for (int i = 0; i < sample.size(); i++) {
@@ -382,7 +388,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			for (Property p : ps) {
 				ExpFactor factor = factors.get(p.getKey());
 				String s = factor.getValueName(p);
-				//String s = p.getValue().toString();
+				// String s = p.getValue().toString();
 //				line += p.getKey() + s + "\t";
 				line += s + "\t";
 			}
@@ -396,36 +402,36 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			e1.printStackTrace();
 		}
 		String anovaResultsName = name + "_anovaResults.csv";
-/*-
-setwd("/home/ian/.3w/project_LMDExp_2022-01-03-22-40-14-976/local/runTime/NOG-K/popWriter0")
-data = read.table("population_AnovaInput.csv",sep="	",header = TRUE,dec=".")
-F0 = data$F0
-F1 = data$F1
-F2 = data$F2
-F3 = data$F3
-RV = data$RV
-mdl = lm(RV~F0*F1*F2*F3)
-ava = anova (mdl)
-write.table(ava,"population_anovaResults.csv", sep = "	")
-svg(paste("population_trends.svg"),width = 5.5, height = 5.5)
-oldpar <- par(mfrow = c(2,2))
-plot(RV~F0, main = outputDir)
-plot(RV~F1, main = outputDir)
-plot(RV~F2, main = outputDir)
-plot(RV~F3, main = outputDir)
-dev.off()
- */
+		/*-
+		setwd("/home/ian/.3w/project_LMDExp_2022-01-03-22-40-14-976/local/runTime/NOG-K/popWriter0")
+		data = read.table("population_AnovaInput.csv",sep="	",header = TRUE,dec=".")
+		F0 = data$F0
+		F1 = data$F1
+		F2 = data$F2
+		F3 = data$F3
+		RV = data$RV
+		mdl = lm(RV~F0*F1*F2*F3)
+		ava = anova (mdl)
+		write.table(ava,"population_anovaResults.csv", sep = "	")
+		svg(paste("population_trends.svg"),width = 5.5, height = 5.5)
+		oldpar <- par(mfrow = c(2,2))
+		plot(RV~F0, main = outputDir)
+		plot(RV~F1, main = outputDir)
+		plot(RV~F2, main = outputDir)
+		plot(RV~F3, main = outputDir)
+		dev.off()
+		 */
 		fileLines.clear();
 		fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
 		fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
 //		for (int i = 0; i < factors.size(); i++)
 //			fileLines.add("F" + i + " = data$F" + i);
-		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) 
+		for (Map.Entry<String, ExpFactor> entry : factors.entrySet())
 			fileLines.add(entry.getValue().getName() + " = data$" + entry.getValue().getName());
 		fileLines.add(name + " = data$RV");
-		String args = name+"~";
-		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) 
-			args += "*"+entry.getValue().getName();
+		String args = name + "~";
+		for (Map.Entry<String, ExpFactor> entry : factors.entrySet())
+			args += "*" + entry.getValue().getName();
 //		args += "*F" + f;
 		args = args.replaceFirst("\\*", "");
 		fileLines.add("mdl = lm(" + args + ")");
@@ -460,51 +466,52 @@ dev.off()
 		}
 
 		if (rPresent) {
-		try {
-			File results = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, anovaResultsName);
-			fileLines = Files.readAllLines(results.toPath(),StandardCharsets.UTF_8);
-			String line = "Terms\t" + fileLines.get(0);
-			fileLines.set(0, line);
-			// Terms "Df" "Sum Sq" "Mean Sq" "F value" "Pr(>F)"
-			List<String> terms = new ArrayList<>();
-			List<Integer> df = new ArrayList<>();
-			List<Double> ssq = new ArrayList<>();
-			double totalSsq = 0;
-			for (int l = 1; l < fileLines.size() - 1; l++) {
-				String[] parts = fileLines.get(l).split("\t");
-				terms.add(parts[0]);
-				df.add(Integer.parseInt(parts[1]));
-				double d = Double.parseDouble(parts[2]);
-				totalSsq += d;
-				ssq.add(d);
-			}
-			double residuals = Double.parseDouble(fileLines.get(fileLines.size() - 1).split("\t")[2]);
-			int dfresiduals = Integer.parseInt(fileLines.get(fileLines.size() - 1).split("\t")[1]);
-			totalSsq += residuals;
-			// make relative
-			List<Double> relSsq = new ArrayList<>();
-			Double totalExplained = 0.0;
-			for (Double d : ssq) {
-				double e = d / totalSsq;
-				relSsq.add(e);
-				totalExplained += e;
-			}
-			fileLines.clear();
-			String sep = "\t";
-			fileLines.add("Terms\tdf\tSum sq\tRel sum sq");
-			for (int i = 0; i < relSsq.size(); i++) {
-				StringBuilder sb = new StringBuilder().append(terms.get(i)).append(sep).append(df.get(i)).append(sep)
-						.append(ssq.get(i)).append(sep).append(relSsq.get(i));
-				fileLines.add(sb.toString());
-			}
-			fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
+			try {
+				File results = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, anovaResultsName);
+				fileLines = Files.readAllLines(results.toPath(), StandardCharsets.UTF_8);
+				String line = "Terms\t" + fileLines.get(0);
+				fileLines.set(0, line);
+				// Terms "Df" "Sum Sq" "Mean Sq" "F value" "Pr(>F)"
+				List<String> terms = new ArrayList<>();
+				List<Integer> df = new ArrayList<>();
+				List<Double> ssq = new ArrayList<>();
+				double totalSsq = 0;
+				for (int l = 1; l < fileLines.size() - 1; l++) {
+					String[] parts = fileLines.get(l).split("\t");
+					terms.add(parts[0]);
+					df.add(Integer.parseInt(parts[1]));
+					double d = Double.parseDouble(parts[2]);
+					totalSsq += d;
+					ssq.add(d);
+				}
+				double residuals = Double.parseDouble(fileLines.get(fileLines.size() - 1).split("\t")[2]);
+				int dfresiduals = Integer.parseInt(fileLines.get(fileLines.size() - 1).split("\t")[1]);
+				totalSsq += residuals;
+				// make relative
+				List<Double> relSsq = new ArrayList<>();
+				Double totalExplained = 0.0;
+				for (Double d : ssq) {
+					double e = d / totalSsq;
+					relSsq.add(e);
+					totalExplained += e;
+				}
+				fileLines.clear();
+				String sep = "\t";
+				fileLines.add("Terms\tdf\tSum sq\tRel sum sq");
+				for (int i = 0; i < relSsq.size(); i++) {
+					StringBuilder sb = new StringBuilder().append(terms.get(i)).append(sep).append(df.get(i))
+							.append(sep).append(ssq.get(i)).append(sep).append(relSsq.get(i));
+					fileLines.add(sb.toString());
+				}
+				fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
 
-			File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_RelSumSq.csv");
-			Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName,
+						name + "_RelSumSq.csv");
+				Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else {
 			throw new TwuifxException("ANOVA not computed because Rscript was not found on the system.");
 		}
@@ -556,7 +563,7 @@ dev.off()
 		designFile.getParentFile().mkdirs();
 		fileLines.clear();
 		fileLines.add("Label\tValue");
-		fileLines.add("Precis\t"+precis);
+		fileLines.add("Precis\t" + precis);
 		for (Map.Entry<String, Object> pair : baseline.entrySet()) {
 			fileLines.add(pair.getKey() + "\t" + pair.getValue());
 		}
