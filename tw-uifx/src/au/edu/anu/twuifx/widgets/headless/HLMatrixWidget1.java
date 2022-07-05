@@ -73,6 +73,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 
 	// TODO work out how we are to use ymuit palettes in the archetype?
 	// TODO need settings to set colour to out of scale pixels as per matrix widget
+	// TODO WE MUST SAVE WITH A SENDER ID!!!
 	/**
 	 * Constructor for a 2-D reading widget (Must be public).
 	 * 
