@@ -215,6 +215,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 				g.setColor(awtColor);
 				g.drawLine(x, y, x, y);
 			}
+		g.dispose();
 		File file = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDir, name + ".tif");
 		file.getParentFile().mkdirs();
 		try {
