@@ -58,6 +58,7 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
+import au.edu.anu.twuifx.widgets.WidgetUtils;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -115,8 +116,10 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			treatmentList = (List<List<Property>>) properties.getPropertyValue("TreatmentList");
 			factors = (Map<String, ExpFactor>) properties.getPropertyValue("Factors");
 			baseline = (Map<String, Object>) properties.getPropertyValue("Baseline");
-			nReps = (Integer) properties.getPropertyValue(P_EXP_NREPLICATES.key());
 		}
+		nReps = 1;
+		if (properties.hasProperty(P_EXP_NREPLICATES.key()))
+			nReps = (Integer) properties.getPropertyValue(P_EXP_NREPLICATES.key());
 		nLines = 1;
 		if (properties.hasProperty(P_HLWIDGET_NLINES.key())) {
 			nLines = (Integer) properties.getPropertyValue(P_HLWIDGET_NLINES.key());
@@ -296,15 +299,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	private void writeData() {
 		// use a local scope to ensure unique file names and so prevent file overwrites
-		LocalScope scope = new LocalScope("Files");
-		File dir = Project.makeFile(ProjectPaths.RUNTIME, outputDir);
-		dir.mkdirs();
-		for (String fileName : dir.list()) {
-			int dotIndex = fileName.lastIndexOf('.');
-			fileName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
-			scope.newId(true, fileName);
-		}
-		String widgetDirName = scope.newId(false, widgetId + "0").id();
+		String widgetDirName = WidgetUtils.getUniqueExperimentSubdirectoryName(outputDir, widgetId);
 
 		SaveProjectDesign(widgetDirName);
 
@@ -558,29 +553,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	}
 
 	private void SaveProjectDesign(String widgetDirName) {
-		List<String> fileLines = new ArrayList<>();
 		File designFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, "Design.csv");
-		designFile.getParentFile().mkdirs();
-		fileLines.clear();
-		fileLines.add("Label\tValue");
-		fileLines.add("Precis\t" + precis);
-		for (Map.Entry<String, Object> pair : baseline.entrySet()) {
-			fileLines.add(pair.getKey() + "\t" + pair.getValue());
-		}
-		if (treatmentList != null && !treatmentList.isEmpty()) {
-			fileLines.add("\nSimulator\tSetting(s)");
-			for (int i = 0; i < treatmentList.size(); i++) {
-				List<Property> list = treatmentList.get(i);
-				fileLines.add(i + "\t" + list.toString());
-			}
-		}
-		try {
-			Files.write(designFile.toPath(), fileLines, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		WidgetUtils.SaveExperimentDesignDetails(precis, baseline, treatmentList, designFile);
 	}
 
 	private int processSeries(String widgetDirName, String header, String name, List<List<Double>> data, int max) {
