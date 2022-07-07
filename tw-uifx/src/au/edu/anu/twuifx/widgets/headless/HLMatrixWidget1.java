@@ -34,6 +34,7 @@ import fr.cnrs.iees.identity.impl.LocalScope;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.ens.biologie.generic.utils.Interval;
 
 /**
@@ -79,6 +80,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	private Map<String, ExpFactor> factors;
 	private Map<String, Object> baseline;
 	private int nReps;
+	private ExperimentDesignType edt;
 
 	// TODO work out how we are to use ymuit palettes in the archetype?
 	// TODO need settings to set colour to out of scale pixels as per matrix widget
@@ -110,6 +112,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		zRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
 		magnification = Math.max(1, (Integer) properties.getPropertyValue(P_WIDGET_IMAGEMAGNIFICATION.key()));
 		if (properties.hasProperty(P_DESIGN_TYPE.key())) {
+			edt = (ExperimentDesignType) properties.getPropertyValue(P_DESIGN_TYPE.key());
 			treatmentList = (List<List<Property>>) properties.getPropertyValue("TreatmentList");
 			factors = (Map<String, ExpFactor>) properties.getPropertyValue("Factors");
 			baseline = (Map<String, Object>) properties.getPropertyValue("Baseline");
@@ -159,19 +162,39 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	private void writeData() {
 		String widgetDirName = WidgetUtils.getUniqueExperimentSubdirectoryName(outputDir, widgetId);
 
+		File designFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, "Design.csv");
+		WidgetUtils.SaveExperimentDesignDetails(precis,edt,baseline, treatmentList,factors,nReps, designFile);
+
 		if (doAverage) {// maybe always both?
-			senderSelectedData.forEach((k, v) -> {
-				Number[][] avg = averageMatrices(v);
-				writeTiff(widgetDirName, k.toString(), "avg", avg);
+			senderSelectedData.forEach((sender, sampleData) -> {
+				int rep =  sender / treatmentList.size();
+				Number[][] matrix = averageMatrices(sampleData);
+				writeTiff(widgetDirName,rep, sender, "avg", getTreatmentDescriptor(sender), matrix);
 
 			});
 
 		} else {
-			senderSelectedData.forEach((k, v) -> {
-				v.forEach((kk, vv) -> {
-					writeTiff(widgetDirName, k.toString(), kk.toString(), vv);
+			senderSelectedData.forEach((sender, sampleData) -> {
+				int rep =  sender / treatmentList.size();
+				sampleData.forEach((timeStep, matrix) -> {
+					writeTiff(widgetDirName, rep,sender, timeStep.toString(), getTreatmentDescriptor(sender), matrix);
 				});
 			});
+		}
+	}
+
+	private String getTreatmentDescriptor(Integer sender) {
+		switch (edt) {
+		case crossFactorial: {
+			return WidgetUtils.getXFDescriptor(treatmentList.get(sender%treatmentList.size()), factors);
+		}
+		case sensitivityAnalysis:{
+			//????
+			return WidgetUtils.getXFDescriptor(treatmentList.get(sender%treatmentList.size()), factors);
+			
+		}
+		default:
+			return "";
 		}
 	}
 
@@ -197,8 +220,9 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		return result;
 	}
 
-	private void writeTiff(String widgetDir, String sender, String name, Number[][] matrix) {
-		File file = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDir, sender + "_" + name + ".tif");
+	private void writeTiff(String widgetDir,int rep,int sender, String prefix, String descriptor, Number[][] matrix) {
+		File file = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDir,
+				"r"+rep+"_s" + sender + "_t" + prefix + descriptor + ".tif");
 		WidgetUtils.writeResizedMatrixToTiffFile(matrix, file, palette, zRange, magnification,
 				BufferedImage.TYPE_INT_RGB, Image.SCALE_SMOOTH);
 	}

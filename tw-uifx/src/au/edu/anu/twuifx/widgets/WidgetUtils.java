@@ -14,10 +14,12 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import au.edu.anu.rscs.aot.graph.property.Property;
+import au.edu.anu.twcore.experiment.ExpFactor;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import fr.cnrs.iees.identity.impl.LocalScope;
+import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.ens.biologie.generic.utils.Interval;
 
 /**
@@ -95,6 +97,26 @@ public class WidgetUtils {
 		return result;
 	}
 
+	public static String getExperimentDesign(String precis, ExperimentDesignType edt, List<List<Property>> treatments,
+			Map<String, ExpFactor> factors, int nReps) {
+		StringBuilder sb = new StringBuilder().append("Precis\t").append(precis).append("\n");
+		sb.append(edt.name()).append("\t").append(edt.description()).append("\n");
+		sb.append("Replicates\t").append(nReps).append("\n");
+		switch (edt) {
+		case crossFactorial: {
+			for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) {
+				ExpFactor factor = entry.getValue();
+				sb.append(factor).append("\n");
+
+			}
+
+			break;
+		}
+		}
+
+		return sb.toString();
+	}
+
 	/**
 	 * Save a file containing experiment details.
 	 * 
@@ -103,8 +125,12 @@ public class WidgetUtils {
 	 * @param treatmentList List of properties with setting levels for each.
 	 * @param file          File name for saving.
 	 */
-	public static void SaveExperimentDesignDetails(String precis, Map<String, Object> baseline,
-			List<List<Property>> treatmentList, File file) {
+	public static void SaveExperimentDesignDetails(String precis, ExperimentDesignType edt,Map<String, Object> baseline,
+			List<List<Property>> treatmentList, Map<String, ExpFactor> factors,int nReps, File file) {
+		String s = getExperimentDesign(precis,edt,treatmentList,factors,nReps);
+		System.out.println(s);
+		StringBuilder sb = new StringBuilder().append("rep(").append(nReps).append(")");
+
 		List<String> fileLines = new ArrayList<>();
 		fileLines.clear();
 		fileLines.add("Label\tValue");
@@ -112,6 +138,7 @@ public class WidgetUtils {
 		for (Map.Entry<String, Object> pair : baseline.entrySet()) {
 			fileLines.add(pair.getKey() + "\t" + pair.getValue());
 		}
+		fileLines.add("Replicates\t" + nReps);
 		if (treatmentList != null && !treatmentList.isEmpty()) {
 			fileLines.add("\nSimulator\tSetting(s)");
 			for (int i = 0; i < treatmentList.size(); i++) {
@@ -139,6 +166,19 @@ public class WidgetUtils {
 			scope.newId(true, fileName);
 		}
 		return scope.newId(false, widgetId + "0").id();
+
+	}
+
+	public static String getXFDescriptor(List<Property> properties, Map<String, ExpFactor> factors) {
+		String result = "";
+		for (Property p : properties) {
+			// get the factor for this property key
+			ExpFactor factor = factors.get(p.getKey());
+			// get the level value name of this property
+			String fn = factor.getValueName(p);
+			result += "_" + fn;
+		}
+		return result;
 
 	}
 

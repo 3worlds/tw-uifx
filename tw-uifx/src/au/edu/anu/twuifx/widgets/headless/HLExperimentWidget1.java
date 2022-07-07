@@ -151,6 +151,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	}
 
 	private void makeChannels(DataLabel dl, int sender) {
+		// WidgetUtils.makeChannels(dl,sender,sas,sampledItems,dataSetMap);
 
 		Map<String, List<Double>> dataSetMap = simulatorDataSetMap.get(sender);
 
@@ -298,7 +299,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	}
 
 	private void writeData() {
-		// use a local scope to ensure unique file names and so prevent file overwrites
+		// Unique file names to prevent file overwrites
 		String widgetDirName = WidgetUtils.getUniqueExperimentSubdirectoryName(outputDir, widgetId);
 
 		SaveProjectDesign(widgetDirName);
@@ -349,7 +350,6 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	}
 
 	private void processANOVA(String widgetDirName, String name, List<List<Double>> data, int lastNonZeroTime) {
-		// TODO make abbrev of factor levels
 		List<Double> sample = new ArrayList<>();
 		for (int c = 0; c < data.size(); c++) {
 			List<Double> col = data.get(c);
@@ -554,7 +554,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	private void SaveProjectDesign(String widgetDirName) {
 		File designFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, "Design.csv");
-		WidgetUtils.SaveExperimentDesignDetails(precis, baseline, treatmentList, designFile);
+		WidgetUtils.SaveExperimentDesignDetails(precis, edt,baseline, treatmentList, factors,nReps,designFile);
 	}
 
 	private int processSeries(String widgetDirName, String header, String name, List<List<Double>> data, int max) {
