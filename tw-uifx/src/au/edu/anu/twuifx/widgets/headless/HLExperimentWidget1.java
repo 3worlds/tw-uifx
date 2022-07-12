@@ -52,6 +52,7 @@ import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.experiment.ExpFactor;
+import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
@@ -62,11 +63,9 @@ import au.edu.anu.twuifx.widgets.WidgetUtils;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
-import fr.cnrs.iees.identity.impl.LocalScope;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.ens.biologie.generic.utils.Statistics;
@@ -88,14 +87,15 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private Metadata msgMetadata;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
-	private List<List<Property>> treatmentList;
-	private Map<String, ExpFactor> factors;
-	private Map<String, Object> baseline;
-	private ExperimentDesignType edt;
-	private int nReps;
+//	private List<List<Property>> treatmentList;
+//	private Map<String, ExpFactor> factors;
+//	private Map<String, Object> baseline;
+//	private ExperimentDesignType edt;
+//	private int nReps;
 	private int nLines;
-	private String outputDir;
-	private String precis;
+//	private String outputDir;
+//	private String precis;
+	private ExperimentDesignDetails edd;
 
 	final private Map<Integer, TreeMap<String, List<Double>>> simulatorDataSetMap;
 
@@ -106,26 +106,17 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		simulatorDataSetMap = new ConcurrentHashMap<>();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		policy.setProperties(id, properties);
 		widgetId = id;
 		if (properties.hasProperty(P_DESIGN_TYPE.key())) {
-			edt = (ExperimentDesignType) properties.getPropertyValue(P_DESIGN_TYPE.key());
-			treatmentList = (List<List<Property>>) properties.getPropertyValue("TreatmentList");
-			factors = (Map<String, ExpFactor>) properties.getPropertyValue("Factors");
-			baseline = (Map<String, Object>) properties.getPropertyValue("Baseline");
+			edd = (ExperimentDesignDetails)properties.getPropertyValue(P_EXP_DETAILS.key());
 		}
-		nReps = 1;
-		if (properties.hasProperty(P_EXP_NREPLICATES.key()))
-			nReps = (Integer) properties.getPropertyValue(P_EXP_NREPLICATES.key());
 		nLines = 1;
 		if (properties.hasProperty(P_HLWIDGET_NLINES.key())) {
 			nLines = (Integer) properties.getPropertyValue(P_HLWIDGET_NLINES.key());
 		}
-		outputDir = (String) properties.getPropertyValue(P_EXP_DIR.key());
-		precis = (String) properties.getPropertyValue(P_EXP_PRECIS.key());
 	}
 
 	@Override
@@ -254,7 +245,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		String result = "";
 		String sep = "\t";
 
-		if (treatmentList.isEmpty()) {
+		if (edd.treatments().isEmpty()) {
 			for (Map.Entry<Integer, TreeMap<String, List<Double>>> simEntry : simulatorDataSetMap.entrySet()) {
 				TreeMap<String, List<Double>> simData = simEntry.getValue();
 				for (Map.Entry<String, List<Double>> simTimeSeries : simData.entrySet()) {
@@ -264,11 +255,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			}
 
 		} else
-			for (int i = 0; i < nReps; i++) {
-				for (List<Property> props : treatmentList) {
+			for (int i = 0; i < edd.nReplicates(); i++) {
+				for (List<Property> props : edd.treatments()) {
 					String colHeader = i + ":";
 					for (Property p : props) {
-						ExpFactor factor = factors.get(p.getKey());
+						ExpFactor factor = edd.factors().get(p.getKey());
 						colHeader += "_" + factor.getName() + "[" + factor.getValueName(p) + "]";
 //						
 //						colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
@@ -284,11 +275,10 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private String getAveragesHeader() {
 		String result = "";
 		String sep = "\t";
-		for (List<Property> props : treatmentList) {
+		for (List<Property> props : edd.treatments()) {
 			String colHeader = "";
 			for (Property p : props) {
-				ExpFactor factor = factors.get(p.getKey());
-//				colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
+				ExpFactor factor = edd.factors().get(p.getKey());
 				colHeader += "_" + factor.getName() + "[" + factor.getValueName(p) + "]";
 			}
 			colHeader = colHeader.replaceFirst("_", "");
@@ -300,7 +290,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	private void writeData() {
 		// Unique file names to prevent file overwrites
-		String widgetDirName = WidgetUtils.getUniqueExperimentSubdirectoryName(outputDir, widgetId);
+		String widgetDirName = WidgetUtils.getUniqueExperimentSubdirectoryName(edd.getExpDir(), widgetId);
 
 		SaveProjectDesign(widgetDirName);
 
@@ -329,8 +319,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			String seriesName = series.getKey();
 			List<List<Double>> seriesData = series.getValue();
 			int lastNonZeroTime = processSeries(widgetDirName, header, seriesName, seriesData, max);
-			if (edt != null)
-				switch (edt) {
+			if (edd.getEdt() != null)
+				switch (edd.getEdt()) {
 				case singleRun: {
 					// nothing to do except write the data series and record the exp data as above
 					break;
@@ -367,21 +357,21 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 //		h += "RV";
 
 		String h = "";
-		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) {
+		for (Map.Entry<String, ExpFactor> entry : edd.factors().entrySet()) {
 			h += entry.getValue().getName() + "\t";
 		}
 		h += "RV";
 
-		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName,
+		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
 				name + "_AnovaInput.csv");
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(h);
 		for (int i = 0; i < sample.size(); i++) {
-			List<Property> ps = treatmentList.get(i % treatmentList.size());
+			List<Property> ps = edd.treatments().get(i % edd.treatments().size());
 			Double v = sample.get(i);
 			String line = "";
 			for (Property p : ps) {
-				ExpFactor factor = factors.get(p.getKey());
+				ExpFactor factor = edd.factors().get(p.getKey());
 				String s = factor.getValueName(p);
 				// String s = p.getValue().toString();
 //				line += p.getKey() + s + "\t";
@@ -421,11 +411,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
 //		for (int i = 0; i < factors.size(); i++)
 //			fileLines.add("F" + i + " = data$F" + i);
-		for (Map.Entry<String, ExpFactor> entry : factors.entrySet())
+		for (Map.Entry<String, ExpFactor> entry : edd.factors().entrySet())
 			fileLines.add(entry.getValue().getName() + " = data$" + entry.getValue().getName());
 		fileLines.add(name + " = data$RV");
 		String args = name + "~";
-		for (Map.Entry<String, ExpFactor> entry : factors.entrySet())
+		for (Map.Entry<String, ExpFactor> entry : edd.factors().entrySet())
 			args += "*" + entry.getValue().getName();
 //		args += "*F" + f;
 		args = args.replaceFirst("\\*", "");
@@ -433,7 +423,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		fileLines.add("ava = anova (mdl)");
 		fileLines.add("write.table(ava,\"" + anovaResultsName + "\", sep = \"\t\")");
 
-		File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_anova.R");
+		File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_anova.R");
 		try {
 			Files.write(rscriptFile.toPath(), fileLines, StandardCharsets.UTF_8);
 		} catch (IOException e1) {
@@ -462,7 +452,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 		if (rPresent) {
 			try {
-				File results = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, anovaResultsName);
+				File results = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, anovaResultsName);
 				fileLines = Files.readAllLines(results.toPath(), StandardCharsets.UTF_8);
 				String line = "Terms\t" + fileLines.get(0);
 				fileLines.set(0, line);
@@ -500,7 +490,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 				}
 				fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
 
-				File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName,
+				File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
 						name + "_RelSumSq.csv");
 				Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
 			} catch (IOException e) {
@@ -514,7 +504,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	private void processSA(String widgetDirName, String name, List<List<Double>> data, int lastNonZeroTime) {
 		List<String> fileLines = new ArrayList<>();
-		int nBars = treatmentList.size();
+		int nBars = edd.treatments().size();
 		// how many indep vars? do we care here?
 		Statistics[] stats = new Statistics[nBars];
 		for (int bar = 0; bar < stats.length; bar++)
@@ -529,13 +519,13 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			}
 			stats[bar].add(sum / (double) nLines);
 		}
-		File statsFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_SA.csv");
+		File statsFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_SA.csv");
 		fileLines.clear();
 		fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
 		String sep = "\t";
 		for (int bar = 0; bar < stats.length; bar++) {
-			Property p = treatmentList.get(bar).get(0);
-			ExpFactor f = factors.get(p.getKey());
+			Property p = edd.treatments().get(bar).get(0);
+			ExpFactor f = edd.factors().get(p.getKey());
 			String s1 = f.getName() + "(" + f.getValueName(p) + ")";
 			String s2 = Double.toString(stats[bar].average());
 			String s3 = Double.toString(stats[bar].variance());
@@ -553,14 +543,14 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	}
 
 	private void SaveProjectDesign(String widgetDirName) {
-		File designFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, "Design.csv");
-		WidgetUtils.SaveExperimentDesignDetails(precis, edt,baseline, treatmentList, factors,nReps,designFile);
+		File designFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, "Design.csv");
+		WidgetUtils.SaveExperimentDesignDetails(edd,designFile);
 	}
 
 	private int processSeries(String widgetDirName, String header, String name, List<List<Double>> data, int max) {
 		String sep = "\t";
 		int lastNonZeroTime = Integer.MAX_VALUE;
-		File seriesFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + ".csv");
+		File seriesFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + ".csv");
 		seriesFile.getParentFile().mkdirs();
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(header);
@@ -588,20 +578,20 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		if (lastNonZeroTime == Integer.MAX_VALUE)
 			lastNonZeroTime = max - 1;
 
-		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_avg.csv");
-		File varianceFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, name + "_var.csv");
+		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv");
+		File varianceFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_var.csv");
 		List<String> fileLinesAvg = new ArrayList<>();
 		List<String> fileLinesVar = new ArrayList<>();
 		String headerAvg = getAveragesHeader();
 		fileLinesAvg.add(headerAvg);
 		fileLinesVar.add(headerAvg);
-		int nCols = data.size() / nReps;
+		int nCols = data.size() / edd.nReplicates();
 		for (int row = 0; row < max; row++) {
 			String lineAgv = "";
 			String lineVar = "";
 			for (int i = 0; i < nCols; i++) {
 				Statistics stat = new Statistics();
-				for (int r = 0; r < nReps; r++) {
+				for (int r = 0; r < edd.nReplicates(); r++) {
 					int col = r * nCols + i;
 					stat.add(data.get(col).get(row));
 				}

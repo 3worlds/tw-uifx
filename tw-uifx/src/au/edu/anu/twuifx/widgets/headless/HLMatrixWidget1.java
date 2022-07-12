@@ -3,25 +3,20 @@ package au.edu.anu.twuifx.widgets.headless;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.imageio.ImageIO;
 import au.edu.anu.rscs.aot.collections.tables.IntTable;
-import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.Output2DData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
-import au.edu.anu.twcore.experiment.ExpFactor;
+import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
@@ -30,11 +25,9 @@ import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.widgets.WidgetUtils;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import au.edu.anu.ymuit.ui.colour.PaletteFactory;
-import fr.cnrs.iees.identity.impl.LocalScope;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.ens.biologie.generic.utils.Interval;
 
 /**
@@ -72,15 +65,16 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	private int nCols;
 	private int nRows;
 	private boolean isSized;
-	private String outputDir;
-	private String precis;
+//	private String outputDir;
+//	private String precis;
 	private final Palette palette = PaletteFactory.orangeMauveBlue();
 	private int magnification;
-	private List<List<Property>> treatmentList;
-	private Map<String, ExpFactor> factors;
-	private Map<String, Object> baseline;
-	private int nReps;
-	private ExperimentDesignType edt;
+	private ExperimentDesignDetails edd;
+//	private List<List<Property>> treatmentList;
+//	private Map<String, ExpFactor> factors;
+//	private Map<String, Object> baseline;
+//	private int nReps;
+//	private ExperimentDesignType edt;
 
 	// TODO work out how we are to use ymuit palettes in the archetype?
 	// TODO need settings to set colour to out of scale pixels as per matrix widget
@@ -107,19 +101,9 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 			recordTimes.add(l);
 		}
 		doAverage = (Boolean) properties.getPropertyValue(P_WIDGET_ASAVERAGE.key());
-		outputDir = (String) properties.getPropertyValue(P_EXP_DIR.key());
-		precis = (String) properties.getPropertyValue(P_EXP_PRECIS.key());
+		edd = (ExperimentDesignDetails) properties.getPropertyValue(P_EXP_DETAILS.key());
 		zRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
 		magnification = Math.max(1, (Integer) properties.getPropertyValue(P_WIDGET_IMAGEMAGNIFICATION.key()));
-		if (properties.hasProperty(P_DESIGN_TYPE.key())) {
-			edt = (ExperimentDesignType) properties.getPropertyValue(P_DESIGN_TYPE.key());
-			treatmentList = (List<List<Property>>) properties.getPropertyValue("TreatmentList");
-			factors = (Map<String, ExpFactor>) properties.getPropertyValue("Factors");
-			baseline = (Map<String, Object>) properties.getPropertyValue("Baseline");
-		}
-		nReps = 1;
-		if (properties.hasProperty(P_EXP_NREPLICATES.key()))
-			nReps = (Integer) properties.getPropertyValue(P_EXP_NREPLICATES.key());
 	}
 
 	@Override
@@ -160,38 +144,39 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	 * range, palette and magnification.
 	 */
 	private void writeData() {
-		String widgetDirName = WidgetUtils.getUniqueExperimentSubdirectoryName(outputDir, widgetId);
+		String widgetDirName = WidgetUtils.getUniqueExperimentSubdirectoryName(edd.getExpDir(), widgetId);
 
-		File designFile = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDirName, "Design.csv");
-		WidgetUtils.SaveExperimentDesignDetails(precis,edt,baseline, treatmentList,factors,nReps, designFile);
+		File designFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, "Design.csv");
+		WidgetUtils.SaveExperimentDesignDetails(edd, designFile);
 
 		if (doAverage) {// maybe always both?
 			senderSelectedData.forEach((sender, sampleData) -> {
-				int rep =  sender / treatmentList.size();
+				int rep = sender / edd.treatments().size();
 				Number[][] matrix = averageMatrices(sampleData);
-				writeTiff(widgetDirName,rep, sender, "avg", getTreatmentDescriptor(sender), matrix);
+				writeTiff(widgetDirName, rep, sender, "avg", getTreatmentDescriptor(sender), matrix);
 
 			});
 
 		} else {
 			senderSelectedData.forEach((sender, sampleData) -> {
-				int rep =  sender / treatmentList.size();
+				int rep = sender / edd.treatments().size();
 				sampleData.forEach((timeStep, matrix) -> {
-					writeTiff(widgetDirName, rep,sender, timeStep.toString(), getTreatmentDescriptor(sender), matrix);
+					writeTiff(widgetDirName, rep, sender, timeStep.toString(), getTreatmentDescriptor(sender), matrix);
 				});
 			});
 		}
 	}
 
 	private String getTreatmentDescriptor(Integer sender) {
-		switch (edt) {
+		// TODO Handle exp from file
+		switch (edd.getEdt()) {
 		case crossFactorial: {
-			return WidgetUtils.getXFDescriptor(treatmentList.get(sender%treatmentList.size()), factors);
+			return WidgetUtils.getXFDescriptor(edd.treatments().get(sender % edd.treatments().size()), edd.factors());
 		}
-		case sensitivityAnalysis:{
-			//????
-			return WidgetUtils.getXFDescriptor(treatmentList.get(sender%treatmentList.size()), factors);
-			
+		case sensitivityAnalysis: {
+			// ????
+			return WidgetUtils.getXFDescriptor(edd.treatments().get(sender % edd.treatments().size()), edd.factors());
+
 		}
 		default:
 			return "";
@@ -220,9 +205,9 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		return result;
 	}
 
-	private void writeTiff(String widgetDir,int rep,int sender, String prefix, String descriptor, Number[][] matrix) {
-		File file = Project.makeFile(ProjectPaths.RUNTIME, outputDir, widgetDir,
-				"r"+rep+"_s" + sender + "_t" + prefix + descriptor + ".tif");
+	private void writeTiff(String widgetDir, int rep, int sender, String prefix, String descriptor, Number[][] matrix) {
+		File file = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDir,
+				"r" + rep + "_s" + sender + "_t" + prefix + descriptor + ".tif");
 		WidgetUtils.writeResizedMatrixToTiffFile(matrix, file, palette, zRange, magnification,
 				BufferedImage.TYPE_INT_RGB, Image.SCALE_SMOOTH);
 	}
