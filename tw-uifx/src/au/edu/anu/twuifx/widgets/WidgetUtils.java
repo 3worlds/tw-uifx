@@ -118,19 +118,36 @@ public class WidgetUtils {
 
 	}
 
-	public static String getUniqueExperimentSubdirectoryName(String expDir, String widgetId) {
+	/**
+	 * Create unique sub-directory name below the given {@code root} directory by
+	 * adding an integer to the {@code baseName}.
+	 * 
+	 * @param root     The root directory.
+	 * @param baseName The name to be modified.
+	 * @return Unique sub-directory name (wigetID {@literal <n>}).
+	 */
+	public static String getUniqueExperimentSubdirectoryName(String root, String baseName) {
 		LocalScope scope = new LocalScope("Files");
-		File dir = Project.makeFile(ProjectPaths.RUNTIME, expDir);
+		File dir = Project.makeFile(ProjectPaths.RUNTIME, root);
 		dir.mkdirs();
 		for (String fileName : dir.list()) {
 			int dotIndex = fileName.lastIndexOf('.');
 			fileName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
 			scope.newId(true, fileName);
 		}
-		return scope.newId(false, widgetId + "0").id();
+		return scope.newId(false, baseName + "0").id();
 
 	}
 
+	/**
+	 * Create a unique artifact name for a single simulator in a cross-factorial
+	 * design.
+	 * 
+	 * @param properties Property list of a simulator.
+	 * @param factors    Experiment factors.
+	 * @return String describing the factor levels used, e.g.
+	 *         distance(long)_habitatPattern(coarse)
+	 */
 	public static String getXFDescriptor(List<Property> properties, Map<String, ExpFactor> factors) {
 		String result = "";
 		for (Property p : properties) {
@@ -138,7 +155,7 @@ public class WidgetUtils {
 			ExpFactor factor = factors.get(p.getKey());
 			// get the level value name of this property
 			String fn = factor.getValueName(p);
-			result += "_" + fn;
+			result += "_" + factor.getName() + "(" + fn + ")";
 		}
 		return result;
 

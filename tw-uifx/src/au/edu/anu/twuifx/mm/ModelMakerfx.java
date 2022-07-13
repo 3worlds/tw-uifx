@@ -37,6 +37,7 @@ import java.util.prefs.Preferences;
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.undo.Caretaker;
+import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
@@ -46,6 +47,7 @@ import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
 import au.edu.anu.twuifx.mm.view.MmController;
+import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -112,6 +114,12 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		});
 	}
 
+	static {
+		ValidPropertyTypes.recordPropertyType(PaletteTypes.class.getSimpleName(), PaletteTypes.class.getName(),
+				PaletteTypes.defaultValue());
+		
+	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		/**
@@ -175,7 +183,7 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		chBxSuppress.setOnAction((e) -> {
 			prefs.putBoolean(key, !chBxSuppress.isSelected());
 		});
-	
+
 		bottom.getChildren().addAll(chBxSuppress, btnClose);
 		BorderPane rightContent = new BorderPane();
 		rightContent.setBottom(bottom);
