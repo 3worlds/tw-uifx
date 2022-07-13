@@ -52,6 +52,7 @@ import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.experiment.ExpFactor;
+import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
@@ -87,15 +88,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private Metadata msgMetadata;
 	private StatisticalAggregatesSet sas;
 	private Collection<String> sampledItems;
-//	private List<List<Property>> treatmentList;
-//	private Map<String, ExpFactor> factors;
-//	private Map<String, Object> baseline;
-//	private ExperimentDesignType edt;
-//	private int nReps;
 	private int nLines;
-//	private String outputDir;
-//	private String precis;
-	private ExperimentDesignDetails edd;
+	private EddReadable edd;
 
 	final private Map<Integer, TreeMap<String, List<Double>>> simulatorDataSetMap;
 
@@ -110,9 +104,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	public void setProperties(String id, SimplePropertyList properties) {
 		policy.setProperties(id, properties);
 		widgetId = id;
-		if (properties.hasProperty(P_DESIGN_TYPE.key())) {
-			edd = (ExperimentDesignDetails)properties.getPropertyValue(P_EXP_DETAILS.key());
-		}
+		edd = (ExperimentDesignDetails) properties.getPropertyValue(P_EXP_DETAILS.key());
 		nLines = 1;
 		if (properties.hasProperty(P_HLWIDGET_NLINES.key())) {
 			nLines = (Integer) properties.getPropertyValue(P_HLWIDGET_NLINES.key());
@@ -245,7 +237,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		String result = "";
 		String sep = "\t";
 
-		if (edd.treatments().isEmpty()) {
+		if (edd.getTreatments().isEmpty()) {
 			for (Map.Entry<Integer, TreeMap<String, List<Double>>> simEntry : simulatorDataSetMap.entrySet()) {
 				TreeMap<String, List<Double>> simData = simEntry.getValue();
 				for (Map.Entry<String, List<Double>> simTimeSeries : simData.entrySet()) {
@@ -255,11 +247,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			}
 
 		} else
-			for (int i = 0; i < edd.nReplicates(); i++) {
-				for (List<Property> props : edd.treatments()) {
+			for (int i = 0; i < edd.getReplicateCount(); i++) {
+				for (List<Property> props : edd.getTreatments()) {
 					String colHeader = i + ":";
 					for (Property p : props) {
-						ExpFactor factor = edd.factors().get(p.getKey());
+						ExpFactor factor = edd.getFactors().get(p.getKey());
 						colHeader += "_" + factor.getName() + "[" + factor.getValueName(p) + "]";
 //						
 //						colHeader += "_" + p.getKey() + "[" + p.getValue() + "]";
@@ -275,10 +267,10 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 	private String getAveragesHeader() {
 		String result = "";
 		String sep = "\t";
-		for (List<Property> props : edd.treatments()) {
+		for (List<Property> props : edd.getTreatments()) {
 			String colHeader = "";
 			for (Property p : props) {
-				ExpFactor factor = edd.factors().get(p.getKey());
+				ExpFactor factor = edd.getFactors().get(p.getKey());
 				colHeader += "_" + factor.getName() + "[" + factor.getValueName(p) + "]";
 			}
 			colHeader = colHeader.replaceFirst("_", "");
@@ -319,8 +311,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			String seriesName = series.getKey();
 			List<List<Double>> seriesData = series.getValue();
 			int lastNonZeroTime = processSeries(widgetDirName, header, seriesName, seriesData, max);
-			if (edd.getEdt() != null)
-				switch (edd.getEdt()) {
+			if (edd.getType() != null)
+				switch (edd.getType()) {
 				case singleRun: {
 					// nothing to do except write the data series and record the exp data as above
 					break;
@@ -357,7 +349,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 //		h += "RV";
 
 		String h = "";
-		for (Map.Entry<String, ExpFactor> entry : edd.factors().entrySet()) {
+		for (Map.Entry<String, ExpFactor> entry : edd.getFactors().entrySet()) {
 			h += entry.getValue().getName() + "\t";
 		}
 		h += "RV";
@@ -367,11 +359,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(h);
 		for (int i = 0; i < sample.size(); i++) {
-			List<Property> ps = edd.treatments().get(i % edd.treatments().size());
+			List<Property> ps = edd.getTreatments().get(i % edd.getTreatments().size());
 			Double v = sample.get(i);
 			String line = "";
 			for (Property p : ps) {
-				ExpFactor factor = edd.factors().get(p.getKey());
+				ExpFactor factor = edd.getFactors().get(p.getKey());
 				String s = factor.getValueName(p);
 				// String s = p.getValue().toString();
 //				line += p.getKey() + s + "\t";
@@ -411,11 +403,11 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
 //		for (int i = 0; i < factors.size(); i++)
 //			fileLines.add("F" + i + " = data$F" + i);
-		for (Map.Entry<String, ExpFactor> entry : edd.factors().entrySet())
+		for (Map.Entry<String, ExpFactor> entry : edd.getFactors().entrySet())
 			fileLines.add(entry.getValue().getName() + " = data$" + entry.getValue().getName());
 		fileLines.add(name + " = data$RV");
 		String args = name + "~";
-		for (Map.Entry<String, ExpFactor> entry : edd.factors().entrySet())
+		for (Map.Entry<String, ExpFactor> entry : edd.getFactors().entrySet())
 			args += "*" + entry.getValue().getName();
 //		args += "*F" + f;
 		args = args.replaceFirst("\\*", "");
@@ -504,7 +496,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	private void processSA(String widgetDirName, String name, List<List<Double>> data, int lastNonZeroTime) {
 		List<String> fileLines = new ArrayList<>();
-		int nBars = edd.treatments().size();
+		int nBars = edd.getTreatments().size();
 		// how many indep vars? do we care here?
 		Statistics[] stats = new Statistics[nBars];
 		for (int bar = 0; bar < stats.length; bar++)
@@ -524,8 +516,8 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
 		String sep = "\t";
 		for (int bar = 0; bar < stats.length; bar++) {
-			Property p = edd.treatments().get(bar).get(0);
-			ExpFactor f = edd.factors().get(p.getKey());
+			Property p = edd.getTreatments().get(bar).get(0);
+			ExpFactor f = edd.getFactors().get(p.getKey());
 			String s1 = f.getName() + "(" + f.getValueName(p) + ")";
 			String s2 = Double.toString(stats[bar].average());
 			String s3 = Double.toString(stats[bar].variance());
@@ -544,7 +536,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	private void SaveProjectDesign(String widgetDirName) {
 		File designFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, "Design.csv");
-		WidgetUtils.SaveExperimentDesignDetails(edd,designFile);
+		WidgetUtils.SaveExperimentDesignDetails(edd, designFile);
 	}
 
 	private int processSeries(String widgetDirName, String header, String name, List<List<Double>> data, int max) {
@@ -585,13 +577,13 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		String headerAvg = getAveragesHeader();
 		fileLinesAvg.add(headerAvg);
 		fileLinesVar.add(headerAvg);
-		int nCols = data.size() / edd.nReplicates();
+		int nCols = data.size() / edd.getReplicateCount();
 		for (int row = 0; row < max; row++) {
 			String lineAgv = "";
 			String lineVar = "";
 			for (int i = 0; i < nCols; i++) {
 				Statistics stat = new Statistics();
-				for (int r = 0; r < edd.nReplicates(); r++) {
+				for (int r = 0; r < edd.getReplicateCount(); r++) {
 					int col = r * nCols + i;
 					stat.add(data.get(col).get(row));
 				}

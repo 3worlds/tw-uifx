@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 
 import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twcore.experiment.ExpFactor;
+import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
@@ -103,7 +104,7 @@ public class WidgetUtils {
 	 * @param edd  Experiment design details ({@link ExperimentDesignDetails}).
 	 * @param file File name for saving.
 	 */
-	public static void SaveExperimentDesignDetails(ExperimentDesignDetails edd, File file) {
+	public static void SaveExperimentDesignDetails(EddReadable edd, File file) {
 		String s = edd.toDetailString();
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(s);

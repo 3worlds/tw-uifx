@@ -16,6 +16,7 @@ import au.edu.anu.rscs.aot.collections.tables.IntTable;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.Output2DData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
@@ -69,12 +70,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 //	private String precis;
 	private final Palette palette = PaletteFactory.orangeMauveBlue();
 	private int magnification;
-	private ExperimentDesignDetails edd;
-//	private List<List<Property>> treatmentList;
-//	private Map<String, ExpFactor> factors;
-//	private Map<String, Object> baseline;
-//	private int nReps;
-//	private ExperimentDesignType edt;
+	private EddReadable edd;
 
 	// TODO work out how we are to use ymuit palettes in the archetype?
 	// TODO need settings to set colour to out of scale pixels as per matrix widget
@@ -151,7 +147,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 
 		if (doAverage) {// maybe always both?
 			senderSelectedData.forEach((sender, sampleData) -> {
-				int rep = sender / edd.treatments().size();
+				int rep = sender / edd.getTreatments().size();
 				Number[][] matrix = averageMatrices(sampleData);
 				writeTiff(widgetDirName, rep, sender, "avg", getTreatmentDescriptor(sender), matrix);
 
@@ -159,7 +155,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 
 		} else {
 			senderSelectedData.forEach((sender, sampleData) -> {
-				int rep = sender / edd.treatments().size();
+				int rep = sender / edd.getTreatments().size();
 				sampleData.forEach((timeStep, matrix) -> {
 					writeTiff(widgetDirName, rep, sender, timeStep.toString(), getTreatmentDescriptor(sender), matrix);
 				});
@@ -169,13 +165,13 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 
 	private String getTreatmentDescriptor(Integer sender) {
 		// TODO Handle exp from file
-		switch (edd.getEdt()) {
+		switch (edd.getType()) {
 		case crossFactorial: {
-			return WidgetUtils.getXFDescriptor(edd.treatments().get(sender % edd.treatments().size()), edd.factors());
+			return WidgetUtils.getXFDescriptor(edd.getTreatments().get(sender % edd.getTreatments().size()), edd.getFactors());
 		}
 		case sensitivityAnalysis: {
 			// ????
-			return WidgetUtils.getXFDescriptor(edd.treatments().get(sender % edd.treatments().size()), edd.factors());
+			return WidgetUtils.getXFDescriptor(edd.getTreatments().get(sender % edd.getTreatments().size()), edd.getFactors());
 
 		}
 		default:

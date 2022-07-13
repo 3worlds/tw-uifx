@@ -246,6 +246,7 @@ public class MRmain {
 			 */
 			Experiment exp = (Experiment) get(configGraph.root().getChildren(),
 					selectOne(hasTheLabel(N_EXPERIMENT.label())));
+			exp.initialise();
 
 			int nSim = 1;
 			if (exp.properties().hasProperty(P_EXP_NREPLICATES.key()))
@@ -265,7 +266,7 @@ public class MRmain {
 			System.out.println("Running... [Project: " + Project.getDisplayName() + "; Date: " + date + "]");
 			int nTreatments = 1;
 			if (edt.equals(ExperimentDesignType.crossFactorial) || edt.equals(ExperimentDesignType.sensitivityAnalysis))
-				nTreatments = exp.getExperimentDesignDetails().treatments().size();
+				nTreatments = exp.getExperimentDesignDetails().getTreatments().size();
 			System.out.println("Initialising... [Simulators: " + (nSim * nTreatments) + "]");
 			for (TreeNode n : ctrlHl.getParent().getChildren()) {
 				InitialisableNode in = (InitialisableNode) n;
