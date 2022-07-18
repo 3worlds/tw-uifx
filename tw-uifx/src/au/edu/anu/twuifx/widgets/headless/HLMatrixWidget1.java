@@ -26,6 +26,7 @@ import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.widgets.WidgetUtils;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import au.edu.anu.ymuit.ui.colour.PaletteFactory;
+import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -68,7 +69,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	private boolean isSized;
 //	private String outputDir;
 //	private String precis;
-	private final Palette palette = PaletteFactory.orangeMauveBlue();
+	private Palette palette;
 	private int magnification;
 	private EddReadable edd;
 
@@ -100,6 +101,8 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		edd = (ExperimentDesignDetails) properties.getPropertyValue(P_EXP_DETAILS.key());
 		zRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
 		magnification = Math.max(1, (Integer) properties.getPropertyValue(P_WIDGET_IMAGEMAGNIFICATION.key()));
+		PaletteTypes pt = (PaletteTypes) properties.getPropertyValue(P_WIDGET_PALETTE.key());
+		palette = pt.getPalette();
 	}
 
 	@Override
@@ -147,7 +150,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 
 		if (doAverage) {// maybe always both?
 			senderSelectedData.forEach((sender, sampleData) -> {
-				int rep = sender / edd.getTreatments().size();
+				int rep = sender / Math.max(1, edd.getTreatments().size());
 				Number[][] matrix = averageMatrices(sampleData);
 				writeTiff(widgetDirName, rep, sender, "avg", getTreatmentDescriptor(sender), matrix);
 
@@ -155,7 +158,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 
 		} else {
 			senderSelectedData.forEach((sender, sampleData) -> {
-				int rep = sender / edd.getTreatments().size();
+				int rep = sender / Math.max(1, edd.getTreatments().size());
 				sampleData.forEach((timeStep, matrix) -> {
 					writeTiff(widgetDirName, rep, sender, timeStep.toString(), getTreatmentDescriptor(sender), matrix);
 				});
@@ -167,11 +170,13 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		// TODO Handle exp from file
 		switch (edd.getType()) {
 		case crossFactorial: {
-			return WidgetUtils.getXFDescriptor(edd.getTreatments().get(sender % edd.getTreatments().size()), edd.getFactors());
+			return WidgetUtils.getXFDescriptor(edd.getTreatments().get(sender % edd.getTreatments().size()),
+					edd.getFactors());
 		}
 		case sensitivityAnalysis: {
 			// ????
-			return WidgetUtils.getXFDescriptor(edd.getTreatments().get(sender % edd.getTreatments().size()), edd.getFactors());
+			return WidgetUtils.getXFDescriptor(edd.getTreatments().get(sender % edd.getTreatments().size()),
+					edd.getFactors());
 
 		}
 		default:
@@ -189,6 +194,9 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	 */
 	private Number[][] averageMatrices(Map<Long, Number[][]> v) {
 		Number[][] result = new Number[nCols][nRows];
+		for (int x = 0;x<nCols;x++)
+			for (int y = 0;y<nRows;y++)
+				result[x][y]=0.0;
 		int n = v.size();
 		for (Number[][] value : v.values()) {
 			for (int x = 0; x < nCols; x++)

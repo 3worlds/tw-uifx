@@ -341,13 +341,6 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			sample.add(sum / (double) nLines);
 		}
 
-		// We need just the property for header
-//		int factors = treatmentList.get(0).size();
-//		String h = "";
-//		for (int i = 0; i < factors; i++)
-//			h += "F" + i + "\t";
-//		h += "RV";
-
 		String h = "";
 		for (Map.Entry<String, ExpFactor> entry : edd.getFactors().entrySet()) {
 			h += entry.getValue().getName() + "\t";
@@ -398,6 +391,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		plot(RV~F3, main = outputDir)
 		dev.off()
 		 */
+		
 		fileLines.clear();
 		fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
 		fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
