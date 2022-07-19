@@ -80,7 +80,7 @@ import fr.ens.biologie.generic.utils.Statistics;
  *         TODO we need some static helpers for common exp widget operations.
  */
 
-public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {
+public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {
 	final private WidgetTimeFormatter timeFormatter;
 	final private WidgetTrackingPolicy<TimeData> policy;
 	private String widgetId;
@@ -93,7 +93,7 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 
 	final private Map<Integer, TreeMap<String, List<Double>>> simulatorDataSetMap;
 
-	public HLExperimentWidget1(StateMachineEngine<StatusWidget> statusSender) {
+	public HLTimeSeriesAnalysisWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimCloneWidgetTrackingPolicy();
@@ -372,71 +372,37 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 			e1.printStackTrace();
 		}
 		String anovaResultsName = name + "_anovaResults.csv";
-		/*-
-		setwd("/home/ian/.3w/project_LMDExp_2022-01-03-22-40-14-976/local/runTime/NOG-K/popWriter0")
-		data = read.table("population_AnovaInput.csv",sep="	",header = TRUE,dec=".")
-		F0 = data$F0
-		F1 = data$F1
-		F2 = data$F2
-		F3 = data$F3
-		RV = data$RV
-		mdl = lm(RV~F0*F1*F2*F3)
-		ava = anova (mdl)
-		write.table(ava,"population_anovaResults.csv", sep = "	")
-		svg(paste("population_trends.svg"),width = 5.5, height = 5.5)
-		oldpar <- par(mfrow = c(2,2))
-		plot(RV~F0, main = outputDir)
-		plot(RV~F1, main = outputDir)
-		plot(RV~F2, main = outputDir)
-		plot(RV~F3, main = outputDir)
-		dev.off()
-		 */
-		
-		fileLines.clear();
-		fileLines.add("setwd(\"" + anovaInputFile.getParent() + "\")");
-		fileLines.add("data = read.table(\"" + anovaInputFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
-//		for (int i = 0; i < factors.size(); i++)
-//			fileLines.add("F" + i + " = data$F" + i);
-		for (Map.Entry<String, ExpFactor> entry : edd.getFactors().entrySet())
-			fileLines.add(entry.getValue().getName() + " = data$" + entry.getValue().getName());
-		fileLines.add(name + " = data$RV");
-		String args = name + "~";
-		for (Map.Entry<String, ExpFactor> entry : edd.getFactors().entrySet())
-			args += "*" + entry.getValue().getName();
-//		args += "*F" + f;
-		args = args.replaceFirst("\\*", "");
-		fileLines.add("mdl = lm(" + args + ")");
-		fileLines.add("ava = anova (mdl)");
-		fileLines.add("write.table(ava,\"" + anovaResultsName + "\", sep = \"\t\")");
+		List<String> anovaLines = WidgetUtils.generateANOVAScript(anovaInputFile,edd.getFactors(),name,anovaResultsName);
+		File anovaFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_anova.R");
+		boolean result = WidgetUtils.saveAndExecuteScript(anovaFile,anovaLines);
+//
+//		try {
+//			Files.write(rscriptFile.toPath(), anovaLines, StandardCharsets.UTF_8);
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		// exec R with rscriptFile
+//		List<String> commands = new ArrayList<>();
+//		commands.add("Rscript");
+//		commands.add(rscriptFile.getAbsolutePath());
+//		ProcessBuilder b = new ProcessBuilder(commands);
+//		b.directory(new File(rscriptFile.getParent()));
+//		b.inheritIO();
+//		boolean rPresent = true;
+//		try {
+//			try {
+//				b.start().waitFor();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				rPresent = false;
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			rPresent = false;
+//		}
 
-		File rscriptFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_anova.R");
-		try {
-			Files.write(rscriptFile.toPath(), fileLines, StandardCharsets.UTF_8);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		// exec R with rscriptFile
-		List<String> commands = new ArrayList<>();
-		commands.add("Rscript");
-		commands.add(rscriptFile.getAbsolutePath());
-		ProcessBuilder b = new ProcessBuilder(commands);
-		b.directory(new File(rscriptFile.getParent()));
-		b.inheritIO();
-		boolean rPresent = true;
-		try {
-			try {
-				b.start().waitFor();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				rPresent = false;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			rPresent = false;
-		}
-
-		if (rPresent) {
+		if (result) {
 			try {
 				File results = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, anovaResultsName);
 				fileLines = Files.readAllLines(results.toPath(), StandardCharsets.UTF_8);
@@ -486,6 +452,10 @@ public class HLExperimentWidget1 extends AbstractDisplayWidget<Output0DData, Met
 		} else {
 			throw new TwuifxException("ANOVA not computed because Rscript was not found on the system.");
 		}
+		List<String> boxPlotLines =WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(), name, anovaResultsName);
+		File boxChartFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_trends.R");
+		WidgetUtils.saveAndExecuteScript(boxChartFile,boxPlotLines);
+
 	}
 
 	private void processSA(String widgetDirName, String name, List<List<Double>> data, int lastNonZeroTime) {

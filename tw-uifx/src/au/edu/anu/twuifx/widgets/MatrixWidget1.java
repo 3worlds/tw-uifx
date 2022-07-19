@@ -121,6 +121,10 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private int nViews;
 	private final List<Output2DData> initialData;
 	private Interval defaultRange;
+//	private Palette defaultPalette;
+	private PaletteTypes defaultPaletteTypes;
+	private int defaultMagnification;
+	private int defaultPrecision;
 
 //	private static Logger log = Logging.getLogger(MatrixWidget1.class);
 
@@ -137,7 +141,21 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
 		// Query ensures range is bounded
-		this.defaultRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
+		if (properties.hasProperty(P_WIDGET_DEFAULT_Z_RANGE.key()))
+			this.defaultRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
+		else
+			this.defaultRange = Interval.open(0.0, 1.0);
+		if (properties.hasProperty(P_WIDGET_PALETTE.key()))
+			defaultPaletteTypes = (PaletteTypes) properties.getPropertyValue(P_WIDGET_PALETTE.key());
+		else
+			defaultPaletteTypes = PaletteTypes.BrownYellowGreen;
+		if (properties.hasProperty(P_WIDGET_IMAGEMAGNIFICATION.key()))
+			defaultMagnification = Math.max(1,
+					(Integer) properties.getPropertyValue(P_WIDGET_IMAGEMAGNIFICATION.key()));
+		else
+			defaultMagnification = 1;
+
+//		defaultPalette = defaultPaletteTypes.getPalette();
 		policy.setProperties(id, properties);
 		nViews = 1;
 		if (properties.hasProperty("nViews"))
@@ -236,10 +254,6 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		return content;
 	}
 
-	private enum MissingValueOptions {
-		LTEQMin, GTEQMax, Auto
-	}
-
 	private static final String keyScaleX = "scaleX";
 	private static final String keyScaleY = "scaleY";
 	private static final String keyScrollH = "scrollH";
@@ -296,13 +310,12 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			d.setSender(prefs.getInt(widgetId + keySender + i, i));
 
 		}
-		resolution = prefs.getInt(widgetId + keyResolution, 2);
+		resolution = prefs.getInt(widgetId + keyResolution, defaultMagnification);
 		decimalPlaces = prefs.getInt(widgetId + keyDecimalPlaces, 2);
 		minValue = prefs.getDouble(widgetId + keyMinValue, defaultRange.inf());
 		maxValue = prefs.getDouble(widgetId + keyMaxValue, defaultRange.sup());
-		paletteType = (PaletteTypes) prefs.getEnum(widgetId + keyPalette, PaletteTypes.BrownYellowGreen);
-		mvMethod = (MissingValueOptions) prefs.getEnum(widgetId + keyMissingValueMethod,
-				MissingValueOptions.Auto);
+		paletteType = (PaletteTypes) prefs.getEnum(widgetId + keyPalette, defaultPaletteTypes);
+		mvMethod = (MissingValueOptions) prefs.getEnum(widgetId + keyMissingValueMethod, MissingValueOptions.Auto);
 
 		double[] rgb = prefs.getDoubles(widgetId + keyBKGColour, Color.TRANSPARENT.getRed(),
 				Color.TRANSPARENT.getGreen(), Color.TRANSPARENT.getBlue(), Color.TRANSPARENT.getOpacity());

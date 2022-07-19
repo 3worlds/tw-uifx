@@ -50,7 +50,7 @@ This control widget can be used even if you have visible widgets. It begins the 
 This progress widget will produce progress information to the console as the experiment proceeds.
 
 [start = 9]
-. Add two more widgets as a children of `headless:hl`, name them 'fstWriter' and 'popWriter' respectively and select 'HLExperimentWidget1' as their type.
+. Add two more widgets as a children of `headless:hl`, name them 'fstWriter' and 'popWriter' respectively and select 'HLTimeSeriesAnalysisWidget1' as their type.
 . Add a `trackSeries` edge from `widget:fstWriter` to  `dataTracker:trkFst`.
 . Add another `trackSeries` edge, this time from `widget:popWriter` to `dataTracker:trkMetaPop`.
 
