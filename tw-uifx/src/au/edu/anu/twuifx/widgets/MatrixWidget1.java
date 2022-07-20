@@ -426,19 +426,19 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		ColorPicker cpBkg = new ColorPicker(bkgColour);
 		addGridControl("Background", row++, col, cpBkg, content);
 
-		// --- resolution
+		// --- magnification
 		Spinner<Integer> spResolution = new Spinner<>();
 		spResolution.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, resolution));
 		spResolution.setMaxWidth(100);
 		spResolution.setEditable(true);
-		addGridControl("Resolution", row++, col, spResolution, content);
+		addGridControl("Magnification", row++, col, spResolution, content);
 
-		// -- format
+		// -- decimal format
 		Spinner<Integer> spDP = new Spinner<>();
 		spDP.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10, decimalPlaces));
 		spDP.setMaxWidth(100);
 		spDP.setEditable(true);
-		addGridControl("Decimal places", row++, col, spDP, content);
+		addGridControl("Precision", row++, col, spDP, content);
 
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {

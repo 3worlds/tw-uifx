@@ -34,6 +34,8 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 //import java.time.Duration;
 import javafx.util.Duration;
+
+import java.awt.Paint;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -234,6 +236,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			else
 				newAxis.setSide(Side.RIGHT);
 			yAxes.add(newAxis);
+		//	newAxis.setAutoRangePadding(0.1);
 		}
 
 		// we need to sort this using padIndexedDidgets somehow
@@ -266,17 +269,20 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 		final DefaultNumericAxis xAxis = new DefaultNumericAxis("time: ", timeUnitName);
 		xAxis.setAutoRangeRounding(false);
+//		xAxis.setAutoRangePadding(0.1);
 		xAxis.setTickLabelRotation(45);
 		xAxis.invertAxis(false);
 		xAxis.setTimeAxis(false);
 
 		chart = new XYChart(xAxis, yAxes.get(0));
+		//NB: This is the padding around the whole control - not between child nodes
 		chart.setPadding(new Insets(1, 10, 5, 5));
 		chart.setLegendSide(legendSide);
 		chart.setLegendVisible(legendVisible);
-
 		chart.setAnimated(false);// probably expensive if true
 		chart.getRenderers().addAll(renderers);
+		chart.getTitleLegendPane(legendSide).setPadding(new Insets(10,10,10,10));
+//		chart.getTitleLegendPane(legendSide).setStyle("-fx-background-color: transparent");
 
 		chart.getPlugins().add(new Zoomer());
 		// senderDataSetMap.get(0).values();
@@ -444,6 +450,8 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			chart.setLegendSide(legendSide);
 			legendVisible = chbxLegendVisible.isSelected();
 			chart.setLegendVisible(legendVisible);
+			chart.getTitleLegendPane(legendSide).setPadding(new Insets(10,10,10,10));
+//			chart.getTitleLegendPane(legendSide).setStyle("-fx-background-color: transparent");
 		}
 	}
 
