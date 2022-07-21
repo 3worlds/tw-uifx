@@ -125,6 +125,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private PaletteTypes defaultPaletteTypes;
 	private int defaultMagnification;
 	private int defaultPrecision;
+	private IsMissingValue defaultMissingValueMethod;
+	private MissingValueColour defaultMissingValueColour;
 
 //	private static Logger log = Logging.getLogger(MatrixWidget1.class);
 
@@ -141,25 +143,39 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	public void setProperties(String id, SimplePropertyList properties) {
 		this.widgetId = id;
 		// Query ensures range is bounded
-		if (properties.hasProperty(P_WIDGET_DEFAULT_Z_RANGE.key()))
-			this.defaultRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
+		if (properties.hasProperty(P_WIDGET_Z_RANGE.key()))
+			this.defaultRange = (Interval) properties.getPropertyValue(P_WIDGET_Z_RANGE.key());
 		else
 			this.defaultRange = Interval.open(0.0, 1.0);
+
 		if (properties.hasProperty(P_WIDGET_PALETTE.key()))
 			defaultPaletteTypes = (PaletteTypes) properties.getPropertyValue(P_WIDGET_PALETTE.key());
 		else
 			defaultPaletteTypes = PaletteTypes.BrownYellowGreen;
-		if (properties.hasProperty(P_WIDGET_IMAGEMAGNIFICATION.key()))
-			defaultMagnification = Math.max(1,
-					(Integer) properties.getPropertyValue(P_WIDGET_IMAGEMAGNIFICATION.key()));
+
+		if (properties.hasProperty(P_WIDGET_IMAGE_MAG.key()))
+			defaultMagnification = Math.max(1, (Integer) properties.getPropertyValue(P_WIDGET_IMAGE_MAG.key()));
 		else
 			defaultMagnification = 1;
 
-//		defaultPalette = defaultPaletteTypes.getPalette();
+		if (properties.hasProperty(P_WIDGET_MV_METHOD.key()))
+			defaultMissingValueMethod = (IsMissingValue) properties.getPropertyValue(P_WIDGET_MV_METHOD.key());
+		else
+			defaultMissingValueMethod = IsMissingValue.NEVER;
+
+		if (properties.hasProperty(P_WIDGET_MV_COLOUR.key()))
+			defaultMissingValueColour = (MissingValueColour) properties.getPropertyValue(P_WIDGET_MV_COLOUR.key());
+		else
+			defaultMissingValueColour = MissingValueColour.TRANSPARENT;
+
+		defaultPrecision = 2;
+		if (properties.hasProperty(P_WIDGET_Z_PRECISION.key()))
+			defaultPrecision = (Integer) properties.getPropertyValue(P_WIDGET_Z_PRECISION.key());
+
 		policy.setProperties(id, properties);
 		nViews = 1;
-		if (properties.hasProperty("nViews"))
-			nViews = (Integer) properties.getPropertyValue("nViews");
+		if (properties.hasProperty(P_WIDGET_NVIEWS.key()))
+			nViews = (Integer) properties.getPropertyValue(P_WIDGET_NVIEWS.key());
 	}
 
 	@Override
@@ -274,7 +290,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private int resolution;
 	private int decimalPlaces;
 	private ImageView paletteImageView;
-	private MissingValueOptions mvMethod;
+	private IsMissingValue isMissingValue;
+	private MissingValueColour missingValueColour;
 	private Color bkgColour;
 
 	@Override
@@ -293,9 +310,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		prefs.putDouble(widgetId + keyMinValue, minValue);
 		prefs.putDouble(widgetId + keyMaxValue, maxValue);
 		prefs.putEnum(widgetId + keyPalette, paletteType);
-		prefs.putEnum(widgetId + keyMissingValueMethod, mvMethod);
-		prefs.putDoubles(widgetId + keyBKGColour, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue(),
-				bkgColour.getOpacity());
+		prefs.putEnum(widgetId + keyMissingValueMethod, isMissingValue);
+		prefs.putEnum(widgetId + keyBKGColour, missingValueColour);
 	}
 
 	@Override
@@ -311,15 +327,13 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 		}
 		resolution = prefs.getInt(widgetId + keyResolution, defaultMagnification);
-		decimalPlaces = prefs.getInt(widgetId + keyDecimalPlaces, 2);
+		decimalPlaces = prefs.getInt(widgetId + keyDecimalPlaces, defaultPrecision);
 		minValue = prefs.getDouble(widgetId + keyMinValue, defaultRange.inf());
 		maxValue = prefs.getDouble(widgetId + keyMaxValue, defaultRange.sup());
 		paletteType = (PaletteTypes) prefs.getEnum(widgetId + keyPalette, defaultPaletteTypes);
-		mvMethod = (MissingValueOptions) prefs.getEnum(widgetId + keyMissingValueMethod, MissingValueOptions.Auto);
-
-		double[] rgb = prefs.getDoubles(widgetId + keyBKGColour, Color.TRANSPARENT.getRed(),
-				Color.TRANSPARENT.getGreen(), Color.TRANSPARENT.getBlue(), Color.TRANSPARENT.getOpacity());
-		bkgColour = new Color(rgb[0], rgb[1], rgb[2], rgb[3]);
+		isMissingValue = (IsMissingValue) prefs.getEnum(widgetId + keyMissingValueMethod, defaultMissingValueMethod);
+		missingValueColour = (MissingValueColour) prefs.getEnum(widgetId + keyBKGColour, defaultMissingValueColour);
+		bkgColour = missingValueColour.get();
 
 		formatter = Decimals.getDecimalFormat(decimalPlaces);
 
@@ -417,9 +431,9 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		addGridControl("Maximun z", row++, col, tfMaxValue, content);
 
 		// Missing value option
-		ComboBox<MissingValueOptions> cmbMV = new ComboBox<>();
-		cmbMV.getItems().addAll(MissingValueOptions.values());
-		cmbMV.getSelectionModel().select(mvMethod);
+		ComboBox<IsMissingValue> cmbMV = new ComboBox<>();
+		cmbMV.getItems().addAll(IsMissingValue.values());
+		cmbMV.getSelectionModel().select(isMissingValue);
 		addGridControl("Missing values", row++, col, cmbMV, content);
 
 		// Background colour i.e colour of missing value (def transparent)
@@ -443,7 +457,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
 			bkgColour = cpBkg.getValue();
-			mvMethod = cmbMV.getValue();
+			isMissingValue = cmbMV.getValue();
 			paletteType = cmbPalette.getValue();
 			palette = paletteType.getPalette();
 			resolution = spResolution.getValue();
@@ -606,21 +620,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 						double v = grid[x][y].doubleValue();
 						obsMin = Math.min(obsMin, v);
 						obsMax = Math.max(obsMax, v);
-						switch (mvMethod) {
-						case LTEQMin: {
-							if (v > minValue)
-								c = palette.getColour(v, minValue, maxValue);
-							break;
-						}
-						case GTEQMax: {
-							if (v < maxValue)
-								c = palette.getColour(v, minValue, maxValue);
-							break;
-						}
-						default: {
+						if (!isMissingValue.apply(minValue, maxValue, v))
 							c = palette.getColour(v, minValue, maxValue);
-						}
-						}
 						int flipy = (int) (h - y);
 						pw.setColor(x, flipy, c);
 					}
@@ -641,21 +642,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 						double v = grid[x][y].doubleValue();
 						obsMin = Math.min(obsMin, v);
 						obsMax = Math.max(obsMax, v);
-						switch (mvMethod) {
-						case LTEQMin: {
-							if (v > minValue)
-								c = palette.getColour(v, minValue, maxValue);
-							break;
-						}
-						case GTEQMax: {
-							if (v < maxValue)
-								c = palette.getColour(v, minValue, maxValue);
-							break;
-						}
-						default: {
+						if (!isMissingValue.apply(minValue, maxValue, v))
 							c = palette.getColour(v, minValue, maxValue);
-						}
-						}
 						gc.setFill(c);
 						int flipy = (int) (h - y);
 						gc.fillRect(x * w, flipy * w, w, w);

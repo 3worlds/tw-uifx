@@ -44,13 +44,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 /**
- * Author Ian davies
- *
- * Date May 6, 2019
+ * @author Ian Davies Date May 6, 2019
  */
 public class GraphStatefx implements IGraphState {
 	private BooleanProperty propertyHasChanged = new SimpleBooleanProperty(false);
@@ -63,15 +59,9 @@ public class GraphStatefx implements IGraphState {
 			this.propertyTitle = propertyTitle;
 		if (propertyJavaPath != null)
 			this.propertyJavaPath = propertyJavaPath;
-		propertyJavaPath.addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(@SuppressWarnings("rawtypes") ObservableValue observable, String oldValue,
-					String newValue) {
-				setTitle();
-			}
+		propertyJavaPath.addListener((o, ov, nv) -> {
+			setTitle();
 		});
-
 	}
 
 	private void setTitle() {

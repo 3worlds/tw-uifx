@@ -78,6 +78,7 @@ public class ModelRunnerfx extends Application {
 	private MrController controller;
 	private Stage stage;
 
+
 	public static void launchUI(TreeGraph<TreeGraphDataNode, ALEdge> config1) {
 		config = config1;
 		uiNode = (TreeGraphNode) get(config.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label())));

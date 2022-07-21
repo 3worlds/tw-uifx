@@ -70,7 +70,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.Timeline;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -93,7 +92,6 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 /**
  * Author Ian Davies
@@ -272,8 +270,16 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Text text = new Text(n.getDisplayText(nodeSelect.get()));
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.configNode().classId());
+		c.setFill(nColor);
+		c.setEffect(dropShadow);
+		
+		c.hoverProperty().addListener((o, ov, nv) -> {
+			if (nv)
+				c.setFill(hoverColor);
+			else
+				c.setFill(nColor);
+		});
 
-		c.fillProperty().bind(Bindings.when(c.hoverProperty()).then(hoverColor).otherwise(nColor));
 		c.setOnMouseEntered(e -> {
 			if (e.isShiftDown()) {
 				dimmingOn = true;
@@ -283,8 +289,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				dimmingOn = false;
 			}
 		});
-
-		c.setEffect(dropShadow);
 
 		c.setOnMousePressed(e -> {
 			if (e.getButton() == MouseButton.PRIMARY && !e.isControlDown()) {
@@ -323,9 +327,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				if (dx != 0 || dy != 0) {
 					dragNode.setPosition(newx, newy);
 					GraphState.setChanged();
-					String desc = "Move ["+dragNode.configNode().toShortString()+"]";
+					String desc = "Move [" + dragNode.configNode().toShortString() + "]";
 					recorder.addState(desc);
-					
+
 				}
 				dragNode = null;
 				e.consume();

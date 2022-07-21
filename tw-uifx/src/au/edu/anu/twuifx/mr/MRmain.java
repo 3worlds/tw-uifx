@@ -53,12 +53,14 @@ import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Kicker;
+import au.edu.anu.twuifx.FXEnumProperties;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.io.FileImporter;
+import fr.cnrs.iees.twcore.constants.EnumProperties;
 import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import fr.ens.biologie.generic.Initialisable;
@@ -85,6 +87,10 @@ public class MRmain {
 
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
+		
+		EnumProperties.recordEnums();
+		FXEnumProperties.recordEnums();
+//		ValidPropertyTypes.listTypes(); // uncomment this if you want to make sure all property types are here
 
 		// great trick - allows myProject.jar to be run without args if run from the prj
 		// dir.
@@ -277,8 +283,8 @@ public class MRmain {
 			System.out.println("Initialising [done]");
 
 			String desc = exp.toShortString();
-			if (edt!=null)
-				desc +="("+edt.name()+")";
+			if (edt != null)
+				desc += "(" + edt.name() + ")";
 			System.out.println("Starting... [" + desc + "]");
 			ctrl.start();
 			// Loop the main thread until controller receives finished msg

@@ -47,11 +47,11 @@ public class RangeWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData>
 	public void setProperties(String id, SimplePropertyList properties) {
 		// must be a +ve range
 		int l = 0;
-		if (properties.hasProperty(P_WIDGET_FIRSTSENDER.key()))
-			l = (int) properties.getPropertyValue(P_WIDGET_FIRSTSENDER.key());
+		if (properties.hasProperty(P_WIDGET_LEAST_SIM_ID.key()))
+			l = (int) properties.getPropertyValue(P_WIDGET_LEAST_SIM_ID.key());
 		int n = 1;
-		if (properties.hasProperty(P_WIDGET_NSENDERS.key()))
-			n = (int) properties.getPropertyValue(P_WIDGET_NSENDERS.key());
+		if (properties.hasProperty(P_WIDGET_NSIMS.key()))
+			n = (int) properties.getPropertyValue(P_WIDGET_NSIMS.key());
 		range = new IntegerRange(l, l + (n - 1));
 	}
 

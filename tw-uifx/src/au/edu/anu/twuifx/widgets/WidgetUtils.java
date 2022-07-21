@@ -20,7 +20,6 @@ import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.ymuit.ui.colour.Palette;
-import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import fr.cnrs.iees.identity.impl.LocalScope;
 import fr.ens.biologie.generic.utils.Interval;
 

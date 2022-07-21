@@ -27,27 +27,32 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx;
+
+import au.edu.anu.twuifx.widgets.IsMissingValue;
+import au.edu.anu.twuifx.widgets.MissingValueColour;
+import au.edu.anu.ymuit.ui.colour.PaletteTypes;
+import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 
 /**
- * 
- * @author Ian Davies - 19 July 2022
+ * @author Ian Davies - 21 July 2022
  */
-public enum MissingValueOptions {
+public class FXEnumProperties {
+	private FXEnumProperties() {
+	};
+
 	/**
-	 * 
+	 * These references trigger the static block initialization of all these classes
+	 * (unknown to twcore), which then record their details in
+	 * {@link ValidPropertyTypes}. This static method must be called early in
+	 * application setup.
+	 * <p>
+	 * TODO: There may be a better way (Services??)
 	 */
-	LTMin, /**
-	 * 
-	 */
-	LTEQMin, /**
-	 * 
-	 */
-	GTEQMax,/**
-	 * 
-	 */
-	GTMax, /**
-	 * 
-	 */
-	Auto;
+	public static void recordEnums() {
+		PaletteTypes.defaultValue();
+		IsMissingValue.defaultValue();
+		MissingValueColour.defaultValue();
+	}
+
 }

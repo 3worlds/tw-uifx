@@ -27,60 +27,58 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mm;
+package au.edu.anu.twuifx.widgets;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.function.Supplier;
 
-import au.edu.anu.twapps.mm.MMModel;
-import au.edu.anu.twuifx.FXEnumProperties;
-import au.edu.anu.twuifx.mr.MRmain;
-import fr.cnrs.iees.OmugiClassLoader;
-import fr.cnrs.iees.twcore.constants.EnumProperties;
-import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
-import fr.ens.biologie.generic.utils.Logging;
-import javafx.application.Application;
+import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import javafx.scene.paint.Color;
 
-public class MMmain {
-	private static String usage = "Usage:\n" + MMmain.class.getName()
-			+ "default logging level, class:level.";
 
-	public static void main(String[] args) {
-		EnumProperties.recordEnums();
-		FXEnumProperties.recordEnums();
-//		ValidPropertyTypes.listTypes(); // uncomment this if you want to make sure all property types are here
+/**
+ * An enum wrapper for {@link Color}.
+ * 
+ * @author Ian Davies - 20 July 2022
+ */
+public enum MissingValueColour implements Supplier<Color> {	
+	/**
+	 * returns {@link Color#WHITE}
+	 */
+	WHITE(Color.WHITE),
+	/**
+	 * returns {@link Color#LIGHTGRAY}
+	 */
+	LIGHTGRAY(Color.LIGHTGRAY),
+	/**
+	 * returns {@link Color#GRAY}
+	 */
+	GRAY(Color.GRAY),
+	/**
+	 * returns {@link Color#BLACK}
+	 */
+	BLACK(Color.BLACK),
+	/**
+	 * returns {@link Color#TRANSPARENT}
+	 */
+	TRANSPARENT(Color.TRANSPARENT);
 
-		// Flaky ??
-		ProjectJarGenerator.setModelRunnerClass(MRmain.class);
-		// pass logging args on to deployed MR
-		MMModel.setMMArgs(args);
-		
-		// enact logging args 
-		if (args.length > 0)
-			Logging.setDefaultLogLevel(Level.parse(args[0]));
-		else
-			Logging.setDefaultLogLevel(Level.OFF);
-		
-		for (int i = 1; i<args.length;i++) {
-			String[] pair = args[i].split(":");
-			if (pair.length != 2) {
-				System.out.println(usage);
-				System.exit(-1);
-			}
-			String klass = pair[0];
-			String level = pair[1];
-			try {
-				Class<?> c = Class.forName(klass,true,OmugiClassLoader.getAppClassLoader());
-				Level lvl = Level.parse(level);
-				Logger log = Logging.getLogger(c);
-				log.setLevel(lvl);
-			} catch(ClassNotFoundException e) {
-				e.printStackTrace();
-				System.exit(-1);
-			}
-		}
-		
-		Application.launch(ModelMakerfx.class);
+	private Color c;
+
+	private MissingValueColour(Color c) {
+		this.c = c;
 	}
 
+	@Override
+	public Color get() {
+		return c;
+	}
+
+	public static MissingValueColour defaultValue() {
+		return TRANSPARENT;
+	}
+	static {
+		ValidPropertyTypes.recordPropertyType(MissingValueColour.class.getSimpleName(),
+				MissingValueColour.class.getName(), MissingValueColour.defaultValue());
+	}
+	
 }

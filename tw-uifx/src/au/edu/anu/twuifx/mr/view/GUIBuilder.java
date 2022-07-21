@@ -93,7 +93,7 @@ public class GUIBuilder {
 		for (TreeGraphNode n : tabNodes) {
 			UITab tabNode = (UITab) n;
 			UIContainerOrientation orientation = (UIContainerOrientation) tabNode.properties()
-					.getPropertyValue(P_UICONTAINER_ORIENT.key());
+					.getPropertyValue(P_UI_LAYOUT_ORIENT.key());
 			buildContent(n.getChildren(), orientation, getTabContainer(n.id()));
 		}
 
@@ -143,19 +143,19 @@ public class GUIBuilder {
 			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane,
 					wn.getParent().id());
 
-			int wnp = (Integer) wn.properties().getPropertyValue(P_UIORDER.key());
-			int cnp = (Integer) cn.properties().getPropertyValue(P_UIORDER.key());
+			int wnp = (Integer) wn.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
+			int cnp = (Integer) cn.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
 			WidgetGUI w = (WidgetGUI) wn.getInstance();
 			guiWidgets.add(w);
 			if (wnp <= cnp) {
 				contents.getFirst().setCenter((Node) w.getUserInterfaceContainer());
 				buildContent(cn.getChildren(),
-						(UIContainerOrientation) cn.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						(UIContainerOrientation) cn.properties().getPropertyValue(P_UI_LAYOUT_ORIENT.key()),
 						contents.getSecond());
 			} else {
 				contents.getSecond().setCenter((Node) w.getUserInterfaceContainer());
 				buildContent(cn.getChildren(),
-						(UIContainerOrientation) cn.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						(UIContainerOrientation) cn.properties().getPropertyValue(P_UI_LAYOUT_ORIENT.key()),
 						contents.getFirst());
 			}
 
@@ -169,8 +169,8 @@ public class GUIBuilder {
 			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane,
 					wn1.getParent().id());
 
-			int w1Pos = (Integer) wn1.properties().getPropertyValue(P_UIORDER.key());
-			int w2Pos = (Integer) wn2.properties().getPropertyValue(P_UIORDER.key());
+			int w1Pos = (Integer) wn1.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
+			int w2Pos = (Integer) wn2.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
 			WidgetGUI w1 = (WidgetGUI) wn1.getInstance();
 			WidgetGUI w2 = (WidgetGUI) wn2.getInstance();
 			guiWidgets.add(w1);
@@ -190,21 +190,21 @@ public class GUIBuilder {
 
 			Duple<BorderPane, BorderPane> contents = makeSplitPane(parentOrientation, parentBorderPane,
 					cn1.getParent().id());
-			int c1Pos = (Integer) cn1.properties().getPropertyValue(P_UIORDER.key());
-			int c2Pos = (Integer) cn2.properties().getPropertyValue(P_UIORDER.key());
+			int c1Pos = (Integer) cn1.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
+			int c2Pos = (Integer) cn2.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
 			if (c1Pos <= c2Pos) {
 				buildContent(cn1.getChildren(),
-						(UIContainerOrientation) cn1.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						(UIContainerOrientation) cn1.properties().getPropertyValue(P_UI_LAYOUT_ORIENT.key()),
 						contents.getFirst());
 				buildContent(cn2.getChildren(),
-						(UIContainerOrientation) cn2.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						(UIContainerOrientation) cn2.properties().getPropertyValue(P_UI_LAYOUT_ORIENT.key()),
 						contents.getSecond());
 			} else {
 				buildContent(cn1.getChildren(),
-						(UIContainerOrientation) cn1.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						(UIContainerOrientation) cn1.properties().getPropertyValue(P_UI_LAYOUT_ORIENT.key()),
 						contents.getSecond());
 				buildContent(cn2.getChildren(),
-						(UIContainerOrientation) cn2.properties().getPropertyValue(P_UICONTAINER_ORIENT.key()),
+						(UIContainerOrientation) cn2.properties().getPropertyValue(P_UI_LAYOUT_ORIENT.key()),
 						contents.getFirst());
 			}
 		} else if (containerNodes.size() == 1) {

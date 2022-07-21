@@ -25,7 +25,6 @@ import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.widgets.WidgetUtils;
 import au.edu.anu.ymuit.ui.colour.Palette;
-import au.edu.anu.ymuit.ui.colour.PaletteFactory;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -99,8 +98,8 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		}
 		doAverage = (Boolean) properties.getPropertyValue(P_WIDGET_ASAVERAGE.key());
 		edd = (ExperimentDesignDetails) properties.getPropertyValue(P_EXP_DETAILS.key());
-		zRange = (Interval) properties.getPropertyValue(P_WIDGET_DEFAULT_Z_RANGE.key());
-		magnification = Math.max(1, (Integer) properties.getPropertyValue(P_WIDGET_IMAGEMAGNIFICATION.key()));
+		zRange = (Interval) properties.getPropertyValue(P_WIDGET_Z_RANGE.key());
+		magnification = Math.max(1, (Integer) properties.getPropertyValue(P_WIDGET_IMAGE_MAG.key()));
 		PaletteTypes pt = (PaletteTypes) properties.getPropertyValue(P_WIDGET_PALETTE.key());
 		palette = pt.getPalette();
 	}

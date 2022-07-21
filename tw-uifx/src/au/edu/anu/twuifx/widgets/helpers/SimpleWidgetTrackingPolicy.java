@@ -59,8 +59,8 @@ public class SimpleWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 		sender = 0;
-		if (properties.hasProperty(P_WIDGET_SENDER.key()))
-			sender = (Integer) properties.getPropertyValue(P_WIDGET_SENDER.key());
+		if (properties.hasProperty(P_WIDGET_SIM_ID.key()))
+			sender = (Integer) properties.getPropertyValue(P_WIDGET_SIM_ID.key());
 	}
 
 	@Override

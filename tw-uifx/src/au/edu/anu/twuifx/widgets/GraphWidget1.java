@@ -80,8 +80,7 @@ public class GraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metada
 
 		int nNodes = 0;
 		if (eg.nodes() != null)
-			for (SystemComponent sc : eg.nodes())
-				nNodes++;
+			nNodes = eg.nNodes();
 
 		// NB: eg.nNodes() is not implemented yet
 		System.out.println("\tnNodes: " + nNodes);

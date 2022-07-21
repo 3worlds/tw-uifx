@@ -27,60 +27,65 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mm;
+package au.edu.anu.twuifx.widgets;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.lang3.function.TriFunction;
 
-import au.edu.anu.twapps.mm.MMModel;
-import au.edu.anu.twuifx.FXEnumProperties;
-import au.edu.anu.twuifx.mr.MRmain;
-import fr.cnrs.iees.OmugiClassLoader;
-import fr.cnrs.iees.twcore.constants.EnumProperties;
-import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
-import fr.ens.biologie.generic.utils.Logging;
-import javafx.application.Application;
+import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 
-public class MMmain {
-	private static String usage = "Usage:\n" + MMmain.class.getName()
-			+ "default logging level, class:level.";
+/**
+ * Indicates if a value is considered outside the given range.
+ * 
+ * @author Ian Davies - 19 July 2022
+ */
+public enum IsMissingValue implements TriFunction<Double, Double, Double, Boolean> {
+	/**
+	 * true if v < min, false otherwise
+	 */
+	LT_MIN((min, max, v) -> {
+		return ((double) v < (double) min) ? true : false;
+	}),
+	/**
+	 * true if v <= min, false otherwise
+	 */
+	LTEQ_MIN((min, max, v) -> {
+		return ((double) v <= (double) min) ? true : false;
+	}),
+	/**
+	 * true if v >= max, false otherwise
+	 */
+	GTEQ_MAX((min, max, v) -> {
+		return ((double) v >= (double) max) ? true : false;
+	}),
+	/**
+	 * true if v > max, false otherwise
+	 */
+	GT_MAX((min, max, v) -> {
+		return ((double) v > (double) max) ? true : false;
+	}),
+	/**
+	 * Always false
+	 */
+	NEVER((min, max, v) -> true);
 
-	public static void main(String[] args) {
-		EnumProperties.recordEnums();
-		FXEnumProperties.recordEnums();
-//		ValidPropertyTypes.listTypes(); // uncomment this if you want to make sure all property types are here
+	private TriFunction<Double, Double, Double, Boolean> tf;
 
-		// Flaky ??
-		ProjectJarGenerator.setModelRunnerClass(MRmain.class);
-		// pass logging args on to deployed MR
-		MMModel.setMMArgs(args);
-		
-		// enact logging args 
-		if (args.length > 0)
-			Logging.setDefaultLogLevel(Level.parse(args[0]));
-		else
-			Logging.setDefaultLogLevel(Level.OFF);
-		
-		for (int i = 1; i<args.length;i++) {
-			String[] pair = args[i].split(":");
-			if (pair.length != 2) {
-				System.out.println(usage);
-				System.exit(-1);
-			}
-			String klass = pair[0];
-			String level = pair[1];
-			try {
-				Class<?> c = Class.forName(klass,true,OmugiClassLoader.getAppClassLoader());
-				Level lvl = Level.parse(level);
-				Logger log = Logging.getLogger(c);
-				log.setLevel(lvl);
-			} catch(ClassNotFoundException e) {
-				e.printStackTrace();
-				System.exit(-1);
-			}
-		}
-		
-		Application.launch(ModelMakerfx.class);
+	private IsMissingValue(TriFunction<Double, Double, Double, Boolean> f) {
+		tf = f;
 	}
 
+	@Override
+	public Boolean apply(final Double min, final Double max, final Double v) {
+		return tf.apply(min, max, v);
+	}
+
+	public static IsMissingValue defaultValue() {
+		return NEVER;
+	}
+
+	static {
+		ValidPropertyTypes.recordPropertyType(IsMissingValue.class.getSimpleName(), IsMissingValue.class.getName(),
+				IsMissingValue.defaultValue());
+
+	}
 }

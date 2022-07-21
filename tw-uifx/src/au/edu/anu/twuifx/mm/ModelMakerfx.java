@@ -38,7 +38,6 @@ import au.edu.anu.omhtk.Language;
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.undo.Caretaker;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
-import fr.cnrs.iees.twcore.constants.EnumProperties;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.project.TwPaths;
@@ -115,10 +114,10 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 	}
 
 	static {
-		ValidPropertyTypes.recordPropertyType(PaletteTypes.class.getSimpleName(), PaletteTypes.class.getName(),
-				PaletteTypes.defaultValue());
-		
-	}
+//	// on behalf of PaletteTypes in ymuit which has no dependence on omugi
+	ValidPropertyTypes.recordPropertyType(PaletteTypes.class.getSimpleName(), PaletteTypes.class.getName(),
+			PaletteTypes.defaultValue());
+	}	
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -128,8 +127,6 @@ public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
 		 * Not used because this stylesheet elicits a warning from search bar of
 		 * propertySheet.
 		 */
-		EnumProperties.recordEnums();
-//		ValidPropertyTypes.listTypes(); // uncomment this if you want to make sure all property types are here
 		mainStage = primaryStage;
 		mainStage.setTitle(DefaultWindowSettings.defaultName());
 		createMainWindow();
