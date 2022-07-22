@@ -41,6 +41,7 @@ import au.edu.anu.twapps.dialogs.IDialogs;
 import au.edu.anu.twapps.dialogs.YesNoCancel;
 import au.edu.anu.twcore.project.TwPaths;
 import fr.cnrs.iees.io.GraphFileFormats;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -136,8 +137,9 @@ public class Dialogsfx implements IDialogs {
 	}
 
 	@Override
-	public String getText(String title, String header, String content, String prompt, String validFormat) {
+	public String getText(String title, String header, String content, final String prompt, String validFormat) {
 		TextInputDialog dialog = new TextInputDialog(prompt);
+//		dialog.getEditor().setStyle("-fx-prompt-text-fill: red;");
 		dialog.initOwner(owner);
 		dialog.setTitle(title);
 		dialog.setHeaderText(header);
@@ -147,6 +149,16 @@ public class Dialogsfx implements IDialogs {
 			tf.setTextFormatter(
 					new TextFormatter<>(change -> (change.getControlNewText().matches(validFormat) ? change : null)));
 		}
+
+		// Seems this is now needed to display the prompt text unselected
+		// But why is the color of the prompt text invisible???
+//		Platform.runLater(dialog.getEditor()::deselect);
+		Platform.runLater(() -> {
+			TextField tf = dialog.getEditor();
+//			tf.setStyle("-fx-prompt-text-fill: red;");
+			tf.deselect();
+		});
+
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent())
 			return result.get();
@@ -325,7 +337,7 @@ public class Dialogsfx implements IDialogs {
 	}
 
 	@Override
-	public List<String> getCBSelections(String title,String header,List<String> items, List<Boolean> selected) {
+	public List<String> getCBSelections(String title, String header, List<String> items, List<Boolean> selected) {
 		Dialog<ButtonType> dlg = new Dialog<>();
 		dlg.setTitle(title);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);

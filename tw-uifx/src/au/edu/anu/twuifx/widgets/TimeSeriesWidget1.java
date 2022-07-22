@@ -445,7 +445,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			legendVisible = chbxLegendVisible.isSelected();
 			chart.setLegendVisible(legendVisible);
 			chart.getTitleLegendPane(legendSide).setPadding(new Insets(10,10,10,10));
-//			chart.getTitleLegendPane(legendSide).setStyle("-fx-background-color: transparent");
+//			chart.getTitleLegendPane(legendSide).setStyle("-fx-background-color: transparent;");
 		}
 	}
 
