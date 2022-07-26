@@ -90,6 +90,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 	private Collection<String> sampledItems;
 	private int nLines;
 	private EddReadable edd;
+	private boolean isMinZero;
 
 	final private Map<Integer, TreeMap<String, List<Double>>> simulatorDataSetMap;
 
@@ -109,6 +110,10 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		if (properties.hasProperty(P_HLWIDGET_NLINES.key())) {
 			nLines = (Integer) properties.getPropertyValue(P_HLWIDGET_NLINES.key());
 		}
+		isMinZero = false;
+		if (properties.hasProperty(P_HLWIDGET_ZERO_MIN.key()))
+			isMinZero = (Boolean) properties.getPropertyValue(P_HLWIDGET_ZERO_MIN.key());
+
 	}
 
 	@Override
@@ -358,8 +363,6 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			for (Property p : ps) {
 				ExpFactor factor = edd.getFactors().get(p.getKey());
 				String s = factor.getValueName(p);
-				// String s = p.getValue().toString();
-//				line += p.getKey() + s + "\t";
 				line += s + "\t";
 			}
 			line += v.toString();
@@ -372,36 +375,10 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			e1.printStackTrace();
 		}
 		String anovaResultsName = name + "_anovaResults.csv";
-		List<String> anovaLines = WidgetUtils.generateANOVAScript(anovaInputFile,edd.getFactors(),name,anovaResultsName);
+		List<String> anovaLines = WidgetUtils.generateANOVAScript(anovaInputFile, edd.getFactors(), name,
+				anovaResultsName);
 		File anovaFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_anova.R");
-		boolean result = WidgetUtils.saveAndExecuteScript(anovaFile,anovaLines);
-//
-//		try {
-//			Files.write(rscriptFile.toPath(), anovaLines, StandardCharsets.UTF_8);
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		// exec R with rscriptFile
-//		List<String> commands = new ArrayList<>();
-//		commands.add("Rscript");
-//		commands.add(rscriptFile.getAbsolutePath());
-//		ProcessBuilder b = new ProcessBuilder(commands);
-//		b.directory(new File(rscriptFile.getParent()));
-//		b.inheritIO();
-//		boolean rPresent = true;
-//		try {
-//			try {
-//				b.start().waitFor();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				rPresent = false;
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			rPresent = false;
-//		}
-
+		boolean result = WidgetUtils.saveAndExecuteScript(anovaFile, anovaLines);
 		if (result) {
 			try {
 				File results = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, anovaResultsName);
@@ -445,6 +422,19 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 				File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
 						name + "_RelSumSq.csv");
 				Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
+
+				List<String> rssqPlotLines = WidgetUtils.generateRSSPlotScript(rssqFile, name);
+				WidgetUtils.saveAndExecuteScript(
+						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "RelSumSq.R"),
+						rssqPlotLines);
+				List<String> trendsBarplotLines = WidgetUtils.generateTrendsBarPlotScript(
+						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv"),
+						edd.getFactors(), name, isMinZero);
+//				for (String s:trendsBarplotLines)
+//					System.out.println(s);
+				WidgetUtils.saveAndExecuteScript(
+						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_MeansPlot.R"),
+						trendsBarplotLines);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -452,9 +442,9 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		} else {
 			throw new TwuifxException("ANOVA not computed because Rscript was not found on the system.");
 		}
-		List<String> boxPlotLines =WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(), name, anovaResultsName);
+		List<String> boxPlotLines = WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(), name);
 		File boxChartFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_trends.R");
-		WidgetUtils.saveAndExecuteScript(boxChartFile,boxPlotLines);
+		WidgetUtils.saveAndExecuteScript(boxChartFile, boxPlotLines);
 
 	}
 
@@ -496,6 +486,15 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		// not appropriate here until we consider avg.csv column headings
+//		List<String> trendsBarplotLines = WidgetUtils.generateTrendsBarPlotScript(
+//				Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv"),
+//				edd.getFactors(), name, isMinZero);
+//		WidgetUtils.saveAndExecuteScript(
+//				Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_MeansPlot.R"),
+//				trendsBarplotLines);
+
 	}
 
 	private void SaveProjectDesign(String widgetDirName) {

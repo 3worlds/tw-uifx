@@ -23,6 +23,8 @@ import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twuifx.widgets.IsMissingValue;
+import au.edu.anu.twuifx.widgets.MissingValueColour;
 import au.edu.anu.twuifx.widgets.WidgetUtils;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
@@ -71,6 +73,8 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	private Palette palette;
 	private int magnification;
 	private EddReadable edd;
+	private IsMissingValue isMissingValue;
+	private javafx.scene.paint.Color bkgColor;
 
 	// TODO work out how we are to use ymuit palettes in the archetype?
 	// TODO need settings to set colour to out of scale pixels as per matrix widget
@@ -102,6 +106,17 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		magnification = Math.max(1, (Integer) properties.getPropertyValue(P_WIDGET_IMAGE_MAG.key()));
 		PaletteTypes pt = (PaletteTypes) properties.getPropertyValue(P_WIDGET_PALETTE.key());
 		palette = pt.getPalette();
+		if (properties.hasProperty(P_WIDGET_MV_METHOD.key()))
+			isMissingValue = (IsMissingValue) properties.getPropertyValue(P_WIDGET_MV_METHOD.key());
+		else
+			isMissingValue = IsMissingValue.NEVER;
+		MissingValueColour mvc;
+		if (properties.hasProperty(P_WIDGET_MV_COLOUR.key()))
+			mvc = (MissingValueColour) properties.getPropertyValue(P_WIDGET_MV_COLOUR.key());
+		else
+			mvc = MissingValueColour.TRANSPARENT;
+		bkgColor = mvc.get();
+
 	}
 
 	@Override
@@ -212,7 +227,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		File file = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDir,
 				"r" + rep + "_s" + sender + "_t" + prefix + descriptor + ".tif");
 		WidgetUtils.writeResizedMatrixToTiffFile(matrix, file, palette, zRange, magnification,
-				BufferedImage.TYPE_INT_RGB, Image.SCALE_SMOOTH);
+				BufferedImage.TYPE_INT_RGB, Image.SCALE_SMOOTH,isMissingValue,bkgColor);
 	}
 
 }
