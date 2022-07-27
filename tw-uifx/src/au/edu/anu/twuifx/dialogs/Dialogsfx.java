@@ -139,7 +139,6 @@ public class Dialogsfx implements IDialogs {
 	@Override
 	public String getText(String title, String header, String content, final String prompt, String validFormat) {
 		TextInputDialog dialog = new TextInputDialog(prompt);
-//		dialog.getEditor().setStyle("-fx-prompt-text-fill: red;");
 		dialog.initOwner(owner);
 		dialog.setTitle(title);
 		dialog.setHeaderText(header);
@@ -153,11 +152,11 @@ public class Dialogsfx implements IDialogs {
 		// Seems this is now needed to display the prompt text unselected
 		// But why is the color of the prompt text invisible???
 //		Platform.runLater(dialog.getEditor()::deselect);
-		Platform.runLater(() -> {
-			TextField tf = dialog.getEditor();
-//			tf.setStyle("-fx-prompt-text-fill: red;");
-			tf.deselect();
-		});
+//		Platform.runLater(() -> {
+//			TextField tf = dialog.getEditor();
+////			tf.setStyle("-fx-prompt-text-fill: red;");
+//			tf.deselect();
+//		});
 
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent())
