@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import au.edu.anu.rscs.aot.graph.property.Property;
+import au.edu.anu.rscs.aot.util.StringUtils;
 import au.edu.anu.twcore.experiment.ExpFactor;
 import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
@@ -260,23 +261,26 @@ public class WidgetUtils {
 			result.add(_fn + " = data$" + fn);
 		}
 		result.add(_rv + " = data$RV");
-		result.add("title = paste(\"" + exp + "\",\" (\",\"" + rv + "\",\")\")");
-		result.add("svg(paste(\"Trends\",title,\".svg\"),width = " + width + ", height = " + height + ")");
+		result.add("title = \""+StringUtils.cap(rv)+" ["+exp+"]\"");
+		result.add("svg(\""+rv+"_boxplots.svg\",width = " + width + ", height = " + height + ")");
 		result.add("par(mfrow = c(" + rows + "," + cols + "))");
+		result.add("par(oma=c(0,0,2,0))");
 		for (int i = 0; i < f.size(); i++) {
 			String fn = f.get(i);
 			String _fn = _f.get(i);
-			result.add("plot (" + _rv + "~" + _fn + ", main = title, ylab = \"" + rv + "\",xlab = \"" + fn + "\")");
+			result.add("plot (" + _rv + "~" + _fn + ", ylab = \"" + rv + "\",xlab = \"" + fn + "\")");
 		}
+		result.add("mtext(text=title,side=3,line=0,outer=TRUE)");
 
-		// seems to produce unnecessary output to the console
+		// no need: closes when execution of Rscript ends otherwise it produces unnecessary output to the console
 		// result.add("dev.off()");
 
 		return result;
 
 	}
 
-	public static List<String> generateRSSPlotScript(File inFile, String rv) {
+	public static List<String> generateRVEPlotScript(File inFile, String rv) {
+		String exp = inFile.getParentFile().getParentFile().getName();
 		List<String> result = new ArrayList<>();
 		double t = 0.01;
 		result.add("setwd(\"" + inFile.getParent() + "\")");
@@ -287,14 +291,15 @@ public class WidgetUtils {
 		result.add("values = data$Rel.sum.sq[select]");
 		result.add("w =2 + 0.5 * length(values)");
 		result.add("h = 3");
-		result.add("svg(paste(\"" + rv + "\",\"_RSSPlot\",\".svg\"),width = w,height = h)");
-		result.add("r = barplot(values,names=terms,ylim = c(0.0,1.0),xlab=\"Terms\",ylab=paste(\"Explained(>=" + t
-				+ ")\"),main = \"" + rv + "\",las=2)");
+		result.add("svg(\"" + rv + "_RVEplot.svg\",width = w,height = h)");
+		result.add("par(mar=c(7,4,4,2)+.1)");
+		
+		result.add("r = barplot(values,names=terms,ylim = c(0.0,1.0),xlab=\"Terms\",ylab=\"Explained(>=" + t+ ")\",main = \"" + StringUtils.cap(rv) + " ["+exp+"]\",las=2)");
 		result.add("segments(0.0,0.05,r[length(r)]+0.5,0.05,lty=2)");
 		return result;
 	}
 
-	public static List<String> generateTrendsBarPlotScript(File inFile, Map<String, ExpFactor> factors, String rv,
+	public static List<String> generateBarPlotScript(File inFile, Map<String, ExpFactor> factors, String rv,
 			boolean isMinZero) {
 		// Make sure we refer to the column headings only to get the order of factors.
 		List<String> result = null;
@@ -346,12 +351,12 @@ public class WidgetUtils {
 			result.add("");
 			result.add("w = 2 + 0.4 * length(values)");
 			result.add("h = 5");
-			result.add("svg(paste(\"" + rv + "\",\"_MeansPlot\",\".svg\"),width = w,height = h)");
+			result.add("svg(\"" + rv + "_barplot.svg\",width = w,height = h)");
 			result.add("");
 			result.add(" x <-barplot(values,");
-			result.add("\tmain = paste(\"" + exp + "\",\"(\",\"" + rv + "\",\")\"),");
+			result.add("\tmain = \"" + StringUtils.cap(rv) + " ["+exp+"]\",");
 			result.add("\tylab = \"" + rv + "\",");
-			result.add("\txlab = \"Trials\",");
+			result.add("\txlab = \"trials\",");
 			result.add("\tylim = yRange,");
 			result.add("\tnames.arg = xNames,xpd = FALSE)");
 			result.add("");
@@ -400,6 +405,7 @@ public class WidgetUtils {
 				s += "," + "\"" + fvmap.get(factorOrder.get(j)).toShortString() + "\"";
 			}
 			s = s.replaceFirst(",", "");
+			s = s.replace("[", ": [");
 
 			result.add("legend(pos,");
 			result.add("\tc(" + s + "),");
@@ -415,15 +421,6 @@ public class WidgetUtils {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		List<String> lst = new ArrayList<>();
-		lst.add("4");
-		lst.add("3");
-		lst.add("2");
-		lst.add("1");
-		for (int i = lst.size() - 1; i >= 0; i--)
-			System.out.println(lst.get(i));
-	}
 
 	public static boolean saveAndExecuteScript(File scriptFile, List<String> lines) {
 		try {

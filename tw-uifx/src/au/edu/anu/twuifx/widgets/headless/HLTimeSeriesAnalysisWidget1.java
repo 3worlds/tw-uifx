@@ -44,6 +44,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.graph.property.Property;
+import au.edu.anu.rscs.aot.util.StringUtils;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.Output0DData;
@@ -337,6 +338,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 	}
 
 	private void processANOVA(String widgetDirName, String name, List<List<Double>> data, int lastNonZeroTime) {
+		//name = StringUtils.cap(name);
 		List<Double> sample = new ArrayList<>();
 		for (int c = 0; c < data.size(); c++) {
 			List<Double> col = data.get(c);
@@ -423,17 +425,17 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 						name + "_RelSumSq.csv");
 				Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
 
-				List<String> rssqPlotLines = WidgetUtils.generateRSSPlotScript(rssqFile, name);
+				List<String> rssqPlotLines = WidgetUtils.generateRVEPlotScript(rssqFile, name);
 				WidgetUtils.saveAndExecuteScript(
-						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "RelSumSq.R"),
+						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "RVE.R"),
 						rssqPlotLines);
-				List<String> trendsBarplotLines = WidgetUtils.generateTrendsBarPlotScript(
+				List<String> trendsBarplotLines = WidgetUtils.generateBarPlotScript(
 						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv"),
 						edd.getFactors(), name, isMinZero);
 //				for (String s:trendsBarplotLines)
 //					System.out.println(s);
 				WidgetUtils.saveAndExecuteScript(
-						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_MeansPlot.R"),
+						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_barplots.R"),
 						trendsBarplotLines);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -443,7 +445,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			throw new TwuifxException("ANOVA not computed because Rscript was not found on the system.");
 		}
 		List<String> boxPlotLines = WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(), name);
-		File boxChartFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_trends.R");
+		File boxChartFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_boxplots.R");
 		WidgetUtils.saveAndExecuteScript(boxChartFile, boxPlotLines);
 
 	}
