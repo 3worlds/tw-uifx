@@ -66,7 +66,7 @@ public enum IsMissingValue implements TriFunction<Double, Double, Double, Boolea
 	/**
 	 * Always false
 	 */
-	NEVER((min, max, v) -> true);
+	NEVER((min, max, v) -> false);
 
 	private TriFunction<Double, Double, Double, Boolean> tf;
 

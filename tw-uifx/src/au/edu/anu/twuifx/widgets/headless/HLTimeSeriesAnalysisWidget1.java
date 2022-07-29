@@ -348,16 +348,19 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			sample.add(sum / (double) nLines);
 		}
 
-		String h = "";
-		for (Map.Entry<String, ExpFactor> entry : edd.getFactors().entrySet()) {
-			h += entry.getValue().getName() + "\t";
+		List<ExpFactor> orderedFactors = new ArrayList<>();
+		String header = "";
+		List<Property> tmpProps = edd.getTreatments().get(0);
+		for (Property p:tmpProps) {
+			ExpFactor factor = edd.getFactors().get(p.getKey());
+			header+= factor.getName()+"\t";
+			orderedFactors.add(factor);
 		}
-		h += "RV";
-
-		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
-				name + "_AnovaInput.csv");
+		
+		header += "RV";
 		List<String> fileLines = new ArrayList<>();
-		fileLines.add(h);
+		fileLines.add(header);
+
 		for (int i = 0; i < sample.size(); i++) {
 			List<Property> ps = edd.getTreatments().get(i % edd.getTreatments().size());
 			Double v = sample.get(i);
@@ -370,6 +373,11 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			line += v.toString();
 			fileLines.add(line);
 		}
+		
+		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
+				name + "_AnovaInput.csv");
+		
+
 		try {
 			Files.write(anovaInputFile.toPath(), fileLines, StandardCharsets.UTF_8);
 		} catch (IOException e1) {
@@ -377,7 +385,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			e1.printStackTrace();
 		}
 		String anovaResultsName = name + "_anovaResults.csv";
-		List<String> anovaLines = WidgetUtils.generateANOVAScript(anovaInputFile, edd.getFactors(), name,
+		List<String> anovaLines = WidgetUtils.generateANOVAScript(anovaInputFile, edd.getFactors(),orderedFactors, name,
 				anovaResultsName);
 		File anovaFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_anova.R");
 		boolean result = WidgetUtils.saveAndExecuteScript(anovaFile, anovaLines);
@@ -444,7 +452,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		} else {
 			throw new TwuifxException("ANOVA not computed because Rscript was not found on the system.");
 		}
-		List<String> boxPlotLines = WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(), name);
+		List<String> boxPlotLines = WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(),orderedFactors, name);
 		File boxChartFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_boxplots.R");
 		WidgetUtils.saveAndExecuteScript(boxChartFile, boxPlotLines);
 

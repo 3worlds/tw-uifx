@@ -178,22 +178,28 @@ public class WidgetUtils {
 	 * @param inFile               The input file name (tab separated with header
 	 *                             and '.' decimal separator).
 	 * @param factors              Factor details ({@link ExpFactor}).
+	 * @param orderedFactors 
 	 * @param responseVariableName The name of the response variable. The input file
 	 *                             must name the response variable as "RV".
 	 * @param resultsName          The file name for the results table.
 	 * @return Lines of text for the script.
 	 */
 	public static List<String> generateANOVAScript(File inFile, Map<String, ExpFactor> factors,
-			String responseVariableName, String resultsName) {
+			List<ExpFactor> orderedFactors, String responseVariableName, String resultsName) {
 		List<String> result = new ArrayList<>();
 		result.add("setwd(\"" + inFile.getParent() + "\")");
 		result.add("data = read.table(\"" + inFile.getName() + "\",sep=\"\t\",header = TRUE,dec=\".\")");
-		for (Map.Entry<String, ExpFactor> entry : factors.entrySet())
-			result.add(entry.getValue().getName() + " = data$" + entry.getValue().getName());
+		for (ExpFactor f:orderedFactors) 
+			result.add(f.getName() + " = data$" + f.getName());
+		
+//		for (Map.Entry<String, ExpFactor> entry : factors.entrySet())
+//			result.add(entry.getValue().getName() + " = data$" + entry.getValue().getName());
 		result.add(responseVariableName + " = data$RV");
 		String args = responseVariableName + "~";
-		for (Map.Entry<String, ExpFactor> entry : factors.entrySet())
-			args += "*" + entry.getValue().getName();
+		for (ExpFactor f:orderedFactors) 
+			args += "*"+f.getName();
+//		for (Map.Entry<String, ExpFactor> entry : factors.entrySet())
+//			args += "*" + entry.getValue().getName();
 		args = args.replaceFirst("\\*", "");
 		result.add("mdl = lm(" + args + ")");
 		result.add("ava = anova (mdl)");
@@ -228,25 +234,31 @@ public class WidgetUtils {
 	 * 
 	 * @param inFile  The file path of the data file.
 	 * @param factors The experiment factor details {@link ExpFactor}.
+	 * @param orderedFactors 
 	 * @param rv      The response variable name.
 	 * @return The script as a list of strings.
 	 */
-	public static List<String> generateBoxPlotScript(File inFile, Map<String, ExpFactor> factors, String rv) {
+	public static List<String> generateBoxPlotScript(File inFile, Map<String, ExpFactor> factors, List<ExpFactor> orderedFactors, String rv) {
 
 		String exp = inFile.getParentFile().getParentFile().getName();
 		String _rv = "tmp" + rv;
 		List<String> f = new ArrayList<>();
 		List<String> _f = new ArrayList<>();
-		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) {
-			String n = entry.getValue().getName();
+		for (ExpFactor ef:orderedFactors) {
+			String n = ef.getName();
 			f.add(n);
-			_f.add("tmp" + n);
+			_f.add("tmp"+n);
 		}
-		int rows = (int) Math.max(1, Math.sqrt(factors.size()));
+//		for (Map.Entry<String, ExpFactor> entry : factors.entrySet()) {
+//			String n = entry.getValue().getName();
+//			f.add(n);
+//			_f.add("tmp" + n);
+//		}
+		int rows = (int) Math.max(1, Math.sqrt(orderedFactors.size()));
 		int cols = rows;
-		if (rows * cols < factors.size())
+		if (rows * cols < orderedFactors.size())
 			cols++;
-		if (rows * cols < factors.size())
+		if (rows * cols < orderedFactors.size())
 			rows++;
 
 		double width = 2.75 * cols;
