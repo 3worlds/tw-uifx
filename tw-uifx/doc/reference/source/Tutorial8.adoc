@@ -5,13 +5,15 @@
 This tutorial introduces the current experiment design system (22/06/2022). This system has a major limitation in that it can only work with arena (i.e. global) constants. 
 We will update this tutorial when OpenMOLE is integrated with 3Worlds, something we are currently working on.
 
-We will demonstrate the current system using GDDM (Genetics, Demography and Disturbance Model).
+**NB: R** must be installed to run this tutorial.
+
+We demonstrate the current system using GDDM (Genetics, Demography and Disturbance Model).
 GDDM is an individual-based spatial model of a population of animals in an environment experiencing recurrent disturbance. The disturbance return interval
 is short (about every two years) because the study is intended for the North Australian savannah. Animals mate, give birth, disperse and die on an annual time step. Their longevity is about 12 years. 
 
-One of the aims of the study is to examine the population and genetic consequences of informed dispersal. In the present case, informed dispersal means tending to select habitat with a higher carrying capacity.
+One of the aims of the study is to examine the population and genetic consequences of informed dispersal. In the present case, informed dispersal means tending to select habitat with the maximum space considering the carrying capacity and current population at this location.
 
-We perform a simple ANOVA experiment to examine the variance explained in Fst and total population by just two parameters (constants): dispersal distance (long/short) and dispersal method (informed/uninformed). Most of the processes in this model depend on random number generation. Therefore, we will run (somewhat arbitrarily) five replicates.
+We perform a simple ANOVA experiment to examine the variance explained in Fst and total population by just two parameters (constants): dispersal distance (long/short) and dispersal method (informed/uninformed). Most of the processes in this model depend on random number generation. Therefore, we will run five replicates.
 
 
 ==== Specifications
@@ -19,7 +21,7 @@ We perform a simple ANOVA experiment to examine the variance explained in Fst an
 . Create a new project by selecting `new -> model library -> GDDM` and name it 'Tut8'.
 . Run (Deploy) the model and adjust the widget settings (widget menu)to suit to get a feel for what's going on.
 
-The model runs for 100 years and displays many variables such as Fst and population occupancy. The habitat pattern changes every year with approximately half being 'good' habitat and half 'bad'. 'Good' habitat has a carrying capacity of 3 animals per ha. and bad 1.5.
+The model runs for 100 years and displays many variables such as Fst and population size. The habitat pattern changes every year with approximately half being 'good' habitat and half 'bad'. 'Good' habitat has a carrying capacity of 3 animals per ha. and bad 1.5.
 
 [#fig-tut8-MR]
 .A view of GDDM running in _ModelRunner_.
@@ -34,25 +36,57 @@ Return to _ModelMaker_ and arrange the graph as follows:
 ===== User interface
 To reduce the running time of the experiment, we can replace the graphic displays and just have text output to file.
 [start = 5]
-. Delete all sub-trees of `UserInterface:gui`.
+. Select the root node (`3worlds:Tut8`) and delete the entire `UserInterface:gui` sub-tree.
 . Add a `Headless` node as a child of `UserInterface:gui`.
 
 Widgets that are children of `Headless` have no visible presence except for console output. Note: you won't see this output unless you are running tw.jar from a console.
 [start = 7]
-. Add a `widget` as a child or `headless:hl`, name it 'ctrl' and select 'HLControlWidget1' as its sub-class.
+. Add a `widget` as a child or `headless:hl`, name it 'ctrl' and select `HLControlWidget1` as its sub-class.
 
 This control widget can be used even if you have visible widgets. It begins the simulation without user-intervention.
 
 [start = 8]
-. Add another `widget` as a child of `headless:hl` name it 'progress' and select 'HLProgressWidget1' as its sub-class.
+. Add another `widget` as a child of `headless:hl` name it 'progress' and select `HLProgressWidget1` as its sub-class.
 . Add a `trackTime` edge from `widget:progress` to `dynamics:sim1`.
 
 This progress widget will produce progress information to the console as the experiment proceeds.
 
 [start = 9]
-. Add two more widgets as a children of `headless:hl`, name them 'fstWriter' and 'popWriter' respectively and select 'HLTimeSeriesAnalysisWidget1' as their type.
+. Add two more widgets as a children of `headless:hl`, name them 'fstWriter' and 'popWriter' respectively and select `HLTimeSeriesAnalysisWidget1` as their type.
 . Add a `trackSeries` edge from `widget:fstWriter` to  `dataTracker:trkFst`.
 . Add another `trackSeries` edge, this time from `widget:popWriter` to `dataTracker:trkMetaPop`.
+
+We can also add headless widgets to save spatial images of various matrices to give some visual feedback of these data for each of the factor combinations (i.e. dispersal distance and dispersal method). To do this:
+
+[start = 12]
+. Add two more widgets as a children of `headless:hl`, name them 'HsMapWriter' and 'popMapWriter' respectively and select `HLMatrixWidget1` as their type.
+. Add a `trackSeries` edge from `widget:HsMapWriter` to `dataTracker:trkHeterozygosity`.
+. Add another `trackSeries` edge, this time from `widget:popMapWriter` to `dataTracker:trkPopulationLayer`.
+
+The newly added `HLMatrixWidget1` widgets have some properties that should be set.
+
+For the `HsMapWriter` set:
+
+[start = 15]
+
+. `imageMagnify` to 6.
+. `palette` to 'OrangeMauveBlue'.
+. `sampleTimes` to 100 to write an image at the last (100th) time step.
+. `zRange` to ']0.4,0.89[
+
+For the `popMapWriter` set:
+
+[start = 19]
+
+. `imageMagnify` to 2.
+. `palette` to 'BrownYellowGreen'.
+. `sampleTimes` to 100.
+. `zRange` to ']1.0,4.0[
+
+. Now add the optional properties to these two widgets (`missingValueColour` and `missingValueMethod`).
+. For both widgets set `missingValueColour` to 'BLACK' and `missingVlaueMethod` to 'LT_MIN'.
+This means all values in the matrix less than the minimum range will be drawn as black.
+
 
 ===== Experiment
 We now define some treatments of `fields` that are children of `record:glbCnt`.
@@ -64,7 +98,7 @@ This field (`isDispersalInformed`) is a boolean constant so the only treatments 
 [start = 3]
 . Click on the `treatment:trt` node and, in the selected properties editor, edit the `dm#values` property by adding 'true' and 'false' on two separate lines.
 
-. Edit the `dm#valueName` property and enter 'inf' and 'uninf', again on two separate line. These are the names by which the setting is described in outputs.
+. Edit the `dm#valueName` property and enter 'inf' and 'uninf', again on two separate line. These are the names by which the treatment is described in outputs.
 
 . Add another `treats` edge from `treatment:trt` to `field:isDispersalShort` and name it 'dd' (dispersal distance).
 
@@ -96,7 +130,7 @@ image::tutorial8IMG/fig-tut8-config.png[align="left",role="thumb", width="800"]
 ==== Simulation
 . Save changes (Ctrl-S) and click the deploy button (Alt+D). 
 
-The date and experiment design type are now written to the console followed by a message from each simulator as it is initialised. The headless controller then starts the simulators and a running message is produced from each. The number of simulators running in parallel depends on the number of cores on your machine. The experiment takes about 3 to 4 minutes on a 16 core machine.
+The date and experiment design type are now written to the console followed by a message from each simulator as it is initialised. The headless controller then starts the simulators and a running message is produced from each. The number of simulators running in parallel depends on the number of cores on your machine. The experiment takes about 5 minutes on a 16 core machine.
 The ODD documentation is generated automatically at the end of the experiment.
 
 [#fig-tut8-consoleOutput]
@@ -106,25 +140,42 @@ image::tutorial8IMG/fig-tut8-consoleOutput.png[align="left",role="thumb", width=
 
 ==== Results
 
-The results of the experiment can be found in 2 directories with the names of the experiment widgets `fstWriter` and `popWriter`.
+The results of the experiment can be found in 4 directories with the names of the experiment widgets `fstWriter`, `popWriter`, `HsMapWriter` and `popMapWriter`.
 
 [#fig-tut8-expDirs]
 .Directory structure pass:[<br/>] created by the `fstWriter` pass:[<br/>] and `popWriter` widgets.
 image::tutorial8IMG/fig-tut8-expDirs.png[align="center",role="thumb", width="200", float="right"]
 
 
-The experiment widgets have produced the following files:
+The widgets `fstWriter` and `popWriter` have produced the following files:
 
 * **Design.csv**: Experiment design details.
 * **<Field name>.csv**: time series of the data from each simulator
 * **<Field name>_avg.csv**: time series of the data averaged over simulators
 * **<Field name>_anova.R**: R script for the anova computation.
+* **<Field name>_boxplots.R**: R script for creating box plots of the output.
+* **<Field name>_barplots.R**: R script for creating a bar plot of the output.
+* **<Field name>_RVEplot.svg**: A plot, created by R, of the relative variance explained by each of the terms of the ANOVA.
+* **<Field name>_boxplots.svg**: A box plot, created by R, response variable to each of the treatments.
+* **<Field name>_barplots.svg**: A bar chart, created by R, of the response variable to each of the factor combinations (i.e. each simulation averaged over replicates).
 * **<Field name>_AnovaInput.csv**: table of data by treatment value name presented to R.
 * **<Field name>_anovaResults.csv**: raw results produced by R.
 * **<Field name>_RelSumSq.csv**: variance explained relative to the total explained.
 * **<Field name>_var.csv**: variance in time series over replicates.
 
-Examining *population_RelSumSq.csv* and **Fst_RelSumSq.csv** we can see that about 90% of variance in Fst is explained by dispersal distance (dd) and 80% of population. Dispersal Method (dm) played a bigger role in explained variance in population (18%) than Fst (6%). The interaction between dd and dm is twice as strong in explaining variation of Fst (4%) than variation in population (2%). 
+The widgets `HsMapWriter` and `popMapWriter` will also have produced (a duplicate) of the 'Design.csv' file and one *.svg image for each of the simulations.
+These files will have the following naming convention:
+
+**r<replicate number>\_s<simulator number>\_t<time step>\_<factor level>**
+
+The factors with be in the order set by the `rank` property (step 9 in the Experiment section above).
+
+Examining **Fst_RVEplot.svg** and **population_RVEplot.svg** we can see that most of the variation in Fst is explained by dispersal distance (dd)(63%) and Dispersal method (dm) is the most important factor in explaining variation in population size (67%). 
+
+Fst was increased by short distance dispersal and to a lesser extent by uninformed dispersal (**Fst_boxplots.svg** and **Fst_barplot.svg**). 
+
+Population was increased by informed dispersal and to a lesser extent by long distance dispersal (**population_boxplots.svg** and **population_barplot.svg**)
+
 
 You can recreate this tutorial by selecting `new -> tutorials -> 12 Running experiments`.
 
