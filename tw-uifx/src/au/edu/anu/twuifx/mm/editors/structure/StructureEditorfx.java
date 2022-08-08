@@ -313,7 +313,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			} else
 				mu.setDisable(true);
 		}
-		// --
+		// ---------------------------------------------------------------
+		cm.getItems().add(new SeparatorMenuItem());
+		// ---------------------------------------------------------------
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_TREE);
 			if (editableNode.visualNode().hasChildren() && !editableNode.visualNode().isPredefined()) {
@@ -335,6 +337,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			} else
 				mu.setDisable(true);
 		}
+		// ---------------------------------------------------------------
+		cm.getItems().add(new SeparatorMenuItem());
+		// ---------------------------------------------------------------
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_OPTIONAL_PROPS);
 			if (!editableNode.visualNode().isPredefined() && (!optionalNodePropertySpecs.isEmpty())
