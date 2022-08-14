@@ -61,10 +61,10 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.exceptions.TwuifxException;
-import au.edu.anu.twuifx.widgets.WidgetUtils;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.WidgetUtils;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
@@ -246,10 +246,11 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		if (edd.getTreatments().isEmpty()) {
 			for (Map.Entry<Integer, TreeMap<String, List<Double>>> simEntry : simulatorDataSetMap.entrySet()) {
 				TreeMap<String, List<Double>> simData = simEntry.getValue();
-				for (Map.Entry<String, List<Double>> simTimeSeries : simData.entrySet()) {
-					String seriesKey = simTimeSeries.getKey();
-					result += sep + seriesKey;
-				}
+				result +=sep+simEntry.getKey()+":Value";
+//				for (Map.Entry<String, List<Double>> simTimeSeries : simData.entrySet()) {
+//					String seriesKey = simTimeSeries.getKey();
+//					result += sep + seriesKey;
+//				}
 			}
 
 		} else
@@ -294,6 +295,8 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 
 		int max = 0;
 		Map<String, List<List<Double>>> seriesMap = new HashMap<>();
+		// Messy for SingleRun exp design types.
+		// The header is unique for each series but not if not SingleRun.
 		String header = getHeader();
 
 		// Split into separate data series
@@ -574,6 +577,10 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		
+		List<String> seriesScript = WidgetUtils.generateSeriesScript(edd.getType(), seriesFile,name,edd.getReplicateCount(),false);	
+		File rFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_Series.R");
+		WidgetUtils.saveAndExecuteScript(rFile,seriesScript);
 
 		return lastNonZeroTime;
 
