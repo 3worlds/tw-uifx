@@ -40,25 +40,25 @@ import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
  */
 public enum IsMissingValue implements TriFunction<Double, Double, Double, Boolean> {
 	/**
-	 * true if v < min, false otherwise
+	 * true if {@literal <} min, false otherwise
 	 */
 	LT_MIN((min, max, v) -> {
 		return ((double) v < (double) min) ? true : false;
 	}),
 	/**
-	 * true if v <= min, false otherwise
+	 * true if v {@literal <=} min, false otherwise
 	 */
 	LTEQ_MIN((min, max, v) -> {
 		return ((double) v <= (double) min) ? true : false;
 	}),
 	/**
-	 * true if v >= max, false otherwise
+	 * true if v {@literal >=} max, false otherwise
 	 */
 	GTEQ_MAX((min, max, v) -> {
 		return ((double) v >= (double) max) ? true : false;
 	}),
 	/**
-	 * true if v > max, false otherwise
+	 * true if v {@literal >} max, false otherwise
 	 */
 	GT_MAX((min, max, v) -> {
 		return ((double) v > (double) max) ? true : false;
