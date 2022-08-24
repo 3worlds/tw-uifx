@@ -437,8 +437,10 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		addGridControl("Missing values", row++, col, cmbMV, content);
 
 		// Background colour i.e colour of missing value (def transparent)
-		ColorPicker cpBkg = new ColorPicker(bkgColour);
-		addGridControl("Background", row++, col, cpBkg, content);
+		ComboBox<MissingValueColour> cmbMVC = new ComboBox<>();
+		cmbMVC.getItems().addAll(MissingValueColour.values());
+		cmbMVC.getSelectionModel().select(missingValueColour);
+		addGridControl("Missing value colour", row++, col, cmbMVC, content);
 
 		// --- magnification
 		Spinner<Integer> spResolution = new Spinner<>();
@@ -456,7 +458,8 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.get().equals(ok)) {
-			bkgColour = cpBkg.getValue();
+			missingValueColour = cmbMVC.getValue();
+			bkgColour = missingValueColour.get();
 			isMissingValue = cmbMV.getValue();
 			paletteType = cmbPalette.getValue();
 			palette = paletteType.getPalette();

@@ -25,7 +25,7 @@ import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import au.edu.anu.twuifx.widgets.IsMissingValue;
 import au.edu.anu.twuifx.widgets.MissingValueColour;
-import au.edu.anu.twuifx.widgets.WidgetUtils;
+import au.edu.anu.twuifx.widgets.helpers.WidgetUtils;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import fr.cnrs.iees.properties.SimplePropertyList;

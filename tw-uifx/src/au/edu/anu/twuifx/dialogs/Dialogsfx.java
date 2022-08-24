@@ -192,9 +192,25 @@ public class Dialogsfx implements IDialogs {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(title);
 		fileChooser.setInitialDirectory(directory);
-		fileChooser.getExtensionFilters().addAll((List<ExtensionFilter>) extensions);
-		if (!fileChooser.getExtensionFilters().isEmpty())
-			fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(0));
+		if (extensions != null) {
+			if (extensions instanceof List<?>) {
+				fileChooser.getExtensionFilters().addAll((List<ExtensionFilter>) extensions);
+				if (!fileChooser.getExtensionFilters().isEmpty())
+					fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(0));
+			} else if (extensions instanceof String) {
+				String s = (String)extensions;
+				String[] pair = s.split(",");
+				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(pair[0], pair[1]));
+				fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(0));
+			} else if (extensions instanceof String[]) {
+				String[] items = (String[])extensions;
+				for (String item:items) {
+					String[] pair = item.trim().split(",");
+					fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter(pair[0], pair[1]));
+				}
+				fileChooser.setSelectedExtensionFilter(fileChooser.getExtensionFilters().get(0));
+			}
+		}
 		return fileChooser.showOpenDialog(owner);
 	}
 
