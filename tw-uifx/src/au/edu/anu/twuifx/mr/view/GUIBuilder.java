@@ -272,8 +272,11 @@ public class GUIBuilder {
 
 			@Override
 			public int compare(WidgetNode o1, WidgetNode o2) {
-				Integer w1 = (Integer) o1.properties().getPropertyValue("order");
-				Integer w2 = (Integer) o2.properties().getPropertyValue("order");
+// JG fix 24/8/2022: this looks like a forgotten property name, if i understand well 				
+//				Integer w1 = (Integer) o1.properties().getPropertyValue("order");
+//				Integer w2 = (Integer) o2.properties().getPropertyValue("order");				
+				Integer w1 = (Integer) o1.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
+				Integer w2 = (Integer) o2.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
 				return w1.compareTo(w2);
 			}
 		});

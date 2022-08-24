@@ -105,26 +105,24 @@ public class VersionSettings {
 	 *
 	 */
 	protected static String[][] DEPS = { 
-			{ "fr.ens.biologie", "generics", "[0.3.1,)", null },
+			{ "fr.ens.biologie", "generics", "[0.4.0,)", null },
 			{ "au.edu.anu.rscs.aot", "omugi", "[0.5.0,)", null },
-			{ "fr.cnrs.iees.tw-core", "tw-core", "[0.6.3,)", null },
+			{ "fr.cnrs.iees.tw-core", "tw-core", "[0.6.4,)", null },
 			{ "au.edu.anu.rscs.aot", "aot", "[0.2.0,)", null },
-			{ "fr.cnrs.iees.tw-models", "tw-models", "[0.0.4,)", null},
+			{ "fr.cnrs.iees.tw-models", "tw-models", "[0.0.5,)", null},
 			{ "au.edu.anu.tw-apps", "tw-apps", "[0.2.3,)", null },
 			{ "au.edu.anu.rscs.aot", "qgraph", "[0.2.0,)", null },
 			{ "au.edu.anu.ymuit", "ymuit", "[0.1.10,)", null },
 			{ "fr.cnrs.iees.rvgrid", "rvgrid", "[0.1.0,)", null },
-			{ "org.openjfx", "javafx-fxml", "[11,)", "_os" },
-			{ "org.openjfx", "javafx-controls", "[11,)", "_os" },
-			{ "org.openjfx", "javafx-graphics", "[11,)", "_os" },
-			{ "org.openjfx", "javafx-base", "[11,)", "_os" },
-//			{ "org.openjfx", "javafx-web", "[11,)", "_os" },
-//			{ "org.openjfx", "javafx-media", "[11,)", "_os" },
-
+			// javafx: version 17.0.4 has long term support until September 2026
+			// do not use early access builds. cf https://gluonhq.com/products/javafx/
+			// but maven central only provides 17.0.2
+			{ "org.openjfx", "javafx-fxml", "17.0.2", "_os" },
+			{ "org.openjfx", "javafx-controls", "17.0.2", "_os" },
+			{ "org.openjfx", "javafx-graphics", "17.0.2", "_os" },
+			{ "org.openjfx", "javafx-base", "17.0.2", "_os" },
 			{ "org.controlsfx", "controlsfx", "[11,)", null }, 
-//			{ "org.apache.commons", "commons-math", "[2,)", null },
 			{"org.apache.commons","commons-math3","[3.6.1,)",null},
-
 			{ "de.gsi", "chartfx", "[11,)", null }, // pom?
 			{ "de.gsi", "chartfx-samples", "[11,)", null },
 			{ "de.gsi.chart", "chartfx-chart", "[11,)", null },
@@ -132,7 +130,6 @@ public class VersionSettings {
 			{ "de.gsi.math", "chartfx-math", "[11,)", null },
 			{ "de.gsi.acc", "chartfx-acc", "[11,)", null },
 			{ "de.gsi", "microservice", "[11,)", null },
-
 			// This is required by chart-fx - tw-core loads this api, but as version 1.7.6
 			// but chartfx cannot use that version, it is set to use version 2.0.0
 			{ "org.slf4j", "slf4j-api", "2.0.0-alpha0", null}
