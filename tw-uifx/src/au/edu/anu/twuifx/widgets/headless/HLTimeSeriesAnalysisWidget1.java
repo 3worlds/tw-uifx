@@ -244,7 +244,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 
 		if (edd.getTreatments().isEmpty()) {
 			for (Map.Entry<Integer, TreeMap<String, List<Double>>> simEntry : simulatorDataSetMap.entrySet()) {
-				TreeMap<String, List<Double>> simData = simEntry.getValue();
+//				TreeMap<String, List<Double>> simData = simEntry.getValue();
 				result +=sep+simEntry.getKey()+":Value";
 //				for (Map.Entry<String, List<Double>> simTimeSeries : simData.entrySet()) {
 //					String seriesKey = simTimeSeries.getKey();
