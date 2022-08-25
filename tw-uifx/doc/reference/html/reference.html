@@ -10025,15 +10025,18 @@ To see all the relevant RNG properties:</p>
 We will update this tutorial when OpenMOLE is integrated with 3Worlds, something we are currently working on.</p>
 </div>
 <div class="paragraph">
-<p>We will demonstrate the current system using GDDM (Genetics, Demography and Disturbance Model).
+<p><strong>NB: R</strong> must be installed to run this tutorial.</p>
+</div>
+<div class="paragraph">
+<p>We demonstrate the current system using GDDM (Genetics, Demography and Disturbance Model).
 GDDM is an individual-based spatial model of a population of animals in an environment experiencing recurrent disturbance. The disturbance return interval
 is short (about every two years) because the study is intended for the North Australian savannah. Animals mate, give birth, disperse and die on an annual time step. Their longevity is about 12 years.</p>
 </div>
 <div class="paragraph">
-<p>One of the aims of the study is to examine the population and genetic consequences of informed dispersal. In the present case, informed dispersal means tending to select habitat with a higher carrying capacity.</p>
+<p>One of the aims of the study is to examine the population and genetic consequences of informed dispersal. In the present case, informed dispersal means tending to select habitat with the maximum space considering the carrying capacity and current population at this location.</p>
 </div>
 <div class="paragraph">
-<p>We perform a simple ANOVA experiment to examine the variance explained in Fst and total population by just two parameters (constants): dispersal distance (long/short) and dispersal method (informed/uninformed). Most of the processes in this model depend on random number generation. Therefore, we will run (somewhat arbitrarily) five replicates.</p>
+<p>We perform a simple ANOVA experiment to examine the variance explained in Fst and total population by just two parameters (constants): dispersal distance (long/short) and dispersal method (informed/uninformed). Most of the processes in this model depend on random number generation. Therefore, we will run five replicates.</p>
 </div>
 </div>
 <div class="sect3">
@@ -10049,7 +10052,7 @@ is short (about every two years) because the study is intended for the North Aus
 </ol>
 </div>
 <div class="paragraph">
-<p>The model runs for 100 years and displays many variables such as Fst and population occupancy. The habitat pattern changes every year with approximately half being 'good' habitat and half 'bad'. 'Good' habitat has a carrying capacity of 3 animals per ha. and bad 1.5.</p>
+<p>The model runs for 100 years and displays many variables such as Fst and population size. The habitat pattern changes every year with approximately half being 'good' habitat and half 'bad'. 'Good' habitat has a carrying capacity of 3 animals per ha. and bad 1.5.</p>
 </div>
 <div id="fig-tut8-MR" class="imageblock text-left thumb">
 <div class="content">
@@ -10078,7 +10081,7 @@ is short (about every two years) because the study is intended for the North Aus
 <div class="olist arabic">
 <ol class="arabic" start="5">
 <li>
-<p>Delete all sub-trees of <code>UserInterface:gui</code>.</p>
+<p>Select the root node (<code>3worlds:Tut8</code>) and delete the entire <code>UserInterface:gui</code> sub-tree.</p>
 </li>
 <li>
 <p>Add a <code>Headless</code> node as a child of <code>UserInterface:gui</code>.</p>
@@ -10091,7 +10094,7 @@ is short (about every two years) because the study is intended for the North Aus
 <div class="olist arabic">
 <ol class="arabic" start="7">
 <li>
-<p>Add a <code>widget</code> as a child or <code>headless:hl</code>, name it 'ctrl' and select 'HLControlWidget1' as its sub-class.</p>
+<p>Add a <code>widget</code> as a child or <code>headless:hl</code>, name it 'ctrl' and select <code>HLControlWidget1</code> as its sub-class.</p>
 </li>
 </ol>
 </div>
@@ -10101,7 +10104,7 @@ is short (about every two years) because the study is intended for the North Aus
 <div class="olist arabic">
 <ol class="arabic" start="8">
 <li>
-<p>Add another <code>widget</code> as a child of <code>headless:hl</code> name it 'progress' and select 'HLProgressWidget1' as its sub-class.</p>
+<p>Add another <code>widget</code> as a child of <code>headless:hl</code> name it 'progress' and select <code>HLProgressWidget1</code> as its sub-class.</p>
 </li>
 <li>
 <p>Add a <code>trackTime</code> edge from <code>widget:progress</code> to <code>dynamics:sim1</code>.</p>
@@ -10114,13 +10117,77 @@ is short (about every two years) because the study is intended for the North Aus
 <div class="olist arabic">
 <ol class="arabic" start="9">
 <li>
-<p>Add two more widgets as a children of <code>headless:hl</code>, name them 'fstWriter' and 'popWriter' respectively and select 'HLExperimentWidget1' as their type.</p>
+<p>Add two more widgets as a children of <code>headless:hl</code>, name them 'fstWriter' and 'popWriter' respectively and select <code>HLTimeSeriesAnalysisWidget1</code> as their type.</p>
 </li>
 <li>
 <p>Add a <code>trackSeries</code> edge from <code>widget:fstWriter</code> to  <code>dataTracker:trkFst</code>.</p>
 </li>
 <li>
 <p>Add another <code>trackSeries</code> edge, this time from <code>widget:popWriter</code> to <code>dataTracker:trkMetaPop</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>We can also add headless widgets to save spatial images of various matrices to give some visual feedback of these data for each of the factor combinations (i.e. dispersal distance and dispersal method). To do this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="12">
+<li>
+<p>Add two more widgets as a children of <code>headless:hl</code>, name them 'HsMapWriter' and 'popMapWriter' respectively and select <code>HLMatrixWidget1</code> as their type.</p>
+</li>
+<li>
+<p>Add a <code>trackSeries</code> edge from <code>widget:HsMapWriter</code> to <code>dataTracker:trkHeterozygosity</code>.</p>
+</li>
+<li>
+<p>Add another <code>trackSeries</code> edge, this time from <code>widget:popMapWriter</code> to <code>dataTracker:trkPopulationLayer</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The newly added <code>HLMatrixWidget1</code> widgets have some properties that should be set.</p>
+</div>
+<div class="paragraph">
+<p>For the <code>HsMapWriter</code> set:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="15">
+<li>
+<p><code>imageMagnify</code> to 6.</p>
+</li>
+<li>
+<p><code>palette</code> to 'OrangeMauveBlue'.</p>
+</li>
+<li>
+<p><code>sampleTimes</code> to 100 to write an image at the last (100th) time step.</p>
+</li>
+<li>
+<p><code>zRange</code> to ']0.4,0.89[</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For the <code>popMapWriter</code> set:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="19">
+<li>
+<p><code>imageMagnify</code> to 2.</p>
+</li>
+<li>
+<p><code>palette</code> to 'BrownYellowGreen'.</p>
+</li>
+<li>
+<p><code>sampleTimes</code> to 100.</p>
+</li>
+<li>
+<p><code>zRange</code> to ']1.0,4.0[</p>
+</li>
+<li>
+<p>Now add the optional properties to these two widgets (<code>missingValueColour</code> and <code>missingValueMethod</code>).</p>
+</li>
+<li>
+<p>For both widgets set <code>missingValueColour</code> to 'BLACK' and <code>missingVlaueMethod</code> to 'LT_MIN'.
+This means all values in the matrix less than the minimum range will be drawn as black.</p>
 </li>
 </ol>
 </div>
@@ -10149,7 +10216,7 @@ is short (about every two years) because the study is intended for the North Aus
 <p>Click on the <code>treatment:trt</code> node and, in the selected properties editor, edit the <code>dm#values</code> property by adding 'true' and 'false' on two separate lines.</p>
 </li>
 <li>
-<p>Edit the <code>dm#valueName</code> property and enter 'inf' and 'uninf', again on two separate line. These are the names by which the setting is described in outputs.</p>
+<p>Edit the <code>dm#valueName</code> property and enter 'inf' and 'uninf', again on two separate line. These are the names by which the treatment is described in outputs.</p>
 </li>
 <li>
 <p>Add another <code>treats</code> edge from <code>treatment:trt</code> to <code>field:isDispersalShort</code> and name it 'dd' (dispersal distance).</p>
@@ -10223,7 +10290,7 @@ is short (about every two years) because the study is intended for the North Aus
 </ol>
 </div>
 <div class="paragraph">
-<p>The date and experiment design type are now written to the console followed by a message from each simulator as it is initialised. The headless controller then starts the simulators and a running message is produced from each. The number of simulators running in parallel depends on the number of cores on your machine. The experiment takes about 3 to 4 minutes on a 16 core machine.
+<p>The date and experiment design type are now written to the console followed by a message from each simulator as it is initialised. The headless controller then starts the simulators and a running message is produced from each. The number of simulators running in parallel depends on the number of cores on your machine. The experiment takes about 5 minutes on a 16 core machine.
 The ODD documentation is generated automatically at the end of the experiment.</p>
 </div>
 <div id="fig-tut8-consoleOutput" class="imageblock text-left thumb">
@@ -10236,7 +10303,7 @@ The ODD documentation is generated automatically at the end of the experiment.</
 <div class="sect3">
 <h4 id="trueresults"><a class="anchor" href="#trueresults"></a>5.8.4. Results</h4>
 <div class="paragraph">
-<p>The results of the experiment can be found in 2 directories with the names of the experiment widgets <code>fstWriter</code> and <code>popWriter</code>.</p>
+<p>The results of the experiment can be found in 4 directories with the names of the experiment widgets <code>fstWriter</code>, <code>popWriter</code>, <code>HsMapWriter</code> and <code>popMapWriter</code>.</p>
 </div>
 <div id="fig-tut8-expDirs" class="imageblock right text-center thumb">
 <div class="content">
@@ -10245,7 +10312,7 @@ The ODD documentation is generated automatically at the end of the experiment.</
 <div class="title">Figure 68. Directory structure <br/> created by the <code>fstWriter</code> <br/> and <code>popWriter</code> widgets.</div>
 </div>
 <div class="paragraph">
-<p>The experiment widgets have produced the following files:</p>
+<p>The widgets <code>fstWriter</code> and <code>popWriter</code> have produced the following files:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -10262,6 +10329,21 @@ The ODD documentation is generated automatically at the end of the experiment.</
 <p><strong>&lt;Field name&gt;_anova.R</strong>: R script for the anova computation.</p>
 </li>
 <li>
+<p><strong>&lt;Field name&gt;_boxplots.R</strong>: R script for creating box plots of the output.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_barplots.R</strong>: R script for creating a bar plot of the output.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_RVEplot.svg</strong>: A plot, created by R, of the relative variance explained by each of the terms of the ANOVA.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_boxplots.svg</strong>: A box plot, created by R, response variable to each of the treatments.</p>
+</li>
+<li>
+<p><strong>&lt;Field name&gt;_barplots.svg</strong>: A bar chart, created by R, of the response variable to each of the factor combinations (i.e. each simulation averaged over replicates).</p>
+</li>
+<li>
 <p><strong>&lt;Field name&gt;_AnovaInput.csv</strong>: table of data by treatment value name presented to R.</p>
 </li>
 <li>
@@ -10276,7 +10358,23 @@ The ODD documentation is generated automatically at the end of the experiment.</
 </ul>
 </div>
 <div class="paragraph">
-<p>Examining <strong>population_RelSumSq.csv</strong> and <strong>Fst_RelSumSq.csv</strong> we can see that about 90% of variance in Fst is explained by dispersal distance (dd) and 80% of population. Dispersal Method (dm) played a bigger role in explained variance in population (18%) than Fst (6%). The interaction between dd and dm is twice as strong in explaining variation of Fst (4%) than variation in population (2%).</p>
+<p>The widgets <code>HsMapWriter</code> and <code>popMapWriter</code> will also have produced (a duplicate) of the 'Design.csv' file and one *.svg image for each of the simulations.
+These files will have the following naming convention:</p>
+</div>
+<div class="paragraph">
+<p><strong>r&lt;replicate number&gt;_s&lt;simulator number&gt;\_t&lt;time step&gt;\_&lt;factor level&gt;</strong></p>
+</div>
+<div class="paragraph">
+<p>The factors with be in the order set by the <code>rank</code> property (step 9 in the Experiment section above).</p>
+</div>
+<div class="paragraph">
+<p>Examining <strong>Fst_RVEplot.svg</strong> and <strong>population_RVEplot.svg</strong> we can see that most of the variation in Fst is explained by dispersal distance (dd)(63%) and Dispersal method (dm) is the most important factor in explaining variation in population size (67%).</p>
+</div>
+<div class="paragraph">
+<p>Fst was increased by short distance dispersal and to a lesser extent by uninformed dispersal (<strong>Fst_boxplots.svg</strong> and <strong>Fst_barplot.svg</strong>).</p>
+</div>
+<div class="paragraph">
+<p>Population was increased by informed dispersal and to a lesser extent by long distance dispersal (<strong>population_boxplots.svg</strong> and <strong>population_barplot.svg</strong>)</p>
 </div>
 <div class="paragraph">
 <p>You can recreate this tutorial by selecting <code>new &#8594; tutorials &#8594; 12 Running experiments</code>.</p>
@@ -10348,7 +10446,7 @@ the Royal Society B: Biological Sciences</em> 358: 1293‑1309. <a href="https:/
 <div id="footer">
 <div id="footer-text">
 Version 1.10<br>
-Last updated 2022-06-24 09:22:13 +0200
+Last updated 2022-08-25 09:39:07 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
