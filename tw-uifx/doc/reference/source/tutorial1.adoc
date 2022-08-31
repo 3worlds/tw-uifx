@@ -31,10 +31,11 @@ them from edges that represent _parent-child_ relationships.
 
 ==== Installation
 
-Installing _ModelMaker_ is very simple: create a directory called `3w` in your home directory and copy `tw.jar` to it. 
-Then copy `modelMaker.jar` to your home directory. To start _modelMaker_, open a terminal and type: 
-`java -jar modelMaker.jar`. If you receive a message saying "Unable to access jarfile modelMaker.jar", check for misspelling 
-(including upper-case letters) and that the file is executable using the file manager of your operating system.
+Installing _ModelMaker_ is very simple: create a directory called `3w` in your home directory and copy `tw<os name>.jar` to it where `os name`is one of `linux`, `mac` or `win`.
+
+To start, open a terminal window, navigate to `3w` and enter:
+
+`java -jar tw<os name>.jar`.
 
 NOTE: To compile your own models, the Java Development Kit (JDK)  must be installed on your computer (<<trueprerequisites>>). 
 
@@ -105,7 +106,7 @@ All projects are located within the 3Worlds root directory called `3w`.
 .The initial directory structure pass:[<br/>] after creating a new project from the 'Blank' pass:[<br/>] template. Later, after all tasks have been pass:[<br/>] completed and the model is deployed, another pass:[<br/>] sub-directory is added for run-time files.
 image::tutorial1IMG/fig-tut1-dir.png[role="thumb",align="left",float="right"]
 
-The `3w` directory contains a Jar file called `tw.jar` (<<fig-tut1-dir>>). This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
+The `3w` directory contains a Jar file called `tw<os name>.jar` (<<fig-tut1-dir>>). This file contains all dependent libraries for _3Worlds_. It's a good idea to keep a backup of this file.
 
 Within `3w` there is now a sub-directory called something like `project_Tut1_2020-06-07-01-47-44-708`. Every project 
 directory begins with the key word `project`, followed by the name of the project you entered (`Tut1` in this case) 
@@ -129,7 +130,7 @@ NOTE: Editing any project graph files (*.utg) with a text editor is likely to co
 On the other hand, you can delete project directories at any time you wish. If you accidentally 
 delete the project of a currently open session, it will be recreated automatically by 
 _ModelMaker_ (apart from the _undo-redo_ history). However, if you delete the entire `3w` directory 
-you will have to restore `tw.jar` from backup.
+you will have to restore `tw<os name>.jar` from backup.
 
 
 ==== Creating the specifications
@@ -494,14 +495,14 @@ This creates  an ODD template (Overview, Design concepts and Details) (`Tut1.odt
 models. This file can be generated any time from _ModelRunner_. When you're satisfied with the specification, edit this file as 
 a basis for the complete documenting of the model.  The file can be found in the Tut1 project directory <<fig-dir-post-run>>:
 
-`~/3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/Tut1.odt`.
+`~/3w/project_Tut1_2021-05-07-01-36-13-257/local/runTime/documentation1/Tut1.odt`.
 
 Most word processors can read this standard format, native to LibreOffice, including Microsoft Word.
 
-NOTE: Every time this file is created, it will have a number added to its name to prevent overwrites. 
+NOTE: Every time documentation is created, it is placed in a incrementally numbered directory to prevent overwrites. 
 
 [#fig-ODD1]
-.A section of the automatically generated documention for Tutorial 1. The text in italics is a quote from <<bibliography.adoc#Grimm2010,Grimm et al. (2010)>> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node for convenience.
+.A section of the automatically generated documentation for Tutorial 1. The text in italics is a quote from <<bibliography.adoc#Grimm2010,Grimm et al. (2010)>> supplementary material ODD template file with suggestions as to how to write this section of the documentation. This quote is replaced by the `precis` property of the root node for convenience.
 image::tutorial1IMG/fig-ODD1.png[align="left",role="thumb",width=850]
 
 
@@ -517,7 +518,7 @@ Once the specification has been compiled without errors and deployed and the doc
 
 ... `runTime/MR.xml`: A preferences file for _ModelRunner_. These settings are saved whenever _ModelRunner_ quits so it will have the same appearance between successive uses.
 
-... `runTime/Tut1.odt`: This is the documentation file generated in the previous steps.
+... `runTime/documentation1/Tut1.odt`: This is the documentation file generated in the previous steps.
 
 ==== Graph layouts
 

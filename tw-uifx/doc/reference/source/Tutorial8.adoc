@@ -39,7 +39,7 @@ To reduce the running time of the experiment, we can replace the graphic display
 . Select the root node (`3worlds:Tut8`) and delete the entire `UserInterface:gui` sub-tree.
 . Add a `Headless` node as a child of `UserInterface:gui`.
 
-Widgets that are children of `Headless` have no visible presence except for console output. Note: you won't see this output unless you are running tw.jar from a console.
+Widgets that are children of `Headless` have no visible presence except for console output. Note: you won't see this output unless you are running _ModelMaker_ from a terminal window.
 [start = 7]
 . Add a `widget` as a child or `headless:hl`, name it 'ctrl' and select `HLControlWidget1` as its sub-class.
 
