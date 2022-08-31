@@ -30,22 +30,19 @@ You will need the following software installed on your computer before installin
 
 === Running ModelMaker
 
-This assumes you have downloaded `3w.zip`.
-// NOTE: 3w.zip must contain (1) 3w/tw.jar, (2) ModelMaker.jar, (3) UserCodeRunner.java
+This assumes you have downloaded `tw-**<os>**.jar` (where *<os>* stands for **linux**, *win* or **mac**, according to your operating system) from the last release on https://github.com/3worlds/3w[github/3w].
 
-. Unzip `3w.zip` in your user home directory (important), keeping the internal directory tree. This will extract a file `modelMaker.jar` and a `3w` directory containing more jar files.
-. Double-click on `modelMaker.jar`. This should launch the ModelMaker application.
-. If this doesn't work, open a terminal and type `java -jar modelMaker.jar`. This should launch the ModelMaker application.
+On your computer, in your home directory:
 
-WARNING: This way of launching 3Worlds is sensitive to the relative location of `modelMaker.jar` and the other jars that are in the `3w` directory, ie `modelMaker.jar` *must* be exactly one directory above `3w`.
+. Create a new directory and name it `3w`
++
+WARNING: This is compulsory: 3worlds will **_not_** run if the directory does not exist, is named otherwise, or is located elsewhere than at the root of the user home directory. To know your user home directory, refer to your https://help.dugeo.com/m/faq/l/245652-where-is-my-user-home-directory[operating system].
+. Copy or move `tw-**<os>**.jar` into `3w`
+. For __linux users__: set the executable file permission of `tw-**<os>**.jar` to true (`chmod +x tw-**<os>**.jar` in a terminal, in the directory where the file is) so that it can be executed
+. Double-click on `tw-**<os>**.jar`. This should launch the ModelMaker application
+. If this doesn't work, open a terminal and type `java -jar tw-**<os>**.jar`. This should launch the ModelMaker application
 
-To remove this constraint, you can bypass `modelMaker.jar` by directly launching it from the jars contained in `3w`:
-[source,bash]
-----
-java -cp 3w/tw.jar au.edu.anu.twuifx.mm.MMmain
-----
-
-It is preferable to run the software from a terminal window. This way, any errors that may arise will be displayed.
+It is preferable to run the software from a terminal window. This way, any errors that may arise will be displayed as text in the terminal
 // I think we could supply a bash shell and a windows .bat file to handle this - Ian
 
 NOTE: to develop your model-specific code, you will need to setup a Java development environment as shown in  <<truesetting-up-a-java-development-environment-for-the-user-code>>.
@@ -71,7 +68,7 @@ This assumes you have downloaded `tw.jar`.
 * Select the `Libraries` tab
 * Select `ClassPath`
 * Click on the `Add external JARs...` button; this open a file selection dialog box
-* In the file selection dialog box, browse and select `tw.jar`
+* In the file selection dialog box, browse and select `tw-**<os>**.jar`
 * Click the `Apply and Close` button
 
 // NB: UserCodeRunner is created when a 3w project is linked to a Java project - it is not 'imported' from anywhere
@@ -91,10 +88,10 @@ This assumes you have downloaded `tw.jar`.
 
 ==== Running ModelMaker from Eclipse
 
-ModelMaker can be run from Eclipse or as a standalone application since it is included in the `tw.jar` library required to develop the user code.
+ModelMaker can be run from Eclipse or as a standalone application since it is included in the `tw-**<os>**.jar` library required to develop the user code.
 
 * In the `package explorer` window, expand the `Referenced libraries` entry
-* Right-click on the `tw.jar` entry, select `Run as -> Java Application`. This opens a dialog box
+* Right-click on the `tw-**<os>**.jar` entry, select `Run as -> Java Application`. This opens a dialog box
 * In the dialog box, type _Main_
 * In the list of matching items, select `Main - au.edu.anu.twuifx.MMmain` and click `OK` 
 * If warning errors appear, click `Proceed`. This launches the ModelMaker application
