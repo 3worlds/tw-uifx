@@ -52,7 +52,6 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.dialogs.TextFilters;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -130,7 +129,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 /**
  * @author Ian Davies - 12 Feb 2020
  *
- *       Widget to show spatial map of objects and their relations.
+ *         Widget to show spatial map of objects and their relations.
  *
  */
 //https://stackoverflow.com/questions/36168429/javafx-gridpane-dynamic-resizng-of-child-nodes-to-fill-assigned-area
@@ -221,10 +220,10 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		nViews = 1;
 		if (properties.hasProperty(P_WIDGET_NVIEWS.key()))
 			nViews = (Integer) properties.getPropertyValue(P_WIDGET_NVIEWS.key());
-		
+
 		defaultElementSize = 1.0;
 		if (properties.hasProperty(P_WIDGET_ELEMENT_SIZE.key()))
-			defaultElementSize = (Double)properties.getPropertyValue(P_WIDGET_ELEMENT_SIZE.key());
+			defaultElementSize = (Double) properties.getPropertyValue(P_WIDGET_ELEMENT_SIZE.key());
 	}
 
 	@Override
@@ -266,7 +265,38 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 				return;
 			}
-			case squareGrid: {
+//			case squareGrid: {
+//				Double cellSize = (Double) meta.properties().getPropertyValue(P_SPACE_CELLSIZE.key());
+//				int xnCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NX.key());
+//				int ynCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NY.key());
+//				spaceBounds = new BoundingBox(0, 0, cellSize * xnCells, cellSize * ynCells);
+//				borderList = (BorderListType) meta.properties().getPropertyValue(P_SPACE_BORDERTYPE.key());
+//				eec = BorderListType.getEdgeEffectCorrection(borderList);
+//				// TODO: ticksize etc should be rounded to units of cellsize
+//				tickSize = getTickSize();
+//				offsetX = getTickOffset(spaceBounds.getMinX(), tickSize);
+//				offsetY = getTickOffset(spaceBounds.getMinY(), tickSize);
+//
+//				nXAxisTicks = getNTicks(spaceBounds.getMinX(), spaceBounds.getMaxX(), tickSize, offsetX);
+//				nYAxisTicks = getNTicks(spaceBounds.getMinY(), spaceBounds.getMaxY(), tickSize, offsetY);
+//
+//				if (meta.properties().hasProperty(P_SPACE_UNITS.key()))
+//					units = (String) meta.properties().getPropertyValue(P_SPACE_UNITS.key());
+//				double prec = (Double) meta.properties().getPropertyValue(P_SPACE_PREC.key());
+//				if (prec < Double.MIN_VALUE)
+//					prec = 1;
+//				int ndp = 0;
+//				while (prec < 1.0) {
+//					prec = prec * 10;
+//					ndp++;
+//				}
+//				pointFormat = Decimals.getDecimalFormat(ndp);
+//				axisFormat = Decimals.getDecimalFormat(ndp - 1);
+//
+//				return;
+//			}
+			default: {
+				/** squareGrid */
 				Double cellSize = (Double) meta.properties().getPropertyValue(P_SPACE_CELLSIZE.key());
 				int xnCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NX.key());
 				int ynCells = (Integer) meta.properties().getPropertyValue(P_SPACE_NY.key());
@@ -293,12 +323,6 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 				}
 				pointFormat = Decimals.getDecimalFormat(ndp);
 				axisFormat = Decimals.getDecimalFormat(ndp - 1);
-
-				return;
-			}
-			default: {
-				// Eventually, the archetype should prevent this situation
-				throw new TwuifxException(type + " not supported.");
 			}
 			}
 		}
@@ -322,7 +346,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		private final Map<Double, Duple<Label, Label>> yAxes;
 		private final ScrollPane scrollPane;
 		private final int nSenders;
-		//private long lastTime;
+		// private long lastTime;
 
 		private final ComboBox<String> cmbxSender;
 
@@ -490,9 +514,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 					Duple<DataLabel, double[]> sEntry = vertices.get(sKey);
 					Duple<DataLabel, double[]> eEntry = vertices.get(eKey);
 					if (sEntry == null)
-						throw new TwuifxException("Line error. Start point not found " + sKey);
+						throw new NullPointerException("Line error. Start point not found " + sKey);
 					if (eEntry == null)
-						throw new TwuifxException("Line error. End point not found " + eKey);
+						throw new NullPointerException("Line error. End point not found " + eKey);
 					double[] start = sEntry.getSecond();
 					double[] end = eEntry.getSecond();
 					// Clone if altering: may need to limit lines to intersection with he map edge
@@ -693,15 +717,17 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 				drawLine(gc, 0.0, yi, endPoint[0], endPoint[1], true);
 				break;
 			}
-			case 5: {// left
+//			case 5: {// left
+//				double yi = getYAt(0.0, m, b);
+//				drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
+//				drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
+//				break;
+//			}
+			default: {
+				//left
 				double yi = getYAt(0.0, m, b);
 				drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
 				drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
-				break;
-			}
-			default: {
-				throw new TwuifxException("Line to unhandled quadrant [" + quad + ": (" + startPoint[0] + ","
-						+ startPoint[1] + ") > (" + endPoint[0] + "," + endPoint[1] + ")]");
 			}
 			}
 
@@ -819,7 +845,24 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 				break;
 			}
 			// bottom right
-			case 8: {
+//			case 8: {
+//				double yi = getYAt(spaceBounds.getMaxX(), m, b);
+//				double xi = getXAt(0.0, m, b);
+//				double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0);
+//				double yd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi);
+//				if (xd2 < yd2) { // cross at x-axis first
+//					drawLine(gc, startPoint[0], startPoint[1], xi, 0.0, false);
+//					drawLine(gc, xi, spaceBounds.getMaxY(), spaceBounds.getMaxX(), spaceBounds.getMaxY() + yi, false);
+//					drawLine(gc, 0.0, spaceBounds.getMaxY() + yi, endPoint[0], endPoint[1], true);
+//				} else { // cross at y-axis first
+//					drawLine(gc, startPoint[0], startPoint[1], spaceBounds.getMaxX(), yi, false);
+//					drawLine(gc, 0.0, yi, xi - spaceBounds.getMaxX(), 0.0, false);
+//					drawLine(gc, xi - spaceBounds.getMaxX(), spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
+//				}
+//				break;
+//			}
+			default: {
+				/** case 8:bottom right*/
 				double yi = getYAt(spaceBounds.getMaxX(), m, b);
 				double xi = getXAt(0.0, m, b);
 				double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0);
@@ -833,11 +876,6 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 					drawLine(gc, 0.0, yi, xi - spaceBounds.getMaxX(), 0.0, false);
 					drawLine(gc, xi - spaceBounds.getMaxX(), spaceBounds.getMaxY(), endPoint[0], endPoint[1], true);
 				}
-				break;
-			}
-			default: {
-				throw new TwuifxException("Line to unhandled quadrant [" + quad + ": (" + startPoint[0] + ","
-						+ startPoint[1] + ") > (" + endPoint[0] + "," + endPoint[1] + ")]");
 			}
 			}
 
@@ -1023,16 +1061,16 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 	private void processDataMessage(SpaceData data) {
 		Platform.runLater(() -> {
-			head = DelayTask.submit(gap, head,e-> {
-			boolean refreshLegend = updateData(data);
-			if (refreshLegend)
-				updateLegend();
-			for (SpDisplay d : displays) {
-				if (d.getSender() == data.sender()) {
-					d.setTime(timeFormatter.getTimeText(data.time()));
-					d.drawScene();
+			head = DelayTask.submit(gap, head, e -> {
+				boolean refreshLegend = updateData(data);
+				if (refreshLegend)
+					updateLegend();
+				for (SpDisplay d : displays) {
+					if (d.getSender() == data.sender()) {
+						d.setTime(timeFormatter.getTimeText(data.time()));
+						d.drawScene();
+					}
 				}
-			}
 			});
 		});
 	}
@@ -1052,19 +1090,19 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		if (isSimulatorState(state, waiting)) {
 			Platform.runLater(() -> {
 				head = DelayTask.submit(gap, head, e -> {
-			senderVertices.forEach((k, vertices) -> {
-				vertices.clear();
-			});
-			senderLines.forEach((k, lineSets) -> {
-				lineSets.clear();
-			});
-			vertexColours.clear();
+					senderVertices.forEach((k, vertices) -> {
+						vertices.clear();
+					});
+					senderLines.forEach((k, lineSets) -> {
+						lineSets.clear();
+					});
+					vertexColours.clear();
 				});
-			for (SpaceData data : lstInitialData)
-				processDataMessage(data);
+				for (SpaceData data : lstInitialData)
+					processDataMessage(data);
 
 				head = DelayTask.submit(gap, head, e -> {
-			lstInitialData.clear();
+					lstInitialData.clear();
 				});
 			});
 		}
@@ -1106,7 +1144,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToCreate().get(lab));
 			// It's an error if the lab IS found in the list before
 			if (vertices.put(lab.toLazyString(), newValue) != null)
-				throw new TwuifxException("Attempt to add an already existing point. [" + lab + "]");
+				throw new IllegalArgumentException("Attempt to add an already existing point. [" + lab + "]");
 			pa++;
 			if (installPointColour(lab))
 				updateLegend = true;
@@ -1118,14 +1156,14 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToMove().get(lab));
 			// It's an error if the lab is NOT in the list
 			if (vertices.put(lab.toLazyString(), newValue) == null)
-				throw new TwuifxException("Attempt to move a non-existing point. [" + lab + "]");
+				throw new IllegalArgumentException("Attempt to move a non-existing point. [" + lab + "]");
 //			pm++;
 			if (installPointColour(lab))
 				updateLegend = true;
 		}
 
 		int pu = vertices.size();
-		if (pu != (pc - pd + pa))
+		if (pu != (pc - pd + pa))// do we need an exception here?
 			System.out.println("Points don't add up. [" + pc + "-" + pd + "+" + pa + "=" + pu + "]");
 
 		// update lines
@@ -1147,7 +1185,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			if (installLineColour(line.getThird()))
 				updateLegend = true;
 			if (!added) {
-				throw new TwuifxException("Attempt to add already existing line. [" + line + "]");
+				throw new IllegalArgumentException("Attempt to add already existing line. [" + line + "]");
 			} else
 				la++;
 		}
@@ -1157,8 +1195,8 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		for (Tuple<DataLabel, DataLabel, String> line : data.linesToDelete()) {
 			boolean removed = lineSets.remove(line);
 			if (!removed) {
-//				throw new TwuifxException("Attempt to delete a non-existing line. [" + line+"]");
-//				This is allowed now. Forgot why.
+//				throw new IllegalArugmentException("Attempt to delete a non-existing line. [" + line+"]");
+//				This is allowed now. Forget why!
 //				System.out.println("Warning: Attempt to delete a non-existing line. [" + line + "]");
 			} else
 				ld++;
@@ -1383,8 +1421,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		prefs.putDoubles(widgetId + keyBKG, bkgColour.getRed(), bkgColour.getGreen(), bkgColour.getBlue());
 //		prefs.putDoubles(widgetId + keyLineColour, lineColour.getRed(), lineColour.getGreen(),
 //				lineColour.getBlue());
-		prefs.putDoubles(widgetId + keyFontColour, fontColour.getRed(), fontColour.getGreen(),
-				fontColour.getBlue());
+		prefs.putDoubles(widgetId + keyFontColour, fontColour.getRed(), fontColour.getGreen(), fontColour.getBlue());
 		prefs.putDouble(widgetId + keyContrast, contrast);
 		prefs.putBoolean(widgetId + keyColour64, colour64);
 		prefs.putBoolean(widgetId + keyShowLines, chbxLines.isSelected());
@@ -1415,8 +1452,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		chbxGrid.setSelected(prefs.getBoolean(widgetId + keyShowGrid, true));
 		chbxBoundaries.setSelected(prefs.getBoolean(widgetId + keyShowEdgeEffect, true));
 		double[] rgb;
-		rgb = prefs.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(),
-				Color.WHITE.getBlue());
+		rgb = prefs.getDoubles(widgetId + keyBKG, Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue());
 		bkgColour = new Color(rgb[0], rgb[1], rgb[2], 1.0);
 
 //		rgb = prefs.getDoubles(widgetId + keyLineColour, Color.GREY.getRed(), Color.GREY.getGreen(),

@@ -55,7 +55,6 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
 import au.edu.anu.twuifx.widgets.helpers.RangeWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
@@ -197,7 +196,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 		int nItems = tsMetadata.doubleNames().size() + tsMetadata.intNames().size();
 		if (nItems == 0)
-			throw new TwuifxException("No numeric items have been defined for '" + widgetId + "'.");
+			throw new IllegalArgumentException("No numeric items have been defined for '" + widgetId + "'.");
 		int nModifiers = 0;
 		if (sas != null)
 			nModifiers += sas.values().size();
@@ -389,7 +388,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 	public void onDataMessage(Output0DData data) {
 		if (policy.canProcessDataMessage(data)) {
 			if (data.status().equals(SimulatorStatus.Initial))
-				throw new TwuifxException("Handling initial data not implemented for this widget.");
+				throw new IllegalArgumentException("Handling initial data not implemented for this widget.");
 			else
 				processDataMessage(data);
 		}

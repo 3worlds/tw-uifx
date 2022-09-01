@@ -54,7 +54,6 @@ import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
 import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
 import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
@@ -272,7 +271,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.configNode().classId());
 		c.setFill(nColor);
 		c.setEffect(dropShadow);
-		
+
 		c.hoverProperty().addListener((o, ov, nv) -> {
 			if (nv)
 				c.setFill(hoverColor);
@@ -857,19 +856,20 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			layout = new RT2Layout(root, pcShowing, xlShowing, sideline);
 			break;
 		}
-		case SpringGraph: {
-			layout = new FRLayout(visualGraph, pcShowing, xlShowing, sideline);
-			break;
-		}
+//		case SpringGraph: {
+//			layout = new FRLayout(visualGraph, pcShowing, xlShowing, sideline);
+//			break;
+//		}
 //		case LombardiGraph: {
 //			layout = new LmbLayout(visualGraph, pcShowing, xlShowing, sideline);
 //			break;
 //		}
 		default: {
-			throw new TwuifxException("Unknown layout type '" + layoutType + "',");
+			/** SpringGraph */
+			layout = new FRLayout(visualGraph, pcShowing, xlShowing, sideline);
+			break;
 		}
 		}
-
 		layout.compute(jitterFraction);
 
 		// always scaled within unit space

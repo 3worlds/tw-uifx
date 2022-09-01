@@ -48,7 +48,6 @@ import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
 import au.edu.anu.twuifx.mr.view.GUIBuilder;
 import au.edu.anu.twuifx.mr.view.MrController;
@@ -109,7 +108,7 @@ public class ModelRunnerfx extends Application {
 //				n.initialise();
 //				i++;
 //			} catch (Exception e) {
-//				throw new TwuifxException("Initialisation failed for node: " + getInitNodeName() + ". ", e);
+//				throw new Something("Initialisation failed for node: " + getInitNodeName() + ". ", e);
 //			}
 //		}
 	}
@@ -201,7 +200,7 @@ public class ModelRunnerfx extends Application {
 				}
 			}
 		}
-		throw new TwuifxException("No controller found in configuration.");
+		throw new NullPointerException("No controller found in configuration.");
 	}
 
 	@Override

@@ -39,6 +39,7 @@ import fr.ens.biologie.generic.Textable;
 //NB: this was previously AotException
 //Policy is to make an exception at least for each library
 //The general advice for exceptions is to throw early and catch late.
+@Deprecated
 public class TwuifxException extends RuntimeException {
 
 	private static final long serialVersionUID = -7822249861382174336L;

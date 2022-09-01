@@ -59,7 +59,6 @@ import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
-import au.edu.anu.twuifx.exceptions.TwuifxException;
 import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -245,7 +244,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		if (edd.getTreatments().isEmpty()) {
 			for (Map.Entry<Integer, TreeMap<String, List<Double>>> simEntry : simulatorDataSetMap.entrySet()) {
 //				TreeMap<String, List<Double>> simData = simEntry.getValue();
-				result +=sep+simEntry.getKey()+":Value";
+				result += sep + simEntry.getKey() + ":Value";
 //				for (Map.Entry<String, List<Double>> simTimeSeries : simData.entrySet()) {
 //					String seriesKey = simTimeSeries.getKey();
 //					result += sep + seriesKey;
@@ -340,7 +339,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 	}
 
 	private void processANOVA(String widgetDirName, String name, List<List<Double>> data, int lastNonZeroTime) {
-		//name = StringUtils.cap(name);
+		// name = StringUtils.cap(name);
 		List<Double> sample = new ArrayList<>();
 		for (int c = 0; c < data.size(); c++) {
 			List<Double> col = data.get(c);
@@ -353,12 +352,12 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		List<ExpFactor> orderedFactors = new ArrayList<>();
 		String header = "";
 		List<Property> tmpProps = edd.getTreatments().get(0);
-		for (Property p:tmpProps) {
+		for (Property p : tmpProps) {
 			ExpFactor factor = edd.getFactors().get(p.getKey());
-			header+= factor.getName()+"\t";
+			header += factor.getName() + "\t";
 			orderedFactors.add(factor);
 		}
-		
+
 		header += "RV";
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(header);
@@ -375,10 +374,9 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			line += v.toString();
 			fileLines.add(line);
 		}
-		
+
 		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
 				name + "_AnovaInput.csv");
-		
 
 		try {
 			Files.write(anovaInputFile.toPath(), fileLines, StandardCharsets.UTF_8);
@@ -387,75 +385,75 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			e1.printStackTrace();
 		}
 		String anovaResultsName = name + "_anovaResults.csv";
-		List<String> anovaLines = WidgetUtils.generateANOVAScript(anovaInputFile, edd.getFactors(),orderedFactors, name,
-				anovaResultsName);
+		List<String> anovaLines = WidgetUtils.generateANOVAScript(anovaInputFile, edd.getFactors(), orderedFactors,
+				name, anovaResultsName);
 		File anovaFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_anova.R");
-		boolean result = WidgetUtils.saveAndExecuteScript(anovaFile, anovaLines);
-		if (result) {
-			try {
-				File results = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, anovaResultsName);
-				fileLines = Files.readAllLines(results.toPath(), StandardCharsets.UTF_8);
-				String line = "Terms\t" + fileLines.get(0);
-				fileLines.set(0, line);
-				// Terms "Df" "Sum Sq" "Mean Sq" "F value" "Pr(>F)"
-				List<String> terms = new ArrayList<>();
-				List<Integer> df = new ArrayList<>();
-				List<Double> ssq = new ArrayList<>();
-				double totalSsq = 0;
-				for (int l = 1; l < fileLines.size() - 1; l++) {
-					String[] parts = fileLines.get(l).split("\t");
-					terms.add(parts[0]);
-					df.add(Integer.parseInt(parts[1]));
-					double d = Double.parseDouble(parts[2]);
-					totalSsq += d;
-					ssq.add(d);
-				}
-				double residuals = Double.parseDouble(fileLines.get(fileLines.size() - 1).split("\t")[2]);
-				int dfresiduals = Integer.parseInt(fileLines.get(fileLines.size() - 1).split("\t")[1]);
-				totalSsq += residuals;
-				// make relative
-				List<Double> relSsq = new ArrayList<>();
-				Double totalExplained = 0.0;
-				for (Double d : ssq) {
-					double e = d / totalSsq;
-					relSsq.add(e);
-					totalExplained += e;
-				}
-				fileLines.clear();
-				String sep = "\t";
-				fileLines.add("Terms\tdf\tSum sq\tRel sum sq");
-				for (int i = 0; i < relSsq.size(); i++) {
-					StringBuilder sb = new StringBuilder().append(terms.get(i)).append(sep).append(df.get(i))
-							.append(sep).append(ssq.get(i)).append(sep).append(relSsq.get(i));
-					fileLines.add(sb.toString());
-				}
-				fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
+		WidgetUtils.saveAndExecuteScript(anovaFile, anovaLines);
 
-				File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
-						name + "_RelSumSq.csv");
-				Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
+		try {
+			File results = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, anovaResultsName);
+			fileLines = Files.readAllLines(results.toPath(), StandardCharsets.UTF_8);
+			String line = "Terms\t" + fileLines.get(0);
+			fileLines.set(0, line);
+			// Terms "Df" "Sum Sq" "Mean Sq" "F value" "Pr(>F)"
+			List<String> terms = new ArrayList<>();
+			List<Integer> df = new ArrayList<>();
+			List<Double> ssq = new ArrayList<>();
+			double totalSsq = 0;
+			for (int l = 1; l < fileLines.size() - 1; l++) {
+				String[] parts = fileLines.get(l).split("\t");
+				terms.add(parts[0]);
+				df.add(Integer.parseInt(parts[1]));
+				double d = Double.parseDouble(parts[2]);
+				totalSsq += d;
+				ssq.add(d);
+			}
+			double residuals = Double.parseDouble(fileLines.get(fileLines.size() - 1).split("\t")[2]);
+			int dfresiduals = Integer.parseInt(fileLines.get(fileLines.size() - 1).split("\t")[1]);
+			totalSsq += residuals;
+			// make relative
+			List<Double> relSsq = new ArrayList<>();
+			Double totalExplained = 0.0;
+			for (Double d : ssq) {
+				double e = d / totalSsq;
+				relSsq.add(e);
+				totalExplained += e;
+			}
+			fileLines.clear();
+			String sep = "\t";
+			fileLines.add("Terms\tdf\tSum sq\tRel sum sq");
+			for (int i = 0; i < relSsq.size(); i++) {
+				StringBuilder sb = new StringBuilder().append(terms.get(i)).append(sep).append(df.get(i)).append(sep)
+						.append(ssq.get(i)).append(sep).append(relSsq.get(i));
+				fileLines.add(sb.toString());
+			}
+			fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
 
-				List<String> rssqPlotLines = WidgetUtils.generateRVEPlotScript(rssqFile, name);
-				WidgetUtils.saveAndExecuteScript(
-						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "RVE.R"),
-						rssqPlotLines);
-				List<String> trendsBarplotLines = WidgetUtils.generateBarPlotScript(
-						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv"),
-						edd.getFactors(), name, isMinZero);
+			File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
+					name + "_RelSumSq.csv");
+			Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
+
+			List<String> rssqPlotLines = WidgetUtils.generateRVEPlotScript(rssqFile, name);
+			WidgetUtils.saveAndExecuteScript(
+					Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "RVE.R"),
+					rssqPlotLines);
+			List<String> trendsBarplotLines = WidgetUtils.generateBarPlotScript(
+					Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv"),
+					edd.getFactors(), name, isMinZero);
 //				for (String s:trendsBarplotLines)
 //					System.out.println(s);
-				WidgetUtils.saveAndExecuteScript(
-						Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_barplots.R"),
-						trendsBarplotLines);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			throw new TwuifxException("ANOVA not computed because Rscript was not found on the system.");
+			WidgetUtils.saveAndExecuteScript(
+					Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_barplots.R"),
+					trendsBarplotLines);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		List<String> boxPlotLines = WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(),orderedFactors, name);
-		File boxChartFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_boxplots.R");
+
+		List<String> boxPlotLines = WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(), orderedFactors,
+				name);
+		File boxChartFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
+				name + "_boxplots.R");
 		WidgetUtils.saveAndExecuteScript(boxChartFile, boxPlotLines);
 
 	}
@@ -576,10 +574,11 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
-		List<String> seriesScript = WidgetUtils.generateSeriesScript(edd.getType(), seriesFile,name,edd.getReplicateCount(),false);	
+
+		List<String> seriesScript = WidgetUtils.generateSeriesScript(edd.getType(), seriesFile, name,
+				edd.getReplicateCount(), false);
 		File rFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_Series.R");
-		WidgetUtils.saveAndExecuteScript(rFile,seriesScript);
+		WidgetUtils.saveAndExecuteScript(rFile, seriesScript);
 
 		return lastNonZeroTime;
 
