@@ -1144,7 +1144,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToCreate().get(lab));
 			// It's an error if the lab IS found in the list before
 			if (vertices.put(lab.toLazyString(), newValue) != null)
-				throw new IllegalArgumentException("Attempt to add an already existing point. [" + lab + "]");
+				throw new IllegalStateException("Attempt to add an already existing point. [" + lab + "]");
 			pa++;
 			if (installPointColour(lab))
 				updateLegend = true;
@@ -1156,7 +1156,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			Duple<DataLabel, double[]> newValue = new Duple<>(lab, data.pointsToMove().get(lab));
 			// It's an error if the lab is NOT in the list
 			if (vertices.put(lab.toLazyString(), newValue) == null)
-				throw new IllegalArgumentException("Attempt to move a non-existing point. [" + lab + "]");
+				throw new IllegalStateException("Attempt to move a non-existing point. [" + lab + "]");
 //			pm++;
 			if (installPointColour(lab))
 				updateLegend = true;
@@ -1185,7 +1185,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 			if (installLineColour(line.getThird()))
 				updateLegend = true;
 			if (!added) {
-				throw new IllegalArgumentException("Attempt to add already existing line. [" + line + "]");
+				throw new IllegalStateException("Attempt to add already existing line. [" + line + "]");
 			} else
 				la++;
 		}
