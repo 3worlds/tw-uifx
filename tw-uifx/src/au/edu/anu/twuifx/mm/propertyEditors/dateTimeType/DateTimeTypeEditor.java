@@ -130,15 +130,16 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 			if (!forbidden.contains(unit))
 				if ((dtItem.getTUMin().compareTo(unit) <= 0) && dtItem.getTUMax().compareTo(unit) >= 0)
 					units.add(unit);
-		units.sort(new Comparator<TimeUnits>() {
-
-			@Override
-			public int compare(TimeUnits t1, TimeUnits t2) {
-				// smallest to largest
-				return t1.compareTo(t2);
-			}
-
-		});
+		units.sort((t1,t2)->t1.compareTo(t2));
+//		units.sort(new Comparator<TimeUnits>() {
+//
+//			@Override
+//			public int compare(TimeUnits t1, TimeUnits t2) {
+//				// smallest to largest
+//				return t1.compareTo(t2);
+//			}
+//
+//		});
 
 		long currentSetting = Long.parseLong(currentValue);
 		long[] factors = null;

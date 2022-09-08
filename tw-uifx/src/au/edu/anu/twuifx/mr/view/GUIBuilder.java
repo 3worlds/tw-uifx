@@ -268,18 +268,23 @@ public class GUIBuilder {
 
 //------------------------------
 	private void sortWidgetOrder(List<WidgetNode> lst) {
-		lst.sort(new Comparator<WidgetNode>() {
-
-			@Override
-			public int compare(WidgetNode o1, WidgetNode o2) {
-// JG fix 24/8/2022: this looks like a forgotten property name, if i understand well 				
-//				Integer w1 = (Integer) o1.properties().getPropertyValue("order");
-//				Integer w2 = (Integer) o2.properties().getPropertyValue("order");				
-				Integer w1 = (Integer) o1.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
-				Integer w2 = (Integer) o2.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
-				return w1.compareTo(w2);
-			}
+		lst.sort((n1, n2) -> {
+			Integer w1 = (Integer) n1.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
+			Integer w2 = (Integer) n2.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
+			return w1.compareTo(w2);
 		});
+//		lst.sort(new Comparator<WidgetNode>() {
+//
+//			@Override
+//			public int compare(WidgetNode o1, WidgetNode o2) {
+//// JG fix 24/8/2022: this looks like a forgotten property name, if i understand well 				
+////				Integer w1 = (Integer) o1.properties().getPropertyValue("order");
+////				Integer w2 = (Integer) o2.properties().getPropertyValue("order");				
+//				Integer w1 = (Integer) o1.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
+//				Integer w2 = (Integer) o2.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
+//				return w1.compareTo(w2);
+//			}
+//		});
 
 	}
 }

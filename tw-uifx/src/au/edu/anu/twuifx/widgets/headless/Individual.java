@@ -56,12 +56,13 @@ public class Individual {
 				double avail = supply - demand;
 				sites.add(new Duple<Integer, Double>(bl, avail));
 			}
-			sites.sort(new Comparator<Duple<Integer, Double>>() {
-				@Override
-				public int compare(Duple<Integer, Double> o1, Duple<Integer, Double> o2) {
-					return o2.getSecond().compareTo(o1.getSecond());
-				}
-			});
+			sites.sort((d1,d2)->d2.getSecond().compareTo(d1.getSecond()));
+//			sites.sort(new Comparator<Duple<Integer, Double>>() {
+//				@Override
+//				public int compare(Duple<Integer, Double> o1, Duple<Integer, Double> o2) {
+//					return o2.getSecond().compareTo(o1.getSecond());
+//				}
+//			});
 			Duple<Integer, Double> loc = sites.get(0);
 			double limit = k2;
 			if (habitat[loc.getFirst()])

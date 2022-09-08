@@ -370,13 +370,14 @@ public class Dialogsfx implements IDialogs {
 			cx.setSelected(selected.get(i));
 		}
 
-		chkbxs.sort(new Comparator<CheckBox>() {
-
-			@Override
-			public int compare(CheckBox cb1, CheckBox cb2) {
-				return cb1.getText().compareTo(cb2.getText());
-			}
-		});
+		chkbxs.sort((cb1,cb2)->cb1.getText().compareTo(cb2.getText()));
+//		chkbxs.sort(new Comparator<CheckBox>() {
+//
+//			@Override
+//			public int compare(CheckBox cb1, CheckBox cb2) {
+//				return cb1.getText().compareTo(cb2.getText());
+//			}
+//		});
 
 		int row = 1;
 		for (CheckBox cx : chkbxs) {

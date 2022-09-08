@@ -148,14 +148,15 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 				makeChannels(dl, sender);
 		}
 
-		tableDataList.sort(new Comparator<WidgetTableData>() {
-
-			@Override
-			public int compare(WidgetTableData o1, WidgetTableData o2) {
-				return padIndexedDidgets(o1.getLabel()).compareTo(padIndexedDidgets(o2.getLabel()));
-			}
-
-		});
+		tableDataList.sort((d1, d2) -> padIndexedDidgets(d1.getLabel()).compareTo(padIndexedDidgets(d2.getLabel())));
+//		tableDataList.sort(new Comparator<WidgetTableData>() {
+//
+//			@Override
+//			public int compare(WidgetTableData o1, WidgetTableData o2) {
+//				return padIndexedDidgets(o1.getLabel()).compareTo(padIndexedDidgets(o2.getLabel()));
+//			}
+//
+//		});
 
 		timeFormatter.onMetaDataMessage(msgMetadata);
 

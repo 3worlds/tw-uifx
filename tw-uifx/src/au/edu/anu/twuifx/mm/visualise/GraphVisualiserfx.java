@@ -756,15 +756,20 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	private void stackEdges(List<VisualEdge> edges) {
-		edges.sort(new Comparator<VisualEdge>() {
-
-			@Override
-			public int compare(VisualEdge e1, VisualEdge e2) {
-				Text t1 = (Text) e1.getText();
-				Text t2 = (Text) e2.getText();
-				return t1.getText().compareTo(t2.getText());
-			}
+		edges.sort((e1,e2)->{
+			Text t1 = (Text) e1.getText();
+			Text t2 = (Text) e2.getText();
+			return t1.getText().compareTo(t2.getText());	
 		});
+//		edges.sort(new Comparator<VisualEdge>() {
+//
+//			@Override
+//			public int compare(VisualEdge e1, VisualEdge e2) {
+//				Text t1 = (Text) e1.getText();
+//				Text t2 = (Text) e2.getText();
+//				return t1.getText().compareTo(t2.getText());
+//			}
+//		});
 
 		// Set the first edge text as per normal i.e mid point of line.
 		// Then stack all the remaining texts below it.

@@ -1289,7 +1289,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private void refreshErrorMessages() {
 		textAreaErrorMsgs.clear();
-		sortErrors();
+		lstErrorMsgs.sort((m1,m2)->m1.actionInfo().compareToIgnoreCase(m2.actionInfo()));
 		int count = 0;
 		for (ErrorMessagable msg : lstErrorMsgs) {
 			count++;
@@ -1357,18 +1357,6 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		return t;
 	}
 
-	private void sortErrors() {
-		lstErrorMsgs.sort(new Comparator<ErrorMessagable>() {
-
-			@Override
-			public int compare(ErrorMessagable m1, ErrorMessagable m2) {
-				// keep the same order regardless of the verbosity
-				return m1.actionInfo().compareToIgnoreCase(m2.actionInfo());
-			}
-		});
-
-	}
-
 	private List<VisualNode> getNodeList() {
 		List<VisualNode> result = new LinkedList<>();
 		for (VisualNode n : visualGraph.nodes())
@@ -1381,9 +1369,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		ObservableList<Item> selItems = FXCollections.observableArrayList();
 		Duple<ObservableList<Item>, ObservableList<Item>> result = new Duple<>(allItems, selItems);
 		List<VisualNode> vNodes = getNodeList();
-		vNodes.sort((first, second) -> {
-			return first.id().compareTo(second.id());
-		});
+		vNodes.sort((n1,n2)->n1.id().compareTo(n2.id()));
+//		vNodes.sort((first, second) -> {
+//			return first.id().compareTo(second.id());
+//		});
 		for (VisualNode vn : vNodes) {
 			if (!vn.isCollapsed()) {
 				String cat = vn.getCategory();
@@ -1433,12 +1422,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			}
 		}
 
-		allItems.sort((first, second) -> {
-			return first.getName().compareTo(second.getName());
-		});
-		selItems.sort((first, second) -> {
-			return first.getName().compareTo(second.getName());
-		});
+		allItems.sort((first,second)->first.getName().compareTo(second.getName()));
+//		allItems.sort((first, second) -> {
+//			return first.getName().compareTo(second.getName());
+//		});
+		
+		selItems.sort((first,second)->first.getName().compareTo(second.getName()));
+//		selItems.sort((first, second) -> {
+//			return first.getName().compareTo(second.getName());
+//		});
 
 		return result;
 	}
