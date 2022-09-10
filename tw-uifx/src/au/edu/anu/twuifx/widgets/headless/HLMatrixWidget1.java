@@ -19,7 +19,6 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
@@ -159,7 +158,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	private void writeData() {
 		String widgetDirName = WidgetUtils.getUniqueExperimentSubdirectoryName(edd.getExpDir(), widgetId);
 
-		File designFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, "Design.csv");
+		File designFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, "Design.csv");
 		WidgetUtils.SaveExperimentDesignDetails(edd, designFile);
 
 		if (doAverage) {// maybe always both?
@@ -180,7 +179,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 		}
 	}
 
-	private String getTreatmentDescriptor(Integer sender) {
+	private String getTreatmentDescriptor(int sender) {
 		// TODO Handle exp from file
 		switch (edd.getType()) {
 		case crossFactorial: {
@@ -224,7 +223,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	}
 
 	private void writeTiff(String widgetDir, int rep, int sender, String prefix, String descriptor, Number[][] matrix) {
-		File file = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDir,
+		File file = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDir,
 				"r" + rep + "_s" + sender + "_t" + prefix + descriptor + ".tif");
 		WidgetUtils.writeResizedMatrixToTiffFile(matrix, file, palette, zRange, magnification,
 				BufferedImage.TYPE_INT_RGB, Image.SCALE_SMOOTH,isMissingValue,bkgColor);

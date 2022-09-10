@@ -55,7 +55,6 @@ import au.edu.anu.twcore.experiment.ExpFactor;
 import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
@@ -375,7 +374,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			fileLines.add(line);
 		}
 
-		File anovaInputFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
+		File anovaInputFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName,
 				name + "_AnovaInput.csv");
 
 		try {
@@ -387,11 +386,11 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		String anovaResultsName = name + "_anovaResults.csv";
 		List<String> anovaLines = WidgetUtils.generateANOVAScript(anovaInputFile, edd.getFactors(), orderedFactors,
 				name, anovaResultsName);
-		File anovaFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_anova.R");
+		File anovaFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_anova.R");
 		WidgetUtils.saveAndExecuteScript(anovaFile, anovaLines);
 
 		try {
-			File results = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, anovaResultsName);
+			File results = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, anovaResultsName);
 			fileLines = Files.readAllLines(results.toPath(), StandardCharsets.UTF_8);
 			String line = "Terms\t" + fileLines.get(0);
 			fileLines.set(0, line);
@@ -429,21 +428,21 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			}
 			fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
 
-			File rssqFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
+			File rssqFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName,
 					name + "_RelSumSq.csv");
 			Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
 
 			List<String> rssqPlotLines = WidgetUtils.generateRVEPlotScript(rssqFile, name);
 			WidgetUtils.saveAndExecuteScript(
-					Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "RVE.R"),
+					Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "RVE.R"),
 					rssqPlotLines);
 			List<String> trendsBarplotLines = WidgetUtils.generateBarPlotScript(
-					Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv"),
+					Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv"),
 					edd.getFactors(), name, isMinZero);
 //				for (String s:trendsBarplotLines)
 //					System.out.println(s);
 			WidgetUtils.saveAndExecuteScript(
-					Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_barplots.R"),
+					Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_barplots.R"),
 					trendsBarplotLines);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -452,7 +451,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 
 		List<String> boxPlotLines = WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(), orderedFactors,
 				name);
-		File boxChartFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName,
+		File boxChartFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName,
 				name + "_boxplots.R");
 		WidgetUtils.saveAndExecuteScript(boxChartFile, boxPlotLines);
 
@@ -475,7 +474,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			}
 			stats[bar].add(sum / (double) nLines);
 		}
-		File statsFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_SA.csv");
+		File statsFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_SA.csv");
 		fileLines.clear();
 		fileLines.add("Property\tAverage\tVar\tStdD\tN\tTime");
 		String sep = "\t";
@@ -508,14 +507,14 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 	}
 
 	private void SaveProjectDesign(String widgetDirName) {
-		File designFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, "Design.csv");
+		File designFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, "Design.csv");
 		WidgetUtils.SaveExperimentDesignDetails(edd, designFile);
 	}
 
 	private int processSeries(String widgetDirName, String header, String name, List<List<Double>> data, int max) {
 		String sep = "\t";
 		int lastNonZeroTime = Integer.MAX_VALUE;
-		File seriesFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + ".csv");
+		File seriesFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + ".csv");
 		seriesFile.getParentFile().mkdirs();
 		List<String> fileLines = new ArrayList<>();
 		fileLines.add(header);
@@ -543,8 +542,8 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 		if (lastNonZeroTime == Integer.MAX_VALUE)
 			lastNonZeroTime = max - 1;
 
-		File averageFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv");
-		File varianceFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_var.csv");
+		File averageFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv");
+		File varianceFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_var.csv");
 		List<String> fileLinesAvg = new ArrayList<>();
 		List<String> fileLinesVar = new ArrayList<>();
 		String headerAvg = getAveragesHeader();
@@ -577,7 +576,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 
 		List<String> seriesScript = WidgetUtils.generateSeriesScript(edd.getType(), seriesFile, name,
 				edd.getReplicateCount(), false);
-		File rFile = Project.makeFile(ProjectPaths.RUNTIME, edd.getExpDir(), widgetDirName, name + "_Series.R");
+		File rFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_Series.R");
 		WidgetUtils.saveAndExecuteScript(rFile, seriesScript);
 
 		return lastNonZeroTime;

@@ -112,8 +112,6 @@ import au.edu.anu.twapps.mm.visualGraph.VisualNode;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twcore.project.ProjectPaths;
-import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
@@ -481,7 +479,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 					ConfigGraph.verifyGraph();
 					String header = "'" + Project.getDisplayName() + "' is now connected to Java project '"
 							+ jprjFile.getName() + "'.";
-					String content = "Make sure '" + TwPaths.TW_DEP_JAR + "' is in the build path of '"
+					String content = "Make sure '" + Project.TW_DEP_JAR + "' is in the build path of '"
 							+ jprjFile.getName() + "' and refresh/clean '" + jprjFile.getName() + "' from the IDE.";
 					Dialogs.infoAlert("Project connected", header, content);
 				}
@@ -667,7 +665,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		TreeGraphDataNode sys = (TreeGraphDataNode) get(ConfigGraph.getGraph().root().getChildren(),
 				selectZeroOrOne(hasTheLabel(N_SYSTEM.label())));
 		File remoteMainModelClass = new File(UserProjectLink.srcRoot().getAbsoluteFile() + File.separator
-				+ ProjectPaths.CODE + File.separator + sys.id() + File.separator + rootId + ".java");
+				+ Project.CODE + File.separator + sys.id() + File.separator + rootId + ".java");
 
 		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets(remoteMainModelClass);
 		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())

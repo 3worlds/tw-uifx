@@ -37,7 +37,6 @@ import java.util.Optional;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twcore.project.ProjectPaths;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -143,7 +142,7 @@ public class ISSelectionDlg {
 		String[] exts = new String[2];
 		exts[0] = "Initial state (*.isf)";
 		exts[1] = ".isf";
-		File file = Dialogs.promptForOpenFile(Project.makeFile(ProjectPaths.RUNTIME), "Add initial state file", exts);
+		File file = Dialogs.promptForOpenFile(Project.makeFile(Project.RUNTIME), "Add initial state file", exts);
 		// TODO open and validate the file before listing
 		if (file != null)
 			if (!listView.getItems().contains(file)) {

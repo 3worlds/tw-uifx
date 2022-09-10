@@ -20,7 +20,6 @@ import au.edu.anu.twcore.experiment.ExpFactor;
 import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twuifx.widgets.IsMissingValue;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import fr.cnrs.iees.identity.impl.LocalScope;
@@ -142,7 +141,7 @@ public class WidgetUtils {
 	 */
 	public static String getUniqueExperimentSubdirectoryName(String root, String baseName) {
 		LocalScope scope = new LocalScope("Files");
-		File dir = Project.makeFile(ProjectPaths.RUNTIME, root);
+		File dir = Project.makeFile(Project.RUNTIME, root);
 		dir.mkdirs();
 		for (String fileName : dir.list()) {
 			int dotIndex = fileName.lastIndexOf('.');

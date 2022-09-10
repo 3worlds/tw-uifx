@@ -49,8 +49,6 @@ import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.experiment.Design;
 import au.edu.anu.twcore.experiment.Experiment;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twcore.project.ProjectPaths;
-import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Kicker;
 import au.edu.anu.twuifx.FXEnumProperties;
@@ -159,7 +157,7 @@ public class MRmain {
 
 		}
 
-		File prjDir = new File(TwPaths.TW_ROOT + File.separator + args[1]);
+		File prjDir = new File(Project.USER_ROOT_TW_ROOT + File.separator + args[1]);
 		if (!prjDir.exists()) {
 			System.err.println("Project not found: [" + prjDir + "]");
 			System.err.println(Arrays.deepToString(args));
@@ -174,7 +172,7 @@ public class MRmain {
 
 		Project.open(prjDir);
 		// Make the runtime dir, otherwise saving prefs will crash
-		Project.makeFile(ProjectPaths.RUNTIME).mkdirs();
+		Project.makeFile(Project.RUNTIME).mkdirs();
 
 		// If we are not running from a jar then load the generated classes
 		if (Jars.getRunningJarFilePath(MRmain.class) == null) {

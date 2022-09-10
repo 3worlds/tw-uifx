@@ -42,7 +42,6 @@ import au.edu.anu.twapps.mr.IMRController;
 import au.edu.anu.twapps.mr.IMRModel;
 import au.edu.anu.twapps.mr.MRModel;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twcore.project.ProjectPaths;
 import au.edu.anu.twuifx.dialogs.ExperimentDetailsDlg;
 import au.edu.anu.twuifx.dialogs.ISParametersDlg;
 import au.edu.anu.twuifx.images.Images;
@@ -304,7 +303,7 @@ public class MrController implements IMRController {
 		String[] exts = new String[2];
 		exts[0] = "Initial state (*.isf)";
 		exts[1] = ".isf";
-		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save state as", exts);
+		File file = Dialogs.promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save state as", exts);
 		if (file != null) {
 			System.out.println(file);
 			model.doISSaveAs(file);
@@ -327,7 +326,7 @@ public class MrController implements IMRController {
 		String[] exts = new String[2];
 		exts[0] = "Model parameters (*.mpf)";
 		exts[1] = ".mpf";
-		File file = Dialogs.promptForOpenFile(Project.makeFile(ProjectPaths.RUNTIME), "Open parameters", exts);
+		File file = Dialogs.promptForOpenFile(Project.makeFile(Project.RUNTIME), "Open parameters", exts);
 		System.out.println(file);
 	}
 
@@ -336,7 +335,7 @@ public class MrController implements IMRController {
 		String[] exts = new String[2];
 		exts[0] = "Model parameters (*.mpf)";
 		exts[1] = ".mpf";
-		File file = Dialogs.promptForSaveFile(Project.makeFile(ProjectPaths.RUNTIME), "Save parameters", exts);
+		File file = Dialogs.promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save parameters", exts);
 		System.out.println(file);
 	}
 

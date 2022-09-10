@@ -39,8 +39,6 @@ import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twapps.mm.undo.Caretaker;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twcore.project.ProjectPaths;
-import au.edu.anu.twcore.project.TwPaths;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.images.Images;
@@ -73,7 +71,7 @@ import javafx.stage.Window;
  *
  * Date 10 Dec. 2018
  */
-public class ModelMakerfx extends Application implements ProjectPaths, TwPaths {
+public class ModelMakerfx extends Application {
 	private Stage mainStage;
 	private Parent root;
 	private MmController controller;

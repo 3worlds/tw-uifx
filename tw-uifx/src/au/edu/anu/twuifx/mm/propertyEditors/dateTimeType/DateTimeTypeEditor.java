@@ -192,9 +192,9 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 			Long time = 0L;
 			if (!dtItem.getTimeScaleType().equals(TimeScaleType.GREGORIAN)) {
 				for (Duple<TimeUnits, Spinner<Integer>> duple : lstSpinners) {
-					Integer n = duple.getSecond().getValue();
+					int n = duple.getSecond().getValue();
 					if (n != 0) {
-						Long factor = TimeUtil.timeUnitExactConversionFactor(duple.getFirst(), dtItem.getTUMin());
+						long factor = TimeUtil.timeUnitExactConversionFactor(duple.getFirst(), dtItem.getTUMin());
 						time += (factor * n);
 					}
 				}
