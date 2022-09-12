@@ -37,7 +37,9 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
+import au.edu.anu.twcore.InitialisableNode;
 import au.edu.anu.twcore.ecosystem.dynamics.Timeline;
+import au.edu.anu.twcore.root.World;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.graph.impl.ALEdge;
@@ -86,18 +88,21 @@ public class DateTimeItem extends SimpleMMPropertyItem {
 
 	@SuppressWarnings("unchecked")
 	private Timeline findSingleTimeLine() {
-		// At the moment, this is only possible if there exists ONE timeline connected
-		// to the graph tw root;
-		TreeGraph<TreeGraphDataNode, ALEdge> graph = ConfigGraph.getGraph();
-		TreeGraphNode twroot = null;
-		for (TreeGraphNode root : graph.roots())
-			if (root.classId().equals(N_ROOT.label()))
-				twroot = root;
-		List<TreeGraphNode> systems = (List<TreeGraphNode>) get(twroot.getChildren(),
-				selectZeroOrMany(hasTheLabel(N_SYSTEM.label())));
-		if (systems.isEmpty() || systems.size() > 1)
+		TreeGraphNode system = (TreeGraphNode)World.getSystemRoot((InitialisableNode) this.element);
+		if (system.equals(this.element))
 			return null;
-		TreeGraphNode system = systems.get(0);
+//		TreeGraph<TreeGraphDataNode, ALEdge> graph = ConfigGraph.getGraph();
+//		TreeGraphNode twroot = null;
+//		for (TreeGraphNode root : graph.roots())
+//			if (root.classId().equals(N_ROOT.label()))
+//				twroot = root;
+//		if (twroot==null)
+//			return null;
+//		List<TreeGraphNode> systems = (List<TreeGraphNode>) get(twroot.getChildren(),
+//				selectZeroOrMany(hasTheLabel(N_SYSTEM.label())));
+//		if (systems.isEmpty() || systems.size() > 1)
+//			return null;
+//		TreeGraphNode system = systems.get(0);
 		TreeGraphNode dynamics = (TreeGraphNode) get(system.getChildren(),
 				selectZeroOrOne(hasTheLabel(N_DYNAMICS.label())));
 		if (dynamics == null)

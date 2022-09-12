@@ -658,7 +658,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	void onImportSnippets(ActionEvent event) {
 		List<String> errorList = new ArrayList<>();
 		Map<String, TreeGraphDataNode> snippetNodes = new HashMap<>();
-		// Extract code for the main java class as Map<function name, code lines>.
+		// Extract code for the main java class of each system as Map<function name, code lines>.
 		// This includes imports using the root.id() as the key (NB lower case first
 		// letter to make id() consistent with method names)
 		String rootId = ConfigGraph.getGraph().root().id();
