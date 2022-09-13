@@ -56,7 +56,7 @@ import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
-import au.edu.anu.twuifx.widgets.helpers.RangeWidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.MultiSenderTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
@@ -133,7 +133,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		// data?? No sure this makes sense but seems to work.
 		senderDataSetMap = new ConcurrentHashMap<>();
 		timeFormatter = new WidgetTimeFormatter();
-		policy = new RangeWidgetTrackingPolicy();
+		policy = new MultiSenderTrackingPolicy();
 		yAxes = new ArrayList<>();
 	}
 
@@ -357,7 +357,6 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 				CircularDoubleErrorDataSet ds = dataSetMap.get(key);
 				final double y = data.getDoubleValues()[tsMetadata.indexOf(dl)];
 				final double ey = 0;
-//				System.out.println(key + "[" + x + ", " + y + "]");
 				if (ds != null)
 					ds.add(x, y, ey, ey);
 			}

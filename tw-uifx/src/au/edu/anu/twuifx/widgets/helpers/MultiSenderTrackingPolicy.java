@@ -36,46 +36,52 @@ import au.edu.anu.twcore.data.runtime.TimeData;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Ian Davies - 9 Dec. 2020
  */
-public class RangeWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData> {
+public class MultiSenderTrackingPolicy implements WidgetTrackingPolicy<TimeData> {
 
-	private IntegerRange range;
+	private final List<Integer> allowedSenders;
+	private int n;
+	public MultiSenderTrackingPolicy() {
+		allowedSenders = new ArrayList<>();
+	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		// must be a +ve range
-		int l = 0;
-		if (properties.hasProperty(P_WIDGET_LEAST_SIM_ID.key()))
-			l = (int) properties.getPropertyValue(P_WIDGET_LEAST_SIM_ID.key());
-		int n = 1;
+		n = 1;
 		if (properties.hasProperty(P_WIDGET_NSIMS.key()))
 			n = (int) properties.getPropertyValue(P_WIDGET_NSIMS.key());
-		range = new IntegerRange(l, l + (n - 1));
 	}
 
 	@Override
 	public boolean canProcessDataMessage(TimeData data) {
-		return range.inRange(data.sender());
+		return allowedSenders.contains(data.sender());
 	}
 
+	//TODO: There can be gaps in the range!!
 	@Override
 	public boolean canProcessMetadataMessage(Metadata meta) {
-		return range.getFirst() == meta.sender();
+		if (allowedSenders.size()<n) {
+			allowedSenders.add(meta.sender());
+			allowedSenders.sort((i1,i2)->i1.compareTo(i2));
+			return true;
+		}
+		allowedSenders.sort((i1,i2)->i1.compareTo(i2));
+		return false;
 	}
 
 	@Override
 	public String toString() {
-		if (range.getLast() - range.getFirst() == 0)
-			return Integer.toString(range.getFirst());
-		else
-			return Integer.toString(range.getFirst()) + "-" + Integer.toString(range.getLast());
+		return allowedSenders.toString();
 	}
 
 	@Override
 	public IntegerRange getDataMessageRange() {
-		return range;
+		return new IntegerRange(allowedSenders.get(0),allowedSenders.get(allowedSenders.size()-1));
 	}
 
 }

@@ -39,18 +39,6 @@ import fr.cnrs.iees.properties.SimplePropertyList;
  * @author Ian Davies - 23 Sep 2019
  */
 
-/*
- * The policy of simple widgets is:
- * 
- * 1) to follow just one sender. That's it! The chosen sender is a sub-archetype
- * property. These widgets will therefore ignore data from other senders.
- * 
- * Each widget should indicate the sender int on the ui.
- * 
- * WIP
- * 
- * This class can be moved to twapp (or twcore?)
- */
 
 public class SimCloneWidgetTrackingPolicy implements WidgetTrackingPolicy<TimeData> {
 	int nSenders;

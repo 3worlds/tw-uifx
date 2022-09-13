@@ -47,7 +47,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.widgets.helpers.RangeWidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.MultiSenderTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import de.gsi.chart.XYChart;
@@ -106,7 +106,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 	public ScatterPlotWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.XY);
 		timeFormatter = new WidgetTimeFormatter();
-		policy = new RangeWidgetTrackingPolicy();
+		policy = new MultiSenderTrackingPolicy();
 		senderDataSet = new ConcurrentHashMap<>();
 	}
 

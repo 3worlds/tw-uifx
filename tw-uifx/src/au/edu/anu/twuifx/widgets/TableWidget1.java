@@ -31,7 +31,6 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +46,7 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.widgets.helpers.RangeWidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.MultiSenderTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -96,7 +95,7 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 	public TableWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
-		policy = new RangeWidgetTrackingPolicy();
+		policy = new MultiSenderTrackingPolicy();
 		log.info("Thread: " + Thread.currentThread().getId());
 		tableDataList = FXCollections.observableArrayList();
 		senderDataSetMap = new ConcurrentHashMap<>();
