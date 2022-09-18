@@ -6,19 +6,24 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrOne;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UI;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UIHEADLESS;
+
+import java.io.File;
 import java.util.logging.Level;
 
+import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.twcore.InitialisableNode;
 import au.edu.anu.twcore.archetype.TwArchetypeConstants;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Kicker;
 import au.edu.anu.twuifx.FXEnumProperties;
+import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.io.GraphImporter;
+import fr.cnrs.iees.io.FileImporter;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import fr.ens.biologie.generic.utils.Logging;
 
@@ -57,18 +62,16 @@ public class OpenMoleRun {
 	 */
 	public static void run(int r) {
 		System.out.println("H! " + r);
-		Logging.setDefaultLogLevel(Level.parse("OFF"));
+		Logging.setDefaultLogLevel(Level.parse("SEVERE"));
 		EnumProperties.recordEnums();
 		FXEnumProperties.recordEnums();
 		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
 				.importGraph("Logistic1.utg", OpenMoleRun.class);
 // Uncomment to run from eclipse
-//		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) FileImporter
-//		.loadGraphFromFile(input);
-//		if (Jars.getRunningJarFilePath(OpenMoleRun.class) == null) {
-//			File userJar = new File("/home/ian/3w/project_Logistic1_2022-09-13-00-49-02-470/Logistic1.jar");
-//			OmugiClassLoader.setJarClassLoader(userJar);
-//		}
+		if (Jars.getRunningJarFilePath(OpenMoleRun.class) == null) {
+			File userJar = new File("/home/ian/3w/project_Logistic1_2022-09-13-00-49-02-470/Logistic1.jar");
+			OmugiClassLoader.setJarClassLoader(userJar);
+		}
 		// else the generated classes must be in the jar. For OM this means building the
 		// model jar with these classes together with this class and the tw<>.jar i.e.
 		// code/<system>/etc
