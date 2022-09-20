@@ -60,7 +60,7 @@ public class IntegerRangeEditor extends AbstractPropertyEditor<String, LabelButt
 	}
 
 	public IntegerRangeEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();
 		dtItem = (IntegerRangeItem) this.getProperty();
 		view.setOnAction(e -> onAction());

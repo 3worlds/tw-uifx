@@ -57,7 +57,7 @@ public class PopTypeEditor extends AbstractPropertyEditor<String, LabelButtonCon
 	}
 
 	public PopTypeEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();
 		view.setOnAction(e -> onAction());
 	}

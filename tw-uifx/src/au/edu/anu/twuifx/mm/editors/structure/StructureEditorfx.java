@@ -41,6 +41,7 @@ import java.util.TreeMap;
 
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
+import au.edu.anu.rscs.aot.archetype.Archetypes;
 import au.edu.anu.twapps.mm.IGraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
@@ -109,12 +110,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (!filteredChildSpecs.isEmpty() && !editableNode.visualNode().isPredefined()) {
 
 				for (SimpleDataTreeNode child : filteredChildSpecs) {
-					String childLabel = (String) child.properties().getPropertyValue(aaIsOfClass);
+					String childLabel = (String) child.properties().getPropertyValue(Archetypes.IS_OF_CLASS);
 					String childId = null;
 					String dispName = childLabel;
 					boolean reserved = false;
-					if (child.properties().hasProperty(aaHasId)) {
-						childId = (String) child.properties().getPropertyValue(aaHasId);
+					if (child.properties().hasProperty(Archetypes.HAS_ID)) {
+						childId = (String) child.properties().getPropertyValue(Archetypes.HAS_ID);
 						reserved = ConfigurationReservedNodeId.isPredefined(childId);
 						dispName += ":" + childId;
 					}
@@ -428,11 +429,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			if (!filteredChildSpecs.isEmpty() && !editableNode.visualNode().isPredefined()) {
 				for (SimpleDataTreeNode childSpec : filteredChildSpecs) {
 					MenuItem mi = MenuLabels.addMenuItem(mu,
-							(String) childSpec.properties().getPropertyValue(aaIsOfClass));
+							(String) childSpec.properties().getPropertyValue(Archetypes.IS_OF_CLASS));
 					mi.setOnAction((e) -> {
 
 						String desc = MenuLabels.ML_IMPORT_TREE.label() + " ["
-								+ (String) childSpec.properties().getPropertyValue(aaIsOfClass) + "]";
+								+ (String) childSpec.properties().getPropertyValue(Archetypes.IS_OF_CLASS) + "]";
 
 						onImportTree(childSpec, duration);
 
@@ -475,10 +476,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 		List<Duple<VisualEdge, SimpleDataTreeNode>> result = new ArrayList<>();
 		for (SimpleDataTreeNode es : edgeSpecs) {
-			String edgeClass = (String) es.properties().getPropertyValue(aaIsOfClass);
+			String edgeClass = (String) es.properties().getPropertyValue(Archetypes.IS_OF_CLASS);
 			if (edgeMap.containsKey(edgeClass)) {
 				List<SimpleDataTreeNode> propSpecs = (List<SimpleDataTreeNode>) get(es, children(),
-						selectZeroOrMany(hasTheLabel(aaHasProperty)));
+						selectZeroOrMany(hasTheLabel(Archetypes.HAS_PROPERTY)));
 				for (SimpleDataTreeNode ps : propSpecs) {
 					if (specifications.getMultiplicityOf(ps).getFirst() == 0) {
 //						String propName = (String) ps.properties().getPropertyValue(aaHasName);
@@ -496,7 +497,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		Collection<String> ne = controller.getUnEditablePropertyKeys(editableNode.visualNode().configNode().classId());
 		Iterator<SimpleDataTreeNode> iter = propSpecs.iterator();
 		while (iter.hasNext()) {
-			String name = (String) iter.next().properties().getPropertyValue(aaHasName);
+			String name = (String) iter.next().properties().getPropertyValue(Archetypes.HAS_NAME);
 			if (ne.contains(name))
 				iter.remove();
 		}

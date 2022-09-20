@@ -30,7 +30,15 @@
 
 package au.edu.anu.twuifx.images;
 
+/**
+ * 
+ * Dummy class to provide package location for images.
+ * 
+ * @author Ian Davies 20 Sep. 2022
+ *
+ */
 public class Images {
-	public static String imagePackage = "au.edu.anu.twuifx.images";
+//	public static String imagePackage = "au.edu.anu.twuifx.images";
+//	public static String x = Images.class.getPackageName();
 
 }

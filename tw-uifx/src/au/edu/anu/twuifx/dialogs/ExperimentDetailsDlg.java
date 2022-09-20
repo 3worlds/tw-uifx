@@ -46,8 +46,13 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
  * @author Ian Davies - 5 Jan 2022
  */
 public class ExperimentDetailsDlg {
-	public ExperimentDetailsDlg(TreeGraph<TreeGraphDataNode, ALEdge> g) {
-		Experiment exp = (Experiment) get(g.root().getChildren(), selectOne(hasTheLabel(N_EXPERIMENT.label())));
+	/**
+	 * Show a dialog box to display the experiment design of a 3Worlds configuration graph.
+	 * 
+	 * @param config The configuration graph
+	 */
+	public ExperimentDetailsDlg(TreeGraph<TreeGraphDataNode, ALEdge> config) {
+		Experiment exp = (Experiment) get(config.root().getChildren(), selectOne(hasTheLabel(N_EXPERIMENT.label())));
 
 		ButtonType close = new ButtonType("Close", ButtonData.OK_DONE);
 		Dialog<ButtonType> dlg = new Dialog<>();

@@ -78,7 +78,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	public TrackerTypeEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		this.getEditor().setOnAction(e -> onAction());
 	}
 

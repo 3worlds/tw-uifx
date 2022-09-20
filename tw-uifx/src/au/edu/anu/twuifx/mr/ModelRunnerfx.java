@@ -138,7 +138,7 @@ public class ModelRunnerfx extends Application {
 		stage.setScene(scene);
 
 		Dialogs.setImplementation(new Dialogsfx(root.getScene().getWindow()));
-		GraphState.initialise(null);
+		GraphState.setImplementation(null);
 
 		controller = loader.getController();
 		controller.setStage(stage);

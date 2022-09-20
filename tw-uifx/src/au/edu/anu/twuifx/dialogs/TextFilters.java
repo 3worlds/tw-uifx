@@ -38,7 +38,7 @@ import javafx.util.StringConverter;
 /**
  * @author Ian Davies -15 Sept 2021
  * 
- *       https://stackoverflow.com/questions/45977390/how-to-force-a-double-input-in-a-textfield-in-javafx
+ *         https://stackoverflow.com/questions/45977390/how-to-force-a-double-input-in-a-textfield-in-javafx
  */
 public class TextFilters {
 	private static Pattern validEditingState = Pattern.compile("-?(([1-9][0-9]*)|0)?(\\.[0-9]*)?");
@@ -46,6 +46,12 @@ public class TextFilters {
 	private TextFilters() {
 	};
 
+	/**
+	 * A formatter for enforcing correctly formed doubles in text fields.
+	 * 
+	 * @param def Default value
+	 * @return A double formatter.
+	 */
 	public static TextFormatter<Double> getDoubleFormatter(Double def) {
 		return new TextFormatter<>(converter, def, getDoubleFilter());
 	}

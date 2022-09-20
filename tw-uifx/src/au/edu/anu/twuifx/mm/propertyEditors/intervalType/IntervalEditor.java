@@ -62,7 +62,7 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	}
 
 	public IntervalEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();
 		dtItem = (IntervalItem) this.getProperty();
 		view.setOnAction(e -> onAction());

@@ -44,7 +44,7 @@ import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.rscs.aot.init.InitialiseMessage;
 import au.edu.anu.rscs.aot.init.Initialiser;
 import au.edu.anu.twcore.InitialisableNode;
-import au.edu.anu.twcore.archetype.TwArchetypeConstants;
+import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.experiment.Design;
 import au.edu.anu.twcore.experiment.Experiment;
@@ -311,7 +311,7 @@ public class MRmain {
 			return null;
 		for (TreeNode n : headlessNode.getChildren()) {
 			TreeGraphDataNode widgetNode = (TreeGraphDataNode) n;
-			String kstr = (String) widgetNode.properties().getPropertyValue(TwArchetypeConstants.twaSubclass);
+			String kstr = (String) widgetNode.properties().getPropertyValue(TWA.SUBCLASS);
 			try {
 				Class<?> widgetClass = Class.forName(kstr);
 				if (smcClass.isAssignableFrom(widgetClass))

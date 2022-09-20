@@ -58,7 +58,7 @@ public class FileTypeEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	}
 
 	public FileTypeEditor(Item property) {
-		this(property, new LabelButtonControl("Open16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Open16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();
 		view.setOnAction(e -> onAction());
 	}

@@ -63,7 +63,7 @@ public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonCon
 	}
 
 	public BoxItemEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.class.getPackageName()));
 		this.getEditor().setOnAction(e -> onAction());
 	}
 

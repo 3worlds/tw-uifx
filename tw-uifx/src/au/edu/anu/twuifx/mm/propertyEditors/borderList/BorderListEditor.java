@@ -66,7 +66,7 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 	}
 
 	public BorderListEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.class.getPackageName()));
 		this.getEditor().setOnAction(e -> onAction());
 	}
 

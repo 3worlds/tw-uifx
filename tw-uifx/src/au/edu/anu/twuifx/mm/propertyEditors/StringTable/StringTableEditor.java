@@ -60,7 +60,7 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	public StringTableEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();
 		dtItem = (StringTableItem) this.getProperty();
 		view.setOnAction(e -> onAction());

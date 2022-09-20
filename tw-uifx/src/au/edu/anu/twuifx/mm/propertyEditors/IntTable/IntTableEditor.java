@@ -63,7 +63,7 @@ public class IntTableEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	}
 
 	public IntTableEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		itItem = (IntTableItem) this.getProperty();
 		view = this.getEditor();
 		view.setOnAction(e -> onAction());

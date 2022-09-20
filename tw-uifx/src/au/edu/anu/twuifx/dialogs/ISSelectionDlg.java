@@ -37,6 +37,7 @@ import java.util.Optional;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.project.Project;
+import fr.cnrs.iees.graph.impl.TreeGraph;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -69,6 +70,13 @@ public class ISSelectionDlg {
 	private Label lblISFileName;
 	private ListView<File> listView;
 
+	/**
+	 * A dialog to select one from many files containing the state of a simulation to be used at start up..
+	 * <p>
+	 * NB: this has not been enabled yet.
+	 * @param fileList List of state files
+	 * @param index current selection.
+	 */
 	public ISSelectionDlg(List<File> fileList, int index) {
 		this.fileList = fileList;
 		this.newIndex = index;

@@ -41,6 +41,13 @@ import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Application;
 
+/**
+ * 
+ * Main method for ModelMaker.
+ * 
+ * @author Ian Davies - 10 Dec. 2018
+ *
+ */
 public class MMmain {
 	private static String usage = "Usage:\n" + MMmain.class.getName()
 			+ "default logging level, class:level.";

@@ -63,7 +63,7 @@ public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButto
 	}
 
 	public DoubleTableEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();
 		dtItem = (DoubleTableItem) this.getProperty();
 		view.setOnAction(e -> onAction());

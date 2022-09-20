@@ -70,7 +70,7 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 	}
 
 	public DateTimeTypeEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif", Images.imagePackage));
+		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();
 		dtItem = (DateTimeItem) this.getProperty();
 		// we need to find the timeline to create the meta-data for time editing

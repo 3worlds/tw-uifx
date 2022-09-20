@@ -54,7 +54,13 @@ public class ISParametersDlg {
 	private Dialog<ButtonType> dlg;
 	private ButtonType ok;
 	
-		public ISParametersDlg(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
+		/**
+		 * A dialog to edit the values of constants in a run-time dynamic graph.
+		 * <p>
+		 * NB: this has not been enabled yet.
+		 * @param dynamicGraph A {@link TreeGraph} of run-time state.
+		 */
+		public ISParametersDlg(TreeGraph<TreeGraphDataNode, ALEdge> dynamicGraph) {
 		dlg = new Dialog<ButtonType>();
 		dlg.setTitle("Edit parameters");
 		dlg.initOwner((Window) Dialogs.owner());

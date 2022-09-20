@@ -12,7 +12,7 @@ import java.util.logging.Level;
 
 import au.edu.anu.omhtk.jars.Jars;
 import au.edu.anu.twcore.InitialisableNode;
-import au.edu.anu.twcore.archetype.TwArchetypeConstants;
+import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Kicker;
@@ -99,7 +99,7 @@ public class OpenMoleRun {
 			return null;
 		for (TreeNode n : headlessNode.getChildren()) {
 			TreeGraphDataNode widgetNode = (TreeGraphDataNode) n;
-			String kstr = (String) widgetNode.properties().getPropertyValue(TwArchetypeConstants.twaSubclass);
+			String kstr = (String) widgetNode.properties().getPropertyValue(TWA.SUBCLASS);
 			try {
 				Class<?> widgetClass = Class.forName(kstr);
 				if (smcClass.isAssignableFrom(widgetClass))
