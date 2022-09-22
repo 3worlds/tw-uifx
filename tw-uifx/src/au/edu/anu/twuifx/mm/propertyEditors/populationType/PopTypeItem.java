@@ -50,7 +50,7 @@ public class PopTypeItem extends SimpleMMPropertyItem {
 
 	@Override
 	public void setValue(Object newString) {
-		PopulationVariablesSet oldValue = (PopulationVariablesSet) getElementProperties().getPropertyValue(key);
+		PopulationVariablesSet oldValue = (PopulationVariablesSet) properties.getPropertyValue(key);
 		String oldString = oldValue.toString();
 		if (!oldString.equals(newString)) {
 			PopulationVariablesSet newValue = PopulationVariablesSet.valueOf((String) newString);

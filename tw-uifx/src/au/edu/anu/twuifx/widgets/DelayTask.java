@@ -36,6 +36,7 @@ import javafx.event.EventHandler;
 import javafx.util.Duration;
 
 /**
+ * 
  * @author Ian Davies 24 Apr 2022
  */
 
@@ -44,16 +45,17 @@ public class DelayTask {
 	};
 
 	/**
-	 * Prevents animation tasks from flickering. Tasks are placed in a Timeline to
-	 * be run at some time in the future ('head') at a rate no greater than the
-	 * value of 'gap'. 
+	 * Prevents animation tasks from flickering (i.e by overwhelming the
+	 * Platform.runLater task list). Tasks are placed in a Timeline to be run at
+	 * some time in the future ('head') at a rate no greater than the value of
+	 * 'gap'.
 	 * <p>
-	 * If the generation of tasks is faster than the 'ga'Using this method can cause animations to lag way behind their
-	 * computation. Typically, 'gap' need be no greater than 1 ms.
+	 * If the generation of tasks is faster than 'gap', animations may lag way
+	 * behind their computation. Typically, 'gap' need be no greater than 1 ms.
 	 * </p>
 	 * <p>
-	 * This method should only be called from the application thread to prevent
-	 * instances of Timeline from throwing concurrent modification exceptions.
+	 * To prevent concurrent modification exceptions, this method should only be
+	 * called from the application thread.
 	 * </p>
 	 * 
 	 * @param gap  time in ms to advance the time front. Must be > 0
@@ -62,7 +64,7 @@ public class DelayTask {
 	 * @return updated value of time front.
 	 */
 	public static long submit(final long gap, long head, EventHandler<ActionEvent> task) {
-		assert(gap>0);
+		assert (gap > 0);
 		long now = System.currentTimeMillis();
 		head = Math.max(head, now);
 		head += gap;

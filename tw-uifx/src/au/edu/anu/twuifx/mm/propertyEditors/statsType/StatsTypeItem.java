@@ -52,7 +52,7 @@ public class StatsTypeItem extends SimpleMMPropertyItem {
 
 	@Override
 	public void setValue(Object newString) {
-		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) getElementProperties().getPropertyValue(key);
+		StatisticalAggregatesSet oldValue = (StatisticalAggregatesSet) properties.getPropertyValue(key);
 		String oldString = oldValue.toString();
 		if (!oldString.equals(newString)) {
 			StatisticalAggregatesSet newValue = StatisticalAggregatesSet.valueOf((String) newString);

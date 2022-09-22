@@ -58,7 +58,7 @@ public class DoubleTableItem extends SimpleMMPropertyItem {
 
 	@Override
 	public void setValue(Object value) {
-		Table oldTable = (Table) getElementProperties().getPropertyValue(key);
+		Table oldTable = (Table) properties.getPropertyValue(key);
 		String oldValue = oldTable.toSaveableString();
 		String newValue = (String)value;
 		// NB Tables do not have an equals() function!

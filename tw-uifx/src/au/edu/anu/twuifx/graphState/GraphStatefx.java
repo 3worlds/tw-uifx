@@ -36,6 +36,7 @@ import au.edu.anu.rscs.aot.errorMessaging.ErrorMessageManager;
 import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
 import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.IGraphState;
+import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
@@ -46,6 +47,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
+ * Javafx implementation for {@link GraphState}.
+ * 
  * @author Ian Davies Date May 6, 2019
  */
 public class GraphStatefx implements IGraphState {
@@ -54,12 +57,23 @@ public class GraphStatefx implements IGraphState {
 	private StringProperty propertyJavaPath = new SimpleStringProperty("");
 	private List<IGraphStateListener> listeners = new ArrayList<>();
 
-	public GraphStatefx(StringProperty propertyTitle, StringProperty propertyJavaPath) {
-		if (propertyTitle != null)
-			this.propertyTitle = propertyTitle;
-		if (propertyJavaPath != null)
-			this.propertyJavaPath = propertyJavaPath;
-		propertyJavaPath.addListener((o, ov, nv) -> {
+	/**
+	 * Javafx implementation of {@link IGraphState}.
+	 * <p>
+	 * The window title is formed by concatenating {@code title} and {@code javaPath}. 
+	 * Whenever the graph is edited, an "*" is prepended to the window title and
+	 * removed when the graph is saved.
+	 * 
+	 * @param title    ModelMaker project display name.
+	 * @param javaPath Path to the linked java project or 'blank' if the project is
+	 *                 not linked.
+	 */
+	public GraphStatefx(StringProperty title, StringProperty javaPath) {
+		if (title != null)
+			this.propertyTitle = title;
+		if (javaPath != null)
+			this.propertyJavaPath = javaPath;
+		javaPath.addListener((o, ov, nv) -> {
 			setTitle();
 		});
 	}

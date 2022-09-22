@@ -35,9 +35,20 @@ import java.util.Map;
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import javafx.scene.paint.Color;
 
+/**
+ * Colour scheme for each of the 7 principle sub-trees of a 3Worlds
+ * configuration.
+ * <p>
+ * The colours have been chosen after testing with a
+ * <a href= "https://www.color-blindness.com/coblis-color-blindness-simulator">
+ * colour-blindness simulator</a>.
+ * 
+ * @author Ian Davies 21 Sep. 2022
+ *
+ */
 public class TreeColours {
-	/*http://www.color-blindness.com/coblis-color-blindness-simulator/*/
-	private static Map<String,Color> nodeColours= new HashMap<>();
+	/* http://www.color-blindness.com/coblis-color-blindness-simulator/ */
+	private static Map<String, Color> nodeColours = new HashMap<>();
 	static {
 		nodeColours.put(ConfigurationNodeLabels.N_SYSTEM.label(), Color.TEAL);
 		nodeColours.put(ConfigurationNodeLabels.N_DYNAMICS.label(), Color.LIME);
@@ -45,11 +56,12 @@ public class TreeColours {
 		nodeColours.put(ConfigurationNodeLabels.N_DATADEFINITION.label(), Color.SALMON);
 		nodeColours.put(ConfigurationNodeLabels.N_EXPERIMENT.label(), Color.GOLDENROD);
 		nodeColours.put(ConfigurationNodeLabels.N_UI.label(), Color.WHITE);
-		nodeColours.put(ConfigurationNodeLabels.N_PREDEFINED.label(),Color.LIGHTGREY);
+		nodeColours.put(ConfigurationNodeLabels.N_PREDEFINED.label(), Color.LIGHTGREY);
 	}
-	public static Color getCategoryColor(String category, String label){
+
+	public static Color getCategoryColor(String category, String label) {
 		if (!nodeColours.containsKey(category))
-				return Color.BLACK;
+			return Color.BLACK;
 		return nodeColours.get(category);
 	}
 

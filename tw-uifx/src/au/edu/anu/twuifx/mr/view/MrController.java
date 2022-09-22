@@ -116,18 +116,34 @@ public class MrController implements IMRController {
 
 	// private IRunTimeParameterizer dashboard;
 
+	/**
+	 * Getter for the controller's TabPane
+	 * @return the tabPane
+	 */
 	public TabPane getTabPane() {
 		return tabPane;
 	}
 
+	/**
+	 * Getter for the controller's tool bar, implemented as an HBox
+	 * @return the tool bar HBox container
+	 */
 	public HBox getToolBar() {
 		return toolBar;
 	}
 
+	/**
+	 * Getter for the controller's status bar, implemented as an HBox
+	 * @return the status bar HBox container
+	 */
 	public HBox getStatusBar() {
 		return statusBar;
 	}
 
+	/**
+	 * Getter for the controller's widget menu
+	 * @return the widget menu
+	 */
 	public Menu getWidgetMenu() {
 		return menuWidgets;
 	}

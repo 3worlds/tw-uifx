@@ -49,9 +49,16 @@ import javafx.application.Application;
  *
  */
 public class MMmain {
-	private static String usage = "Usage:\n" + MMmain.class.getName()
-			+ "default logging level, class:level.";
+	private static String usage = "Usage:\n" + MMmain.class.getName() + "default logging level, class:level.";
 
+	/**
+	 * Launch {@link ModelMakerfx} by calling {@code Application.launch(ModelMakerfx.class)}.
+	 * <p>
+	 * Arguments are a list of classes to log and the required logging level. These
+	 * arguments are also passed on to ModelRunner when launched from ModelMaker.
+	 * 
+	 * @param args {@literal <class>:<level> ... }
+	 */
 	public static void main(String[] args) {
 		EnumProperties.recordEnums();
 		FXEnumProperties.recordEnums();
@@ -61,14 +68,14 @@ public class MMmain {
 		ProjectJarGenerator.setModelRunnerClass(MRmain.class);
 		// pass logging args on to deployed MR
 		MMModel.setMMArgs(args);
-		
-		// enact logging args 
+
+		// enact logging args
 		if (args.length > 0)
 			Logging.setDefaultLogLevel(Level.parse(args[0]));
 		else
 			Logging.setDefaultLogLevel(Level.OFF);
-		
-		for (int i = 1; i<args.length;i++) {
+
+		for (int i = 1; i < args.length; i++) {
 			String[] pair = args[i].split(":");
 			if (pair.length != 2) {
 				System.out.println(usage);
@@ -77,16 +84,16 @@ public class MMmain {
 			String klass = pair[0];
 			String level = pair[1];
 			try {
-				Class<?> c = Class.forName(klass,true,OmugiClassLoader.getAppClassLoader());
+				Class<?> c = Class.forName(klass, true, OmugiClassLoader.getAppClassLoader());
 				Level lvl = Level.parse(level);
 				Logger log = Logging.getLogger(c);
 				log.setLevel(lvl);
-			} catch(ClassNotFoundException e) {
+			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				System.exit(-1);
 			}
 		}
-		
+
 		Application.launch(ModelMakerfx.class);
 	}
 

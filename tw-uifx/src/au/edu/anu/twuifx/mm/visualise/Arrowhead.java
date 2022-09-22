@@ -34,10 +34,12 @@ import javafx.beans.property.DoubleProperty;
 import javafx.scene.shape.Line;
 
 /**
+ * A line with a simple arrowhead (thickened line end).
+ * 
  * @author Ian Davies - 25 May 2020
  */
 public class Arrowhead extends Line {
-	public Arrowhead(Line line, DoubleProperty r,DoubleProperty lineWidth) {
+	public Arrowhead(Line line, DoubleProperty r, DoubleProperty lineWidth) {
 		super();
 		// arrow same colour as line
 		setStroke(line.getStroke());
@@ -91,24 +93,20 @@ public class Arrowhead extends Line {
 
 		endYProperty().bind(ybnd);
 
-//		old code
-//		endXProperty().bind(x2.subtract(x2.subtract(x1).divide(4)));
-//		endYProperty().bind(y2.subtract(y2.subtract(y1).divide(4)));
-
 	}
 
-	public static void main(String[] args) {
-		double x1 = 1;
-		double y1 = 1;
-		double x2 = 3;
-		double y2 = 3;
-		double r = Math.sqrt(2);
-		double x = x1 + (Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) - r)
-				* Math.cos(Math.atan2(y2 - y1, x2 - x1));
-		// NB limit to > 0 cf above
-		double y = y1 + (Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) - r)
-				* Math.sin(Math.atan2(y2 - y1, x2 - x1));
-		System.out.println(x + "," + y);
-
-	}
+//	public static void main(String[] args) {
+//		double x1 = 1;
+//		double y1 = 1;
+//		double x2 = 3;
+//		double y2 = 3;
+//		double r = Math.sqrt(2);
+//		double x = x1 + (Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) - r)
+//				* Math.cos(Math.atan2(y2 - y1, x2 - x1));
+//		// NB limit to > 0 cf above
+//		double y = y1 + (Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) - r)
+//				* Math.sin(Math.atan2(y2 - y1, x2 - x1));
+//		System.out.println(x + "," + y);
+//
+//	}
 }

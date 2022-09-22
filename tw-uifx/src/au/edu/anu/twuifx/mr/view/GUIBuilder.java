@@ -52,7 +52,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;

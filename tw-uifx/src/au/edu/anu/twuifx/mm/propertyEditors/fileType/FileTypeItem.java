@@ -57,7 +57,7 @@ public class FileTypeItem extends SimpleMMPropertyItem {
 
 	public FileTypeItem(IMMController controller,String key, ElementAdapter element, boolean canEdit, String category, String description) {
 		super(controller,key, element, canEdit, category, description);
-		fileType = (FileType)getElementProperties().getPropertyValue(key);
+		fileType = (FileType)properties.getPropertyValue(key);
 		exts = new ArrayList<>();
 		exts.add(new FileChooser.ExtensionFilter("All files", "*.*"));
 	}

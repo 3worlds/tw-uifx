@@ -74,7 +74,7 @@ public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonCon
 		origins = new ArrayList<>();
 		widths = new ArrayList<>();
 		BoxItem item = (BoxItem) getProperty();
-		Box currentBox = (Box) item.getElementProperties().getPropertyValue(P_SPACE_OBSWINDOW.key());
+		Box currentBox = (Box) item.getProperties().getPropertyValue(P_SPACE_OBSWINDOW.key());
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
 		dlg.setTitle(item.getElement().toShortString() + "#" + P_SPACE_OBSWINDOW.key());

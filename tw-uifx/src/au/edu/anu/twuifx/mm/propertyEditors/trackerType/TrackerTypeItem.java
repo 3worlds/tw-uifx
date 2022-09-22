@@ -64,7 +64,7 @@ public class TrackerTypeItem extends SimpleMMPropertyItem {
 
 	@Override
 	public Object getValue() {
-		TrackerType tt = (TrackerType) getElementProperties().getPropertyValue(key);
+		TrackerType tt = (TrackerType) properties.getPropertyValue(key);
 		return tt.toString();
 	}
 

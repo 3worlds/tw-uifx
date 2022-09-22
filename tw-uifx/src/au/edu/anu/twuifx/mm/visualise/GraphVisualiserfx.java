@@ -32,7 +32,6 @@ package au.edu.anu.twuifx.mm.visualise;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,7 +97,15 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
  * Date 28 Jan. 2019
  */
 public final class GraphVisualiserfx implements IGraphVisualiser {
+	/**
+	 * Speed of configuration graph animation in msec.
+	 */
 	public static final Double animateSlow = 1000.0;
+	/**
+	 * Speed of configuration graph animation in msec when particular tasks are
+	 * effectively instantaneous (i.e. when hiding the pre-defined sub-tree at start
+	 * up).
+	 */
 	public static final Double animateFast = 1.0;
 
 	private TreeGraph<VisualNode, VisualEdge> visualGraph;
@@ -409,7 +416,6 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 	}
 
-	// TODO used for editing??? later
 	@SuppressWarnings("unchecked")
 	private void createGraphLines(VisualNode n, BooleanProperty show) {
 		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(n.edges(Direction.OUT));
@@ -431,7 +437,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Text text = new Text(edge.getDisplayText(edgeSelect.get()));
 		// text.setCacheHint(CacheHint.SPEED);
 		text.fontProperty().bind(font);
-		// TODO use property here
+		//  use property here
 		line.setStroke(graphEdgeColor);
 
 		// Bindings
@@ -756,10 +762,10 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	private void stackEdges(List<VisualEdge> edges) {
-		edges.sort((e1,e2)->{
+		edges.sort((e1, e2) -> {
 			Text t1 = (Text) e1.getText();
 			Text t2 = (Text) e2.getText();
-			return t1.getText().compareTo(t2.getText());	
+			return t1.getText().compareTo(t2.getText());
 		});
 //		edges.sort(new Comparator<VisualEdge>() {
 //

@@ -30,9 +30,11 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors;
 
+import java.util.Objects;
 import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 
+import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -43,18 +45,41 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import javafx.beans.value.ObservableValue;
 
 /**
- * Author Ian Davies
+ * An adaptor for {@link Item} for any element in a ModelMaker configuration
+ * file whose class is handled natively by Controlsfx (e.g All numbers, Strings
+ * and Enums).
+ * <p>
+ * Note: For String properties, an update event is fired for every key stroke.
+ * This is a problem because each update event causes a re-compile of the
+ * configuration file. This means typing fast will over-load the thread.
+ * Therefore, large strings such as Descriptions, should be handled by purpose
+ * built property editor.
+ * 
+ * @author Ian Davies - 14 Feb. 2019
  *
- * Date 14 Feb. 2019
  */
 public class SimpleMMPropertyItem implements Item {
 	protected ElementAdapter element;
 	protected String key;
 	protected boolean isEditable;
 	protected String category;
+	protected SimplePropertyList properties;
 	private String description;
 	private IMMController controller;
 
+	/**
+	 * 
+	 * @param controller  ModelMaker controller, used to coordinated updates across
+	 *                    two property sheets.
+	 * @param key         The unique key of the property in the element's property
+	 *                    list.
+	 * @param element     The element (Node or Edge) containing the property list.
+	 * @param canEdit     True if editing of this property is allowed, false
+	 *                    otherwise.
+	 * @param category    The sub-tree to which this element belongs. This is used
+	 *                    in the property sheet to categorized items.
+	 * @param description Not implemented. Intended as help info for the property.
+	 */
 	public SimpleMMPropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
 			String category, String description) {
 		this.element = element;
@@ -63,6 +88,7 @@ public class SimpleMMPropertyItem implements Item {
 		this.category = category;
 		this.description = description;
 		this.controller = controller;
+		properties = Objects.requireNonNull(getElementProperties());
 	}
 
 	@Override
@@ -72,7 +98,7 @@ public class SimpleMMPropertyItem implements Item {
 
 	@Override
 	public Class<?> getType() {
-		return getElementProperties().getPropertyClass(key);
+		return properties.getPropertyClass(key);
 	}
 
 	@Override
@@ -92,7 +118,7 @@ public class SimpleMMPropertyItem implements Item {
 
 	@Override
 	public Object getValue() {
-		return getElementProperties().getPropertyValue(key);
+		return properties.getPropertyValue(key);
 	}
 
 	@Override
@@ -111,14 +137,14 @@ public class SimpleMMPropertyItem implements Item {
 	}
 
 	protected void onUpdateProperty(Object value) {
-		getElementProperties().setProperty(key, value);
+		properties.setProperty(key, value);
 		controller.onItemEdit(this);
 		GraphState.setChanged();
 		if (!(value instanceof String))
 			ConfigGraph.verifyGraph();
 	}
 
-	public SimplePropertyList getElementProperties() {
+	private SimplePropertyList getElementProperties() {
 		if (element instanceof TreeGraphDataNode) {
 			TreeGraphDataNode node = (TreeGraphDataNode) element;
 			return node.properties();

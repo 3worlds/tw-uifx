@@ -40,12 +40,27 @@ import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.BorderListType;
 
 /**
+ * Property item for {@link BorderListType}.
+ * 
  * @author Ian Davies - 12 Oct 2019
  */
 public class BorderListItem extends SimpleMMPropertyItem {
 
-	public BorderListItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
-			String description) {
+	/**
+	 * 
+	 * @param controller  ModelMaker controller, used to coordinated updates across
+	 *                    two property sheets.
+	 * @param key         The unique key of the property in the element's property
+	 *                    list.
+	 * @param element     The element (Node or Edge) containing the property list.
+	 * @param canEdit     True if editing of this property is allowed, false
+	 *                    otherwise.
+	 * @param category    The sub-tree to which this element belongs. This is used
+	 *                    in the property sheet to categorized items.
+	 * @param description Not implemented. Intended as help info for the property.
+	 */
+	public BorderListItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
+			String category, String description) {
 		super(controller, key, element, canEdit, category, description);
 	}
 
@@ -57,13 +72,19 @@ public class BorderListItem extends SimpleMMPropertyItem {
 			onUpdateProperty(blt);
 		}
 	}
+
+	/**
+	 * Getter for the Element (Node or Edge).
+	 * 
+	 * @return Node or Edge element.
+	 */
 	public ElementAdapter getElement() {
 		return element;
 	}
 
 	@Override
 	public Object getValue() {
-		return getElementProperties().getPropertyValue(key).toString();
+		return properties.getPropertyValue(key).toString();
 	}
 
 	@Override

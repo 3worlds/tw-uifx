@@ -55,7 +55,7 @@ public class IntervalItem extends SimpleMMPropertyItem {
 
 	@Override
 	public void setValue(Object value) {
-		Interval oldValue = (Interval) getElementProperties().getPropertyValue(key);
+		Interval oldValue = (Interval)properties.getPropertyValue(key);
 		Interval newValue = Interval.valueOf((String) value);
 		if (!oldValue.equals(newValue)) {
 			onUpdateProperty(newValue);

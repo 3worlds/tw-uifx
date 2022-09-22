@@ -37,18 +37,19 @@ import org.controlsfx.property.editor.PropertyEditor;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
+import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.uit.space.Box;
 
 /**
  * @author Ian Davies - 25 Sep 2020
  */
-public class BoxItem extends SimpleMMPropertyItem{
+public class BoxItem extends SimpleMMPropertyItem {
 
 	public BoxItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
 			String description) {
 		super(controller, key, element, canEdit, category, description);
 	}
-	
+
 	@Override
 	public void setValue(Object newValue) {
 		Object oldValue = getValue();
@@ -57,16 +58,34 @@ public class BoxItem extends SimpleMMPropertyItem{
 			onUpdateProperty(box);
 		}
 	}
+
 	public Object getValue() {
-		return getElementProperties().getPropertyValue(key).toString();
+		return properties.getPropertyValue(key).toString();
 	}
-	
+
 	@Override
 	public Optional<Class<? extends PropertyEditor<?>>> getPropertyEditorClass() {
 		return Optional.of(BoxItemEditor.class);
 	}
+
+	// TODO Check use of this.
+	/**
+	 * Getter for the Element (Node or Edge).
+	 * 
+	 * @return Node or Edge element.
+	 */
 	public ElementAdapter getElement() {
 		return element;
+	}
+
+	// TODO Check use of this.
+	/**
+	 * Getter for the protected properties list.(?)
+	 * 
+	 * @return Element properties.
+	 */
+	public SimplePropertyList getProperties() {
+		return properties;
 	}
 
 }

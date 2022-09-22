@@ -73,7 +73,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -786,6 +785,11 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// ---------------FXML End -------------------------
 
 	// ---------------IMMController Start ---------------------
+	/**
+	 * Maintain a list of host services, used for opening web pages for 3Worlds gitHub.
+	 * 
+	 * @param hs Currently available host services.
+	 */
 	public void setHostServices(HostServices hs) {
 		hostServices = hs;
 	}
@@ -1022,6 +1026,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	private static final String ScrollVValue = "VValue";
 	private static final String KeyPathLength = "PathLength";
 
+	@Override
 	public void putPreferences() {
 		if (Project.isOpen()) {
 			IPreferences prefs = Preferences.getImplementation();
@@ -1059,6 +1064,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		}
 	}
 
+	@Override
 	public void getPreferences() {
 		Preferences.setImplementation(new PrefImpl(Project.makeProjectPreferencesFile()));
 		IPreferences prefs = Preferences.getImplementation();
@@ -1153,7 +1159,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		this.stage = stage;
 	}
 
-	// humm... suspect. Should refer to UserProjectLink
+	
+	/**
+	 * Getter for the user project path string property.
+	 * 
+	 * @return The string property.
+	 */
 	public StringProperty getUserProjectPathProperty() {
 		return userProjectPath;
 	}

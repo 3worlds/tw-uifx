@@ -231,9 +231,9 @@ public class ModelMakerfx extends Application {
 		System.exit(0);
 	}
 
-	public static void main(String[] args) {
-		System.out.println("Before 'launch(args)'");
-		launch(args);
-	}
+//	public static void main(String[] args) {
+//		System.out.println("Before 'launch(args)'");
+//		launch(args);
+//	}
 
 }

@@ -23,7 +23,6 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.io.GraphImporter;
-import fr.cnrs.iees.io.FileImporter;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import fr.ens.biologie.generic.utils.Logging;
 
@@ -65,6 +64,7 @@ public class OpenMoleRun {
 		Logging.setDefaultLogLevel(Level.parse("SEVERE"));
 		EnumProperties.recordEnums();
 		FXEnumProperties.recordEnums();
+		@SuppressWarnings("unchecked")
 		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
 				.importGraph("Logistic1.utg", OpenMoleRun.class);
 // Uncomment to run from eclipse
@@ -105,7 +105,6 @@ public class OpenMoleRun {
 				if (smcClass.isAssignableFrom(widgetClass))
 					return (WidgetNode) widgetNode;
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

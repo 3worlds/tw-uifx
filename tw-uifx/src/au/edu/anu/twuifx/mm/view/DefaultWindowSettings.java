@@ -40,7 +40,7 @@ public class DefaultWindowSettings {
 	private static double y = screenBounds.getHeight() * 0.1;
 	private static double splitter1 = 0.2;
 	private static double splitter2 = 0.5;
-	private static String defaultMMName = "3Worlds Model Maker";
+	private static String defaultMMName = "3Worlds ModelMaker";
 
 	public static double getWidth() {
 		return w;

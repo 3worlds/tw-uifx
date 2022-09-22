@@ -1,13 +1,11 @@
 package au.edu.anu.twuifx.widgets.headless;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
 import au.edu.anu.omhtk.rng.Pcg32;
 import fr.ens.biologie.generic.utils.Duple;
-import fr.ens.biologie.generic.utils.Tuple;
 
 public class Individual {
 	public static int nBids = 1;
@@ -48,7 +46,7 @@ public class Individual {
 				if (bl<0)
 					bl+=size;
 				
-				int p = pop[bl];
+//				int p = pop[bl];
 				double supply = k2;
 				if (habitat[bl])
 					supply = k1;
@@ -87,8 +85,8 @@ public class Individual {
 	}
 
 	public static void main(String[] args) {
-		double k1 = 3.0;
-		double k2 = 1.5;
+//		double k1 = 3.0;
+//		double k2 = 1.5;
 		double dd = 10;
 		int size = 10000;
 		int nSteps = 1000;

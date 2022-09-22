@@ -37,7 +37,6 @@ import java.util.Optional;
 
 import au.edu.anu.twapps.dialogs.Dialogs;
 import au.edu.anu.twcore.project.Project;
-import fr.cnrs.iees.graph.impl.TreeGraph;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;

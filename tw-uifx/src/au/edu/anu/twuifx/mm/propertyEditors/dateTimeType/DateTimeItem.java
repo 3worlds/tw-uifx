@@ -30,21 +30,16 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.dateTimeType;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.InitialisableNode;
 import au.edu.anu.twcore.ecosystem.dynamics.Timeline;
 import au.edu.anu.twcore.root.World;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
-import fr.cnrs.iees.graph.impl.ALEdge;
-import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
@@ -86,23 +81,10 @@ public class DateTimeItem extends SimpleMMPropertyItem {
 		return tuMax;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Timeline findSingleTimeLine() {
 		TreeGraphNode system = (TreeGraphNode)World.getSystemRoot((InitialisableNode) this.element);
 		if (system.equals(this.element))
 			return null;
-//		TreeGraph<TreeGraphDataNode, ALEdge> graph = ConfigGraph.getGraph();
-//		TreeGraphNode twroot = null;
-//		for (TreeGraphNode root : graph.roots())
-//			if (root.classId().equals(N_ROOT.label()))
-//				twroot = root;
-//		if (twroot==null)
-//			return null;
-//		List<TreeGraphNode> systems = (List<TreeGraphNode>) get(twroot.getChildren(),
-//				selectZeroOrMany(hasTheLabel(N_SYSTEM.label())));
-//		if (systems.isEmpty() || systems.size() > 1)
-//			return null;
-//		TreeGraphNode system = systems.get(0);
 		TreeGraphNode dynamics = (TreeGraphNode) get(system.getChildren(),
 				selectZeroOrOne(hasTheLabel(N_DYNAMICS.label())));
 		if (dynamics == null)
@@ -121,7 +103,7 @@ public class DateTimeItem extends SimpleMMPropertyItem {
 
 	@Override
 	public void setValue(Object value) {
-		DateTimeType oldValue = (DateTimeType) getElementProperties().getPropertyValue(key);
+		DateTimeType oldValue = (DateTimeType) properties.getPropertyValue(key);
 		DateTimeType newValue = DateTimeType.valueOf((String) value);
 		if (oldValue.getDateTime() != newValue.getDateTime()) {
 			onUpdateProperty(newValue);

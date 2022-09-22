@@ -47,27 +47,26 @@ import javafx.scene.layout.Priority;
 
 /**
  * 
+ * Generic UI for property editors with text (non-editable) on left and an edit
+ * button on the right.
  * 
- */
-/**
  * @author Ian Davies - 24 Feb. 2018
- *         <p>
- *         Generic UI for property editor with text (non-editable) on left and
- *         and edit button on the right. This is the ui many properties
- *         appearing in the propertySheet in ModelMaker
  * 
  */
 public class LabelButtonControl extends GridPane {
 	private Label label;
 	private Button button;
 
+	/**
+	 * @param fileName    File name containing the image to display on the button.
+	 * @param packageName Package location of the image.
+	 */
 	public LabelButtonControl(String fileName, String packageName) {
 		super();
 		label = new Label("");
 		label.setPadding(new Insets(5, 2, 0, 0));
 		label.setMaxWidth(150);
 		button = new Button("");
-		// TODO: This won't work when MM is running from jar.cf MRSplash.java
 		File file = Resources.getFile(fileName, packageName);
 		Image image = new Image(file.toURI().toString());
 		ImageView imageView = new ImageView(image);
@@ -83,18 +82,41 @@ public class LabelButtonControl extends GridPane {
 		GridPane.setValignment(button, VPos.CENTER);
 	}
 
+	/**
+	 * Getter for the label's text property.
+	 * 
+	 * @return The label's text property.
+	 */
 	public StringProperty getTextProperty() {
 		return label.textProperty();
 	}
 
+	/**
+	 * Setter for the non-editable label text.
+	 * 
+	 * @param text String for display
+	 */
 	public void setText(String text) {
 		label.setText(text);
 	}
 
+	/**
+	 * Setter for the button's action. This will typically call the editor property
+	 * editor.
+	 * 
+	 * @param action The action handler
+	 */
 	public void setOnAction(EventHandler<ActionEvent> action) {
 		button.setOnAction(action);
 	}
 
+	/**
+	 * Setter for the button's disable property. Some property values cannot be
+	 * edited because they are either set by the system are part of the
+	 * pre-defined sub-tree of the configuration graph.
+	 * 
+	 * @param b True to disable, false to enable.
+	 */
 	public void setDiabled(boolean b) {
 		button.setDisable(b);
 	}

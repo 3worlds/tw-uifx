@@ -57,14 +57,23 @@ import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
+ * Property editor for {@BorderListItem}.
+ * 
  * @author Ian Davies - 25 Sep 2020
  */
 public class BorderListEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
+	/**
+	 * @param property The {@link BorderListItem}
+	 * @param control The {@link LabelButtonControl}
+	 */
 	public BorderListEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property The {@link BorderListItem}
+	 */
 	public BorderListEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.class.getPackageName()));
 		this.getEditor().setOnAction(e -> onAction());
@@ -138,9 +147,9 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 					while (lo == wrapIdx) {
 						lo = (lo + 1) % nValues;
 					}
-					if (hi == lo || hi==wrapIdx) {
+					if (hi == lo || hi == wrapIdx) {
 						hi = (hi + 1) % nValues;
-						while (hi == wrapIdx || hi==lo)
+						while (hi == wrapIdx || hi == lo)
 							hi = (hi + 1) % nValues;
 					}
 					cmbLower.get(idx).getSelectionModel().select(lo);

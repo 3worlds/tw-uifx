@@ -55,7 +55,7 @@ public class IntegerRangeItem extends SimpleMMPropertyItem {
 
 	@Override
 	public void setValue(Object value) {
-		IntegerRange oldValue = (IntegerRange) getElementProperties().getPropertyValue(key);
+		IntegerRange oldValue = (IntegerRange) properties.getPropertyValue(key);
 		IntegerRange newValue = IntegerRange.valueOf(value.toString());
 		if (!oldValue.equals(newValue)) {
 			onUpdateProperty(newValue);

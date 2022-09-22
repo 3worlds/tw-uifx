@@ -67,9 +67,14 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 /**
- * Author Ian Davies
- *
- * Date 13 Jan. 2019
+ * Javafx extension of the {@link StructureEditorAdapter}.
+ * <p>
+ * This class displays a pop-up menu when the user clicks on a configuration
+ * graph node. The menu options available are context dependent.
+ * </p>
+ * <p> This class has an {@link Originator}, allowing any editors to be undone or redone.
+ * 
+ * @author Ian Davies - 13 Jan. 2019
  */
 
 public class StructureEditorfx extends StructureEditorAdapter {
@@ -77,6 +82,13 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	private ContextMenu cm;
 	private Originator recorder;
 
+	/**
+	 * @param n The user-selected node for editing.
+	 * @param event The event used to place the pop-up menu at the correct location.
+	 * @param controller The ModelMaker controller
+	 * @param gv The graph visualisation system.
+	 * @param recorder Records edits for the undo/redo system.
+	 */
 	public StructureEditorfx(VisualNodeEditable n, MouseEvent event, IMMController controller, IGraphVisualiser gv,
 			Originator recorder) {
 		super(n, gv, controller);
@@ -472,7 +484,6 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		Map<String, VisualEdge> edgeMap = new LinkedHashMap<>();
 		for (VisualEdge e : editableNode.getOutEdges())
 			edgeMap.put(e.getConfigEdge().classId(), e);
-		
 
 		List<Duple<VisualEdge, SimpleDataTreeNode>> result = new ArrayList<>();
 		for (SimpleDataTreeNode es : edgeSpecs) {
