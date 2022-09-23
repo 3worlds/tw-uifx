@@ -180,7 +180,7 @@ public class WidgetUtils {
 	 * @param inFile               The input file name (tab separated with header
 	 *                             and '.' decimal separator).
 	 * @param factors              Factor details ({@link ExpFactor}).
-	 * @param orderedFactors
+	 * @param orderedFactors       Factors ordered by appearance in column headers. 
 	 * @param responseVariableName The name of the response variable. The input file
 	 *                             must name the response variable as "RV".
 	 * @param resultsName          The file name for the results table.
@@ -419,6 +419,14 @@ public class WidgetUtils {
 		return result;
 	}
 
+	/**
+	 * @param edt
+	 * @param inFile
+	 * @param rv
+	 * @param nReplicates
+	 * @param isMinZero
+	 * @return
+	 */
 	public static List<String> generateSeriesScript(ExperimentDesignType edt, File inFile, String rv, int nReplicates,
 			boolean isMinZero) {
 		List<String> result = new ArrayList<>();
@@ -508,14 +516,14 @@ public class WidgetUtils {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		File file = new File(
-				"/home/ian/3w/project_GDDMExp_2022-07-23-04-13-06-683/local/runTime/OG/popWriter0/population.csv");
-		List<String> lines = generateSeriesScript(ExperimentDesignType.crossFactorial ,file, "population", 5, false);
-		for (String line : lines)
-			System.out.println(line);
-
-	}
+//	public static void main(String[] args) {
+//		File file = new File(
+//				"/home/ian/3w/project_GDDMExp_2022-07-23-04-13-06-683/local/runTime/OG/popWriter0/population.csv");
+//		List<String> lines = generateSeriesScript(ExperimentDesignType.crossFactorial ,file, "population", 5, false);
+//		for (String line : lines)
+//			System.out.println(line);
+//
+//	}
 
 	/**
 	 * Saves an R script to file then executes the script with Rscript. This method

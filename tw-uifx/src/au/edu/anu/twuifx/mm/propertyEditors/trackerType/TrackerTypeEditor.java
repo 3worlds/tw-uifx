@@ -64,6 +64,8 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 /**
+ * Property editor for {@link TrackerTypeItem}.
+ * 
  * @author Ian Davies - 13 Oct 2019
  */
 public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
@@ -73,12 +75,19 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	private ALDataEdge trackerEdge;
 	private TrackerType currentTT;
 
+	/**
+	 * @param property The {@link TrackerTypeItem}.
+	 * @param control The {@link LabelButtonControl}.
+	 */
 	public TrackerTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property The {@link TrackerTypeItem}.
+	 */
 	public TrackerTypeEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.class.getPackageName()));
 		this.getEditor().setOnAction(e -> onAction());
 	}
 
@@ -104,12 +113,12 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 			List<TreeGraphDataNode> categories = (List<TreeGraphDataNode>) get(process.edges(Direction.OUT),
 					selectZeroOrMany(hasTheLabel(ConfigurationEdgeLabels.E_APPLIESTO.label())), edgeListEndNodes());
 			for (TreeGraphDataNode category : categories) {
-				Record drvr = (Record) get(category.edges(Direction.OUT),selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())),
-						endNode());
+				Record drvr = (Record) get(category.edges(Direction.OUT),
+						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())), endNode());
 				if (drvr != null)
 					result.add(drvr);
-				Record decr = (Record) get(category.edges(Direction.OUT),selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DECORATORS.label())),
-						endNode());
+				Record decr = (Record) get(category.edges(Direction.OUT),
+						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DECORATORS.label())), endNode());
 				if (decr != null)
 					result.add(decr);
 			}
@@ -194,7 +203,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 	private static String illegalChars = "[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ(*&^$#@!?><~+=)/_]";
 	// why not legal chars?
 
-	private String validateEntry(String input, int[][] sizes) {		
+	private String validateEntry(String input, int[][] sizes) {
 		String test = input.replaceAll(illegalChars, "");
 		if (!test.equals(input))
 			return input + " contains illegal characters.";

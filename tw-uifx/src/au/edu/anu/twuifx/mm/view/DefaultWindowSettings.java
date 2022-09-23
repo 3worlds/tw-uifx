@@ -32,6 +32,12 @@ package au.edu.anu.twuifx.mm.view;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
+/**
+ * Default ModelMaker window settings scaled to the current screen size.
+ * 
+ * @author Ian Davies - 23 Sep. 2022
+ *
+ */
 public class DefaultWindowSettings {
 	private static Rectangle2D screenBounds = Screen.getPrimary().getBounds();
 	private static double w = screenBounds.getWidth() * 0.8;
@@ -42,30 +48,51 @@ public class DefaultWindowSettings {
 	private static double splitter2 = 0.5;
 	private static String defaultMMName = "3Worlds ModelMaker";
 
+	/**
+	 * @return default main window width.
+	 */
 	public static double getWidth() {
 		return w;
 	}
 
+	/**
+	 * @return default main window height.
+	 */
 	public static double getHeight() {
 		return h;
 	}
 
+	/**
+	 * @return default position of left side of the main window.
+	 */
 	public static double getX() {
 		return x;
 	}
 
+	/**
+	 * @return default position of top of the main window.
+	 */
 	public static double getY() {
 		return y;
 	}
 
+	/**
+	 * @return relative position of vertical splitter bar.
+	 */
 	public static double splitter1() {
 		return splitter1;
 	}
 
+	/**
+	 * @return relative position of horizontal splitter bar.
+	 */
 	public static double splitter2() {
 		return splitter2;
 	}
 
+	/**
+	 * @return Tile of main window when no project has been opened.
+	 */
 	public static String defaultName() {
 		return defaultMMName;
 	}

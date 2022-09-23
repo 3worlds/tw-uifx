@@ -45,20 +45,30 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
 
 /**
- * Author Ian Davies
- *
- * Date 14 Feb. 2019
+ * Property editor for {@link FileTypeItem}. 
+ * <p>
+ * The path is relative to the project
+ * directory.
+ * 
+ * @author Ian Davies - 14 Feb. 2019
  */
 public class FileTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
-	private  LabelButtonControl view;
+	private LabelButtonControl view;
 
+	/**
+	 * @param property The {@link FileTypeItem}.
+	 * @param control The {@link LabelButtonControl}
+	 */
 	public FileTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property  The {@link FileTypeItem}.
+	 */
 	public FileTypeEditor(Item property) {
-		this(property, new LabelButtonControl("Open16.gif",  Images.class.getPackageName()));
+		this(property, new LabelButtonControl("Open16.gif", Images.class.getPackageName()));
 		view = this.getEditor();
 		view.setOnAction(e -> onAction());
 	}

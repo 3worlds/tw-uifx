@@ -45,14 +45,26 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.layout.Pane;
 
+/**
+ * Property editor for {@link StatsTypeItem}.
+ * 
+ * @author Ian Davies - 14 Feb. 2019
+ */
 public class StatsTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
 	private LabelButtonControl view;
 
+	/**
+	 * @param property The {@link StatsTypeItem}.
+	 * @param control The {@link LabelButtonControl}.
+	 */
 	public StatsTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property The {@link StatsTypeItem}.
+	 */
 	public StatsTypeEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();

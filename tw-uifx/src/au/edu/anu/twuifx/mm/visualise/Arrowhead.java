@@ -39,6 +39,11 @@ import javafx.scene.shape.Line;
  * @author Ian Davies - 25 May 2020
  */
 public class Arrowhead extends Line {
+	/**
+	 * @param line The line to which the arrowhead belongs.
+	 * @param r ModelMaker's node radius property.
+	 * @param lineWidth ModelMaker's line width property. 
+	 */
 	public Arrowhead(Line line, DoubleProperty r, DoubleProperty lineWidth) {
 		super();
 		// arrow same colour as line

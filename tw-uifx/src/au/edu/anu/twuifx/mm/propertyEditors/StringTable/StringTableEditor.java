@@ -51,14 +51,27 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
+/**
+ * Property editor for {@link StringTableItem}.
+ * 
+ * @author Ian Davies - 15 Dec 2019
+ *
+ */
 public class StringTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private StringTableItem dtItem;
 
+	/**
+	 * @param property The {@link StringTableItem}.
+	 * @param control The {@link LabelButtonControl}.
+	 */
 	public StringTableEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property The {@link StringTableItem}.
+	 */
 	public StringTableEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();

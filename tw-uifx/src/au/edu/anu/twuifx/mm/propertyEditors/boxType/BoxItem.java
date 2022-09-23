@@ -41,10 +41,25 @@ import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.uit.space.Box;
 
 /**
+ * Property item for {@link Box}.
+ * 
  * @author Ian Davies - 25 Sep 2020
  */
 public class BoxItem extends SimpleMMPropertyItem {
 
+	/**
+	 * 
+	 * @param controller  ModelMaker controller, used to coordinated updates across
+	 *                    two property sheets.
+	 * @param key         The unique key of the property in the element's property
+	 *                    list.
+	 * @param element     The element (Node or Edge) containing the property list.
+	 * @param canEdit     True if editing of this property is allowed, false
+	 *                    otherwise.
+	 * @param category    The sub-tree to which this element belongs. This is used
+	 *                    in the property sheet to categorized items.
+	 * @param description Not implemented. Intended as help info for the property.
+	 */
 	public BoxItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
 			String description) {
 		super(controller, key, element, canEdit, category, description);

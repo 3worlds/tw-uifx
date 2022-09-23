@@ -40,14 +40,30 @@ import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 
+//TODO table editors need to be brought together in a proper hierarchy
 /**
+ * Property item for {@link DoubleTable}.
+ * 
  * @author Ian Davies -15 Dec 2019
  */
-//TODO table editors need to be brought together in a proper hierarchy
 public class DoubleTableItem extends SimpleMMPropertyItem {
 
-	public DoubleTableItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
-		super(controller,key, element, canEdit, category, description);
+	/**
+	 * 
+	 * @param controller  ModelMaker controller, used to coordinated updates across
+	 *                    two property sheets.
+	 * @param key         The unique key of the property in the element's property
+	 *                    list.
+	 * @param element     The element (Node or Edge) containing the property list.
+	 * @param canEdit     True if editing of this property is allowed, false
+	 *                    otherwise.
+	 * @param category    The sub-tree to which this element belongs. This is used
+	 *                    in the property sheet to categorized items.
+	 * @param description Not implemented. Intended as help info for the property.
+	 */
+	public DoubleTableItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
+			String category, String description) {
+		super(controller, key, element, canEdit, category, description);
 	}
 
 	@Override
@@ -60,9 +76,9 @@ public class DoubleTableItem extends SimpleMMPropertyItem {
 	public void setValue(Object value) {
 		Table oldTable = (Table) properties.getPropertyValue(key);
 		String oldValue = oldTable.toSaveableString();
-		String newValue = (String)value;
+		String newValue = (String) value;
 		// NB Tables do not have an equals() function!
-		if (!oldValue.equals(newValue)){
+		if (!oldValue.equals(newValue)) {
 			Table newTable = DoubleTable.valueOf(newValue);
 			onUpdateProperty(newTable);
 		}

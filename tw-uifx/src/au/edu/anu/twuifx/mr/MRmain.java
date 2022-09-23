@@ -83,9 +83,14 @@ public class MRmain {
 			+ " [instance id] [<Project relative directory>] [default log level]  [class to log:level...]";
 	private static Logger log = Logging.getLogger(MRmain.class);
 
+	/**
+	 * The main method to launch ModelRunner.
+	 * 
+	 * @param args {@literal [instance id] [<Project relative directory>] [default log level]  [class to log:level...]}
+	 */
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
-		
+
 		EnumProperties.recordEnums();
 		FXEnumProperties.recordEnums();
 //		ValidPropertyTypes.listTypes(); // uncomment this if you want to make sure all property types are here

@@ -55,13 +55,22 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Property editor for {@link BoxItem}.
+ * 
  * @author Ian Davies - 25 Sep 2020
  */
 public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
+	/**
+	 *@param property The {@link BoxItem} property.
+	 * @param control The {@link LabelButtonControl}
+	 */
 	public BoxItemEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property The {@link BoxItem} property.
+	 */
 	public BoxItemEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif", Images.class.getPackageName()));
 		this.getEditor().setOnAction(e -> onAction());

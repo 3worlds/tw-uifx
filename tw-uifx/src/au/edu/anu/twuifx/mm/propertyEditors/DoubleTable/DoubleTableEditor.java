@@ -50,27 +50,38 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
+
+//TODO table editors need to be brought together in a proper hierarchy
 /**
+ * Property editor for {@link DoubleTable}.
+ * 
  * @author Ian Davies-15 Dec 2019
  */
 
-//TODO table editors need to be brought together in a proper hierarchy
 public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private DoubleTableItem dtItem;
+
+	/**
+	 * @param property The {@link DoubleTableItem}
+	 * @param control  The {@link LabelButtonControl}
+	 */
 	public DoubleTableEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property The {@link DoubleTableItem}
+	 */
 	public DoubleTableEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.class.getPackageName()));
 		view = this.getEditor();
 		dtItem = (DoubleTableItem) this.getProperty();
 		view.setOnAction(e -> onAction());
 	}
 
 	private void onAction() {
-		DoubleTable currentTable = DoubleTable.valueOf((String)dtItem.getValue());
+		DoubleTable currentTable = DoubleTable.valueOf((String) dtItem.getValue());
 		Table newTable = editTable(currentTable);
 		setValue(newTable.toSaveableString());
 	}
@@ -106,7 +117,7 @@ public class DoubleTableEditor extends AbstractPropertyEditor<String, LabelButto
 			if (entries.isEmpty())
 				entries.add("");
 			DoubleTable newValue = new DoubleTable(new Dimensioner(entries.size()));
-			//NB 1 dim editor only
+			// NB 1 dim editor only
 			for (int i = 0; i < entries.size(); i++)
 				newValue.setWithFlatIndex(Double.parseDouble(entries.get(i)), i);
 			return newValue;

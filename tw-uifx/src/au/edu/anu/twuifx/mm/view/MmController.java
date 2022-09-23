@@ -154,6 +154,15 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
 
+/**
+ * Javafx implementation of {@link IMMController}. It also implements
+ * {@link ErrorListListener} to display verification and model compile error
+ * messages and {IGraphStateListener}.to update controls depending on the state
+ * of the configuration graph.
+ * 
+ * @author Ian Davies - 23 Sep. 2022
+ *
+ */
 public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
 	@FXML
 	private MenuItem miImportSnippets;
@@ -290,7 +299,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	private CheckBox cbAnimate;
 
-	public enum Verbosity {
+	private enum Verbosity {
 		brief, medium, full;
 	}
 
@@ -657,14 +666,15 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	void onImportSnippets(ActionEvent event) {
 		List<String> errorList = new ArrayList<>();
 		Map<String, TreeGraphDataNode> snippetNodes = new HashMap<>();
-		// Extract code for the main java class of each system as Map<function name, code lines>.
+		// Extract code for the main java class of each system as Map<function name,
+		// code lines>.
 		// This includes imports using the root.id() as the key (NB lower case first
 		// letter to make id() consistent with method names)
 		String rootId = ConfigGraph.getGraph().root().id();
 		TreeGraphDataNode sys = (TreeGraphDataNode) get(ConfigGraph.getGraph().root().getChildren(),
 				selectZeroOrOne(hasTheLabel(N_SYSTEM.label())));
-		File remoteMainModelClass = new File(UserProjectLink.srcRoot().getAbsoluteFile() + File.separator
-				+ Project.CODE + File.separator + sys.id() + File.separator + rootId + ".java");
+		File remoteMainModelClass = new File(UserProjectLink.srcRoot().getAbsoluteFile() + File.separator + Project.CODE
+				+ File.separator + sys.id() + File.separator + rootId + ".java");
 
 		Map<String, List<String>> snippetCodes = UserProjectLink.getSnippets(remoteMainModelClass);
 		for (TreeGraphDataNode n : ConfigGraph.getGraph().nodes())
@@ -786,7 +796,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	// ---------------IMMController Start ---------------------
 	/**
-	 * Maintain a list of host services, used for opening web pages for 3Worlds gitHub.
+	 * Maintain a list of host services, used for opening web pages for 3Worlds
+	 * gitHub.
 	 * 
 	 * @param hs Currently available host services.
 	 */
@@ -1100,11 +1111,10 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		cbEdgeTextChoice.getSelectionModel()
 				.select((ElementDisplayText) prefs.getEnum(EdgeTextDisplayChoice, ElementDisplayText.RoleName));
 
-		PropertySheet.Mode mode = (PropertySheet.Mode) prefs
-				.getEnum(allElementsPropertySheet.idProperty().get() + Mode, PropertySheet.Mode.CATEGORY);
+		PropertySheet.Mode mode = (PropertySheet.Mode) prefs.getEnum(allElementsPropertySheet.idProperty().get() + Mode,
+				PropertySheet.Mode.CATEGORY);
 		allElementsPropertySheet.setMode(mode);
-		mode = (PropertySheet.Mode) prefs.getEnum(nodePropertySheet.idProperty().get() + Mode,
-				PropertySheet.Mode.NAME);
+		mode = (PropertySheet.Mode) prefs.getEnum(nodePropertySheet.idProperty().get() + Mode, PropertySheet.Mode.NAME);
 		nodePropertySheet.setMode(mode);
 		int idx = prefs.getInt(AccordionSelection, -1);
 		UiHelpers.setExpandedPane(allElementsPropertySheet, idx);
@@ -1151,15 +1161,24 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	// -------------- Preferencable End ---------------------
 
 	// -------------- ModelMakerfx Start---------------------
+	/**
+	 * Getter for the {@link IMMModel#canClose()}.
+	 * 
+	 * @return true if project can close; false otherwise.
+	 */
 	public boolean canClose() {
 		return model.canClose();
 	}
 
+	/**
+	 * Getter for the ModelMaker main Stage.
+	 * 
+	 * @param stage The main stage.
+	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
 
-	
 	/**
 	 * Getter for the user project path string property.
 	 * 
@@ -1298,7 +1317,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private void refreshErrorMessages() {
 		textAreaErrorMsgs.clear();
-		lstErrorMsgs.sort((m1,m2)->m1.actionInfo().compareToIgnoreCase(m2.actionInfo()));
+		lstErrorMsgs.sort((m1, m2) -> m1.actionInfo().compareToIgnoreCase(m2.actionInfo()));
 		int count = 0;
 		for (ErrorMessagable msg : lstErrorMsgs) {
 			count++;
@@ -1378,7 +1397,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		ObservableList<Item> selItems = FXCollections.observableArrayList();
 		Duple<ObservableList<Item>, ObservableList<Item>> result = new Duple<>(allItems, selItems);
 		List<VisualNode> vNodes = getNodeList();
-		vNodes.sort((n1,n2)->n1.id().compareTo(n2.id()));
+		vNodes.sort((n1, n2) -> n1.id().compareTo(n2.id()));
 //		vNodes.sort((first, second) -> {
 //			return first.id().compareTo(second.id());
 //		});
@@ -1431,12 +1450,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 			}
 		}
 
-		allItems.sort((first,second)->first.getName().compareTo(second.getName()));
+		allItems.sort((first, second) -> first.getName().compareTo(second.getName()));
 //		allItems.sort((first, second) -> {
 //			return first.getName().compareTo(second.getName());
 //		});
-		
-		selItems.sort((first,second)->first.getName().compareTo(second.getName()));
+
+		selItems.sort((first, second) -> first.getName().compareTo(second.getName()));
 //		selItems.sort((first, second) -> {
 //			return first.getName().compareTo(second.getName());
 //		});

@@ -54,13 +54,22 @@ import javafx.stage.StageStyle;
  * 
  */
 public class MrSplash extends Preloader {
+	/**
+	 * Time model construction started.
+	 */
 	public static long startTime;
+	/**
+	 * The user account that created the configuration graph.
+	 */
 	public static String builtBy;
 	private static Stage stage;
 	private Scene scene;
 	private TextField lblNodeName;
 	private ProgressBar progressBar;
 
+	/**
+	 * Setter to hide the splash screen.
+	 */
 	public static void hideStage() {
 		stage.hide();
 	}
@@ -75,7 +84,7 @@ public class MrSplash extends Preloader {
 		Platform.runLater(() -> {
 			BorderPane root = new BorderPane();
 
-			TextField label = new TextField(builtBy+": Initialising simulator...");
+			TextField label = new TextField(builtBy + ": Initialising simulator...");
 			label.setAlignment(Pos.CENTER);
 
 			progressBar = new ProgressBar();
@@ -101,7 +110,7 @@ public class MrSplash extends Preloader {
 			title.setOpacity(0.8);
 //			title.setStyle("-fx-effect: innershadow(gaussian, gray, 5, 1.0, 0, 0);");
 
-			ImageView imageView = new ImageView(new Image( Images.class.getResourceAsStream("3worlds-5.jpg")));
+			ImageView imageView = new ImageView(new Image(Images.class.getResourceAsStream("3worlds-5.jpg")));
 			imageView.preserveRatioProperty().set(true);
 
 			root.setTop(title);

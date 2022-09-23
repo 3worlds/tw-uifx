@@ -27,34 +27,37 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.widgets;
+package au.edu.anu.twuifx.widgets.helpers;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.util.Duration;
 
 /**
+ * Static class to prevent animation tasks flickering. This can occur when many
+ * tasks are rapidly submitted to Platform.runLater(). 'gap'.
  * 
  * @author Ian Davies 24 Apr 2022
  */
 
 public class DelayTask {
+	// prevent instantiation
 	private DelayTask() {
 	};
 
 	/**
-	 * Prevents animation tasks from flickering (i.e by overwhelming the
-	 * Platform.runLater task list). Tasks are placed in a Timeline to be run at
+	 * To prevent flicker, tasks are placed in a Timeline to be run at
 	 * some time in the future ('head') at a rate no greater than the value of
 	 * 'gap'.
 	 * <p>
-	 * If the generation of tasks is faster than 'gap', animations may lag way
-	 * behind their computation. Typically, 'gap' need be no greater than 1 ms.
+	 * If the generation of tasks is faster than 'gap', animations will lag behind
+	 * their computation, sometimes very noticeably. Typically, 'gap' need be no greater than 1 ms.
 	 * </p>
 	 * <p>
-	 * To prevent concurrent modification exceptions, this method should only be
+	 * NOTE: To prevent concurrent modification exceptions, this method must only be
 	 * called from the application thread.
 	 * </p>
 	 * 
@@ -63,8 +66,9 @@ public class DelayTask {
 	 * @param task submitted task to run at that time.
 	 * @return updated value of time front.
 	 */
-	public static long submit(final long gap, long head, EventHandler<ActionEvent> task) {
-		assert (gap > 0);
+	public static long submit(long gap, long head, EventHandler<ActionEvent> task) {
+		assert (Platform.isFxApplicationThread());
+		gap = Math.max(0, 1L);
 		long now = System.currentTimeMillis();
 		head = Math.max(head, now);
 		head += gap;

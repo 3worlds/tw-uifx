@@ -118,6 +118,7 @@ public class MrController implements IMRController {
 
 	/**
 	 * Getter for the controller's TabPane
+	 * 
 	 * @return the tabPane
 	 */
 	public TabPane getTabPane() {
@@ -126,6 +127,7 @@ public class MrController implements IMRController {
 
 	/**
 	 * Getter for the controller's tool bar, implemented as an HBox
+	 * 
 	 * @return the tool bar HBox container
 	 */
 	public HBox getToolBar() {
@@ -134,6 +136,7 @@ public class MrController implements IMRController {
 
 	/**
 	 * Getter for the controller's status bar, implemented as an HBox
+	 * 
 	 * @return the status bar HBox container
 	 */
 	public HBox getStatusBar() {
@@ -142,14 +145,18 @@ public class MrController implements IMRController {
 
 	/**
 	 * Getter for the controller's widget menu
+	 * 
 	 * @return the widget menu
 	 */
 	public Menu getWidgetMenu() {
 		return menuWidgets;
 	}
 
+	/**
+	 * Initialize the controller by creating a {@link MRModel}.
+	 */
 	@FXML
-	public void initialize() {
+	public final void initialize() {
 		model = new MRModel();
 		statusBar.setSpacing(5);
 		statusBar.setPadding(new Insets(1, 1, 1, 1));
@@ -231,7 +238,7 @@ public class MrController implements IMRController {
 		else
 			lines = Resources.getTextResource("aboutMREN.txt", getClass());
 
-		for (String line:lines){
+		for (String line : lines) {
 			textArea.appendText(line);
 			textArea.appendText("\n");
 		}
@@ -277,12 +284,12 @@ public class MrController implements IMRController {
 			alert.setHeaderText("Generation completed");
 			String content = "Directory:\n" + gen.getArtifactFiles()[0].getParent() + "\n\nFiles:";
 			File[] list = gen.getArtifactFiles();
-			for (int i = 0;i<list.length;i++)
-				content+="\n - "+list[i].getName();
+			for (int i = 0; i < list.length; i++)
+				content += "\n - " + list[i].getName();
 			alert.setContentText(content);
 			alert.showAndWait();
 		});
-		oddTask.setOnFailed(e->{
+		oddTask.setOnFailed(e -> {
 			tabPane.getScene().setCursor(oldCursor);
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Documentation generator");
@@ -367,14 +374,25 @@ public class MrController implements IMRController {
 	private static final String mainMaximized = mainFrameName + "_" + "maximized";
 	private static final String tabIndex = "tabIndex";
 
-	public void setStage(Stage stage) {
+	/**
+	 * Setter for the ModelRunner main stage.
+	 * 
+	 * @param stage The main stage.
+	 */
+	public final void setStage(Stage stage) {
 		this.stage = stage;
 	}
 
-	public IMRModel getModel() {
+	/**
+	 * Getter for the ModelRunner interface.
+	 * 
+	 * @return The model interface.
+	 */
+	public final IMRModel getModel() {
 		return model;
 	}
 
+	@Override
 	public void putPreferences() {
 		if (Project.isOpen()) {
 			IPreferences prefs = Preferences.getImplementation();
@@ -387,10 +405,10 @@ public class MrController implements IMRController {
 		}
 	}
 
+	@Override
 	public void getPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
-		double[] r = prefs.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(),
-				stage.getHeight());
+		double[] r = prefs.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 		stage.setX(r[0]);
 		stage.setY(r[1]);
 		stage.setWidth(r[2]);

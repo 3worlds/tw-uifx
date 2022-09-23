@@ -51,6 +51,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Window;
 
 /**
+ * Property editor for {@link IntTableItem}.
+ * 
  * @author Ian Davies - 11 Nov 2021
  */
 public class IntTableEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
@@ -58,10 +60,17 @@ public class IntTableEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	private LabelButtonControl view;
 	private IntTableItem itItem;
 
+	/**
+	 * @param property The {@link IntTableItem}.
+	 * @param control  The {@link LabelButtonControl}
+	 */
 	public IntTableEditor(Item property, LabelButtonControl control) {
 		super(property, control);
 	}
 
+	/**
+	 * @param property The {@link IntTableItem}.
+	 */
 	public IntTableEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		itItem = (IntTableItem) this.getProperty();

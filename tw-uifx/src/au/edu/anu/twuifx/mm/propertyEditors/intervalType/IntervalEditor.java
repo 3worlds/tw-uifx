@@ -53,14 +53,27 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
+/**
+ * Property editor for {@link IntervalItem}.
+ * 
+ * @author Ian Davies - 24 Oct 2019
+ *
+ */
 public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private IntervalItem dtItem;
 
+	/**
+	 * @param property The {@link IntervalItem}.
+	 * @param control The {@link LabelButtonControl}
+	 */
 	public IntervalEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property The {@link IntervalItem}.
+	 */
 	public IntervalEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();

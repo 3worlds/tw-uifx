@@ -42,6 +42,8 @@ import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
 
 /**
+ * Static helper methods for various javafx controls.
+ * 
  * @author Ian Davies - 11 Dec 2019
  */
 public class UiHelpers {

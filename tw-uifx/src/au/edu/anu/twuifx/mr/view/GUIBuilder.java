@@ -68,6 +68,12 @@ public class GUIBuilder {
 	private List<SplitPane> splitPanes;
 	private MrController controller;
 
+	/**
+	 * Builds the GUI widgets and layout.
+	 * 
+	 * @param uiNode     The root of the user-interface sub-tree.
+	 * @param controller The ModelRunner controller javafx implementation.
+	 */
 	@SuppressWarnings("unchecked")
 	public GUIBuilder(TreeGraphNode uiNode, MrController controller) {
 		guiWidgets = new ArrayList<>();
@@ -246,7 +252,10 @@ public class GUIBuilder {
 
 	private static final String splitter = "splitter_";
 
-	public void getPreferences() {
+	/**
+	 * Get run-time ui layout preferences for model runner from preferences system.
+	 */
+	public final void getPreferences() {
 		// maybe needs to be delayed!
 		for (SplitPane s : splitPanes) {
 			String key = splitter + s.getId();
@@ -255,6 +264,9 @@ public class GUIBuilder {
 		}
 	}
 
+	/**
+	 * Put run-time ui layout preferences for model runner to preferences system.
+	 */
 	public void putPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 		for (WidgetGUI w : guiWidgets)
@@ -272,18 +284,5 @@ public class GUIBuilder {
 			Integer w2 = (Integer) n2.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
 			return w1.compareTo(w2);
 		});
-//		lst.sort(new Comparator<WidgetNode>() {
-//
-//			@Override
-//			public int compare(WidgetNode o1, WidgetNode o2) {
-//// JG fix 24/8/2022: this looks like a forgotten property name, if i understand well 				
-////				Integer w1 = (Integer) o1.properties().getPropertyValue("order");
-////				Integer w2 = (Integer) o2.properties().getPropertyValue("order");				
-//				Integer w1 = (Integer) o1.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
-//				Integer w2 = (Integer) o2.properties().getPropertyValue(P_UI_LAYOUT_ORDER.key());
-//				return w1.compareTo(w2);
-//			}
-//		});
-
 	}
 }

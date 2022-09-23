@@ -40,14 +40,14 @@ import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.FileType;
 import javafx.stage.FileChooser;
+//TODO Problem how to avoid polluting tw-apps or tw-core with FileChooser which
+//is fx stage specific
 
 /**
- * Author Ian davies
- *
- * Date Jan 28, 2019
+ * Property item for {@link FileType}
+ * 
+ * @author Ian davies - Jan 28, 2019
  */
-// TODO Problem how to avoid polluting tw-apps or tw-core with FileChooser which
-// is fx stage specific
 
 public class FileTypeItem extends SimpleMMPropertyItem {
 
@@ -55,17 +55,40 @@ public class FileTypeItem extends SimpleMMPropertyItem {
 
 	private FileType fileType;
 
-	public FileTypeItem(IMMController controller,String key, ElementAdapter element, boolean canEdit, String category, String description) {
-		super(controller,key, element, canEdit, category, description);
-		fileType = (FileType)properties.getPropertyValue(key);
+	/**
+	 * 
+	 * @param controller  ModelMaker controller, used to coordinated updates across
+	 *                    two property sheets.
+	 * @param key         The unique key of the property in the element's property
+	 *                    list.
+	 * @param element     The element (Node or Edge) containing the property list.
+	 * @param canEdit     True if editing of this property is allowed, false
+	 *                    otherwise.
+	 * @param category    The sub-tree to which this element belongs. This is used
+	 *                    in the property sheet to categorized items.
+	 * @param description Not implemented. Intended as help info for the property.
+	 */
+	public FileTypeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
+			String description) {
+		super(controller, key, element, canEdit, category, description);
+		fileType = (FileType) properties.getPropertyValue(key);
 		exts = new ArrayList<>();
 		exts.add(new FileChooser.ExtensionFilter("All files", "*.*"));
 	}
 
+	/**
+	 * Setter for the list of extension filters.
+	 * 
+	 * @param exts List of extension filters.
+	 */
 	public void setExtensions(List<FileChooser.ExtensionFilter> exts) {
 		this.exts = exts;
 	}
 
+	/**
+	 * Getter of the list of extension filters.
+	 * @return List of extension filters.
+	 */
 	public List<FileChooser.ExtensionFilter> getExtensions() {
 		return exts;
 	}

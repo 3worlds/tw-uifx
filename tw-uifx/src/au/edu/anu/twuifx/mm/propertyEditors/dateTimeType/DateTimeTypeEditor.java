@@ -59,17 +59,30 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
+/**
+ * Property editor for {@link DateTimeItem}.
+ * 
+ * @author Ian Davies - 23 Sep. 2022
+ *
+ */
 public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private DateTimeItem dtItem;
 
+	/**
+	 * @param property The {@link DateTimeItem}
+	 * @param control The {@link LabelButtonControl}
+	 */
 	public DateTimeTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @param property The {@link DateTimeItem}
+	 */
 	public DateTimeTypeEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.class.getPackageName()));
 		view = this.getEditor();
 		dtItem = (DateTimeItem) this.getProperty();
 		// we need to find the timeline to create the meta-data for time editing
@@ -116,29 +129,20 @@ public class DateTimeTypeEditor extends AbstractPropertyEditor<String, LabelButt
 			forbidden.add(TimeUnits.WEEK);
 			forbidden.add(TimeUnits.MILLISECOND);
 		}
-		// TODO we should be able to use units = new ArrayList<>(dtItem.getTimeScaleType().validTimeUnits(smallest,largest));
+		// TODO we should be able to use units = new
+		// ArrayList<>(dtItem.getTimeScaleType().validTimeUnits(smallest,largest));
 		SortedSet<TimeUnits> validUnits = TimeScaleType.validTimeUnits(dtItem.getTimeScaleType());
 		if (dtItem.getTimeScaleType().equals(TimeScaleType.MONO_UNIT))
 			for (TimeUnits unit : validUnits)
 				if (!dtItem.getTUMin().equals(unit))
 					forbidden.add(unit);
 
-
 		List<TimeUnits> units = new ArrayList<>();
 		for (TimeUnits unit : validUnits)
 			if (!forbidden.contains(unit))
 				if ((dtItem.getTUMin().compareTo(unit) <= 0) && dtItem.getTUMax().compareTo(unit) >= 0)
 					units.add(unit);
-		units.sort((t1,t2)->t1.compareTo(t2));
-//		units.sort(new Comparator<TimeUnits>() {
-//
-//			@Override
-//			public int compare(TimeUnits t1, TimeUnits t2) {
-//				// smallest to largest
-//				return t1.compareTo(t2);
-//			}
-//
-//		});
+		units.sort((t1, t2) -> t1.compareTo(t2));
 
 		long currentSetting = Long.parseLong(currentValue);
 		long[] factors = null;

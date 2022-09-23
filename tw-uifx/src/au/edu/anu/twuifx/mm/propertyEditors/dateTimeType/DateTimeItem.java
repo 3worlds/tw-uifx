@@ -50,13 +50,33 @@ import fr.cnrs.iees.twcore.constants.TimeUnits;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
+/**
+ * Property item for {@link DateTimeType}.
+ * 
+ * @author Ian Davies - 23 Sep. 2022
+ *
+ */
 public class DateTimeItem extends SimpleMMPropertyItem {
 	private TimeScaleType timeScale = TimeScaleType.defaultValue();
 	private TimeUnits tuMin = TimeUnits.defaultValue();
 	private TimeUnits tuMax = TimeUnits.defaultValue();
 
-	public DateTimeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category, String description) {
-		super(controller,key, element, canEdit, category, description);
+	/**
+	 * 
+	 * @param controller  ModelMaker controller, used to coordinated updates across
+	 *                    two property sheets.
+	 * @param key         The unique key of the property in the element's property
+	 *                    list.
+	 * @param element     The element (Node or Edge) containing the property list.
+	 * @param canEdit     True if editing of this property is allowed, false
+	 *                    otherwise.
+	 * @param category    The sub-tree to which this element belongs. This is used
+	 *                    in the property sheet to categorized items.
+	 * @param description Not implemented. Intended as help info for the property.
+	 */
+	public DateTimeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
+			String description) {
+		super(controller, key, element, canEdit, category, description);
 		Timeline timeline = null;
 		if (element.classId().equals(N_TIMELINE.label()))
 			timeline = (Timeline) element;
@@ -69,20 +89,37 @@ public class DateTimeItem extends SimpleMMPropertyItem {
 		}
 	}
 
+	/**
+	 * Getter for the {@link TimeScaleType} this property is associated with.
+	 * 
+	 * @return The time scale.
+	 */
 	public TimeScaleType getTimeScaleType() {
 		return timeScale;
 	}
 
+	/**
+	 * Getter for the minimum {@link TimeUnits} for associated
+	 * {@link TimeScaleType}.
+	 * 
+	 * @return minimum time unit.
+	 */
 	public TimeUnits getTUMin() {
 		return tuMin;
 	}
 
+	/**
+	 * Getter for the maximum {@link TimeUnits} for associated
+	 * {@link TimeScaleType}.
+	 * 
+	 * @return maximum time unit.
+	 */
 	public TimeUnits getTUMax() {
 		return tuMax;
 	}
 
 	private Timeline findSingleTimeLine() {
-		TreeGraphNode system = (TreeGraphNode)World.getSystemRoot((InitialisableNode) this.element);
+		TreeGraphNode system = (TreeGraphNode) World.getSystemRoot((InitialisableNode) this.element);
 		if (system.equals(this.element))
 			return null;
 		TreeGraphNode dynamics = (TreeGraphNode) get(system.getChildren(),

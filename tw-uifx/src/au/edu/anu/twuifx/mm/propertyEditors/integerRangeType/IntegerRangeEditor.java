@@ -51,16 +51,29 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 
+/**
+ * Property editor for {@link IntegerRangeItem}.
+ * 
+ * @author Ian Davies - 24 Oct 2019
+ *
+ */
 public class IntegerRangeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 	private LabelButtonControl view;
 	private IntegerRangeItem dtItem;
 
+	/**
+	 * @param property The {@link IntegerRangeItem}
+	 * @param control The {@link LabelButtonControl}
+	 */
 	public IntegerRangeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property  The {@link IntegerRangeItem}
+	 */
 	public IntegerRangeEditor(Item property) {
-		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
+		this(property, new LabelButtonControl("Ellipsis16.gif", Images.class.getPackageName()));
 		view = this.getEditor();
 		dtItem = (IntegerRangeItem) this.getProperty();
 		view.setOnAction(e -> onAction());
@@ -93,12 +106,14 @@ public class IntegerRangeEditor extends AbstractPropertyEditor<String, LabelButt
 		TextField tfLow = new TextField();
 		TextField tfHigh = new TextField();
 		tfLow.textProperty().addListener((observable, oldValue, newValue) -> {
-		    if (newValue.matches("-?\\d*")) return;
-		    tfLow.setText(newValue.replaceAll("[^\\d]", ""));
+			if (newValue.matches("-?\\d*"))
+				return;
+			tfLow.setText(newValue.replaceAll("[^\\d]", ""));
 		});
 		tfHigh.textProperty().addListener((observable, oldValue, newValue) -> {
-		    if (newValue.matches("-?\\d*")) return;
-		    tfHigh.setText(newValue.replaceAll("[^\\d]", ""));
+			if (newValue.matches("-?\\d*"))
+				return;
+			tfHigh.setText(newValue.replaceAll("[^\\d]", ""));
 		});
 		CheckBox cbLowMin = new CheckBox("MIN INTEGER");
 		CheckBox cbHighMax = new CheckBox("*");
@@ -148,13 +163,13 @@ public class IntegerRangeEditor extends AbstractPropertyEditor<String, LabelButt
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {
 			low = Integer.MIN_VALUE;
-			high = Integer.MAX_VALUE; 
+			high = Integer.MAX_VALUE;
 			if (!cbLowMin.isSelected())
 				low = Integer.parseInt(tfLow.getText());
 			if (!cbHighMax.isSelected())
 				high = Integer.parseInt(tfHigh.getText());
-			range = new IntegerRange(low,high);
-			return range.toString();	
+			range = new IntegerRange(low, high);
+			return range.toString();
 		}
 		return currentValue;
 	}

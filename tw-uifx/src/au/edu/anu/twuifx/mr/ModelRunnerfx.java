@@ -77,7 +77,12 @@ public class ModelRunnerfx extends Application {
 	private MrController controller;
 	private Stage stage;
 
-
+	/**
+	 * This method is called if the configuration has a GUI. A splash screen is
+	 * shown while loading.
+	 * 
+	 * @param config1 The project configuration graph.
+	 */
 	public static void launchUI(TreeGraph<TreeGraphDataNode, ALEdge> config1) {
 		config = config1;
 		uiNode = (TreeGraphNode) get(config.root().getChildren(), selectZeroOrOne(hasTheLabel(N_UI.label())));
@@ -87,6 +92,12 @@ public class ModelRunnerfx extends Application {
 		launch(args);
 	}
 
+	/**
+	 * This system is not currently used. It is intended to display the name of each
+	 * node as it is initialised.
+	 * 
+	 * @return currently initializing node.
+	 */
 	public static String getInitNodeName() {
 		return initNodeName;
 	}

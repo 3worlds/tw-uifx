@@ -46,16 +46,25 @@ import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.layout.Pane;
 
 /**
+ * Property editor for {@link PopTypeItem}.
+ * 
  * @author Ian Davies - 15 Nov 2019
  */
 public class PopTypeEditor extends AbstractPropertyEditor<String, LabelButtonControl> {
 
 	private LabelButtonControl view;
 
+	/**
+	 * @param property The {@link PopTypeItem}.
+	 * @param control The {@link LabelButtonControl}.
+	 */
 	public PopTypeEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);
 	}
 
+	/**
+	 * @param property The {@link PopTypeItem}.
+	 */
 	public PopTypeEditor(Item property) {
 		this(property, new LabelButtonControl("Ellipsis16.gif",  Images.class.getPackageName()));
 		view = this.getEditor();

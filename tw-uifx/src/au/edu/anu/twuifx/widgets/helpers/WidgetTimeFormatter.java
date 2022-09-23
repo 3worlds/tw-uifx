@@ -97,16 +97,6 @@ public class WidgetTimeFormatter implements Widget {
 		DateTimeType dtt = (DateTimeType) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
 		startTime = dtt.getDateTime();
 		units = new ArrayList<>(timeScale.validTimeUnits(smallest,largest));
-//		Set<TimeUnits> allowable = TimeScaleType.validTimeUnits(timeScale);
-//		for (TimeUnits allowed : allowable)
-//			if (allowed.compareTo(largest) <= 0 && allowed.compareTo(smallest) >= 0)
-//				units.add(allowed);
-//
-//		// NB // smallest to largest
-//		units.sort((first, second) -> {
-//			return first.compareTo(second);
-//		});
-
 	}
 
 	public long getInitialTime() {

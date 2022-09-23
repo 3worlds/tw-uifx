@@ -59,10 +59,15 @@ public class TreeColours {
 		nodeColours.put(ConfigurationNodeLabels.N_PREDEFINED.label(), Color.LIGHTGREY);
 	}
 
-	public static Color getCategoryColor(String category, String label) {
-		if (!nodeColours.containsKey(category))
+	/**
+	 * @param subtree The sub-tree requested. If no such sub-tree is found, BLACK is
+	 *                returned.
+	 * @return The color of this subtree.
+	 */
+	public static Color getCategoryColor(String subtree) {
+		if (!nodeColours.containsKey(subtree))
 			return Color.BLACK;
-		return nodeColours.get(category);
+		return nodeColours.get(subtree);
 	}
 
 }

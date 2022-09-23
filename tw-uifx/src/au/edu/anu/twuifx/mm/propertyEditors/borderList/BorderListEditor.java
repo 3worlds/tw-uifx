@@ -57,7 +57,7 @@ import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
- * Property editor for {@BorderListItem}.
+ * Property editor for {@link BorderListItem}.
  * 
  * @author Ian Davies - 25 Sep 2020
  */
@@ -65,7 +65,7 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 
 	/**
 	 * @param property The {@link BorderListItem}
-	 * @param control The {@link LabelButtonControl}
+	 * @param control The {@link LabelButtonControl}.
 	 */
 	public BorderListEditor(Item property, Pane control) {
 		super(property, (LabelButtonControl) control);

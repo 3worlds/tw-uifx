@@ -92,9 +92,9 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 /**
- * Author Ian Davies
- *
- * Date 28 Jan. 2019
+ * Javafx implementation of {@link IGraphVisualiser}
+ * 
+ * @author Ian Davies -28 Jan. 2019
  */
 public final class GraphVisualiserfx implements IGraphVisualiser {
 	/**
@@ -126,10 +126,30 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final static Interpolator interpolator = Interpolator.EASE_BOTH;
 	private final IMMController controller;
 	private final Originator recorder;
-	private ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
-	private ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
+	private final ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
+	private final ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
 	private final ReadOnlyObjectProperty<Integer> pathLength;
 
+	/**
+	 * @param visualGraph    The layout graph.
+	 * @param pane           The zoomable drawing pane.
+	 * @param animate        Flag to select animation when applying graph layout
+	 *                       operations.
+	 * @param nodeRadius     The system wide node radius.
+	 * @param lineWidth      The system wide line width.
+	 * @param showTreeLine   Flag to show/hide parent - child lines.
+	 * @param showGraphLine  Flag to show/hide node cross-link lines.
+	 * @param nodeTextOption Node text display options.
+	 * @param edgeTextOption Edge text display options.
+	 * @param sideline       Flag to place nodes with no showing edges to one side
+	 *                       of the display.
+	 * @param pathLength     The length of the path to traverse when displaying
+	 *                       sub-graphs/
+	 * @param font           The font used for all node and edge text.
+	 * @param controller     The view controller interface.
+	 * @param recorder       The {@link Originator} to record edits in the undo/redo
+	 *                       system.
+	 */
 	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
 			Pane pane, //
 			BooleanProperty animate, //
@@ -137,8 +157,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			DoubleProperty lineWidth, //
 			BooleanProperty showTreeLine, //
 			BooleanProperty showGraphLine, //
-			ReadOnlyObjectProperty<ElementDisplayText> nodeSelect, //
-			ReadOnlyObjectProperty<ElementDisplayText> edgeSelect, //
+			ReadOnlyObjectProperty<ElementDisplayText> nodeTextOption, //
+			ReadOnlyObjectProperty<ElementDisplayText> edgeTextOption, //
 			BooleanProperty sideline, //
 //			BooleanProperty neighMode, 
 			ReadOnlyObjectProperty<Integer> pathLength, //
@@ -157,8 +177,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		this.font = font;
 		this.controller = controller;
 		this.recorder = recorder;
-		this.edgeSelect = edgeSelect;
-		this.nodeSelect = nodeSelect;
+		this.edgeSelect = edgeTextOption;
+		this.nodeSelect = nodeTextOption;
 //		this.neighMode = neighMode;
 		this.pathLength = pathLength;
 
@@ -192,7 +212,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void initialiseView(double duration) {
+	public final void initialiseView(double duration) {
 //		animateDuration = animateDurationFast;
 		pane.setPrefHeight(pane.getHeight());
 		pane.setPrefWidth(pane.getWidth());
@@ -252,12 +272,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public TreeGraph<VisualNode, VisualEdge> getVisualGraph() {
+	public final TreeGraph<VisualNode, VisualEdge> getVisualGraph() {
 		return visualGraph;
 	}
 
 	@Override
-	public void close() {
+	public final void close() {
 		pane.getChildren().clear();
 
 	}
@@ -275,7 +295,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		c.radiusProperty().bind(nodeRadius);
 		Text text = new Text(n.getDisplayText(nodeSelect.get()));
 		n.setVisualElements(c, text);
-		Color nColor = TreeColours.getCategoryColor(n.getCategory(), n.configNode().classId());
+		Color nColor = TreeColours.getCategoryColor(n.getCategory());
 		c.setFill(nColor);
 		c.setEffect(dropShadow);
 
@@ -365,7 +385,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void setLayoutRoot(VisualNode newRoot) {
+	public final void setLayoutRoot(VisualNode newRoot) {
 		if (newRoot == null)
 			newRoot = getTWRoot();
 		if (!newRoot.isVisible() || newRoot.isCollapsed())
@@ -382,7 +402,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void onNewNode(VisualNode node) {
+	public final void onNewNode(VisualNode node) {
 		createNodeVisualisation(node);
 		createParentLines(node, parentLineVisibleProperty);
 		resetZorder(pane.getChildren());
@@ -437,7 +457,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		Text text = new Text(edge.getDisplayText(edgeSelect.get()));
 		// text.setCacheHint(CacheHint.SPEED);
 		text.fontProperty().bind(font);
-		//  use property here
+		// use property here
 		line.setStroke(graphEdgeColor);
 
 		// Bindings
@@ -565,7 +585,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void collapseTreeFrom(VisualNode childRoot, double duration) {
+	public final void collapseTreeFrom(VisualNode childRoot, double duration) {
 		collapseTree(childRoot, duration);
 	}
 
@@ -611,7 +631,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void expandTreeFrom(VisualNode childRoot, double duration) {
+	public final void expandTreeFrom(VisualNode childRoot, double duration) {
 		expandTree(childRoot, duration);
 	}
 
@@ -661,7 +681,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void removeView(VisualNode visualNode) {
+	public final void removeView(VisualNode visualNode) {
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) visualNode.getSymbol());
 		sceneNodes.add((Node) visualNode.getText());
@@ -682,7 +702,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void onNewEdge(VisualEdge edge, double duration) {
+	public final void onNewEdge(VisualEdge edge, double duration) {
 		createGraphLine(edge, edgeLineVisibleProperty);
 		VisualNode vn = (VisualNode) edge.endNode();
 		if (vn.isCollapsed()) {
@@ -721,7 +741,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void removeView(VisualEdge edge) {
+	public final void removeView(VisualEdge edge) {
 		removeFromBinding(edge);
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) edge.getText());
@@ -803,13 +823,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void onNewParent(VisualNode child) {
+	public final void onNewParent(VisualNode child) {
 		createParentLines(child, parentLineVisibleProperty);
 		resetZorder(pane.getChildren());
 	}
 
 	@Override
-	public void onRemoveParentLink(VisualNode vnChild) {
+	public final void onRemoveParentLink(VisualNode vnChild) {
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) vnChild.getParentLine().getFirst());
 		sceneNodes.add((Node) vnChild.getParentLine().getSecond());
@@ -818,13 +838,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void onNodeRenamed(VisualNode vNode) {
+	public final void onNodeRenamed(VisualNode vNode) {
 		Text text = (Text) vNode.getText();
 		text.setText(vNode.getDisplayText(nodeSelect.get()));
 	}
 
 	@Override
-	public void onEdgeRenamed(VisualEdge vEdge) {
+	public final void onEdgeRenamed(VisualEdge vEdge) {
 		Text text = (Text) vEdge.getText();
 		text.setText(vEdge.getDisplayText(edgeSelect.get()));
 	}
@@ -838,7 +858,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void doLayout(VisualNode root, double jitterFraction, LayoutType layoutType, boolean pcShowing,
+	public final void doLayout(VisualNode root, double jitterFraction, LayoutType layoutType, boolean pcShowing,
 			boolean xlShowing, boolean sideline, double duration) {
 		/**
 		 * Can we figure out a way to show just the local neighbourhood to some path
@@ -928,7 +948,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void collapsePredef() {
+	public final void collapsePredef() {
 		for (VisualNode root : visualGraph.roots()) {
 			if (root.isRoot()) {
 				VisualNode predef = (VisualNode) get(root.getChildren(),
@@ -939,7 +959,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void onHighlightAll() {
+	public final void onHighlightAll() {
 		Set<VisualNode> highlightNodes = new HashSet<>();
 		for (VisualNode n : visualGraph.nodes())
 //			if (!n.isCollapsed())
@@ -947,26 +967,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		updateElementColour(highlightNodes);
 	}
 
-//	@Override
-//	public void onShowLocalGraph(VisualNode root, int pathLength) {
-//		Set<VisualNode> visibleNodes = new HashSet<>();
-//		traversal(parentLineVisibleProperty.getValue(), edgeLineVisibleProperty.getValue(), root, 0, pathLength,
-//				visibleNodes);
-//		visibleNodes.add(root);
-//		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-//	}
-
-//	@Override
-//	public void onShowAll() {
-//		Set<VisualNode> visibleNodes = new HashSet<>();
-//		for (VisualNode n : visualGraph.nodes())
-//			if (!n.isCollapsed())
-//				visibleNodes.add(n);
-//		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
-//	}
 
 	@Override
-	public void onHighlightLocalGraph(VisualNode root, int pathLength) {
+	public final void onHighlightLocalGraph(VisualNode root, int pathLength) {
 		Set<VisualNode> focusNodes = new HashSet<>();
 		traversal(parentLineVisibleProperty.getValue(), edgeLineVisibleProperty.getValue(), root, 0, pathLength,
 				focusNodes);
@@ -1131,7 +1134,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+	public final void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
 		final double duration = animateFast;
 		this.visualGraph = layoutGraph;
 		pane.getChildren().clear();
