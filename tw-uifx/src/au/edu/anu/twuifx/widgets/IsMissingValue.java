@@ -79,6 +79,12 @@ public enum IsMissingValue implements TriFunction<Double, Double, Double, Boolea
 		return tf.apply(min, max, v);
 	}
 
+	/**
+	 * This value is used when creating a property with this class for the first
+	 * time.
+	 * 
+	 * @return Default value of this class ({@link IsMissingValue#NEVER}).
+	 */
 	public static IsMissingValue defaultValue() {
 		return NEVER;
 	}

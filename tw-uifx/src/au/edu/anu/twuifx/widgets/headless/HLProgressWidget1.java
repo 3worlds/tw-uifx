@@ -48,6 +48,10 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 
 /**
+ * A headless class to report simulation progress to stdout. ,P. It reports the
+ * time a simulator ended the first time step and the time all simulators have
+ * finished.
+ * 
  * @author Ian Davies - 7 Sept 2021
  */
 public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements Widget {
@@ -57,7 +61,9 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 	private Metadata msgMetadata;
 	private final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 
-
+	/**
+	 * @param statusSender The {@link StatusWidget}.
+	 */
 	public HLProgressWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
@@ -78,11 +84,11 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 	public void onDataMessage(TimeData data) {
 //		boolean show = false;
 		if (data.time() == 0)
-			System.out.println("[" + (data.sender()+1) + "/" + nSenders + "]\tready...");
+			System.out.println("[" + (data.sender() + 1) + "/" + nSenders + "]\tready...");
 		else if (data.time() == 1) {
 			LocalDateTime currentDate = LocalDateTime.now(ZoneOffset.UTC);
 			String timeTxt = currentDate.format(dtf);
-			System.out.println("[" + (data.sender()+1) + "]\trunning...\t" + timeTxt);
+			System.out.println("[" + (data.sender() + 1) + "]\trunning...\t" + timeTxt);
 		}
 
 	}

@@ -56,7 +56,6 @@ import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.ens.biologie.generic.utils.Logging;
-//import fr.ens.biologie.generic.utils.Statistics;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -70,13 +69,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRACKER_STATISTICS;
-import static au.edu.anu.twuifx.widgets.helpers.Utilities.*;
 
 /**
- * @author Ian Davies - 6 Dec 2019
  * 
- *         Displays a table of data from all simulator.id() from [lower..
- *         lower+range]
+ * A {@link WidgetGUI} that displays a table of data from all simulators sending
+ * {@link Output0DData} messages. The simulator id is prepended to each table
+ * entry.
+ * <p>
+ * <img src="{@docRoot}/../doc/images/TableWidget1.png" width="400" alt=
+ * "TableWidget1"/>
+ * </p>
+ * 
+ * @author Ian Davies - 6 Dec 2019
  */
 public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
 	private final WidgetTimeFormatter timeFormatter;
@@ -92,6 +96,9 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 	private final ObservableList<WidgetTableData> tableDataList;
 	private Map<Integer, TreeMap<String, WidgetTableData>> senderDataSetMap;
 
+	/**
+	 * @param statusSender The {@link StatusWidget}.
+	 */
 	public TableWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
@@ -122,7 +129,7 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 	public Object getUserInterfaceContainer() {
 //		3) called third after metadata
 //		get the prefs, if any, before building the ui
-		getUserPreferences();
+		getPreferences();
 
 		// use a helper
 		sas = null;
@@ -263,11 +270,11 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 	}
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 	}
 
 	protected static class WidgetTableData {
@@ -333,6 +340,19 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 			dataSetMap.put(key, wtd);
 		}
 
+	}
+	private static String padIndexedDidgets(String s) {
+		int st = s.indexOf("[");
+		int en = s.indexOf("]");
+		if (st >= 0 && en > st) {
+			String num = s.substring(st+1, en);
+			String padded = num;
+			while (padded.length() < 5)
+				padded = "0" + padded;
+			String result = s.replace("[" + num + "]", "[" + padded + "]");
+			return result;
+		} else
+			return s;
 	}
 
 }

@@ -84,10 +84,14 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
 
 /**
- * @author Ian Davies - 16 Mar. 2021
  * 
- *       Displays one scatter plot for each selected simulator (default sender =
- *       0)
+ * A {@link WidgetGUI} that displays a scatter plot for simulators sending {@link OutputXYData} messages.
+ * <p>
+  * <img src="{@docRoot}/../doc/images/ScatterPlotWidget1.png" width="400" alt=
+ * "ScatterPlotWidget1"/>
+ * </p>
+ 
+ * @author Ian Davies - 16 Mar. 2021
  */
 public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Metadata> implements WidgetGUI {
 	private String widgetId;
@@ -103,6 +107,9 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 	private String xUnits;
 	private String yUnits;
 
+	/**
+	 * @param statusSender  statusSender The {@link StatusWidget}.
+	 */
 	public ScatterPlotWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.XY);
 		timeFormatter = new WidgetTimeFormatter();
@@ -136,7 +143,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		 * 3) called third after metadata.
 		 */
 		// Get the prefs before building the ui
-		getUserPreferences();
+		getPreferences();
 
 		timeFormatter.onMetaDataMessage(msgMetadata);
 // Know nothing about sampledItem at this stage!?
@@ -195,7 +202,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		reductionAlgorithm.setMinPointPixelDistance(1);
 
 		chart = new XYChart(xAxis1, yAxis1);
-		chart.setPadding(new Insets(5,5,5,5));
+		chart.setPadding(new Insets(5, 5, 5, 5));
 
 		for (Map.Entry<Integer, DoubleDataSet> entry : senderDataSet.entrySet())
 			rndr.getDatasets().add(entry.getValue());
@@ -343,7 +350,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 	private boolean swapAxes;
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 		prefs.putInt(widgetId + keySymbolSize, symbolSize);
 		prefs.putEnum(widgetId + keySymbol, symbol);
@@ -351,7 +358,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 		symbolSize = prefs.getInt(widgetId + keySymbolSize, 2);
 		symbol = (DefaultMarker) prefs.getEnum(widgetId + keySymbol, DefaultMarker.DIAMOND);

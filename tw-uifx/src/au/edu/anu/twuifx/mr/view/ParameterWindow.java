@@ -61,6 +61,11 @@ public class ParameterWindow implements IRunTimeParameterizer{
 	private Button btnOpen;
 	private PropertySheet propertySheet;
 
+	/**
+	 * @param graph  TODO: Not implemented
+	 * @param ownerStage TODO: Not implemented
+	 * @param showToggle TODO: Not implemented
+	 */
 	public ParameterWindow(TreeGraph<TreeGraphDataNode, ALEdge> graph, Stage ownerStage, BooleanProperty showToggle) {
 		BorderPane content = new BorderPane();
 		Scene scene = new Scene(content, 400, 500);

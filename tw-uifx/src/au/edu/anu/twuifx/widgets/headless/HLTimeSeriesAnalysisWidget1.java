@@ -70,12 +70,20 @@ import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
 import fr.ens.biologie.generic.utils.Statistics;
 
 /**
- * @author Ian Davies -22 Feb 2020
  * 
- *         Should be called something else: it only handles time series of
- *         scalar data.
- *         <p>
- *         TODO we need some static helpers for common exp widget operations.
+ * A headless widget to save time series data to file.
+ * <p>
+ * It writes:
+ * <li>Raw time series</li>
+ * <li>Average of replicates time series</li>
+ * <li>Performs ANOVA analysis for and sensitivity analysis depending on
+ * {@link EddReadable#getType()}</li>
+ * </p>
+ * <p>
+ * All files are placed in uniquely named directories base on the WidgetNode's
+ * id in the model configuration file.
+ * 
+ * @author Ian Davies -22 Feb 2020
  */
 
 public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements Widget {
@@ -92,6 +100,9 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 
 	final private Map<Integer, TreeMap<String, List<Double>>> simulatorDataSetMap;
 
+	/**
+	 * @param statusSender The {@link StatusWidget}.
+	 */
 	public HLTimeSeriesAnalysisWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
@@ -428,14 +439,12 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			}
 			fileLines.add("Explained\t" + dfresiduals + "\t" + totalExplained.toString());
 
-			File rssqFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName,
-					name + "_RelSumSq.csv");
+			File rssqFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_RelSumSq.csv");
 			Files.write(rssqFile.toPath(), fileLines, StandardCharsets.UTF_8);
 
 			List<String> rssqPlotLines = WidgetUtils.generateRVEPlotScript(rssqFile, name);
 			WidgetUtils.saveAndExecuteScript(
-					Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "RVE.R"),
-					rssqPlotLines);
+					Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "RVE.R"), rssqPlotLines);
 			List<String> trendsBarplotLines = WidgetUtils.generateBarPlotScript(
 					Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_avg.csv"),
 					edd.getFactors(), name, isMinZero);
@@ -451,8 +460,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 
 		List<String> boxPlotLines = WidgetUtils.generateBoxPlotScript(anovaInputFile, edd.getFactors(), orderedFactors,
 				name);
-		File boxChartFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName,
-				name + "_boxplots.R");
+		File boxChartFile = Project.makeFile(Project.RUNTIME, edd.getExpDir(), widgetDirName, name + "_boxplots.R");
 		WidgetUtils.saveAndExecuteScript(boxChartFile, boxPlotLines);
 
 	}

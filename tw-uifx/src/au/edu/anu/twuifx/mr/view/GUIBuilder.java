@@ -270,7 +270,7 @@ public class GUIBuilder {
 	public void putPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 		for (WidgetGUI w : guiWidgets)
-			w.putUserPreferences();
+			w.putPreferences();
 		for (SplitPane s : splitPanes) {
 			String key = splitter + s.getId();
 			prefs.putDouble(key, s.getDividerPositions()[0]);

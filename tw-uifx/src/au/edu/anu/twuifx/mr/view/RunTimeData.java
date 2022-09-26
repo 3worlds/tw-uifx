@@ -71,8 +71,11 @@ public class RunTimeData {
 	};
 
 	/**
-	 * Extracts a "parameters" graph from "initialisedConfig". This data is a
-	 * **copy** from the initialisedGraph
+	 * Extracts a "parameters" graph from "initialisedConfig". This data is a _copy_
+	 * from the initialisedGraph
+	 * 
+	 * @param initialisedConfig TODO: Not implemented
+	 * @return TODO: Not implemented
 	 */
 	public static TreeGraph<TreeGraphDataNode, ALEdge> getParameters(
 			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
@@ -88,32 +91,59 @@ public class RunTimeData {
 		return null;
 	}
 
-	/** Overwrite the runTime parameters with data in "newPars" */
+	/**
+	 * Overwrite the runTime parameters with data in "newPars"
+	 * 
+	 * @param initialisedConfig TODO: Not implemented
+	 * @param newPars           TODO: Not implemented
+	 */
 	public static void putModelParameters(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
 			TreeGraph<TreeGraphDataNode, ALEdge> newPars) {
 	}
 
-	/** Checks that "pars" is a valid parameter set for "initialisedConfig" */
+	/**
+	 * Checks that "pars" is a valid parameter set for "initialisedConfig"
+	 * 
+	 * @param initialisedConfig TODO: Not implemented
+	 * @param pars              TODO: Not implemented
+	 * @return TODO: Not implemented
+	 */
 	public static boolean validModelParameters(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
 			TreeGraph<TreeGraphDataNode, ALEdge> pars) {
 		return false;
 	}
 
-	/** Extract "systemState" graph from "initialisedConfig" */
+	/**
+	 * Extract "systemState" graph from "initialisedConfig"
+	 * 
+	 * @param initialisedConfig TODO: Not implemented
+	 * @return TODO: Not implemented
+	 */
 	public static TreeGraph<TreeGraphDataNode, ALEdge> getModelState(
 			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		// The old code had Community.asGraph() function???
 		return null;
 	}
 
-	/** Overwrite the runTime state with data in "newState" */
+	/**
+	 * Overwrite the runTime state with data in "newState"
+	 * 
+	 * @param newState          TODO: Not implemented
+	 * @param initialisedConfig TODO: Not implemented
+	 */
 	public static void putModelState(TreeGraph<TreeGraphDataNode, ALEdge> newState,
 			TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		clearModelState(initialisedConfig);
 
 	}
 
-	/** Checks that "state" is a valid data set for "initialisedConfig" */
+	/**
+	 * Checks that "state" is a valid data set for "initialisedConfig"
+	 * 
+	 * @param initialisedConfig TODO: Not implemented
+	 * @param state             TODO: Not implemented
+	 * @return TODO: Not implemented
+	 */
 	public static boolean validModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig,
 			TreeGraph<TreeGraphDataNode, ALEdge> state) {
 		return false;
@@ -122,12 +152,17 @@ public class RunTimeData {
 	/**
 	 * Sets all state data to appropriate zero values - essentially clears all
 	 * populations
+	 * 
+	 * @param initialisedConfig TODO: Not implemented
 	 */
 	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		for (ComponentContainer community : communities(initialisedConfig))
 			community.clearState();
 	}
 
+	/**
+	 * @param initialisedConfig TODO: Not implemented
+	 */
 	public static void resetModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		for (ComponentContainer community : communities(initialisedConfig))
 			community.reset();
@@ -150,6 +185,9 @@ public class RunTimeData {
 	/**
 	 * This will be tricky! Return whatever is required (System factories?) to
 	 * generate a new state for "initialisedConfig"
+	 * 
+	 * @param initialisedConfig TODO: Not implemented
+	 * @return TODO: Not implemented
 	 */
 	public static Object getSystemsForGeneration(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		/**
@@ -185,7 +223,9 @@ public class RunTimeData {
 	small projects, p & v can be kept together.
 	 * */
 
-//	@SuppressWarnings("unchecked")
+	/**
+	 * @param configGraph TODO: Not implemented
+	 */
 	public static void dumpGraphState(TreeGraph<TreeGraphDataNode, ALEdge> configGraph) {
 //		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(configGraph.root().getChildren(),
 //				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));

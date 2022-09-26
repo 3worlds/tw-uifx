@@ -126,14 +126,39 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Window;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
+//https://stackoverflow.com/questions/36168429/javafx-gridpane-dynamic-resizng-of-child-nodes-to-fill-assigned-area
 
 /**
+ * A {@link WidgetGUI} to display {@link SpaceData} as a map of systems with
+ * location (nodes) and their relations (edges).
+ * <p>
+ * <img src="{@docRoot}/../doc/images/SpaceWidget1.png" width="400" alt=
+ * "SpaceWidget1"/>
+ * </p>
+ * <p>
+ * This widget has:
+ * <p>
+ * <li>Zoomable display area ;</li>
+ * <li>Tool bar with controls to size the image, change its resolution and set
+ * various viewing options;</li>
+ * <li>A second tTool bar with a dropdown list to select the simulator to track
+ * and show the time data was received;</li>
+ * <li>Legend with maximum and minimum displayed values.</li>
+ * </p>
+ * <p>
+ * Settings for this widget can be found in the Widget menu of ModelRunner.
+ * These settings are saved in ModelRunner's preferences file and persist when
+ * the model is reopened.
+ * </p>
+ * <p>
+ * <img src="{@docRoot}/../doc/images/MatrixWidget1Dlg.png" width="250" alt=
+ * "MatrixWidget1Dlg"/>
+ * </p>
+ * 
  * @author Ian Davies - 12 Feb 2020
  *
- *         Widget to show spatial map of objects and their relations.
  *
  */
-//https://stackoverflow.com/questions/36168429/javafx-gridpane-dynamic-resizng-of-child-nodes-to-fill-assigned-area
 public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> implements WidgetGUI {
 	private static final double labelFontSize = 9.5;
 	private static final double axisFontSize = 13.0;
@@ -197,6 +222,9 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	private long head;
 	private double defaultElementSize;
 
+	/**
+	 * @param statusSender statusSender The {@link StatusWidget}
+	 */
 	public SpaceWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.SPACE);
 		timeFormatter = new WidgetTimeFormatter();
@@ -725,7 +753,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 //				break;
 //			}
 			default: {
-				//left
+				// left
 				double yi = getYAt(0.0, m, b);
 				drawLine(gc, startPoint[0], startPoint[1], 0.0, yi, false);
 				drawLine(gc, spaceBounds.getMaxX(), yi, endPoint[0], endPoint[1], true);
@@ -863,7 +891,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 //				break;
 //			}
 			default: {
-				/** case 8:bottom right*/
+				/** case 8:bottom right */
 				double yi = getYAt(spaceBounds.getMaxX(), m, b);
 				double xi = getXAt(0.0, m, b);
 				double xd2 = Distance.squaredEuclidianDistance(startPoint[0], startPoint[1], xi, 0);
@@ -1032,7 +1060,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		legend.setHgap(3);
 		legend.setVgap(3);
 
-		getUserPreferences();
+		getPreferences();
 
 		setPaperWidth();
 
@@ -1402,7 +1430,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	private PaletteSize paletteSize = PaletteSize.veryLarge;
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 
 		for (int i = 0; i < displays.size(); i++) {
@@ -1436,7 +1464,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 	// called at END of UI construction because this depends on UI components.
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			SpDisplay d = displays.get(i);

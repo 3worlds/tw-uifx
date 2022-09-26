@@ -29,8 +29,15 @@
  **************************************************************************/
 package au.edu.anu.twuifx.utils;
 
+/**
+ * @author Ian Davies - 25 Sep. 2022
+ *
+ */
 public class TestZoomable {
 
+	/**
+	 * @param args TODO: Test case
+	 */
 	public static void main(String[] args) {
 		ZoomAndScrollApplication.main(args);
 

@@ -47,6 +47,17 @@ import javafx.scene.layout.BorderPane;
  * @author Ian Davies - 11 Dec 2019
  */
 public class UiHelpers {
+	/**
+	 * Retrieves a single Double from the preferences system.
+	 * <p>
+	 * Splitter positions are represented as a double array (why?) but we only need
+	 * one value. This method hides this fact so we only need deal with a single
+	 * double.
+	 * 
+	 * @param def Default value
+	 * @param key Unique key to value
+	 * @return double array suitable for a Splitter position property.
+	 */
 	public static double[] getSplitPanePositions(double def, String key) {
 		IPreferences prefs = Preferences.getImplementation();
 		double pos;
@@ -56,6 +67,14 @@ public class UiHelpers {
 		return positions;
 	}
 
+	/**
+	 * Gets the index of a {@link PropertySheet}'s currently selected pane from the
+	 * preference node if NOT in {@link PropertySheet.Mode#CATEGORY} display mode.
+	 * 
+	 * @param sheet The property sheet.
+	 * @return the selected index if NOT in CATEGORY mode; 0 otherwise.
+	 * @see PropertySheet.Mode
+	 */
 	public static int getExpandedPaneIndex(PropertySheet sheet) {
 		if (!sheet.getMode().equals(PropertySheet.Mode.CATEGORY))
 			return 0;
@@ -63,6 +82,14 @@ public class UiHelpers {
 		return accordion.getPanes().indexOf(accordion.getExpandedPane());
 	}
 
+	/**
+	 * Stores the index of a {@link PropertySheet}'s currently selected pane in the
+	 * preferences node if NOT in {@link PropertySheet.Mode#CATEGORY} display mode.
+	 * 
+	 * @param sheet The property sheet.
+	 * @param idx   The current index of the currently selected pane.
+	 * @see PropertySheet.Mode.
+	 */
 	public static void setExpandedPane(PropertySheet sheet, int idx) {
 		if (!sheet.getMode().equals(PropertySheet.Mode.CATEGORY))
 			return;
@@ -121,13 +148,20 @@ public class UiHelpers {
 		node.setTranslateY(node.getTranslateY() - f * dy);
 	}
 
-	public static void zoom(Node node, ScrollEvent event) {
+	private static void zoom(Node node, ScrollEvent event) {
 		if (event.isControlDown()) {
 			zoom(node, Math.pow(1.01, event.getDeltaY()), event.getSceneX(), event.getSceneY());
 			event.consume();
 		}
 	}
 
+	/**
+	 * Zoom in or out from a node keeping the scene centered on the mouse position
+	 * contained within the given zoom event.
+	 * 
+	 * @param node  The javafx Node which is the focus of the zooming event.
+	 * @param event The Zoom event containing coordinates and the zoom factor.
+	 */
 	public static void zoom(Node node, ZoomEvent event) {
 		zoom(node, event.getZoomFactor(), event.getSceneX(), event.getSceneY());
 	}

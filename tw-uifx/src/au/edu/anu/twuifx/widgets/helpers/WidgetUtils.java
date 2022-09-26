@@ -27,7 +27,7 @@ import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.ens.biologie.generic.utils.Duple;
 import fr.ens.biologie.generic.utils.Interval;
 import fr.ens.biologie.generic.utils.NiceScale;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.Color; // this is the only javafx pollution here
 
 /**
  * Static methods commonly used in widgets.
@@ -215,7 +215,7 @@ public class WidgetUtils {
 	 * 
 	 * @param inFile         The file path of the data file.
 	 * @param factors        The experiment factor details {@link ExpFactor}.
-	 * @param orderedFactors
+	 * @param orderedFactors The factors ordered according to series header order
 	 * @param rv             The response variable name.
 	 * @return The script as a list of strings.
 	 */
@@ -532,6 +532,7 @@ public class WidgetUtils {
 	 * @param scriptFile The file and path name of the script.
 	 * @param lines      An array of lines of the script.
 	 * 
+	 * @return true if successful, false otherwise
 	 */
 	public static boolean saveAndExecuteScript(File scriptFile, List<String> lines) {
 		try {

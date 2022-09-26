@@ -57,8 +57,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 
-public class CpuTimeRecorder  extends StateMachineController
-implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
+/**
+ * Possible ancestor of component of other widgets - not implemented (yet?).
+ * 
+ * @author Ian Davies - 25 Sep. 2022
+ *
+ */
+public class CpuTimeRecorder extends StateMachineController
+		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 	private long startTime;
 	private long idleTime;
 	private long idleStartTime;
@@ -66,6 +72,10 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 	private Button btnStep;
 	private Button btnReset;
 	private Label lblRealTime;
+
+	/**
+	 * @param observed TODO: not implemented
+	 */
 	public CpuTimeRecorder(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 //		new SimpleWidgetTrackingPolicy();
@@ -91,6 +101,7 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 			}
 		}, DataMessageTypes.METADATA);
 	}
+
 	protected void handleResetPressed() {
 		nullButtons();
 		sendEvent(reset.event());
@@ -117,7 +128,7 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 			sendEvent(goOn.event());
 		}
 	}
-	
+
 	protected void handleStepPressed() {
 		long now = System.currentTimeMillis();
 		State state = stateMachine().getCurrentState();
@@ -132,6 +143,7 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 			sendEvent(step.event());
 		}
 	}
+
 	protected final long getDuration(long now) {
 		return now - (startTime + idleTime);
 	}
@@ -150,8 +162,9 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 
 	@Override
 	public void onStatusMessage(State state) {
-		
+
 	}
+
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
 	}
@@ -169,27 +182,27 @@ implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 	}
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onDataMessage(TimeData data) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onMetaDataMessage(Metadata meta) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

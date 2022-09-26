@@ -31,6 +31,7 @@
 package au.edu.anu.twuifx.widgets;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -65,8 +66,30 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import au.edu.anu.twcore.ecosystem.runtime.*;
 
+// TODO This widget needs more testing. Buttons become all disabled at times.
 /**
+ * A {@link WidgetGUI} to display progress of multiple simulators in a vertical
+ * bar chart.
+ * <p>
+ * This widget also displays the:
+ * <li>number of {@link Simulator}s;</li>
+ * <li>number of computer cores available;</li>
+ * <li>{@link StoppingCondition} - if one is in use;</li>
+ * <li>mean time of all simulators;</li>
+ * <li>start time of the run;</li>
+ * <li>end time of the run;</li>
+ * </p>
+ * <p>
+ * <img src="{@docRoot}/../doc/images/ProgressWidget3.png" width="400" alt=
+ * "ProgressWidget3"/>
+ * </p>
+ * <p>
+ * This widget rendezvous with messages of type {@link DataMessageTypes#TIME}
+ * containing {@link TimeData} at a rate depending on the sending
+ * {@link Simulator}.
+ * 
  * @author Ian Davies - 7 Sept 2021
  */
 public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
@@ -87,6 +110,9 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss");
 
+	/**
+	 * @param statusSender The {@link StatusWidget}
+	 */
 	public ProgressWidget3(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
@@ -114,7 +140,7 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 	@Override
 	public Object getUserInterfaceContainer() {
 
-		getUserPreferences();
+		getPreferences();//?
 
 		timeFormatter.onMetaDataMessage(metadata);
 		lblTime = new Label("");
@@ -243,13 +269,13 @@ public class ProgressWidget3 extends AbstractDisplayWidget<TimeData, Metadata> i
 	}
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 		// TODO Auto-generated method stub
 
 	}

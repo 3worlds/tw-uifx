@@ -46,6 +46,9 @@ import fr.ens.biologie.generic.utils.Logging;
  *
  */
 public class OpenMoleRun {
+	/**
+	 * @param args TODO: Not implemented
+	 */
 	public static void main(String[] args) {
 		run(0);
 	}

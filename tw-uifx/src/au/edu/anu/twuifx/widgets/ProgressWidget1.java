@@ -39,6 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
+import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
+import au.edu.anu.twcore.ecosystem.runtime.*;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -58,23 +60,36 @@ import javafx.scene.layout.HBox;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
+//Tested to 1,000,000 simulators.
 /**
+ * 
+ * A {@link WidgetGUI} to display the average time of all currently running
+ * simulators.
+ * <p>
+ * 
+ * <img src="{@docRoot}/../doc/images/ProgressWidget1.png" width="400" alt=
+ * "ProgressWidget1"/>
+ * </p>
+ * <p>
+ * This widget also displays the:
+ * <li>number of {@link Simulator}s;</li>
+ * <li>{@link StoppingCondition} - if used.</li>
+ * </p>
+ * <img src="{@docRoot}/../doc/images/ProgressWidget1.png" width="400" alt=
+ * "ProgressWidget1"/>
+ * </p>
+ * <p>
+ * It rendezvous with messages of type {@link DataMessageTypes#TIME} containing
+ * {@link TimeData} at a rate depending on the sending {@link Simulator}.
+ * </p>
+ * <p>
+ * The current time of every simulator is recorded in a collection. A java timer
+ * determines how often an average value from this collection is calculated
+ * (controlled by the widget refresh rate - default 250 ms). If the average time
+ * has changed, the display is updated.
+ * 
  * @author Ian Davies - 5 Dec. 2020
  * 
- *         Displays the average sim time for a collection of simulators.
- * 
- *         Every simulator msg is recorded in a collection. A java timer
- *         determines how often an average value from this collection is
- *         calculated (controlled by the 'refreshRate'). If the average time has
- *         change the ui is updated.
- * 
- *         NB: The currentSenderTimes will become as large as the number of
- *         unique simulator ids.
- * 
- *         Tested to 1,000,000 simulators.
- * 
- *         Important: The SimCloneWIdgetTrackingPolicy assumes all simulators
- *         are instances of the same SimulatorNode!
  */
 public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
 	private WidgetTimeFormatter timeFormatter;
@@ -86,6 +101,9 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 	private long refreshRate;// ms
 	private Timer timer;
 
+	/**
+	 * @param statusSender The {@link StatusWidget}.
+	 */
 	public ProgressWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
@@ -162,7 +180,7 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 
 	@Override
 	public Object getUserInterfaceContainer() {
-		getUserPreferences();
+		getPreferences();//?
 
 		HBox content = new HBox(5);
 		content.setAlignment(Pos.BASELINE_LEFT);
@@ -177,11 +195,11 @@ public class ProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata> i
 	}
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 	}
 
 	private double getMeanTime() {

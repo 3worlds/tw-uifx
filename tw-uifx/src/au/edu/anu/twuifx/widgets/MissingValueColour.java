@@ -34,13 +34,12 @@ import java.util.function.Supplier;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import javafx.scene.paint.Color;
 
-
 /**
  * An enum wrapper for {@link Color}.
  * 
  * @author Ian Davies - 20 July 2022
  */
-public enum MissingValueColour implements Supplier<Color> {	
+public enum MissingValueColour implements Supplier<Color> {
 	/**
 	 * returns {@link Color#WHITE}
 	 */
@@ -73,12 +72,18 @@ public enum MissingValueColour implements Supplier<Color> {
 		return c;
 	}
 
+	/**
+	 * The default value of any properties constructed with this class.
+	 * 
+	 * @return The default value {@link Color#TRANSPARENT}
+	 */
 	public static MissingValueColour defaultValue() {
 		return TRANSPARENT;
 	}
+
 	static {
 		ValidPropertyTypes.recordPropertyType(MissingValueColour.class.getSimpleName(),
 				MissingValueColour.class.getName(), MissingValueColour.defaultValue());
 	}
-	
+
 }

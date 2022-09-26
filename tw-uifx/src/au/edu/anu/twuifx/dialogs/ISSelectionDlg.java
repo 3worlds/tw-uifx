@@ -233,6 +233,10 @@ public class ISSelectionDlg {
 				btnSet.setDisable(true);
 	}
 
+	/**
+	 * TODO: Not implemented
+	 * @return TODO: Not implemented
+	 */
 	public int getResult() {
 		Optional<ButtonType> result = dlg.showAndWait();
 		if (result.get().equals(ok)) {

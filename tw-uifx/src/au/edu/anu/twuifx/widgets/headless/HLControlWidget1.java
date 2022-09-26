@@ -30,6 +30,7 @@ package au.edu.anu.twuifx.widgets.headless;
 
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.ui.runtime.Kicker;
+import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -39,12 +40,15 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
+// TODO: Move to twcore but note: 
+// - not all headless widgets are free of javafx (Color!!!). 
+// - Also library models would need to be update!
 /**
- * @author Ian Davies -2 Sep 2019
  * 
- *       This controller has no GUI. It sends a run event on start(), a quit
- *       event on Finished and writes the instance id and simulation time to
- *       stdout.
+ * This controller has no GUI. It sends a run event on start(), a quit event on
+ * Finished and writes the instance id and simulation time to stdout.
+ * 
+ * @author Ian Davies -2 Sep 2019
  */
 public class HLControlWidget1 extends StateMachineController implements Widget, Kicker {
 
@@ -52,6 +56,9 @@ public class HLControlWidget1 extends StateMachineController implements Widget, 
 	private long startTime;
 	private boolean ended;
 
+	/**
+	 * @param observed The {@link StatusWidget}.
+	 */
 	public HLControlWidget1(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 	}
@@ -79,7 +86,7 @@ public class HLControlWidget1 extends StateMachineController implements Widget, 
 			sendEvent(quit.event());
 
 			// Does not include tidy-up (quitting state) time taken by other widgets as that
-			// occurs in another thread.		
+			// occurs in another thread.
 			System.out.println("Experiment [done; Instance: " + RunTimeId.runTimeId() + "; Duration: "
 					+ (System.currentTimeMillis() - startTime) + " ms]");
 

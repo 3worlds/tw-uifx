@@ -40,10 +40,10 @@ import java.util.logging.Logger;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ui.runtime.ControllerAdapter;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
-import au.edu.anu.twuifx.widgets.helpers.ControllerAdapter;
 import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -64,7 +64,22 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
+//TODO: Check use for multi-sim runs. If it's not accurate in this case, write a query to prevent its use in this case.
 /**
+ * A {@link StateMachineController} for the {@link StateMachineEngine} that also
+ * displays total execution time and the time of each simulation step.
+ * <p>
+ * <img src="{@docRoot}/../doc/images/ControlWidget2.png" width="250" alt=
+ * "ControlWidget2"/>
+ * </p>
+ * <p>
+ * The controller subtracts time elapsed during paused state.
+ * </p>
+ * <p>
+ * This widget is intended for purpose of analysis of a single model as the
+ * reported execution times are reliable when one instance of a
+ * simulator is being used.
+ * 
  * @author Ian Davies - 29 Jan 2020
  */
 public class ControlWidget2 extends ControllerAdapter
@@ -90,6 +105,9 @@ public class ControlWidget2 extends ControllerAdapter
 
 	private static Logger log = Logging.getLogger(ControlWidget2.class);
 
+	/**
+	 * @param observed  The {@link StateMachineController}.
+	 */
 	public ControlWidget2(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 		policy = new SimpleWidgetTrackingPolicy();
@@ -149,7 +167,7 @@ public class ControlWidget2 extends ControllerAdapter
 
 		nullButtons();
 
-		getUserPreferences();
+		getPreferences();
 
 		return pane;
 	}
@@ -240,11 +258,11 @@ public class ControlWidget2 extends ControllerAdapter
 	}
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 	}
 
 	private void setButtonLogic(State state) {
@@ -307,7 +325,7 @@ public class ControlWidget2 extends ControllerAdapter
 	public void onMetaDataMessage(Metadata meta) {
 		policy.canProcessMetadataMessage(meta);
 //			if (policy.canProcessMetadataMessage(meta))
-			//scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
+		// scText = "Stop when: " + meta.properties().getPropertyValue("StoppingDesc");
 	}
 
 }

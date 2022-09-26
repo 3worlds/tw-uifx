@@ -34,15 +34,31 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ui.runtime.Widget;
 
 /**
+ * Simulator tracking policies for GUI widgets. Particular implementations will
+ * be chosen to suit widget capabilities.
+ * 
  * @author Ian Davies - 24 Nov. 2020
  */
 // Can be moved to twapps (or twcore)
-public interface WidgetTrackingPolicy<T> extends Widget{
-	
+public interface WidgetTrackingPolicy<T> extends Widget {
+
+	/**
+	 * 
+	 * @param data The simulator data.
+	 * @return true if the policy is able to process this data, false otherwise.
+	 */
 	public boolean canProcessDataMessage(T data);
-	
+
+	/**
+	 * @param meta The simulator meta-data.
+	 * @return true if the policy is able to process (or has not already processed
+	 *         identical meta-data), false otherwise.
+	 */
 	public boolean canProcessMetadataMessage(Metadata meta);
-	
+
+	/**
+	 * @return The contiguous range of simulator ids allowed.
+	 */
 	public IntegerRange getDataMessageRange();
-	
+
 }

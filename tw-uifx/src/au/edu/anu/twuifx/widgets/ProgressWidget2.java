@@ -31,6 +31,8 @@ package au.edu.anu.twuifx.widgets;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
+import au.edu.anu.twcore.ecosystem.runtime.StoppingCondition;
+import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
@@ -56,9 +58,24 @@ import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 /**
+ * A {@link WidgetGUI} to display progress of multiple simulators in a
+ * horizontal bar chart.
+ * <p>
+ * <img src="{@docRoot}/../doc/images/ProgressWidget2.png" width="400" alt=
+ * "ProgressWidget2"/>
+ * </p>
+ * <p>
+ * In addition to the bar chart, the widget also displays the:
+ * <li>number of {@link Simulator}s;</li>
+ * <li>number of computer cores available;</li>
+ * <li>{@link StoppingCondition} - if one is in use;</li>
+ * </p>
+ * <p>
+ * The widget rendezvous with messages of type {@link DataMessageTypes#TIME} containing
+ * {@link TimeData} at a rate depending on the sending {@link Simulator}.
+ * 
  * @author Ian Davies -23 Mar. 2021
  * 
- *       Series (time by Sender) for each simulator
  */
 public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> implements WidgetGUI {
 	private WidgetTimeFormatter timeFormatter;
@@ -70,6 +87,9 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 	private static int MAX_BINS = 2000;
 	private Double[] binWeights;
 
+	/**
+	 * @param statusSender The {@link StatusWidget}
+	 */
 	public ProgressWidget2(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.TIME);
 		timeFormatter = new WidgetTimeFormatter();
@@ -95,7 +115,7 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 	@Override
 	public Object getUserInterfaceContainer() {
 
-		getUserPreferences();
+		getPreferences();
 		timeFormatter.onMetaDataMessage(metadata);
 
 		BorderPane content = new BorderPane();
@@ -103,7 +123,7 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 				+ "; Stop: when " + metadata.properties().getPropertyValue("StoppingDesc")));
 
 		chart = new XYChart();
-		chart.setPadding(new Insets(5,5,5,5));
+		chart.setPadding(new Insets(5, 5, 5, 5));
 		chart.setLegendVisible(false);
 		ErrorDataSetRenderer rndr = new ErrorDataSetRenderer();
 		rndr.setDrawBars(true);
@@ -133,7 +153,7 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 	}
 
 	private void processDataMessage(TimeData data) {
-		int bin = histDataSet.findBin(DataSet.DIM_X, data.sender()+0.0001);
+		int bin = histDataSet.findBin(DataSet.DIM_X, data.sender() + 0.0001);
 //		System.out.println(data.sender() + " -> " + bin);
 		histDataSet.addBinContent(bin, binWeights[bin]);
 
@@ -145,7 +165,7 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 			Platform.runLater(() -> {
 				// defacto initialisation point
 				double minX = 0.0;
-				double maxX = nSenders-0.5;
+				double maxX = nSenders - 0.5;
 				int nBins = Math.min(MAX_BINS, nSenders);
 				histDataSet = new Histogram("", nBins, minX, maxX, HistogramOuterBounds.BINS_ALIGNED_WITH_BOUNDARY);
 				int[] spb = new int[histDataSet.getBinCount(DataSet.DIM_X)];// sims per bin
@@ -179,11 +199,11 @@ public class ProgressWidget2 extends AbstractDisplayWidget<TimeData, Metadata> i
 	}
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 	}
 
 }

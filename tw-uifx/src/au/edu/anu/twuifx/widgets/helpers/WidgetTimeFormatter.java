@@ -41,23 +41,20 @@ import fr.cnrs.iees.twcore.constants.TimeScaleType;
 import fr.cnrs.iees.twcore.constants.TimeUnits;
 
 /**
+ * A widget used to display the time stamp of data received. It is intended that
+ * this widget be an associative class of widgets this feature.
+ * <p>
+ * This widget assumes properties from a simulator's time scale node are present
+ * in the meta-data.
+ * 
  * @author Ian Davies - 19 Sep 2019
  */
 
-/*
- * Many (most) widgets need to display the time or received data. This
- * associative class can be added to a widget to handle all that.
- * 
- * NOTE: time is NOT the time from the simulator. It is the time from the time
- * model that is driving the dataTracker and hence the time the associated data
- * was sent.
- */
 public class WidgetTimeFormatter implements Widget {
 	private TimeUnits smallest;
 	private TimeUnits largest;
 	private TimeScaleType timeScale;
 	private List<TimeUnits> units;
-//	private SortedSet<TimeUnits> units;
 	private Long startTime;
 
 	/*
@@ -81,6 +78,12 @@ public class WidgetTimeFormatter implements Widget {
 	 * such as month and year are m and y but if they not Gregorian months they have
 	 * a tick mark to highlight this.
 	 */
+	/**
+	 * Translate the simulator time to text using methods from {@link TimeUtil}.
+	 * 
+	 * @param time Simulator time.
+	 * @return Simulator time in text format.
+	 */
 	public String getTimeText(Long time) {
 		if (timeScale.equals(TimeScaleType.GREGORIAN)) {
 			LocalDateTime presentDate = TimeUtil.longToDate(time, smallest);
@@ -90,26 +93,42 @@ public class WidgetTimeFormatter implements Widget {
 		}
 	}
 
+	/**
+	 * Set class memebers based to timer properties.
+	 * 
+	 * @param meta The simulators meta-data.
+	 */
 	public void onMetaDataMessage(Metadata meta) {
 		smallest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_SHORTTU.key());
 		largest = (TimeUnits) meta.properties().getPropertyValue(P_TIMELINE_LONGTU.key());
 		timeScale = (TimeScaleType) meta.properties().getPropertyValue(P_TIMELINE_SCALE.key());
 		DateTimeType dtt = (DateTimeType) meta.properties().getPropertyValue(P_TIMELINE_TIMEORIGIN.key());
 		startTime = dtt.getDateTime();
-		units = new ArrayList<>(timeScale.validTimeUnits(smallest,largest));
+		units = new ArrayList<>(timeScale.validTimeUnits(smallest, largest));
 	}
 
+	/**
+	 * Getter for the initial simulator starting time.
+	 * 
+	 * @return simulator starting time.
+	 */
 	public long getInitialTime() {
 		return startTime;
 	}
 
+	/**
+	 * Getter for the smallest unit of time measurement.
+	 * 
+	 * @return the smallest time unit.
+	 */
 	public TimeUnits getSmallest() {
 		return smallest;
 	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
-		// TODO Auto-generated method stub
+		// TODO Seems a wrong design to have this. Does this class need to extned
+		// widget?? Some refactoring of interfaces may be needed.
 
 	};
 

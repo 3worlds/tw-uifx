@@ -31,9 +31,10 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import au.edu.anu.twcore.ui.runtime.ControllerAdapter;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
-import au.edu.anu.twuifx.widgets.helpers.ControllerAdapter;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.Event;
 import fr.cnrs.iees.rvgrid.statemachine.State;
@@ -52,28 +53,13 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
 /**
+ * A Simple {@link StateMachineController} for the {@link StateMachineEngine} to
+ * Start, Pause/Continue and Stop a simulation experiment.
+ * <p>
+ * <img src="{@docRoot}/../doc/images/ControlWidget1.png" width="100" alt=
+ * "ControlWidget1"/>
+ *
  * @author Ian Davies - 2 Sep 2019
- *
- *       Simplest possible state machine controller (experiment Deployer)
- *       widget.
- *
- *       The Run/Pause button does triple service:
- *
- *       - if the state is running then it's a pause button.
- *
- *       - If the state is Pausing then its a continue button
- *
- *       - If the state is Waiting then its a Run button.
- *
- *       setButtonLogic() prevents invalid events being sent by
- *       enabling/disabling control buttons.
- *
- *       TODO Ideally, a quit event should be sent before the program is closed
- *       to prevent hanging threads. This would need to be called by something
- *       external to this class. Should the ancestor (StateMachineController)
- *       have a public quit method? - little bit flaky because quit is not valid
- *       from and state.
- *
  */
 public class ControlWidget1 extends ControllerAdapter implements WidgetGUI {
 	private Button btnRunPause;
@@ -83,6 +69,9 @@ public class ControlWidget1 extends ControllerAdapter implements WidgetGUI {
 	private ImageView runGraphic;
 	private ImageView pauseGraphic;
 
+	/**
+	 * @param observed The {@link StateMachineController}.
+	 */
 	public ControlWidget1(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 	}
@@ -116,7 +105,7 @@ public class ControlWidget1 extends ControllerAdapter implements WidgetGUI {
 
 		nullButtons();
 
-		getUserPreferences();
+		getPreferences();
 
 		return pane;
 	}
@@ -174,13 +163,6 @@ public class ControlWidget1 extends ControllerAdapter implements WidgetGUI {
 		return null;
 	}
 
-	@Override
-	public void putUserPreferences() {
-	}
-
-	@Override
-	public void getUserPreferences() {
-	}
 
 	@Override
 	public void setProperties(String id, SimplePropertyList properties) {
@@ -198,5 +180,17 @@ public class ControlWidget1 extends ControllerAdapter implements WidgetGUI {
 			if (iv != null)
 				btnRunPause.setGraphic(iv);
 		});
+	}
+
+	@Override
+	public void putPreferences() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void getPreferences() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -98,6 +98,30 @@ import javafx.scene.text.Font;
 import javafx.stage.Window;
 
 /**
+ * A {@link WidgetGUI} to display a {@link Output2DData} as a coloured matrix.
+ * <p>
+ * <img src="{@docRoot}/../doc/images/MatrixWidget1.png" width="250" alt=
+ * "MatrixWidget1"/>
+ * </p>
+ * <p>
+ * This widget has:
+ * <p>
+ * <li>Zoomable display area ;</li>
+ * <li>Tool bar with controls to select simulator and view message time stamp;</li>
+ * <li>Status bar with range of data for the current time step and the current
+ * value under the mouse pointer;</li>
+ * <li>Legend with maximum and minimum displayed values.</li>
+ * </p>
+ * <p>
+ * Settings for this widget can be found in the Widget menu of ModelRunner.
+ * These settings are saved in ModelRunner's preferences file and persist when
+ * the model is reopened.
+ * </p>
+ * <p>
+ * <img src="{@docRoot}/../doc/images/MatrixWidget1Dlg.png" width="250" alt=
+ * "MatrixWidget1Dlg"/>
+ * </p>
+ * 
  * @author Ian Davies - 2 Sep 2019
  */
 
@@ -129,6 +153,9 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 //	private static Logger log = Logging.getLogger(MatrixWidget1.class);
 
+	/**
+	 * @param statusSender The {@link StatusWidget}
+	 */
 	public MatrixWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM2);
 		timeFormatter = new WidgetTimeFormatter();
@@ -264,7 +291,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 			displayGrid.getColumnConstraints().addAll(col1);
 		}
 
-		getUserPreferences();
+		getPreferences();
 
 		return content;
 	}
@@ -294,7 +321,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	private Color bkgColour;
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			D2Display d = displays.get(i);
@@ -314,7 +341,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			D2Display d = displays.get(i);

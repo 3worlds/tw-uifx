@@ -51,9 +51,19 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import javafx.scene.layout.BorderPane;
 
+/**
+ * TODO: Not implemented
+ * 
+ * @author Ian Davies - 25 Sep. 2022
+ *
+ */
 public class GraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metadata> implements WidgetGUI {
 	private final WidgetTrackingPolicy<TimeData> policy;
 	private final WidgetTimeFormatter timeFormatter;
+
+	/**
+	 * @param statusSender TODO: Not implemented
+	 */
 	public GraphWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.RUNTIMEGRAPH);
 		timeFormatter = new WidgetTimeFormatter();
@@ -158,13 +168,13 @@ public class GraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metada
 	}
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 
 	}
 
 	@Override
-	public void getUserPreferences() {
-		System.out.println("getUserPreferences");
+	public void getPreferences() {
+		System.out.println("getPreferences");
 
 	}
 

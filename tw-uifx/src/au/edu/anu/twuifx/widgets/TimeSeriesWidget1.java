@@ -55,7 +55,6 @@ import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.widgets.helpers.CircularDoubleErrorDataSetResizable;
 import au.edu.anu.twuifx.widgets.helpers.MultiSenderTrackingPolicy;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
 import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
@@ -102,10 +101,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Window;
 
 /**
+ * Displays 1..* time series lines in a circular buffer: one set for each
+ * selected simulator. Plotting is done with {@link XYChart}.
+ * <p>
+ * The model configuration can define any number of y axes.
+ * 
  * @author Ian Davies - 10 Dec. 2020
- *         <p>
- *         S * Displays 1..* time series lines: one set for each selected
- *         simulator (default sender = 0)
  * 
  */
 public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> implements WidgetGUI {
@@ -127,6 +128,9 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 	private Label trackerTime;
 
+	/**
+	 * @param statusSender The {@link StatusWidget}.
+	 */
 	public TimeSeriesWidget1(StateMachineEngine<StatusWidget> statusSender) {
 		super(statusSender, DataMessageTypes.DIM0);
 		// needs to be thread-safe because chartfx plugins may be looking at chart
@@ -164,7 +168,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		/* 3) called third after metadata */
 
 		// get the prefs before building the ui
-		getUserPreferences();
+		getPreferences();
 
 		timeFormatter.onMetaDataMessage(msgMetadata);
 //		TimeScaleType tst = (TimeScaleType) msgMetadata.properties().getPropertyValue(P_TIMELINE_SCALE.key());
@@ -229,7 +233,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			else
 				newAxis.setSide(Side.RIGHT);
 			yAxes.add(newAxis);
-		//	newAxis.setAutoRangePadding(0.1);
+			// newAxis.setAutoRangePadding(0.1);
 		}
 
 		// we need to sort this using padIndexedDidgets somehow
@@ -268,13 +272,13 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		xAxis.setTimeAxis(false);
 
 		chart = new XYChart(xAxis, yAxes.get(0));
-		//NB: This is the padding around the whole control - not between child nodes
+		// NB: This is the padding around the whole control - not between child nodes
 		chart.setPadding(new Insets(1, 10, 5, 5));
 		chart.setLegendSide(legendSide);
 		chart.setLegendVisible(legendVisible);
 		chart.setAnimated(false);// probably expensive if true
 		chart.getRenderers().addAll(renderers);
-		chart.getTitleLegendPane(legendSide).setPadding(new Insets(10,10,10,10));
+		chart.getTitleLegendPane(legendSide).setPadding(new Insets(10, 10, 10, 10));
 //		chart.getTitleLegendPane(legendSide).setStyle("-fx-background-color: transparent");
 
 		chart.getPlugins().add(new Zoomer());
@@ -442,7 +446,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 			chart.setLegendSide(legendSide);
 			legendVisible = chbxLegendVisible.isSelected();
 			chart.setLegendVisible(legendVisible);
-			chart.getTitleLegendPane(legendSide).setPadding(new Insets(10,10,10,10));
+			chart.getTitleLegendPane(legendSide).setPadding(new Insets(10, 10, 10, 10));
 //			chart.getTitleLegendPane(legendSide).setStyle("-fx-background-color: transparent;");
 		}
 	}
@@ -466,7 +470,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 	private int maxLegendItems;
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 
 		prefs.putBoolean(widgetId + keyLegendVisible, legendVisible);
@@ -475,7 +479,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 		IPreferences prefs = Preferences.getImplementation();
 
 		legendVisible = prefs.getBoolean(widgetId + keyLegendVisible, true);
@@ -502,18 +506,18 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		if (sas != null) {
 			for (StatisticalAggregates sa : sas.values()) {
 				String key = sender + ":" + sa.name() + DataLabel.HIERARCHY_DOWN + dl.toLazyString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, bufferSize);
 				dataSetMap.put(key, ds);
 			}
 		} else if (sampledItems != null) {
 			for (String si : sampledItems) {
 				String key = sender + ":" + si + DataLabel.HIERARCHY_DOWN + dl.toLazyString();
-				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
+				CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, bufferSize);
 				dataSetMap.put(key, ds);
 			}
 		} else {
 			String key = sender + ":" + dl.toLazyString();
-			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSetResizable(key, bufferSize);
+			CircularDoubleErrorDataSet ds = new CircularDoubleErrorDataSet(key, bufferSize);
 			dataSetMap.put(key, ds);
 		}
 	}

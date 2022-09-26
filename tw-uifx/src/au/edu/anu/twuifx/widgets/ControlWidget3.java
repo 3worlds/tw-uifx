@@ -41,6 +41,7 @@ import java.util.logging.Logger;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ui.runtime.ControllerAdapter;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import au.edu.anu.twuifx.images.Images;
@@ -72,14 +73,20 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 /**
- * @author Ian Davies -29 Jan 2020
- *         <p>
- *         Produces a plots of cpu time.
+ * A {@link StateMachineController} for the {@link StateMachineEngine} that also
+ * displays a graph of total execution time.
+ * <p>
+ * <img src="{@docRoot}/../doc/images/ControlWidget3.png" width="250" alt=
+ * "ControlWidget3"/>
+ * </p>
+ * <p>
+ * This widget is intended for purpose of analysis of a single model as the
+ * reported execution times are reliable when one instance of a simulator is
+ * being used.
  * 
- *         There is clearly an opportunity for a common ancestor for this and
- *         SCW1 and perhaps SCW.
+ * @author Ian Davies -29 Jan 2020
  */
-public class ControlWidget3 extends StateMachineController
+public class ControlWidget3 extends ControllerAdapter
 		implements StateMachineObserver, DataReceiver<TimeData, Metadata>, WidgetGUI {
 
 	private Button btnRunPause;
@@ -108,6 +115,9 @@ public class ControlWidget3 extends StateMachineController
 	private XYChart chart;
 	private CircularDoubleErrorDataSet dataSet;
 
+	/**
+	 * @param observed  The {@link StateMachineController}.
+	 */
 	public ControlWidget3(StateMachineEngine<StateMachineController> observed) {
 		super(observed);
 		log.info("Thread: " + Thread.currentThread().getId());
@@ -209,7 +219,7 @@ public class ControlWidget3 extends StateMachineController
 
 		nullButtons();
 
-		getUserPreferences();
+		getPreferences();
 
 		return content;
 	}
@@ -300,11 +310,11 @@ public class ControlWidget3 extends StateMachineController
 	}
 
 	@Override
-	public void putUserPreferences() {
+	public void putPreferences() {
 	}
 
 	@Override
-	public void getUserPreferences() {
+	public void getPreferences() {
 	}
 
 	private void setButtonLogic(State state) {

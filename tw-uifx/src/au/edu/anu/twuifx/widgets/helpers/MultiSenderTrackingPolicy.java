@@ -40,14 +40,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A policy allowing multiple simulators to be tracked as set by an optional
+ * property in this widgets configuration. The reason for this policy is that
+ * many widget UI are not designed to scale to very large number of simulators.
+ * 
  * @author Ian Davies - 9 Dec. 2020
  */
 public class MultiSenderTrackingPolicy implements WidgetTrackingPolicy<TimeData> {
 
-	private final List<Integer> allowedSenders;
+	private final List<Integer> allowedSimIds;
 	private int n;
+
+	/**
+	 * Default constructor to maintain a list of allowed simulator ids.
+	 */
 	public MultiSenderTrackingPolicy() {
-		allowedSenders = new ArrayList<>();
+		allowedSimIds = new ArrayList<>();
 	}
 
 	@Override
@@ -59,29 +67,29 @@ public class MultiSenderTrackingPolicy implements WidgetTrackingPolicy<TimeData>
 
 	@Override
 	public boolean canProcessDataMessage(TimeData data) {
-		return allowedSenders.contains(data.sender());
+		return allowedSimIds.contains(data.sender());
 	}
 
-	//TODO: There can be gaps in the range!!
+	// TODO: There can be gaps in the range!!
 	@Override
 	public boolean canProcessMetadataMessage(Metadata meta) {
-		if (allowedSenders.size()<n) {
-			allowedSenders.add(meta.sender());
-			allowedSenders.sort((i1,i2)->i1.compareTo(i2));
+		if (allowedSimIds.size() < n) {
+			allowedSimIds.add(meta.sender());
+			allowedSimIds.sort((i1, i2) -> i1.compareTo(i2));
 			return true;
 		}
-		allowedSenders.sort((i1,i2)->i1.compareTo(i2));
+		allowedSimIds.sort((i1, i2) -> i1.compareTo(i2));
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return allowedSenders.toString();
+		return allowedSimIds.toString();
 	}
 
 	@Override
 	public IntegerRange getDataMessageRange() {
-		return new IntegerRange(allowedSenders.get(0),allowedSenders.get(allowedSenders.size()-1));
+		return new IntegerRange(allowedSimIds.get(0), allowedSimIds.get(allowedSimIds.size() - 1));
 	}
 
 }
