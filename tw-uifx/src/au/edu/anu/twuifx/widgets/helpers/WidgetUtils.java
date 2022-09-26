@@ -39,19 +39,21 @@ public class WidgetUtils {
 	};
 
 	/**
-	 * Write a 2-D {@code Number[][]} array to a tif file, optionally using a
-	 * magnification factor.
+	 * Write a 2-D {@code Number[][]} array to a tif file
+	 * <p>
+	 * <img src="{@docRoot}/../doc/images/TiffExample.png" width="250" alt=
+	 * "TiffExample"/>
+	 * </p>
 	 * 
 	 * @param matrix             The {@code Number[][]} matrix to save
 	 * @param file               Full file name
 	 * @param palette            {@link Palette} to use.
 	 * @param range              The {@link Interval} range for mapping the data to
 	 *                           the palette entries.
-	 * @param magnification      Size increase in image output.
+	 * @param magnification      Size increase in image output (default 1).
 	 * @param bufferImageType    The {@link BufferedImage} type constant.
 	 * @param imageScalingMethod The {@link Image} scaling method constant.
-	 * @param bkgColor           Colour used when value is considered a missing
-	 *                           value.
+	 * @param bkgColor           Colour used when if value is a missing value.
 	 * @param isMissingValue     Enum to determine if a value is a missing value
 	 *                           {@link IsMissingValue}.
 	 */
@@ -180,7 +182,7 @@ public class WidgetUtils {
 	 * @param inFile               The input file name (tab separated with header
 	 *                             and '.' decimal separator).
 	 * @param factors              Factor details ({@link ExpFactor}).
-	 * @param orderedFactors       Factors ordered by appearance in column headers. 
+	 * @param orderedFactors       Factors ordered by appearance in column headers.
 	 * @param responseVariableName The name of the response variable. The input file
 	 *                             must name the response variable as "RV".
 	 * @param resultsName          The file name for the results table.
@@ -211,7 +213,12 @@ public class WidgetUtils {
 
 	/**
 	 * Generate an R script that will produce a box plot showing the overall trends
-	 * in the response variable for each of the experiment factors.
+	 * in the response variable for each of the experiment factors in a
+	 * cross-factorial experiment.
+	 * <p>
+	 * <img src="{@docRoot}/../doc/images/population_boxplots.svg" width="250" alt=
+	 * "population_boxblots"/>
+	 * </p>
 	 * 
 	 * @param inFile         The file path of the data file.
 	 * @param factors        The experiment factor details {@link ExpFactor}.
@@ -267,10 +274,15 @@ public class WidgetUtils {
 	/**
 	 * Generate an R script to create a barplot of the relative variance of the
 	 * response variable explained by treatments.
+	 * <p>
+	 * <img src="{@docRoot}/../doc/images/population_RVEplot.svg" width="250" alt=
+	 * "population_RVEplot"/>
+	 * </p>
 	 * 
 	 * @param inFile The data file of relative variance explained
 	 * @param rv     Name of the response variable.
 	 * @return Script as a list of strings.
+	 * 
 	 */
 	public static List<String> generateRVEPlotScript(File inFile, String rv) {
 		String exp = inFile.getParentFile().getParentFile().getName();
@@ -295,6 +307,20 @@ public class WidgetUtils {
 		return result;
 	}
 
+	/**
+	 * Generate an R script to create a barplot of mean value of replicates for each
+	 * factor combination in a cross-factorial experiment.
+	 * <p>
+	 * <img src="{@docRoot}/../doc/images/population_barplot.svg" width="250" alt=
+	 * "population_barplot"/>
+	 * </p>
+	 * 
+	 * @param inFile    time series data of average for all replicates.
+	 * @param factors   Experiment factors and their treatment levels.
+	 * @param rv        the response variable
+	 * @param isMinZero forces y-axis to zero if true.
+	 * @return RScript as a list of strings.
+	 */
 	public static List<String> generateBarPlotScript(File inFile, Map<String, ExpFactor> factors, String rv,
 			boolean isMinZero) {
 		// Make sure we refer to the column headings only to obtain the order of
@@ -420,12 +446,21 @@ public class WidgetUtils {
 	}
 
 	/**
-	 * @param edt
-	 * @param inFile
-	 * @param rv
-	 * @param nReplicates
-	 * @param isMinZero
-	 * @return
+	 * Creates file contents for an R script to plot data series for each treatment
+	 * combination. averaged over replicates. Standard deviation for each mean
+	 * series is shown with grey polygons.
+	 * <p>
+	 * <img src="{@docRoot}/../doc/images/Ht_Series.svg" width="400" alt=
+	 * "Ht_Series"/>
+	 * </p>
+	 * 
+	 * @param edt         The experiment design information.
+	 * @param inFile      File of time series of the response variable for each all
+	 *                    simulations.
+	 * @param rv          The response variable
+	 * @param nReplicates The number of experiment replicates.
+	 * @param isMinZero   Flag to force zero on the y axis.
+	 * @return R script file contents.
 	 */
 	public static List<String> generateSeriesScript(ExperimentDesignType edt, File inFile, String rv, int nReplicates,
 			boolean isMinZero) {
