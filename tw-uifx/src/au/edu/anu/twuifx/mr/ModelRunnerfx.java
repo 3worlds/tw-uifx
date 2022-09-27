@@ -66,9 +66,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Author Ian Davies
- *
- * Date 18 Dec. 2018
+ * 3Worlds application to run, analyse and document simulations, whose
+ * configuration graph conforms with the 3Worlds specification archetype.
+ * 
+ * @author Ian Davies- 18 Dec. 2018
  */
 public class ModelRunnerfx extends Application {
 	private static TreeGraphNode uiNode;

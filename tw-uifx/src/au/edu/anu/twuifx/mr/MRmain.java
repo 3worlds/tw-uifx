@@ -71,9 +71,11 @@ import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
 /**
+ * Main method to launch {@link ModelRunnerfx}. This is required because 3Worlds is not a modular
+ * project.
+
  * @author Ian Davies -30 Aug 2019
  */
-// This replaces MrLauncher
 public class MRmain {
 
 	private MRmain() {

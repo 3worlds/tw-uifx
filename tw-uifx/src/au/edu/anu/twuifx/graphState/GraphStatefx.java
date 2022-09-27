@@ -47,7 +47,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * Javafx implementation for {@link GraphState}.
+ * A Javafx implementation of {@link IGraphState} for {@link GraphState}.
  * 
  * @author Ian Davies Date May 6, 2019
  */
@@ -60,9 +60,9 @@ public class GraphStatefx implements IGraphState {
 	/**
 	 * Javafx implementation of {@link IGraphState}.
 	 * <p>
-	 * The window title is formed by concatenating {@code title} and {@code javaPath}. 
-	 * Whenever the graph is edited, an "*" is prepended to the window title and
-	 * removed when the graph is saved.
+	 * The window title is formed by concatenating {@code title} and
+	 * {@code javaPath}. Whenever the graph is edited, an "*" is prepended to the
+	 * window title and removed when the graph is saved.
 	 * 
 	 * @param title    ModelMaker project display name.
 	 * @param javaPath Path to the linked java project or 'blank' if the project is

@@ -65,9 +65,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 
 /**
- * Author Ian Davies
- *
- * Date 12 Dec. 2018
+ * @author Ian Davies -Date 12 Dec. 2018
  */
 
 public class Dialogsfx implements IDialogs {

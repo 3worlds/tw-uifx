@@ -70,9 +70,12 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
  * Javafx extension of the {@link StructureEditorAdapter}.
  * <p>
  * This class displays a pop-up menu when the user clicks on a configuration
- * graph node. The menu options available are context dependent.
+ * graph node. The menu options available are context dependent constrained by
+ * the 3Worlds specification archetype.
  * </p>
- * <p> This class has an {@link Originator}, allowing any editors to be undone or redone.
+ * <p>
+ * This class has an {@link Originator}, allowing any edits to be undone or
+ * redone.
  * 
  * @author Ian Davies - 13 Jan. 2019
  */
@@ -83,11 +86,12 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	private Originator recorder;
 
 	/**
-	 * @param n The user-selected node for editing.
-	 * @param event The event used to place the pop-up menu at the correct location.
+	 * @param n          The user-selected node for editing.
+	 * @param event      The event used to place the pop-up menu at the correct
+	 *                   location.
 	 * @param controller The ModelMaker controller
-	 * @param gv The graph visualisation system.
-	 * @param recorder Records edits for the undo/redo system.
+	 * @param gv         The graph visualisation system.
+	 * @param recorder   Records edits for the undo/redo system.
 	 */
 	public StructureEditorfx(VisualNodeEditable n, MouseEvent event, IMMController controller, IGraphVisualiser gv,
 			Originator recorder) {

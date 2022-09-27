@@ -45,6 +45,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.dialogs.ExperimentDetailsDlg;
 import au.edu.anu.twuifx.dialogs.ISParametersDlg;
 import au.edu.anu.twuifx.images.Images;
+import au.edu.anu.twuifx.mr.ModelRunnerfx;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import javafx.concurrent.Task;
@@ -80,6 +81,12 @@ import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
+ * Javafx Controller for {@link ModelRunnerfx}. The language specific
+ * ModelRunner FXML file is injected into fields in this class.
+ * 
+ * NB: Do not change field names in this field without corresponding change in
+ * each language FXML file.
+ * 
  * @author Ian Davies - 18 Jan. 2018
  */
 public class MrController implements IMRController {
@@ -160,11 +167,14 @@ public class MrController implements IMRController {
 		model = new MRModel();
 		statusBar.setSpacing(5);
 		statusBar.setPadding(new Insets(1, 1, 1, 1));
-		// statusBar.setStyle("-fx-background-color: lightgray");
 		toolBar.setSpacing(5);
-		// toolBar.setStyle("-fx-background-color: lightgray");
 	}
 
+	/**
+	 * Display the About box for {@link ModelRunnerfx}
+	 * 
+	 * @param event The event triggering this handler.
+	 */
 	@FXML
 	void onAboutModelRunner(ActionEvent event) {
 		Dialog<ButtonType> dlg = new Dialog<>();
@@ -262,6 +272,11 @@ public class MrController implements IMRController {
 
 	}
 
+	/**
+	 * Instantiate the {@link DocoGenerator} in a background thread.
+	 * 
+	 * @param event Calling event.
+	 */
 	@FXML
 	void onODDGen(ActionEvent event) {
 		Cursor oldCursor = tabPane.getScene().getCursor();

@@ -49,9 +49,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
+ * Splash screen to show while loading {@link ModelRunnerfx}. This is only used
+ * if the configuration graph has a GUI.
+ * 
  * @author Ian Davies -23 Sep. 2018
- * 
- * 
  */
 public class MrSplash extends Preloader {
 	/**

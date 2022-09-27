@@ -40,10 +40,12 @@ import fr.cnrs.iees.twcore.constants.EnumProperties;
 import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Application;
+import au.edu.anu.twuifx.mr.MRmain;
 
 /**
  * 
- * Main method for ModelMaker.
+ * Main method to launch {@link ModelMakerfx}. This is required because 3Worlds is not a modular
+ * project.
  * 
  * @author Ian Davies - 10 Dec. 2018
  *
@@ -52,10 +54,12 @@ public class MMmain {
 	private static String usage = "Usage:\n" + MMmain.class.getName() + "default logging level, class:level.";
 
 	/**
-	 * Launch {@link ModelMakerfx} by calling {@code Application.launch(ModelMakerfx.class)}.
+	 * Launch {@link ModelMakerfx} by calling
+	 * {@code Application.launch(ModelMakerfx.class)}.
 	 * <p>
 	 * Arguments are a list of classes to log and the required logging level. These
-	 * arguments are also passed on to ModelRunner when launched from ModelMaker.
+	 * arguments are also passed on to ModelRunner {@link MRmain} when launched from
+	 * {@link ModelMakerfx}.
 	 * 
 	 * @param args {@literal <class>:<level> ... }
 	 */

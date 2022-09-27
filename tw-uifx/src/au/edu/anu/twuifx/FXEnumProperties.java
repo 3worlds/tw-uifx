@@ -33,21 +33,26 @@ import au.edu.anu.twuifx.widgets.IsMissingValue;
 import au.edu.anu.twuifx.widgets.MissingValueColour;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.twcore.constants.EnumProperties;
 
 /**
+ * Trigger static methods of enums in fx dependent projects. The purpose of this
+ * class is primarily so other fx projects don't require a dependence on the
+ * project containing {@link EnumProperties#recordEnums()}.
+ * 
  * @author Ian Davies - 21 July 2022
  */
 public class FXEnumProperties {
 	private FXEnumProperties() {
 	};
 
+	// TODO: There may be a better way (Services??)
 	/**
 	 * These references trigger the static block initialization of all these classes
 	 * (unknown to twcore), which then record their details in
 	 * {@link ValidPropertyTypes}. This static method must be called early in
 	 * application setup.
 	 * <p>
-	 * TODO: There may be a better way (Services??)
 	 */
 	public static void recordEnums() {
 		PaletteTypes.defaultValue();

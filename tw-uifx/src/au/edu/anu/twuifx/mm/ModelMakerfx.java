@@ -67,9 +67,10 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
- * Author Ian Davies
- *
- * Date 10 Dec. 2018
+ * Application used to form the specification graph for ecological simulations
+ * in accordance with the 3Worlds specification archetype.
+ * 
+ * @author Ian Davies - 10 Dec. 2018
  */
 public class ModelMakerfx extends Application {
 	private Stage mainStage;
@@ -113,9 +114,9 @@ public class ModelMakerfx extends Application {
 
 	static {
 //	// on behalf of PaletteTypes in ymuit which has no dependence on omugi
-	ValidPropertyTypes.recordPropertyType(PaletteTypes.class.getSimpleName(), PaletteTypes.class.getName(),
-			PaletteTypes.defaultValue());
-	}	
+		ValidPropertyTypes.recordPropertyType(PaletteTypes.class.getSimpleName(), PaletteTypes.class.getName(),
+				PaletteTypes.defaultValue());
+	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -129,7 +130,8 @@ public class ModelMakerfx extends Application {
 		mainStage.setTitle(DefaultWindowSettings.defaultName());
 		createMainWindow();
 		Dialogs.setImplementation(new Dialogsfx(root.getScene().getWindow()));
-		GraphState.setImplementation(new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
+		GraphState.setImplementation(
+				new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
 		GraphState.addListener(controller);
 		mainStage.setHeight(DefaultWindowSettings.getHeight());
 		mainStage.setWidth(DefaultWindowSettings.getWidth());

@@ -59,7 +59,13 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
+import au.edu.anu.twuifx.mm.ModelMakerfx;
+
 /**
+ * A class to layout and instantiate the GUI for {@link ModelMakerfx}.
+ * <p>
+ * 
+ * 
  * @author Ian Davies - 2 Sep 2019
  */
 public class GUIBuilder {

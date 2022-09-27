@@ -36,19 +36,22 @@ import javafx.scene.control.ListCell;
 import javafx.scene.paint.Color;
 
 /**
+ * A ListCell formatter for file listings: {@literal <name> - <path>}. Contents
+ * are show red if the file does not exist.
+ * 
  * @author Ian Davies -3 Jan 2020
  */
 public class FileFormatCell extends ListCell<File> {
 
 	@Override
-	protected void updateItem(File item, boolean empty) {
-		super.updateItem(item, empty);
-		if (item == null || empty) {
+	protected void updateItem(File file, boolean empty) {
+		super.updateItem(file, empty);
+		if (file == null || empty) {
 			setText("");
 			setTextFill(Color.BLACK);
 		} else {
-			setText(item.getName() + " - " + item.getParent());
-			setTextFill(isSelected() ? Color.WHITE : !item.exists() ? Color.RED : Color.BLACK);
+			setText(file.getName() + " - " + file.getParent());
+			setTextFill(isSelected() ? Color.WHITE : !file.exists() ? Color.RED : Color.BLACK);
 		}
 	}
 }

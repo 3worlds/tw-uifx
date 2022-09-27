@@ -36,12 +36,12 @@ import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
 /**
- * @author Ian Davies -15 Sept 2021
+ * Static class of TextFormatters.
  * 
- *         https://stackoverflow.com/questions/45977390/how-to-force-a-double-input-in-a-textfield-in-javafx
+ * @author Ian Davies -15 Sept 2021
  */
 public class TextFilters {
-	private static Pattern validEditingState = Pattern.compile("-?(([1-9][0-9]*)|0)?(\\.[0-9]*)?");
+	private static Pattern doublePattern = Pattern.compile("-?(([1-9][0-9]*)|0)?(\\.[0-9]*)?");
 
 	private TextFilters() {
 	};
@@ -51,6 +51,9 @@ public class TextFilters {
 	 * 
 	 * @param def Default value
 	 * @return A double formatter.
+	 * @see <a href=
+	 *      "https://stackoverflow.com/questions/45977390/how-to-force-a-double-input-in-a-textfield-in-javafx">
+	 *      Stack overflow.</a>
 	 */
 	public static TextFormatter<Double> getDoubleFormatter(Double def) {
 		return new TextFormatter<>(converter, def, getDoubleFilter());
@@ -59,7 +62,7 @@ public class TextFilters {
 	private static UnaryOperator<TextFormatter.Change> getDoubleFilter() {
 		UnaryOperator<TextFormatter.Change> result = c -> {
 			String text = c.getControlNewText();
-			if (validEditingState.matcher(text).matches()) {
+			if (doublePattern.matcher(text).matches()) {
 				return c;
 			} else {
 				return null;

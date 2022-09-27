@@ -34,7 +34,6 @@ import java.util.Objects;
 import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 
-import au.edu.anu.rscs.aot.graph.property.Property;
 import au.edu.anu.twapps.mm.IMMController;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -54,6 +53,10 @@ import javafx.beans.value.ObservableValue;
  * configuration file. This means typing fast will over-load the thread.
  * Therefore, large strings such as Descriptions, should be handled by purpose
  * built property editor.
+ * </p>
+ * <p>
+ * Currently, for String fields, update events are only enacted when focus
+ * leaves the field.
  * 
  * @author Ian Davies - 14 Feb. 2019
  *

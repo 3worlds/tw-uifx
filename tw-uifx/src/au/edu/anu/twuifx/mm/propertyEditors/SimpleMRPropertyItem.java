@@ -38,9 +38,7 @@ import au.edu.anu.twcore.data.runtime.TwData;
 import javafx.beans.value.ObservableValue;
 
 /**
- * Author Ian Davies
- *
- * Date 14 Feb. 2019
+ * @author Ian Davies- 14 Feb. 2019
  */
 public class SimpleMRPropertyItem implements Item {
 	private String containerId;
