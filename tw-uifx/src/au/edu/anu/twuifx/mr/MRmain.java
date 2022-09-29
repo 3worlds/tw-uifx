@@ -164,7 +164,7 @@ public class MRmain {
 
 		}
 
-		File prjDir = new File(Project.USER_ROOT_TW_ROOT + File.separator + args[1]);
+		File prjDir = new File(Project.TW_HOME + File.separator + args[1]);
 		if (!prjDir.exists()) {
 			System.err.println("Project not found: [" + prjDir + "]");
 			System.err.println(Arrays.deepToString(args));
