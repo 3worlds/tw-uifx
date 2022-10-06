@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import au.edu.anu.rscs.aot.collections.tables.IntTable;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.Output2DData;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
 import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
@@ -84,7 +84,7 @@ public class HLMatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadat
 	 * @param statusSender The state machine
 	 */
 	public HLMatrixWidget1(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.DIM2);
+		super(statusSender, AbstractDataTracker.DIM2);
 		recordTimes = new HashSet<>();
 		senderSelectedData = new ConcurrentHashMap<>();
 		isSized = false;

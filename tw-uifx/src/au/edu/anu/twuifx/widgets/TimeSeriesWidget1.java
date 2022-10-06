@@ -51,7 +51,7 @@ import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.Output0DData;
 import au.edu.anu.twcore.data.runtime.Output0DMetadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
@@ -132,7 +132,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 	 * @param statusSender The {@link StatusWidget}.
 	 */
 	public TimeSeriesWidget1(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.DIM0);
+		super(statusSender, AbstractDataTracker.DIM0);
 		// needs to be thread-safe because chartfx plugins may be looking at chart
 		// data?? No sure this makes sense but seems to work.
 		senderDataSetMap = new ConcurrentHashMap<>();

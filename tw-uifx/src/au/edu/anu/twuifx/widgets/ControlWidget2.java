@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
 import au.edu.anu.twcore.ui.runtime.ControllerAdapter;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
@@ -115,22 +115,22 @@ public class ControlWidget2 extends ControllerAdapter
 		addRendezvous(new RendezvousProcess() {
 			@Override
 			public void execute(RVMessage message) {
-				if (message.getMessageHeader().type() == DataMessageTypes.TIME) {
+				if (message.getMessageHeader().type() == AbstractDataTracker.TIME) {
 					TimeData data = (TimeData) message.payload();
 					onDataMessage(data);
 				}
 			}
-		}, DataMessageTypes.TIME);
+		}, AbstractDataTracker.TIME);
 		// RV for metadata messages
 		addRendezvous(new RendezvousProcess() {
 			@Override
 			public void execute(RVMessage message) {
-				if (message.getMessageHeader().type() == DataMessageTypes.METADATA) {
+				if (message.getMessageHeader().type() == AbstractDataTracker.METADATA) {
 					Metadata meta = (Metadata) message.payload();
 					onMetaDataMessage(meta);
 				}
 			}
-		}, DataMessageTypes.METADATA);
+		}, AbstractDataTracker.METADATA);
 
 	}
 

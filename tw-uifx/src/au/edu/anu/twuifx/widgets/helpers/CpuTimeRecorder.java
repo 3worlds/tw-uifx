@@ -42,7 +42,7 @@ import static au.edu.anu.twcore.ui.runtime.StatusWidget.isSimulatorState;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
 import au.edu.anu.twcore.ui.runtime.DataReceiver;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -84,22 +84,22 @@ public class CpuTimeRecorder extends StateMachineController
 		addRendezvous(new RendezvousProcess() {
 			@Override
 			public void execute(RVMessage message) {
-				if (message.getMessageHeader().type() == DataMessageTypes.TIME) {
+				if (message.getMessageHeader().type() == AbstractDataTracker.TIME) {
 					TimeData data = (TimeData) message.payload();
 					onDataMessage(data);
 				}
 			}
-		}, DataMessageTypes.TIME);
+		}, AbstractDataTracker.TIME);
 		// Metadata messages
 		addRendezvous(new RendezvousProcess() {
 			@Override
 			public void execute(RVMessage message) {
-				if (message.getMessageHeader().type() == DataMessageTypes.METADATA) {
+				if (message.getMessageHeader().type() == AbstractDataTracker.METADATA) {
 					Metadata meta = (Metadata) message.payload();
 					onMetaDataMessage(meta);
 				}
 			}
-		}, DataMessageTypes.METADATA);
+		}, AbstractDataTracker.METADATA);
 	}
 
 	protected void handleResetPressed() {

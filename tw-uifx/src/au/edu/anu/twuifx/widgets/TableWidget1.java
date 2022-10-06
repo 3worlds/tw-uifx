@@ -42,7 +42,7 @@ import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.data.runtime.Output0DData;
 import au.edu.anu.twcore.data.runtime.Output0DMetadata;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.WidgetGUI;
@@ -100,7 +100,7 @@ public class TableWidget1 extends AbstractDisplayWidget<Output0DData, Metadata> 
 	 * @param statusSender The {@link StatusWidget}.
 	 */
 	public TableWidget1(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.DIM0);
+		super(statusSender, AbstractDataTracker.DIM0);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new MultiSenderTrackingPolicy();
 		log.info("Thread: " + Thread.currentThread().getId());

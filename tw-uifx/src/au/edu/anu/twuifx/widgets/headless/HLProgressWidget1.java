@@ -36,7 +36,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.tracking.DataMessageTypes;
+import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
 import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
 import au.edu.anu.twcore.ui.runtime.StatusWidget;
 import au.edu.anu.twcore.ui.runtime.Widget;
@@ -65,7 +65,7 @@ public class HLProgressWidget1 extends AbstractDisplayWidget<TimeData, Metadata>
 	 * @param statusSender The {@link StatusWidget}.
 	 */
 	public HLProgressWidget1(StateMachineEngine<StatusWidget> statusSender) {
-		super(statusSender, DataMessageTypes.TIME);
+		super(statusSender, AbstractDataTracker.TIME);
 		timeFormatter = new WidgetTimeFormatter();
 		policy = new SimCloneWidgetTrackingPolicy();
 		nSenders = 0;
