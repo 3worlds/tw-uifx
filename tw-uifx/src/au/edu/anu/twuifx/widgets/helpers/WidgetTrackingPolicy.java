@@ -39,7 +39,7 @@ import au.edu.anu.twcore.ui.runtime.Widget;
  * 
  * @author Ian Davies - 24 Nov. 2020
  */
-// Can be moved to twapps (or twcore)
+// TODO: can be moved to twapps (or twcore)
 public interface WidgetTrackingPolicy<T> extends Widget {
 
 	/**
