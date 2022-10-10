@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mr.view;
+package au.edu.anu.twuifx.mm.view;
 
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -60,6 +60,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import au.edu.anu.twuifx.mm.ModelMakerfx;
+import au.edu.anu.twuifx.mr.view.MRControllerfx;
 
 /**
  * A class to layout and instantiate the GUI for {@link ModelMakerfx}.
@@ -72,7 +73,7 @@ public class GUIBuilder {
 	private List<WidgetGUI> guiWidgets;
 	private List<Widget> hlWidgets;
 	private List<SplitPane> splitPanes;
-	private MrController controller;
+	private MRControllerfx controller;
 
 	/**
 	 * Builds the GUI widgets and layout.
@@ -81,7 +82,7 @@ public class GUIBuilder {
 	 * @param controller The ModelRunner controller javafx implementation.
 	 */
 	@SuppressWarnings("unchecked")
-	public GUIBuilder(TreeGraphNode uiNode, MrController controller) {
+	public GUIBuilder(TreeGraphNode uiNode, MRControllerfx controller) {
 		guiWidgets = new ArrayList<>();
 		hlWidgets = new ArrayList<>();
 		splitPanes = new ArrayList<>();

@@ -34,7 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.properties.SimplePropertyList;
@@ -60,7 +60,7 @@ public class BoxItem extends SimpleMMPropertyItem {
 	 *                    in the property sheet to categorized items.
 	 * @param description Not implemented. Intended as help info for the property.
 	 */
-	public BoxItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
+	public BoxItem(MMController controller, String key, ElementAdapter element, boolean canEdit, String category,
 			String description) {
 		super(controller, key, element, canEdit, category, description);
 	}

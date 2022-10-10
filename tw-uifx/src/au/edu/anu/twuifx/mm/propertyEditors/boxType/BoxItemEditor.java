@@ -33,7 +33,7 @@ package au.edu.anu.twuifx.mm.propertyEditors.boxType;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.uit.space.Box;
@@ -87,7 +87,7 @@ public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonCon
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
 		dlg.setTitle(item.getElement().toShortString() + "#" + P_SPACE_OBSWINDOW.key());
-		dlg.initOwner((Window) Dialogs.owner());
+		dlg.initOwner((Window) DialogsFactory.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		GridPane content = new GridPane();
@@ -104,11 +104,11 @@ public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonCon
 
 			tf = new TextField(origin.toString());
 			tf.setTextFormatter(new TextFormatter<>(
-					change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+					change -> (change.getControlNewText().matches(DialogsFactory.vsReal) ? change : null)));
 			origins.add(tf);
 			tf = new TextField(width.toString());
 			tf.setTextFormatter(new TextFormatter<>(
-					change -> (change.getControlNewText().matches(Dialogs.vsReal) ? change : null)));
+					change -> (change.getControlNewText().matches(DialogsFactory.vsReal) ? change : null)));
 			widths.add(tf);
 
 			content.add(origins.get(i), 0, i + 1);

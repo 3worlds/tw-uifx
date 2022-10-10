@@ -34,10 +34,9 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
-//import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 
 /**
@@ -60,7 +59,7 @@ public class TrackerTypeItem extends SimpleMMPropertyItem {
 	 *                    in the property sheet to categorized items.
 	 * @param description Not implemented. Intended as help info for the property.
 	 */
-	public TrackerTypeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
+	public TrackerTypeItem(MMController controller, String key, ElementAdapter element, boolean canEdit,
 			String category, String description) {
 		super(controller, key, element, canEdit, category, description);
 	}

@@ -37,7 +37,7 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -87,7 +87,7 @@ public class BorderListEditor extends AbstractPropertyEditor<String, LabelButton
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
 		dlg.setTitle(item.getElement().toShortString() + "#" + P_SPACE_BORDERTYPE.key());
-		dlg.initOwner((Window) Dialogs.owner());
+		dlg.initOwner((Window) DialogsFactory.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 

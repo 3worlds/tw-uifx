@@ -40,7 +40,7 @@ import java.util.Optional;
 
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.data.runtime.Output2DData;
 import au.edu.anu.twcore.data.runtime.TimeData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
@@ -430,7 +430,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 		dialog.setTitle(widgetId);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dialog.initOwner((Window) Dialogs.owner());
+		dialog.initOwner((Window) DialogsFactory.owner());
 		GridPane content = new GridPane();
 		content.setVgap(5);
 		content.setHgap(3);

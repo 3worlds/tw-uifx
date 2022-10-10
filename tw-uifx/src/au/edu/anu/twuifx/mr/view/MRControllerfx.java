@@ -37,10 +37,8 @@ import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.util.Resources;
-import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.mr.IMRController;
-import au.edu.anu.twapps.mr.IMRModel;
-import au.edu.anu.twapps.mr.MRModel;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.mr.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.dialogs.ExperimentDetailsDlg;
 import au.edu.anu.twuifx.dialogs.ISParametersDlg;
@@ -89,7 +87,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  * 
  * @author Ian Davies - 18 Jan. 2018
  */
-public class MrController implements IMRController {
+public class MRControllerfx implements MRController {
 	@FXML
 	private CheckMenuItem miParDashboard;
 
@@ -113,7 +111,7 @@ public class MrController implements IMRController {
 	@FXML
 	private TabPane tabPane;
 
-	private IMRModel model;
+	private MRModel model;
 
 	@FXML
 	private HBox toolBar;
@@ -164,7 +162,7 @@ public class MrController implements IMRController {
 	 */
 	@FXML
 	public final void initialize() {
-		model = new MRModel();
+		model = new MRModelImpl();
 		statusBar.setSpacing(5);
 		statusBar.setPadding(new Insets(1, 1, 1, 1));
 		toolBar.setSpacing(5);
@@ -178,7 +176,7 @@ public class MrController implements IMRController {
 	@FXML
 	void onAboutModelRunner(ActionEvent event) {
 		Dialog<ButtonType> dlg = new Dialog<>();
-		dlg.initOwner((Window) Dialogs.owner());
+		dlg.initOwner((Window) DialogsFactory.owner());
 		dlg.setTitle("About ModelRunner");
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		HBox content = new HBox();
@@ -341,7 +339,7 @@ public class MrController implements IMRController {
 		String[] exts = new String[2];
 		exts[0] = "Initial state (*.isf)";
 		exts[1] = ".isf";
-		File file = Dialogs.promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save state as", exts);
+		File file = DialogsFactory.promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save state as", exts);
 		if (file != null) {
 			System.out.println(file);
 			model.doISSaveAs(file);
@@ -350,7 +348,7 @@ public class MrController implements IMRController {
 
 	@FXML
 	void onISSelect(ActionEvent event) {
-		int idx = Dialogs.selectFile(model.getISFiles(), model.getISSelection());
+		int idx = DialogsFactory.selectFile(model.getISFiles(), model.getISSelection());
 		model.setISSelection(idx);
 	}
 
@@ -364,7 +362,7 @@ public class MrController implements IMRController {
 		String[] exts = new String[2];
 		exts[0] = "Model parameters (*.mpf)";
 		exts[1] = ".mpf";
-		File file = Dialogs.promptForOpenFile(Project.makeFile(Project.RUNTIME), "Open parameters", exts);
+		File file = DialogsFactory.promptForOpenFile(Project.makeFile(Project.RUNTIME), "Open parameters", exts);
 		System.out.println(file);
 	}
 
@@ -373,7 +371,7 @@ public class MrController implements IMRController {
 		String[] exts = new String[2];
 		exts[0] = "Model parameters (*.mpf)";
 		exts[1] = ".mpf";
-		File file = Dialogs.promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save parameters", exts);
+		File file = DialogsFactory.promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save parameters", exts);
 		System.out.println(file);
 	}
 
@@ -403,7 +401,7 @@ public class MrController implements IMRController {
 	 * 
 	 * @return The model interface.
 	 */
-	public final IMRModel getModel() {
+	public final MRModel getModel() {
 		return model;
 	}
 

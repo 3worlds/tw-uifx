@@ -43,14 +43,14 @@ import java.util.TimerTask;
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
-import au.edu.anu.twuifx.mr.view.GUIBuilder;
-import au.edu.anu.twuifx.mr.view.MrController;
+import au.edu.anu.twuifx.mm.view.GUIBuilder;
+import au.edu.anu.twuifx.mr.view.MRControllerfx;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
@@ -75,7 +75,7 @@ public class ModelRunnerfx extends Application {
 	private static TreeGraphNode uiNode;
 	private static TreeGraph<TreeGraphDataNode, ALEdge> config;
 	private GUIBuilder uiDeployer;
-	private MrController controller;
+	private MRControllerfx controller;
 	private Stage stage;
 
 	/**
@@ -149,7 +149,7 @@ public class ModelRunnerfx extends Application {
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 
-		Dialogs.setImplementation(new Dialogsfx(root.getScene().getWindow()));
+		DialogsFactory.setImplementation(new Dialogsfx(root.getScene().getWindow()));
 		GraphState.setImplementation(null);
 
 		controller = loader.getController();

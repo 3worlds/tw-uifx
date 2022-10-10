@@ -32,7 +32,7 @@ package au.edu.anu.twuifx.mm;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import au.edu.anu.twapps.mm.MMModel;
+import au.edu.anu.twapps.mm.MMModelImpl;
 import au.edu.anu.twuifx.FXEnumProperties;
 import au.edu.anu.twuifx.mr.MRmain;
 import fr.cnrs.iees.OmugiClassLoader;
@@ -40,7 +40,6 @@ import fr.cnrs.iees.twcore.constants.EnumProperties;
 import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import fr.ens.biologie.generic.utils.Logging;
 import javafx.application.Application;
-import au.edu.anu.twuifx.mr.MRmain;
 
 /**
  * 
@@ -71,7 +70,7 @@ public class MMmain {
 		// Flaky ??
 		ProjectJarGenerator.setModelRunnerClass(MRmain.class);
 		// pass logging args on to deployed MR
-		MMModel.setMMArgs(args);
+		MMModelImpl.setMMArgs(args);
 
 		// enact logging args
 		if (args.length > 0)

@@ -32,7 +32,7 @@ package au.edu.anu.twuifx.mr.view;
 
 import org.controlsfx.control.PropertySheet;
 
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -72,7 +72,7 @@ public class ParameterWindow implements IRunTimeParameterizer{
 		stage = new Stage();
 		stage.setTitle("Parameters");
 		stage.setScene(scene);
-		stage.initOwner((Window) Dialogs.owner());
+		stage.initOwner((Window) DialogsFactory.owner());
 		stage.setX(ownerStage.getX() + 200);
 		stage.setY(ownerStage.getY() + 100);
 		scene.getWindow().setOnCloseRequest((e) -> {

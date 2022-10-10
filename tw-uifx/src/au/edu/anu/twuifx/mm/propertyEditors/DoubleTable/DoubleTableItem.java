@@ -36,7 +36,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
 import au.edu.anu.rscs.aot.collections.tables.Table;
-import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.MMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 
@@ -61,7 +61,7 @@ public class DoubleTableItem extends SimpleMMPropertyItem {
 	 *                    in the property sheet to categorized items.
 	 * @param description Not implemented. Intended as help info for the property.
 	 */
-	public DoubleTableItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
+	public DoubleTableItem(MMController controller, String key, ElementAdapter element, boolean canEdit,
 			String category, String description) {
 		super(controller, key, element, canEdit, category, description);
 	}

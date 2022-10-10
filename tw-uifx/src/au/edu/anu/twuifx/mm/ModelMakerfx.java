@@ -35,7 +35,7 @@ import java.net.URL;
 import java.util.prefs.Preferences;
 
 import au.edu.anu.omhtk.Language;
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twapps.mm.undo.Caretaker;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
 import au.edu.anu.twcore.graphState.GraphState;
@@ -43,7 +43,7 @@ import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
-import au.edu.anu.twuifx.mm.view.MmController;
+import au.edu.anu.twuifx.mm.view.MMControllerImpl;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -75,7 +75,7 @@ import javafx.stage.Window;
 public class ModelMakerfx extends Application {
 	private Stage mainStage;
 	private Parent root;
-	private MmController controller;
+	private MMControllerImpl controller;
 
 	private void createMainWindow() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -129,7 +129,7 @@ public class ModelMakerfx extends Application {
 		mainStage = primaryStage;
 		mainStage.setTitle(DefaultWindowSettings.defaultName());
 		createMainWindow();
-		Dialogs.setImplementation(new Dialogsfx(root.getScene().getWindow()));
+		DialogsFactory.setImplementation(new Dialogsfx(root.getScene().getWindow()));
 		GraphState.setImplementation(
 				new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
 		GraphState.addListener(controller);

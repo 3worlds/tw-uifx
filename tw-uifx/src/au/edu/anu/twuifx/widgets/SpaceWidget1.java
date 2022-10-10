@@ -42,7 +42,7 @@ import java.util.Set;
 
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.SpaceData;
@@ -1610,7 +1610,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		dialog.setTitle(widgetId);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dialog.initOwner((Window) Dialogs.owner());
+		dialog.initOwner((Window) DialogsFactory.owner());
 		GridPane content = new GridPane();
 		content.setVgap(15);
 		content.setHgap(10);

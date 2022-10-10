@@ -34,7 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.control.PropertySheet;
 
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
@@ -63,7 +63,7 @@ public class ISParametersDlg {
 		public ISParametersDlg(TreeGraph<TreeGraphDataNode, ALEdge> dynamicGraph) {
 		dlg = new Dialog<ButtonType>();
 		dlg.setTitle("Edit parameters");
-		dlg.initOwner((Window) Dialogs.owner());
+		dlg.initOwner((Window) DialogsFactory.owner());
 		ok = new ButtonType("Ok", ButtonData.OK_DONE);
 
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);

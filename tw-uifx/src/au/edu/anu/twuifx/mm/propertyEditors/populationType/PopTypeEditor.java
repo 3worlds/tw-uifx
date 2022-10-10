@@ -34,7 +34,7 @@ import org.controlsfx.control.ListSelectionView;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.twcore.constants.PopulationVariables;
@@ -94,7 +94,7 @@ public class PopTypeEditor extends AbstractPropertyEditor<String, LabelButtonCon
 			if (!sas.values().contains(sa))
 				src.add(sa);
 		}
-		if (Dialogs.editList(getProperty().getName(), "", "", listView)) {
+		if (DialogsFactory.editList(getProperty().getName(), "", "", listView)) {
 			/*
 			 * Using this dirty trick:
 			 * 

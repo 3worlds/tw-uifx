@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.data.runtime.IndexedDataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.OutputXYData;
@@ -279,7 +279,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 		dialog.setTitle(widgetId);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dialog.initOwner((Window) Dialogs.owner());
+		dialog.initOwner((Window) DialogsFactory.owner());
 		GridPane content = new GridPane();
 		content.setVgap(5);
 		content.setHgap(3);

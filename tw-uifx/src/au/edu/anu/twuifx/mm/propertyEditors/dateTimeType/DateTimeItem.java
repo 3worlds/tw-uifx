@@ -34,7 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twcore.InitialisableNode;
 import au.edu.anu.twcore.ecosystem.dynamics.Timeline;
 import au.edu.anu.twcore.root.World;
@@ -74,7 +74,7 @@ public class DateTimeItem extends SimpleMMPropertyItem {
 	 *                    in the property sheet to categorized items.
 	 * @param description Not implemented. Intended as help info for the property.
 	 */
-	public DateTimeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
+	public DateTimeItem(MMController controller, String key, ElementAdapter element, boolean canEdit, String category,
 			String description) {
 		super(controller, key, element, canEdit, category, description);
 		Timeline timeline = null;

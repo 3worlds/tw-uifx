@@ -36,7 +36,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.PropertySheet?>
 
-<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mm.view.MmController">
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="au.edu.anu.twuifx.mm.view.MMControllerImpl">
 	<top>
 		<MenuBar BorderPane.alignment="CENTER">
 			<menus>

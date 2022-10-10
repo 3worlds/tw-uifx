@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.dialogs.IDialogs;
 import au.edu.anu.twapps.dialogs.YesNoCancel;
 import au.edu.anu.twcore.project.Project;
 import fr.cnrs.iees.io.GraphFileFormats;
@@ -68,7 +68,7 @@ import javafx.stage.Window;
  * @author Ian Davies -Date 12 Dec. 2018
  */
 
-public class Dialogsfx implements IDialogs {
+public class Dialogsfx implements Dialogs {
 	private Window owner;
 
 	/**
@@ -327,7 +327,7 @@ public class Dialogsfx implements IDialogs {
 		for (String[] ext : exts)
 			if (result.getName().endsWith(ext[1]))
 				return result;
-		Dialogs.errorAlert("File name error", "", result.getName() + " does not have a valid file-extension.");
+		DialogsFactory.errorAlert("File name error", "", result.getName() + " does not have a valid file-extension.");
 		return null;
 	}
 
@@ -353,7 +353,7 @@ public class Dialogsfx implements IDialogs {
 		dlg.setTitle(title);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dlg.initOwner((Window) Dialogs.owner());
+		dlg.initOwner((Window) DialogsFactory.owner());
 		GridPane content = new GridPane();
 		content.setVgap(15);
 		content.setHgap(10);

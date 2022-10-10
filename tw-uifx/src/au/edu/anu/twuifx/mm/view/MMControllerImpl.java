@@ -33,22 +33,12 @@ package au.edu.anu.twuifx.mm.view;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.Observable;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.*;
+import javafx.beans.value.*;
+import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
-import javafx.scene.Group;
+import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
@@ -68,16 +58,9 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
 import javafx.scene.effect.DropShadow;
@@ -85,35 +68,24 @@ import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
-import au.edu.anu.rscs.aot.collections.tables.DoubleTable;
-import au.edu.anu.rscs.aot.collections.tables.IntTable;
-import au.edu.anu.rscs.aot.collections.tables.StringTable;
-import au.edu.anu.rscs.aot.errorMessaging.ErrorMessageManager;
-import au.edu.anu.rscs.aot.errorMessaging.ErrorListListener;
-import au.edu.anu.rscs.aot.errorMessaging.ErrorMessagable;
-import au.edu.anu.rscs.aot.util.IntegerRange;
-import au.edu.anu.rscs.aot.util.Resources;
-import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.MMModel;
+import au.edu.anu.rscs.aot.collections.tables.*;
+import au.edu.anu.rscs.aot.errorMessaging.*;
+import au.edu.anu.rscs.aot.util.*;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twapps.mm.IGraphVisualiser;
 import au.edu.anu.twapps.mm.layout.LayoutType;
 import au.edu.anu.twapps.mm.undo.Caretaker;
 import au.edu.anu.twapps.mm.undo.MMMemento;
 import au.edu.anu.twapps.mm.userProjectFactory.IDETypes;
 import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
-import au.edu.anu.twapps.mm.IMMModel;
-import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
-import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
-import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twapps.mm.layoutGraph.*;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twcore.graphState.IGraphStateListener;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
-import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
+import au.edu.anu.twuifx.mm.propertyEditors.*;
 import au.edu.anu.twuifx.mm.propertyEditors.DoubleTable.DoubleTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.IntTable.IntTableItem;
 import au.edu.anu.twuifx.mm.propertyEditors.StringTable.StringTableItem;
@@ -126,29 +98,17 @@ import au.edu.anu.twuifx.mm.propertyEditors.intervalType.IntervalItem;
 import au.edu.anu.twuifx.mm.propertyEditors.populationType.PopTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.statsType.StatsTypeItem;
 import au.edu.anu.twuifx.mm.propertyEditors.trackerType.TrackerTypeItem;
-//import au.edu.anu.twuifx.modelLibrary.LibraryTable;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import au.edu.anu.ymuit.util.CenteredZooming;
 import fr.cnrs.iees.graph.DataHolder;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.ElementAdapter;
-import fr.cnrs.iees.graph.impl.ALDataEdge;
-import fr.cnrs.iees.graph.impl.ALEdge;
-import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
-import fr.cnrs.iees.twcore.constants.BorderListType;
-import fr.cnrs.iees.twcore.constants.DateTimeType;
-import fr.cnrs.iees.twcore.constants.FileType;
-import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
-import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
-import fr.cnrs.iees.twcore.constants.TrackerType;
-import fr.cnrs.iees.twcore.constants.TwFunctionTypes;
+import fr.cnrs.iees.graph.impl.*;
+import fr.cnrs.iees.twcore.constants.*;
 import fr.cnrs.iees.twmodels.LibraryTable;
 import fr.cnrs.iees.uit.space.Box;
-import fr.ens.biologie.generic.utils.Duple;
-import fr.ens.biologie.generic.utils.Interval;
+import fr.ens.biologie.generic.utils.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
@@ -163,7 +123,7 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
  * @author Ian Davies - 23 Sep. 2022
  *
  */
-public class MmController implements ErrorListListener, IMMController, IGraphStateListener {
+public class MMControllerImpl implements ErrorListListener, MMController, IGraphStateListener {
 	@FXML
 	private MenuItem miImportSnippets;
 
@@ -308,8 +268,8 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private RadioButton[] rbLayouts;
 
-	private IMMModel model;
-	private IGraphVisualiser visualiser;
+	private MMModel model;
+	private GraphVisualiser visualiser;
 
 	private Stage stage;
 	private ToggleGroup tgArchetype;
@@ -328,7 +288,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	private LayoutType currentLayout;
 
-	private TreeGraph<VisualNode, VisualEdge> visualGraph;
+	private TreeGraph<LayoutNode, LayoutEdge> visualGraph;
 	private Font font;
 	private static final double fontSize = 9.5;
 	private static final double nodeRadius = 7.0;
@@ -349,7 +309,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	public void initialize() {
 		/** This class has all the housework for managing graph */
-		model = new MMModel(this);
+		model = new MMModelImpl(this);
 
 		cbNodeTextChoice.getItems().addAll(ElementDisplayText.values());
 		cbNodeTextChoice.getSelectionModel().select(ElementDisplayText.RoleName);
@@ -472,12 +432,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				+ UserProjectLink.projectRoot().getName() + "'.";
 		UserProjectLink.unlinkUserProject();
 		ConfigGraph.verifyGraph();
-		Dialogs.infoAlert("Project disconnected", header, "");
+		DialogsFactory.infoAlert("Project disconnected", header, "");
 	}
 
 	@FXML
 	void handleSetCodePath(ActionEvent event) {
-		File jprjFile = Dialogs.selectDirectory("Select java project", userProjectPath.get());
+		File jprjFile = DialogsFactory.selectDirectory("Select java project", userProjectPath.get());
 		if (jprjFile != null) {
 			String tmp = jprjFile.getAbsolutePath().replace("\\", "/");
 			if (!tmp.equals(userProjectPath.get())) {
@@ -489,7 +449,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 							+ jprjFile.getName() + "'.";
 					String content = "Make sure '" + Project.TW_DEP_JAR + "' is in the build path of '"
 							+ jprjFile.getName() + "' and refresh/clean '" + jprjFile.getName() + "' from the IDE.";
-					Dialogs.infoAlert("Project connected", header, content);
+					DialogsFactory.infoAlert("Project connected", header, content);
 				}
 			}
 		}
@@ -533,7 +493,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void handleSaveAs(ActionEvent event) {
 		model.doSaveAs();
-		for (VisualNode rootNodes : visualGraph.roots())
+		for (LayoutNode rootNodes : visualGraph.roots())
 			if (rootNodes.isRoot())
 				visualiser.onNodeRenamed(rootNodes);
 	}
@@ -601,7 +561,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	@FXML
 	void onAbout(ActionEvent event) {
 		Dialog<ButtonType> dlg = new Dialog<>();
-		dlg.initOwner((Window) Dialogs.owner());
+		dlg.initOwner((Window) DialogsFactory.owner());
 		dlg.setTitle("About ModelMaker");
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		HBox content = new HBox();
@@ -730,7 +690,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		// Best if we have a list of paired and unpaired code-snippet node
 		if (content.isBlank())
 			content = "No changes found.";
-		Dialogs.infoAlert(title, header, content);
+		DialogsFactory.infoAlert(title, header, content);
 	}
 
 	@FXML
@@ -823,7 +783,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	public void onProjectOpened(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+	public void onProjectOpened(TreeGraph<LayoutNode, LayoutEdge> layoutGraph) {
 		this.visualGraph = layoutGraph;
 		Cursor oldCursor = setWaitCursor();
 		getPreferences();
@@ -849,16 +809,16 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		stage.setTitle(Project.getDisplayName());
 	}
 
-	private VisualNode newNode;
+	private LayoutNode newNode;
 
 	@Override
-	public void onNewNode(VisualNode node) {
+	public void onNewNode(LayoutNode node) {
 		zoomTarget.setCursor(Cursor.CROSSHAIR);
 		newNode = node;
 	}
 
 	@Override
-	public void onNewEdge(VisualEdge e) {
+	public void onNewEdge(LayoutEdge e) {
 		initialisePropertySheets();
 	}
 
@@ -897,14 +857,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	public void doFocusedLayout(VisualNode root, LayoutType layout, double duration) {
+	public void doFocusedLayout(LayoutNode root, LayoutType layout, double duration) {
 		callLayout(root, layout, duration);
 		currentLayout = layout;
 	}
 
 	// used only by Visualiser?? Passed by a node onClicked left button
 	@Override
-	public void onNodeSelected(VisualNode node) {
+	public void onNodeSelected(LayoutNode node) {
 		lastSelectedNode = node;
 		Duple<ObservableList<Item>, ObservableList<Item>> items = getObsItems();
 		fillSelPropertySheet(items.getSecond());
@@ -960,7 +920,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 //	}
 
 	@Override
-	public void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+	public void onRollback(TreeGraph<LayoutNode, LayoutEdge> layoutGraph) {
 		// cbNodeTextChoice.getSelectionModel().selectedItemProperty()
 		// cbEdgeTextChoice.getSelectionModel().selectedItemProperty()
 		visualGraph = layoutGraph;
@@ -975,7 +935,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	public void onAddRemoveProperty(VisualNode vn) {
+	public void onAddRemoveProperty(LayoutNode vn) {
 		Duple<ObservableList<Item>, ObservableList<Item>> items = getObsItems();
 		fillAllPropertySheet(items.getFirst());
 		if (lastSelectedNode != null)
@@ -983,14 +943,14 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 				fillSelPropertySheet(items.getSecond());
 	}
 
-	private VisualNode layoutRoot;
+	private LayoutNode layoutRoot;
 
 	@Override
-	public VisualNode setLayoutRoot(VisualNode newRoot) {
-		VisualNode oldRoot = layoutRoot;
+	public LayoutNode setLayoutRoot(LayoutNode newRoot) {
+		LayoutNode oldRoot = layoutRoot;
 		layoutRoot = newRoot;
 		if (layoutRoot == null) {
-			for (VisualNode root : visualGraph.roots())
+			for (LayoutNode root : visualGraph.roots())
 				if (root.isRoot())
 					layoutRoot = root;
 		}
@@ -1003,17 +963,17 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 	}
 
 	@Override
-	public VisualNode getLayoutRoot() {
+	public LayoutNode getLayoutRoot() {
 		return layoutRoot;
 	}
 
 	@Override
-	public IMMModel model() {
+	public MMModel model() {
 		return model;
 	}
 
 	@Override
-	public IGraphVisualiser visualiser() {
+	public GraphVisualiser visualiser() {
 		return visualiser;
 	}
 
@@ -1282,7 +1242,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 						rnames += ((++i) + ") " + r.toShortString() + "\n");
 					String title = "Library graph error";
 					String content = "Graphs must have a single root (ref '" + N_ROOT.label() + "').";
-					Dialogs.errorAlert(title, content, rnames);
+					DialogsFactory.errorAlert(title, content, rnames);
 					return;
 				}
 
@@ -1326,7 +1286,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 
 	}
 
-	private void callLayout(VisualNode root, LayoutType layout, double duration) {
+	private void callLayout(LayoutNode root, LayoutType layout, double duration) {
 		int size = jitterProperty.get();
 		double dSize = size;
 		dSize = dSize / 10.0;
@@ -1385,9 +1345,9 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		return t;
 	}
 
-	private List<VisualNode> getNodeList() {
-		List<VisualNode> result = new LinkedList<>();
-		for (VisualNode n : visualGraph.nodes())
+	private List<LayoutNode> getNodeList() {
+		List<LayoutNode> result = new LinkedList<>();
+		for (LayoutNode n : visualGraph.nodes())
 			result.add(n);
 		return result;
 	}
@@ -1396,12 +1356,12 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		ObservableList<Item> allItems = FXCollections.observableArrayList();
 		ObservableList<Item> selItems = FXCollections.observableArrayList();
 		Duple<ObservableList<Item>, ObservableList<Item>> result = new Duple<>(allItems, selItems);
-		List<VisualNode> vNodes = getNodeList();
+		List<LayoutNode> vNodes = getNodeList();
 		vNodes.sort((n1, n2) -> n1.id().compareTo(n2.id()));
 //		vNodes.sort((first, second) -> {
 //			return first.id().compareTo(second.id());
 //		});
-		for (VisualNode vn : vNodes) {
+		for (LayoutNode vn : vNodes) {
 			if (!vn.isCollapsed()) {
 				String cat = vn.getCategory();
 				if (cat == null)
@@ -1530,7 +1490,7 @@ public class MmController implements ErrorListListener, IMMController, IGraphSta
 		return result;
 	}
 
-	private VisualNode lastSelectedNode = null;
+	private LayoutNode lastSelectedNode = null;
 
 	private void setUndoRedoBtns() {
 		miRedo.setDisable(!Caretaker.hasSucc());

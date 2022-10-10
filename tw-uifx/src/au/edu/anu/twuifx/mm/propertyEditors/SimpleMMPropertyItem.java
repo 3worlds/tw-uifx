@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 
-import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twcore.graphState.GraphState;
 import fr.cnrs.iees.graph.ElementAdapter;
@@ -68,7 +68,7 @@ public class SimpleMMPropertyItem implements Item {
 	protected String category;
 	protected SimplePropertyList properties;
 	private String description;
-	private IMMController controller;
+	private MMController controller;
 
 	/**
 	 * 
@@ -83,7 +83,7 @@ public class SimpleMMPropertyItem implements Item {
 	 *                    in the property sheet to categorized items.
 	 * @param description Not implemented. Intended as help info for the property.
 	 */
-	public SimpleMMPropertyItem(IMMController controller, String key, ElementAdapter element, boolean canEdit,
+	public SimpleMMPropertyItem(MMController controller, String key, ElementAdapter element, boolean canEdit,
 			String category, String description) {
 		this.element = element;
 		this.key = key;

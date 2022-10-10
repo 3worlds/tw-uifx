@@ -35,7 +35,7 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.MMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.FileType;
@@ -68,7 +68,7 @@ public class FileTypeItem extends SimpleMMPropertyItem {
 	 *                    in the property sheet to categorized items.
 	 * @param description Not implemented. Intended as help info for the property.
 	 */
-	public FileTypeItem(IMMController controller, String key, ElementAdapter element, boolean canEdit, String category,
+	public FileTypeItem(MMController controller, String key, ElementAdapter element, boolean canEdit, String category,
 			String description) {
 		super(controller, key, element, canEdit, category, description);
 		fileType = (FileType) properties.getPropertyValue(key);

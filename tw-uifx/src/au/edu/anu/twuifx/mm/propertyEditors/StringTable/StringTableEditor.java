@@ -38,7 +38,7 @@ import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import javafx.application.Platform;
@@ -88,7 +88,7 @@ public class StringTableEditor extends AbstractPropertyEditor<String, LabelButto
 		StringTable currentValue = StringTable.valueOf(currentStringValue);
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
-		dlg.initOwner((Window) Dialogs.owner());
+		dlg.initOwner((Window) DialogsFactory.owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		BorderPane pane = new BorderPane();

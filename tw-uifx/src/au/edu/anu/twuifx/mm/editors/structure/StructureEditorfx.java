@@ -39,16 +39,14 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import au.edu.anu.twapps.mm.IMMController;
+import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.rscs.aot.archetype.Archetypes;
-import au.edu.anu.twapps.mm.IGraphVisualiser;
+import au.edu.anu.twapps.mm.GraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.StructureEditorAdapter;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
 import au.edu.anu.twapps.mm.undo.Originator;
-import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
-import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
-import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twapps.mm.layoutGraph.*;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
@@ -93,7 +91,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	 * @param gv         The graph visualisation system.
 	 * @param recorder   Records edits for the undo/redo system.
 	 */
-	public StructureEditorfx(VisualNodeEditable n, MouseEvent event, IMMController controller, IGraphVisualiser gv,
+	public StructureEditorfx(VisualNodeEditable n, MouseEvent event, MMController controller, GraphVisualiser gv,
 			Originator recorder) {
 		super(n, gv, controller);
 		this.recorder = recorder;
@@ -108,16 +106,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(editableNode, baseSpec, subClassSpec,
 				TWA.getRoot());
 		List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
-		List<VisualNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
+		List<LayoutNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
-		List<Tuple<String, VisualNode, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
+		List<Tuple<String, LayoutNode, SimpleDataTreeNode>> filteredEdgeSpecs = filterEdgeSpecs(edgeSpecs);
 		List<SimpleDataTreeNode> optionalNodePropertySpecs = removeNonEditablePropertySpecs(
 				specifications.getOptionalProperties(baseSpec, subClassSpec));
 		// Get edge specs for currently extant edges and select those that are
 		// optional.
 		// TODO: No account taken of possible constraints and non-editable properties.
 		// Some inconsistency in use of Iterable and List<>
-		List<Duple<VisualEdge, SimpleDataTreeNode>> optionalEdgePropertySpecs = filterOptionalEdgePropertySpecs(
+		List<Duple<LayoutEdge, SimpleDataTreeNode>> optionalEdgePropertySpecs = filterOptionalEdgePropertySpecs(
 				editableNode, edgeSpecs);
 		final double duration = GraphVisualiserfx.animateSlow;
 
@@ -156,7 +154,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_EDGE);
 			if (!filteredEdgeSpecs.isEmpty()) {
-				for (Tuple<String, VisualNode, SimpleDataTreeNode> p : filteredEdgeSpecs) {
+				for (Tuple<String, LayoutNode, SimpleDataTreeNode> p : filteredEdgeSpecs) {
 					boolean reserved = ConfigurationReservedEdgeLabels.isPredefined(p.getFirst());
 					if (!reserved) {
 						MenuItem mi = MenuLabels.addMenuItem(mu,
@@ -182,7 +180,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_CHILD_LINK);
 			if (!orphanedChildren.isEmpty() && !editableNode.visualNode().isPredefined()) {
-				for (VisualNode vn : orphanedChildren) {
+				for (LayoutNode vn : orphanedChildren) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					mi.setOnAction((e) -> {
 
@@ -205,10 +203,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPAND);
 			if (editableNode.visualNode().hasCollaspedChild()) {
 				int count = 0;
-				SortedMap<String, VisualNode> sortedNames = new TreeMap<>();
-				for (VisualNode vn : editableNode.visualNode().getChildren())
+				SortedMap<String, LayoutNode> sortedNames = new TreeMap<>();
+				for (LayoutNode vn : editableNode.visualNode().getChildren())
 					sortedNames.put(vn.getDisplayText(ElementDisplayText.RoleName), vn);
-				for (Map.Entry<String, VisualNode> entry : sortedNames.entrySet()) {
+				for (Map.Entry<String, LayoutNode> entry : sortedNames.entrySet()) {
 					if (entry.getValue().isCollapsed()) {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, entry.getKey());
@@ -237,10 +235,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_COLLAPSE);
 			if (editableNode.visualNode().hasUncollapsedChildren()) {
 				int count = 0;
-				SortedMap<String, VisualNode> sortedNames = new TreeMap<>();
-				for (VisualNode vn : editableNode.visualNode().getChildren())
+				SortedMap<String, LayoutNode> sortedNames = new TreeMap<>();
+				for (LayoutNode vn : editableNode.visualNode().getChildren())
 					sortedNames.put(vn.getDisplayText(ElementDisplayText.RoleName), vn);
-				for (Map.Entry<String, VisualNode> entry : sortedNames.entrySet()) {
+				for (Map.Entry<String, LayoutNode> entry : sortedNames.entrySet()) {
 					if (!entry.getValue().isCollapsed()) {
 						count++;
 						MenuItem mi = MenuLabels.addMenuItem(mu, entry.getKey());
@@ -288,8 +286,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_EDGE);
 			if (editableNode.hasOutEdges()) {
-				for (VisualEdge edge : editableNode.getOutEdges()) {
-					VisualNode vn = (VisualNode) edge.endNode();
+				for (LayoutEdge edge : editableNode.getOutEdges()) {
+					LayoutNode vn = (LayoutNode) edge.endNode();
 
 					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->"
 							+ vn.getDisplayText(ElementDisplayText.RoleName));
@@ -313,7 +311,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_CHILD_EDGE);
 			if (editableNode.visualNode().hasChildren() && !editableNode.visualNode().isPredefined()) {
-				for (VisualNode child : editableNode.visualNode().getChildren()) {
+				for (LayoutNode child : editableNode.visualNode().getChildren()) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, child.getDisplayText(ElementDisplayText.RoleName));
 					if (child.isPredefined())
 						mi.setDisable(true);
@@ -336,8 +334,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_TREE);
 			if (editableNode.visualNode().hasChildren() && !editableNode.visualNode().isPredefined()) {
-				Iterable<VisualNode> lst = editableNode.visualNode().getChildren();
-				for (VisualNode vn : lst) {
+				Iterable<LayoutNode> lst = editableNode.visualNode().getChildren();
+				for (LayoutNode vn : lst) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					if (vn.isPredefined())
 						mi.setDisable(true);
@@ -410,8 +408,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_RENAME_EDGE);
 			if (editableNode.hasOutEdges()) {
-				for (VisualEdge edge : editableNode.getOutEdges()) {
-					VisualNode vn = (VisualNode) edge.endNode();
+				for (LayoutEdge edge : editableNode.getOutEdges()) {
+					LayoutNode vn = (LayoutNode) edge.endNode();
 					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->"
 							+ vn.getDisplayText(ElementDisplayText.RoleName));
 //					mi.setDisable(true);
@@ -464,7 +462,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPORT_TREE);
 			if (editableNode.visualNode().hasChildren() && !editableNode.visualNode().isPredefined()) {
-				for (VisualNode vn : editableNode.visualNode().getChildren()) {
+				for (LayoutNode vn : editableNode.visualNode().getChildren()) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					if (vn.isPredefined())
 						mi.setDisable(true);
@@ -481,15 +479,15 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	// TODO Move to adaptor
 	@SuppressWarnings("unchecked")
-	private List<Duple<VisualEdge, SimpleDataTreeNode>> filterOptionalEdgePropertySpecs(VisualNodeEditable editableNode,
+	private List<Duple<LayoutEdge, SimpleDataTreeNode>> filterOptionalEdgePropertySpecs(VisualNodeEditable editableNode,
 			Iterable<SimpleDataTreeNode> edgeSpecs) {
 		// Task: get edge spec for each out edge present for this node that contains
 		// optional properties
-		Map<String, VisualEdge> edgeMap = new LinkedHashMap<>();
-		for (VisualEdge e : editableNode.getOutEdges())
+		Map<String, LayoutEdge> edgeMap = new LinkedHashMap<>();
+		for (LayoutEdge e : editableNode.getOutEdges())
 			edgeMap.put(e.getConfigEdge().classId(), e);
 
-		List<Duple<VisualEdge, SimpleDataTreeNode>> result = new ArrayList<>();
+		List<Duple<LayoutEdge, SimpleDataTreeNode>> result = new ArrayList<>();
 		for (SimpleDataTreeNode es : edgeSpecs) {
 			String edgeClass = (String) es.properties().getPropertyValue(Archetypes.IS_OF_CLASS);
 			if (edgeMap.containsKey(edgeClass)) {
@@ -499,8 +497,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					if (specifications.getMultiplicityOf(ps).getFirst() == 0) {
 //						String propName = (String) ps.properties().getPropertyValue(aaHasName);
 						// add a duple of ALEdge and property spec
-						result.add(new Duple<VisualEdge, SimpleDataTreeNode>(edgeMap.get(edgeClass), ps));
-//						VisualEdge ve = edgeMap.get(edgeClass);
+						result.add(new Duple<LayoutEdge, SimpleDataTreeNode>(edgeMap.get(edgeClass), ps));
+//						LayoutEdge ve = edgeMap.get(edgeClass);
 					}
 				}
 			}

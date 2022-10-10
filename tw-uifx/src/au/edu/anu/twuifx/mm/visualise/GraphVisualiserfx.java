@@ -30,28 +30,15 @@
 
 package au.edu.anu.twuifx.mm.visualise;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import fr.cnrs.iees.uit.space.Distance;
-//import org.apache.commons.math.util.MathUtils;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
-import au.edu.anu.twapps.mm.IMMController;
-import au.edu.anu.twapps.mm.IGraphVisualiser;
+import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
-import au.edu.anu.twapps.mm.layout.FRLayout;
-import au.edu.anu.twapps.mm.layout.ILayout;
-import au.edu.anu.twapps.mm.layout.LayoutType;
-import au.edu.anu.twapps.mm.layout.OTLayout;
-import au.edu.anu.twapps.mm.layout.RT1Layout;
-import au.edu.anu.twapps.mm.layout.RT2Layout;
+import au.edu.anu.twapps.mm.layout.*;
 import au.edu.anu.twapps.mm.undo.Originator;
-import au.edu.anu.twapps.mm.visualGraph.ElementDisplayText;
-import au.edu.anu.twapps.mm.visualGraph.VisualEdge;
-import au.edu.anu.twapps.mm.visualGraph.VisualNode;
+import au.edu.anu.twapps.mm.layoutGraph.*;
 import au.edu.anu.twcore.graphState.GraphState;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
@@ -61,17 +48,8 @@ import fr.cnrs.iees.graph.impl.ALEdge;
 import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import fr.ens.biologie.generic.utils.Duple;
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.ParallelTransition;
-import javafx.animation.Timeline;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.animation.*;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -82,11 +60,8 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.shape.*;
+import javafx.scene.text.*;
 import javafx.util.Duration;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
@@ -96,7 +71,7 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
  * 
  * @author Ian Davies -28 Jan. 2019
  */
-public final class GraphVisualiserfx implements IGraphVisualiser {
+public final class GraphVisualiserfx implements GraphVisualiser {
 	/**
 	 * Speed of configuration graph animation in msec.
 	 */
@@ -108,7 +83,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	 */
 	public static final Double animateFast = 1.0;
 
-	private TreeGraph<VisualNode, VisualEdge> visualGraph;
+	private TreeGraph<LayoutNode, LayoutEdge> visualGraph;
 	private final Pane pane;
 	private final DoubleProperty nodeRadius;
 	private final DoubleProperty lineWidth;
@@ -124,7 +99,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	private final Color treeEdgeColor;
 	private final Color graphEdgeColor;
 	private final static Interpolator interpolator = Interpolator.EASE_BOTH;
-	private final IMMController controller;
+	private final MMController controller;
 	private final Originator recorder;
 	private final ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
 	private final ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
@@ -150,7 +125,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	 * @param recorder       The {@link Originator} to record edits in the undo/redo
 	 *                       system.
 	 */
-	public GraphVisualiserfx(TreeGraph<VisualNode, VisualEdge> visualGraph, //
+	public GraphVisualiserfx(TreeGraph<LayoutNode, LayoutEdge> visualGraph, //
 			Pane pane, //
 			BooleanProperty animate, //
 			DoubleProperty nodeRadius, //
@@ -163,7 +138,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 //			BooleanProperty neighMode, 
 			ReadOnlyObjectProperty<Integer> pathLength, //
 			ObjectProperty<Font> font, //
-			IMMController controller, //
+			MMController controller, //
 			Originator recorder) {
 		this.visualGraph = visualGraph;
 		this.pane = pane;
@@ -194,15 +169,15 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	private void setTextListeners() {
 		this.nodeSelect.addListener(e_ -> {
-			for (VisualNode n : visualGraph.nodes()) {
+			for (LayoutNode n : visualGraph.nodes()) {
 				Text txt = (Text) n.getText();
 				txt.setText(n.getDisplayText(nodeSelect.get()));
 			}
 		});
 		this.edgeSelect.addListener(e -> {
-			for (VisualNode n : visualGraph.nodes()) {
+			for (LayoutNode n : visualGraph.nodes()) {
 				for (Edge edge : n.edges(Direction.OUT)) {
-					VisualEdge ve = (VisualEdge) edge;
+					LayoutEdge ve = (LayoutEdge) edge;
 					Text txt = (Text) ve.getText();
 					txt.setText(ve.getDisplayText(edgeSelect.get()));
 				}
@@ -217,12 +192,12 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pane.setPrefHeight(pane.getHeight());
 		pane.setPrefWidth(pane.getWidth());
 
-		for (VisualNode n : visualGraph.nodes()) {
+		for (LayoutNode n : visualGraph.nodes()) {
 			createNodeVisualisation(n);
 		}
-		List<VisualNode> collapsedParents = new ArrayList<>();
+		List<LayoutNode> collapsedParents = new ArrayList<>();
 
-		for (VisualNode n : visualGraph.nodes()) {
+		for (LayoutNode n : visualGraph.nodes()) {
 			createParentLines(n, parentLineVisibleProperty);
 			createGraphLines(n, edgeLineVisibleProperty);
 			if (!n.isCollapsed() && n.hasCollaspedChild())
@@ -230,14 +205,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 		resetZorder(pane.getChildren());
 
-		for (VisualNode parent : collapsedParents)
-			for (VisualNode child : parent.getChildren()) {
+		for (LayoutNode parent : collapsedParents)
+			for (LayoutNode child : parent.getChildren()) {
 				if (child.isCollapsed())
 					collapseTree(child, duration);
 			}
-		Set<VisualNode> visibleNodes = new HashSet<>();
+		Set<LayoutNode> visibleNodes = new HashSet<>();
 
-		for (VisualNode n : visualGraph.nodes())
+		for (LayoutNode n : visualGraph.nodes())
 			if (n.isVisible())
 				visibleNodes.add(n);
 
@@ -272,7 +247,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final TreeGraph<VisualNode, VisualEdge> getVisualGraph() {
+	public final TreeGraph<LayoutNode, LayoutEdge> getVisualGraph() {
 		return visualGraph;
 	}
 
@@ -282,11 +257,11 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	}
 
-	private VisualNode dragNode;
+	private LayoutNode dragNode;
 
 	private boolean dimmingOn;
 
-	private void createNodeVisualisation(VisualNode n) {
+	private void createNodeVisualisation(LayoutNode n) {
 		double x = n.getX() * pane.getWidth();
 		double y = n.getY() * pane.getHeight();
 
@@ -385,14 +360,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final void setLayoutRoot(VisualNode newRoot) {
+	public final void setLayoutRoot(LayoutNode newRoot) {
 		if (newRoot == null)
 			newRoot = getTWRoot();
 		if (!newRoot.isVisible() || newRoot.isCollapsed())
 			newRoot = getTWRoot();
 		if (!visualGraph.nodes().contains(newRoot))
 			newRoot = getTWRoot();
-		VisualNode oldRoot = controller.setLayoutRoot(newRoot);
+		LayoutNode oldRoot = controller.setLayoutRoot(newRoot);
 		if (oldRoot != null)
 			((Circle) oldRoot.getSymbol()).setStroke(null);
 		if (newRoot.isRoot())
@@ -402,15 +377,15 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final void onNewNode(VisualNode node) {
+	public final void onNewNode(LayoutNode node) {
 		createNodeVisualisation(node);
 		createParentLines(node, parentLineVisibleProperty);
 		resetZorder(pane.getChildren());
 	}
 
-	private void createParentLines(VisualNode child, BooleanProperty show) {
+	private void createParentLines(LayoutNode child, BooleanProperty show) {
 		// each node has a line connected to its parent
-		VisualNode parent = child.getParent();
+		LayoutNode parent = child.getParent();
 		if (parent != null) {
 			Circle parentCircle = (Circle) parent.getSymbol();
 			Circle childCircle = (Circle) child.getSymbol();
@@ -437,17 +412,17 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void createGraphLines(VisualNode n, BooleanProperty show) {
-		Iterable<VisualEdge> edges = (Iterable<VisualEdge>) SequenceQuery.get(n.edges(Direction.OUT));
-		for (VisualEdge edge : edges) {
+	private void createGraphLines(LayoutNode n, BooleanProperty show) {
+		Iterable<LayoutEdge> edges = (Iterable<LayoutEdge>) SequenceQuery.get(n.edges(Direction.OUT));
+		for (LayoutEdge edge : edges) {
 			createGraphLine(edge, show);
 		}
 	}
 
-	private void createGraphLine(VisualEdge edge, BooleanProperty show) {
+	private void createGraphLine(LayoutEdge edge, BooleanProperty show) {
 
-		VisualNode startNode = (VisualNode) edge.startNode();
-		VisualNode endNode = (VisualNode) edge.endNode();
+		LayoutNode startNode = (LayoutNode) edge.startNode();
+		LayoutNode endNode = (LayoutNode) edge.endNode();
 
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
@@ -502,7 +477,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	}
 
-	protected void textPropertyChange(Line line, Text text, VisualNode startNode, VisualNode endNode) {
+	protected void textPropertyChange(Line line, Text text, LayoutNode startNode, LayoutNode endNode) {
 		boolean collapsed = startNode.isCollapsed() || endNode.isCollapsed();
 //		double[] p1 = { line.getStartX(), line.getStartY() };
 //		double[] p2 = { line.getEndX(), line.getEndY() };
@@ -517,7 +492,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 	}
 
-	private static void setExpandBindings(VisualNode node, double w, double h,
+	private static void setExpandBindings(LayoutNode node, double w, double h,
 			BooleanProperty parentLineVisibleProperty, List<Animation> timelines, double duration,
 			BooleanProperty animate) {
 		Circle circle = (Circle) node.getSymbol();
@@ -546,14 +521,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	private static void collapse(TreeNode parent, DoubleProperty xp, DoubleProperty yp, List<Animation> timelines,
 			double duration, BooleanProperty animate) {
-		VisualNode vParent = (VisualNode) parent;
+		LayoutNode vParent = (LayoutNode) parent;
 		setCollapseBindings(vParent, xp, yp, timelines, duration, animate);
 		vParent.setCollapse(true);
 		for (TreeNode child : parent.getChildren())
 			collapse(child, xp, yp, timelines, duration, animate);
 	}
 
-	private static void setCollapseBindings(VisualNode node, DoubleProperty xp, DoubleProperty yp,
+	private static void setCollapseBindings(LayoutNode node, DoubleProperty xp, DoubleProperty yp,
 			List<Animation> timelines, double duration, BooleanProperty animate) {
 		Circle circle = (Circle) node.getSymbol();
 		// Some subtrees may already be collapsed
@@ -585,13 +560,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final void collapseTreeFrom(VisualNode childRoot, double duration) {
+	public final void collapseTreeFrom(LayoutNode childRoot, double duration) {
 		collapseTree(childRoot, duration);
 	}
 
-	private void collapseTree(VisualNode childRoot, double duration) {
+	private void collapseTree(LayoutNode childRoot, double duration) {
 		List<Animation> timelines = new ArrayList<>();
-		VisualNode parent = childRoot.getParent();
+		LayoutNode parent = childRoot.getParent();
 		Circle circle = (Circle) parent.getSymbol();
 		DoubleProperty xp = circle.centerXProperty();
 		DoubleProperty yp = circle.centerYProperty();
@@ -612,13 +587,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		}
 	}
 
-	private static void hideEdges(VisualNode vNode) {
+	private static void hideEdges(LayoutNode vNode) {
 		// May not word due to threading.
 		for (Edge e : vNode.edges()) {
-			VisualNode sn = (VisualNode) e.startNode();
-			VisualNode en = (VisualNode) e.endNode();
+			LayoutNode sn = (LayoutNode) e.startNode();
+			LayoutNode en = (LayoutNode) e.endNode();
 			if (sn.isCollapsed() || en.isCollapsed()) {
-				VisualEdge ve = (VisualEdge) e;
+				LayoutEdge ve = (LayoutEdge) e;
 				Line line = (Line) ve.getSymbol().getFirst();
 				if (line.visibleProperty().isBound()) {
 					line.visibleProperty().unbind();
@@ -626,16 +601,16 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				}
 			}
 		}
-		for (VisualNode vChild : vNode.getChildren())
+		for (LayoutNode vChild : vNode.getChildren())
 			hideEdges(vChild);
 	}
 
 	@Override
-	public final void expandTreeFrom(VisualNode childRoot, double duration) {
+	public final void expandTreeFrom(LayoutNode childRoot, double duration) {
 		expandTree(childRoot, duration);
 	}
 
-	private void expandTree(VisualNode childRoot, double duration) {
+	private void expandTree(LayoutNode childRoot, double duration) {
 		List<Animation> timelines = new ArrayList<>();
 		double w = pane.getWidth();
 		double h = pane.getHeight();
@@ -655,13 +630,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			showEdges(childRoot, edgeLineVisibleProperty);
 	}
 
-	private static void showEdges(VisualNode vNode, BooleanProperty show) {
+	private static void showEdges(LayoutNode vNode, BooleanProperty show) {
 		for (Edge e : vNode.edges()) {
-			VisualNode sn = (VisualNode) e.startNode();
-			VisualNode en = (VisualNode) e.endNode();
+			LayoutNode sn = (LayoutNode) e.startNode();
+			LayoutNode en = (LayoutNode) e.endNode();
 			if (!sn.isCollapsed() && !en.isCollapsed())
 				if (sn.isVisible() && en.isVisible()) {
-					VisualEdge ve = (VisualEdge) e;
+					LayoutEdge ve = (LayoutEdge) e;
 					ve.setVisible(true);
 					Line line = (Line) ve.getSymbol().getFirst();
 					if (!line.visibleProperty().isBound()) {
@@ -669,31 +644,31 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 					}
 				}
 		}
-		for (VisualNode vChild : vNode.getChildren())
+		for (LayoutNode vChild : vNode.getChildren())
 			showEdges(vChild, show);
 	}
 
 	private static void expand(TreeNode parent, double w, double h, BooleanProperty parentLineVisibleProperty,
 			List<Animation> timelines, double duration, BooleanProperty animate) {
-		setExpandBindings((VisualNode) parent, w, h, parentLineVisibleProperty, timelines, duration, animate);
+		setExpandBindings((LayoutNode) parent, w, h, parentLineVisibleProperty, timelines, duration, animate);
 		for (TreeNode child : parent.getChildren())
 			expand(child, w, h, parentLineVisibleProperty, timelines, duration, animate);
 	}
 
 	@Override
-	public final void removeView(VisualNode visualNode) {
+	public final void removeView(LayoutNode visualNode) {
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) visualNode.getSymbol());
 		sceneNodes.add((Node) visualNode.getText());
 		sceneNodes.add((Node) visualNode.getParentLine().getFirst());
 		sceneNodes.add((Node) visualNode.getParentLine().getSecond());
-		for (VisualNode child : visualNode.getChildren()) {
+		for (LayoutNode child : visualNode.getChildren()) {
 			sceneNodes.add((Node) child.getParentLine().getFirst());
 			sceneNodes.add((Node) child.getParentLine().getSecond());
 			child.removeParentLine();
 		}
 		for (Edge e : visualNode.edges()) {
-			VisualEdge ve = (VisualEdge) e;
+			LayoutEdge ve = (LayoutEdge) e;
 			sceneNodes.add((Node) ve.getText());
 			sceneNodes.add((Node) ve.getSymbol().getFirst());
 			sceneNodes.add((Node) ve.getSymbol().getSecond());
@@ -702,9 +677,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final void onNewEdge(VisualEdge edge, double duration) {
+	public final void onNewEdge(LayoutEdge edge, double duration) {
 		createGraphLine(edge, edgeLineVisibleProperty);
-		VisualNode vn = (VisualNode) edge.endNode();
+		LayoutNode vn = (LayoutNode) edge.endNode();
 		if (vn.isCollapsed()) {
 			// animate fadeout otherwise it looks like nothing happened
 			Duple<Object, Object> line = edge.getSymbol();
@@ -741,7 +716,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final void removeView(VisualEdge edge) {
+	public final void removeView(LayoutEdge edge) {
 		removeFromBinding(edge);
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) edge.getText());
@@ -750,47 +725,47 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		pane.getChildren().removeAll(sceneNodes);
 	}
 
-	private void removeFromBinding(VisualEdge edge) {
-		List<VisualEdge> edges = getReplicateEdges((VisualNode) edge.startNode(), (VisualNode) edge.endNode());
+	private void removeFromBinding(LayoutEdge edge) {
+		List<LayoutEdge> edges = getReplicateEdges((LayoutNode) edge.startNode(), (LayoutNode) edge.endNode());
 		if (edges.size() == 1)
 			return;
 		edges.remove(edge);
 		stackEdges(edges);
 	}
 
-	private List<VisualEdge> getReplicateEdges(VisualNode startNode, VisualNode endNode) {
-		List<VisualEdge> result = new ArrayList<>();
+	private List<LayoutEdge> getReplicateEdges(LayoutNode startNode, LayoutNode endNode) {
+		List<LayoutEdge> result = new ArrayList<>();
 		for (ALEdge e : startNode.edges(Direction.OUT)) {
-			VisualEdge ve = (VisualEdge) e;
+			LayoutEdge ve = (LayoutEdge) e;
 			if (ve.endNode().id().equals(endNode.id()) && ve.hasText())
-				result.add((VisualEdge) e);
+				result.add((LayoutEdge) e);
 		}
 		for (ALEdge e : endNode.edges(Direction.OUT)) {
-			VisualEdge ve = (VisualEdge) e;
+			LayoutEdge ve = (LayoutEdge) e;
 			if (ve.endNode().id().equals(startNode.id()) && ve.hasText())
-				result.add((VisualEdge) e);
+				result.add((LayoutEdge) e);
 		}
 		return result;
 	}
 
-	private void arrangeLineText(VisualNode startNode, VisualNode endNode) {
-		List<VisualEdge> edges = getReplicateEdges(startNode, endNode);
+	private void arrangeLineText(LayoutNode startNode, LayoutNode endNode) {
+		List<LayoutEdge> edges = getReplicateEdges(startNode, endNode);
 		if (edges.size() <= 1)
 			// nothing to do
 			return;
 		stackEdges(edges);
 	}
 
-	private void stackEdges(List<VisualEdge> edges) {
+	private void stackEdges(List<LayoutEdge> edges) {
 		edges.sort((e1, e2) -> {
 			Text t1 = (Text) e1.getText();
 			Text t2 = (Text) e2.getText();
 			return t1.getText().compareTo(t2.getText());
 		});
-//		edges.sort(new Comparator<VisualEdge>() {
+//		edges.sort(new Comparator<LayoutEdge>() {
 //
 //			@Override
-//			public int compare(VisualEdge e1, VisualEdge e2) {
+//			public int compare(LayoutEdge e1, LayoutEdge e2) {
 //				Text t1 = (Text) e1.getText();
 //				Text t2 = (Text) e2.getText();
 //				return t1.getText().compareTo(t2.getText());
@@ -800,9 +775,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		// Set the first edge text as per normal i.e mid point of line.
 		// Then stack all the remaining texts below it.
 
-		VisualEdge firstEdge = edges.get(0);
-		VisualNode startNode = (VisualNode) firstEdge.startNode();
-		VisualNode endNode = (VisualNode) firstEdge.endNode();
+		LayoutEdge firstEdge = edges.get(0);
+		LayoutNode startNode = (LayoutNode) firstEdge.startNode();
+		LayoutNode endNode = (LayoutNode) firstEdge.endNode();
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
 
@@ -823,13 +798,13 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final void onNewParent(VisualNode child) {
+	public final void onNewParent(LayoutNode child) {
 		createParentLines(child, parentLineVisibleProperty);
 		resetZorder(pane.getChildren());
 	}
 
 	@Override
-	public final void onRemoveParentLink(VisualNode vnChild) {
+	public final void onRemoveParentLink(LayoutNode vnChild) {
 		List<Node> sceneNodes = new ArrayList<>();
 		sceneNodes.add((Node) vnChild.getParentLine().getFirst());
 		sceneNodes.add((Node) vnChild.getParentLine().getSecond());
@@ -838,19 +813,19 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final void onNodeRenamed(VisualNode vNode) {
+	public final void onNodeRenamed(LayoutNode vNode) {
 		Text text = (Text) vNode.getText();
 		text.setText(vNode.getDisplayText(nodeSelect.get()));
 	}
 
 	@Override
-	public final void onEdgeRenamed(VisualEdge vEdge) {
+	public final void onEdgeRenamed(LayoutEdge vEdge) {
 		Text text = (Text) vEdge.getText();
 		text.setText(vEdge.getDisplayText(edgeSelect.get()));
 	}
 
-	private VisualNode getTWRoot() {
-		for (VisualNode n : visualGraph.nodes()) {
+	private LayoutNode getTWRoot() {
+		for (LayoutNode n : visualGraph.nodes()) {
 			if (n.isRoot())
 				return n;
 		}
@@ -858,7 +833,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@Override
-	public final void doLayout(VisualNode root, double jitterFraction, LayoutType layoutType, boolean pcShowing,
+	public final void doLayout(LayoutNode root, double jitterFraction, LayoutType layoutType, boolean pcShowing,
 			boolean xlShowing, boolean sideline, double duration) {
 		/**
 		 * Can we figure out a way to show just the local neighbourhood to some path
@@ -908,7 +883,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 		// rescale to provide border for a little node radius
 		Timeline timeline = new Timeline();
 
-		for (VisualNode node : visualGraph.nodes())
+		for (LayoutNode node : visualGraph.nodes())
 			if (!node.isCollapsed()) {
 				double x = ILayout.rescale(node.getX(), 0, 1, 0.05, 0.95);
 				double y = ILayout.rescale(node.getY(), 0, 1, 0.05, 0.95);
@@ -949,9 +924,9 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public final void collapsePredef() {
-		for (VisualNode root : visualGraph.roots()) {
+		for (LayoutNode root : visualGraph.roots()) {
 			if (root.isRoot()) {
-				VisualNode predef = (VisualNode) get(root.getChildren(),
+				LayoutNode predef = (LayoutNode) get(root.getChildren(),
 						selectOne(hasTheName(ConfigurationReservedNodeId.categories.id())));
 				collapseTree(predef, 1.0);
 			}
@@ -960,8 +935,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 	@Override
 	public final void onHighlightAll() {
-		Set<VisualNode> highlightNodes = new HashSet<>();
-		for (VisualNode n : visualGraph.nodes())
+		Set<LayoutNode> highlightNodes = new HashSet<>();
+		for (LayoutNode n : visualGraph.nodes())
 //			if (!n.isCollapsed())
 			highlightNodes.add(n);
 		updateElementColour(highlightNodes);
@@ -969,20 +944,20 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 
 
 	@Override
-	public final void onHighlightLocalGraph(VisualNode root, int pathLength) {
-		Set<VisualNode> focusNodes = new HashSet<>();
+	public final void onHighlightLocalGraph(LayoutNode root, int pathLength) {
+		Set<LayoutNode> focusNodes = new HashSet<>();
 		traversal(parentLineVisibleProperty.getValue(), edgeLineVisibleProperty.getValue(), root, 0, pathLength,
 				focusNodes);
 		focusNodes.add(root);
 		updateElementColour(focusNodes);
 	}
 
-	private void updateElementColour(Set<VisualNode> focusNodes) {
-		for (VisualNode n : visualGraph.nodes())
+	private void updateElementColour(Set<LayoutNode> focusNodes) {
+		for (LayoutNode n : visualGraph.nodes())
 			dimNode(n);
 
 		ObservableList<Node> obs = FXCollections.observableArrayList();
-		for (VisualNode n : focusNodes)
+		for (LayoutNode n : focusNodes)
 			unDimNode(n, focusNodes, obs);
 
 		resetZorder(obs);
@@ -990,7 +965,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void unDimNode(VisualNode n, Set<VisualNode> focusNodes, ObservableList<Node> obs) {
+	private void unDimNode(LayoutNode n, Set<LayoutNode> focusNodes, ObservableList<Node> obs) {
 		Shape c = (Shape) n.getSymbol();
 		if (c != null) {// will be null during node creation
 			c.setEffect(dropShadow);
@@ -1005,7 +980,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				obs.add((Line) dpl.getFirst());
 				obs.add((Line) dpl.getSecond());
 			}
-			for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
+			for (LayoutEdge e : (Iterable<LayoutEdge>) get(n.edges(Direction.OUT))) {
 				if (focusNodes.contains(e.endNode())) {
 					Duple<Object, Object> dpl = e.getSymbol();
 					((Shape) dpl.getFirst()).setEffect(null);
@@ -1020,7 +995,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void dimNode(VisualNode n) {
+	private void dimNode(LayoutNode n) {
 		Shape c = (Shape) n.getSymbol();
 		if (c == null)
 			return;// may occur when creating a node!
@@ -1031,7 +1006,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			((Line) n.getParentLine().getFirst()).setEffect(colorAdjust);
 			((Line) n.getParentLine().getSecond()).setEffect(colorAdjust);
 		}
-		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
+		for (LayoutEdge e : (Iterable<LayoutEdge>) get(n.edges(Direction.OUT))) {
 			((Shape) e.getSymbol().getFirst()).setEffect(colorAdjust);
 			((Shape) e.getSymbol().getSecond()).setEffect(colorAdjust);
 			((Text) e.getText()).setEffect(colorAdjust);
@@ -1039,8 +1014,8 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void showNode(VisualNode n, BooleanProperty parentVisibleProperty,
-			BooleanProperty edgeVisibleProperty, Set<VisualNode> visibleNodes) {
+	private static void showNode(LayoutNode n, BooleanProperty parentVisibleProperty,
+			BooleanProperty edgeVisibleProperty, Set<LayoutNode> visibleNodes) {
 		Shape s = (Shape) n.getSymbol();
 		s.setVisible(true);
 		n.setVisible(true);
@@ -1053,7 +1028,7 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 				// expand
 			}
 		}
-		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
+		for (LayoutEdge e : (Iterable<LayoutEdge>) get(n.edges(Direction.OUT))) {
 			if (visibleNodes.contains(e.endNode())) {
 				s = (Shape) e.getSymbol().getFirst();
 				s.visibleProperty().bind(edgeVisibleProperty);
@@ -1063,23 +1038,23 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void hideNode(VisualNode n) {
+	private static void hideNode(LayoutNode n) {
 		hideShape((Shape) n.getSymbol());
 		n.setVisible(false);
 		if (n.getParent() != null) {
 			hideShape((Shape) n.getParentLine().getFirst());
 		}
-		for (VisualEdge e : (Iterable<VisualEdge>) get(n.edges(Direction.OUT))) {
+		for (LayoutEdge e : (Iterable<LayoutEdge>) get(n.edges(Direction.OUT))) {
 			hideShape((Shape) e.getSymbol().getFirst());
 			e.setVisible(false);
 		}
 	}
 
-	private static void updateGraphVisibility(TreeGraph<VisualNode, VisualEdge> g, Set<VisualNode> visibleNodes,
+	private static void updateGraphVisibility(TreeGraph<LayoutNode, LayoutEdge> g, Set<LayoutNode> visibleNodes,
 			BooleanProperty parentLineVisibleProperty, BooleanProperty edgeLineVisibleProperty) {
-		for (VisualNode n : g.nodes())
+		for (LayoutNode n : g.nodes())
 			hideNode(n);
-		for (VisualNode n : visibleNodes) {
+		for (LayoutNode n : visibleNodes) {
 			showNode(n, parentLineVisibleProperty, edgeLineVisibleProperty, visibleNodes);
 		}
 
@@ -1092,34 +1067,34 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void traversal(boolean treeVisible, boolean edgesVisible, VisualNode root, int depth, int pathLength,
-			Set<VisualNode> nnNodes) {
+	private static void traversal(boolean treeVisible, boolean edgesVisible, LayoutNode root, int depth, int pathLength,
+			Set<LayoutNode> nnNodes) {
 		if (depth < pathLength) {
-			Set<VisualNode> nn = new HashSet<>();
+			Set<LayoutNode> nn = new HashSet<>();
 
 			if (treeVisible) {
-				VisualNode parent = root.getParent();
+				LayoutNode parent = root.getParent();
 				if (parent != null && !nnNodes.contains(parent))
 					nn.add(root.getParent());
 
-				for (VisualNode n : root.getChildren())
+				for (LayoutNode n : root.getChildren())
 					if (!n.isCollapsed())
 						if (!nnNodes.contains(n))
 							nn.add(n);
 			}
 
 			if (edgesVisible) {
-				Collection<VisualEdge> outEdges = (Collection<VisualEdge>) get(root.edges(Direction.OUT));
-				for (VisualEdge e : outEdges) {
-					VisualNode endNode = (VisualNode) e.endNode();
+				Collection<LayoutEdge> outEdges = (Collection<LayoutEdge>) get(root.edges(Direction.OUT));
+				for (LayoutEdge e : outEdges) {
+					LayoutNode endNode = (LayoutNode) e.endNode();
 					if (!endNode.isCollapsed())
 						if (!nnNodes.contains(endNode))
 							nn.add(endNode);
 				}
 
-				Collection<VisualEdge> inEdges = (Collection<VisualEdge>) get(root.edges(Direction.IN));
-				for (VisualEdge e : inEdges) {
-					VisualNode startNode = (VisualNode) e.startNode();
+				Collection<LayoutEdge> inEdges = (Collection<LayoutEdge>) get(root.edges(Direction.IN));
+				for (LayoutEdge e : inEdges) {
+					LayoutNode startNode = (LayoutNode) e.startNode();
 					if (!startNode.isCollapsed())
 						if (!nnNodes.contains(startNode))
 							nn.add(startNode);
@@ -1127,14 +1102,14 @@ public final class GraphVisualiserfx implements IGraphVisualiser {
 			}
 			nnNodes.addAll(nn);
 
-			for (VisualNode n : nn)
+			for (LayoutNode n : nn)
 				traversal(treeVisible, edgesVisible, n, depth + 1, pathLength, nnNodes);
 
 		}
 	}
 
 	@Override
-	public final void onRollback(TreeGraph<VisualNode, VisualEdge> layoutGraph) {
+	public final void onRollback(TreeGraph<LayoutNode, LayoutEdge> layoutGraph) {
 		final double duration = animateFast;
 		this.visualGraph = layoutGraph;
 		pane.getChildren().clear();

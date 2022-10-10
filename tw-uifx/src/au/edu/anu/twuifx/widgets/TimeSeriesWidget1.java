@@ -44,7 +44,7 @@ import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.rscs.aot.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.util.StringUtils;
-import au.edu.anu.twapps.dialogs.Dialogs;
+import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;
@@ -411,7 +411,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		dialog.setTitle(widgetId);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dialog.initOwner((Window) Dialogs.owner());
+		dialog.initOwner((Window) DialogsFactory.owner());
 		GridPane content = new GridPane();
 		content.setVgap(5);
 		content.setHgap(3);
