@@ -73,7 +73,7 @@ public class OpenMoleRun {
 				.importGraph("Logistic1.utg", OpenMoleRun.class);
 // Uncomment to run from eclipse
 		if (Jars.getRunningJarFilePath(OpenMoleRun.class) == null) {
-			File userJar = new File("/home/ian/3w/project_Logistic1_2022-09-13-00-49-02-470/Logistic1.jar");
+			File userJar = new File("/home/ian/3w/project_Logistic1_2022-10-11-01-15-35-503/Logistic1.jar");
 			OmugiClassLoader.setJarClassLoader(userJar);
 		}
 		// else the generated classes must be in the jar. For OM this means building the
