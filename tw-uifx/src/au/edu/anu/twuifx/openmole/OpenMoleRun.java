@@ -63,7 +63,8 @@ public class OpenMoleRun {
 	 * 
 	 */
 	public static void run(int r) {
-		System.out.println("H! " + r);
+		System.out.println("Hi " + r);
+		System.out.println("PID: "+ProcessHandle.current().pid());
 		Logging.setDefaultLogLevel(Level.parse("SEVERE"));
 		EnumProperties.recordEnums();
 		FXEnumProperties.recordEnums();
