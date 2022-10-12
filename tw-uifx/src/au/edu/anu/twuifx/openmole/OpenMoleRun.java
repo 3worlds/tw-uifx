@@ -62,36 +62,40 @@ public class OpenMoleRun {
 	 * @param r     a constant for exp manipulation
 	 * 
 	 */
+	public static long testNumber = -1;
 	public static void run(int r) {
-		System.out.println("Hi " + r);
+		System.out.println("r: " + r);
 		System.out.println("PID: "+ProcessHandle.current().pid());
-		Logging.setDefaultLogLevel(Level.parse("SEVERE"));
-		EnumProperties.recordEnums();
-		FXEnumProperties.recordEnums();
-		@SuppressWarnings("unchecked")
-		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
-				.importGraph("Logistic1.utg", OpenMoleRun.class);
-// Uncomment to run from eclipse
-		if (Jars.getRunningJarFilePath(OpenMoleRun.class) == null) {
-			File userJar = new File("/home/ian/3w/project_Logistic1_2022-10-11-01-15-35-503/Logistic1.jar");
-			OmugiClassLoader.setJarClassLoader(userJar);
-		}
-		// else the generated classes must be in the jar. For OM this means building the
-		// model jar with these classes together with this class and the tw<>.jar i.e.
-		// code/<system>/etc
-		TreeNode uiNode = (TreeNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_UI.label())));
-		WidgetNode ctrlHl = getHeadlessController(uiNode);
-
-		for (TreeNode n : ctrlHl.getParent().getChildren()) {
-			InitialisableNode in = (InitialisableNode) n;
-			in.initialise();
-		}
-
-		Kicker ctrl = (Kicker) ctrlHl.getInstance();
-
-		ctrl.start();
-		while (!ctrl.ended())
-			;
+		if (testNumber!=-1L)
+			throw new IllegalStateException("TestNumber: "+testNumber);
+		testNumber = ProcessHandle.current().pid();
+//		Logging.setDefaultLogLevel(Level.parse("SEVERE"));
+//		EnumProperties.recordEnums();
+//		FXEnumProperties.recordEnums();
+//		@SuppressWarnings("unchecked")
+//		TreeGraph<TreeGraphDataNode, ALEdge> configGraph = (TreeGraph<TreeGraphDataNode, ALEdge>) GraphImporter
+//				.importGraph("Logistic1.utg", OpenMoleRun.class);
+//// Uncomment to run from eclipse
+//		if (Jars.getRunningJarFilePath(OpenMoleRun.class) == null) {
+//			File userJar = new File("/home/ian/3w/project_Logistic1_2022-10-11-01-15-35-503/Logistic1.jar");
+//			OmugiClassLoader.setJarClassLoader(userJar);
+//		}
+//		// else the generated classes must be in the jar. For OM this means building the
+//		// model jar with these classes together with this class and the tw<>.jar i.e.
+//		// code/<system>/etc
+//		TreeNode uiNode = (TreeNode) get(configGraph.root().getChildren(), selectOne(hasTheLabel(N_UI.label())));
+//		WidgetNode ctrlHl = getHeadlessController(uiNode);
+//
+//		for (TreeNode n : ctrlHl.getParent().getChildren()) {
+//			InitialisableNode in = (InitialisableNode) n;
+//			in.initialise();
+//		}
+//
+//		Kicker ctrl = (Kicker) ctrlHl.getInstance();
+//
+//		ctrl.start();
+//		while (!ctrl.ended())
+//			;
 	}
 
 	private static WidgetNode getHeadlessController(TreeNode uiNode) {

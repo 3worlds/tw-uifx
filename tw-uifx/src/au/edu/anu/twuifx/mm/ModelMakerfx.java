@@ -38,7 +38,7 @@ import au.edu.anu.omhtk.Language;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twapps.mm.undo.Caretaker;
 import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
-import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.images.Images;
@@ -130,9 +130,9 @@ public class ModelMakerfx extends Application {
 		mainStage.setTitle(DefaultWindowSettings.defaultName());
 		createMainWindow();
 		DialogsFactory.setImplementation(new Dialogsfx(root.getScene().getWindow()));
-		GraphState.setImplementation(
+		GraphStateFactory.setImplementation(
 				new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
-		GraphState.addListener(controller);
+		GraphStateFactory.addListener(controller);
 		mainStage.setHeight(DefaultWindowSettings.getHeight());
 		mainStage.setWidth(DefaultWindowSettings.getWidth());
 		mainStage.setX(DefaultWindowSettings.getX());

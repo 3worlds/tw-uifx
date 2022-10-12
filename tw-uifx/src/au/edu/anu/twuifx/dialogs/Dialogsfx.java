@@ -31,23 +31,17 @@
 package au.edu.anu.twuifx.dialogs;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import au.edu.anu.twapps.dialogs.DialogsFactory;
-import au.edu.anu.twapps.dialogs.Dialogs;
-import au.edu.anu.twapps.dialogs.YesNoCancel;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twcore.project.Project;
 import fr.cnrs.iees.io.GraphFileFormats;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.control.ButtonType;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Control;

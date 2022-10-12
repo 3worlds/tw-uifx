@@ -75,13 +75,11 @@ import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.layout.LayoutType;
-import au.edu.anu.twapps.mm.undo.Caretaker;
-import au.edu.anu.twapps.mm.undo.MMMemento;
+import au.edu.anu.twapps.mm.undo.*;
 import au.edu.anu.twapps.mm.userProjectFactory.IDETypes;
 import au.edu.anu.twapps.mm.userProjectFactory.UserProjectLinkFactory;
 import au.edu.anu.twapps.mm.layoutGraph.*;
-import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twcore.graphState.IGraphStateListener;
+import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.userProject.UserProjectLink;
 import au.edu.anu.twuifx.images.Images;
@@ -123,7 +121,7 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
  * @author Ian Davies - 23 Sep. 2022
  *
  */
-public class MMControllerImpl implements ErrorListListener, MMController, IGraphStateListener {
+public class MMControllerImpl implements ErrorListListener, MMController, GraphStateListener {
 	@FXML
 	private MenuItem miImportSnippets;
 
@@ -514,7 +512,7 @@ public class MMControllerImpl implements ErrorListListener, MMController, IGraph
 				lastSelectedNode = newNode;
 				newNode = null;
 				initialisePropertySheets();
-				GraphState.setChanged();
+				GraphStateFactory.setChanged();
 				ConfigGraph.verifyGraph();
 
 				model.addState(desc);
@@ -527,7 +525,7 @@ public class MMControllerImpl implements ErrorListListener, MMController, IGraph
 		MMMemento m = (MMMemento) Caretaker.succ();
 		if (mementoFilesExist(m)) {
 			model.restore(m);
-			GraphState.setChanged();
+			GraphStateFactory.setChanged();
 		} else {
 			Caretaker.initialise();
 			model.doSave();
@@ -545,7 +543,7 @@ public class MMControllerImpl implements ErrorListListener, MMController, IGraph
 		MMMemento m = (MMMemento) Caretaker.prev();
 		if (mementoFilesExist(m)) {
 			model.restore(m);
-			GraphState.setChanged();
+			GraphStateFactory.setChanged();
 		} else {
 			Caretaker.initialise();
 			model.doSave();
@@ -672,7 +670,7 @@ public class MMControllerImpl implements ErrorListListener, MMController, IGraph
 
 		if (changed) {
 			model.addState(miImportSnippets.getText());
-			GraphState.setChanged();
+			GraphStateFactory.setChanged();
 			ConfigGraph.verifyGraph();
 		}
 		String title = "IDE Import";
@@ -723,7 +721,7 @@ public class MMControllerImpl implements ErrorListListener, MMController, IGraph
 
 		if (changed) {
 			initialisePropertySheets();
-			GraphState.setChanged();
+			GraphStateFactory.setChanged();
 			model.addState(miClearSnippets.getText());
 		}
 	}
@@ -767,7 +765,7 @@ public class MMControllerImpl implements ErrorListListener, MMController, IGraph
 
 	@Override
 	public void onProjectClosing() {
-		GraphState.clear();
+		GraphStateFactory.clear();
 		if (visualiser != null)
 			visualiser.close();
 		visualiser = null;
@@ -1509,7 +1507,7 @@ public class MMControllerImpl implements ErrorListListener, MMController, IGraph
 
 	private void setButtonState() {
 		boolean isOpen = Project.isOpen();
-		boolean isClean = !GraphState.changed() & isOpen;
+		boolean isClean = !GraphStateFactory.changed() & isOpen;
 		boolean isConnected = UserProjectLink.haveUserProject();
 		miSetCodePath.setDisable(isConnected);
 		miDisconnect.setDisable(!isConnected);

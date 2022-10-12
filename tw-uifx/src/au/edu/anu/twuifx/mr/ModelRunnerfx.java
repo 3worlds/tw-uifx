@@ -44,7 +44,7 @@ import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.PrefImpl;
 import au.edu.anu.omhtk.preferences.Preferences;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
-import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
@@ -150,7 +150,7 @@ public class ModelRunnerfx extends Application {
 		stage.setScene(scene);
 
 		DialogsFactory.setImplementation(new Dialogsfx(root.getScene().getWindow()));
-		GraphState.setImplementation(null);
+		GraphStateFactory.setImplementation(new SimpleGraphStateImpl());
 
 		controller = loader.getController();
 		controller.setStage(stage);

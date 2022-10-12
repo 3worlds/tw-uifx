@@ -30,18 +30,16 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import org.controlsfx.control.PropertySheet.Item;
 
 import au.edu.anu.twapps.mm.*;
-import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.twcore.graphState.GraphState;
-import fr.cnrs.iees.graph.ElementAdapter;
-import fr.cnrs.iees.graph.impl.ALDataEdge;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.properties.SimplePropertyList;
-import javafx.beans.value.ObservableValue;
+import au.edu.anu.twapps.mm.configGraph.*;
+import au.edu.anu.twcore.graphState.*;
+import fr.cnrs.iees.graph.*;
+import fr.cnrs.iees.graph.impl.*;
+import fr.cnrs.iees.properties.*;
+import javafx.beans.value.*;
 
 /**
  * An adaptor for {@link Item} for any element in a ModelMaker configuration
@@ -142,7 +140,7 @@ public class SimpleMMPropertyItem implements Item {
 	protected void onUpdateProperty(Object value) {
 		properties.setProperty(key, value);
 		controller.onItemEdit(this);
-		GraphState.setChanged();
+		GraphStateFactory.setChanged();
 		if (!(value instanceof String))
 			ConfigGraph.verifyGraph();
 	}

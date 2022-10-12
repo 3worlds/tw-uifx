@@ -39,7 +39,7 @@ import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
 import au.edu.anu.twapps.mm.layout.*;
 import au.edu.anu.twapps.mm.undo.Originator;
 import au.edu.anu.twapps.mm.layoutGraph.*;
-import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.Direction;
 import fr.cnrs.iees.graph.Edge;
@@ -322,7 +322,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 				int dy = (int) Math.round(50 * Math.abs(oldy - newy));
 				if (dx != 0 || dy != 0) {
 					dragNode.setPosition(newx, newy);
-					GraphState.setChanged();
+					GraphStateFactory.setChanged();
 					String desc = "Move [" + dragNode.configNode().toShortString() + "]";
 					recorder.addState(desc);
 
@@ -870,7 +870,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		if (animate.get())
 			timeline.play();
 
-		GraphState.setChanged();
+		GraphStateFactory.setChanged();
 	}
 
 	private static KeyFrame getKeyFrame(Circle c, double x, double y, double duration) {

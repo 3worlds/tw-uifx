@@ -30,14 +30,7 @@
 
 package au.edu.anu.twuifx.mm.editors.structure;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
@@ -48,19 +41,14 @@ import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditable;
 import au.edu.anu.twapps.mm.undo.Originator;
 import au.edu.anu.twapps.mm.layoutGraph.*;
 import au.edu.anu.twcore.archetype.TWA;
-import au.edu.anu.twcore.graphState.GraphState;
+import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
-import fr.cnrs.iees.twcore.constants.ConfigurationReservedEdgeLabels;
-import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
+import fr.cnrs.iees.twcore.constants.*;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import fr.ens.biologie.generic.utils.Duple;
-import fr.ens.biologie.generic.utils.Tuple;
+import fr.ens.biologie.generic.utils.*;
 import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
 import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
 
@@ -367,7 +355,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					if (onOptionalProperties(optionalNodePropertySpecs, optionalEdgePropertySpecs)) {
 
 						controller.onAddRemoveProperty(editableNode.visualNode());
-						GraphState.setChanged();
+						GraphStateFactory.setChanged();
 						ConfigGraph.verifyGraph();
 
 						recorder.addState(desc);
@@ -397,7 +385,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 						recorder.addState(desc);
 
-						GraphState.setChanged();
+						GraphStateFactory.setChanged();
 						ConfigGraph.verifyGraph();
 					}
 				});
@@ -425,7 +413,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 							recorder.addState(desc);
 
-							GraphState.setChanged();
+							GraphStateFactory.setChanged();
 							ConfigGraph.verifyGraph();
 						}
 					});

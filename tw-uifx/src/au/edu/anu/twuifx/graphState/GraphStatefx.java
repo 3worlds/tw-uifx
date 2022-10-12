@@ -35,9 +35,8 @@ import java.util.List;
 import au.edu.anu.rscs.aot.errorMessaging.ErrorMessageManager;
 import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
 import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
-import au.edu.anu.twcore.graphState.IGraphState;
-import au.edu.anu.twcore.graphState.GraphState;
-import au.edu.anu.twcore.graphState.IGraphStateListener;
+import au.edu.anu.twcore.graphState.*;
+import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
 import javafx.application.Platform;
@@ -51,11 +50,11 @@ import javafx.beans.property.StringProperty;
  * 
  * @author Ian Davies Date May 6, 2019
  */
-public class GraphStatefx implements IGraphState {
+public class GraphStatefx implements GraphState {
 	private BooleanProperty propertyHasChanged = new SimpleBooleanProperty(false);
 	private StringProperty propertyTitle = new SimpleStringProperty("");
 	private StringProperty propertyJavaPath = new SimpleStringProperty("");
-	private List<IGraphStateListener> listeners = new ArrayList<>();
+	private List<GraphStateListener> listeners = new ArrayList<>();
 
 	/**
 	 * Javafx implementation of {@link IGraphState}.
@@ -121,14 +120,14 @@ public class GraphStatefx implements IGraphState {
 	}
 
 	@Override
-	public void addListener(IGraphStateListener l) {
+	public void addListener(GraphStateListener l) {
 		listeners.add(l);
 
 	}
 
 	@Override
 	public void onChange() {
-		for (IGraphStateListener l : listeners)
+		for (GraphStateListener l : listeners)
 			l.onStateChange(propertyHasChanged.getValue());
 
 	}
