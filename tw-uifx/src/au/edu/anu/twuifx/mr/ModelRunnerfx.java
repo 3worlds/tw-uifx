@@ -49,7 +49,7 @@ import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
-import au.edu.anu.twuifx.mm.view.GUIBuilder;
+import au.edu.anu.twuifx.mr.view.GUIBuilder;
 import au.edu.anu.twuifx.mr.view.MRControllerfx;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.ALEdge;

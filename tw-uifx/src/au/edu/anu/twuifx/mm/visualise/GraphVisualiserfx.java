@@ -83,15 +83,14 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	 */
 	public static final Double animateFast = 1.0;
 
-	private TreeGraph<LayoutNode, LayoutEdge> visualGraph;
+	private TreeGraph<LayoutNode, LayoutEdge> layoutGraph;
 	private final Pane pane;
 	private final DoubleProperty nodeRadius;
 	private final DoubleProperty lineWidth;
-	private final BooleanProperty parentLineVisibleProperty;
-	private final BooleanProperty edgeLineVisibleProperty;
+	private final BooleanProperty isParentLineVisible;
+	private final BooleanProperty isCrossLinkLineVisible;
 	private final BooleanProperty animate;
 
-	// private final BooleanProperty sideLineProperty;
 	private final DropShadow dropShadow;
 	private final ColorAdjust colorAdjust;
 	private final ObjectProperty<Font> font;
@@ -106,55 +105,52 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	private final ReadOnlyObjectProperty<Integer> pathLength;
 
 	/**
-	 * @param visualGraph    The layout graph.
-	 * @param pane           The zoomable drawing pane.
-	 * @param animate        Flag to select animation when applying graph layout
-	 *                       operations.
-	 * @param nodeRadius     The system wide node radius.
-	 * @param lineWidth      The system wide line width.
-	 * @param showTreeLine   Flag to show/hide parent - child lines.
-	 * @param showGraphLine  Flag to show/hide node cross-link lines.
-	 * @param nodeTextOption Node text display options.
-	 * @param edgeTextOption Edge text display options.
-	 * @param sideline       Flag to place nodes with no showing edges to one side
-	 *                       of the display.
-	 * @param pathLength     The length of the path to traverse when displaying
-	 *                       sub-graphs/
-	 * @param font           The font used for all node and edge text.
-	 * @param controller     The view controller interface.
-	 * @param recorder       The {@link Originator} to record edits in the undo/redo
-	 *                       system.
+	 * @param visualGraph            The layout graph.
+	 * @param pane                   The zoomable drawing pane.
+	 * @param animate                Flag to select animation when applying graph
+	 *                               layout operations.
+	 * @param nodeRadius             The system wide node radius.
+	 * @param lineWidth              The system wide line width.
+	 * @param isParentLineVisible    Flag to show/hide parent - child lines.
+	 * @param isCrossLinkLineVisible Flag to show/hide node cross-link lines.
+	 * @param nodeTextOption         Node text display options.
+	 * @param edgeTextOption         Edge text display options.
+	 * @param sideline               Flag to place nodes with no showing edges to
+	 *                               one side of the display.
+	 * @param pathLength             The length of the path to traverse when
+	 *                               displaying sub-graphs/
+	 * @param font                   The font used for all node and edge text.
+	 * @param controller             The view controller interface.
+	 * @param recorder               The {@link Originator} to record edits in the
+	 *                               undo/redo system.
 	 */
-	public GraphVisualiserfx(TreeGraph<LayoutNode, LayoutEdge> visualGraph, //
+	public GraphVisualiserfx(TreeGraph<LayoutNode, LayoutEdge> layoutGraph, //
 			Pane pane, //
 			BooleanProperty animate, //
 			DoubleProperty nodeRadius, //
 			DoubleProperty lineWidth, //
-			BooleanProperty showTreeLine, //
-			BooleanProperty showGraphLine, //
+			BooleanProperty isParentLineVisible, //
+			BooleanProperty isCrossLinkLineVisible, //
 			ReadOnlyObjectProperty<ElementDisplayText> nodeTextOption, //
 			ReadOnlyObjectProperty<ElementDisplayText> edgeTextOption, //
 			BooleanProperty sideline, //
-//			BooleanProperty neighMode, 
 			ReadOnlyObjectProperty<Integer> pathLength, //
 			ObjectProperty<Font> font, //
 			MMController controller, //
 			Originator recorder) {
-		this.visualGraph = visualGraph;
+		this.layoutGraph = layoutGraph;
 		this.pane = pane;
 		this.nodeRadius = nodeRadius;
 		this.lineWidth = lineWidth;
-		this.edgeLineVisibleProperty = showGraphLine;
-		this.parentLineVisibleProperty = showTreeLine;
+		this.isCrossLinkLineVisible = isCrossLinkLineVisible;
+		this.isParentLineVisible = isParentLineVisible;
 		this.animate = animate;
 
-		// this.sideLineProperty = sideline;
 		this.font = font;
 		this.controller = controller;
 		this.recorder = recorder;
 		this.edgeSelect = edgeTextOption;
 		this.nodeSelect = nodeTextOption;
-//		this.neighMode = neighMode;
 		this.pathLength = pathLength;
 
 		dropShadow = new DropShadow();
@@ -169,13 +165,13 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 
 	private void setTextListeners() {
 		this.nodeSelect.addListener(e_ -> {
-			for (LayoutNode n : visualGraph.nodes()) {
+			for (LayoutNode n : layoutGraph.nodes()) {
 				Text txt = (Text) n.getText();
 				txt.setText(n.getDisplayText(nodeSelect.get()));
 			}
 		});
 		this.edgeSelect.addListener(e -> {
-			for (LayoutNode n : visualGraph.nodes()) {
+			for (LayoutNode n : layoutGraph.nodes()) {
 				for (Edge edge : n.edges(Direction.OUT)) {
 					LayoutEdge ve = (LayoutEdge) edge;
 					Text txt = (Text) ve.getText();
@@ -188,18 +184,17 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 
 	@Override
 	public final void initialiseView(double duration) {
-//		animateDuration = animateDurationFast;
 		pane.setPrefHeight(pane.getHeight());
 		pane.setPrefWidth(pane.getWidth());
 
-		for (LayoutNode n : visualGraph.nodes()) {
+		for (LayoutNode n : layoutGraph.nodes()) {
 			createNodeVisualisation(n);
 		}
 		List<LayoutNode> collapsedParents = new ArrayList<>();
 
-		for (LayoutNode n : visualGraph.nodes()) {
-			createParentLines(n, parentLineVisibleProperty);
-			createGraphLines(n, edgeLineVisibleProperty);
+		for (LayoutNode n : layoutGraph.nodes()) {
+			createParentLines(n, isParentLineVisible);
+			createGraphLines(n, isCrossLinkLineVisible);
 			if (!n.isCollapsed() && n.hasCollaspedChild())
 				collapsedParents.add(n);
 		}
@@ -212,11 +207,11 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 			}
 		Set<LayoutNode> visibleNodes = new HashSet<>();
 
-		for (LayoutNode n : visualGraph.nodes())
+		for (LayoutNode n : layoutGraph.nodes())
 			if (n.isVisible())
 				visibleNodes.add(n);
 
-		updateGraphVisibility(visualGraph, visibleNodes, parentLineVisibleProperty, edgeLineVisibleProperty);
+		updateGraphVisibility(layoutGraph, visibleNodes, isParentLineVisible, isCrossLinkLineVisible);
 
 		setLayoutRoot(null);
 	}
@@ -247,8 +242,8 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	}
 
 	@Override
-	public final TreeGraph<LayoutNode, LayoutEdge> getVisualGraph() {
-		return visualGraph;
+	public final TreeGraph<LayoutNode, LayoutEdge> getLayoutGraph() {
+		return layoutGraph;
 	}
 
 	@Override
@@ -338,14 +333,12 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY && !e.isControlDown()) {
-				new StructureEditorfx(new VisualNodeEditor(n, visualGraph), e, controller, this, recorder);
+				new StructureEditorfx(new VisualNodeEditor(n, layoutGraph), e, controller, this, recorder);
 				e.consume();
 			} else if (e.getButton() == MouseButton.SECONDARY && e.isControlDown()) {
 				setLayoutRoot(n);
-//				e.consume();
 			} else {
 				controller.onNodeSelected(n);
-//				e.consume();
 			}
 		});
 
@@ -365,7 +358,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 			newRoot = getTWRoot();
 		if (!newRoot.isVisible() || newRoot.isCollapsed())
 			newRoot = getTWRoot();
-		if (!visualGraph.nodes().contains(newRoot))
+		if (!layoutGraph.nodes().contains(newRoot))
 			newRoot = getTWRoot();
 		LayoutNode oldRoot = controller.setLayoutRoot(newRoot);
 		if (oldRoot != null)
@@ -379,7 +372,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	@Override
 	public final void onNewNode(LayoutNode node) {
 		createNodeVisualisation(node);
-		createParentLines(node, parentLineVisibleProperty);
+		createParentLines(node, isParentLineVisible);
 		resetZorder(pane.getChildren());
 	}
 
@@ -390,7 +383,6 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 			Circle parentCircle = (Circle) parent.getSymbol();
 			Circle childCircle = (Circle) child.getSymbol();
 			Line line = new Line();
-//			line.setCacheHint(CacheHint.SPEED);
 			line.strokeWidthProperty().bind(lineWidth);
 
 			line.setStroke(treeEdgeColor);
@@ -427,12 +419,9 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		Circle fromCircle = (Circle) startNode.getSymbol();
 		Circle toCircle = (Circle) endNode.getSymbol();
 		Line line = new Line();
-//		line.setCacheHint(CacheHint.SPEED);
 		line.strokeWidthProperty().bind(lineWidth);
 		Text text = new Text(edge.getDisplayText(edgeSelect.get()));
-		// text.setCacheHint(CacheHint.SPEED);
 		text.fontProperty().bind(font);
-		// use property here
 		line.setStroke(graphEdgeColor);
 
 		// Bindings
@@ -479,8 +468,6 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 
 	protected void textPropertyChange(Line line, Text text, LayoutNode startNode, LayoutNode endNode) {
 		boolean collapsed = startNode.isCollapsed() || endNode.isCollapsed();
-//		double[] p1 = { line.getStartX(), line.getStartY() };
-//		double[] p2 = { line.getEndX(), line.getEndY() };
 		double distance = Distance.euclidianDistance(line.getStartX(), line.getStartY(), line.getEndX(),
 				line.getEndY());
 		// or dy small (horizontal) and dx shorter than label??
@@ -588,7 +575,6 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	}
 
 	private static void hideEdges(LayoutNode vNode) {
-		// May not word due to threading.
 		for (Edge e : vNode.edges()) {
 			LayoutNode sn = (LayoutNode) e.startNode();
 			LayoutNode en = (LayoutNode) e.endNode();
@@ -614,20 +600,18 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		List<Animation> timelines = new ArrayList<>();
 		double w = pane.getWidth();
 		double h = pane.getHeight();
-//		double duration = animateDuration;
 		// Recursively unbind nodes from the position of the sub-tree's parent.
-		expand(childRoot, w, h, parentLineVisibleProperty, timelines, duration, animate);
+		expand(childRoot, w, h, isParentLineVisible, timelines, duration, animate);
 
 		if (animate.get()) {
 			ParallelTransition pt = new ParallelTransition();
 			pt.getChildren().addAll(timelines);
 			pt.setOnFinished(e -> {
-				// rebind edges to the showGraphLine property.
-				showEdges(childRoot, edgeLineVisibleProperty);
+				showEdges(childRoot, isCrossLinkLineVisible);
 			});
 			pt.play();
 		} else
-			showEdges(childRoot, edgeLineVisibleProperty);
+			showEdges(childRoot, isCrossLinkLineVisible);
 	}
 
 	private static void showEdges(LayoutNode vNode, BooleanProperty show) {
@@ -678,7 +662,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 
 	@Override
 	public final void onNewEdge(LayoutEdge edge, double duration) {
-		createGraphLine(edge, edgeLineVisibleProperty);
+		createGraphLine(edge, isCrossLinkLineVisible);
 		LayoutNode vn = (LayoutNode) edge.endNode();
 		if (vn.isCollapsed()) {
 			// animate fadeout otherwise it looks like nothing happened
@@ -762,15 +746,6 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 			Text t2 = (Text) e2.getText();
 			return t1.getText().compareTo(t2.getText());
 		});
-//		edges.sort(new Comparator<LayoutEdge>() {
-//
-//			@Override
-//			public int compare(LayoutEdge e1, LayoutEdge e2) {
-//				Text t1 = (Text) e1.getText();
-//				Text t2 = (Text) e2.getText();
-//				return t1.getText().compareTo(t2.getText());
-//			}
-//		});
 
 		// Set the first edge text as per normal i.e mid point of line.
 		// Then stack all the remaining texts below it.
@@ -799,7 +774,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 
 	@Override
 	public final void onNewParent(LayoutNode child) {
-		createParentLines(child, parentLineVisibleProperty);
+		createParentLines(child, isParentLineVisible);
 		resetZorder(pane.getChildren());
 	}
 
@@ -825,7 +800,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	}
 
 	private LayoutNode getTWRoot() {
-		for (LayoutNode n : visualGraph.nodes()) {
+		for (LayoutNode n : layoutGraph.nodes()) {
 			if (n.isRoot())
 				return n;
 		}
@@ -862,17 +837,9 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 			layout = new RT2Layout(root, pcShowing, xlShowing, sideline);
 			break;
 		}
-//		case SpringGraph: {
-//			layout = new FRLayout(visualGraph, pcShowing, xlShowing, sideline);
-//			break;
-//		}
-//		case LombardiGraph: {
-//			layout = new LmbLayout(visualGraph, pcShowing, xlShowing, sideline);
-//			break;
-//		}
 		default: {
 			/** SpringGraph */
-			layout = new FRLayout(visualGraph, pcShowing, xlShowing, sideline);
+			layout = new FRLayout(layoutGraph, pcShowing, xlShowing, sideline);
 			break;
 		}
 		}
@@ -883,7 +850,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		// rescale to provide border for a little node radius
 		Timeline timeline = new Timeline();
 
-		for (LayoutNode node : visualGraph.nodes())
+		for (LayoutNode node : layoutGraph.nodes())
 			if (!node.isCollapsed()) {
 				double x = ILayout.rescale(node.getX(), 0, 1, 0.05, 0.95);
 				double y = ILayout.rescale(node.getY(), 0, 1, 0.05, 0.95);
@@ -919,12 +886,11 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(keyFrame);
 		timelines.add(timeline);
-		// timeline.play();
 	}
 
 	@Override
 	public final void collapsePredef() {
-		for (LayoutNode root : visualGraph.roots()) {
+		for (LayoutNode root : layoutGraph.roots()) {
 			if (root.isRoot()) {
 				LayoutNode predef = (LayoutNode) get(root.getChildren(),
 						selectOne(hasTheName(ConfigurationReservedNodeId.categories.id())));
@@ -936,24 +902,21 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	@Override
 	public final void onHighlightAll() {
 		Set<LayoutNode> highlightNodes = new HashSet<>();
-		for (LayoutNode n : visualGraph.nodes())
-//			if (!n.isCollapsed())
+		for (LayoutNode n : layoutGraph.nodes())
 			highlightNodes.add(n);
 		updateElementColour(highlightNodes);
 	}
 
-
 	@Override
 	public final void onHighlightLocalGraph(LayoutNode root, int pathLength) {
 		Set<LayoutNode> focusNodes = new HashSet<>();
-		traversal(parentLineVisibleProperty.getValue(), edgeLineVisibleProperty.getValue(), root, 0, pathLength,
-				focusNodes);
+		traversal(isParentLineVisible.getValue(), isCrossLinkLineVisible.getValue(), root, 0, pathLength, focusNodes);
 		focusNodes.add(root);
 		updateElementColour(focusNodes);
 	}
 
 	private void updateElementColour(Set<LayoutNode> focusNodes) {
-		for (LayoutNode n : visualGraph.nodes())
+		for (LayoutNode n : layoutGraph.nodes())
 			dimNode(n);
 
 		ObservableList<Node> obs = FXCollections.observableArrayList();
@@ -1111,7 +1074,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	@Override
 	public final void onRollback(TreeGraph<LayoutNode, LayoutEdge> layoutGraph) {
 		final double duration = animateFast;
-		this.visualGraph = layoutGraph;
+		this.layoutGraph = layoutGraph;
 		pane.getChildren().clear();
 		this.initialiseView(duration);
 		this.setTextListeners();

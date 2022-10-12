@@ -47,7 +47,6 @@ import javafx.scene.paint.Color;
  *
  */
 public class TreeColours {
-	/* http://www.color-blindness.com/coblis-color-blindness-simulator/ */
 	private static Map<String, Color> nodeColours = new HashMap<>();
 	static {
 		nodeColours.put(ConfigurationNodeLabels.N_SYSTEM.label(), Color.TEAL);

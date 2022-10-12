@@ -27,7 +27,7 @@
  *  If not, see <https://www.gnu.org/licenses/gpl.html>.                  *
  *                                                                        *
  **************************************************************************/
-package au.edu.anu.twuifx.mm.view;
+package au.edu.anu.twuifx.mr.view;
 
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -60,7 +60,6 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 import au.edu.anu.twuifx.mm.ModelMakerfx;
-import au.edu.anu.twuifx.mr.view.MRControllerfx;
 
 /**
  * A class to layout and instantiate the GUI for {@link ModelMakerfx}.

@@ -104,11 +104,11 @@ public class BoxItemEditor extends AbstractPropertyEditor<String, LabelButtonCon
 
 			tf = new TextField(origin.toString());
 			tf.setTextFormatter(new TextFormatter<>(
-					change -> (change.getControlNewText().matches(DialogsFactory.vsReal) ? change : null)));
+					change -> (change.getControlNewText().matches(DialogsFactory.REGX_REAL) ? change : null)));
 			origins.add(tf);
 			tf = new TextField(width.toString());
 			tf.setTextFormatter(new TextFormatter<>(
-					change -> (change.getControlNewText().matches(DialogsFactory.vsReal) ? change : null)));
+					change -> (change.getControlNewText().matches(DialogsFactory.REGX_REAL) ? change : null)));
 			widths.add(tf);
 
 			content.add(origins.get(i), 0, i + 1);

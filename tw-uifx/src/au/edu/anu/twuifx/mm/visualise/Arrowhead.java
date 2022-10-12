@@ -50,7 +50,6 @@ public class Arrowhead extends Line {
 		setStroke(line.getStroke());
 		// make thicker
 		this.strokeWidthProperty().bind(lineWidth.multiply(4));
-//		setStrokeWidth(4);
 		// same visibility
 		visibleProperty().bind(line.visibleProperty());
 
@@ -100,18 +99,4 @@ public class Arrowhead extends Line {
 
 	}
 
-//	public static void main(String[] args) {
-//		double x1 = 1;
-//		double y1 = 1;
-//		double x2 = 3;
-//		double y2 = 3;
-//		double r = Math.sqrt(2);
-//		double x = x1 + (Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) - r)
-//				* Math.cos(Math.atan2(y2 - y1, x2 - x1));
-//		// NB limit to > 0 cf above
-//		double y = y1 + (Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)) - r)
-//				* Math.sin(Math.atan2(y2 - y1, x2 - x1));
-//		System.out.println(x + "," + y);
-//
-//	}
 }
