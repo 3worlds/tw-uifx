@@ -36,7 +36,6 @@ import au.edu.anu.rscs.aot.errorMessaging.ErrorMessageManager;
 import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
 import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
 import au.edu.anu.twcore.graphState.*;
-import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
 import javafx.application.Platform;
@@ -46,7 +45,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- * A Javafx implementation of {@link IGraphState} for {@link GraphState}.
+ * A Javafx implementation of {@link GraphState} for {@link GraphStateFactory}.
  * 
  * @author Ian Davies Date May 6, 2019
  */
@@ -57,7 +56,7 @@ public class GraphStatefx implements GraphState {
 	private List<GraphStateListener> listeners = new ArrayList<>();
 
 	/**
-	 * Javafx implementation of {@link IGraphState}.
+	 * Javafx implementation of {@link GraphState}.
 	 * <p>
 	 * The window title is formed by concatenating {@code title} and
 	 * {@code javaPath}. Whenever the graph is edited, an "*" is prepended to the

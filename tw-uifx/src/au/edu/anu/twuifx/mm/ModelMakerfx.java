@@ -43,7 +43,7 @@ import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.graphState.GraphStatefx;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
-import au.edu.anu.twuifx.mm.view.MMControllerImpl;
+import au.edu.anu.twuifx.mm.view.MMControllerfx;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -75,7 +75,7 @@ import javafx.stage.Window;
 public class ModelMakerfx extends Application {
 	private Stage mainStage;
 	private Parent root;
-	private MMControllerImpl controller;
+	private MMControllerfx controller;
 
 	private void createMainWindow() throws IOException {
 		FXMLLoader loader = new FXMLLoader();

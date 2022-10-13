@@ -121,7 +121,7 @@ import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
  * @author Ian Davies - 23 Sep. 2022
  *
  */
-public class MMControllerImpl implements ErrorListListener, MMController, GraphStateListener {
+public class MMControllerfx implements ErrorListListener, MMController, GraphStateListener {
 	@FXML
 	private MenuItem miImportSnippets;
 
