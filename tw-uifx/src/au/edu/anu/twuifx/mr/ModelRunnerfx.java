@@ -30,12 +30,10 @@
 
 package au.edu.anu.twuifx.mr;
 
-import static au.edu.anu.rscs.aot.queries.CoreQueries.hasTheLabel;
-import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrOne;
-import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UI;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_MODEL_BUILTBY;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_WIDGET_SUBCLASS;
+import static au.edu.anu.qgraph.queries.CoreQueries.*;
+import static au.edu.anu.qgraph.queries.base.SequenceQuery.get;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import java.util.Timer;
 import java.util.TimerTask;

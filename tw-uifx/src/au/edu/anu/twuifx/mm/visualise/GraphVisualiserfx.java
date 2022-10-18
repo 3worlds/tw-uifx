@@ -33,7 +33,7 @@ package au.edu.anu.twuifx.mm.visualise;
 import java.util.*;
 import fr.cnrs.iees.uit.space.Distance;
 
-import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
+import au.edu.anu.qgraph.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.graphEditor.*;
 import au.edu.anu.twapps.mm.layout.*;
@@ -57,8 +57,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
 import javafx.util.Duration;
-import static au.edu.anu.rscs.aot.queries.CoreQueries.*;
-import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.*;
+import static au.edu.anu.qgraph.queries.CoreQueries.*;
+import static au.edu.anu.qgraph.queries.base.SequenceQuery.*;
 
 /**
  * Javafx implementation of {@link IGraphVisualiser}

@@ -1,11 +1,8 @@
 package au.edu.anu.twuifx.openmole;
 
-import static au.edu.anu.rscs.aot.queries.CoreQueries.hasTheLabel;
-import static au.edu.anu.rscs.aot.queries.CoreQueries.selectOne;
-import static au.edu.anu.rscs.aot.queries.CoreQueries.selectZeroOrOne;
-import static au.edu.anu.rscs.aot.queries.base.SequenceQuery.get;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UI;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.N_UIHEADLESS;
+import static au.edu.anu.qgraph.queries.CoreQueries.*;
+import static au.edu.anu.qgraph.queries.base.SequenceQuery.get;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 
 import java.io.File;
 import java.util.logging.Level;
