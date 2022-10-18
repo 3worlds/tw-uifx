@@ -35,28 +35,22 @@ import fr.cnrs.iees.uit.space.Distance;
 
 import au.edu.anu.rscs.aot.queries.base.SequenceQuery;
 import au.edu.anu.twapps.mm.*;
-import au.edu.anu.twapps.mm.graphEditor.VisualNodeEditor;
+import au.edu.anu.twapps.mm.graphEditor.*;
 import au.edu.anu.twapps.mm.layout.*;
 import au.edu.anu.twapps.mm.undo.Originator;
 import au.edu.anu.twapps.mm.layoutGraph.*;
 import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
-import fr.cnrs.iees.graph.Direction;
-import fr.cnrs.iees.graph.Edge;
-import fr.cnrs.iees.graph.TreeNode;
-import fr.cnrs.iees.graph.impl.ALEdge;
-import fr.cnrs.iees.graph.impl.TreeGraph;
+import fr.cnrs.iees.graph.*;
+import fr.cnrs.iees.graph.impl.*;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
 import fr.ens.biologie.generic.utils.Duple;
 import javafx.animation.*;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.value.*;
+import javafx.collections.*;
 import javafx.scene.Node;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -105,7 +99,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	private final ReadOnlyObjectProperty<Integer> pathLength;
 
 	/**
-	 * @param visualGraph            The layout graph.
+	 * @param layoutGraph            The layout graph.
 	 * @param pane                   The zoomable drawing pane.
 	 * @param animate                Flag to select animation when applying graph
 	 *                               layout operations.
@@ -333,7 +327,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY && !e.isControlDown()) {
-				new StructureEditorfx(new VisualNodeEditor(n, layoutGraph), e, controller, this, recorder);
+				new StructureEditorfx(new VisualNodeEditorAdapter(n, layoutGraph), e, controller, this, recorder);
 				e.consume();
 			} else if (e.getButton() == MouseButton.SECONDARY && e.isControlDown()) {
 				setLayoutRoot(n);
