@@ -67,9 +67,9 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 
 // TREE
 3worlds testdatatracker9
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	authors = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	built-by = java.lang.String("")
 	precis =  java.lang.String("")
@@ -169,7 +169,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			componentType microbeC
 				driverClass = java.lang.String(code.system.Rcrd2)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"code.system.Plot12_MicrobeCRelocateFunction"))
+				relocateFunctionName = au.edu.anu.omugi.collections.tables.StringTable(([1]"code.system.Plot12_MicrobeCRelocateFunction"))
 			arena arena
 				space plot12
 					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
@@ -179,7 +179,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			componentType plantC
 				driverClass = java.lang.String(code.system.Rcrd1)
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]"code.system.Plot12_PlantCRelocateFunction"))
+				relocateFunctionName = au.edu.anu.omugi.collections.tables.StringTable(([1]"code.system.Plot12_PlantCRelocateFunction"))
 			categorySet ctgrySt1
 				category microbe
 				category plant

@@ -36,7 +36,7 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.rscs.aot.collections.tables.IndexString;
+import au.edu.anu.omugi.collections.tables.IndexString;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twuifx.images.Images;

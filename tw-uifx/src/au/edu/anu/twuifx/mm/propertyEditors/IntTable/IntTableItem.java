@@ -33,8 +33,8 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.rscs.aot.collections.tables.IntTable;
-import au.edu.anu.rscs.aot.collections.tables.Table;
+import au.edu.anu.omugi.collections.tables.IntTable;
+import au.edu.anu.omugi.collections.tables.Table;
 import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;

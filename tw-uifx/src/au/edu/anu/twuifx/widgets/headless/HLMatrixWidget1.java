@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import au.edu.anu.rscs.aot.collections.tables.IntTable;
+import au.edu.anu.omugi.collections.tables.IntTable;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.Output2DData;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;

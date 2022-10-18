@@ -4,9 +4,9 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds genetics2
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	authors = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	built-by = java.lang.String("")
 	precis =  java.lang.String("")
@@ -63,7 +63,7 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 				mobile = java.lang.Boolean(true)
 				parameterClass = java.lang.String()
-				relocateFunctionName = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+				relocateFunctionName = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
 	experiment expt
 		timePeriod tp
 			end = fr.cnrs.iees.twcore.constants.DateTimeType(0)

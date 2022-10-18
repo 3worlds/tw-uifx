@@ -21,9 +21,9 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 	
 // TREE
 3worlds testdatatracker2
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	authors = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	built-by = java.lang.String("")
 	precis =  java.lang.String("")

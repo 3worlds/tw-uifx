@@ -36,8 +36,8 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.rscs.aot.collections.tables.Dimensioner;
-import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.omugi.collections.tables.Dimensioner;
+import au.edu.anu.omugi.collections.tables.StringTable;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;

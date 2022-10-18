@@ -35,7 +35,7 @@ import java.util.List;
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.omugi.collections.tables.StringTable;
 import au.edu.anu.rscs.aot.util.Resources;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twapps.mr.*;

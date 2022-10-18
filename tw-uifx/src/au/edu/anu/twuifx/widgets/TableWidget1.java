@@ -36,7 +36,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import au.edu.anu.rscs.aot.collections.tables.StringTable;
+import au.edu.anu.omugi.collections.tables.StringTable;
 import au.edu.anu.twcore.data.runtime.DataLabel;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.data.runtime.TimeData;

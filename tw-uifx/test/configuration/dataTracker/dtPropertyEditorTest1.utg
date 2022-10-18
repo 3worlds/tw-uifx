@@ -6,9 +6,9 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 02 09:41:00 AEDT 2019
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds dtPropertyEditorTest1
-	authors = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	contacts = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.rscs.aot.collections.tables.StringTable(([1]""))
+	authors = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	contacts = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	publication = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	built-by = java.lang.String("")
 	precis =  java.lang.String("")
