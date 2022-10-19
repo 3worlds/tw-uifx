@@ -44,7 +44,7 @@ import au.edu.anu.twuifx.mm.editors.structure.StructureEditorfx;
 import fr.cnrs.iees.graph.*;
 import fr.cnrs.iees.graph.impl.*;
 import fr.cnrs.iees.twcore.constants.ConfigurationReservedNodeId;
-import fr.ens.biologie.generic.utils.Duple;
+import fr.cnrs.iees.omhtk.utils.Duple;
 import javafx.animation.*;
 import javafx.beans.property.*;
 import javafx.beans.value.*;

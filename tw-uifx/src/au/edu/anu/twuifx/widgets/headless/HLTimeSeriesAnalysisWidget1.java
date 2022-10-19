@@ -67,7 +67,7 @@ import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregates;
 import fr.cnrs.iees.twcore.constants.StatisticalAggregatesSet;
-import fr.ens.biologie.generic.utils.Statistics;
+import fr.cnrs.iees.omhtk.utils.Statistics;
 
 /**
  * 

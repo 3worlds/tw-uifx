@@ -31,14 +31,7 @@
 package au.edu.anu.twuifx.widgets;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
@@ -70,9 +63,7 @@ import fr.cnrs.iees.twcore.constants.EdgeEffectCorrection;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import fr.cnrs.iees.twcore.constants.SpaceType;
 import fr.cnrs.iees.uit.space.Distance;
-import fr.ens.biologie.generic.utils.Duple;
-import fr.ens.biologie.generic.utils.Interval;
-import fr.ens.biologie.generic.utils.Tuple;
+import fr.cnrs.iees.omhtk.utils.*;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

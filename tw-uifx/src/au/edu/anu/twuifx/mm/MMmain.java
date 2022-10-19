@@ -38,7 +38,7 @@ import au.edu.anu.twuifx.mr.MRmain;
 import fr.cnrs.iees.OmugiClassLoader;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
-import fr.ens.biologie.generic.utils.Logging;
+import fr.cnrs.iees.omhtk.utils.Logging;
 import javafx.application.Application;
 
 /**

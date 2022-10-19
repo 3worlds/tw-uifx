@@ -40,7 +40,7 @@ import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.graph.TreeNode;
 import fr.cnrs.iees.graph.impl.TreeGraphNode;
 import fr.cnrs.iees.twcore.constants.UIContainerOrientation;
-import fr.ens.biologie.generic.utils.Duple;
+import fr.cnrs.iees.omhtk.utils.Duple;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Menu;

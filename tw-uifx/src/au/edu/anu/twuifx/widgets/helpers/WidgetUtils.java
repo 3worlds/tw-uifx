@@ -24,9 +24,7 @@ import au.edu.anu.twuifx.widgets.IsMissingValue;
 import au.edu.anu.ymuit.ui.colour.Palette;
 import fr.cnrs.iees.identity.impl.LocalScope;
 import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
-import fr.ens.biologie.generic.utils.Duple;
-import fr.ens.biologie.generic.utils.Interval;
-import fr.ens.biologie.generic.utils.NiceScale;
+import fr.cnrs.iees.omhtk.utils.*;
 import javafx.scene.paint.Color; // this is the only javafx pollution here
 
 /**

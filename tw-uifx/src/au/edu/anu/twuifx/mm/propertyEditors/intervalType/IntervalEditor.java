@@ -39,7 +39,7 @@ import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twuifx.dialogs.TextFilters;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
-import fr.ens.biologie.generic.utils.Interval;
+import fr.cnrs.iees.omhtk.utils.Interval;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.ButtonBar.ButtonData;

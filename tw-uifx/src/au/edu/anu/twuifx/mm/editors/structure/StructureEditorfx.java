@@ -43,6 +43,7 @@ import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twuifx.mm.visualise.GraphVisualiserfx;
 import fr.cnrs.iees.graph.impl.SimpleDataTreeNode;
+import fr.cnrs.iees.omhtk.utils.*;
 import fr.cnrs.iees.twcore.constants.*;
 import javafx.scene.Node;
 import javafx.scene.control.*;

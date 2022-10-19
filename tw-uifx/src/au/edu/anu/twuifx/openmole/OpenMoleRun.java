@@ -21,7 +21,7 @@ import fr.cnrs.iees.graph.impl.TreeGraph;
 import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
 import fr.cnrs.iees.graph.io.GraphImporter;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
-import fr.ens.biologie.generic.utils.Logging;
+import fr.cnrs.iees.omhtk.utils.Logging;
 
 /**
  * Note: (https://docs.oracle.com/javase/tutorial/deployment/jar/downman.html)

@@ -30,7 +30,7 @@ import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import fr.cnrs.iees.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.ens.biologie.generic.utils.Interval;
+import fr.cnrs.iees.omhtk.utils.Interval;
 
 /**
  *
