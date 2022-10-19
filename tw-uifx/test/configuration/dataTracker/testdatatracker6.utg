@@ -96,7 +96,7 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 			table tx
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				precision = java.lang.Double(0.0)
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,1.0])
 				units = java.lang.String()
 			field n
 				range = au.edu.anu.rscs.aot.util.IntegerRange(0..2)

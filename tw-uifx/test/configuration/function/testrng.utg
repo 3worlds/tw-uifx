@@ -168,12 +168,12 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 07 15:39:54 CET 2020
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(animalrec)
 			field length
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(cm)
 			field bodyweight
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.01)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(g)
@@ -194,12 +194,12 @@ treegraph // saved by OmugiGraphExporter on Tue Jan 07 15:39:54 CET 2020
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(plantrec)
 			field biomass
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.001)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(kg)
 			field height
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(0.1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(m)

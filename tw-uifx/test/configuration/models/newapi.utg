@@ -17,7 +17,7 @@ treegraph // saved by OmugiGraphExporter on Wed Apr 15 15:06:46 CEST 2020
 			field brotch
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 			field britch
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1.0])
+				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,1.0])
 				precision = java.lang.Double(1.0E-4)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(kW m-1 s-2)
@@ -25,12 +25,12 @@ treegraph // saved by OmugiGraphExporter on Wed Apr 15 15:06:46 CEST 2020
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(rcrd1)
 			field y
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.cnrs.iees.omhtk.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field x
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,+∞[)
+				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,+∞[)
 				precision = java.lang.Double(12.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String(W)

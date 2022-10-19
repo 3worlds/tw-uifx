@@ -52,7 +52,7 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(Rec)
 			field x
-				interval = fr.ens.biologie.generic.utils.Interval([0.0,1])
+				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,1])
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()

@@ -31,7 +31,7 @@ treegraph // saved by OmugiGraphExporter on Mon Dec 02 09:41:00 AEDT 2019
 			table tbl2
 				record rcrd1
 					field x
-						interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+						interval = fr.cnrs.iees.omhtk.utils.Interval(]-∞,+∞[)
 						precision = java.lang.Double(0.0)
 						type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 						units = java.lang.String()

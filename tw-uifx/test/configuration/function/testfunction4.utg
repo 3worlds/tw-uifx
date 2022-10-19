@@ -80,7 +80,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(rcrd2)
 			field virulence
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.cnrs.iees.omhtk.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
@@ -88,7 +88,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 			dynamic = java.lang.Boolean(true)
 			generatedClassName = java.lang.String(rcrd1)
 			field biomass
-				interval = fr.ens.biologie.generic.utils.Interval(]-∞,+∞[)
+				interval = fr.cnrs.iees.omhtk.utils.Interval(]-∞,+∞[)
 				precision = java.lang.Double(0.0)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
@@ -179,8 +179,8 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 				space plot12
 					type = fr.cnrs.iees.twcore.constants.SpaceType(continuousFlatSurface)
 					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
-					x-limits = fr.ens.biologie.generic.utils.Interval([0.0,10.0])
-					y-limits = fr.ens.biologie.generic.utils.Interval(]5.0,12.0])
+					x-limits = fr.cnrs.iees.omhtk.utils.Interval([0.0,10.0])
+					y-limits = fr.cnrs.iees.omhtk.utils.Interval(]5.0,12.0])
 	userInterface gui
 		tab tab
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)
