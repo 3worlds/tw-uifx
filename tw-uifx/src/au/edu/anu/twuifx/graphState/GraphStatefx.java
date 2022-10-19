@@ -32,17 +32,13 @@ package au.edu.anu.twuifx.graphState;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.edu.anu.rscs.aot.errorMessaging.ErrorMessageManager;
-import au.edu.anu.twcore.errorMessaging.ModelBuildErrorMsg;
-import au.edu.anu.twcore.errorMessaging.ModelBuildErrors;
+import au.edu.anu.aot.errorMessaging.ErrorMessageManager;
+import au.edu.anu.twcore.errorMessaging.*;
 import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 /**
  * A Javafx implementation of {@link GraphState} for {@link GraphStateFactory}.

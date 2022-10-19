@@ -34,7 +34,7 @@ import java.util.*;
 
 import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
-import au.edu.anu.rscs.aot.archetype.Archetypes;
+import au.edu.anu.aot.archetype.Archetypes;
 import au.edu.anu.twapps.mm.GraphVisualiser;
 import au.edu.anu.twapps.mm.graphEditor.*;
 import au.edu.anu.twapps.mm.undo.Originator;
