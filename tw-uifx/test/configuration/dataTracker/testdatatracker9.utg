@@ -216,7 +216,7 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 [componentType:microbeC] belongsTo blngsT2 [category:microbe]
 [widget:seriesPlant] trackSeries trksSrsOf1 [dataTracker:plantTracker]
 [component:gr1] location 1_1 [space:plot12]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.1,11.2))
+	coordinates = DoubleTable(([2]1.1,11.2))
 [component:gr1] instanceOf instOf1 [componentType:plantC]
 [category:plant] drivers drvrs1 [record:rcrd1]
 [widget:space] trackSpace trksSpc [space:plot12]
@@ -236,6 +236,6 @@ treegraph // saved by OmugiGraphExporter on Wed Jan 22 15:33:36 CET 2020
 [dataTracker:micTracker] trackPopulation trksPopOf1 [group:bacteria]
 	variables = fr.cnrs.iees.twcore.constants.PopulationVariablesSet({COUNT,NADDED,NREMOVED})
 [component:mic1] location 1 [space:plot12]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,11.0))
+	coordinates = DoubleTable(([2]1.0,11.0))
 [component:mic1] instanceOf instOf [componentType:microbeC]
 [widget:time] trackTime tracks1 [dynamics:dyn]

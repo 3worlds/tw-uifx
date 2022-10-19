@@ -165,17 +165,17 @@ treegraph // saved by OmugiGraphExporter on Fri Apr 03 15:19:42 AEDT 2020
 [group:female] groupOf grpOf [componentType:ctFemale]
 [component:cmpMale] instanceOf instOf1 [componentType:ctMale]
 [component:cmpMale] location loc2 [space:space]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]2.0,2.0))
+	coordinates = DoubleTable(([2]2.0,2.0))
 [component:cmpMale2] instanceOf instOf3 [componentType:ctMale]
 [component:cmpMale2] location loc3 [space:space]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]5.0,5.0))
+	coordinates = DoubleTable(([2]5.0,5.0))
 [group:male] groupOf grpOf1 [componentType:ctMale]
 [process:a_findMate] inSpace in [space:space]
 	searchRadius = java.lang.Double(1.42)
 [process:a_findMate] appliesTo aplyTo [relationType:mating]
 [widget:ctrl] trackTime trksTmOf [dynamics:dyns]
 [component:cmpFemale2] location loc1 [space:space]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]1.0,1.0))
+	coordinates = DoubleTable(([2]1.0,1.0))
 [component:cmpFemale2] instanceOf instOf2 [componentType:ctFemale]
 [process:d_mort] dependsOn depsOn2 [process:c_birth]
 [process:d_mort] appliesTo aplyTo4 [category:catMale]
@@ -193,7 +193,7 @@ treegraph // saved by OmugiGraphExporter on Fri Apr 03 15:19:42 AEDT 2020
 [table:genome] sizedBy szBy1 [dimensioner:nAlleles]
 	rank = java.lang.Integer(1)
 [component:cmpFemale] location loc [space:space]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]4.0,4.0))
+	coordinates = DoubleTable(([2]4.0,4.0))
 [component:cmpFemale] instanceOf instOf [componentType:ctFemale]
 [widget:time] trackTime trksTmOf1 [dynamics:dyns]
 [widget:space1] trackSpace trksSpc [space:space]

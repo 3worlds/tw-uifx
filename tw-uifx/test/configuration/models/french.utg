@@ -796,7 +796,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 [process:proc1] appliesTo aplyTo [category:trees]
 [group:std-tree] groupOf grpOf [componentType:tree]
 [component:tree1] location loc [space:plot]
-	coordinates = au.edu.anu.rscs.aot.collections.tables.DoubleTable(([2]25.0,25.0))
+	coordinates = DoubleTable(([2]25.0,25.0))
 [component:tree1] instanceOf instOf [componentType:tree]
 [widget:spacewgt] trackSpace trksSpc [space:plot]
 [widget:popwgt] trackSeries trksSrsOf [dataTracker:poptrack]
