@@ -32,17 +32,12 @@ package au.edu.anu.twuifx.widgets;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import au.edu.anu.omhtk.preferences.IPreferences;
 import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.omugi.collections.tables.StringTable;
+import fr.cnrs.iees.omugi.collections.tables.StringTable;
 import au.edu.anu.omhtk.util.StringUtils;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.data.runtime.DataLabel;

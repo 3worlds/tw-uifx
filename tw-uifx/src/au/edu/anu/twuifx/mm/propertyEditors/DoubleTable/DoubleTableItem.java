@@ -34,8 +34,7 @@ import java.util.Optional;
 
 import org.controlsfx.property.editor.PropertyEditor;
 
-import au.edu.anu.omugi.collections.tables.DoubleTable;
-import au.edu.anu.omugi.collections.tables.Table;
+import fr.cnrs.iees.omugi.collections.tables.*;
 import au.edu.anu.twapps.mm.MMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.graph.ElementAdapter;

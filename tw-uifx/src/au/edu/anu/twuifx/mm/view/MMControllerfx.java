@@ -62,7 +62,7 @@ import javafx.scene.effect.DropShadow;
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.*;
 import au.edu.anu.omhtk.util.*;
-import au.edu.anu.omugi.collections.tables.*;
+import fr.cnrs.iees.omugi.collections.tables.*;
 import au.edu.anu.aot.errorMessaging.*;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twapps.mm.*;
