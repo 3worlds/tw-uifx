@@ -57,7 +57,7 @@ treegraph // saved by OmugiGraphExporter on Mon Oct 14 10:26:26 AEDT 2019
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Double)
 				units = java.lang.String()
 			field n
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..2)
+				range = au.edu.anu.omhtk.util.IntegerRange(0..2)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 	system sys

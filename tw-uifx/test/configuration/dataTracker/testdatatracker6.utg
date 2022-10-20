@@ -99,7 +99,7 @@ treegraph // saved by OmugiGraphExporter on Sun Nov 03 09:13:29 AEDT 2019
 				interval = fr.cnrs.iees.omhtk.utils.Interval([0.0,1.0])
 				units = java.lang.String()
 			field n
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..2)
+				range = au.edu.anu.omhtk.util.IntegerRange(0..2)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 		dimensioner dimer

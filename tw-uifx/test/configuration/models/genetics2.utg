@@ -13,14 +13,14 @@ treegraph // saved by OmugiGraphExporter on Mon Apr 06 16:48:16 AEST 2020
 	dataDefinition dDef
 		record parsAnimal
 			field isFemale
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..1)
+				range = au.edu.anu.omhtk.util.IntegerRange(0..1)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Boolean)
 		dimensioner ploidy
 			size = java.lang.Integer(2)
 		record ltPars
 			table genome
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..*)
+				range = au.edu.anu.omhtk.util.IntegerRange(0..*)
 				units = java.lang.String()
 		dimensioner nAlleles
 			size = java.lang.Integer(10)

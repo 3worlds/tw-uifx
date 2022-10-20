@@ -39,11 +39,11 @@ treegraph // saved by OmugiGraphExporter on Fri Apr 03 15:19:42 AEDT 2020
 			dynamic = java.lang.Boolean(false)
 			generatedClassName = java.lang.String(animalPars)
 			field lifeSpan
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..100)
+				range = au.edu.anu.omhtk.util.IntegerRange(0..100)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 			field matAge
-				range = au.edu.anu.rscs.aot.util.IntegerRange(0..10)
+				range = au.edu.anu.omhtk.util.IntegerRange(0..10)
 				type = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
 				units = java.lang.String()
 		dimensioner nAlleles
@@ -53,7 +53,7 @@ treegraph // saved by OmugiGraphExporter on Fri Apr 03 15:19:42 AEDT 2020
 			generatedClassName = java.lang.String(lifeConst)
 			table genome
 				dataElementType = fr.cnrs.iees.twcore.constants.DataElementType(Integer)
-				range = au.edu.anu.rscs.aot.util.IntegerRange(MIN_INTEGER..*)
+				range = au.edu.anu.omhtk.util.IntegerRange(MIN_INTEGER..*)
 				units = java.lang.String()
 	system sys
 		parameterClass = java.lang.String()

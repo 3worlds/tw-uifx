@@ -48,7 +48,6 @@ import fr.cnrs.iees.twcore.constants.*;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import fr.ens.biologie.generic.utils.*;
 import static au.edu.anu.qgraph.queries.CoreQueries.*;
 import static au.edu.anu.qgraph.queries.base.SequenceQuery.*;
 

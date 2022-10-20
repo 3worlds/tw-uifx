@@ -38,8 +38,8 @@ import java.util.*;
 import java.util.logging.Level;
 
 import au.edu.anu.omhtk.jars.Jars;
-import au.edu.anu.rscs.aot.init.InitialiseMessage;
-import au.edu.anu.rscs.aot.init.Initialiser;
+import au.edu.anu.omhtk.init.InitialiseMessage;
+import au.edu.anu.omhtk.init.Initialiser;
 import au.edu.anu.twcore.InitialisableNode;
 import au.edu.anu.twcore.archetype.TWA;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;

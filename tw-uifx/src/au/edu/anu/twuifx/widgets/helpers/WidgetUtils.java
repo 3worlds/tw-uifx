@@ -15,7 +15,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import au.edu.anu.omugi.graph.property.Property;
-import au.edu.anu.rscs.aot.util.StringUtils;
+import au.edu.anu.omhtk.util.StringUtils;
 import au.edu.anu.twcore.experiment.ExpFactor;
 import au.edu.anu.twcore.experiment.runtime.EddReadable;
 import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;

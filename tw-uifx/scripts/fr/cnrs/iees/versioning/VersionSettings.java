@@ -105,13 +105,13 @@ public class VersionSettings {
 	 *
 	 */
 	protected static String[][] DEPS = { 
-			{ "fr.ens.biologie", "generics", "[0.4.0,)", null },
-			{ "au.edu.anu.rscs.aot", "omugi", "[0.5.0,)", null },
+			{ "fr.cnrs.iees.omhtk", "generics", "[0.4.0,)", null },
+			{ "fr.cnrs.iees.omugi", "omugi", "[0.5.0,)", null },
 			{ "fr.cnrs.iees.tw-core", "tw-core", "[0.6.4,)", null },
-			{ "au.edu.anu.rscs.aot", "aot", "[0.2.0,)", null },
+			{ "au.edu.anu.aot", "aot", "[0.2.0,)", null },
 			{ "fr.cnrs.iees.tw-models", "tw-models", "[0.0.5,)", null},
 			{ "au.edu.anu.tw-apps", "tw-apps", "[0.2.3,)", null },
-			{ "au.edu.anu.rscs.aot", "qgraph", "[0.2.0,)", null },
+			{ "au.edu.anu.qgraph", "qgraph", "[0.2.0,)", null },
 			{ "au.edu.anu.ymuit", "ymuit", "[0.1.10,)", null },
 			{ "fr.cnrs.iees.rvgrid", "rvgrid", "[0.1.0,)", null },
 			// javafx: version 17.0.4 has long term support until September 2026

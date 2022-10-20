@@ -31,7 +31,7 @@ package au.edu.anu.twuifx.mm.propertyEditors;
 
 import java.io.File;
 
-import au.edu.anu.rscs.aot.util.Resources;
+import au.edu.anu.omhtk.util.Resources;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
