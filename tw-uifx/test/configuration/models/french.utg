@@ -356,9 +356,9 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 
 // TREE
 3worlds french
-	authors = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
-	contacts = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	authors = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
+	contacts = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
+	publication = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	built-by = java.lang.String("")
 	precis =  java.lang.String("")
@@ -711,7 +711,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(ephemeral)
 				mobile = java.lang.Boolean(false)
 				parameterClass = java.lang.String(code.system.TreePar)
-				relocateFunctionName = au.edu.anu.omugi.collections.tables.StringTable(([2]"","code.system.Plot_TreeRelocateFunction"))
+				relocateFunctionName = fr.cnrs.iees.omugi.collections.tables.StringTable(([2]"","code.system.Plot_TreeRelocateFunction"))
 			arena arena
 				space plot
 					edgeEffects = fr.cnrs.iees.twcore.constants.EdgeEffects(noCorrection)
@@ -731,7 +731,7 @@ treegraph // saved by OmugiGraphExporter on Thu Mar 19 15:33:48 CET 2020
 				lifeSpan = fr.cnrs.iees.twcore.constants.LifespanType(permanent)
 				mobile = java.lang.Boolean(false)
 				parameterClass = java.lang.String(code.system.FirePar)
-				relocateFunctionName = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+				relocateFunctionName = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
 	userInterface gui
 		tab tab
 			orientation = fr.cnrs.iees.twcore.constants.UIContainerOrientation(horizontal)

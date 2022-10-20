@@ -47,9 +47,9 @@ treegraph // saved by OmugiGraphExporter on Thu Jan 09 16:14:23 CET 2020
 
 // TREE
 3worlds testfunction3
-	authors = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
-	contacts = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	authors = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
+	contacts = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
+	publication = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	built-by = java.lang.String("")
 	precis =  java.lang.String("")

@@ -36,9 +36,9 @@ treegraph // saved by OmugiGraphExporter on Thu Dec 19 16:04:44 AEDT 2019
 	node_factory = java.lang.String(au.edu.anu.twcore.root.TwConfigFactory)
 // TREE
 3worlds testdatatracker8
-	authors = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
-	contacts = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
-	publication = au.edu.anu.omugi.collections.tables.StringTable(([1]""))
+	authors = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
+	contacts = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
+	publication = fr.cnrs.iees.omugi.collections.tables.StringTable(([1]""))
 	version = java.lang.String()
 	built-by = java.lang.String("")
 	precis =  java.lang.String("")
