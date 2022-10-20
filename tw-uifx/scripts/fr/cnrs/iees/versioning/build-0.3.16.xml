@@ -1,5 +1,5 @@
 <!--===================================================================================
- ant and ivy scripts for project <tw-uifx> version 0.3.17 (Thu Oct 20 13:52:54 CEST 2022)
+ ant and ivy scripts for project <tw-uifx> version 0.3.16 (Wed Aug 24 15:05:45 CEST 2022)
  author: Jacques Gignoux <jacques.gignoux@upmc.fr>
 
  CAUTION: this file is generated - DO NOT EDIT!
@@ -11,7 +11,7 @@
 	<!-- Artifacts are produced in the project lib directory-->
 	<property name="jarRepo" location="${user.dir}/../lib"/>
 
-	<property name="docRepo" location="${user.dir}/../javadoc"/>	<!-- Use this string as the organisation package -->
+	<property name="docRepo" location="${user.dir}/../doc/javadoc"/>	<!-- Use this string as the organisation package -->
 	<property name="org" value="au.edu.anu.tw-uifx"/>
 
 	<!-- The project name -->
@@ -47,7 +47,7 @@
 			<manifest>
 				<attribute name="Implementation-Vendor" value="CNRS/ANU"/>
 				<attribute name="Implementation-Title" value="au.edu.anu.tw-uifx"/>
-				<attribute name="Implementation-Version" value="0.3.17"/>
+				<attribute name="Implementation-Version" value="0.3.16"/>
 				<attribute name="Built-By" value="${user.name}"/>
  			</manifest>
 		</jar>
