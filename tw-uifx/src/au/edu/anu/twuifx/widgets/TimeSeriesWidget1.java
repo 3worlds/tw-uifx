@@ -67,7 +67,7 @@ import de.gsi.chart.ui.geometry.Side;// This is a flaw since two of these values
 import de.gsi.dataset.DataSet;
 // Nicer would be to use a converter routine
 import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
-import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.omugi.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.DateTimeType;

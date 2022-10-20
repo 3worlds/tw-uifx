@@ -14,12 +14,12 @@ import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twcore.ui.runtime.Kicker;
 import au.edu.anu.twuifx.FXEnumProperties;
-import fr.cnrs.iees.OmugiClassLoader;
-import fr.cnrs.iees.graph.TreeNode;
-import fr.cnrs.iees.graph.impl.ALEdge;
-import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.graph.io.GraphImporter;
+import fr.cnrs.iees.omugi.OmugiClassLoader;
+import fr.cnrs.iees.omugi.graph.TreeNode;
+import fr.cnrs.iees.omugi.graph.impl.ALEdge;
+import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
+import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.omugi.graph.io.GraphImporter;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import fr.cnrs.iees.omhtk.utils.Logging;
 

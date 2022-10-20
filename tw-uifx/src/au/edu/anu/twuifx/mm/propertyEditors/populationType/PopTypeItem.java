@@ -36,7 +36,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 
 import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
-import fr.cnrs.iees.graph.ElementAdapter;
+import fr.cnrs.iees.omugi.graph.ElementAdapter;
 import fr.cnrs.iees.twcore.constants.PopulationVariablesSet;
 
 /**

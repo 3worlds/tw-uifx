@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 import au.edu.anu.twapps.mm.MMModelImpl;
 import au.edu.anu.twuifx.FXEnumProperties;
 import au.edu.anu.twuifx.mr.MRmain;
-import fr.cnrs.iees.OmugiClassLoader;
+import fr.cnrs.iees.omugi.OmugiClassLoader;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 import fr.cnrs.iees.twcore.generators.ProjectJarGenerator;
 import fr.cnrs.iees.omhtk.utils.Logging;

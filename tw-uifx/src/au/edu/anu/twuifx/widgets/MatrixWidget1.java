@@ -56,7 +56,7 @@ import au.edu.anu.ymuit.ui.colour.Palette;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
 import au.edu.anu.ymuit.util.CenteredZooming;
 import au.edu.anu.ymuit.util.Decimals;
-import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.omugi.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.statemachine.State;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;

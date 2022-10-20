@@ -31,7 +31,7 @@ package au.edu.anu.twuifx.widgets;
 
 import java.util.function.Supplier;
 
-import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.omugi.io.parsing.ValidPropertyTypes;
 import javafx.scene.paint.Color;
 
 /**

@@ -31,7 +31,7 @@ package au.edu.anu.twuifx.widgets;
 
 import org.apache.commons.lang3.function.TriFunction;
 
-import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.omugi.io.parsing.ValidPropertyTypes;
 
 /**
  * Indicates if a value is considered outside the given range.

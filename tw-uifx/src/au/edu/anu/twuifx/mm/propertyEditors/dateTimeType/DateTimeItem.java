@@ -39,8 +39,8 @@ import au.edu.anu.twcore.InitialisableNode;
 import au.edu.anu.twcore.ecosystem.dynamics.Timeline;
 import au.edu.anu.twcore.root.World;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
-import fr.cnrs.iees.graph.ElementAdapter;
-import fr.cnrs.iees.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.omugi.graph.ElementAdapter;
+import fr.cnrs.iees.omugi.graph.impl.TreeGraphNode;
 import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 

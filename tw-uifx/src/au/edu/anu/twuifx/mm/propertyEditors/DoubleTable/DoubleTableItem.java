@@ -37,7 +37,7 @@ import org.controlsfx.property.editor.PropertyEditor;
 import fr.cnrs.iees.omugi.collections.tables.*;
 import au.edu.anu.twapps.mm.MMController;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
-import fr.cnrs.iees.graph.ElementAdapter;
+import fr.cnrs.iees.omugi.graph.ElementAdapter;
 
 //TODO table editors need to be brought together in a proper hierarchy
 /**

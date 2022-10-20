@@ -19,7 +19,7 @@ import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.widgets.IsMissingValue;
 import au.edu.anu.ymuit.ui.colour.Palette;
-import fr.cnrs.iees.identity.impl.LocalScope;
+import fr.cnrs.iees.omugi.identity.impl.LocalScope;
 import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.cnrs.iees.omhtk.utils.*;
 import javafx.scene.paint.Color; // this is the only javafx pollution here

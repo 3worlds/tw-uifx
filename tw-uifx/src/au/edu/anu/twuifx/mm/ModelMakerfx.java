@@ -37,7 +37,7 @@ import java.util.prefs.Preferences;
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twapps.mm.undo.Caretaker;
-import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.omugi.io.parsing.ValidPropertyTypes;
 import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.graphState.GraphStatefx;

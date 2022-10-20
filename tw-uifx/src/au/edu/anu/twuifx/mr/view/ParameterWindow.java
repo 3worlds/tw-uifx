@@ -33,9 +33,9 @@ package au.edu.anu.twuifx.mr.view;
 import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.twapps.dialogs.DialogsFactory;
-import fr.cnrs.iees.graph.impl.ALEdge;
-import fr.cnrs.iees.graph.impl.TreeGraph;
-import fr.cnrs.iees.graph.impl.TreeGraphDataNode;
+import fr.cnrs.iees.omugi.graph.impl.ALEdge;
+import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
+import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
 import javafx.scene.control.Button;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;

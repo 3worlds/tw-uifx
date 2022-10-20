@@ -32,7 +32,7 @@ package au.edu.anu.twuifx;
 import au.edu.anu.twuifx.widgets.IsMissingValue;
 import au.edu.anu.twuifx.widgets.MissingValueColour;
 import au.edu.anu.ymuit.ui.colour.PaletteTypes;
-import fr.cnrs.iees.io.parsing.ValidPropertyTypes;
+import fr.cnrs.iees.omugi.io.parsing.ValidPropertyTypes;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
 
 /**

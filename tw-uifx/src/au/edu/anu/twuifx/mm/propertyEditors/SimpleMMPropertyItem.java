@@ -36,9 +36,9 @@ import org.controlsfx.control.PropertySheet.Item;
 import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.configGraph.*;
 import au.edu.anu.twcore.graphState.*;
-import fr.cnrs.iees.graph.*;
-import fr.cnrs.iees.graph.impl.*;
-import fr.cnrs.iees.properties.*;
+import fr.cnrs.iees.omugi.graph.*;
+import fr.cnrs.iees.omugi.graph.impl.*;
+import fr.cnrs.iees.omugi.properties.*;
 import javafx.beans.value.*;
 
 /**

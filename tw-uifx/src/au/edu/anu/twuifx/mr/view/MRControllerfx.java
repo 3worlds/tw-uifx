@@ -44,7 +44,7 @@ import au.edu.anu.twuifx.dialogs.ExperimentDetailsDlg;
 import au.edu.anu.twuifx.dialogs.ISParametersDlg;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mr.ModelRunnerfx;
-import fr.cnrs.iees.properties.SimplePropertyList;
+import fr.cnrs.iees.omugi.properties.SimplePropertyList;
 import fr.cnrs.iees.twcore.generators.odd.DocoGenerator;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;

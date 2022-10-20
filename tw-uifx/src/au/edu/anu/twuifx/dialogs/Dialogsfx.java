@@ -35,7 +35,7 @@ import java.util.*;
 
 import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twcore.project.Project;
-import fr.cnrs.iees.io.GraphFileFormats;
+import fr.cnrs.iees.omugi.io.GraphFileFormats;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
