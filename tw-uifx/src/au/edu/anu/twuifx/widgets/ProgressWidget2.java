@@ -29,27 +29,20 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import au.edu.anu.twcore.data.runtime.Metadata;
-import au.edu.anu.twcore.data.runtime.TimeData;
+import au.edu.anu.twcore.data.runtime.*;
 import au.edu.anu.twcore.ecosystem.runtime.StoppingCondition;
 import au.edu.anu.twcore.ecosystem.runtime.simulator.Simulator;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
-import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
-import au.edu.anu.twcore.ui.runtime.StatusWidget;
-import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
+import au.edu.anu.twcore.ui.runtime.*;
+import au.edu.anu.twuifx.widgets.helpers.*;
 import de.gsi.chart.XYChart;
-import de.gsi.chart.renderer.ErrorStyle;
-import de.gsi.chart.renderer.LineStyle;
+import de.gsi.chart.renderer.*;
 import de.gsi.chart.renderer.spi.ErrorDataSetRenderer;
 import de.gsi.dataset.DataSet;
 import de.gsi.dataset.spi.AbstractHistogram.HistogramOuterBounds;
 import de.gsi.dataset.spi.Histogram;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.rvgrid.statemachine.*;
 import fr.cnrs.iees.twcore.constants.SimulatorStatus;
 import javafx.application.Platform;
 import javafx.geometry.Insets;

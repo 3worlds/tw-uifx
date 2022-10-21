@@ -29,8 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import au.edu.anu.twapps.mm.MMModelImpl;
 import au.edu.anu.twuifx.FXEnumProperties;

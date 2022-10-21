@@ -30,12 +30,8 @@
 package au.edu.anu.twuifx.dialogs;
 
 import au.edu.anu.twcore.experiment.Experiment;
-import fr.cnrs.iees.omugi.graph.impl.ALEdge;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextArea;
+import fr.cnrs.iees.omugi.graph.impl.*;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.control.ButtonBar.ButtonData;
 import static au.edu.anu.qgraph.queries.CoreQueries.*;

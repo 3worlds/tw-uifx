@@ -29,26 +29,15 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.waiting;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
-import au.edu.anu.twcore.data.runtime.Metadata;
-import au.edu.anu.twcore.data.runtime.RuntimeGraphData;
-import au.edu.anu.twcore.data.runtime.TimeData;
-import au.edu.anu.twcore.ecosystem.runtime.system.ArenaComponent;
-import au.edu.anu.twcore.ecosystem.runtime.system.CategorizedContainer;
-import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
-import au.edu.anu.twcore.ecosystem.runtime.system.EcosystemGraph;
-import au.edu.anu.twcore.ecosystem.runtime.system.SystemComponent;
+import au.edu.anu.twcore.data.runtime.*;
+import au.edu.anu.twcore.ecosystem.runtime.system.*;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
-import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
-import au.edu.anu.twcore.ui.runtime.StatusWidget;
-import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
+import au.edu.anu.twcore.ui.runtime.*;
+import au.edu.anu.twuifx.widgets.helpers.*;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.rvgrid.statemachine.*;
 import javafx.scene.layout.BorderPane;
 
 /**

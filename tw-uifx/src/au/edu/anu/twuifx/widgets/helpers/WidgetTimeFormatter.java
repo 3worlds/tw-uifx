@@ -30,15 +30,12 @@ package au.edu.anu.twuifx.widgets.helpers;
 
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import au.edu.anu.twcore.data.runtime.Metadata;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ui.runtime.Widget;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
-import fr.cnrs.iees.twcore.constants.DateTimeType;
-import fr.cnrs.iees.twcore.constants.TimeScaleType;
-import fr.cnrs.iees.twcore.constants.TimeUnits;
+import fr.cnrs.iees.twcore.constants.*;
 
 /**
  * A widget used to display the time stamp of data received. It is intended that

@@ -29,8 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.visualise;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels;
 import javafx.scene.paint.Color;

@@ -29,9 +29,7 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.propertyEditors.fileType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.controlsfx.property.editor.PropertyEditor;
 

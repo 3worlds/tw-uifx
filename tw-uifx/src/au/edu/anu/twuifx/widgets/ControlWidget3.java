@@ -34,19 +34,14 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.isSimulatorState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
-import au.edu.anu.twcore.data.runtime.Metadata;
-import au.edu.anu.twcore.data.runtime.TimeData;
+import au.edu.anu.twcore.data.runtime.*;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
-import au.edu.anu.twcore.ui.runtime.ControllerAdapter;
-import au.edu.anu.twcore.ui.runtime.DataReceiver;
-import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twcore.ui.runtime.*;
 import au.edu.anu.twuifx.images.Images;
-import au.edu.anu.twuifx.widgets.helpers.SimpleWidgetTrackingPolicy;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
+import au.edu.anu.twuifx.widgets.helpers.*;
 import de.gsi.chart.XYChart;
 import de.gsi.chart.axes.spi.DefaultNumericAxis;
 import de.gsi.chart.renderer.ErrorStyle;
@@ -56,21 +51,13 @@ import de.gsi.dataset.spi.CircularDoubleErrorDataSet;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
 import fr.cnrs.iees.rvgrid.rendezvous.RendezvousProcess;
-import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineObserver;
+import fr.cnrs.iees.rvgrid.statemachine.*;
 import fr.cnrs.iees.omhtk.utils.Logging;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.geometry.*;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
 
 /**
  * A {@link StateMachineController} for the {@link StateMachineEngine} that also

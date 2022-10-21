@@ -41,14 +41,13 @@ import au.edu.anu.twcore.root.World;
 import au.edu.anu.twuifx.mm.propertyEditors.SimpleMMPropertyItem;
 import fr.cnrs.iees.omugi.graph.ElementAdapter;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraphNode;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
-import fr.cnrs.iees.twcore.constants.DateTimeType;
-import fr.cnrs.iees.twcore.constants.TimeScaleType;
-import fr.cnrs.iees.twcore.constants.TimeUnits;
+import fr.cnrs.iees.twcore.constants.*;
+
 import static au.edu.anu.qgraph.queries.CoreQueries.*;
 import static au.edu.anu.qgraph.queries.base.SequenceQuery.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
  * Property item for {@link DateTimeType}.

@@ -37,7 +37,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
 
@@ -148,12 +147,12 @@ public class UiHelpers {
 		node.setTranslateY(node.getTranslateY() - f * dy);
 	}
 
-	private static void zoom(Node node, ScrollEvent event) {
-		if (event.isControlDown()) {
-			zoom(node, Math.pow(1.01, event.getDeltaY()), event.getSceneX(), event.getSceneY());
-			event.consume();
-		}
-	}
+//	private static void zoom(Node node, ScrollEvent event) {
+//		if (event.isControlDown()) {
+//			zoom(node, Math.pow(1.01, event.getDeltaY()), event.getSceneX(), event.getSceneY());
+//			event.consume();
+//		}
+//	}
 
 	/**
 	 * Zoom in or out from a node keeping the scene centered on the mouse position

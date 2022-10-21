@@ -29,13 +29,9 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mr.view;
 
-import au.edu.anu.omhtk.preferences.IPreferences;
-import au.edu.anu.omhtk.preferences.Preferences;
-import au.edu.anu.twcore.ui.UIContainer;
-import au.edu.anu.twcore.ui.UITab;
-import au.edu.anu.twcore.ui.WidgetNode;
-import au.edu.anu.twcore.ui.runtime.Widget;
-import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.omhtk.preferences.*;
+import au.edu.anu.twcore.ui.*;
+import au.edu.anu.twcore.ui.runtime.*;
 import au.edu.anu.twuifx.utils.UiHelpers;
 import fr.cnrs.iees.omugi.graph.TreeNode;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraphNode;
@@ -43,16 +39,10 @@ import fr.cnrs.iees.twcore.constants.UIContainerOrientation;
 import fr.cnrs.iees.omhtk.utils.Duple;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static au.edu.anu.qgraph.queries.CoreQueries.*;
 import static au.edu.anu.qgraph.queries.base.SequenceQuery.*;

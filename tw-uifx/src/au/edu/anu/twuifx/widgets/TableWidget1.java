@@ -36,30 +36,21 @@ import java.util.logging.Logger;
 import fr.cnrs.iees.omugi.collections.tables.StringTable;
 import au.edu.anu.twcore.data.runtime.*;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
-import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
-import au.edu.anu.twcore.ui.runtime.StatusWidget;
-import au.edu.anu.twcore.ui.runtime.WidgetGUI;
-import au.edu.anu.twuifx.widgets.helpers.MultiSenderTrackingPolicy;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
+import au.edu.anu.twcore.ui.runtime.*;
+import au.edu.anu.twuifx.widgets.helpers.*;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.rvgrid.statemachine.*;
 import fr.cnrs.iees.twcore.constants.*;
 import fr.cnrs.iees.omhtk.utils.Logging;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.*;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.P_DATATRACKER_STATISTICS;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 
 /**
  * 

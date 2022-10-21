@@ -29,23 +29,16 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import au.edu.anu.twcore.ui.runtime.ControllerAdapter;
-import au.edu.anu.twcore.ui.runtime.WidgetGUI;
+import au.edu.anu.twcore.ui.runtime.*;
 import au.edu.anu.twuifx.images.Images;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.statemachine.Event;
-import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.rvgrid.statemachine.*;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
 import javafx.scene.layout.HBox;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;

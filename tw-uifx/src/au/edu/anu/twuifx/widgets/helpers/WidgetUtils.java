@@ -1,10 +1,8 @@
 package au.edu.anu.twuifx.widgets.helpers;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
@@ -14,8 +12,7 @@ import javax.imageio.ImageIO;
 import fr.cnrs.iees.omugi.graph.property.Property;
 import au.edu.anu.omhtk.util.StringUtils;
 import au.edu.anu.twcore.experiment.ExpFactor;
-import au.edu.anu.twcore.experiment.runtime.EddReadable;
-import au.edu.anu.twcore.experiment.runtime.ExperimentDesignDetails;
+import au.edu.anu.twcore.experiment.runtime.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.widgets.IsMissingValue;
 import au.edu.anu.ymuit.ui.colour.Palette;

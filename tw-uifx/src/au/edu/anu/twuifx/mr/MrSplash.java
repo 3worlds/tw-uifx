@@ -31,22 +31,15 @@
 package au.edu.anu.twuifx.mr;
 
 import au.edu.anu.twuifx.images.Images;
-import javafx.application.Platform;
-import javafx.application.Preloader;
+import javafx.application.*;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.*;
 
 /**
  * Splash screen to show while loading {@link ModelRunnerfx}. This is only used

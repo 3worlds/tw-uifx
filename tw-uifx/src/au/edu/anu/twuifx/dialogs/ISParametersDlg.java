@@ -35,11 +35,8 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet;
 
 import au.edu.anu.twapps.dialogs.DialogsFactory;
-import fr.cnrs.iees.omugi.graph.impl.ALEdge;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
+import fr.cnrs.iees.omugi.graph.impl.*;
+import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Window;

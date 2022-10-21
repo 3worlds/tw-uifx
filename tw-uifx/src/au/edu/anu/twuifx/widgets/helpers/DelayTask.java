@@ -29,11 +29,9 @@
  **************************************************************************/
 package au.edu.anu.twuifx.widgets.helpers;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.event.*;
 import javafx.util.Duration;
 
 /**

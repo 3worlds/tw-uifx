@@ -30,9 +30,7 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.trackerType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
@@ -41,27 +39,19 @@ import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
-import fr.cnrs.iees.omugi.graph.Direction;
-import fr.cnrs.iees.omugi.graph.TreeNode;
-import fr.cnrs.iees.omugi.graph.impl.ALDataEdge;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
-import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
-import fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels;
+import fr.cnrs.iees.omugi.graph.*;
+import fr.cnrs.iees.omugi.graph.impl.*;
 import fr.cnrs.iees.twcore.constants.TrackerType;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Window;
 
 import static au.edu.anu.qgraph.queries.CoreQueries.*;
 import static au.edu.anu.qgraph.queries.base.SequenceQuery.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
+import static fr.cnrs.iees.twcore.constants.ConfigurationEdgeLabels.*;
 
 /**
  * Property editor for {@link TrackerTypeItem}.
@@ -111,14 +101,14 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		if (process != null) {
 			@SuppressWarnings("unchecked")
 			List<TreeGraphDataNode> categories = (List<TreeGraphDataNode>) get(process.edges(Direction.OUT),
-					selectZeroOrMany(hasTheLabel(ConfigurationEdgeLabels.E_APPLIESTO.label())), edgeListEndNodes());
+					selectZeroOrMany(hasTheLabel(E_APPLIESTO.label())), edgeListEndNodes());
 			for (TreeGraphDataNode category : categories) {
 				Record drvr = (Record) get(category.edges(Direction.OUT),
-						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DRIVERS.label())), endNode());
+						selectZeroOrOne(hasTheLabel(E_DRIVERS.label())), endNode());
 				if (drvr != null)
 					result.add(drvr);
 				Record decr = (Record) get(category.edges(Direction.OUT),
-						selectZeroOrOne(hasTheLabel(ConfigurationEdgeLabels.E_DECORATORS.label())), endNode());
+						selectZeroOrOne(hasTheLabel(E_DECORATORS.label())), endNode());
 				if (decr != null)
 					result.add(decr);
 			}

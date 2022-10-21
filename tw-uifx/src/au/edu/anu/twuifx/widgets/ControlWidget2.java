@@ -30,11 +30,8 @@
 
 package au.edu.anu.twuifx.widgets;
 
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
-import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import au.edu.anu.twcore.data.runtime.Metadata;
@@ -49,20 +46,17 @@ import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
 import fr.cnrs.iees.rvgrid.rendezvous.RVMessage;
 import fr.cnrs.iees.rvgrid.rendezvous.RendezvousProcess;
-import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineObserver;
+import fr.cnrs.iees.rvgrid.statemachine.*;
 import fr.cnrs.iees.omhtk.utils.Logging;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
 import javafx.scene.layout.HBox;
+
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
+import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
 //TODO: Check use for multi-sim runs. If it's not accurate in this case, write a query to prevent its use in this case.
 /**

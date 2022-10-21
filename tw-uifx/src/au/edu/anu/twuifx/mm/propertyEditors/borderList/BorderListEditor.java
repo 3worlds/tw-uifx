@@ -30,9 +30,7 @@
 
 package au.edu.anu.twuifx.mm.propertyEditors.borderList;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
@@ -41,18 +39,12 @@ import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.twcore.constants.BorderListType;
-import fr.cnrs.iees.twcore.constants.BorderType;
+import fr.cnrs.iees.twcore.constants.*;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Window;
 import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
 

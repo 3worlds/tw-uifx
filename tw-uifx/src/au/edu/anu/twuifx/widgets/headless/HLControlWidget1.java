@@ -29,20 +29,13 @@
 package au.edu.anu.twuifx.widgets.headless;
 
 import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
-import au.edu.anu.twcore.ui.runtime.Kicker;
-import au.edu.anu.twcore.ui.runtime.StatusWidget;
-import au.edu.anu.twcore.ui.runtime.Widget;
+import au.edu.anu.twcore.ui.runtime.*;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.rvgrid.statemachine.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorEvents.*;
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 import static au.edu.anu.twcore.ui.runtime.StatusWidget.*;
 
-// TODO: Move to twcore but note: 
-// - not all headless widgets are free of javafx (Color!!!). 
-// - Also library models would need to be update!
 /**
  * 
  * This controller has no GUI. It sends a run event on start(), a quit event on

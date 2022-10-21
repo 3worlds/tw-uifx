@@ -31,21 +31,14 @@ package au.edu.anu.twuifx.widgets.headless;
 
 import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import au.edu.anu.twcore.data.runtime.Metadata;
-import au.edu.anu.twcore.data.runtime.TimeData;
+import au.edu.anu.twcore.data.runtime.*;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
-import au.edu.anu.twcore.ui.runtime.AbstractDisplayWidget;
-import au.edu.anu.twcore.ui.runtime.StatusWidget;
-import au.edu.anu.twcore.ui.runtime.Widget;
-import au.edu.anu.twuifx.widgets.helpers.SimCloneWidgetTrackingPolicy;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTimeFormatter;
-import au.edu.anu.twuifx.widgets.helpers.WidgetTrackingPolicy;
+import au.edu.anu.twcore.ui.runtime.*;
+import au.edu.anu.twuifx.widgets.helpers.*;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
-import fr.cnrs.iees.rvgrid.statemachine.State;
-import fr.cnrs.iees.rvgrid.statemachine.StateMachineEngine;
+import fr.cnrs.iees.rvgrid.statemachine.*;
 
 /**
  * A headless class to report simulation progress to stdout. ,P. It reports the

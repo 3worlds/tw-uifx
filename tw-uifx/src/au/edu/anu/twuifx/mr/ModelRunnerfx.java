@@ -39,28 +39,21 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import au.edu.anu.omhtk.Language;
-import au.edu.anu.omhtk.preferences.PrefImpl;
-import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.omhtk.preferences.*;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;
 import au.edu.anu.twuifx.dialogs.Dialogsfx;
 import au.edu.anu.twuifx.mm.view.DefaultWindowSettings;
-import au.edu.anu.twuifx.mr.view.GUIBuilder;
-import au.edu.anu.twuifx.mr.view.MRControllerfx;
+import au.edu.anu.twuifx.mr.view.*;
 import fr.cnrs.iees.omugi.graph.TreeNode;
-import fr.cnrs.iees.omugi.graph.impl.ALEdge;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraphNode;
+import fr.cnrs.iees.omugi.graph.impl.*;
 import fr.cnrs.iees.rvgrid.statemachine.StateMachineController;
 import fr.cnrs.iees.twcore.constants.EnumProperties;
-import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.application.*;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.stage.Stage;
 
 /**

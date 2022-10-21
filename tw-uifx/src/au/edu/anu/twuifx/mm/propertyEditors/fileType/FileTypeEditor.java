@@ -29,10 +29,8 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mm.propertyEditors.fileType;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.io.*;
+import java.nio.file.*;
 
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
