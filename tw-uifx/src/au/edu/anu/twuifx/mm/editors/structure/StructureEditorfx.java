@@ -78,7 +78,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	 * @param gv         The graph visualisation system.
 	 * @param recorder   Records edits for the undo/redo system.
 	 */
-	public StructureEditorfx(VisualNodeEditor n, MouseEvent event, MMController controller, GraphVisualiser gv,
+	public StructureEditorfx(NodeEditor n, MouseEvent event, MMController controller, GraphVisualiser gv,
 			Originator recorder) {
 		super(n, gv, controller);
 		this.recorder = recorder;
@@ -90,8 +90,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	@Override
 	public void buildgui() {
-		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(nodeEditor, baseSpec, subClassSpec,
-				TWA.getRoot());
+		Iterable<SimpleDataTreeNode> childSpecs = specifications.getChildSpecsOf(nodeEditor, baseSpec, subClassSpec);
 		List<SimpleDataTreeNode> filteredChildSpecs = filterChildSpecs(childSpecs);
 		List<LayoutNode> orphanedChildren = orphanedChildList(filteredChildSpecs);
 		Iterable<SimpleDataTreeNode> edgeSpecs = specifications.getEdgeSpecsOf(baseSpec, subClassSpec);
@@ -107,8 +106,9 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		final double duration = GraphVisualiserfx.animateSlow;
 
 		{
+			
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_NODE);
-			if (!filteredChildSpecs.isEmpty() && !nodeEditor.visualNode().isPredefined()) {
+			if (!filteredChildSpecs.isEmpty() && !nodeEditor.isPredefined()) {
 
 				for (SimpleDataTreeNode child : filteredChildSpecs) {
 					String childLabel = (String) child.properties().getPropertyValue(Archetypes.IS_OF_CLASS);
@@ -147,7 +147,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 						MenuItem mi = MenuLabels.addMenuItem(mu,
 								p.getFirst() + "->" + p.getSecond().getDisplayText(ElementDisplayText.RoleName));
 						if (ConfigurationReservedNodeId.isPredefined(p.getSecond().id()) && ConfigurationReservedNodeId
-								.isPredefined(nodeEditor.visualNode().configNode().id()))
+								.isPredefined(nodeEditor.getName()))
 							mi.setDisable(true);
 						mi.setOnAction((e) -> {
 
@@ -166,7 +166,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// ---
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_NEW_CHILD_LINK);
-			if (!orphanedChildren.isEmpty() && !nodeEditor.visualNode().isPredefined()) {
+			if (!orphanedChildren.isEmpty() && !nodeEditor.isPredefined()) {
 				for (LayoutNode vn : orphanedChildren) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					mi.setOnAction((e) -> {
@@ -188,10 +188,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPAND);
-			if (nodeEditor.visualNode().hasCollaspedChild()) {
+			if (nodeEditor.hasCollapsedChild()) {
 				int count = 0;
 				SortedMap<String, LayoutNode> sortedNames = new TreeMap<>();
-				for (LayoutNode vn : nodeEditor.visualNode().getChildren())
+				for (LayoutNode vn : nodeEditor.getChildren())
 					sortedNames.put(vn.getDisplayText(ElementDisplayText.RoleName), vn);
 				for (Map.Entry<String, LayoutNode> entry : sortedNames.entrySet()) {
 					if (entry.getValue().isCollapsed()) {
@@ -210,7 +210,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					mi.setOnAction((e) -> {
 						onExpandTrees(duration);
 						String desc = "Expand " + MenuLabels.ML_ALL.label() + " ["
-								+ nodeEditor.visualNode().configNode().toShortString() + "]";
+								+ nodeEditor.toString() + "]";
 						recorder.addState(desc);
 					});
 				}
@@ -220,10 +220,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// --
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_COLLAPSE);
-			if (nodeEditor.visualNode().hasUncollapsedChildren()) {
+			if (nodeEditor.hasUncollapsedChildren()) {
 				int count = 0;
 				SortedMap<String, LayoutNode> sortedNames = new TreeMap<>();
-				for (LayoutNode vn : nodeEditor.visualNode().getChildren())
+				for (LayoutNode vn : nodeEditor.getChildren())
 					sortedNames.put(vn.getDisplayText(ElementDisplayText.RoleName), vn);
 				for (Map.Entry<String, LayoutNode> entry : sortedNames.entrySet()) {
 					if (!entry.getValue().isCollapsed()) {
@@ -242,7 +242,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					mi.setOnAction(e -> {
 						onCollapseTrees(duration);
 						String desc = "Collapse " + MenuLabels.ML_ALL.label() + " ["
-								+ nodeEditor.visualNode().configNode().toShortString() + "]";
+								+ nodeEditor.toString() + "]";
 						recorder.addState(desc);
 					});
 				}
@@ -254,11 +254,11 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// ---------------------------------------------------------------
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_DELETE_NODE);
-			if (!nodeEditor.visualNode().isRoot() && !nodeEditor.visualNode().isPredefined()) {
+			if (!nodeEditor.is3Wroot() && !nodeEditor.isPredefined()) {
 				mi.setOnAction((e) -> {
 
 					String desc = MenuLabels.ML_DELETE_NODE.label() + " ["
-							+ nodeEditor.visualNode().configNode().toShortString() + "]";
+							+ nodeEditor.toString() + "]";
 
 					onDeleteNode(duration);
 
@@ -279,14 +279,14 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->"
 							+ vn.getDisplayText(ElementDisplayText.RoleName));
 					if (ConfigurationReservedNodeId.isPredefined(vn.id())
-							&& ConfigurationReservedNodeId.isPredefined(nodeEditor.visualNode().configNode().id()))
+							&& ConfigurationReservedNodeId.isPredefined(nodeEditor.getName()))
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
 
 						onDeleteEdge(edge);
 
 						String desc = MenuLabels.ML_DELETE_EDGE.label() + " ["
-								+ nodeEditor.visualNode().configNode().toShortString() + "]";
+								+ nodeEditor.toString() + "]";
 						recorder.addState(desc);
 					});
 				}
@@ -297,8 +297,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// ---
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_CHILD_EDGE);
-			if (nodeEditor.visualNode().hasChildren() && !nodeEditor.visualNode().isPredefined()) {
-				for (LayoutNode child : nodeEditor.visualNode().getChildren()) {
+			if (nodeEditor.hasChildren() && !nodeEditor.isPredefined()) {
+				for (LayoutNode child : nodeEditor.getChildren()) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, child.getDisplayText(ElementDisplayText.RoleName));
 					if (child.isPredefined())
 						mi.setDisable(true);
@@ -320,8 +320,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// ---------------------------------------------------------------
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_DELETE_TREE);
-			if (nodeEditor.visualNode().hasChildren() && !nodeEditor.visualNode().isPredefined()) {
-				Iterable<LayoutNode> lst = nodeEditor.visualNode().getChildren();
+			if (nodeEditor.hasChildren() && !nodeEditor.isPredefined()) {
+				Iterable<LayoutNode> lst = nodeEditor.getChildren();
 				for (LayoutNode vn : lst) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					if (vn.isPredefined())
@@ -344,16 +344,16 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		// ---------------------------------------------------------------
 		{
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_OPTIONAL_PROPS);
-			if (!nodeEditor.visualNode().isPredefined() && (!optionalNodePropertySpecs.isEmpty())
+			if (!nodeEditor.isPredefined() && (!optionalNodePropertySpecs.isEmpty())
 					|| !optionalEdgePropertySpecs.isEmpty()) {
 				mi.setOnAction((e) -> {
 
 					String desc = MenuLabels.ML_OPTIONAL_PROPS.label() + " ["
-							+ nodeEditor.visualNode().configNode().toShortString() + "]";
+							+ nodeEditor.toString() + "]";
 
 					if (onOptionalProperties(optionalNodePropertySpecs, optionalEdgePropertySpecs)) {
 
-						controller.onAddRemoveProperty(nodeEditor.visualNode());
+						controller.onAddRemoveProperty(nodeEditor.layoutNode());
 						GraphStateFactory.setChanged();
 						ConfigGraph.verifyGraph();
 
@@ -371,10 +371,10 @@ public class StructureEditorfx extends StructureEditorAdapter {
 			MenuItem mi = MenuLabels.addMenuItem(cm, MenuLabels.ML_RENAME_NODE);
 			// mi.setDisable(true);
 
-			if (!nodeEditor.visualNode().isRoot() && !nodeEditor.visualNode().isPredefined()) {
+			if (!nodeEditor.is3Wroot() && !nodeEditor.isPredefined()) {
 				mi.setOnAction((e) -> {
 					String desc = MenuLabels.ML_RENAME_NODE.label() + " ["
-							+ nodeEditor.visualNode().configNode().toShortString() + "]";
+							+ nodeEditor.toString() + "]";
 
 					if (onRenameNode()) {
 
@@ -400,7 +400,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 					MenuItem mi = MenuLabels.addMenuItem(mu, edge.getDisplayText(ElementDisplayText.RoleName) + "->"
 							+ vn.getDisplayText(ElementDisplayText.RoleName));
 //					mi.setDisable(true);
-					if (vn.isPredefined() && nodeEditor.visualNode().isPredefined())
+					if (vn.isPredefined() && nodeEditor.isPredefined())
 						mi.setDisable(true);
 					mi.setOnAction((e) -> {
 						String desc = MenuLabels.ML_RENAME_EDGE.label() + " [" + edge.getConfigEdge().toShortString()
@@ -427,7 +427,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_IMPORT_TREE);
 			mu.setDisable(true);// TODO fix importing problem with parent table
-			if (!filteredChildSpecs.isEmpty() && !nodeEditor.visualNode().isPredefined()) {
+			if (!filteredChildSpecs.isEmpty() && !nodeEditor.isPredefined()) {
 				for (SimpleDataTreeNode childSpec : filteredChildSpecs) {
 					MenuItem mi = MenuLabels.addMenuItem(mu,
 							(String) childSpec.properties().getPropertyValue(Archetypes.IS_OF_CLASS));
@@ -448,8 +448,8 @@ public class StructureEditorfx extends StructureEditorAdapter {
 //--
 		{
 			Menu mu = MenuLabels.addMenu(cm, MenuLabels.ML_EXPORT_TREE);
-			if (nodeEditor.visualNode().hasChildren() && !nodeEditor.visualNode().isPredefined()) {
-				for (LayoutNode vn : nodeEditor.visualNode().getChildren()) {
+			if (nodeEditor.hasChildren() && !nodeEditor.isPredefined()) {
+				for (LayoutNode vn : nodeEditor.getChildren()) {
 					MenuItem mi = MenuLabels.addMenuItem(mu, vn.getDisplayText(ElementDisplayText.RoleName));
 					if (vn.isPredefined())
 						mi.setDisable(true);
@@ -466,7 +466,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 	// TODO Move to adaptor
 	@SuppressWarnings("unchecked")
-	private List<Duple<LayoutEdge, SimpleDataTreeNode>> filterOptionalEdgePropertySpecs(VisualNodeEditor nodeEditor,
+	private List<Duple<LayoutEdge, SimpleDataTreeNode>> filterOptionalEdgePropertySpecs(NodeEditor nodeEditor,
 			Iterable<SimpleDataTreeNode> edgeSpecs) {
 		// Task: get edge spec for each out edge present for this node that contains
 		// optional properties
@@ -494,7 +494,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 	}
 
 	private List<SimpleDataTreeNode> removeNonEditablePropertySpecs(List<SimpleDataTreeNode> propSpecs) {
-		Collection<String> ne = controller.getUnEditablePropertyKeys(nodeEditor.visualNode().configNode().classId());
+		Collection<String> ne = controller.getUnEditablePropertyKeys(nodeEditor.getLabel());
 		Iterator<SimpleDataTreeNode> iter = propSpecs.iterator();
 		while (iter.hasNext()) {
 			String name = (String) iter.next().properties().getPropertyValue(Archetypes.HAS_NAME);

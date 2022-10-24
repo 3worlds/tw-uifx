@@ -189,7 +189,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		for (LayoutNode n : layoutGraph.nodes()) {
 			createParentLines(n, isParentLineVisible);
 			createGraphLines(n, isCrossLinkLineVisible);
-			if (!n.isCollapsed() && n.hasCollaspedChild())
+			if (!n.isCollapsed() && n.hasCollapsedChild())
 				collapsedParents.add(n);
 		}
 		resetZorder(pane.getChildren());
@@ -327,7 +327,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY && !e.isControlDown()) {
-				new StructureEditorfx(new VisualNodeEditorAdapter(n, layoutGraph), e, controller, this, recorder);
+				new StructureEditorfx(new NodeEditorAdapter(n, layoutGraph), e, controller, this, recorder);
 				e.consume();
 			} else if (e.getButton() == MouseButton.SECONDARY && e.isControlDown()) {
 				setLayoutRoot(n);
