@@ -94,8 +94,8 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	private final static Interpolator interpolator = Interpolator.EASE_BOTH;
 	private final MMController controller;
 	private final Originator recorder;
-	private final ReadOnlyObjectProperty<ElementDisplayText> nodeSelect;
-	private final ReadOnlyObjectProperty<ElementDisplayText> edgeSelect;
+	private final ReadOnlyObjectProperty<ElementDisplayText> nodeTextOption;
+	private final ReadOnlyObjectProperty<ElementDisplayText> edgeTextOption;
 	private final ReadOnlyObjectProperty<Integer> pathLength;
 
 	/**
@@ -143,8 +143,8 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		this.font = font;
 		this.controller = controller;
 		this.recorder = recorder;
-		this.edgeSelect = edgeTextOption;
-		this.nodeSelect = nodeTextOption;
+		this.edgeTextOption = edgeTextOption;
+		this.nodeTextOption = nodeTextOption;
 		this.pathLength = pathLength;
 
 		dropShadow = new DropShadow();
@@ -158,18 +158,18 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	}
 
 	private void setTextListeners() {
-		this.nodeSelect.addListener(e_ -> {
+		this.nodeTextOption.addListener(e_ -> {
 			for (LayoutNode n : layoutGraph.nodes()) {
 				Text txt = (Text) n.getText();
-				txt.setText(n.getDisplayText(nodeSelect.get()));
+				txt.setText(n.getDisplayText(nodeTextOption.get()));
 			}
 		});
-		this.edgeSelect.addListener(e -> {
+		this.edgeTextOption.addListener(e -> {
 			for (LayoutNode n : layoutGraph.nodes()) {
 				for (Edge edge : n.edges(Direction.OUT)) {
 					LayoutEdge ve = (LayoutEdge) edge;
 					Text txt = (Text) ve.getText();
-					txt.setText(ve.getDisplayText(edgeSelect.get()));
+					txt.setText(ve.getDisplayText(edgeTextOption.get()));
 				}
 			}
 		});
@@ -243,13 +243,13 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	@Override
 	public final void close() {
 		pane.getChildren().clear();
-
 	}
 
 	private LayoutNode dragNode;
 
 	private boolean dimmingOn;
-
+	// we must remove listeners when deleteing javafx nodes.
+//https://stackoverflow.com/questions/51474679/cleaning-up-bindings-and-change-listeners-on-nested-properties-when-parent-prope
 	private void createNodeVisualisation(LayoutNode n) {
 		double x = n.getX() * pane.getWidth();
 		double y = n.getY() * pane.getHeight();
@@ -257,7 +257,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		Circle c = new Circle(x, y, nodeRadius.get());
 
 		c.radiusProperty().bind(nodeRadius);
-		Text text = new Text(n.getDisplayText(nodeSelect.get()));
+		Text text = new Text(n.getDisplayText(nodeTextOption.get()));
 		n.setVisualElements(c, text);
 		Color nColor = TreeColours.getCategoryColor(n.getCategory());
 		c.setFill(nColor);
@@ -414,7 +414,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		Circle toCircle = (Circle) endNode.getSymbol();
 		Line line = new Line();
 		line.strokeWidthProperty().bind(lineWidth);
-		Text text = new Text(edge.getDisplayText(edgeSelect.get()));
+		Text text = new Text(edge.getDisplayText(edgeTextOption.get()));
 		text.fontProperty().bind(font);
 		line.setStroke(graphEdgeColor);
 
@@ -784,13 +784,13 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 	@Override
 	public final void onNodeRenamed(LayoutNode vNode) {
 		Text text = (Text) vNode.getText();
-		text.setText(vNode.getDisplayText(nodeSelect.get()));
+		text.setText(vNode.getDisplayText(nodeTextOption.get()));
 	}
 
 	@Override
 	public final void onEdgeRenamed(LayoutEdge vEdge) {
 		Text text = (Text) vEdge.getText();
-		text.setText(vEdge.getDisplayText(edgeSelect.get()));
+		text.setText(vEdge.getDisplayText(edgeTextOption.get()));
 	}
 
 	private LayoutNode getTWRoot() {
