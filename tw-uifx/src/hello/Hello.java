@@ -1,4 +1,4 @@
-package au.edu.anu.twuifx.openmole;
+package hello;
 
 /**
  * OpenMole test case: Testing independence of memory space through a static
