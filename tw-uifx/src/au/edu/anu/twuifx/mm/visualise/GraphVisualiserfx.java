@@ -327,7 +327,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		});
 		c.setOnMouseClicked(e -> {
 			if (e.getButton() == MouseButton.SECONDARY && !e.isControlDown()) {
-				new StructureEditorfx(new NodeEditorAdapter(n, layoutGraph), e, controller, this, recorder);
+				new StructureEditorfx(new NodeEditorAdapter(n), e, controller, this, recorder);
 				e.consume();
 			} else if (e.getButton() == MouseButton.SECONDARY && e.isControlDown()) {
 				setLayoutRoot(n);
