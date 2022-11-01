@@ -316,7 +316,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 				int dy = (int) Math.round(50 * Math.abs(oldy - newy));
 				if (dx != 0 || dy != 0) {
 					dragNode.setPosition(newx, newy);
-					GraphStateFactory.setChanged();
+					GraphStateService.getImplementation().setChanged();
 					String desc = "Move [" + dragNode.configNode().toShortString() + "]";
 					recorder.addState(desc);
 
@@ -864,7 +864,7 @@ public final class GraphVisualiserfx implements GraphVisualiser {
 		if (animate.get())
 			timeline.play();
 
-		GraphStateFactory.setChanged();
+		GraphStateService.getImplementation().setChanged();
 	}
 
 	private static KeyFrame getKeyFrame(Circle c, double x, double y, double duration) {

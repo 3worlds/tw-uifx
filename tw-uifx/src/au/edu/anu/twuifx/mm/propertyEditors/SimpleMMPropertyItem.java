@@ -140,7 +140,7 @@ public class SimpleMMPropertyItem implements Item {
 	protected void onUpdateProperty(Object value) {
 		properties.setProperty(key, value);
 		controller.onItemEdit(this);
-		GraphStateFactory.setChanged();
+		GraphStateService.getImplementation().setChanged();
 		if (!(value instanceof String))
 			ConfigGraph.verifyGraph();
 	}

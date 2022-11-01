@@ -205,7 +205,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 						recorder.addState(desc);
 
-						GraphStateFactory.setChanged();
+						GraphStateService.getImplementation().setChanged();
 						ConfigGraph.verifyGraph();
 					}
 				});
@@ -231,7 +231,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 
 					recorder.addState(desc);
 
-					GraphStateFactory.setChanged();
+					GraphStateService.getImplementation().setChanged();
 					ConfigGraph.verifyGraph();
 				}
 			});
@@ -251,7 +251,7 @@ public class StructureEditorfx extends StructureEditorAdapter {
 				if (onOptionalProperties(optionalNodePropertySpecs, optionalEdgePropertySpecs)) {
 
 					controller.onAddRemoveProperty(nodeEditor.layoutNode());
-					GraphStateFactory.setChanged();
+					GraphStateService.getImplementation().setChanged();
 					ConfigGraph.verifyGraph();
 
 					recorder.addState(desc);

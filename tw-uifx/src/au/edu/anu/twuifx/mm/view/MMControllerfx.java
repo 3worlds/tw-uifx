@@ -502,7 +502,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 				lastSelectedNode = newNode;
 				newNode = null;
 				initialisePropertySheets();
-				GraphStateFactory.setChanged();
+				GraphStateService.getImplementation().setChanged();
 				ConfigGraph.verifyGraph();
 
 				model.addState(desc);
@@ -515,7 +515,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		MMMemento m = (MMMemento) Caretaker.succ();
 		if (mementoFilesExist(m)) {
 			model.restore(m);
-			GraphStateFactory.setChanged();
+			GraphStateService.getImplementation().setChanged();
 		} else {
 			Caretaker.initialise();
 			model.doSave();
@@ -533,7 +533,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		MMMemento m = (MMMemento) Caretaker.prev();
 		if (mementoFilesExist(m)) {
 			model.restore(m);
-			GraphStateFactory.setChanged();
+			GraphStateService.getImplementation().setChanged();
 		} else {
 			Caretaker.initialise();
 			model.doSave();
@@ -660,7 +660,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 		if (changed) {
 			model.addState(miImportSnippets.getText());
-			GraphStateFactory.setChanged();
+			GraphStateService.getImplementation().setChanged();
 			ConfigGraph.verifyGraph();
 		}
 		String title = "IDE Import";
@@ -711,7 +711,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 		if (changed) {
 			initialisePropertySheets();
-			GraphStateFactory.setChanged();
+			GraphStateService.getImplementation().setChanged();
 			model.addState(miClearSnippets.getText());
 		}
 	}
@@ -755,7 +755,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 	@Override
 	public void onProjectClosing() {
-		GraphStateFactory.clear();
+		GraphStateService.getImplementation().clear();
 		if (visualiser != null)
 			visualiser.close();
 		visualiser = null;
@@ -1497,7 +1497,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 	private void setButtonState() {
 		boolean isOpen = Project.isOpen();
-		boolean isClean = !GraphStateFactory.changed() & isOpen;
+		boolean isClean = !GraphStateService.getImplementation().changed() & isOpen;
 		boolean isConnected = UserProjectLink.haveUserProject();
 		miSetCodePath.setDisable(isConnected);
 		miDisconnect.setDisable(!isConnected);
@@ -1507,11 +1507,8 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		btnXLinks.setDisable(!isOpen);
 		cbNodeTextChoice.setDisable(!isOpen);
 		cbEdgeTextChoice.setDisable(!isOpen);
-//		btnSelectAll.setDisable(!isOpen);
 		tglSideline.setDisable(!isOpen);
-//		tglNeighbourhood.setDisable(!isOpen);
 		btnLayout.setDisable(!isOpen);
-		// txfLayoutRoot.setDisable(!isOpen);
 		rbl1.setDisable(!isOpen);
 		rbl2.setDisable(!isOpen);
 		rbl3.setDisable(!isOpen);
@@ -1521,8 +1518,6 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		btnCheck.setDisable(!isOpen);
 		boolean cleanAndValid = isClean && isValid;
 		btnDeploy.setDisable(!cleanAndValid);
-//		btnDocument.setDisable(!cleanAndValid);
-//		boolean snp = !cleanAndValid || !UserProjectLink.haveUserProject();
 		boolean snp = !UserProjectLink.haveUserProject();
 		miImportSnippets.setDisable(snp);
 		miClearSnippets.setDisable(!isOpen);

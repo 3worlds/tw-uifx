@@ -117,9 +117,9 @@ public class ModelMakerfx extends Application {
 		mainStage.setTitle(DefaultWindowSettings.defaultName());
 		createMainWindow();
 		DialogService.setImplementation(new Dialogsfx(root.getScene().getWindow()));
-		GraphStateFactory.setImplementation(
+		GraphStateService.setImplementation(
 				new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
-		GraphStateFactory.addListener(controller);
+		GraphStateService.getImplementation().addListener(controller);
 		mainStage.setHeight(DefaultWindowSettings.getHeight());
 		mainStage.setWidth(DefaultWindowSettings.getWidth());
 		mainStage.setX(DefaultWindowSettings.getX());
