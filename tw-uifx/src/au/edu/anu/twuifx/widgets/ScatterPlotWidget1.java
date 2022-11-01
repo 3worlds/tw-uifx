@@ -329,7 +329,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 
 	@Override
 	public void putPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 		prefs.putInt(widgetId + keySymbolSize, symbolSize);
 		prefs.putEnum(widgetId + keySymbol, symbol);
 		prefs.putBoolean(keySwapAxes, swapAxes);
@@ -337,7 +337,7 @@ public class ScatterPlotWidget1 extends AbstractDisplayWidget<OutputXYData, Meta
 
 	@Override
 	public void getPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 		symbolSize = prefs.getInt(widgetId + keySymbolSize, 2);
 		symbol = (DefaultMarker) prefs.getEnum(widgetId + keySymbol, DefaultMarker.DIAMOND);
 		swapAxes = prefs.getBoolean(keySwapAxes, false);

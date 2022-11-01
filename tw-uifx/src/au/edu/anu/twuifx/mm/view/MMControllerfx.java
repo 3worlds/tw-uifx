@@ -103,7 +103,7 @@ import static au.edu.anu.qgraph.queries.CoreQueries.*;
 import static au.edu.anu.qgraph.queries.base.SequenceQuery.get;
 
 /**
- * Javafx implementation of {@link IMMController}. It also implements
+ * Javafx implementation of {@link MMController}. It also implements
  * {@link ErrorListListener} to display verification and model compile error
  * messages and {IGraphStateListener}.to update controls depending on the state
  * of the configuration graph.
@@ -988,7 +988,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 	@Override
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			IPreferences prefs = Preferences.getImplementation();
+			ArrayPreferences prefs = PreferenceService.getImplementation();
 
 			prefs.putString(UserProjectPath, userProjectPath.get());
 			prefs.putEnum(allElementsPropertySheet.idProperty().get() + Mode, allElementsPropertySheet.getMode());
@@ -1025,8 +1025,8 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 	@Override
 	public void getPreferences() {
-		Preferences.setImplementation(new PrefImpl(Project.makeProjectPreferencesFile()));
-		IPreferences prefs = Preferences.getImplementation();
+		PreferenceService.setImplementation(new PrefImpl(Project.makeProjectPreferencesFile()));
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 		// get path string for user project
 		String prjtmp = prefs.getString(UserProjectPath, "");
 		if (!prjtmp.equals("")) {
@@ -1110,9 +1110,9 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 	// -------------- ModelMakerfx Start---------------------
 	/**
-	 * Getter for the {@link IMMModel#canClose()}.
+	 * Provide access to the {@link MMModel#canClose()}.
 	 * 
-	 * @return true if project can close; false otherwise.
+	 * @return {@code true} if project can close; {@code false} otherwise.
 	 */
 	public boolean canClose() {
 		return model.canClose();

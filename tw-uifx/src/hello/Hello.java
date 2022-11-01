@@ -17,8 +17,14 @@ public class Hello {
 //		run(0);
 //	}
 
+	/**
+	 * A static field to test class is running in a separate process.
+	 */
 	public static long testNumber = -1;
 
+	/**
+	 * @param arg test case
+	 */
 	public static void run(int arg) {
 		System.out.println("arg: " + arg);
 		System.out.println("PID: " + ProcessHandle.current().pid());

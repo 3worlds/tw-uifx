@@ -1368,7 +1368,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 
 	@Override
 	public void putPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 
 		for (int i = 0; i < displays.size(); i++) {
 			SpDisplay d = displays.get(i);
@@ -1402,7 +1402,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 	// called at END of UI construction because this depends on UI components.
 	@Override
 	public void getPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			SpDisplay d = displays.get(i);
 			d.zoomTarget().setScaleX(prefs.getDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX()));

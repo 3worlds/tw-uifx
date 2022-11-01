@@ -285,7 +285,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	@Override
 	public void putPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			D2Display d = displays.get(i);
 			prefs.putDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX());
@@ -305,7 +305,7 @@ public class MatrixWidget1 extends AbstractDisplayWidget<Output2DData, Metadata>
 
 	@Override
 	public void getPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 		for (int i = 0; i < displays.size(); i++) {
 			D2Display d = displays.get(i);
 			d.zoomTarget().setScaleX(prefs.getDouble(widgetId + keyScaleX + i, d.zoomTarget().getScaleX()));

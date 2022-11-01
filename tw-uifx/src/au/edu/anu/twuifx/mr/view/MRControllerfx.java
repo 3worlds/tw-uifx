@@ -33,15 +33,13 @@ package au.edu.anu.twuifx.mr.view;
 import java.io.File;
 import java.util.List;
 import au.edu.anu.omhtk.Language;
-import au.edu.anu.omhtk.preferences.IPreferences;
-import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.omhtk.preferences.*;
 import fr.cnrs.iees.omugi.collections.tables.StringTable;
 import au.edu.anu.omhtk.util.Resources;
 import au.edu.anu.twapps.dialogs.DialogsFactory;
 import au.edu.anu.twapps.mr.*;
 import au.edu.anu.twcore.project.Project;
-import au.edu.anu.twuifx.dialogs.ExperimentDetailsDlg;
-import au.edu.anu.twuifx.dialogs.ISParametersDlg;
+import au.edu.anu.twuifx.dialogs.*;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mr.ModelRunnerfx;
 import fr.cnrs.iees.omugi.properties.SimplePropertyList;
@@ -50,29 +48,14 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -408,7 +391,7 @@ public class MRControllerfx implements MRController {
 	@Override
 	public void putPreferences() {
 		if (Project.isOpen()) {
-			IPreferences prefs = Preferences.getImplementation();
+			ArrayPreferences prefs = PreferenceService.getImplementation();
 			prefs.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 			prefs.putBoolean(mainMaximized, stage.isMaximized());
 			int idx = tabPane.getSelectionModel().getSelectedIndex();
@@ -420,7 +403,7 @@ public class MRControllerfx implements MRController {
 
 	@Override
 	public void getPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 		double[] r = prefs.getDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 		stage.setX(r[0]);
 		stage.setY(r[1]);

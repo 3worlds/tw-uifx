@@ -78,7 +78,7 @@ import au.edu.anu.twcore.ecosystem.runtime.*;
  * "ProgressWidget3"/>
  * </p>
  * <p>
- * This widget rendezvous with messages of type {@link DataMessageTypes#TIME}
+ * This widget rendezvous with messages of type {@link AbstractDataTracker#TIME}
  * containing {@link TimeData} at a rate depending on the sending
  * {@link Simulator}.
  * 

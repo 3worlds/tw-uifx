@@ -264,7 +264,7 @@ public class GUIBuilder {
 	 * Put run-time ui layout preferences for model runner to preferences system.
 	 */
 	public void putPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences prefs = PreferenceService.getImplementation();
 		for (WidgetGUI w : guiWidgets)
 			w.putPreferences();
 		for (SplitPane s : splitPanes) {

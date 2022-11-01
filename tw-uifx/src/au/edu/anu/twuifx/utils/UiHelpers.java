@@ -30,13 +30,11 @@ package au.edu.anu.twuifx.utils;
 
 import org.controlsfx.control.PropertySheet;
 
-import au.edu.anu.omhtk.preferences.IPreferences;
-import au.edu.anu.omhtk.preferences.Preferences;
+import au.edu.anu.omhtk.preferences.*;
 import impl.org.controlsfx.skin.PropertySheetSkin;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.BorderPane;
 
@@ -58,10 +56,9 @@ public class UiHelpers {
 	 * @return double array suitable for a Splitter position property.
 	 */
 	public static double[] getSplitPanePositions(double def, String key) {
-		IPreferences prefs = Preferences.getImplementation();
 		double pos;
 		double[] positions = new double[1];
-		pos = prefs.getDouble(key, def);
+		pos = PreferenceService.getImplementation().getDouble(key, def);
 		positions[0] = pos;
 		return positions;
 	}

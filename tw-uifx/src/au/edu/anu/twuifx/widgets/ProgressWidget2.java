@@ -64,7 +64,7 @@ import static au.edu.anu.twcore.ecosystem.runtime.simulator.SimulatorStates.*;
  * <li>{@link StoppingCondition} - if one is in use;</li>
  * </p>
  * <p>
- * The widget rendezvous with messages of type {@link DataMessageTypes#TIME} containing
+ * The widget rendezvous with messages of type {@link AbstractDataTracker#TIME} containing
  * {@link TimeData} at a rate depending on the sending {@link Simulator}.
  * 
  * @author Ian Davies -23 Mar. 2021

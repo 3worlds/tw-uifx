@@ -436,20 +436,20 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 
 	@Override
 	public void putPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences p = PreferenceService.getImplementation();
 
-		prefs.putBoolean(widgetId + keyLegendVisible, legendVisible);
-		prefs.putEnum(widgetId + keyLegendSide, legendSide);
-		prefs.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
+		p.putBoolean(widgetId + keyLegendVisible, legendVisible);
+		p.putEnum(widgetId + keyLegendSide, legendSide);
+		p.putInt(widgetId + keyMaxLegendItems, maxLegendItems);
 	}
 
 	@Override
 	public void getPreferences() {
-		IPreferences prefs = Preferences.getImplementation();
+		ArrayPreferences p = PreferenceService.getImplementation();
 
-		legendVisible = prefs.getBoolean(widgetId + keyLegendVisible, true);
-		legendSide = (Side) prefs.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
-		maxLegendItems = prefs.getInt(widgetId + keyMaxLegendItems, 8);
+		legendVisible = p.getBoolean(widgetId + keyLegendVisible, true);
+		legendSide = (Side) p.getEnum(widgetId + keyLegendSide, Side.BOTTOM);
+		maxLegendItems = p.getInt(widgetId + keyMaxLegendItems, 8);
 	}
 
 	// helper to initialise a Renderer

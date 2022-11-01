@@ -51,20 +51,23 @@ public class OpenMoleRun {
 	}
 
 	/**
+	 * Testing if openmole runs this class in a separate process.
+	 */
+	public static long testNumber = -1;
+
+	/**
 	 * This file largely boilerplate except for:
 	 * <li>for the parameters</li>
 	 * <li>The imported file name;</li>
 	 * <li>updateParameters</li>
 	 * 
-	 * @param r     a constant for exp manipulation
-	 * 
+	 * @param r a constant for exp manipulation
 	 */
-	public static long testNumber = -1;
 	public static void run(int r) {
 		System.out.println("r: " + r);
-		System.out.println("PID: "+ProcessHandle.current().pid());
-		if (testNumber!=-1L)
-			throw new IllegalStateException("TestNumber: "+testNumber);
+		System.out.println("PID: " + ProcessHandle.current().pid());
+		if (testNumber != -1L)
+			throw new IllegalStateException("TestNumber: " + testNumber);
 		testNumber = ProcessHandle.current().pid();
 //		Logging.setDefaultLogLevel(Level.parse("SEVERE"));
 //		EnumProperties.recordEnums();

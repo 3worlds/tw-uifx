@@ -61,7 +61,7 @@ import static au.edu.anu.qgraph.queries.CoreQueries.*;
 import static au.edu.anu.qgraph.queries.base.SequenceQuery.*;
 
 /**
- * Javafx implementation of {@link IGraphVisualiser}
+ * Javafx implementation of {@link GraphVisualiser}
  * 
  * @author Ian Davies -28 Jan. 2019
  */

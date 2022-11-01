@@ -150,7 +150,7 @@ public class ModelRunnerfx extends Application {
 		scene.getWindow().setOnCloseRequest((e) -> {
 			stop();
 		});
-		Preferences.setImplementation(new PrefImpl(Project.makeRuntimePreferencesFile()));
+		PreferenceService.setImplementation(new PrefImpl(Project.makeRuntimePreferencesFile()));
 		//
 		// Everything is initialized here through cascading.
 		uiDeployer = new GUIBuilder(uiNode, controller);
@@ -210,7 +210,7 @@ public class ModelRunnerfx extends Application {
 	public void stop() {
 		controller.putPreferences();
 		uiDeployer.putPreferences();
-		Preferences.getImplementation().flush();
+		PreferenceService.getImplementation().flush();
 		Platform.exit();
 		System.exit(0);
 	}

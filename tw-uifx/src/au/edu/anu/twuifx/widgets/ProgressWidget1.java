@@ -71,7 +71,7 @@ import static fr.cnrs.iees.twcore.constants.ConfigurationPropertyNames.*;
  * "ProgressWidget1"/>
  * </p>
  * <p>
- * It rendezvous with messages of type {@link DataMessageTypes#TIME} containing
+ * It rendezvous with messages of type {@link AbstractDataTracker#TIME} containing
  * {@link TimeData} at a rate depending on the sending {@link Simulator}.
  * </p>
  * <p>
