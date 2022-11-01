@@ -35,7 +35,7 @@ import java.nio.file.*;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
@@ -85,17 +85,17 @@ public class FileTypeEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	private void onAction() {
 		File root = Project.makeFile("");
 		FileTypeItem fileTypeItem = (FileTypeItem) getProperty();
-		File file = DialogsFactory.getOpenFile(root, "Select file", fileTypeItem.getExtensions());
+		File file = DialogService.getImplementation().getOpenFile(root, "Select file", fileTypeItem.getExtensions());
 		String relativePath = null;
 		if (file != null) {
 			if (file.getAbsolutePath().contains(root.getAbsolutePath()))
 				relativePath = makeProjectRelative(file.getAbsolutePath());
-			else if (DialogsFactory.confirmation("Import file", "", "Import " + file.getName() + " to the current project?")) {
+			else if (DialogService.getImplementation().confirmation("Import file", "", "Import " + file.getName() + " to the current project?")) {
 				File newFile = importFile(file);
 				relativePath = makeProjectRelative(newFile.getAbsolutePath());
 			}
 		} else {
-			if (DialogsFactory.confirmation("Query", "Clear property value?", "")) {
+			if (DialogService.getImplementation().confirmation("Query", "Clear property value?", "")) {
 				relativePath = "";
 			}
 		}

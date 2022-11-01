@@ -35,7 +35,7 @@ import java.util.Optional;
 import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twuifx.dialogs.TextFilters;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
@@ -87,7 +87,7 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 	private String editInterval(String currentValue) {
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setTitle(getProperty().getName());
-		dlg.initOwner((Window) DialogsFactory.owner());
+		dlg.initOwner((Window) DialogService.getImplementation().owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		BorderPane content = new BorderPane();
@@ -191,7 +191,7 @@ public class IntervalEditor extends AbstractPropertyEditor<String, LabelButtonCo
 
 			// not range
 			if (low.equals(high)) {
-				DialogsFactory.errorAlert("Interval error", "", "Bounds set with empty or negative range");
+				DialogService.getImplementation().errorAlert("Interval error", "", "Bounds set with empty or negative range");
 				return currentValue;
 			}
 

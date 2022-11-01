@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import au.edu.anu.omhtk.preferences.*;
 import fr.cnrs.iees.omugi.collections.tables.StringTable;
 import au.edu.anu.omhtk.util.StringUtils;
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twcore.data.runtime.*;
 import au.edu.anu.twcore.ecosystem.runtime.timer.TimeUtil;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
@@ -376,7 +376,7 @@ public class TimeSeriesWidget1 extends AbstractDisplayWidget<Output0DData, Metad
 		dialog.setTitle(widgetId);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dialog.initOwner((Window) DialogsFactory.owner());
+		dialog.initOwner((Window) DialogService.getImplementation().owner());
 		GridPane content = new GridPane();
 		content.setVgap(5);
 		content.setHgap(3);

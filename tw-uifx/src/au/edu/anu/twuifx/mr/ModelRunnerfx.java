@@ -40,7 +40,7 @@ import java.util.TimerTask;
 
 import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.*;
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twcore.graphState.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twcore.ui.WidgetNode;
@@ -140,7 +140,7 @@ public class ModelRunnerfx extends Application {
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
 
-		DialogsFactory.setImplementation(new Dialogsfx(root.getScene().getWindow()));
+		DialogService.setImplementation(new Dialogsfx(root.getScene().getWindow()));
 		GraphStateFactory.setImplementation(new SimpleGraphStateImpl());
 
 		controller = loader.getController();

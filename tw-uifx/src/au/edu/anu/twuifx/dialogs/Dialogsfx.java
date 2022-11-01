@@ -309,7 +309,7 @@ public class Dialogsfx implements Dialogs {
 		for (String[] ext : exts)
 			if (result.getName().endsWith(ext[1]))
 				return result;
-		DialogsFactory.errorAlert("File name error", "", result.getName() + " does not have a valid file-extension.");
+		DialogService.getImplementation().errorAlert("File name error", "", result.getName() + " does not have a valid file-extension.");
 		return null;
 	}
 
@@ -335,7 +335,7 @@ public class Dialogsfx implements Dialogs {
 		dlg.setTitle(title);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dlg.initOwner((Window) DialogsFactory.owner());
+		dlg.initOwner((Window) DialogService.getImplementation().owner());
 		GridPane content = new GridPane();
 		content.setVgap(15);
 		content.setHgap(10);

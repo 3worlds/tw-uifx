@@ -34,7 +34,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 import au.edu.anu.omhtk.preferences.*;
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twcore.data.runtime.*;
 import au.edu.anu.twcore.ecosystem.runtime.tracking.AbstractDataTracker;
 import au.edu.anu.twcore.ui.runtime.*;
@@ -1547,7 +1547,7 @@ public class SpaceWidget1 extends AbstractDisplayWidget<SpaceData, Metadata> imp
 		dialog.setTitle(widgetId);
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
-		dialog.initOwner((Window) DialogsFactory.owner());
+		dialog.initOwner((Window) DialogService.getImplementation().owner());
 		GridPane content = new GridPane();
 		content.setVgap(15);
 		content.setHgap(10);

@@ -36,7 +36,7 @@ import au.edu.anu.omhtk.Language;
 import au.edu.anu.omhtk.preferences.*;
 import fr.cnrs.iees.omugi.collections.tables.StringTable;
 import au.edu.anu.omhtk.util.Resources;
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twapps.mr.*;
 import au.edu.anu.twcore.project.Project;
 import au.edu.anu.twuifx.dialogs.*;
@@ -159,7 +159,7 @@ public class MRControllerfx implements MRController {
 	@FXML
 	void onAboutModelRunner(ActionEvent event) {
 		Dialog<ButtonType> dlg = new Dialog<>();
-		dlg.initOwner((Window) DialogsFactory.owner());
+		dlg.initOwner((Window) DialogService.getImplementation().owner());
 		dlg.setTitle("About ModelRunner");
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		HBox content = new HBox();
@@ -322,7 +322,7 @@ public class MRControllerfx implements MRController {
 		String[] exts = new String[2];
 		exts[0] = "Initial state (*.isf)";
 		exts[1] = ".isf";
-		File file = DialogsFactory.promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save state as", exts);
+		File file = DialogService.getImplementation().promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save state as", exts);
 		if (file != null) {
 			System.out.println(file);
 			model.doISSaveAs(file);
@@ -331,7 +331,7 @@ public class MRControllerfx implements MRController {
 
 	@FXML
 	void onISSelect(ActionEvent event) {
-		int idx = DialogsFactory.selectFile(model.getISFiles(), model.getISSelection());
+		int idx = DialogService.getImplementation().selectFile(model.getISFiles(), model.getISSelection());
 		model.setISSelection(idx);
 	}
 
@@ -345,7 +345,7 @@ public class MRControllerfx implements MRController {
 		String[] exts = new String[2];
 		exts[0] = "Model parameters (*.mpf)";
 		exts[1] = ".mpf";
-		File file = DialogsFactory.promptForOpenFile(Project.makeFile(Project.RUNTIME), "Open parameters", exts);
+		File file = DialogService.getImplementation().promptForOpenFile(Project.makeFile(Project.RUNTIME), "Open parameters", exts);
 		System.out.println(file);
 	}
 
@@ -354,7 +354,7 @@ public class MRControllerfx implements MRController {
 		String[] exts = new String[2];
 		exts[0] = "Model parameters (*.mpf)";
 		exts[1] = ".mpf";
-		File file = DialogsFactory.promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save parameters", exts);
+		File file = DialogService.getImplementation().promptForSaveFile(Project.makeFile(Project.RUNTIME), "Save parameters", exts);
 		System.out.println(file);
 	}
 

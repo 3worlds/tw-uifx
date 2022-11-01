@@ -35,7 +35,7 @@ import java.net.URL;
 import java.util.prefs.Preferences;
 
 import au.edu.anu.omhtk.Language;
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twapps.mm.undo.Caretaker;
 import fr.cnrs.iees.omugi.io.parsing.ValidPropertyTypes;
 import au.edu.anu.twcore.graphState.*;
@@ -116,7 +116,7 @@ public class ModelMakerfx extends Application {
 		mainStage = primaryStage;
 		mainStage.setTitle(DefaultWindowSettings.defaultName());
 		createMainWindow();
-		DialogsFactory.setImplementation(new Dialogsfx(root.getScene().getWindow()));
+		DialogService.setImplementation(new Dialogsfx(root.getScene().getWindow()));
 		GraphStateFactory.setImplementation(
 				new GraphStatefx(mainStage.titleProperty(), controller.getUserProjectPathProperty()));
 		GraphStateFactory.addListener(controller);

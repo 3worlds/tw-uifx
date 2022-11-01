@@ -64,7 +64,7 @@ import au.edu.anu.omhtk.preferences.*;
 import au.edu.anu.omhtk.util.*;
 import fr.cnrs.iees.omugi.collections.tables.*;
 import au.edu.anu.aot.errorMessaging.*;
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twapps.mm.*;
 import au.edu.anu.twapps.mm.configGraph.ConfigGraph;
 import au.edu.anu.twapps.mm.layout.LayoutType;
@@ -420,12 +420,12 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 				+ UserProjectLink.projectRoot().getName() + "'.";
 		UserProjectLink.unlinkUserProject();
 		ConfigGraph.verifyGraph();
-		DialogsFactory.infoAlert("Project disconnected", header, "");
+		DialogService.getImplementation().infoAlert("Project disconnected", header, "");
 	}
 
 	@FXML
 	void handleSetCodePath(ActionEvent event) {
-		File jprjFile = DialogsFactory.selectDirectory("Select java project", userProjectPath.get());
+		File jprjFile = DialogService.getImplementation().selectDirectory("Select java project", userProjectPath.get());
 		if (jprjFile != null) {
 			String tmp = jprjFile.getAbsolutePath().replace("\\", "/");
 			if (!tmp.equals(userProjectPath.get())) {
@@ -437,7 +437,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 							+ jprjFile.getName() + "'.";
 					String content = "Make sure '" + Project.TW_DEP_JAR + "' is in the build path of '"
 							+ jprjFile.getName() + "' and refresh/clean '" + jprjFile.getName() + "' from the IDE.";
-					DialogsFactory.infoAlert("Project connected", header, content);
+					DialogService.getImplementation().infoAlert("Project connected", header, content);
 				}
 			}
 		}
@@ -549,7 +549,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 	@FXML
 	void onAbout(ActionEvent event) {
 		Dialog<ButtonType> dlg = new Dialog<>();
-		dlg.initOwner((Window) DialogsFactory.owner());
+		dlg.initOwner((Window) DialogService.getImplementation().owner());
 		dlg.setTitle("About ModelMaker");
 		ButtonType done = new ButtonType("Close", ButtonData.OK_DONE);
 		HBox content = new HBox();
@@ -678,7 +678,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		// Best if we have a list of paired and unpaired code-snippet node
 		if (content.isBlank())
 			content = "No changes found.";
-		DialogsFactory.infoAlert(title, header, content);
+		DialogService.getImplementation().infoAlert(title, header, content);
 	}
 
 	@FXML
@@ -1230,7 +1230,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 						rnames += ((++i) + ") " + r.toShortString() + "\n");
 					String title = "Library graph error";
 					String content = "Graphs must have a single root (ref '" + N_ROOT.label() + "').";
-					DialogsFactory.errorAlert(title, content, rnames);
+					DialogService.getImplementation().errorAlert(title, content, rnames);
 					return;
 				}
 

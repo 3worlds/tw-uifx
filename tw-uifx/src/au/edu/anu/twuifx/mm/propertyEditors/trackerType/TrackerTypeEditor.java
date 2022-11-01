@@ -35,7 +35,7 @@ import org.controlsfx.control.PropertySheet.Item;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 
 import fr.cnrs.iees.omugi.collections.tables.IndexString;
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twcore.data.Record;
 import au.edu.anu.twuifx.images.Images;
 import au.edu.anu.twuifx.mm.propertyEditors.LabelButtonControl;
@@ -87,7 +87,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		catRecords = getRootRecords();
 		currentTT = (TrackerType) trackerEdge.properties().getPropertyValue(P_TRACKEDGE_INDEX.key());
 		if (catRecords.isEmpty()) {
-			DialogsFactory.errorAlert(getProperty().getName(), "Property setting",
+			DialogService.getImplementation().errorAlert(getProperty().getName(), "Property setting",
 					"Not able to edit this property until associated category drivers are defined.");
 			return;
 		}
@@ -138,7 +138,7 @@ public class TrackerTypeEditor extends AbstractPropertyEditor<String, LabelButto
 		Dialog<ButtonType> dlg = new Dialog<ButtonType>();
 		dlg.setResizable(true);
 		dlg.setTitle(trackerEdge.toShortString() + "#" + P_TRACKEDGE_INDEX.key());
-		dlg.initOwner((Window) DialogsFactory.owner());
+		dlg.initOwner((Window) DialogService.getImplementation().owner());
 		ButtonType ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		BorderPane content = new BorderPane();

@@ -33,7 +33,7 @@ package au.edu.anu.twuifx.dialogs;
 import java.io.File;
 import java.util.*;
 
-import au.edu.anu.twapps.dialogs.DialogsFactory;
+import au.edu.anu.twapps.dialogs.*;
 import au.edu.anu.twcore.project.Project;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -73,7 +73,7 @@ public class ISSelectionDlg {
 		this.oldIndex = index;
 		dlg = new Dialog<ButtonType>();
 		dlg.setTitle("Manage initial state files");
-		dlg.initOwner((Window) DialogsFactory.owner());
+		dlg.initOwner((Window) DialogService.getImplementation().owner());
 		ok = new ButtonType("Ok", ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(ok, ButtonType.CANCEL);
 		BorderPane content = new BorderPane();
@@ -140,7 +140,7 @@ public class ISSelectionDlg {
 		String[] exts = new String[2];
 		exts[0] = "Initial state (*.isf)";
 		exts[1] = ".isf";
-		File file = DialogsFactory.promptForOpenFile(Project.makeFile(Project.RUNTIME), "Add initial state file", exts);
+		File file = DialogService.getImplementation().promptForOpenFile(Project.makeFile(Project.RUNTIME), "Add initial state file", exts);
 		// TODO open and validate the file before listing
 		if (file != null)
 			if (!listView.getItems().contains(file)) {
