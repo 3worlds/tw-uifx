@@ -1,28 +1,5 @@
 package au.edu.anu.twuifx.openmole;
 
-import static au.edu.anu.qgraph.queries.CoreQueries.*;
-import static au.edu.anu.qgraph.queries.base.SequenceQuery.get;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
-
-import java.io.File;
-import java.util.logging.Level;
-
-import au.edu.anu.omhtk.jars.Jars;
-import au.edu.anu.twcore.InitialisableNode;
-import au.edu.anu.twcore.archetype.TWA;
-import au.edu.anu.twcore.ecosystem.runtime.simulator.RunTimeId;
-import au.edu.anu.twcore.ui.WidgetNode;
-import au.edu.anu.twcore.ui.runtime.Kicker;
-import au.edu.anu.twuifx.FXEnumProperties;
-import fr.cnrs.iees.omugi.OmugiClassLoader;
-import fr.cnrs.iees.omugi.graph.TreeNode;
-import fr.cnrs.iees.omugi.graph.impl.ALEdge;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
-import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
-import fr.cnrs.iees.omugi.graph.io.GraphImporter;
-import fr.cnrs.iees.twcore.constants.EnumProperties;
-import fr.cnrs.iees.omhtk.utils.Logging;
-
 /**
  * Note: (https://docs.oracle.com/javase/tutorial/deployment/jar/downman.html)
  * <p>
@@ -98,25 +75,25 @@ public class OpenMoleRun {
 //			;
 	}
 
-	private static WidgetNode getHeadlessController(TreeNode uiNode) {
-		RunTimeId.setRunTimeId(0);
-		Class<?> smcClass = fr.cnrs.iees.rvgrid.statemachine.StateMachineController.class;
-		TreeNode headlessNode = (TreeNode) get(uiNode.getChildren(),
-				selectZeroOrOne(hasTheLabel(N_UIHEADLESS.label())));
-		if (headlessNode == null)
-			return null;
-		for (TreeNode n : headlessNode.getChildren()) {
-			TreeGraphDataNode widgetNode = (TreeGraphDataNode) n;
-			String kstr = (String) widgetNode.properties().getPropertyValue(TWA.SUBCLASS);
-			try {
-				Class<?> widgetClass = Class.forName(kstr);
-				if (smcClass.isAssignableFrom(widgetClass))
-					return (WidgetNode) widgetNode;
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
+//	private static WidgetNode getHeadlessController(TreeNode uiNode) {
+//		RunTimeId.setRunTimeId(0);
+//		Class<?> smcClass = fr.cnrs.iees.rvgrid.statemachine.StateMachineController.class;
+//		TreeNode headlessNode = (TreeNode) get(uiNode.getChildren(),
+//				selectZeroOrOne(hasTheLabel(N_UIHEADLESS.label())));
+//		if (headlessNode == null)
+//			return null;
+//		for (TreeNode n : headlessNode.getChildren()) {
+//			TreeGraphDataNode widgetNode = (TreeGraphDataNode) n;
+//			String kstr = (String) widgetNode.properties().getPropertyValue(TWA.SUBCLASS);
+//			try {
+//				Class<?> widgetClass = Class.forName(kstr);
+//				if (smcClass.isAssignableFrom(widgetClass))
+//					return (WidgetNode) widgetNode;
+//			} catch (ClassNotFoundException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return null;
+//	}
 
 }

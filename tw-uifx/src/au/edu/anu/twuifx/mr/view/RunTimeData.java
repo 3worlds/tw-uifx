@@ -29,17 +29,12 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mr.view;
 
-import au.edu.anu.twcore.ecosystem.dynamics.SimulatorNode;
 import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
 import fr.cnrs.iees.omugi.graph.impl.ALEdge;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
-import static fr.cnrs.iees.twcore.constants.ConfigurationNodeLabels.*;
-
 import java.util.ArrayList;
 import java.util.List;
-import static au.edu.anu.qgraph.queries.base.SequenceQuery.*;
-import static au.edu.anu.qgraph.queries.CoreQueries.*;
 
 /**
  * @author Ian Davies - 6 Jan 2020
@@ -168,17 +163,16 @@ public class RunTimeData {
 			community.reset();
 	}
 
-	@SuppressWarnings("unchecked")
 	private static List<ComponentContainer> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
 		List<ComponentContainer> result = new ArrayList<>();
-		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(initialisedConfig.root().getChildren(),
-				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
-		for (TreeGraphDataNode system : systems) {
-			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
-					selectOne(hasTheLabel(N_DYNAMICS.label())));
-//			for (Simulator sim : simNode.getSimulators())
-//				result.add(sim.community());
-		}
+//		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(initialisedConfig.root().getChildren(),
+//				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
+//		for (TreeGraphDataNode system : systems) {
+//			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
+//					selectOne(hasTheLabel(N_DYNAMICS.label())));
+////			for (Simulator sim : simNode.getSimulators())
+////				result.add(sim.community());
+//		}
 		return result;
 	}
 
