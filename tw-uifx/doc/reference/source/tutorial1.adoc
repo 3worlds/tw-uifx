@@ -31,7 +31,7 @@ them from edges that represent _parent-child_ relationships.
 
 ==== Installation
 
-Installing _ModelMaker_ is very simple: create a directory called `3w` in your home directory and copy `tw<os name>.jar` to it where `os name`is one of `linux`, `mac` or `win`.
+The default location for installation is the user's home directory. This can be changed by setting an environment variable called 'TW_HOME'. Create a directory called `3w` in your chosen location directory and copy `tw<os name>.jar` to it; where `os name`is one of `linux`, `mac` or `win`.
 
 To start, open a terminal window, navigate to `3w` and enter:
 
