@@ -311,22 +311,26 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			String seriesName = series.getKey();
 			List<List<Double>> seriesData = series.getValue();
 			int lastNonZeroTime = processSeries(widgetDirName, header, seriesName, seriesData, max);
-			if (edd.getType() != null)
-				switch (edd.getType()) {
-				case singleRun: {
-					// nothing to do except write the data series and record the exp data as above
-					break;
-				}
-				case sensitivityAnalysis: {
-					processSA(widgetDirName, seriesName, seriesData, lastNonZeroTime);
-					break;
-				}
-				case crossFactorial: {
-					processANOVA(widgetDirName, seriesName, seriesData, lastNonZeroTime);
-					break;
-				}
-				}
+			if (lastNonZeroTime <= 0)
+				System.out.println("Warning: No non-zero data in series. [" + widgetId + "]");
+			if (lastNonZeroTime > 0) {
+				if (edd.getType() != null)
+					switch (edd.getType()) {
+					case singleRun: {
+						// nothing to do except write the data series and record the exp data as above
+						break;
+					}
+					case sensitivityAnalysis: {
+						processSA(widgetDirName, seriesName, seriesData, lastNonZeroTime);
+						break;
+					}
+					case crossFactorial: {
+						processANOVA(widgetDirName, seriesName, seriesData, lastNonZeroTime);
+						break;
+					}
+					}
 
+			}
 		}
 
 	}
