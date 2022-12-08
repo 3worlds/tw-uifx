@@ -30,6 +30,7 @@
 package au.edu.anu.twuifx.widgets.helpers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,8 @@ import au.edu.anu.ymuit.ui.colour.Palette;
 import fr.cnrs.iees.omugi.identity.impl.LocalScope;
 import fr.cnrs.iees.twcore.constants.ExperimentDesignType;
 import fr.cnrs.iees.omhtk.utils.*;
-import javafx.scene.paint.Color; 
+import javafx.scene.paint.Color;
+
 /**
  * Static methods commonly used in widgets.
  * 
@@ -380,85 +382,58 @@ public class WidgetUtils {
 			}
 			if (isMinZero)
 				min = 0;
+			List<String> yAxisLabels = getYAxisLabels(fvmap, factorOrder);
+			int longest = 0;
+			for (String term:yAxisLabels)
+				longest = Math.max(longest, term.length());
+
 			NiceScale ns = new NiceScale(min, max);
 			String exp = inFile.getParentFile().getParentFile().getName();
 
-			List<String> levelColours = new ArrayList<>();
-			for (int i = 0; i < maxLevels; i++) {
-				int idx = (int) ((double) i / (double) maxLevels * 100.0);
-				levelColours.add("gray" + idx);
-
-			}
+//			List<String> levelColours = new ArrayList<>();
+//			for (int i = 0; i < maxLevels; i++) {
+//				int idx = (int) ((double) i / (double) maxLevels * 100.0);
+//				levelColours.add("gray" + idx);
+//
+//			}
 			result = new ArrayList<>();
 			result.add("setwd(\"" + inFile.getParent() + "\")");
 			result.add("values = c(" + lastLine + ")");
-			result.add("xNames = letters[1:length(values)]");
-			result.add("yRange = c(" + ns.getNiceMin() + ", " + ns.getNiceMax() + ")");
+			result.add("yNames = c(");
+			for (int i = 0; i<yAxisLabels.size();i++) {
+				String term = yAxisLabels.get(i);
+				if (i<yAxisLabels.size()-1)
+				result.add("\""+term+"\",");
+				else
+					result.add("\""+term+"\")");			
+			}
+			result.add("yNames = rev(yNames)");
+			result.add("values = rev(values)");
+			result.add("xRange = c(" + ns.getNiceMin() + ", " + ns.getNiceMax() + ")");
 			result.add("");
-			result.add("w = 2 + 0.4 * length(values)");
+			result.add("w = 5");
 			result.add("h = 5");
+			
 			result.add("svg(\"" + rv + "_barplot.svg\",width = w,height = h)");
 			result.add("");
+			result.add("bottom = 5.1");
+			
+			double f =  (Math.round(factorOrder.size()*2.5)+0.1);
+			result.add("left = "+f+"");
+			result.add("top = 4.1");
+			result.add("right = 2.1");
+			result.add("par(mar = c(bottom,left,top,right))");
+			
 			result.add(" x <-barplot(values,");
+			result.add("horiz = TRUE,");
 			result.add("\tmain = \"" + StringUtils.cap(rv) + " [" + exp + "]\",");
-			result.add("\tylab = \"" + rv + "\",");
-			result.add("\txlab = \"trials\",");
-			result.add("\tylim = yRange,");
-			result.add("\tnames.arg = xNames,xpd = FALSE)");
+			result.add("\txlab = \""+rv+"\",");
+			result.add("\txlim = xRange,");
+			result.add("\tlas = 1,");
+			result.add("\tnames.arg = yNames,xpd = FALSE)");
 			result.add("");
-			result.add("s = 0.04");
-			result.add("range = yRange[2]-yRange[1]");
-			result.add("dx = 0.3");
-			result.add("weight = 6");
-			String line = "ly = c(s * range";
-			for (int f = 1; f < factorOrder.size(); f++) {
-				line += ", " + (f + 1) + " * s * range";
-			}
-			result.add(line + ")+yRange[1]");
-			result.add("");
-			for (int i = 0; i < items.length; i++) {
-				int barNo = i + 1;
-				String[] fs = cols[i].split("_");
-				result.add("");
-				for (int l = 0; l < fs.length; l++) { // items x fs statements
-					int ht = l + 1;
-					String fl = fs[l];
-					// which level?
-					// dd[short]
-					String factorName = fl.substring(0, fl.indexOf("["));
-					String factorLevel = fl.substring(fl.indexOf("[") + 1, fl.indexOf("]"));
-					// int nLevels = fvmap.get(factorName).nLevels();
-					int level = fvmap.get(factorName).getValueLevel(factorLevel);
-					// segments(x[1]-dx,ly[4],x[1]+dx,ly[4],col="red4",lwd=weight)
-					result.add("segments(x[" + barNo + "]-dx, ly[" + ht + "], x[" + barNo + "]+dx, ly[" + ht
-							+ "], col=\"" + levelColours.get(level) + "\", lwd=weight)");
-				}
-			}
-			result.add("");
-			int i = 0;
-			for (String s : factorOrder) {
-//				text(-0.2,ly[1],"dd")
-				result.add("text(-0.2, ly[" + (++i) + "], \"" + s + "\")");
-			}
-
-			result.add("");
-			result.add("pos = \"topleft\"");
-			result.add("if (values[1]>values[length(values)])");
-			result.add("\tpos =\"topright\"");
-			String s = "";
-
-			for (int j = factorOrder.size() - 1; j >= 0; j--) {
-				s += "," + "\"" + fvmap.get(factorOrder.get(j)).toShortString() + "\"";
-			}
-			s = s.replaceFirst(",", "");
-			s = s.replace("[", ": [");
-
-			result.add("legend(pos,");
-			result.add("\tc(" + s + "),");
-			result.add("\tlty=c(0),");
-			result.add("\ttitle= \"Treatments\",");
-			result.add("\tbty=\"n\",");
-			result.add("\tncol = 1)");
+			String yaxisHeader = getBarPlotYAxisHeader(factorOrder,longest);
+			result.add("mtext(\""+yaxisHeader+"\",side =2, adj = 1.15, las=1,at=x[length(x)]+1)");
 			result.add("invisible(dev.off())");
 
 		} catch (IOException e) {
@@ -468,6 +443,74 @@ public class WidgetUtils {
 		return result;
 	}
 
+	private static String getBarPlotYAxisHeader(List<String> factorOrder,int longest) {
+		String tmp = "";
+		for (String f:factorOrder)
+			tmp+=f;
+		int spacing = (longest - tmp.length())/(factorOrder.size()-1);
+		StringBuilder sb = new StringBuilder();
+		for (String f:factorOrder) {
+			sb.append(f);
+			for (int i=0;i<spacing;i++)
+				sb.append(" ");
+		}
+		return sb.toString().trim();
+	}
+
+	private static List<String> getYAxisLabels(Map<String, ExpFactor> fvmap, List<String> factorOrder) {
+		List<Integer> levels = new ArrayList<>();
+		for (String key : factorOrder)
+			levels.add(fvmap.get(key).nLevels());
+		List<List<Integer>> indicies = FullFactorial.getFactorialIndicies(levels);
+		Collections.reverse(indicies);
+		// [[0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+		// [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1],
+		// [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1],
+		// [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]]
+		List<List<String>> names = new ArrayList<>();
+		for (int i = 0; i < indicies.size(); i++) {
+			List<String> nameList = new ArrayList<>();
+			names.add(nameList);
+			List<Integer> index1 = indicies.get(i);
+			for (int j = 0; j < index1.size(); j++) {
+				Integer idx = index1.get(j);
+				ExpFactor ef = fvmap.get(factorOrder.get(i));
+				String name = ef.getValueName(idx);
+				if (j == 0) {
+					nameList.add(name);
+				} else {
+					if (idx.equals(index1.get(j - 1)))
+						nameList.add("");
+					else
+						nameList.add(name);
+				}
+			}
+		}
+		List<String> result = new ArrayList<>();
+		int n = indicies.get(0).size();
+		List<List<String>> terms = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			List<String> term = new ArrayList<>();
+			terms.add(term);
+			for (int j = 0; j < names.size(); j++) {
+				String name = names.get(j).get(i);
+				if (!name.isBlank())
+					term.add(name);
+
+			}
+		}
+		for (List<String> term : terms) {
+			StringBuilder t = new StringBuilder();
+			for (String part:term) {
+				t.append(part).append(" ");
+			}
+			result.add(t.toString().trim());
+		}
+		
+		return result;
+	}
+
+	
 	/**
 	 * Creates file contents for an R script to plot data series for each treatment
 	 * combination. averaged over replicates. Standard deviation for each mean
@@ -574,15 +617,6 @@ public class WidgetUtils {
 		return result;
 	}
 
-//	public static void main(String[] args) {
-//		File file = new File(
-//				"/home/ian/3w/project_GDDMExp_2022-07-23-04-13-06-683/local/runTime/OG/popWriter0/population.csv");
-//		List<String> lines = generateSeriesScript(ExperimentDesignType.crossFactorial ,file, "population", 5, false);
-//		for (String line : lines)
-//			System.out.println(line);
-//
-//	}
-
 	/**
 	 * Saves an R script to file then executes the script with Rscript. This method
 	 * waits for the execution to finish before returning.
@@ -633,5 +667,14 @@ public class WidgetUtils {
 			rows++;
 		return new Duple<Integer, Integer>(rows, cols);
 	}
+
+//	public static void main(String[] args) {
+//	File file = new File(
+//			"/home/ian/3w/project_GDDMExp_2022-07-23-04-13-06-683/local/runTime/OG/popWriter0/population.csv");
+//	List<String> lines = generateSeriesScript(ExperimentDesignType.crossFactorial ,file, "population", 5, false);
+//	for (String line : lines)
+//		System.out.println(line);
+//
+//}
 
 }
