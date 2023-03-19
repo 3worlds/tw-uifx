@@ -2,7 +2,7 @@ ModelRunner is the second of two programs that comprise the 3Worlds project. Its
 
 At the heart of 3Worlds is an archetype: a meta-model of what constitutes an ecosystem. In effect, the archetype makes concrete our interpretation of the term “Ecosystem” first articulated in Tansley’s 1935 paper. ModelRunner assumes the model specifications comply with this archetype.
 
-As well as performing simulation experiments, ModelRunner provides for editing, saving and otherwise managing model parameters and the initial state from which simulations begin. It also displays and saves model outputs, depending on which user interface components have be defined in the configuration graph.
+As well as performing simulation experiments, ModelRunner provides for editing, saving and otherwise managing model parameters and the initial state from which simulations begin. It also displays and saves model outputs, depending on which user interface components have been defined in the configuration graph.
 
 The name of this project is a homage to the lithograph “Three Worlds” by E. C. Escher. To our minds, this well represents Tansley’s view of the ecosystem as one physical system comprising organisms living out their lives in their particular environment.
 
