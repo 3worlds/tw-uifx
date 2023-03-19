@@ -20,4 +20,6 @@ Gignoux, J., Davies, I.D., Flint, S.R. and Zucker, J.D., 2011. The ecosystem in 
 
 Gignoux, J., Chérel, G., Davies, I.D., Flint, S.R. and Lateltin, E., 2017. Emergence and complex systems: The contribution of dynamic graph theory. Ecological complexity, 31, pp.34-49.
 
+Gignoux, J., Davies, I.D. and Flint, S.R., 2022. 3Worlds, a simulation platform for ecosystem modelling. Ecological Modelling, 473, p.110121.
+
 Tansley, A. G., 1935. The use and abuse of vegetational concepts and terms. Ecology, 16, pp.284–307.
