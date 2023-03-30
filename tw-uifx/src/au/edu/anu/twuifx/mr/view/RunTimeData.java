@@ -30,6 +30,7 @@
 package au.edu.anu.twuifx.mr.view;
 
 import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
+import au.edu.anu.twcore.ecosystem.runtime.system.OldComponentContainer;
 import fr.cnrs.iees.omugi.graph.impl.ALEdge;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
@@ -151,7 +152,7 @@ public class RunTimeData {
 	 * @param initialisedConfig TODO: Not implemented
 	 */
 	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (ComponentContainer community : communities(initialisedConfig))
+		for (OldComponentContainer community : communities(initialisedConfig))
 			community.clearState();
 	}
 
@@ -159,12 +160,12 @@ public class RunTimeData {
 	 * @param initialisedConfig TODO: Not implemented
 	 */
 	public static void resetModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (ComponentContainer community : communities(initialisedConfig))
+		for (OldComponentContainer community : communities(initialisedConfig))
 			community.reset();
 	}
 
-	private static List<ComponentContainer> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		List<ComponentContainer> result = new ArrayList<>();
+	private static List<OldComponentContainer> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+		List<OldComponentContainer> result = new ArrayList<>();
 //		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(initialisedConfig.root().getChildren(),
 //				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
 //		for (TreeGraphDataNode system : systems) {

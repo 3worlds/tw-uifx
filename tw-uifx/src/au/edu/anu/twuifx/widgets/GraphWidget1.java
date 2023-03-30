@@ -123,12 +123,12 @@ public class GraphWidget1 extends AbstractDisplayWidget<RuntimeGraphData, Metada
 	}
 
 	private static void printContainer(String indent, SystemComponent sc) {
-		ComponentContainer container = (ComponentContainer) sc.container();
+		OldComponentContainer container = (OldComponentContainer) sc.container();
 		if (container != null) {
 			container.fullId();
 			// where can i find the ephemeral category that should be displayed here.
 			System.out.println(indent + String.join("-.", container.fullId()) + "->" + sc.id() + sc);// etc
-			for (CategorizedContainer<SystemComponent> subc : container.subContainers()) {
+			for (OldCategorizedContainer<SystemComponent> subc : container.subContainers()) {
 				for (SystemComponent ssc : subc.allItems()) {
 					printContainer(indent + "\t", ssc);
 				}
