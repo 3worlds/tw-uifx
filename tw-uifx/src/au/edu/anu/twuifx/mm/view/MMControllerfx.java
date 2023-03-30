@@ -755,6 +755,7 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 	@Override
 	public void onProjectClosing() {
+		putPreferences();
 		GraphStateService.getImplementation().clear();
 		if (visualiser != null)
 			visualiser.close();
@@ -765,9 +766,11 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		visualGraph = null;
 		lastSelectedNode = null;
 		UserProjectLink.unlinkUserProject();
+		userProjectPath.set("");
 		stage.setTitle(DefaultWindowSettings.defaultName());
 		setButtonState();
-		putPreferences();
+		
+
 	}
 
 	@Override
