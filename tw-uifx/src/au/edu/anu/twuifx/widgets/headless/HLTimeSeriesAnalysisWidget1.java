@@ -312,7 +312,7 @@ public class HLTimeSeriesAnalysisWidget1 extends AbstractDisplayWidget<Output0DD
 			List<List<Double>> seriesData = series.getValue();
 			int lastNonZeroTime = processSeries(widgetDirName, header, seriesName, seriesData, max);
 			if (lastNonZeroTime <= 0)
-				System.out.println("Warning: No non-zero data in series. [" + widgetId + "]");
+				System.out.println("Warning: Data is all zeros. [" + widgetId + ":"+seriesName+"][!=t= "+lastNonZeroTime);
 			if (lastNonZeroTime > 0) {
 				if (edd.getType() != null)
 					switch (edd.getType()) {
