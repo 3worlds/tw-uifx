@@ -29,13 +29,13 @@
  **************************************************************************/
 package au.edu.anu.twuifx.mr.view;
 
-import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
-import au.edu.anu.twcore.ecosystem.runtime.system.OldComponentContainer;
+//import au.edu.anu.twcore.ecosystem.runtime.system.ComponentContainer;
+//import au.edu.anu.twcore.ecosystem.runtime.system.OldComponentContainer;
 import fr.cnrs.iees.omugi.graph.impl.ALEdge;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraph;
 import fr.cnrs.iees.omugi.graph.impl.TreeGraphDataNode;
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 
 /**
  * @author Ian Davies - 6 Jan 2020
@@ -61,7 +61,7 @@ import java.util.List;
  * to t1000 for 1000 steps OR from t500 to t1000 for 500 steps... if you get
  * what i mean!
  */
-
+// TODO: refactor this - check no harm
 public class RunTimeData {
 	private RunTimeData() {
 	};
@@ -152,30 +152,30 @@ public class RunTimeData {
 	 * @param initialisedConfig TODO: Not implemented
 	 */
 	public static void clearModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (OldComponentContainer community : communities(initialisedConfig))
-			community.clearState();
+//		for (OldComponentContainer community : communities(initialisedConfig))
+//			community.clearState();
 	}
 
 	/**
 	 * @param initialisedConfig TODO: Not implemented
 	 */
 	public static void resetModelState(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		for (OldComponentContainer community : communities(initialisedConfig))
-			community.reset();
+//		for (OldComponentContainer community : communities(initialisedConfig))
+//			community.reset();
 	}
 
-	private static List<OldComponentContainer> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
-		List<OldComponentContainer> result = new ArrayList<>();
-//		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(initialisedConfig.root().getChildren(),
-//				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
-//		for (TreeGraphDataNode system : systems) {
-//			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
-//					selectOne(hasTheLabel(N_DYNAMICS.label())));
-////			for (Simulator sim : simNode.getSimulators())
-////				result.add(sim.community());
-//		}
-		return result;
-	}
+//	private static List<?> communities(TreeGraph<TreeGraphDataNode, ALEdge> initialisedConfig) {
+//		List<?> result = new ArrayList<>();
+////		List<TreeGraphDataNode> systems = (List<TreeGraphDataNode>) get(initialisedConfig.root().getChildren(),
+////				selectOneOrMany(hasTheLabel(N_SYSTEM.label())));
+////		for (TreeGraphDataNode system : systems) {
+////			SimulatorNode simNode = (SimulatorNode) get(system.getChildren(),
+////					selectOne(hasTheLabel(N_DYNAMICS.label())));
+//////			for (Simulator sim : simNode.getSimulators())
+//////				result.add(sim.community());
+////		}
+//		return result;
+//	}
 
 	/**
 	 * This will be tricky! Return whatever is required (System factories?) to
