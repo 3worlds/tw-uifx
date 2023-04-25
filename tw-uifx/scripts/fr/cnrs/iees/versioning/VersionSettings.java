@@ -105,8 +105,8 @@ public class VersionSettings {
 	 *
 	 */
 	protected static String[][] DEPS = { 
-			{ "fr.cnrs.iees.omhtk", "generics", "[0.5.0,)", null },
-			{ "fr.cnrs.iees.omugi", "omugi", "[0.6.0,)", null },
+			{ "fr.cnrs.iees.omhtk", "generics", "[0.5.1,)", null },
+			{ "fr.cnrs.iees.omugi", "omugi", "[0.6.1,)", null },
 			{ "fr.cnrs.iees.tw-core", "tw-core", "[0.6.5,)", null },
 			{ "au.edu.anu.aot", "aot", "[0.2.1,)", null },
 			{ "fr.cnrs.iees.tw-models", "tw-models", "[0.0.6,)", null},
