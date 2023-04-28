@@ -411,8 +411,8 @@ public class WidgetUtils {
 			result.add("values = rev(values)");
 			result.add("xRange = c(" + ns.getNiceMin() + ", " + ns.getNiceMax() + ")");
 			result.add("");
-			result.add("w = 5");
-			result.add("h = 5");
+			result.add("w = 10");
+			result.add("h = 10");
 			
 			result.add("svg(\"" + rv + "_barplot.svg\",width = w,height = h)");
 			result.add("");
