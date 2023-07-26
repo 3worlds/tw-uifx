@@ -990,9 +990,9 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 	@Override
 	public void putPreferences() {
+//		System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Putting prefs.");
 		if (Project.isOpen()) {
 			ArrayPreferences prefs = PreferenceService.getImplementation();
-
 			prefs.putString(UserProjectPath, userProjectPath.get());
 			prefs.putEnum(allElementsPropertySheet.idProperty().get() + Mode, allElementsPropertySheet.getMode());
 			prefs.putEnum(nodePropertySheet.idProperty().get() + Mode, nodePropertySheet.getMode());
@@ -1000,8 +1000,6 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 			prefs.putDouble(splitPane2.idProperty().get(), splitPane2.getDividerPositions()[0]);
 			prefs.putDouble(zoomTarget.idProperty().get() + scaleX, zoomTarget.getScaleX());
 			prefs.putDouble(zoomTarget.idProperty().get() + scaleY, zoomTarget.getScaleY());
-			prefs.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-			prefs.putBoolean(mainMaximized, stage.isMaximized());
 			prefs.putBoolean(btnXLinks.idProperty().get(), btnXLinks.isSelected());
 			prefs.putBoolean(btnChildLinks.idProperty().get(), btnChildLinks.isSelected());
 			prefs.putBoolean(tglSideline.idProperty().get(), tglSideline.isSelected());
@@ -1022,19 +1020,30 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 			prefs.putBoolean(cbAnimate.idProperty().get(), cbAnimate.isSelected());
 
+//			System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Putting x:"+stage.getX());
+			prefs.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+			prefs.putBoolean(mainMaximized, stage.isMaximized());
+
 			prefs.flush();
 		}
+
 	}
 
+//	private static int counter = 0;
 	@Override
 	public void getPreferences() {
+//		System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Getting prefs.");
+		// NB: Unlink previous link if any
+		if (UserProjectLink.haveUserProject())
+			UserProjectLink.unlinkUserProject();
+
 		PreferenceService.setImplementation(new PrefImpl(Project.makeProjectPreferencesFile()));
 		ArrayPreferences prefs = PreferenceService.getImplementation();
 		// get path string for user project
+
 		String prjtmp = prefs.getString(UserProjectPath, "");
 		if (!prjtmp.equals("")) {
 			// check java project still exists.
-			UserProjectLink.unlinkUserProject();
 			if (UserProjectLinkFactory.makeEnv(new File(prjtmp), ideType)) {
 				userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
 			} else
@@ -1042,13 +1051,6 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		} else
 			userProjectPath.set("");
 
-		double[] ws = prefs.getDoubles(mainFrameName, DefaultWindowSettings.getX(), DefaultWindowSettings.getY(),
-				DefaultWindowSettings.getWidth(), DefaultWindowSettings.getHeight());
-		stage.setX(ws[0]);
-		stage.setY(ws[1]);
-		stage.setWidth(ws[2]);
-		stage.setHeight(ws[3]);
-		stage.setMaximized(prefs.getBoolean(mainMaximized, stage.isMaximized()));
 
 		setJitter(prefs.getInt(jitterKey, 0));
 		tabPaneProperties.getSelectionModel()
@@ -1107,6 +1109,15 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		cbAnimate.selectedProperty().set(prefs.getBoolean(cbAnimate.idProperty().get(), true));
 
 		this.setElementScales(sldrElements.getValue());
+		double[] ws = prefs.getDoubles(mainFrameName, DefaultWindowSettings.getX(), DefaultWindowSettings.getY(),
+				DefaultWindowSettings.getWidth(), DefaultWindowSettings.getHeight());
+//		System.out.println((counter++) + " [" + Project.getProjectUserName() + "] Getting x:" + ws[0]);
+//		System.out.println((counter++) + " [" + Project.getProjectUserName() + "] Setting window x to:" + ws[0]);
+		stage.setX(ws[0]);
+		stage.setY(ws[1]);
+		stage.setWidth(ws[2]);
+		stage.setHeight(ws[3]);
+		stage.setMaximized(prefs.getBoolean(mainMaximized, stage.isMaximized()));
 	}
 
 	// -------------- Preferencable End ---------------------
