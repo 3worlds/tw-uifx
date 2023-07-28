@@ -990,9 +990,12 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 	@Override
 	public void putPreferences() {
-//		System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Putting prefs.");
 		if (Project.isOpen()) {
+//			System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Putting prefs.");
 			ArrayPreferences prefs = PreferenceService.getImplementation();
+			
+//			System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Writing to: "+prefs.getFile());
+			
 			prefs.putString(UserProjectPath, userProjectPath.get());
 			prefs.putEnum(allElementsPropertySheet.idProperty().get() + Mode, allElementsPropertySheet.getMode());
 			prefs.putEnum(nodePropertySheet.idProperty().get() + Mode, nodePropertySheet.getMode());
@@ -1020,7 +1023,6 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 
 			prefs.putBoolean(cbAnimate.idProperty().get(), cbAnimate.isSelected());
 
-//			System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Putting x:"+stage.getX());
 			prefs.putDoubles(mainFrameName, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 			prefs.putBoolean(mainMaximized, stage.isMaximized());
 
@@ -1033,23 +1035,24 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 	@Override
 	public void getPreferences() {
 //		System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Getting prefs.");
-		// NB: Unlink previous link if any
-		if (UserProjectLink.haveUserProject())
-			UserProjectLink.unlinkUserProject();
 
 		PreferenceService.setImplementation(new PrefImpl(Project.makeProjectPreferencesFile()));
 		ArrayPreferences prefs = PreferenceService.getImplementation();
+//		System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Reading from: "+prefs.getFile());
 		// get path string for user project
 
 		String prjtmp = prefs.getString(UserProjectPath, "");
 		if (!prjtmp.equals("")) {
 			// check java project still exists.
+//			System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Getting prefs: linking "+prjtmp);
 			if (UserProjectLinkFactory.makeEnv(new File(prjtmp), ideType)) {
 				userProjectPath.set(UserProjectLink.projectRoot().getAbsolutePath());
 			} else
 				userProjectPath.set("");
-		} else
+		} else {
 			userProjectPath.set("");
+//			System.out.println((counter++)+" ["+Project.getProjectUserName()+"] Getting prefs: no link found.");
+		}
 
 
 		setJitter(prefs.getInt(jitterKey, 0));
@@ -1111,8 +1114,6 @@ public class MMControllerfx implements ErrorListListener, MMController, GraphSta
 		this.setElementScales(sldrElements.getValue());
 		double[] ws = prefs.getDoubles(mainFrameName, DefaultWindowSettings.getX(), DefaultWindowSettings.getY(),
 				DefaultWindowSettings.getWidth(), DefaultWindowSettings.getHeight());
-//		System.out.println((counter++) + " [" + Project.getProjectUserName() + "] Getting x:" + ws[0]);
-//		System.out.println((counter++) + " [" + Project.getProjectUserName() + "] Setting window x to:" + ws[0]);
 		stage.setX(ws[0]);
 		stage.setY(ws[1]);
 		stage.setWidth(ws[2]);
